@@ -1,0 +1,61 @@
+<template>
+  <div>
+    <div class="row gutters-tiny">
+      <p-box
+        name="Profile"
+        link="/account/profile"
+        icon="si si-user"/>
+      <p-box
+        name="Project"
+        link="/account/project"
+        icon="si si-notebook"/>
+      <p-box
+        name="Billing"
+        link="/account/billing"
+        icon="si si-docs"/>
+      <p-box
+        name="Referral"
+        link="/account/referral"
+        icon="si si-share"/>
+      <p-box
+        name="Email Subscription"
+        link="/account/email-subscription"
+        icon="si si-envelope"/>
+    </div>
+    <p-loading-block v-show="isLoading" />
+  </div>
+</template>
+
+<script>
+import Breadcrumb from '@/views/account/Breadcrumb'
+import { mapGetters, mapActions } from 'vuex'
+
+export default {
+  components: {
+    Breadcrumb
+  },
+  data () {
+    return {
+      isLoading: false
+    }
+  },
+  computed: {
+    ...mapGetters('AccountProject', ['projects'])
+  },
+  methods: {
+    ...mapActions('AccountProject', ['get'])
+  },
+  created () {
+    if (this.projects.length == 0) {
+      this.isLoading = true
+      this.get()
+        .then((response) => {
+          this.isLoading = false
+        }, (error) => {
+          this.isLoading = false
+          console.log(JSON.stringify(error))
+        })
+    }
+  }
+}
+</script>

@@ -1,0 +1,14 @@
+{
+  "new" : "tambah",
+  "join" : "bergabung",
+  "group" : "grup",
+  "due date": "tanggal jatuh tempo",
+  "date from": "periode awal",
+  "date to": "periode akhir",
+  "date": "tanggal",
+  "period": "periode",
+  "time": "jam",
+  "percentage": "persentase",
+  "total": "total",
+  "report": "laporan"
+}

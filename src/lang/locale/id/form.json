@@ -1,0 +1,10 @@
+{
+  "add" : "tambah",
+  "create" : "buat",
+  "edit" : "ubah",
+  "update" : "ubah",
+  "delete" : "hapus",
+  "list" : "list",
+  "submit" : "simpan",
+  "cancel" : "batal"
+}

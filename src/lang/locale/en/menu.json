@@ -1,0 +1,13 @@
+{
+  "dashboard" : "dashboard",
+  "main menu" : "main menu",
+  "master" : "master",
+  "purchasing" : "purchasing",
+  "sales" : "sales",
+  "inventory" : "inventory",
+  "expedition" : "expedition",
+  "manufacture" : "manufacture",
+  "finance" : "finance",
+  "accounting" : "accounting",
+  "human resource" : "human resource"
+}

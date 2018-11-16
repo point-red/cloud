@@ -1,0 +1,12 @@
+{
+  "company name" : "company name",
+  "company address" : "company address",
+  "company phone" : "company phone",
+  "company identifier" : "company identifier",
+  "vat identification number" : "vat identification number",
+  "join to company" : "join to company",
+  "invitation code" : "invitation code",
+  "request to join" : "request to join",
+  "invitation code intro": "this invitation code is for your employee register and join to your project, Check this checkbox below to activate your invitation code",
+  "join to company intro": "you can join to existing company as an employee, supervisor or manager. You can ask your invitation code from the company"
+}

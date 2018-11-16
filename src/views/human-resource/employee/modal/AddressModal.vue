@@ -1,0 +1,75 @@
+<template>
+  <div>
+    <form
+      class="row"
+      @submit.prevent="onSubmitAddress">
+      <p-modal
+        ref="addressModal"
+        :id="id"
+        :title="title">
+        <template slot="content">
+          <p-form-row
+            id="name"
+            name="name"
+            :label="$t('address')"
+            :isFocus="true"
+            v-model="address">
+          </p-form-row>
+        </template>
+        <template slot="footer">
+          <button class="btn btn-primary">Add</button>
+          <button type="button" @click="close" class="btn btn-outline-danger">Close</button>
+        </template>
+      </p-modal>
+    </form>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    title: {
+      type: String
+    },
+    id: {
+      type: String,
+      required: true
+    }
+  },
+  data () {
+    return {
+      address: ''
+    }
+  },
+  watch: {
+    'address' () {
+      this.$emit('value', this.address)
+    }
+  },
+  methods: {
+    show () {
+      this.$refs.addressModal.show()
+    },
+    close () {
+      this.$refs.addressModal.close()
+    },
+    onSubmitAddress () {
+      this.$emit('add', { address: this.address })
+      this.address = ''
+      this.close()
+    }
+  },
+  created () {
+    console.log('address created')
+  },
+  updated () {
+    console.log('address updated')
+  },
+  mounted () {
+    console.log('address mounted')
+  },
+  beforeDestroy () {
+    console.log('address before destroy')
+  }
+}
+</script>

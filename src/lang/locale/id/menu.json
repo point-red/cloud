@@ -1,0 +1,13 @@
+{
+  "dashboard" : "dashboard",
+  "main menu" : "menu utama",
+  "master" : "master",
+  "purchasing" : "pembelian",
+  "sales" : "penjualan",
+  "inventory" : "persediaan",
+  "expedition" : "ekspedisi",
+  "manufacture" : "produksi",
+  "finance" : "keuangan",
+  "accounting" : "akuntansi",
+  "human resource" : "sdm"
+}

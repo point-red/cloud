@@ -1,0 +1,10 @@
+{
+  "add" : "add",
+  "create" : "create",
+  "edit" : "edit",
+  "update" : "update",
+  "delete" : "delete",
+  "list" : "list",
+  "submit" : "submit",
+  "cancel" : "cancel"
+}
