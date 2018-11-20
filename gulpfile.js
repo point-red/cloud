@@ -12,18 +12,18 @@ var merge = require('gulp-merge-json')
 
 gulp.task('js', function () {
   return gulp.src([
-    'public/assets/js/core/jquery.min.js',
-    'public/assets/js/core/bootstrap.bundle.min.js',
-    'public/assets/js/core/jquery.slimscroll.min.js',
-    'public/assets/js/core/jquery.scrollLock.min.js',
-    'public/assets/js/core/jquery.appear.min.js',
-    'public/assets/js/core/jquery.countTo.min.js',
-    'public/assets/js/core/jquery.cookie.min.js',
-    'public/assets/js/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js',
-    'public/assets/js/plugins/jquery-auto-complete/jquery.auto-complete.min.js',
-    'public/assets/js/plugins/masked-inputs/jquery.maskedinput.min.js',
-    'public/assets/js/plugins/ion-rangeslider/js/ion.rangeSlider.min.js',
-    'public/assets/js/plugins/dropzonejs/min/dropzone.min.js'
+    'resources/js/core/jquery.min.js',
+    'resources/js/core/bootstrap.bundle.min.js',
+    'resources/js/core/jquery.slimscroll.min.js',
+    'resources/js/core/jquery.scrollLock.min.js',
+    'resources/js/core/jquery.appear.min.js',
+    'resources/js/core/jquery.countTo.min.js',
+    'resources/js/core/jquery.cookie.min.js',
+    'resources/js/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js',
+    'resources/js/plugins/jquery-auto-complete/jquery.auto-complete.min.js',
+    'resources/js/plugins/masked-inputs/jquery.maskedinput.min.js',
+    'resources/js/plugins/ion-rangeslider/js/ion.rangeSlider.min.js',
+    'resources/js/plugins/dropzonejs/min/dropzone.min.js'
   ])
     .pipe(concat('core.min.js'))
     .pipe(uglify())
@@ -32,11 +32,11 @@ gulp.task('js', function () {
 
 gulp.task('styles', function () {
   return gulp.src([
-    'public/assets/js/plugins/jquery-auto-complete/jquery.auto-complete.min.css',
-    'public/assets/js/plugins/ion-rangeslider/css/ion.rangeSlider.min.css',
-    'public/assets/js/plugins/ion-rangeslider/css/ion.rangeSlider.skinHTML5.min.css',
-    'public/assets/js/plugins/dropzonejs/min/dropzone.min.css',
-    'public/assets/css/codebase.css'
+    'resources/js/plugins/jquery-auto-complete/jquery.auto-complete.min.css',
+    'resources/js/plugins/ion-rangeslider/css/ion.rangeSlider.min.css',
+    'resources/js/plugins/ion-rangeslider/css/ion.rangeSlider.skinHTML5.min.css',
+    'resources/js/plugins/dropzonejs/min/dropzone.min.css',
+    'resources/css/codebase.css'
   ])
     .pipe(concat('core.min.css'))
     .pipe(minifyCSS())
