@@ -82,7 +82,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .sm-default-btn {
   width: 100%;
   text-align: left;

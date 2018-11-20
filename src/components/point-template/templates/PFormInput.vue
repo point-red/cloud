@@ -120,7 +120,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .invalid-input {
   display: block;
   margin-top: .25rem;
