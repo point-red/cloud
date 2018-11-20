@@ -28,6 +28,7 @@ import VueClipboard from 'vue-clipboard2'
 import VueSelectMenu from 'v-selectmenu'
 
 require('vue-tour/dist/vue-tour.css')
+require('flag-icon-css/css/flag-icon.min.css')
 
 const bugsnagClient = bugsnag(process.env.VUE_APP_BUGSNAG_API_KEY)
 bugsnagClient.use(bugsnagVue(Vue))

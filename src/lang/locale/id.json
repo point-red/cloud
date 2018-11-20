@@ -1,4 +1,6 @@
 {
+	"english": "english",
+	"indonesia": "indonesia",
 	"add": "tambah",
 	"create": "buat",
 	"edit": "ubah",
@@ -59,6 +61,7 @@
 	"employee": "karyawan",
 	"kpi template": "template kpi",
 	"user": "user",
+	"role & permission": "hak akses",
 	"customer": "pelanggan",
 	"plugin": "plugin",
 	"sales visitation form": "form kunjungan sales",

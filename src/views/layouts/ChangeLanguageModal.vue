@@ -5,21 +5,17 @@
       :id="id"
       :title="title">
       <template slot="content">
-        <div class="row text-center">
-          <div class="col-sm-12">
-            <div class="block">
-              <button
-                class="btn btn-hero btn-outline-secondary btn-block"
-                @click="setLang('en')">English</button>
-            </div>
-          </div>
-          <div class="col-sm-12">
-            <div class="block">
-              <button
-                class="btn btn-hero btn-outline-secondary btn-block"
-                @click="setLang('id')">Indonesian</button>
-            </div>
-          </div>
+        <div class="row gutters-tiny">
+          <p-box
+            :name="$t('english') | titlecase"
+            @click.native="setLang('en')"
+            background-color="bg-gray-lighter"
+            icon="flag-icon flag-icon-us"/>
+          <p-box
+            :name="$t('indonesia') | titlecase"
+            @click.native="setLang('id')"
+            background-color="bg-gray-lighter"
+            icon="flag-icon flag-icon-id"/>
         </div>
       </template>
       <template slot="footer">

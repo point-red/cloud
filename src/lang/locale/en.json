@@ -1,4 +1,6 @@
 {
+	"english": "english",
+	"indonesia": "indonesia",
 	"add": "add",
 	"create": "create",
 	"edit": "edit",
@@ -59,6 +61,7 @@
 	"employee": "employee",
 	"kpi template": "kpi template",
 	"user": "user",
+	"role & permission": "role & permission",
 	"customer": "customer",
 	"plugin": "plugin",
 	"sales visitation form": "sales visitation form",
