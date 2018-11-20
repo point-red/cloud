@@ -108,14 +108,14 @@
                 to="/"
                 exact
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-speedometer"/> {{ $t("dashboard") }}</router-link>
+                class="sidebar-mini-hide"><i class="si si-speedometer"/> {{ $t("dashboard") | titlecase }}</router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/menu"
                 exact
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-list"/> {{ $t("main menu") }}</router-link>
+                class="sidebar-mini-hide"><i class="si si-list"/> {{ $t("main menu") | titlecase }}</router-link>
             </li>
             <li class="nav-main-heading">
               <span class="sidebar-mini-visible">MD</span>
@@ -127,7 +127,7 @@
                 class="nav-submenu"
                 active-class="active">
                 <i class="si si-layers"/>
-                <span class="sidebar-mini-hide">{{ $t("master") }}</span>
+                <span class="sidebar-mini-hide">{{ $t("master") | titlecase }}</span>
               </router-link>
               <ul>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read user')">
@@ -137,7 +137,7 @@
                 </li>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read role')">
                   <router-link to="/master/role" active-class="active">
-                    Role & Permission
+                    {{ $t('role & permission') | titlecase }}
                   </router-link>
                 </li>
               </ul>
@@ -145,7 +145,7 @@
             <li :class="{ 'open' : firstUri === 'human-resource' }" v-if="$permission.has('menu human resource')">
               <router-link to="/human-resource" class="nav-submenu" active-class="active">
                 <i class="si si-emoticon-smile"/>
-                <span class="sidebar-mini-hide">{{ $t("human resource") }}</span>
+                <span class="sidebar-mini-hide">{{ $t("human resource") | titlecase }}</span>
               </router-link>
               <ul>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read employee') || $permission.has('create employee assessment') || $permission.has('read employee assessment')">
@@ -168,7 +168,7 @@
                 class="nav-submenu"
                 active-class="active">
                 <i class="si si-puzzle"/>
-                <span class="sidebar-mini-hide">{{ $t("plugin") }}</span>
+                <span class="sidebar-mini-hide">{{ $t("plugin") | titlecase }}</span>
               </router-link>
               <ul>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('menu scale weight')">
