@@ -45,7 +45,7 @@
                 <th width="200px">{{ $t('address') }}</th>
                 <th width="100px">{{ $t('phone') }}</th>
                 <th width="250px">{{ $t('interest reason') }}</th>
-                <th width="250px">{{ $t('not interest reason') }}</th>
+                <th width="250px">{{ $t('no interest reason') }}</th>
                 <th width="250px">{{ $t('similar product') }}</th>
                 <th width="250px">{{ $t('item sold') }}</th>
               </tr>

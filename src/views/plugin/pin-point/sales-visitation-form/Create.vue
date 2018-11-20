@@ -138,7 +138,7 @@
         <p-form-row
           id="not-interest"
           name="not_interest"
-          :label="$t('not interest reason')">
+          :label="$t('no interest reason')">
           <div slot="body" class="col-lg-9">
             <p-select
               id="not-interest"
