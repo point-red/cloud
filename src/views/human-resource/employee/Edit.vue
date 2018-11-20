@@ -412,10 +412,11 @@
         </div>
         <div class="form-group row">
           <div class="col-md-12">
+            <hr>
             <button
               type="submit"
               :disabled="loadingSaveButton"
-              class="btn btn-sm btn-primary">
+              class="btn btn-sm btn-primary mr-5">
               <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Update
             </button>
             <button

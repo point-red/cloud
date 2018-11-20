@@ -140,11 +140,12 @@
 
           <div class="form-group row">
             <div class="col-md-12">
+              <hr>
               <button
                 v-if="form.template.weight > 0"
                 :disabled="loadingSaveButton"
                 type="submit"
-                class="btn btn-sm btn-primary">
+                class="btn btn-sm btn-primary mr-5">
                 <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
               </button>
               <button

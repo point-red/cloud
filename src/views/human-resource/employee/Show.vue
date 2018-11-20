@@ -192,10 +192,11 @@
               </p-table>
             </div>
             <div class="col-sm-12 mb-20">
+              <hr>
               <router-link
                 :to="{ path: '/human-resource/employee/' + employee.id + '/edit', params: { id: employee.id }}"
                 v-if="$permission.has('update employee')"
-                class="btn btn-sm btn-primary">
+                class="btn btn-sm btn-primary mr-5">
                 Edit
               </router-link>
               <button
