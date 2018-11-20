@@ -10,32 +10,21 @@
 
     <div class="row">
       <p-block :title="$t('sales visitation form')" :header="true">
-        <p-form-row
-          id="date"
-          name="date"
-          :label="$t('date from')">
+        <p-form-row id="date" name="date" :label="$t('date from')">
           <div slot="body" class="col-lg-9">
-            <p-date-picker
-              id="date-from"
-              name="date_from"
-              @input="updateDateFrom"
-              v-model="date_from"/>
+            <p-date-picker id="date-from" name="date_from" @input="updateDateFrom" v-model="date_from"/>
           </div>
         </p-form-row>
-        <p-form-row
-          id="date"
-          name="date"
-          :label="$t('date to')">
+        <p-form-row id="date" name="date" :label="$t('date to')">
           <div slot="body" class="col-lg-9">
-            <p-date-picker
-              id="date-to"
-              name="date_to"
-              @input="updateDateTo"
-              v-model="date_to"/>
+            <p-date-picker id="date-to" name="date_to" @input="updateDateTo" v-model="date_to"/>
           </div>
         </p-form-row>
-        <p-form-row id="export" name="export">
+        <p-form-row>
           <div slot="body" class="col-lg-9">
+            <button :disabled="isLoading" class="btn btn-sm btn-primary mr-5" @click="search">
+              <i v-show="isLoading" class="fa fa-asterisk fa-spin"/> Search
+            </button>
             <button :disabled="isExporting" type="submit" class="btn btn-sm btn-primary" @click="exportData">
               <i v-show="isExporting" class="fa fa-asterisk fa-spin"/> Export
             </button>
@@ -44,7 +33,7 @@
             </ul>
           </div>
         </p-form-row>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <div class="table-responsive">
             <p-table>
               <tr slot="p-head">
@@ -106,7 +95,6 @@
 </template>
 
 <script>
-// import { debounce } from 'lodash'
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
@@ -122,7 +110,7 @@ export default {
   },
   data () {
     return {
-      loading: false,
+      isLoading: false,
       isExporting: false,
       date_from: new Date(),
       date_to: new Date(),
@@ -134,33 +122,29 @@ export default {
   },
   methods: {
     ...mapActions('SalesVisitationForm', ['get', 'export']),
-    updateDateFrom () {
-      this.loading = true
-      this.date_to = this.date_from
+    search () {
+      this.isLoading = true
       this.get({
         params: {
           date_from: this.date_from,
           date_to: this.date_to
         }
       }).then((response) => {
-        this.loading = false
-      }, (error) => {
-        this.loading = false
-        this.$notifications.error(error.message)
+      }).catch((error) => {
+        this.$notification.error(error)
+      }).then(() => {
+        this.isLoading = false
       })
     },
+    updateDateFrom () {
+      if (new Date(this.date_to).valueOf() < new Date(this.date_from).valueOf()) {
+        this.date_to = this.date_from
+      }
+    },
     updateDateTo () {
-      this.get({
-        params: {
-          date_from: this.date_from,
-          date_to: this.date_to
-        }
-      }).then((response) => {
-        this.loading = false
-      }, (error) => {
-        this.loading = false
-        this.$notifications.error(error.message)
-      })
+      if (new Date(this.date_from).valueOf() > new Date(this.date_to).valueOf()) {
+        this.date_from = this.date_to
+      }
     },
     exportData () {
       this.isExporting = true
@@ -168,20 +152,26 @@ export default {
         date_from: this.date_from,
         date_to: this.date_to
       }).then((response) => {
-        this.isExporting = false
         this.downloadLink = response.data.url
       }, (error) => {
-        this.isExporting = false
         console.log(error)
+      }).then(() => {
+        this.isExporting = false
       })
     }
   },
   created () {
+    this.isLoading = true
     this.get({
       params: {
         date_from: this.date_from,
         date_to: this.date_to
       }
+    }).then((response) => {
+    }).catch((error) => {
+      this.$notification.error(error)
+    }).then(() => {
+      this.isLoading = false
     })
   }
 }
