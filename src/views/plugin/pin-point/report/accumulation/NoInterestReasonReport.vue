@@ -134,6 +134,7 @@ export default {
         }
       }).then((response) => {
       }).catch((error) => {
+        this.$notification.error(error)
       }).then(() => {
         this.loading = false
         this.loadingSaveButton = false
