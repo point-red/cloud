@@ -63,14 +63,18 @@
               </tr>
               <tr slot="p-head">
                 <th></th>
-                <th>Total</th>
-                <th>Repeat</th>
+                <th class="text-center">New</th>
+                <th class="text-center">Percentage</th>
+                <th class="text-center">Repeat</th>
+                <th class="text-center">Percentage</th>
               </tr>
               <template v-for="(sales, index) in sales">
                 <tr slot="p-body" :key="index">
                   <td>Week {{ index + 1 }}</td>
-                  <td>{{ sales.new }} ({{ sales.new / sales.total * 100 | numberFormat }}%)</td>
-                  <td>{{ sales.repeat }} ({{ sales.repeat / sales.total * 100 | numberFormat }}%)</td>
+                  <td class="text-center">{{ sales.new }}</td>
+                  <td class="text-center">{{ sales.new / sales.total * 100 | numberFormat }}%</td>
+                  <td class="text-center">{{ sales.repeat }}</td>
+                  <td class="text-center">{{ sales.repeat / sales.total * 100 | numberFormat }}%</td>
                 </tr>
               </template>
             </p-table>
