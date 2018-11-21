@@ -1,0 +1,130 @@
+<template>
+  <div>
+    <breadcrumb>
+      <breadcrumb-plugin/>
+      <breadcrumb-pin-point></breadcrumb-pin-point>
+      <span class="breadcrumb-item active">{{ $t('report') | titlecase }}</span>
+    </breadcrumb>
+
+    <tab-menu />
+
+    <div class="row">
+      <p-block :title="$t('accumulation report')" :header="true">
+        <p-form-row
+          id="date"
+          name="date"
+          :label="$t('period')">
+          <div slot="body" class="col-lg-9">
+            <p-date-picker
+              id="date"
+              name="date"
+              label="date"
+              type="month"
+              format="MMMM YYYY"
+              v-model="date"/>
+          </div>
+        </p-form-row>
+        <p-form-row>
+          <div slot="body" class="col-lg-9">
+            <router-link
+              to="/plugin/pin-point/report/accumulation/interest-reason"
+              class="btn btn-outline-dark btn-sm mr-5">
+              <span>{{ $t('interest reason') | titlecase }}</span>
+            </router-link>
+            <router-link
+              to="/plugin/pin-point/report/accumulation/no-interest-reason"
+              class="btn btn-outline-dark btn-sm mr-5">
+              <span>{{ $t('no interest reason') | titlecase }}</span>
+            </router-link>
+            <router-link
+              to="/plugin/pin-point/report/accumulation/similar-product"
+              class="btn btn-outline-dark btn-sm mr-5">
+              <span>{{ $t('similar product') | titlecase }}</span>
+            </router-link>
+            <router-link
+              to="/plugin/pin-point/report/accumulation/repeat-order"
+              class="btn btn-dark btn-sm mr-5">
+              <span>{{ $t('repeat order') | titlecase }}</span>
+            </router-link>
+          </div>
+        </p-form-row>
+        <p-form-row>
+          <div slot="body" class="col-lg-9">
+            <button class="btn btn-primary btn-sm mr-5" :disabled="loadingSaveButton" v-show="!loading" @click="search">
+              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Search
+            </button>
+          </div>
+        </p-form-row>
+        <p-block-inner :is-loading="loading">
+          <div class="table-responsive">
+            <p-table :is-bordered="true">
+              <tr slot="p-head">
+                <th :colspan="sales.length" class="text-center align-middle">{{ date | dateFormat('MMMM YYYY') }}</th>
+              </tr>
+              <tr slot="p-head">
+                <th></th>
+                <th>Total</th>
+                <th>Repeat</th>
+              </tr>
+              <template v-for="(sales, index) in sales">
+                <tr slot="p-body" :key="index">
+                  <td>Week {{ index + 1 }}</td>
+                  <td>{{ sales.new }} ({{ sales.new / sales.total * 100 | numberFormat }}%)</td>
+                  <td>{{ sales.repeat }} ({{ sales.repeat / sales.total * 100 | numberFormat }}%)</td>
+                </tr>
+              </template>
+            </p-table>
+          </div>
+        </p-block-inner>
+      </p-block>
+    </div>
+  </div>
+</template>
+
+<script>
+import TabMenu from '../TabMenu'
+import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
+import BreadcrumbPinPoint from '@/views/plugin/pin-point/Breadcrumb'
+import { mapGetters, mapActions } from 'vuex'
+
+export default {
+  components: {
+    TabMenu,
+    Breadcrumb,
+    BreadcrumbPlugin,
+    BreadcrumbPinPoint
+  },
+  data () {
+    return {
+      loading: false,
+      loadingSaveButton: false,
+      date: new Date()
+    }
+  },
+  computed: {
+    ...mapGetters('RepeatOrderReport', ['sales'])
+  },
+  methods: {
+    ...mapActions('RepeatOrderReport', ['get']),
+    search () {
+      this.loading = true
+      this.loadingSaveButton = true
+      this.get({
+        params: {
+          date: this.date
+        }
+      }).then((response) => {
+      }).catch((error) => {
+        this.$notification.error(error)
+      }).then(() => {
+        this.loading = false
+        this.loadingSaveButton = false
+      })
+    }
+  },
+  created () {
+    this.search()
+  }
+}
+</script>

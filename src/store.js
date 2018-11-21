@@ -48,6 +48,9 @@ import SalesVisitationForm from './modules/plugin/pin-point/sales-visitation-for
 import SalesVisitationTarget from './modules/plugin/pin-point/sales-visitation-target'
 import PinPointPerformanceReport from './modules/plugin/pin-point/report/performance'
 import InterestReasonReport from './modules/plugin/pin-point/report/interest-reason'
+import NoInterestReasonReport from './modules/plugin/pin-point/report/no-interest-reason'
+import SimilarProductReport from './modules/plugin/pin-point/report/similar-product'
+import RepeatOrderReport from './modules/plugin/pin-point/report/repeat-order'
 import axios from '@/axios'
 
 Vue.use(Vuex)
@@ -123,7 +126,10 @@ const store = new Vuex.Store({
     SalesVisitationForm,
     SalesVisitationTarget,
     PinPointPerformanceReport,
-    InterestReasonReport
+    InterestReasonReport,
+    NoInterestReasonReport,
+    SimilarProductReport,
+    RepeatOrderReport
   }
 })
 

@@ -6,54 +6,56 @@
       <span class="breadcrumb-item active">{{ $t('report') | titlecase }}</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item" v-if="$permission.has('create pin point sales visitation form')">
-        <router-link
-          to="/plugin/pin-point/report/performance"
-          class="nav-link">
-          <span>Interest Reason</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('create pin point sales visitation form')">
-        <router-link
-          to="/plugin/pin-point/report/performance"
-          class="nav-link">
-          <span>Not Interest Reason</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('create pin point sales visitation form')">
-        <router-link
-          to="/plugin/pin-point/report/performance"
-          class="nav-link">
-          <span>Similar Product</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('create pin point sales visitation form')">
-        <router-link
-          to="/plugin/pin-point/report/repeat-order"
-          class="nav-link">
-          <span>Repeat Order</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu />
 
     <div class="row">
       <p-block :title="$t('accumulation report')" :header="true">
+        <p-form-row
+          id="date"
+          name="date"
+          :label="$t('period')">
+          <div slot="body" class="col-lg-9">
+            <p-date-picker
+              id="date"
+              name="date"
+              label="date"
+              type="month"
+              format="MMMM YYYY"
+              v-model="date"/>
+          </div>
+        </p-form-row>
+        <p-form-row>
+          <div slot="body" class="col-lg-9">
+            <router-link
+              to="/plugin/pin-point/report/accumulation/interest-reason"
+              class="btn btn-dark btn-sm mr-5">
+              <span>{{ $t('interest reason') | titlecase }}</span>
+            </router-link>
+            <router-link
+              to="/plugin/pin-point/report/accumulation/no-interest-reason"
+              class="btn btn-outline-dark btn-sm mr-5">
+              <span>{{ $t('no interest reason') | titlecase }}</span>
+            </router-link>
+            <router-link
+              to="/plugin/pin-point/report/accumulation/similar-product"
+              class="btn btn-outline-dark btn-sm mr-5">
+              <span>{{ $t('similar product') | titlecase }}</span>
+            </router-link>
+            <router-link
+              to="/plugin/pin-point/report/accumulation/repeat-order"
+              class="btn btn-outline-dark btn-sm mr-5">
+              <span>{{ $t('repeat order') | titlecase }}</span>
+            </router-link>
+          </div>
+        </p-form-row>
+        <p-form-row>
+          <div slot="body" class="col-lg-9">
+            <button class="btn btn-primary btn-sm mr-5" :disabled="loadingSaveButton" v-show="!loading" @click="search">
+              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Search
+            </button>
+          </div>
+        </p-form-row>
         <p-block-inner :is-loading="loading">
-          <p-form-row
-            id="date"
-            name="date"
-            :label="$t('period')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="date"
-                type="month"
-                format="MMMM YYYY"
-                v-model="date"/>
-            </div>
-          </p-form-row>
           <div class="table-responsive">
             <p-table :is-bordered="true">
               <tr slot="p-head">
@@ -98,8 +100,7 @@
 </template>
 
 <script>
-// import { debounce } from 'lodash'
-import TabMenu from './TabMenu'
+import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPinPoint from '@/views/plugin/pin-point/Breadcrumb'
@@ -115,6 +116,7 @@ export default {
   data () {
     return {
       loading: false,
+      loadingSaveButton: false,
       date: new Date()
     }
   },
@@ -122,17 +124,24 @@ export default {
     ...mapGetters('InterestReasonReport', ['reasons', 'totalPerWeek'])
   },
   methods: {
-    ...mapActions('InterestReasonReport', ['get'])
+    ...mapActions('InterestReasonReport', ['get']),
+    search () {
+      this.loading = true
+      this.loadingSaveButton = true
+      this.get({
+        params: {
+          date: this.date
+        }
+      }).then((response) => {
+      }).catch((error) => {
+      }).then(() => {
+        this.loading = false
+        this.loadingSaveButton = false
+      })
+    }
   },
   created () {
-    this.loading = true
-    this.get({
-      params: {
-        date: this.date
-      }
-    }).then((response) => {
-      this.loading = false
-    })
+    this.search()
   }
 }
 </script>

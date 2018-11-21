@@ -11,16 +11,16 @@
           <span><i class="si si-docs"></i> Performance Report</span>
         </router-link>
       </li>
-      <!-- <li class="nav-item" v-if="$permission.has('read pin point sales visitation form report')">
+      <li class="nav-item" v-if="$permission.has('read pin point sales visitation form report')">
         <router-link
-          to="/plugin/pin-point/report/accumulation"
+          to="/plugin/pin-point/report/accumulation/interest-reason"
           exact
           class="nav-link"
           active-class="active">
           <span><i class="si si-docs"></i> Accumulation Report</span>
         </router-link>
       </li>
-      <li class="nav-item" v-if="$permission.has('read pin point sales visitation form report')">
+      <!-- <li class="nav-item" v-if="$permission.has('read pin point sales visitation form report')">
         <router-link
           to="/plugin/pin-point/report/sales"
           exact

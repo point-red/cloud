@@ -17,7 +17,7 @@
               name="date_from"
               type="date"
               v-model="dateFrom"
-              @input="changeDateFrom"/>
+              @input="updateDateFrom"/>
           </div>
         </p-form-row>
         <p-form-row
@@ -30,13 +30,14 @@
               name="date_to"
               type="date"
               v-model="dateTo"
-              @input="changeDateTo"/>
+              @input="updateDateTo"/>
           </div>
         </p-form-row>
         <p-form-row id="date" name="date">
           <div slot="body" class="col-lg-9">
-            <button class="btn btn-primary btn-sm" @click="$refs.target.show(dateFrom, dateTo)">Set Target</button>
-            <button class="btn btn-primary btn-sm" @click="toggleColor">Highlight</button>
+            <button class="btn btn-primary btn-sm mr-5" @click="search">Search</button>
+            <button class="btn btn-primary btn-sm mr-5" @click="$refs.target.show(dateFrom, dateTo)">Set Target</button>
+            <button class="btn btn-primary btn-sm mr-5" @click="toggleColor">Highlight</button>
             <button :disabled="isExporting" type="submit" class="btn btn-sm btn-primary" @click="exportData">
               <i v-show="isExporting" class="fa fa-asterisk fa-spin"/> Export
             </button>
@@ -148,14 +149,17 @@ export default {
     toggleColor () {
       this.isColorful = !this.isColorful
     },
-    changeDateFrom () {
-      this.dateTo = this.dateFrom
-      this.changeDate()
+    updateDateFrom () {
+      if (new Date(this.dateTo).valueOf() < new Date(this.dateFrom).valueOf()) {
+        this.dateTo = this.dateFrom
+      }
     },
-    changeDateTo () {
-      this.changeDate()
+    updateDateTo () {
+      if (new Date(this.dateFrom).valueOf() > new Date(this.dateTo).valueOf()) {
+        this.dateFrom = this.dateTo
+      }
     },
-    changeDate () {
+    search () {
       this.loading = true
       this.get({
         params: {
