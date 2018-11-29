@@ -4,6 +4,7 @@
       :data="options"
       key-field="id"
       show-field="label"
+      position="left"
       :multiple="multiple"
       :max-selected="maxSelected"
       :key="options.length"
@@ -67,7 +68,7 @@ export default {
     }
   },
   created () {
-    if (this.value !== undefined) {
+    if (this.value !== undefined && this.value !== null) {
       this.selectedValue = this.value.toString()
     }
   },

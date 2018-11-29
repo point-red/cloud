@@ -5,7 +5,7 @@
       :id="id"
       class="modal"
       tabindex="-1"
-      role="dialog">      
+      role="dialog">
       <div
         class="modal-dialog modal-lg modal-dialog-popout modal-dialog-centered"
         role="document">
@@ -41,7 +41,7 @@
         </div>
       </div>
     </div>
-  </div>  
+  </div>
 </template>
 
 <script>
