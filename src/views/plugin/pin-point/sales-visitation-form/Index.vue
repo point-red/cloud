@@ -51,7 +51,7 @@
               </tr>
               <tr slot="p-body" v-for="(form, index) in forms" :key="index">
                 <td>{{ form.form.date | dateFormat('DD MMM YYYY') }}</td>
-                <td>{{ form.form.created_at | dateFormat('hh:mm') }}</td>
+                <td>{{ form.form.created_at | dateFormat('HH:mm') }}</td>
                 <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                 <td>{{ form.group }}</td>
                 <td>{{ form.name }}</td>

@@ -1,4 +1,4 @@
-import momentjs from 'moment'
+import momentjs from 'moment-timezone'
 
 export default {
   install: (Vue) => {
@@ -7,7 +7,7 @@ export default {
     Vue.moment = moment
 
     Vue.filter('dateFormat', function (value, format = 'YYYY-MM-DD') {
-      return moment(value).format(format)
+      return moment(value).add(7, 'hour').format(format)
     })
   }
 }
