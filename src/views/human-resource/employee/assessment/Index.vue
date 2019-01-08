@@ -95,13 +95,43 @@
               <td class="text-center">{{ assessment.score | numberFormat }}</td>
               <td class="text-center">{{ assessment.score_percentage | numberFormat }}</td>
               <td class="text-right">
-                <i class="fa fa-close" v-show="authUser.id == assessment.scorer.id && $permission.has('create employee assessment') && reportType == 'all'" @click="deleteEmployeeAssessment({id: assessment.id, employeeId: id})"/>
+                <router-link
+                  :to="{ path: '/human-resource/employee/' + employee.id + '/assessment/' + assessment.id + '/edit', params: { id: employee.id, kpiId: assessment.id }}"
+                  v-if="authUser.id == assessment.scorer.id && $permission.has('update employee assessment') && reportType == 'all'"
+                  class="btn btn-sm btn-secondary mr-5">
+                  <i class="si si-note"></i> Edit
+                </router-link>
+                &nbsp;
+                <i class="fa fa-close" v-show="authUser.id == assessment.scorer.id && $permission.has('delete employee assessment') && reportType == 'all'" @click="deleteAssessment(assessment.id)"/>
               </td>
             </tr>
           </p-table>
         </p-block-inner>
       </p-block>
     </div>
+
+    <p-modal
+      id="modal-delete"
+      title="Confirmation"
+      ref="delete">
+      <div slot="content"><p>Are you sure want to delete the KPI?</p></div>
+      <div slot="footer">
+        <button
+          type="button"
+          class="btn btn-alt-secondary"
+          @click="$refs.delete.close()"
+          data-dismiss="modal">Cancel</button>
+        &nbsp;
+        <button
+          type="button"
+          @click="onDelete()"
+          v-if="$permission.has('delete employee assessment')"
+          :disabled="loadingSaveButton"
+          class="btn btn-danger">
+          <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Delete
+        </button>
+      </div>
+    </p-modal>
   </div>
 </template>
 
@@ -128,7 +158,9 @@ export default {
       chartData: [],
       isScorer: false,
       hideChart: false,
-      reportType: 'all'
+      reportType: 'all',
+      loadingSaveButton: false,
+      selectedAsessementId: '',
     }
   },
   created () {
@@ -198,6 +230,22 @@ export default {
           }
         })
       }
+    },
+    deleteAssessment(assessmentId) {
+      this.selectedAsessementId = assessmentId
+      this.$refs.delete.show()
+    },
+    onDelete() {
+      this.loadingSaveButton = true
+      this.deleteEmployeeAssessment({id: this.selectedAsessementId, employeeId: this.id})
+        .then((response) => {
+          this.loadingSaveButton = false
+          this.$refs.delete.close()
+        }, (error) => {
+          this.loadingSaveButton = false
+          this.$notification.error('Delete failed', error.message)
+          console.log(JSON.stringify(error))
+        })
     }
   }
 }
