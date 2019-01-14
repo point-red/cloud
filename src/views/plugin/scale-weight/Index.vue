@@ -17,6 +17,11 @@
         v-if="$permission.has('read scale weight item')"
         link="/plugin/scale-weight/item"
         icon="fa fa-balance-scale"/>
+      <p-box
+        name="Scale Weight (Merge)"
+        v-if="$permission.has('read scale weight item')"
+        link="/plugin/scale-weight/merge"
+        icon="fa fa-balance-scale"/>
     </div>
   </div>
 </template>
