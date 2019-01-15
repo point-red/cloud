@@ -4,7 +4,8 @@ const url = '/plugin/scale-weight/merge'
 
 const state = {
   scaleWeight: {},
-  scaleWeights: []
+  scaleWeights: [],
+  items: []
 }
 
 const getters = {
@@ -13,12 +14,18 @@ const getters = {
   },
   scaleWeights: state => {
     return state.scaleWeights
+  },
+  items: state => {
+    return state.items
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.scaleWeights = payload
+  },
+  'ITEM' (state, payload) {
+    state.items = payload
   },
   'FETCH_OBJECT' (state, payload) {
     state.scaleWeight = payload
@@ -39,6 +46,17 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.post(url + '/export', payload)
         .then((response) => {
+          resolve(response)
+        }, (error) => {
+          reject(error)
+        })
+    })
+  },
+  getItems ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/item', { params: payload.params })
+        .then((response) => {
+          commit('ITEM', response.data)
           resolve(response)
         }, (error) => {
           reject(error)
