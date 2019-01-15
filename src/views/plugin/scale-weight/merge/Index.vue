@@ -247,6 +247,9 @@ export default {
     'date_from' () {
       this.updateDateFrom()
     },
+    'date_to' () {
+      this.updateDateTo()
+    },
     'checkedColumnCat' () {
       this.updateDateTo()
     }
