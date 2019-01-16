@@ -112,6 +112,7 @@
               <th v-if="checkedColumn.indexOf('Item Vendor') != -1">Item Vendor</th>
               <th v-if="checkedColumn.indexOf('Item Driver') != -1">Item Driver</th>
               <th v-if="checkedColumn.indexOf('Item Item') != -1" class="text-right">Item Item</th>
+              <th v-if="checkedColumn.indexOf('Box') != -1" class="text-right">Box</th>
               <th v-if="checkedColumn.indexOf('Item Gross') != -1" class="text-right">Item Gross</th>
               <th v-if="checkedColumn.indexOf('Item Tare') != -1" class="text-right">Item Tare</th>
               <th v-if="checkedColumn.indexOf('Item Net') != -1" class="text-right">Item Net</th>
@@ -148,6 +149,7 @@
               <td v-if="checkedColumn.indexOf('Item Vendor') != -1">{{ scaleWeight.item_vendor}}</td>
               <td v-if="checkedColumn.indexOf('Item Driver') != -1">{{ scaleWeight.item_driver}}</td>
               <td v-if="checkedColumn.indexOf('Item Item') != -1">{{ scaleWeight.item_item}}</td>
+              <td v-if="checkedColumn.indexOf('Box') != -1">{{ scaleWeight.box}}</td>
               <td v-if="checkedColumn.indexOf('Item Gross') != -1" class="text-right">{{ scaleWeight.item_gross_weight |
                 numberFormat }}
               </td>
@@ -198,6 +200,7 @@ export default {
         'Item Vendor',
         'Item Driver',
         'Item Item',
+        'Box',
         'Item Gross',
         'Item Tare',
         'Item Net',
@@ -225,6 +228,7 @@ export default {
         'Item Vendor',
         'Item Driver',
         'Item Item',
+        'Box',
         'Item Gross',
         'Item Tare',
         'Item Net',
