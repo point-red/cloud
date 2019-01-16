@@ -24,7 +24,6 @@
               <p-date-picker
                 id="date-from"
                 name="date_from"
-                @input="updateDateFrom"
                 v-model="date_from"/>
             </div>
           </p-form-row>
@@ -36,7 +35,6 @@
               <p-date-picker
                 id="date-to"
                 name="date_to"
-                @input="updateDateTo"
                 v-model="date_to"/>
             </div>
           </p-form-row>
@@ -111,6 +109,14 @@ export default {
       downloadLink: ''
     }
   },
+  watch: {
+    'date_from' () {
+      this.updateDateFrom()
+    },
+    'date_to' () {
+      this.updateDateTo()
+    },
+  },
   computed: {
     ...mapGetters('ScaleWeightTruck', ['scaleWeights'])
   },
@@ -132,6 +138,7 @@ export default {
       })
     },
     updateDateTo () {
+      this.loading = true
       this.get({
         params: {
           date_from: this.date_from,

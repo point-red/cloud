@@ -111,11 +111,15 @@ export default {
   watch: {
     'date_from' () {
       this.updateDateFrom()
-    }
+    },
+    'date_to' () {
+      this.updateDateTo()
+    },
   },
   methods: {
     ...mapActions('ScaleWeightItem', ['get', 'export']),
     updateDateFrom () {
+      this.loading = true
       this.date_to = this.date_from
       this.get({
         params: {
@@ -130,6 +134,7 @@ export default {
       })
     },
     updateDateTo () {
+      this.loading = true
       this.get({
         params: {
           date_from: this.date_from,
