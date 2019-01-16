@@ -26,6 +26,8 @@
             <p-date-picker
               id="date-from"
               name="date_from"
+              type="datetime"
+              format="YYYY-MM-DD HH:mm"
               v-model="date_from"/>
           </div>
         </p-form-row>
@@ -37,6 +39,8 @@
             <p-date-picker
               id="date-to"
               name="date_to"
+              type="datetime"
+              format="YYYY-MM-DD HH:mm"
               v-model="date_to"/>
           </div>
         </p-form-row>
