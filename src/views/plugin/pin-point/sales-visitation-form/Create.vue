@@ -366,8 +366,11 @@ export default {
         { id: 'Hotel', label: 'Hotel' },
         { id: 'Resto', label: 'Resto' },
         { id: 'Cafe', label: 'Cafe' },
-        { id: 'Retail / Swalayan', label: 'Retail / Swalayan' },
-        { id: 'Toko / Warung', label: 'Toko / Warung' }
+        { id: 'Toko', label: 'Toko' },
+        { id: 'Warung', label: 'Warung' },
+        { id: 'Agen', label: 'Agen' },
+        { id: 'Grosir', label: 'Grosir' },
+        { id: 'Mini Market', label: 'Mini Market' }
       ],
       itemList: [
         { id: 'B001 REGULER BUBUK 250GR', label: 'B001 REGULER BUBUK 250GR' },

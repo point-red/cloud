@@ -79,11 +79,14 @@
                     </ol>
                 </td>
                 <td>
-                    <ol>
-                      <li v-for="(detail, index) in form.details" :key="index">
-                        {{ detail.item.name }} (Qty: {{ detail.quantity | numberFormat }}) (Price: {{ detail.price | numberFormat }}) (Total: {{ detail.quantity * detail.price | numberFormat }})
-                      </li>
-                    </ol>
+                  <template v-if="form.is_repeat_order">
+                    <b>[REPEAT]</b> <br>
+                  </template>
+                  <ol>
+                    <li v-for="(detail, index) in form.details" :key="index">
+                      {{ detail.item.name }} (Qty: {{ detail.quantity | numberFormat }}) (Price: {{ detail.price | numberFormat }}) (Total: {{ detail.quantity * detail.price | numberFormat }})
+                    </li>
+                  </ol>
                 </td>
               </tr>
             </p-table>

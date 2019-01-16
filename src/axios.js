@@ -7,7 +7,7 @@ Vue.use(VueCookie)
 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_API_ENDPOINT,
-  timeout: 60 * 2 * 1000, // 2 minutes
+  timeout: 600 * 2 * 1000, // 2 minutes
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
