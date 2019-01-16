@@ -34,11 +34,11 @@ export default {
     },
     type: {
       type: String,
-      default: 'date'
+      default: 'datetime'
     },
     format: {
       type: String,
-      default: 'YYYY-MM-DD'
+      default: 'YYYY-MM-DD HH:mm:ss'
     },
     value: {
       type: [Date, String]
@@ -76,11 +76,11 @@ export default {
   },
   watch: {
     'time' () {
-      this.time = this.$moment(this.time).format('YYYY-MM-DD')
+      this.time = this.$moment(this.time).format('YYYY-MM-DD HH:mm:ss')
       this.$emit('input', this.time)
     },
     'value' () {
-      this.value = this.$moment(this.value).format('YYYY-MM-DD')
+      this.value = this.$moment(this.value).format('YYYY-MM-DD HH:mm:ss')
       this.time = this.value
     }
   },

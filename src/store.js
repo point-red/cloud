@@ -43,6 +43,7 @@ import FixedAssetTurnOver from './modules/accounting/ratio-report/fixed-asset-tu
 import InventoryTurnOver from './modules/accounting/ratio-report/inventory-turn-over'
 import AverageCollectionPeriodRatio from './modules/accounting/ratio-report/average-collection-period-ratio'
 import ScaleWeightTruck from './modules/plugin/scale-weight/truck'
+import ScaleWeightMerge from './modules/plugin/scale-weight/merge'
 import ScaleWeightItem from './modules/plugin/scale-weight/item'
 import SalesVisitationForm from './modules/plugin/pin-point/sales-visitation-form'
 import SalesVisitationTarget from './modules/plugin/pin-point/sales-visitation-target'
@@ -123,6 +124,7 @@ const store = new Vuex.Store({
     AverageCollectionPeriodRatio,
     ScaleWeightTruck,
     ScaleWeightItem,
+    ScaleWeightMerge,
     SalesVisitationForm,
     SalesVisitationTarget,
     PinPointPerformanceReport,
