@@ -101,10 +101,8 @@ export default {
     },
     paginate (page) {
       this.getEmployees({
-        filters: {
-          'name': this.filter.name,
-          'job_title': this.filter.jobTitle
-        },
+        filter_like: [{'name': this.filter.name }],
+        or_filter_like: [{'job_title': this.filter.jobTitle}],
         sort_by: 'name',
         includes: 'scorers',
         additional: 'groups',
@@ -121,10 +119,8 @@ export default {
     filterColumn: debounce(function () {
       this.loading = true
       this.getEmployees({
-        filters: {
-          'name': this.filter.name,
-          'job_title': this.filter.jobTitle
-        },
+        filter_like: [{'name': this.filter.name }],
+        or_filter_like: [{'job_title': this.filter.jobTitle}],
         sort_by: 'name',
         includes: 'scorers',
         additional: 'groups',

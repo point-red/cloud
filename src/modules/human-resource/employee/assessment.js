@@ -87,15 +87,9 @@ const actions = {
   },
   update (context, payload) {
     return new Promise((resolve, reject) => {
-      api.patch(url + '/' + payload.id, payload)
+      api.patch(url(payload.employeeId) + '/' + payload.kpiId, payload.form)
         .then(
           (response) => {
-            context.dispatch('get', {
-              params: {
-                kpi_template_id: response.data.kpi_template_id
-              }
-            })
-            context.dispatch('KpiTemplate/find', { id: response.data.kpi_template_id }, { root: true })
             resolve(response)
           },
           (error) => {
