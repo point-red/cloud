@@ -74,6 +74,16 @@
         <td><i class="fa fa-file-text-o fa-fw"></i> Sales Visitation Report</td>
         <td><p-form-check-box ref="read pin point sales visitation report" @click.native="togglePermission('read pin point sales visitation report')" :checked="$rolePermission.has('read pin point sales visitation report', permissions)" :description="'Read'"/></td>
       </tr>
+      <tr slot="p-body">
+        <td></td>
+        <td><i class="fa fa-file-text-o fa-fw"></i> Notification Sales</td>
+        <td><p-form-check-box ref="notification pin point sales" @click.native="togglePermission('notification pin point sales')" :checked="$rolePermission.has('notification pin point sales', permissions)" :description="'Read'"/></td>
+      </tr>
+      <tr slot="p-body">
+        <td></td>
+        <td><i class="fa fa-file-text-o fa-fw"></i> Notification Supervisor</td>
+        <td><p-form-check-box ref="notification pin point supervisor" @click.native="togglePermission('notification pin point supervisor')" :checked="$rolePermission.has('notification pin point supervisor', permissions)" :description="'Read'"/></td>
+      </tr>
     </p-table>
   </div>
 </template>
