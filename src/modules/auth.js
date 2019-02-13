@@ -54,10 +54,18 @@ const actions = {
           tokenType: apiData.token_type,
           expirationDate: apiData.token_expires_at
         })
-        Vue.cookie.set('TID', apiData.token_id, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
-        Vue.cookie.set('TTT', apiData.token_type, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
-        Vue.cookie.set('TAT', apiData.access_token, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
-        Vue.cookie.set('TED', apiData.token_expires_at, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
+        if (process.env.NODE_ENV === 'development') {
+          Vue.cookie.set('TID', apiData.token_id)
+          Vue.cookie.set('TTT', apiData.token_type)
+          Vue.cookie.set('TAT', apiData.access_token)
+          Vue.cookie.set('TED', apiData.token_expires_at)
+        } else {
+          Vue.cookie.set('TID', apiData.token_id, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
+          Vue.cookie.set('TTT', apiData.token_type, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
+          Vue.cookie.set('TAT', apiData.access_token, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
+          Vue.cookie.set('TED', apiData.token_expires_at, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
+        }
+        
         localStorage.setItem('userId', apiData.id)
         localStorage.setItem('userName', apiData.name)
         localStorage.setItem('userEmail', apiData.email)
@@ -72,10 +80,18 @@ const actions = {
     })
   },
   logout () {
-    Vue.cookie.delete('TID', { domain: '.' + process.env.VUE_APP_DOMAIN })
-    Vue.cookie.delete('TTT', { domain: '.' + process.env.VUE_APP_DOMAIN })
-    Vue.cookie.delete('TAT', { domain: '.' + process.env.VUE_APP_DOMAIN })
-    Vue.cookie.delete('TED', { domain: '.' + process.env.VUE_APP_DOMAIN })
+    if (process.env.NODE_ENV === 'development') {
+      Vue.cookie.delete('TID')
+      Vue.cookie.delete('TTT')
+      Vue.cookie.delete('TAT')
+      Vue.cookie.delete('TED')
+    } else {
+      Vue.cookie.delete('TID', { domain: '.' + process.env.VUE_APP_DOMAIN })
+      Vue.cookie.delete('TTT', { domain: '.' + process.env.VUE_APP_DOMAIN })
+      Vue.cookie.delete('TAT', { domain: '.' + process.env.VUE_APP_DOMAIN })
+      Vue.cookie.delete('TED', { domain: '.' + process.env.VUE_APP_DOMAIN })
+    }
+    
     localStorage.removeItem('userId')
     localStorage.removeItem('userName')
     localStorage.removeItem('userEmail')
