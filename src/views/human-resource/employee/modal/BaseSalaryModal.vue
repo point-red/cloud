@@ -2,26 +2,29 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmitContract">
+      @submit.prevent="onSubmitBaseSalary">
       <p-modal
-        ref="salaryModal"
+        ref="baseSalaryModal"
         :id="id"
         :title="title">
         <template slot="content">
           <p-form-row
-            id="salary-date"
-            :label="$t('salary date')">
+            id="base-salary-year"
+            :label="$t('salary year')">
             <div slot="body" class="col-lg-9">
               <p-date-picker
-                name="salary-date"
-                v-model="salary_date"/>
+                name="base-salary-year"
+                type="year"
+                format="YYYY"
+                placeholder="Select Year"
+                v-model="year"/>
             </div>
           </p-form-row>
 
           <p-form-row
-            id="salary"
-            name="salary"
-            :label="$t('salary')">
+            id="base-salary"
+            name="base-salary"
+            :label="$t('base salary')">
             <div slot="body" class="col-lg-9">
               <p-form-number
                 v-model="salary"
@@ -50,29 +53,29 @@ export default {
   },
   data () {
     return {
-      salary_date: '',
+      year: '',
       salary: null
     }
   },
   watch: {
-    'salary' () {
-      this.$emit('value', this.salary)
+    'baseSalary' () {
+      this.$emit('value', this.baseSalary)
     }
   },
   methods: {
     show () {
-      this.$refs.salaryModal.show()
+      this.$refs.baseSalaryModal.show()
     },
     close () {
-      this.$refs.salaryModal.close()
+      this.$refs.baseSalaryModal.close()
     },
-    onSubmitContract () {
+    onSubmitBaseSalary () {
       this.$emit('add', {
-        date: this.salary_date,
+        year: this.year,
         salary: this.salary
       })
-      this.salary = ''
-      this.$refs.salaryModal.close()
+      this.baseSalary = ''
+      this.$refs.baseSalaryModal.close()
     }
   }
 }

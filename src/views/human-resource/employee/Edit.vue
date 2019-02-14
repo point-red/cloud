@@ -278,6 +278,16 @@
             </p-form-row>
 
             <p-form-row
+              id="employee-identity"
+              name="employee-identity"
+              :label="$t('employee id')"
+              :disabled="loadingSaveButton"
+              v-model="form.employee_identity"
+              :errors="form.errors.get('employee_identity')"
+              @errors="form.errors.set('employee_identity', null)">
+            </p-form-row>
+
+            <p-form-row
               id="job-title"
               name="job-title"
               :label="$t('job title')"
@@ -285,6 +295,21 @@
               v-model="form.job_title"
               :errors="form.errors.get('job_title')"
               @errors="form.errors.set('job_title', null)">
+            </p-form-row>
+
+            <p-form-row
+              id="job-location"
+              name="job-location"
+              :label="$t('job location')">
+              <div slot="body" class="col-lg-9">
+                <p-select
+                  id="employee-job-location"
+                  name="employee-job-location"
+                  v-model="form.employee_job_location_id"
+                  :options="jobLocationList"
+                  :errors="form.errors.get('employee_job_location_id')"
+                  @errors="form.errors.set('employee_job_location_id', null)"/>
+              </div>
             </p-form-row>
 
             <p-form-row
@@ -299,6 +324,21 @@
                   v-model="form.join_date"
                   :errors="form.errors.get('join_date')"
                   @errors="form.errors.set('join_date', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="status"
+              name="status"
+              :label="$t('status')">
+              <div slot="body" class="col-lg-9">
+                <p-select
+                  id="status"
+                  name="status"
+                  v-model="form.employee_status_id"
+                  :options="statusList"
+                  :errors="form.errors.get('employee_status_id')"
+                  @errors="form.errors.set('employee_status_id', null)"/>
               </div>
             </p-form-row>
 
@@ -408,6 +448,118 @@
                 </p-table>
               </div>
             </p-form-row>
+
+            <h2 class="content-heading">{{ $t('salary info') | uppercase }}</h2>
+            <p-form-row
+              id="base-salary"
+              :label="$t('base salary')">
+              <div slot="body" class="col-lg-9">
+                <button
+                  type="button"
+                  class="btn btn-alt-primary mb-15"
+                  :disabled="loadingSaveButton"
+                  @click="$refs.baseSalaryModal.show()">
+                  <i class="fa fa-plus"/> {{ $t('base salary') | titlecase }}
+                </button>
+                <p-table>
+                  <tr slot="p-head"/>
+                  <tr
+                    v-for="(baseSalary, index) in form.base_salaries"
+                    slot="p-body"
+                    :key="baseSalary.index">
+                    <td>{{ baseSalary.year | dateFormat('YYYY') }}</td>
+                    <td>{{ baseSalary.salary | numberFormat }}</td>
+                    <td class="text-right">
+                      <i class="fa fa-close" @click="removeBaseSalary(index)"/>
+                    </td>
+                  </tr>
+                </p-table>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="multiplier-kpi"
+              name="multiplier-kpi"
+              :label="$t('multiplier kpi')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.multiplier_kpi"
+                  :disabled="loadingSaveButton"
+                  :is-text-right="false"
+                  :errors="form.errors.get('multiplier_kpi')"
+                  @errors="form.errors.set('multiplier_kpi', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="daily-transport-allowance"
+              name="daily-transport-allowance"
+              :label="$t('daily transport allowance')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.daily_transport_allowance"
+                  :disabled="loadingSaveButton"
+                  :is-text-right="false"
+                  :errors="form.errors.get('daily_transport_allowance')"
+                  @errors="form.errors.set('daily_transport_allowance', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="tl-allowance"
+              name="tl-allowance"
+              :label="$t('tl allowance')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.tl_allowance"
+                  :disabled="loadingSaveButton"
+                  :is-text-right="false"
+                  :errors="form.errors.get('tl_allowance')"
+                  @errors="form.errors.set('tl_allowance', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="communication-allowance"
+              name="communication-allowance"
+              :label="$t('communication allowance')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.communication_allowance"
+                  :disabled="loadingSaveButton"
+                  :is-text-right="false"
+                  :errors="form.errors.get('communication_allowance')"
+                  @errors="form.errors.set('communication_allowance', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="bpjs-ketenagakerjaan"
+              name="bpjs-ketenagakerjaan"
+              :label="$t('bpjs ketenagakerjaan')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.bpjs_ketenagakerjaan"
+                  :disabled="loadingSaveButton"
+                  :is-text-right="false"
+                  :errors="form.errors.get('bpjs_ketenagakerjaan')"
+                  @errors="form.errors.set('bpjs_ketenagakerjaan', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="bpjs-kesehatan"
+              name="bpjs-kesehatan"
+              :label="$t('bpjs kesehatan')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.bpjs_kesehatan"
+                  :disabled="loadingSaveButton"
+                  :is-text-right="false"
+                  :errors="form.errors.get('bpjs_kesehatan')"
+                  @errors="form.errors.set('bpjs_kesehatan', null)"/>
+              </div>
+            </p-form-row>
           </div>
         </div>
         <div class="form-group row">
@@ -477,6 +629,12 @@
       ref="scorerModal"
       title="Scorer"
       @add="onSubmitScorer"/>
+
+    <base-salary-modal
+      id="baseSalary"
+      ref="baseSalaryModal"
+      title="Base Salary"
+      @add="onSubmitBaseSalary"/>
   </div>
 </template>
 
@@ -492,6 +650,7 @@ import SocialMediaModal from './modal/SocialMediaModal'
 import ContractModal from './modal/ContractModal'
 import SalaryModal from './modal/SalaryModal'
 import ScorerModal from './modal/ScorerModal'
+import BaseSalaryModal from './modal/BaseSalaryModal'
 import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -507,7 +666,8 @@ export default {
     SocialMediaModal,
     ContractModal,
     SalaryModal,
-    ScorerModal
+    ScorerModal,
+    BaseSalaryModal
   },
   data () {
     return {
@@ -528,8 +688,19 @@ export default {
         employee_religion_id: '',
         employee_marital_status_id: '',
         employee_gender_id: '',
+        employee_status_id: '',
+        employee_job_location_id: '',
         job_title: '',
         join_date: '',
+        employee_identity: '',
+        status: '',
+        job_location: '',
+        multiplier_kpi: '',
+        daily_transport_allowance: '',
+        tl_allowance: '',
+        communication_allowance: '',
+        bpjs_ketenagakerjaan: '',
+        bpjs_kesehatan: '',
         phones: [],
         emails: [],
         company_emails: [],
@@ -537,7 +708,8 @@ export default {
         social_media: [],
         contracts: [],
         salary_histories: [],
-        scorers: []
+        scorers: [],
+        base_salaries: []
       })
     }
   },
@@ -546,7 +718,9 @@ export default {
     ...mapGetters('EmployeeGroup', ['groupList']),
     ...mapGetters('EmployeeReligion', ['religionList']),
     ...mapGetters('EmployeeGender', ['genderList']),
-    ...mapGetters('EmployeeMaritalStatus', ['maritalStatusList'])
+    ...mapGetters('EmployeeMaritalStatus', ['maritalStatusList']),
+    ...mapGetters('EmployeeStatus', ['statusList']),
+    ...mapGetters('EmployeeJobLocation', ['jobLocationList'])
   },
   created () {
     this.loading = true
@@ -576,6 +750,18 @@ export default {
       }, (error) => {
         console.log(JSON.stringify(error))
       })
+    this.getStatuses()
+      .then((response) => {
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+    this.getJobLocations()
+      .then((response) => {
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+    })
     this.findEmployee({
       id: this.id
     }).then((response) => {
@@ -597,6 +783,8 @@ export default {
     ...mapActions('EmployeeReligion', { getReligions: 'get' }),
     ...mapActions('EmployeeGender', { getGenders: 'get' }),
     ...mapActions('EmployeeMaritalStatus', { getMaritalStatuses: 'get' }),
+    ...mapActions('EmployeeStatus', { getStatuses: 'get' }),
+    ...mapActions('EmployeeJobLocation', { getJobLocations: 'get' }),
     ...mapActions('Employee', { findEmployee: 'find', updateEmployee: 'update' }),
     onSubmitContract (data) {
       this.form.contracts.push(data)
@@ -653,6 +841,13 @@ export default {
     },
     removeEmailCompany (index) {
       this.form.company_emails.splice(index, 1)
+    },
+    onSubmitBaseSalary (data) {
+      this.form.base_salaries.push(data)
+      this.$refs.baseSalaryModal.close()
+    },
+    removeBaseSalary (index) {
+      this.form.base_salaries.splice(index, 1)
     },
     onSubmit () {
       this.loadingSaveButton = true

@@ -15,6 +15,8 @@ import EmployeeGroup from './modules/human-resource/employee/group'
 import EmployeeReligion from './modules/human-resource/employee/religion'
 import EmployeeGender from './modules/human-resource/employee/gender'
 import EmployeeMaritalStatus from './modules/human-resource/employee/marital-status'
+import EmployeeStatus from './modules/human-resource/employee/status'
+import EmployeeJobLocation from './modules/human-resource/employee/job-location'
 import EmployeeAssessment from './modules/human-resource/employee/assessment'
 import AccountProject from './modules/account/project'
 import RequestJoinProject from './modules/account/request-join-project'
@@ -95,6 +97,8 @@ const store = new Vuex.Store({
     EmployeeReligion,
     EmployeeGender,
     EmployeeMaritalStatus,
+    EmployeeStatus,
+    EmployeeJobLocation,
     EmployeeAssessment,
     AccountProject,
     RequestJoinProject,
