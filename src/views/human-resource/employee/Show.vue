@@ -221,14 +221,6 @@
                     <td>{{ employee.communication_allowance | numberFormat }}</td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('bpjs ketenagakerjaan') | titlecase }}</span></td>
-                    <td>{{ employee.bpjs_ketenagakerjaan | numberFormat }}</td>
-                  </tr>
-                  <tr>
-                    <td><span class="font-w700">{{ $t('bpjs kesehatan') | titlecase }}</span></td>
-                    <td>{{ employee.bpjs_kesehatan | numberFormat }}</td>
-                  </tr>
-                  <tr>
                     <td><span class="font-w700">{{ $t('employee scorer') | titlecase }}</span></td>
                     <td>
                       <ul>

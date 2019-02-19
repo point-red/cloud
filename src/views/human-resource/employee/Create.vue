@@ -485,34 +485,6 @@
                   @errors="form.errors.set('communication_allowance', null)"/>
               </div>
             </p-form-row>
-
-            <p-form-row
-              id="bpjs-ketenagakerjaan"
-              name="bpjs-ketenagakerjaan"
-              :label="$t('bpjs ketenagakerjaan')">
-              <div slot="body" class="col-lg-9">
-                <p-form-number
-                  v-model="form.bpjs_ketenagakerjaan"
-                  :disabled="loadingSaveButton"
-                  :is-text-right="false"
-                  :errors="form.errors.get('bpjs_ketenagakerjaan')"
-                  @errors="form.errors.set('bpjs_ketenagakerjaan', null)"/>
-              </div>
-            </p-form-row>
-
-            <p-form-row
-              id="bpjs-kesehatan"
-              name="bpjs-kesehatan"
-              :label="$t('bpjs kesehatan')">
-              <div slot="body" class="col-lg-9">
-                <p-form-number
-                  v-model="form.bpjs_kesehatan"
-                  :disabled="loadingSaveButton"
-                  :is-text-right="false"
-                  :errors="form.errors.get('bpjs_kesehatan')"
-                  @errors="form.errors.set('bpjs_kesehatan', null)"/>
-              </div>
-            </p-form-row>
           </div>
         </div>
         <div class="form-group row">
@@ -628,8 +600,6 @@ export default {
         daily_transport_allowance: '',
         tl_allowance: '',
         communication_allowance: '',
-        bpjs_ketenagakerjaan: '',
-        bpjs_kesehatan: '',
         phones: [],
         emails: [],
         company_emails: [],
