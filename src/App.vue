@@ -2,7 +2,6 @@
   <div
     id="app"
     style="heigth: 900px"
-    @keyup.esc="closeModal"
     @click="closeHeaderDropdown($event)">
     <network>
       <span slot="online">
