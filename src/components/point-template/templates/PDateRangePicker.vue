@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import DatePicker from 'vue-ctk-date-time-picker';
-import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
+import DatePicker from 'vue-ctk-date-time-picker'
+import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css'
 
 export default {
   components: {
@@ -49,17 +49,6 @@ export default {
     },
     errors: {
       type: Array
-    }
-  },
-  computed: {
-    onlyDate () {
-      if (this.type === 'date') {
-        this.format = 'YYYY-MM-DD'
-        this.formatted = 'DD MMM YYYY'
-        return true
-      }
-
-      return false
     }
   },
   data () {

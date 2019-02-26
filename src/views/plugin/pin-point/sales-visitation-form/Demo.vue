@@ -140,11 +140,11 @@ export default {
   methods: {
     ...mapActions('SalesVisitationForm', ['create', 'get']),
     onSelectedNoInterestReason (selected) {
-      this.form.not_interest_reason = selected;
+      this.form.not_interest_reason = selected
       this.loadSuggestions = false
     },
     onSuggestNoInterestReason: debounce(function (text) {
-      this.form.not_interest_reason = text;
+      this.form.not_interest_reason = text
       this.loadSuggestions = true
       this.noInterestReasonList = [{
         data: [
@@ -152,7 +152,7 @@ export default {
           { name: 'Tidak ada merchandise' },
           { name: 'Perlu kopi biji' },
           { name: 'Perlu kopi bubuk kiloan' },
-          { name: 'Perlu kopi cup yang bisa dibawa kemana mana' },
+          { name: 'Perlu kopi cup yang bisa dibawa kemana mana' }
         ]
       }]
     }, 200),

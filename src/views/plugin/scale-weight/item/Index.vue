@@ -114,7 +114,7 @@ export default {
     },
     'date_to' () {
       this.updateDateTo()
-    },
+    }
   },
   methods: {
     ...mapActions('ScaleWeightItem', ['get', 'export']),

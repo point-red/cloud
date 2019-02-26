@@ -115,7 +115,7 @@ export default {
     },
     'date_to' () {
       this.updateDateTo()
-    },
+    }
   },
   computed: {
     ...mapGetters('ScaleWeightTruck', ['scaleWeights'])

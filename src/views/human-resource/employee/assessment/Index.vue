@@ -160,7 +160,7 @@ export default {
       hideChart: false,
       reportType: 'all',
       loadingSaveButton: false,
-      selectedAsessementId: '',
+      selectedAsessementId: ''
     }
   },
   created () {
@@ -231,13 +231,13 @@ export default {
         })
       }
     },
-    deleteAssessment(assessmentId) {
+    deleteAssessment (assessmentId) {
       this.selectedAsessementId = assessmentId
       this.$refs.delete.show()
     },
-    onDelete() {
+    onDelete () {
       this.loadingSaveButton = true
-      this.deleteEmployeeAssessment({id: this.selectedAsessementId, employeeId: this.id})
+      this.deleteEmployeeAssessment({ id: this.selectedAsessementId, employeeId: this.id })
         .then((response) => {
           this.loadingSaveButton = false
           this.$refs.delete.close()

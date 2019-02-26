@@ -39,11 +39,11 @@
         <div class="block pull-r-l">
           <div class="block-content">
             <div
-              v-for="vesaChat in vesaChats"
+              v-for="(vesaChat, index) in vesaChats"
+              :key="index"
               :class="{
                 'rounded p-10 mb-10 animated fadeIn mr-50 bg-primary-lighter text-primary-darker': vesaChat.from === 'vesa',
-                'rounded p-10 mb-10 animated fadeIn ml-50 bg-flat-lighter': vesaChat.from === 'user'
-            }">
+                'rounded p-10 mb-10 animated fadeIn ml-50 bg-flat-lighter': vesaChat.from === 'user' }">
               {{ vesaChat.message }}
             </div>
             <div

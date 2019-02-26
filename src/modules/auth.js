@@ -65,7 +65,7 @@ const actions = {
           Vue.cookie.set('TAT', apiData.access_token, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
           Vue.cookie.set('TED', apiData.token_expires_at, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
         }
-        
+
         localStorage.setItem('userId', apiData.id)
         localStorage.setItem('userName', apiData.name)
         localStorage.setItem('userEmail', apiData.email)
@@ -91,7 +91,7 @@ const actions = {
       Vue.cookie.delete('TAT', { domain: '.' + process.env.VUE_APP_DOMAIN })
       Vue.cookie.delete('TED', { domain: '.' + process.env.VUE_APP_DOMAIN })
     }
-    
+
     localStorage.removeItem('userId')
     localStorage.removeItem('userName')
     localStorage.removeItem('userEmail')

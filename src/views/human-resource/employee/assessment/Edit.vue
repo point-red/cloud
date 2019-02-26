@@ -171,7 +171,6 @@
 <script>
 import Form from '@/utils/Form'
 import AssignScoreModal from './AssignScoreModal'
-import AssignKpiTemplateModal from './AssignKpiTemplateModal'
 import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
@@ -180,7 +179,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     AssignScoreModal,
-    AssignKpiTemplateModal,
     TabMenu,
     Breadcrumb,
     BreadcrumbHumanResource
@@ -242,9 +240,9 @@ export default {
     cancel () {
       this.$router.go(-1)
     },
-    assignSelected() {
+    assignSelected () {
       for (var groupIndex in this.form.template.groups) {
-        var group = this.form.template.groups[groupIndex];
+        var group = this.form.template.groups[groupIndex]
 
         for (var indicatorIndex in group.indicators) {
           var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex]

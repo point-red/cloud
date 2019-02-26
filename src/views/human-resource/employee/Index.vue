@@ -16,9 +16,8 @@
               <th width="33%">{{ $t('job title') }}</th>
               <th width="33%">{{ $t('employee group') }}</th>
             </tr>
-            <tr
-              v-for="employee in employees"
-              :key="employee.id"
+            <template v-for="employee in employees">
+            <tr :key="employee.id"
               v-if="($permission.has('create employee assessment') && isShow(employee.scorers)) || $permission.has('read employee')"
               slot="p-body">
               <td>
@@ -29,6 +28,7 @@
               <td>{{ employee.job_title }}</td>
               <td><template v-if="employee.group">{{ employee.group.name }}</template></td>
             </tr>
+            </template>
           </p-table>
           <nav v-show="pagination.last_page > 1">
             <ul class="pagination justify-content-center">
@@ -101,8 +101,8 @@ export default {
     },
     paginate (page) {
       this.getEmployees({
-        filter_like: [{'name': this.filter.name }],
-        or_filter_like: [{'job_title': this.filter.jobTitle}],
+        filter_like: [{ 'name': this.filter.name }],
+        or_filter_like: [{ 'job_title': this.filter.jobTitle }],
         sort_by: 'name',
         includes: 'scorers',
         additional: 'groups',
@@ -119,8 +119,8 @@ export default {
     filterColumn: debounce(function () {
       this.loading = true
       this.getEmployees({
-        filter_like: [{'name': this.filter.name }],
-        or_filter_like: [{'job_title': this.filter.jobTitle}],
+        filter_like: [{ 'name': this.filter.name }],
+        or_filter_like: [{ 'job_title': this.filter.jobTitle }],
         sort_by: 'name',
         includes: 'scorers',
         additional: 'groups',
