@@ -6,7 +6,6 @@
       :format="format"
       :formatted="formatted"
       :auto-close="autoClose"
-      :only-date="onlyDate"
       :min-date="minDate"
       :max-date="maxDate"
       color="#343A40"
@@ -53,17 +52,6 @@ export default {
     },
     errors: {
       type: Array
-    }
-  },
-  methods: {
-    onlyDate () {
-      if (this.type === 'date') {
-        this.format = 'YYYY-MM-DD'
-        this.formatted = 'DD MMM YYYY'
-        return true
-      }
-
-      return false
     }
   },
   data () {

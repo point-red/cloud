@@ -85,6 +85,8 @@
 	"job info": "informasi pekerjaan",
 	"name": "nama",
 	"address": "alamat",
+	"sub_district": "kecamatan",
+	"district": "kelurahan",
 	"personal id": "nomer identitas",
 	"phone": "telepon",
 	"email": "email",

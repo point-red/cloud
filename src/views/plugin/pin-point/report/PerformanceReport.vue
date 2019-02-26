@@ -23,8 +23,8 @@
             <button :disabled="isExporting" type="submit" class="btn btn-sm btn-primary" @click="exportData">
               <i v-show="isExporting" class="fa fa-asterisk fa-spin"/> Export
             </button>
-            <ul v-show="downloadLink">
-              <li><a :href="downloadLink" download>{{ downloadLink }}</a> (expired in 24 hour)</li>
+            <ul v-show="downloadFiles">
+              <li v-for="(downloadFile, index) in downloadFiles" :key="index"><a :href="downloadFile.url" download>{{ downloadFile.name }}</a> (expired in 24 hour)</li>
             </ul>
           </div>
         </p-form-row>
@@ -68,8 +68,8 @@
                 <td class="text-center" :class="{'bg-danger text-white': isColorful}">{{ report.call || 0 }}</td>
                 <td class="text-center" :class="{'bg-danger text-white': isColorful}">{{ report.effective_call || 0 }}</td>
                 <td class="text-center" :class="{'bg-danger text-white': isColorful}">{{ report.value || 0 | numberFormat }}</td>
-                <td class="text-center" :class="{'bg-primary text-white': isColorful}">{{ report.call / report.target_call * 100 | numberFormat }}%</td>
-                <td class="text-center" :class="{'bg-primary text-white': isColorful}">{{ report.effective_call / report.target_effective_call * 100 | numberFormat }}%</td>
+                <td class="text-center" :class="{'bg-primary text-white': isColorful}">{{ percentage(report.call, report.target_call) | numberFormat }}%</td>
+                <td class="text-center" :class="{'bg-primary text-white': isColorful}">{{ percentage(report.effective_call, report.target_effective_call) | numberFormat }}%</td>
                 <td class="text-center" :class="{'bg-primary text-white': isColorful}">{{ report.value / report.target_value * 100 | numberFormat }}%</td>
                 <td class="text-center" v-for="(item, index) in items" :key="index">
                   {{ getItemSoldQty(item.id, report.items) | numberFormat }}
@@ -109,7 +109,7 @@ export default {
       loading: false,
       isExporting: false,
       isColorful: false,
-      downloadLink: ''
+      downloadFiles: []
     }
   },
   computed: {
@@ -126,6 +126,10 @@ export default {
   },
   methods: {
     ...mapActions('PinPointPerformanceReport', ['get', 'export']),
+    percentage: function (actual, target) {
+      let result = actual / target * 100
+      return result >= 100 ? 100 : result
+    },
     getItemSoldQty (itemId, reportItems) {
       let item = reportItems.find(o => o.item_id === itemId)
       return item ? item.quantity : 0
@@ -154,7 +158,7 @@ export default {
         date_to: this.date.end
       }).then((response) => {
         this.isExporting = false
-        this.downloadLink = response.data.url
+        this.downloadFiles = response.data.files
       }, (error) => {
         this.isExporting = false
         console.log(error)

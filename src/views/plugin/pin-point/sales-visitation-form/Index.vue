@@ -20,9 +20,21 @@
             <button :disabled="isLoading" class="btn btn-sm btn-primary mr-5" @click="search">
               <i v-show="isLoading" class="fa fa-asterisk fa-spin"/> Search
             </button>
-            <button :disabled="isExporting" type="submit" class="btn btn-sm btn-primary" @click="exportData">
-              <i v-show="isExporting" class="fa fa-asterisk fa-spin"/> Export
-            </button>
+            <div class="btn-group">
+              <button :disabled="isExporting" class="btn btn-sm btn-primary">
+                <i v-show="isExporting" class="fa fa-asterisk fa-spin"/>
+                Export
+              </button>
+              <button :disabled="isExporting" type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" @click="toggleBtnDropdown">
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <div :class="{'dropdown-menu': true, 'show': !isExporting && isDropdown}">
+                <a class="dropdown-item" @click="exportData('SalesVisitationReport')">Export Report</a>
+                <a class="dropdown-item" @click="exportData('ChartInterestReason')">Export Chart Interest Reason</a>
+                <a class="dropdown-item" @click="exportData('ChartNotInterestReason')">Export Chart Not Interest Reason</a>
+                <a class="dropdown-item" @click="exportData('ChartSimilarProduct')">Export Chart Similar Product</a>
+              </div>
+            </div>
             <ul v-show="downloadLink">
               <li><a :href="downloadLink" download>{{ downloadLink }}</a> (expired in 24 hour)</li>
             </ul>
@@ -108,12 +120,10 @@ export default {
   },
   data () {
     return {
+      date: this.$moment(),
       isLoading: false,
       isExporting: false,
-      date: {
-        start: this.$moment().format('YYYY-MM-DD'),
-        end: this.$moment().format('YYYY-MM-DD')
-      },
+      isDropdown: false,
       downloadLink: ''
     }
   },
@@ -122,8 +132,12 @@ export default {
   },
   methods: {
     ...mapActions('SalesVisitationForm', ['get', 'export']),
+    toggleBtnDropdown () {
+      this.isDropdown = !this.isDropdown
+    },
     search () {
       this.isLoading = true
+
       this.get({
         params: {
           date_from: this.date.start,
@@ -136,11 +150,13 @@ export default {
         this.isLoading = false
       })
     },
-    exportData () {
+    exportData (file = '') {
       this.isExporting = true
+      this.toggleBtnDropdown()
       this.export({
         date_from: this.date.start,
-        date_to: this.date.end
+        date_to: this.date.end,
+        file_export: file
       }).then((response) => {
         this.downloadLink = response.data.url
       }, (error) => {

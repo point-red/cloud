@@ -85,6 +85,8 @@
 	"job info": "job info",
 	"name": "name",
 	"address": "address",
+	"sub_district": "sub district",
+	"district": "district",
 	"personal id": "personal id",
 	"phone": "phone",
 	"email": "email",
