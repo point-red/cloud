@@ -10,14 +10,9 @@
 
     <div class="row">
       <p-block :title="$t('sales visitation form')" :header="true">
-        <p-form-row id="date" name="date" :label="$t('date from')">
+        <p-form-row id="date" name="date" :label="$t('date')">
           <div slot="body" class="col-lg-9">
-            <p-date-picker id="date-from" name="date_from" @input="updateDateFrom" v-model="date_from"/>
-          </div>
-        </p-form-row>
-        <p-form-row id="date" name="date" :label="$t('date to')">
-          <div slot="body" class="col-lg-9">
-            <p-date-picker id="date-to" name="date_to" @input="updateDateTo" v-model="date_to"/>
+            <p-date-range-picker id="date" name="date" v-model="date"/>
           </div>
         </p-form-row>
         <p-form-row>
@@ -115,8 +110,10 @@ export default {
     return {
       isLoading: false,
       isExporting: false,
-      date_from: new Date(),
-      date_to: new Date(),
+      date: {
+        start: this.$moment().format('YYYY-MM-DD'),
+        end: this.$moment().format('YYYY-MM-DD')
+      },
       downloadLink: ''
     }
   },
@@ -129,8 +126,8 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          date_from: this.date_from,
-          date_to: this.date_to
+          date_from: this.date.start,
+          date_to: this.date.end
         }
       }).then((response) => {
       }).catch((error) => {
@@ -139,21 +136,11 @@ export default {
         this.isLoading = false
       })
     },
-    updateDateFrom () {
-      if (new Date(this.date_to).valueOf() < new Date(this.date_from).valueOf()) {
-        this.date_to = this.date_from
-      }
-    },
-    updateDateTo () {
-      if (new Date(this.date_from).valueOf() > new Date(this.date_to).valueOf()) {
-        this.date_from = this.date_to
-      }
-    },
     exportData () {
       this.isExporting = true
       this.export({
-        date_from: this.date_from,
-        date_to: this.date_to
+        date_from: this.date.start,
+        date_to: this.date.end
       }).then((response) => {
         this.downloadLink = response.data.url
       }, (error) => {
@@ -167,8 +154,8 @@ export default {
     this.isLoading = true
     this.get({
       params: {
-        date_from: this.date_from,
-        date_to: this.date_to
+        date_from: this.date.start,
+        date_to: this.date.end
       }
     }).then((response) => {
     }).catch((error) => {

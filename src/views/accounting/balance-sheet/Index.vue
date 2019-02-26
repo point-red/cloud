@@ -30,9 +30,8 @@
                 <tr slot="p-body">
                   <td colspan="2" class="font-w600">ASSET LANCAR</td>
                 </tr>
-                <tr
-                  v-for="(chartOfAccount, index) in chartOfAccounts"
-                  v-if="chartOfAccount.type.name === 'cash'
+                <template v-for="(chartOfAccount, index) in chartOfAccounts">
+                <tr v-if="chartOfAccount.type.name === 'cash'
                     || chartOfAccount.type.name === 'bank'
                     || chartOfAccount.type.name === 'note receivable'
                     || chartOfAccount.type.name === 'inventory'
@@ -43,6 +42,7 @@
                   <td>{{ chartOfAccount.alias }}</td>
                   <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
                 </tr>
+                </template>
                 <tr slot="p-body">
                   <td></td>
                   <td class="text-right font-w600">{{ totalCurrentAsset | numberFormat }}</td>
@@ -50,9 +50,8 @@
                 <tr slot="p-body">
                   <td colspan="2" class="font-w600">ASSET TETAP</td>
                 </tr>
-                <tr
-                  v-for="(chartOfAccount, index) in chartOfAccounts"
-                  v-if="chartOfAccount.type.name === 'fixed asset'
+                <template v-for="(chartOfAccount, index) in chartOfAccounts">
+                <tr v-if="chartOfAccount.type.name === 'fixed asset'
                     || chartOfAccount.type.name === 'fixed asset depreciation'
                     || chartOfAccount.type.name === 'other asset'
                     || chartOfAccount.type.name === 'other asset amortization'"
@@ -61,6 +60,7 @@
                   <td>{{ chartOfAccount.alias }}</td>
                   <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
                 </tr>
+                </template>
                 <tr slot="p-body">
                   <td></td>
                   <td class="text-right font-w600">{{ totalFixedAsset | numberFormat }}</td>
@@ -75,9 +75,8 @@
                 <tr slot="p-body">
                   <td colspan="2" class="font-w600">KEWAJIBAN</td>
                 </tr>
-                <tr
-                  v-for="(chartOfAccount, index) in chartOfAccounts"
-                  v-if="chartOfAccount.type.name === 'current liability'
+                <template v-for="(chartOfAccount, index) in chartOfAccounts">
+                <tr v-if="chartOfAccount.type.name === 'current liability'
                     || chartOfAccount.type.name === 'other current liability'
                     || chartOfAccount.type.name === 'long term liability'"
                   :key="index"
@@ -85,6 +84,7 @@
                   <td>{{ chartOfAccount.alias }}</td>
                   <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
                 </tr>
+                </template>
                 <tr slot="p-body">
                   <td></td>
                   <td class="text-right font-w600">{{ totalLiability | numberFormat }}</td>
@@ -92,14 +92,14 @@
                 <tr slot="p-body">
                   <td colspan="2" class="font-w600">MODAL</td>
                 </tr>
-                <tr
-                  v-for="(chartOfAccount, index) in chartOfAccounts"
-                  v-if="chartOfAccount.type.name === 'owner equity' || chartOfAccount.type.name === 'shareholder distribution'"
+                <template v-for="(chartOfAccount, index) in chartOfAccounts">
+                <tr v-if="chartOfAccount.type.name === 'owner equity' || chartOfAccount.type.name === 'shareholder distribution'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
                   <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
                 </tr>
+                </template>
                 <tr slot="p-body">
                   <td></td>
                   <td class="text-right font-w600">{{ totalEquity | numberFormat }}</td>
@@ -139,7 +139,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      date: new Date(),
+      date: this.$moment(),
       loading: false,
       totalAsset: 0,
       totalCurrentAsset: 0,

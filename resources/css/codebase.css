@@ -9644,10 +9644,11 @@ textarea.form-control.form-control-lg, .input-group-lg > textarea.form-control,
   }
 }
 
-#main-container,
-#page-footer {
-  overflow-x: hidden;
-}
+/* #main-container, */
+/* #page-footer { */
+  /* This make datepicker and other element not visible when out of container */
+  /* overflow-x: hidden; */
+/* } */
 
 .content {
   margin: 0 auto;

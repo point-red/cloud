@@ -9,6 +9,7 @@ import PTable from './templates/PTable.vue'
 import PSelect from './templates/PSelect.vue'
 import PSuggest from './templates/PSuggest.vue'
 import PDatePicker from './templates/PDatePicker.vue'
+import PDateRangePicker from './templates/PDateRangePicker.vue'
 import PMonthPicker from './templates/PMonthPicker.vue'
 import PModal from './templates/PModal.vue'
 import PFormNumber from './templates/PFormNumber.vue'
@@ -27,6 +28,7 @@ export default {
   PSelect,
   PSuggest,
   PDatePicker,
+  PDateRangePicker,
   PMonthPicker,
   PModal,
   PLoadingBlock

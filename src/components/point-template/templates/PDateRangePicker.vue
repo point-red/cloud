@@ -2,11 +2,11 @@
   <div>
     <date-picker
       :name="name"
+      :range="true"
       :overlay="true"
       :format="format"
       :formatted="formatted"
-      :auto-close="autoClose"
-      :only-date="onlyDate"
+      :auto-close="true"
       :min-date="minDate"
       :max-date="maxDate"
       color="#343A40"
@@ -37,10 +37,6 @@ export default {
       type: String,
       required: false
     },
-    type: {
-      type: String,
-      default: 'date'
-    },
     value: {
       type: [Object, String]
     },
@@ -68,9 +64,9 @@ export default {
   },
   data () {
     return {
-      time: this.$moment().format('YYYY-MM-DD'),
-      format: 'YYYY-MM-DD HH:mm:ss',
-      formatted: 'DD MMM YYYY HH:mm',
+      time: null,
+      format: 'YYYY-MM-DD',
+      formatted: 'DD MMM YYYY',
       minDate: this.$moment('2000-01-01').format('YYYY-MM-DD'),
       maxDate: this.$moment().format('YYYY-MM-DD'),
       autoClose: true
@@ -83,15 +79,6 @@ export default {
   },
   mounted () {
     this.time = this.value
-    if (this.type === 'date') {
-      this.format = 'YYYY-MM-DD'
-      this.formatted = 'DD MMM YYYY'
-      this.autoClose = true
-    } else {
-      this.format = 'YYYY-MM-DD HH:mm:ss'
-      this.formatted = 'DD MMM YYYY HH:mm'
-      this.autoClose = false
-    }
   }
 }
 </script>

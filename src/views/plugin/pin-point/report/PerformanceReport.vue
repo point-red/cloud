@@ -10,33 +10,15 @@
 
     <div class="row">
       <p-block :title="$t('performance report')" :header="true">
-        <p-form-row :label="$t('date from')">
+        <p-form-row :label="$t('date')">
           <div slot="body" class="col-lg-9">
-            <p-date-picker
-              id="date-from"
-              name="date_from"
-              type="date"
-              v-model="dateFrom"
-              @input="updateDateFrom"/>
+            <p-date-range-picker id="date" name="date" v-model="date"/>
           </div>
         </p-form-row>
-        <p-form-row
-          id="date"
-          name="date"
-          :label="$t('date to')">
-          <div slot="body" class="col-lg-9">
-            <p-date-picker
-              id="date-to"
-              name="date_to"
-              type="date"
-              v-model="dateTo"
-              @input="updateDateTo"/>
-          </div>
-        </p-form-row>
-        <p-form-row id="date" name="date">
+        <p-form-row>
           <div slot="body" class="col-lg-9">
             <button class="btn btn-primary btn-sm mr-5" @click="search">Search</button>
-            <button class="btn btn-primary btn-sm mr-5" @click="$refs.target.show(dateFrom, dateTo)">Set Target</button>
+            <button class="btn btn-primary btn-sm mr-5" @click="$refs.target.show(date.start, date.end)">Set Target</button>
             <button class="btn btn-primary btn-sm mr-5" @click="toggleColor">Highlight</button>
             <button :disabled="isExporting" type="submit" class="btn btn-sm btn-primary" @click="exportData">
               <i v-show="isExporting" class="fa fa-asterisk fa-spin"/> Export
@@ -51,8 +33,8 @@
             <p-table :is-bordered="true">
               <tr slot="p-head">
                 <th :colspan="2" class="text-center"></th>
-                <th :colspan="9" class="text-center">{{ this.date }}</th>
-                <th :colspan="items.length" class="text-center">{{ this.date }}</th>
+                <th :colspan="9" class="text-center">{{ this.dateView }}</th>
+                <th :colspan="items.length" class="text-center">{{ this.dateView }}</th>
               </tr>
               <tr slot="p-head">
                 <th colspan="2" class=""></th>
@@ -120,8 +102,10 @@ export default {
   },
   data () {
     return {
-      dateFrom: new Date(),
-      dateTo: new Date(),
+      date: {
+        start: this.$moment(),
+        end: this.$moment()
+      },
       loading: false,
       isExporting: false,
       isColorful: false,
@@ -130,11 +114,11 @@ export default {
   },
   computed: {
     ...mapGetters('PinPointPerformanceReport', ['reports', 'items']),
-    date: function () {
-      if (this.dateFrom == this.dateTo) {
-        return this.$moment(this.dateFrom).format('D MMM Y')
-      } else if (this.dateFrom < this.dateTo) {
-        return this.$moment(this.dateFrom).format('D MMM Y') + ' - ' + this.$moment(this.dateTo).format('D MMM Y')
+    dateView: function () {
+      if (this.date.start == this.date.end) {
+        return this.$moment(this.date.start).format('D MMM Y')
+      } else if (this.date.start < this.date.end) {
+        return this.$moment(this.date.start).format('D MMM Y') + ' - ' + this.$moment(this.date.end).format('D MMM Y')
       } else {
         return 'Invalid date'
       }
@@ -149,22 +133,12 @@ export default {
     toggleColor () {
       this.isColorful = !this.isColorful
     },
-    updateDateFrom () {
-      if (new Date(this.dateTo).valueOf() < new Date(this.dateFrom).valueOf()) {
-        this.dateTo = this.dateFrom
-      }
-    },
-    updateDateTo () {
-      if (new Date(this.dateFrom).valueOf() > new Date(this.dateTo).valueOf()) {
-        this.dateFrom = this.dateTo
-      }
-    },
     search () {
       this.loading = true
       this.get({
         params: {
-          date_from: this.dateFrom,
-          date_to: this.dateTo
+          date_from: this.date.start,
+          date_to: this.date.end
         }
       }).then((response) => {
         this.loading = false
@@ -176,8 +150,8 @@ export default {
     exportData () {
       this.isExporting = true
       this.export({
-        date_from: this.dateFrom,
-        date_to: this.dateTo
+        date_from: this.date.start,
+        date_to: this.date.end
       }).then((response) => {
         this.isExporting = false
         this.downloadLink = response.data.url
@@ -190,8 +164,8 @@ export default {
   created () {
     this.get({
       params: {
-        date_from: this.dateFrom,
-        date_to: this.dateTo
+        date_from: this.date.start,
+        date_to: this.date.end
       }
     })
   }
