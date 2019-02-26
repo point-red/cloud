@@ -55,7 +55,7 @@ export default {
       type: Array
     }
   },
-  computed: {
+  methods: {
     onlyDate () {
       if (this.type === 'date') {
         this.format = 'YYYY-MM-DD'
