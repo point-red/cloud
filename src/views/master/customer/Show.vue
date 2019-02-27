@@ -49,10 +49,6 @@
                 <th width="150px">{{ $t('date') }}</th>
                 <th width="50px">{{ $t('time') }}</th>
                 <th width="150px">{{ $t('sales') }}</th>
-                <th width="150px">{{ $t('group') }}</th>
-                <th width="150px">{{ $t('customer') }}</th>
-                <th width="200px">{{ $t('address') }}</th>
-                <th width="100px">{{ $t('phone') }}</th>
                 <th width="250px">{{ $t('interest reason') }}</th>
                 <th width="250px">{{ $t('no interest reason') }}</th>
                 <th width="250px">{{ $t('similar product') }}</th>
@@ -62,10 +58,6 @@
                 <td>{{ form.form.date | dateFormat('DD MMM YYYY') }}</td>
                 <td>{{ form.form.created_at | dateFormat('HH:mm') }}</td>
                 <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
-                <td>{{ form.group }}</td>
-                <td>{{ form.name }}</td>
-                <td>{{ form.address }}</td>
-                <td>{{ form.phone }}</td>
                 <td>
                     <ol>
                       <li v-for="(interestReason, index) in form.interest_reasons" :key="index">
@@ -103,7 +95,6 @@
         </p-block-inner>
       </p-block>
     </div>
-    <role-modal id="role" ref="role" :title="'Roles'"/>
   </div>
 </template>
 
