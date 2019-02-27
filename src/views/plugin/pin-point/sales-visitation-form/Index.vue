@@ -21,7 +21,7 @@
               <i v-show="isLoading" class="fa fa-asterisk fa-spin"/> Search
             </button>
             <div class="btn-group">
-              <button :disabled="isExporting" class="btn btn-sm btn-primary">
+              <button :disabled="isExporting" class="btn btn-sm btn-primary" @click="toggleBtnDropdown">
                 <i v-show="isExporting" class="fa fa-asterisk fa-spin"/>
                 Export
               </button>
