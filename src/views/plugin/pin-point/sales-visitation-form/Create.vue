@@ -84,7 +84,7 @@
           v-model="form.sub_district"
           :errors="form.errors.get('sub_district')"
           @errors="form.errors.set('sub_district', null)">
-        </p-form-row>    
+        </p-form-row>
 
         <p-form-row
           id="phone"

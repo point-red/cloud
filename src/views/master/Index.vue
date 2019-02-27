@@ -15,6 +15,13 @@
         link="/master/role"
         icon="si si-equalizer"/>
     </div>
+    <div class="row gutters-tiny">
+      <p-box
+        name="Customer"
+        v-if="$permission.has('read user')"
+        link="/master/customer"
+        icon="si si-user"/>
+    </div>
   </div>
 </template>
 
