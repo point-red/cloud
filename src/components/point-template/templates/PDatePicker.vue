@@ -47,6 +47,14 @@ export default {
       type: Boolean,
       default: false
     },
+    minDate: {
+      type: String,
+      default: null
+    },
+    maxDate: {
+      type: String,
+      default: null
+    },
     help: {
       type: String
     },
@@ -59,8 +67,8 @@ export default {
       time: this.$moment().format('YYYY-MM-DD'),
       format: 'YYYY-MM-DD HH:mm:ss',
       formatted: 'DD MMM YYYY HH:mm',
-      minDate: this.$moment('2000-01-01').format('YYYY-MM-DD'),
-      maxDate: this.$moment().format('YYYY-MM-DD'),
+      defaultMinDate: this.$moment('2000-01-01').format('YYYY-MM-DD'),
+      defaultMaxDate: this.$moment().format('YYYY-MM-DD'),
       autoClose: true
     }
   },
