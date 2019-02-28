@@ -65,13 +65,16 @@ export default {
   },
   created () {
     this.loading = true
-    this.getCustomer()
-      .then((response) => {
-        this.loading = false
-      }, (error) => {
-        this.loading = false
-        this.$notifications.error(error.message)
-      })
+    this.getCustomer({
+      params: {
+        sort_by: 'name'
+      }
+    }).then((response) => {
+      this.loading = false
+    }, (error) => {
+      this.loading = false
+      this.$notifications.error(error.message)
+    })
   }
 }
 </script>

@@ -15,6 +15,7 @@
         link="/master/role"
         icon="si si-equalizer"/>
     </div>
+    <hr>
     <div class="row gutters-tiny">
       <p-box
         name="Customer"

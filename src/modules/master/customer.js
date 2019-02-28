@@ -40,9 +40,9 @@ const mutations = {
 }
 
 const actions = {
-  get ({ commit }) {
+  get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url)
+      api.get(url, payload)
         .then(
           (response) => {
             commit('FETCH_ARRAY', response.data)
