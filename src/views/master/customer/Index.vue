@@ -15,7 +15,7 @@
           <p-table>
             <tr slot="p-head">
               <th>Name</th>
-              <th>Email</th>
+              <th>Address</th>
               <th>Phone</th>
             </tr>
             <tr
@@ -28,8 +28,8 @@
                 </router-link>
               </td>
               <td>
-                <template v-for="customerEmail in customer.emails">
-                  {{ customerEmail.email | lowercase }}
+                <template v-for="customerAddress in customer.addresses">
+                  {{ customerAddress.address | lowercase }}
                 </template>
               </td>
               <td>
