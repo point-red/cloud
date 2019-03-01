@@ -9,6 +9,9 @@
   "period": "periode",
   "time": "jam",
   "percentage": "persentase",
+  "item": "item",
+  "quantity": "jumlah",
+  "price": "harga",
   "total": "total",
   "report": "laporan"
 }

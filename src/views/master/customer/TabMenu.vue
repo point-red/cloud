@@ -19,6 +19,15 @@
         <span><i class="si si-docs"></i> List</span>
       </router-link>
     </li>
+    <li class="nav-item" v-if="$permission.has('read user')">
+      <router-link
+        to="/master/customer/priority"
+        exact
+        class="nav-link"
+        active-class="active">
+        <span><i class="si si-star"></i> Priority</span>
+      </router-link>
+    </li>
     <slot name="right"></slot>
   </ul>
 </template>

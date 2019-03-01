@@ -19,26 +19,38 @@
             id="name"
             label="Name"
             name="name"
-            v-model="customer.name"
+            v-model="data.name"
             readonly/>
           <p-form-row
             id="email"
             label="Email"
             name="email"
-            v-model="customer.email"
+            v-model="data.email"
             readonly/>
           <p-form-row
             id="address"
             label="Address"
             name="address"
-            v-model="customer.addresses[0].address"
+            v-model="data.address"
             readonly/>
           <p-form-row
             id="phone"
             label="Phone"
             name="phone"
-            v-model="customer.phones[0].number"
+            v-model="data.phone"
             readonly/>
+          <p-form-row
+            id="priority"
+            :label="''"
+            name="priority">
+            <div slot="body" class="col-lg-9">
+              <p-form-check-box
+                id="priority"
+                name="priority"
+                :checked="data.priority"
+                :description="'Priority Customer'"/>
+            </div>          
+          </p-form-row>
         </p-block-inner>
       </p-block>
       <p-block>
@@ -145,7 +157,14 @@ export default {
     return {
       id: this.$route.params.id,
       title: 'Customer',
-      isLoading: false
+      isLoading: false,
+      data: {
+        name: null,
+        email: null,
+        address: null,
+        phone: null,
+        priority: false,
+      }
     }
   },
   computed: {
@@ -161,7 +180,22 @@ export default {
     this.find({ id: this.id })
       .then((response) => {
         this.isLoading = false
-        console.log('find')
+        console.log('find ' + JSON.stringify(response))
+        this.data.name = response.data.name
+        if (response.data.emails.length > 0) {
+          this.data.email = response.data.emails[0].email
+        }
+        if (response.data.addresses.length > 0) {
+          this.data.address = response.data.addresses[0].address
+        }
+        if (response.data.phones.length > 0) {
+          this.data.phone = response.data.phones[0].number
+        }
+        if (response.data.groups.length > 0) {
+          if (response.data.groups[0].name == 'priority') {
+            this.data.priority = true
+          }
+        }
         this.get({
           params: {
             customer_id: this.customer.id,
@@ -169,7 +203,7 @@ export default {
             date_to: this.$moment().format('YYYY-MM-DD 23:59:59')
           }
         }).then(response => {
-          this.isLoading = false
+          this.isLoading = false          
         }).catch(error => {
           this.isLoading = false
           this.$notification.error(error.message)

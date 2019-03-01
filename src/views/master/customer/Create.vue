@@ -29,6 +29,15 @@
           name="email"
           :errors="form.errors.get('email')"
           @errors="form.errors.set('email', null)"/>
+
+        <p-form-row
+          id="address"
+          v-model="form.phones[0].number"
+          :disabled="loadingSaveButton"
+          :label="$t('address')"
+          name="address"
+          :errors="form.errors.get('address')"
+          @errors="form.errors.set('address', null)"/>
         
         <p-form-row
           id="phone"
@@ -38,6 +47,24 @@
           name="phone"
           :errors="form.errors.get('phone')"
           @errors="form.errors.set('phone', null)"/>
+        
+        <p-form-row
+          id="phone"
+          v-model="form.phones[0].number"
+          :disabled="loadingSaveButton"
+          :label="''"
+          name="phone"
+          :errors="form.errors.get('phone')"
+          @errors="form.errors.set('phone', null)">
+          <div slot="body" class="col-lg-9">
+            <p-form-check-box
+              id="subscibe"
+              name="subscibe"
+              @click.native="togglePriority"
+              :checked="form.group.name == 'priority'"
+              :description="'Priority Customer'"/>
+          </div>          
+        </p-form-row>
 
         <div class="form-group row">
           <div class="col-md-3"></div>
@@ -75,11 +102,19 @@ export default {
             email: null
           }
         ],
+        addresses: [
+          {
+            address: null
+          }
+        ],
         phones: [
           {
             number: null
           }
-        ]
+        ],
+        group: {
+          name: ''
+        }
       })
     }
   },
@@ -88,6 +123,13 @@ export default {
   },
   methods: {
     ...mapActions('Customer', ['create']),
+    togglePriority () {
+      if (this.form.group.name == 'priority') {
+        this.form.group.name = ''
+      } else {
+        this.form.group.name = 'priority'
+      }
+    },
     onSubmit () {
       this.loadingSaveButton = true
       
