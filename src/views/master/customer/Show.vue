@@ -137,14 +137,12 @@ export default {
             date_from: new Date('2000-01-01'),
             date_to: this.$moment().format('YYYY-MM-DD 23:59:59')
           }
-        }).then((response) => {
-            console.log('ga')
-            this.isLoading = false
-          }, (error) => {
-            console.log('gb')
-            this.isLoading = false
-            this.$notification.error(error.message)
-          })
+        }).then(response => {
+          this.isLoading = false
+        }).catch(error => {
+          this.isLoading = false
+          this.$notification.error(error.message)
+        })
       }, (error) => {
         this.isLoading = false
         this.$notification.error(error.message)

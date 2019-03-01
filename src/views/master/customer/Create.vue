@@ -23,18 +23,27 @@
 
         <p-form-row
           id="email"
-          v-model="form.email"
+          v-model="form.emails[0].email"
           :disabled="loadingSaveButton"
           :label="$t('email')"
           name="email"
           :errors="form.errors.get('email')"
           @errors="form.errors.set('email', null)"/>
+        
+        <p-form-row
+          id="phone"
+          v-model="form.phones[0].number"
+          :disabled="loadingSaveButton"
+          :label="$t('phone')"
+          name="phone"
+          :errors="form.errors.get('phone')"
+          @errors="form.errors.set('phone', null)"/>
 
         <div class="form-group row">
           <div class="col-md-3"></div>
           <div class="col-md-9">
             <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Invite
+              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
             </button>
           </div>
         </div>
@@ -60,8 +69,17 @@ export default {
     return {
       loadingSaveButton: false,
       form: new Form({
-        name: '',
-        email: ''
+        name: null,
+        emails: [
+          {
+            email: null
+          }
+        ],
+        phones: [
+          {
+            number: null
+          }
+        ]
       })
     }
   },
@@ -72,12 +90,13 @@ export default {
     ...mapActions('Customer', ['create']),
     onSubmit () {
       this.loadingSaveButton = true
+      
       this.create(this.form)
-        .then((response) => {
+        .then(response => {
           this.loadingSaveButton = false
-          this.$notification.success('create success')
-          this.form.reset()
-        }, (error) => {
+          this.$notification.success('create success')          
+          Object.assign(this.$data, this.$options.data.call(this));
+        }).catch(error => {
           this.loadingSaveButton = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)

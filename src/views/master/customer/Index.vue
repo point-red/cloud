@@ -27,8 +27,16 @@
                   {{ customer.name | titlecase }}
                 </router-link>
               </td>
-              <td>{{ customer.email | lowercase }}</td>
-              <td>{{ customer.phone }}</td>
+              <td>
+                <template v-for="customerEmail in customer.emails">
+                  {{ customerEmail.email | lowercase }}
+                </template>
+              </td>
+              <td>
+                <template v-for="customerPhone in customer.phones">
+                  {{ customerPhone.number | lowercase }}
+                </template>
+              </td>
             </tr>
           </p-table>
         </p-block-inner>
