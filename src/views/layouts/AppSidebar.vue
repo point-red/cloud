@@ -150,6 +150,11 @@
                     {{ $t('supplier') | titlecase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read warehouse')">
+                  <router-link to="/master/warehouse" active-class="active">
+                    {{ $t('warehouse') | titlecase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li :class="{ 'open' : firstUri === 'human-resource' }" v-if="$permission.has('menu human resource')">

@@ -28,6 +28,14 @@
         link="/master/supplier"
         icon="si si-user"/>
     </div>
+    <hr>
+    <div class="row gutters-tiny">
+      <p-box
+        name="Warehouse"
+        v-if="$permission.has('read warehouse')"
+        link="/master/warehouse"
+        icon="si si-home"/>
+    </div>
   </div>
 </template>
 
