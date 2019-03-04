@@ -35,6 +35,11 @@
         v-if="$permission.has('read warehouse')"
         link="/master/warehouse"
         icon="si si-home"/>
+      <p-box
+        name="Allocation"
+        v-if="$permission.has('read allocation')"
+        link="/master/allocation"
+        icon="si si-list"/>
     </div>
   </div>
 </template>

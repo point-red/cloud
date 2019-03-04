@@ -155,6 +155,11 @@
                     {{ $t('warehouse') | titlecase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read allocation')">
+                  <router-link to="/master/allocation" active-class="active">
+                    {{ $t('allocation') | titlecase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li :class="{ 'open' : firstUri === 'human-resource' }" v-if="$permission.has('menu human resource')">

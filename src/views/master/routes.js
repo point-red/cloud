@@ -4,6 +4,7 @@ import Role from './role/routes'
 import Customer from './customer/routes'
 import Supplier from './supplier/routes'
 import Warehouse from './warehouse/routes'
+import Allocation from './allocation/routes'
 
 export default [
   { path: '/master', name: 'Master', component: Master },
@@ -11,5 +12,6 @@ export default [
   ...Role,
   ...Customer,
   ...Supplier,
-  ...Warehouse
+  ...Warehouse,
+  ...Allocation
 ]
