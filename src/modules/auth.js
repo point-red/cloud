@@ -118,13 +118,10 @@ const actions = {
         expirationDate: Vue.cookie.get('TED')
       })
 
-      console.log(Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT'))
       axios.defaults.headers.common['Authorization'] = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
-      console.log('Start Fetching')
       axios.post('/auth/fetch', {
         access_token: accessToken
       }).then((response) => {
-        console.log('End Response')
         var axiosData = response.data // axios wrap response with data
         var apiData = axiosData.data
         localStorage.setItem('userId', apiData.id)
@@ -135,12 +132,10 @@ const actions = {
         commit('storeUser', apiData)
         return resolve(response.data)
       }).catch(error => {
-        console.log('End Error')
         // cannot auth, redirect to login page
         // router.replace('/auth/signin')
         return reject(error.data)
       })
-      console.log('End Fetch')
     })
   },
   updateProfile (context, payload) {
