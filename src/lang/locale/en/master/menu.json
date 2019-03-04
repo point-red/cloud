@@ -1,5 +1,11 @@
 {
   "user" : "user",
   "role & permission" : "role & permission",
-  "customer" : "customer"
+  "customer" : "customer",
+  "supplier" : "supplier",
+  "expedition" : "expedition",
+  "item" : "item",
+  "service" : "service",
+  "warehouse" : "warehouse",
+  "allocation" : "allocation"
 }

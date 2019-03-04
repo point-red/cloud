@@ -140,9 +140,14 @@
                     {{ $t('role & permission') | titlecase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read user')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read customer')">
                   <router-link to="/master/customer" active-class="active">
                     {{ $t('customer') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read supplier')">
+                  <router-link to="/master/supplier" active-class="active">
+                    {{ $t('supplier') | titlecase }}
                   </router-link>
                 </li>
               </ul>

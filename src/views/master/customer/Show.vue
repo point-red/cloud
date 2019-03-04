@@ -52,15 +52,13 @@
             </div>          
           </p-form-row>
 
-          <div class="col-sm-12 mb-20">
-            <hr>
-            <router-link
-              :to="{ path: '/master/customer/' + customer.id + '/edit', params: { id: customer.id }}"
-              v-if="$permission.has('update user')"
-              class="btn btn-sm btn-primary mr-5">
-              Edit
-            </router-link>
-          </div>
+          <hr/>
+          <router-link
+            :to="{ path: '/master/customer/' + customer.id + '/edit', params: { id: customer.id }}"
+            v-if="$permission.has('update user')"
+            class="btn btn-sm btn-primary mr-5">
+            Edit
+          </router-link>
         </p-block-inner>
       </p-block>
       <p-block>

@@ -1,0 +1,11 @@
+{
+  "sales" : "sales",
+  "sales quotation" : "penawaran",
+  "sales contract" : "kontrak",
+  "sales order" : "order",
+  "delivery order" : "order angkutan",
+  "delivery notes" : "surat jalan",
+  "sales invoice" : "nota",
+  "sales down payment" : "uang muka",
+  "sales return" : "retur penjualan"
+}

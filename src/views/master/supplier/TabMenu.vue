@@ -1,31 +1,22 @@
 <template>
   <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
     <slot></slot>
-    <li class="nav-item ml-auto" v-if="$permission.has('create customer')">
+    <li class="nav-item ml-auto" v-if="$permission.has('create supplier')">
       <router-link
-        to="/master/customer/create"
+        to="/master/supplier/create"
         exact
         class="nav-link"
         active-class="active">
         <span><i class="si si-plus"></i> Add</span>
       </router-link>
     </li>
-    <li class="nav-item" v-if="$permission.has('read customer')">
+    <li class="nav-item" v-if="$permission.has('read supplier')">
       <router-link
-        to="/master/customer"
+        to="/master/supplier"
         exact
         class="nav-link"
         active-class="active">
         <span><i class="si si-docs"></i> List</span>
-      </router-link>
-    </li>
-    <li class="nav-item" v-if="$permission.has('read customer')">
-      <router-link
-        to="/master/customer/priority"
-        exact
-        class="nav-link"
-        active-class="active">
-        <span><i class="si si-star"></i> Priority</span>
       </router-link>
     </li>
     <slot name="right"></slot>

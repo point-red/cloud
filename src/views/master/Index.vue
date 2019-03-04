@@ -19,8 +19,13 @@
     <div class="row gutters-tiny">
       <p-box
         name="Customer"
-        v-if="$permission.has('read user')"
+        v-if="$permission.has('read customer')"
         link="/master/customer"
+        icon="si si-user"/>
+      <p-box
+        name="Supplier"
+        v-if="$permission.has('read supplier')"
+        link="/master/supplier"
         icon="si si-user"/>
     </div>
   </div>

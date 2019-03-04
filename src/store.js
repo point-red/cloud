@@ -24,6 +24,7 @@ import User from './modules/master/user'
 import UserInvitation from './modules/master/user-invitation'
 import UserRole from './modules/master/user-role'
 import Customer from './modules/master/customer'
+import Supplier from './modules/master/supplier'
 import ChartOfAccount from './modules/accounting/chart-of-account'
 import ChartOfAccountType from './modules/accounting/chart-of-account-type'
 import CutOff from './modules/accounting/cut-off'
@@ -104,6 +105,7 @@ const store = new Vuex.Store({
     User,
     UserRole,
     Customer,
+    Supplier,
     UserInvitation,
     ChartOfAccount,
     ChartOfAccountType,
