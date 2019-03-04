@@ -27,6 +27,14 @@
         <td><p-form-check-box ref="update role" @click.native="togglePermission('update role')" :checked="$rolePermission.has('update role', permissions)" :description="'Update'"/></td>
         <td><p-form-check-box ref="delete role" @click.native="togglePermission('delete role')" :checked="$rolePermission.has('delete role', permissions)" :description="'Delete'"/></td>
       </tr>
+      <tr slot="p-body">
+        <td><p-form-check-box @click.native="togglePermissionRow(['create customer', 'read customer', 'update customer', 'delete customer'], permissions)" :checked="checkPermissionRow(['create customer', 'read customer', 'update customer', 'delete customer'], permissions)" :description="''"/></td>
+        <td><i class="si si-customers fa-fw"></i> Customer</td>
+        <td><p-form-check-box ref="create customer" @click.native="togglePermission('create customer')" :checked="$rolePermission.has('create customer', permissions)" :description="'Create'"/></td>
+        <td><p-form-check-box ref="read customer" @click.native="togglePermission('read customer')" :checked="$rolePermission.has('read customer', permissions)" :description="'Read'"/></td>
+        <td><p-form-check-box ref="update customer" @click.native="togglePermission('update customer')" :checked="$rolePermission.has('update customer', permissions)" :description="'Update'"/></td>
+        <td><p-form-check-box ref="delete customer" @click.native="togglePermission('delete customer')" :checked="$rolePermission.has('delete customer', permissions)" :description="'Delete'"/></td>
+      </tr>
     </p-table>
   </div>
 </template>
