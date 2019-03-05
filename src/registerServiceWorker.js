@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 
 import { register } from 'register-service-worker'
+import swal from 'sweetalert2'
+require('sweetalert2/dist/sweetalert2.css')
 
 if (process.env.NODE_ENV === 'production') {
   register(`${process.env.BASE_URL}service-worker.js`, {
@@ -21,7 +23,18 @@ if (process.env.NODE_ENV === 'production') {
     },
     updated () {
       console.log('New content is available; please refresh.')
-      window.location.reload()
+      fetch('./version.json')
+        .then(response => response.json())
+        .then(jsonResponse => {
+          swal.fire({
+            title: 'New update installed',
+            text: jsonResponse.update_description + '. The page will be reloaded',
+            type: 'success',
+            confirmButtonText: 'Ok'
+          }).then(() => {
+            window.location.reload()
+          })
+        })
     },
     offline () {
       console.log('No internet connection found. App is running in offline mode.')
