@@ -1,6 +1,6 @@
 {
-  "name": "point-cloud",
-  "short_name": "point-cloud",
+  "name": "point",
+  "short_name": "point",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
