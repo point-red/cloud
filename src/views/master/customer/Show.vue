@@ -55,7 +55,7 @@
           <hr/>
           <router-link
             :to="{ path: '/master/customer/' + customer.id + '/edit', params: { id: customer.id }}"
-            v-if="$permission.has('update user')"
+            v-if="$permission.has('update customer')"
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>

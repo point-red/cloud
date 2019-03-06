@@ -26,7 +26,7 @@
 
           <router-link
             :to="{ path: '/master/warehouse/' + warehouse.id + '/edit', params: { id: warehouse.id }}"
-            v-if="$permission.has('update user')"
+            v-if="$permission.has('update warehouse')"
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>

@@ -44,7 +44,7 @@
 
           <router-link
             :to="{ path: '/master/supplier/' + supplier.id + '/edit', params: { id: supplier.id }}"
-            v-if="$permission.has('update user')"
+            v-if="$permission.has('update supplier')"
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>

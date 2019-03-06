@@ -26,7 +26,7 @@
 
           <router-link
             :to="{ path: '/master/allocation/' + allocation.id + '/edit', params: { id: allocation.id }}"
-            v-if="$permission.has('update user')"
+            v-if="$permission.has('update allocation')"
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>
