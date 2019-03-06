@@ -58,7 +58,7 @@
               <template v-if="project.joined == true">
                 <a
                   class="btn btn-sm btn-secondary"
-                  href="javascript:void(0)"
+                  :href="'//' + project.code + '.' + domain"
                   @click="redirectToProject(project)">
                   <i class="fa fa-globe"/> Open
                 </a>
