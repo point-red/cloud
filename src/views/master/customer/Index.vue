@@ -75,7 +75,8 @@ export default {
     this.loading = true
     this.getCustomer({
       params: {
-        sort_by: 'name'
+        sort_by: 'name',
+        limit: 10000
       }
     }).then((response) => {
       this.loading = false
