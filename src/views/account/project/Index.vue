@@ -101,7 +101,6 @@ export default {
       updateProject: 'update'
     }),
     redirectToProject (project) {
-      window.location.href = '//' + project.code + '.' + process.env.VUE_APP_DOMAIN
       localStorage.setItem('tenantCode', project.code)
       localStorage.setItem('tenantName', project.name)
     },
