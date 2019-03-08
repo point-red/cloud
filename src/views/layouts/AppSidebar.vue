@@ -160,6 +160,18 @@
                     active-class="active">{{ $t('kpi template') | titlecase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read employee job location')">
+                  <router-link
+                    to="/human-resource/job-location"
+                    active-class="active">{{ $t('job location') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read employee status')">
+                  <router-link
+                    to="/human-resource/employee-status"
+                    active-class="active">{{ $t('employee status') | titlecase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li :class="{ 'open' : firstUri === 'plugin' }" v-if="$permission.has('menu plugin')">

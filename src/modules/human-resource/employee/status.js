@@ -5,7 +5,16 @@ const url = '/human-resource/employee/statuses'
 const state = {
   status: {},
   statuses: [],
-  statusList: []
+  statusList: [],
+  pagination: {
+    current_page: null,
+    from: null,
+    to: null,
+    path: null,
+    last_page: null,
+    per_page: null,
+    total: null
+  }
 }
 
 const getters = {
@@ -17,12 +26,26 @@ const getters = {
   },
   statusList: state => {
     return state.statusList
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.statuses = payload
+
+    if (payload.meta)
+    {
+      state.pagination.current_page = payload.meta.current_page
+      state.pagination.from = payload.meta.from
+      state.pagination.to = payload.meta.to
+      state.pagination.path = payload.meta.path
+      state.pagination.last_page = payload.meta.last_page
+      state.pagination.per_page = payload.meta.per_page
+      state.pagination.total = payload.meta.total
+    }
   },
   'FETCH_SELECT_LIST' (state, payload) {
     let array = []
@@ -81,7 +104,6 @@ const actions = {
       api.post(url, payload)
         .then(
           (response) => {
-            context.dispatch('get')
             resolve(response)
           },
           (error) => {
@@ -94,7 +116,6 @@ const actions = {
       api.patch(url + '/' + payload.id, payload)
         .then(
           (response) => {
-            context.dispatch('get')
             resolve(response)
           },
           (error) => {
@@ -107,7 +128,6 @@ const actions = {
       api.delete(url + '/' + payload.id, payload)
         .then(
           (response) => {
-            context.dispatch('get')
             resolve(response)
           },
           (error) => {

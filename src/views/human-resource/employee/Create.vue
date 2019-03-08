@@ -257,13 +257,13 @@
             </p-form-row>
 
             <p-form-row
-              id="employee-identity"
-              name="employee-identity"
-              :label="$t('employee id')"
+              id="employee-code"
+              name="employee-code"
+              :label="$t('employee code')"
               :disabled="loadingSaveButton"
-              v-model="form.employee_identity"
-              :errors="form.errors.get('employee_identity')"
-              @errors="form.errors.set('employee_identity', null)">
+              v-model="form.employee_code"
+              :errors="form.errors.get('employee_code')"
+              @errors="form.errors.set('employee_code', null)">
             </p-form-row>
 
             <p-form-row
@@ -402,48 +402,7 @@
               </div>
             </p-form-row>
 
-            <h2 class="content-heading">{{ $t('salary info') | uppercase }}</h2>
-            <p-form-row
-              id="base-salary"
-              :label="$t('base salary')">
-              <div slot="body" class="col-lg-9">
-                <button
-                  type="button"
-                  class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
-                  @click="$refs.baseSalaryModal.show()">
-                  <i class="fa fa-plus"/> {{ $t('base salary') | titlecase }}
-                </button>
-                <p-table>
-                  <tr slot="p-head"/>
-                  <tr
-                    v-for="(baseSalary, index) in form.base_salaries"
-                    slot="p-body"
-                    :key="baseSalary.index">
-                    <td>{{ baseSalary.year | dateFormat('YYYY') }}</td>
-                    <td>{{ baseSalary.salary | numberFormat }}</td>
-                    <td class="text-right">
-                      <i class="fa fa-close" @click="removeBaseSalary(index)"/>
-                    </td>
-                  </tr>
-                </p-table>
-              </div>
-            </p-form-row>
-
-            <p-form-row
-              id="multiplier-kpi"
-              name="multiplier-kpi"
-              :label="$t('multiplier kpi')">
-              <div slot="body" class="col-lg-9">
-                <p-form-number
-                  v-model="form.multiplier_kpi"
-                  :disabled="loadingSaveButton"
-                  :is-text-right="false"
-                  :errors="form.errors.get('multiplier_kpi')"
-                  @errors="form.errors.set('multiplier_kpi', null)"/>
-              </div>
-            </p-form-row>
-
+            <h2 class="content-heading">{{ $t('allowance info') | uppercase }}</h2>
             <p-form-row
               id="daily-transport-allowance"
               name="daily-transport-allowance"
@@ -459,16 +418,16 @@
             </p-form-row>
 
             <p-form-row
-              id="tl-allowance"
-              name="tl-allowance"
-              :label="$t('tl allowance')">
+              id="team-leader-allowance"
+              name="team-leader-allowance"
+              :label="$t('team leader allowance')">
               <div slot="body" class="col-lg-9">
                 <p-form-number
-                  v-model="form.tl_allowance"
+                  v-model="form.team_leader_allowance"
                   :disabled="loadingSaveButton"
                   :is-text-right="false"
-                  :errors="form.errors.get('tl_allowance')"
-                  @errors="form.errors.set('tl_allowance', null)"/>
+                  :errors="form.errors.get('team_leader_allowance')"
+                  @errors="form.errors.set('team_leader_allowance', null)"/>
               </div>
             </p-form-row>
 
@@ -538,12 +497,6 @@
       ref="salaryModal"
       title="Salary"
       @add="onSubmitSalary"/>
-
-    <base-salary-modal
-      id="baseSalary"
-      ref="baseSalaryModal"
-      title="Base Salary"
-      @add="onSubmitBaseSalary"/>
   </div>
 </template>
 
@@ -558,7 +511,6 @@ import AddressModal from './modal/AddressModal'
 import SocialMediaModal from './modal/SocialMediaModal'
 import ContractModal from './modal/ContractModal'
 import SalaryModal from './modal/SalaryModal'
-import BaseSalaryModal from './modal/BaseSalaryModal'
 import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -573,8 +525,7 @@ export default {
     AddressModal,
     SocialMediaModal,
     ContractModal,
-    SalaryModal,
-    BaseSalaryModal
+    SalaryModal
   },
   data () {
     return {
@@ -593,12 +544,11 @@ export default {
         employee_group_id: '',
         job_title: '',
         join_date: '',
-        employee_identity: '',
+        employee_code: '',
         status: '',
         job_location: '',
-        multiplier_kpi: '',
         daily_transport_allowance: '',
-        tl_allowance: '',
+        team_leader_allowance: '',
         communication_allowance: '',
         phones: [],
         emails: [],
@@ -606,8 +556,7 @@ export default {
         addresses: [],
         social_media: [],
         contracts: [],
-        salary_histories: [],
-        base_salaries: []
+        salary_histories: []
       })
     }
   },
@@ -727,13 +676,6 @@ export default {
     },
     removeEmailCompany (index) {
       this.form.company_emails.splice(index, 1)
-    },
-    onSubmitBaseSalary (data) {
-      this.form.base_salaries.push(data)
-      this.$refs.baseSalaryModal.close()
-    },
-    removeBaseSalary (index) {
-      this.form.base_salaries.splice(index, 1)
     },
     onSubmit () {
       this.loadingSaveButton = true

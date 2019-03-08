@@ -14,6 +14,16 @@
         v-if="$permission.has('read employee kpi')"
         link="/human-resource/kpi"
         icon="si si-badge"/>
+      <p-box
+        name="Job Locations"
+        v-if="$permission.has('read employee job location')"
+        link="/human-resource/job-location"
+        icon="si si-badge"/>
+      <p-box
+        name="Employee Status"
+        v-if="$permission.has('read employee status')"
+        link="/human-resource/employee-status"
+        icon="si si-badge"/>
     </div>
   </div>
 </template>

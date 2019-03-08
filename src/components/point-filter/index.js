@@ -27,7 +27,7 @@ export default {
       })
       var words = value.split(' ')
       var transform = ''
-      var ignoredString = ['Vat', 'Id', 'Npwp', 'Kpi', 'Sdm', 'Tl']
+      var ignoredString = ['Vat', 'Id', 'Npwp', 'Kpi', 'Sdm']
       for (var i = 0; i < words.length; i++) {
         if (ignoredString.indexOf(words[i]) > -1) {
           transform += words[i].toUpperCase() + ' '

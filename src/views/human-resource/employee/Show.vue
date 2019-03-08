@@ -27,6 +27,18 @@
           <span><i class="si si-note"></i> {{ $t('employee assessment') | titlecase }}</span>
         </router-link>
       </li>
+
+
+      <li class="nav-item" slot="right">
+        <router-link
+          :to="'#'"
+          exact
+          class="nav-link"
+          active-class="">
+          <span><i class="si si-bar-chart"></i> Salary</span>
+        </router-link>
+      </li>
+
     </tab-menu>
 
     <div class="row">
@@ -132,8 +144,8 @@
                     <td><span v-if="employee.group">{{ employee.group.name }}</span></td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('employee id') | titlecase }}</span></td>
-                    <td>{{ employee.employee_identity }}</td>
+                    <td><span class="font-w700">{{ $t('employee code') | titlecase }}</span></td>
+                    <td>{{ employee.employee_code }}</td>
                   </tr>
                   <tr>
                     <td><span class="font-w700">{{ $t('join date') | titlecase }}</span></td>
@@ -146,6 +158,14 @@
                   <tr>
                     <td><span class="font-w700">{{ $t('job location') | titlecase }}</span></td>
                     <td><span v-if="employee.job_location">{{ employee.job_location.name }}</span></td>
+                  </tr>
+                  <tr v-if="$permission.has('read employee job location')">
+                    <td><span class="font-w700">{{ $t('base salary') | titlecase }}</span></td>
+                    <td><span>{{ employee.job_location.base_salary | numberFormat }}</span></td>
+                  </tr>
+                  <tr v-if="$permission.has('read employee job location')">
+                    <td><span class="font-w700">{{ $t('multiplier kpi') | titlecase }}</span></td>
+                    <td><span>{{ employee.job_location.multiplier_kpi | numberFormat }}</span></td>
                   </tr>
                   <tr>
                     <td><span class="font-w700">{{ $t('status') | titlecase }}</span></td>
@@ -191,30 +211,12 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('base salary') | titlecase }}</span></td>
-                    <td>
-                      <ul>
-                        <li
-                          v-for="(employeeBaseSalary, index) in employee.base_salaries"
-                          :key="index">
-                          <b>{{ $t('year') | titlecase }}</b> {{ employeeBaseSalary.year }}
-                          <br>
-                          <b>{{ $t('salary') | titlecase }}</b> {{ employeeBaseSalary.salary | numberFormat }}
-                        </li>
-                      </ul>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><span class="font-w700">{{ $t('multiplier kpi') | titlecase }}</span></td>
-                    <td>{{ employee.multiplier_kpi | numberFormatNoLimit }}</td>
-                  </tr>
-                  <tr>
                     <td><span class="font-w700">{{ $t('daily transport allowance') | titlecase }}</span></td>
                     <td>{{ employee.daily_transport_allowance | numberFormat }}</td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('tl allowance') | titlecase }}</span></td>
-                    <td>{{ employee.tl_allowance | numberFormat }}</td>
+                    <td><span class="font-w700">{{ $t('team leader allowance') | titlecase }}</span></td>
+                    <td>{{ employee.team_leader_allowance | numberFormat }}</td>
                   </tr>
                   <tr>
                     <td><span class="font-w700">{{ $t('communication allowance') | titlecase }}</span></td>
