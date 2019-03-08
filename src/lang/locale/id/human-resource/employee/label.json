@@ -48,5 +48,6 @@
   "key performance indicator" : "key performance indicator",
   "description" : "deskripsi",
   "date" : "tanggal",
-  "value" : "nilai"
+  "value" : "nilai",
+  "user account" : "akun pengguna"
 }

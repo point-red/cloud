@@ -449,6 +449,32 @@
               </div>
             </p-form-row>
 
+            <p-form-row
+              id="user-employee"
+              :label="$t('user account')">
+              <div slot="body" class="col-lg-9">
+                <button v-if="form.user_employee.length == 0"
+                  type="button"
+                  class="btn btn-alt-primary mb-15"
+                  :disabled="loadingSaveButton"
+                  @click="$refs.userEmployeeModal.show()">
+                  <i class="fa fa-plus"/> {{ $t('user account') | titlecase }}
+                </button>
+                <p-table v-else>
+                  <tr slot="p-head"/>
+                  <tr
+                    v-for="(user_employee, index) in form.user_employee"
+                    slot="p-body"
+                    :key="index">
+                    <td>{{ user_employee.name }}</td>
+                    <td class="text-right">
+                      <i class="fa fa-close" @click="removeUserEmployee(index)"/>
+                    </td>
+                  </tr>
+                </p-table>
+              </div>
+            </p-form-row>
+
             <h2 class="content-heading">{{ $t('allowance info') | uppercase }}</h2>
             <p-form-row
               id="daily-transport-allowance"
@@ -560,6 +586,12 @@
       ref="scorerModal"
       title="Scorer"
       @add="onSubmitScorer"/>
+
+    <user-employee-modal
+      id="userEmployee"
+      ref="userEmployeeModal"
+      title="User Account"
+      @add="onSubmitUserEmployee"/>
   </div>
 </template>
 
@@ -575,6 +607,7 @@ import SocialMediaModal from './modal/SocialMediaModal'
 import ContractModal from './modal/ContractModal'
 import SalaryModal from './modal/SalaryModal'
 import ScorerModal from './modal/ScorerModal'
+import UserEmployeeModal from './modal/UserEmployeeModal'
 import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -590,7 +623,8 @@ export default {
     SocialMediaModal,
     ContractModal,
     SalaryModal,
-    ScorerModal
+    ScorerModal,
+    UserEmployeeModal
   },
   data () {
     return {
@@ -628,7 +662,8 @@ export default {
         social_media: [],
         contracts: [],
         salary_histories: [],
-        scorers: []
+        scorers: [],
+        user_employee: []
       })
     }
   },
@@ -732,6 +767,13 @@ export default {
     },
     removeScorer (index) {
       this.form.scorers.splice(index, 1)
+    },
+    onSubmitUserEmployee (data) {
+      this.form.user_employee.push(data)
+      this.$refs.userEmployeeModal.close()
+    },
+    removeUserEmployee (index) {
+      this.form.user_employee.splice(index, 1)
     },
     onSubmitAddress (data) {
       this.form.addresses.push(data)

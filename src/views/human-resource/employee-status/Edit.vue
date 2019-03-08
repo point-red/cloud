@@ -105,7 +105,7 @@ export default {
           (response) => {
             this.loadingSaveButton = false
             this.$notification.success('Update success')
-            this.$router.replace('/human-resource/employee-status/' + this.employee.id)
+            this.$router.replace('/human-resource/employee-status/' + this.status.id)
           },
           (error) => {
             this.loadingSaveButton = false

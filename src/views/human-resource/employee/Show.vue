@@ -159,11 +159,11 @@
                     <td><span class="font-w700">{{ $t('job location') | titlecase }}</span></td>
                     <td><span v-if="employee.job_location">{{ employee.job_location.name }}</span></td>
                   </tr>
-                  <tr v-if="$permission.has('read employee job location')">
+                  <tr v-if="$permission.has('read employee job location') && employee.job_location">
                     <td><span class="font-w700">{{ $t('base salary') | titlecase }}</span></td>
                     <td><span>{{ employee.job_location.base_salary | numberFormat }}</span></td>
                   </tr>
-                  <tr v-if="$permission.has('read employee job location')">
+                  <tr v-if="$permission.has('read employee job location') && employee.job_location">
                     <td><span class="font-w700">{{ $t('multiplier kpi') | titlecase }}</span></td>
                     <td><span>{{ employee.job_location.multiplier_kpi | numberFormat }}</span></td>
                   </tr>
@@ -231,6 +231,12 @@
                         </li>
                       </ul>
                     </td>
+                  </tr>
+                  <tr>
+                    <td><span class="font-w700">{{ $t('user account') | titlecase }}</span></td>
+                    <td><span v-for="(userEmployee, index) in employee.user_employee" :key="index">
+                      {{ userEmployee.first_name | titlecase }} {{ userEmployee.last_name | titlecase }}
+                    </span></td>
                   </tr>
                 </template>
               </p-table>

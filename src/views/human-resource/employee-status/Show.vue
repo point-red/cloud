@@ -61,7 +61,6 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      isScorer: false,
       loading: false,
       loadingSaveButton: false
     }
