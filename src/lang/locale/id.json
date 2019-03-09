@@ -131,5 +131,6 @@
 	"description": "deskripsi",
 	"value": "nilai",
 	"employment status" : "status pekerjaan",
-	"user account" : "akun pengguna"
+	"user account" : "akun pengguna",
+	"automated indicator" : "indikator otomatis"
 }
