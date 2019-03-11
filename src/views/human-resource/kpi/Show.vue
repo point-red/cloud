@@ -64,7 +64,7 @@
               <td>{{ index+1 }}</td>
               <td>{{ indicator.name }}</td>
               <td class="text-center">{{ indicator.weight | numberFormat }}%</td>
-              <td class="text-center">{{ indicator.target }}</td>
+              <td class="text-center"><template v-if="!indicator.automated_id">{{ indicator.target }}</template></td>
               <td class="text-center">
                 <button
                   class="btn btn-secondary btn-sm mr-5"

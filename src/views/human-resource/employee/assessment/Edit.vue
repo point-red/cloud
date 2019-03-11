@@ -92,20 +92,37 @@
                 <td>{{ index+1 }}</td>
                 <td>{{ indicator.name }}</td>
                 <td class="text-center">{{ indicator.weight }}%</td>
-                <td class="text-center">{{ indicator.target }}</td>
+                <td class="text-center">{{ indicator.target | numberFormat }}</td>
+
                 <td class="text-center">
                   <a
                     href="javascript:void(0)"
-                    v-show="!indicator.selected"
+                    v-show="!indicator.selected && !indicator.automated_id"
                     class="btn btn-sm btn-primary"
                     @click="$refs.score.show(indicator)">
                       <i class="si si-note"></i>
                   </a>
                   <span v-if="indicator.selected">
-                    {{ indicator.selected.score }}
+                    {{ indicator.selected.score | numberFormat }}
+                  </span>
+                  <span v-else-if="indicator.automated_id && indicator.score">
+                    {{ indicator.score | numberFormat }}
+                  </span>
+                  <span v-else-if="indicator.automated_id && !indicator.score">
+                    {{ 0 }}
                   </span>
                 </td>
-                <td class="text-center"><span v-if="indicator.selected">{{ indicator.selected.score_percentage }}</span></td>
+                <td class="text-center">
+                  <span v-if="indicator.selected">
+                    {{ indicator.selected.score_percentage | numberFormat }}
+                  </span>
+                  <span v-else-if="indicator.automated_id && indicator.score_percentage">
+                    {{ indicator.score_percentage | numberFormat }}
+                  </span>
+                  <span v-else-if="indicator.automated_id && !indicator.score">
+                    {{ 0 }}
+                  </span>
+                </td>
                 <td class="text-center">
                   <span v-if="indicator.selected && indicator.selected.notes !== ''">
                     {{ indicator.selected.notes }}
@@ -117,7 +134,7 @@
                 <td class="text-center">
                   <span>
                     <button
-                      v-show="indicator.selected"
+                      v-show="indicator.selected && !indicator.automated_id"
                       @click="removeScore(indicator.kpi_template_group_id, indicator.id)"
                       type="button"
                       class="btn btn-sm btn-danger">
@@ -191,7 +208,9 @@ export default {
       kpiId: this.$route.params.kpiId,
       form: new Form({
         date: '',
-        template: {}
+        template: {
+          groups:[],
+        }
       }),
       title: 'Kpi',
       loading: false,
@@ -204,11 +223,18 @@ export default {
       type: String
     }
   },
+  watch: {
+    'form.date' () {
+      this.loading = true
+      this.getAutomatedScore()
+    }
+  },
   computed: {
     ...mapGetters('Employee', ['employee']),
     ...mapGetters('EmployeeAssessment', ['assessment']),
     ...mapGetters('KpiResult', ['result']),
-    ...mapGetters('KpiTemplate', ['template'])
+    ...mapGetters('KpiTemplate', ['template']),
+    ...mapGetters('KpiAutomated', ['automated_ids'])
   },
   created () {
     this.loading = true
@@ -218,7 +244,6 @@ export default {
       kpiId: this.kpiId
     }).then(
       (response) => {
-        this.loading = false
         this.form.date = this.assessment.date
         this.form.template = this.assessment
 
@@ -239,6 +264,9 @@ export default {
     ...mapActions('KpiResult', {
       findKpiResult: 'findByScorePercentage'
     }),
+    ...mapActions('KpiAutomated', {
+      getAutomatedData: 'get'
+    }),
     cancel () {
       this.$router.go(-1)
     },
@@ -248,12 +276,15 @@ export default {
 
         for (var indicatorIndex in group.indicators) {
           var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex]
-          var score = indicator.scores.find(o => o.description === indicator.score_description && o.score === indicator.score && o.kpi_indicator_id === indicator.id)
-          var scorePercentage = score.score / indicator.target * indicator.weight
 
-          this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected', score)
-          this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'score_percentage', scorePercentage)
-          this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'notes', '')
+          if (!indicator['automated_id']) {
+            var score = indicator.scores.find(o => o.description === indicator.score_description && o.score === indicator.score && o.kpi_indicator_id === indicator.id)
+            var scorePercentage = score.score / indicator.target * indicator.weight
+
+            this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected', score)
+            this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'score_percentage', scorePercentage)
+            this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'notes', '')
+          }
         }
       }
     },
@@ -313,6 +344,81 @@ export default {
             this.form.errors.record(error.errors)
           }
         )
+    },
+    getAutomatedScore() {
+      var automatedIDs = [];
+
+      this.form.template.groups.forEach(function (group, key) {
+        group.indicators.forEach(function (indicator, key) {
+          if (indicator.automated_id) {
+            automatedIDs.push(indicator.automated_id)
+          }
+        })
+      });
+
+      automatedIDs = [...new Set(automatedIDs)]
+
+      if (automatedIDs.length > 0) {
+        this.getAutomatedData({ date: this.form.date, automated_ids: automatedIDs })
+          .then((response) => {
+            this.loading = false
+
+            var templateTarget = 0
+            var templateScore = 0
+            var templateScorePercentage = 0
+
+            this.form.template.groups.forEach((group, groupIndex) => {
+              var groupTarget = 0
+              var groupScore = 0
+              var groupScorePercentage = 0
+
+              group.indicators.forEach((indicator, indicatorIndex) => {
+                  var target = this.form.template.groups[groupIndex].indicators[indicatorIndex]['target'] || 0
+                  var score = this.form.template.groups[groupIndex].indicators[indicatorIndex]['score'] || 0
+                  var scorePercentage = score / target * indicator.weight || 0
+
+                if (response[indicator.automated_id]) {
+                  target = response[indicator.automated_id]['target'] || 0 
+                  score = response[indicator.automated_id]['score']|| 0 
+                  scorePercentage = score / target * indicator.weight || 0
+                  
+                  this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'automated_id', indicator.automated_id)
+                }
+                else if (indicator.selected) {
+                  score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected['score'] || 0
+                  scorePercentage = score / target * indicator.weight || 0
+                }
+
+                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'target', target)
+                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'score', score)
+                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'score_percentage', scorePercentage)
+                
+                groupTarget += target
+                groupScore += score
+                groupScorePercentage += scorePercentage
+
+                templateTarget += target
+                templateScore += score
+                templateScorePercentage += scorePercentage
+              })
+
+              this.$set(this.form.template.groups[groupIndex], 'target', groupTarget)
+              this.$set(this.form.template.groups[groupIndex], 'score', groupScore)
+              this.$set(this.form.template.groups[groupIndex], 'score_percentage', groupScorePercentage)
+            });
+
+            this.$set(this.form.template, 'target', templateTarget)
+            this.$set(this.form.template, 'score', templateScore)
+            this.$set(this.form.template, 'score_percentage', templateScorePercentage)
+
+          }, (error) => {
+            this.loading = false
+            console.log(JSON.stringify(error))
+          })
+      }
+      else {
+        this.loading = false
+      }
     }
   }
 }

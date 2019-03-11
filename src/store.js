@@ -10,6 +10,7 @@ import KpiTemplateGroup from './modules/human-resource/kpi/template-group'
 import KpiTemplateIndicator from './modules/human-resource/kpi/template-indicator'
 import KpiTemplateScore from './modules/human-resource/kpi/template-score'
 import KpiResult from './modules/human-resource/kpi/result'
+import KpiAutomated from './modules/human-resource/kpi/automated'
 import Employee from './modules/human-resource/employee/employee'
 import EmployeeGroup from './modules/human-resource/employee/group'
 import EmployeeReligion from './modules/human-resource/employee/religion'
@@ -93,6 +94,7 @@ const store = new Vuex.Store({
     KpiTemplateIndicator,
     KpiTemplateScore,
     KpiResult,
+    KpiAutomated,
     Employee,
     EmployeeGroup,
     EmployeeReligion,
