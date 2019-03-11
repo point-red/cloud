@@ -19,8 +19,8 @@
               <th>Phone</th>
             </tr>
             <tr
-              v-for="customer in customers"
-              :key="customer.id"
+              v-for="(customer, index) in customers"
+              :key="index"
               slot="p-body">
               <td>
                 <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">
@@ -76,7 +76,9 @@ export default {
     this.getCustomer({
       params: {
         sort_by: 'name',
-        priority: true
+        priority: true,
+        limit: 100,
+        includes: 'addresses;phones;groups'
       }
     }).then((response) => {
       this.loading = false

@@ -7,8 +7,9 @@ export default {
     Vue.moment = moment
 
     Vue.filter('dateFormat', function (value, format = 'YYYY-MM-DD') {
-      var offset = new Date().getTimezoneOffset()
-      return moment(value).add(offset, 'minute').format(format)
+      // var offset = new Date().getTimezoneOffset()
+      // return moment(value).add(offset, 'minute').format(format)
+      return moment(value).add(0, 'minute').format(format)
     })
   }
 }
