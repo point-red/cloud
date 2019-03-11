@@ -11,14 +11,14 @@
 
     <div class="row">
       <p-block :title="title" :header="true">
-        <p-block-inner :is-loading="loading">
-          <p-form-input
-            id="search-text"
-            name="search-text"
-            placeholder="Search"
-            :value="searchText"
-            @input="filterSearch"/>
-          <hr>
+        <p-form-input
+          id="search-text"
+          name="search-text"
+          placeholder="Search"
+          :value="searchText"
+          @input="filterSearch"/>
+        <hr>
+        <p-block-inner :is-loading="loading">          
           <point-table class="table table-hover">
             <tr slot="p-head">
               <th>Name</th>
@@ -46,32 +46,32 @@
               </td>
             </tr>
           </point-table>
-          <nav v-if="customerPagination.last_page > 1">
-            <ul class="pagination">
-              <li class="page-item" :class="{'disabled': customerPagination.current_page == 1}">
-                <a class="page-link" href="javascript:void(0)">
-                  <span aria-hidden="true">
-                    <i class="fa fa-angle-double-left"></i>
-                  </span>
-                  <span class="sr-only">Previous</span>
-                </a>
-              </li>
-              <template v-for="(n, index) in customerPagination.last_page">
-                <li :key="index" class="page-item" :class="{'active': customerPagination.current_page == n}" v-if="showPageNumber(n)">
-                    <a class="page-link" href="javascript:void(0)" @click="paginatePage(n)">{{ n }}</a>
-                </li>
-              </template>
-              <li class="page-item" :class="{'disabled': customerPagination.current_page == customerPagination.last_page}">
-                <a class="page-link" href="javascript:void(0)">
-                  <span aria-hidden="true">
-                    <i class="fa fa-angle-double-right"></i>
-                  </span>
-                  <span class="sr-only">Next</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
         </p-block-inner>
+        <nav v-if="customerPagination.last_page > 1">
+          <ul class="pagination">
+            <li class="page-item" :class="{'disabled': customerPagination.current_page == 1}">
+              <a class="page-link" href="javascript:void(0)">
+                <span aria-hidden="true">
+                  <i class="fa fa-angle-double-left"></i>
+                </span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <template v-for="(n, index) in customerPagination.last_page">
+              <li :key="index" class="page-item" :class="{'active': customerPagination.current_page == n}" v-if="showPageNumber(n)">
+                  <a class="page-link" href="javascript:void(0)" @click="paginatePage(n)">{{ n }}</a>
+              </li>
+            </template>
+            <li class="page-item" :class="{'disabled': customerPagination.current_page == customerPagination.last_page}">
+              <a class="page-link" href="javascript:void(0)">
+                <span aria-hidden="true">
+                  <i class="fa fa-angle-double-right"></i>
+                </span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </p-block>
     </div>
   </div>
@@ -107,6 +107,7 @@ export default {
       getCustomer: 'get'
     }),
     paginatePage (n) {
+      this.loading = true
       this.getCustomer({
         params: {
           sort_by: 'name',
@@ -119,10 +120,15 @@ export default {
           includes: 'addresses;phones;groups',
           page: n
         }
+      }).then(response => {
+        this.loading = false
+      }).catch(error => {
+        this.loading = false
       })
     },
     filterSearch: debounce(function (value) {
       this.searchText = value
+      this.loading = true
       this.getCustomer({
         params: {
           sort_by: 'name',
@@ -134,6 +140,10 @@ export default {
           includes: 'addresses;phones;groups',
           limit: 10
         }
+      }).then(response => {
+        this.loading = false
+      }).catch(error => {
+        this.loading = false
       })
     }, 200),
     showPageNumber(n) {
