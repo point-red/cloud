@@ -7,8 +7,6 @@
 
     <tab-menu/>
 
-    <br>
-
     <div class="row">
       <p-block :title="title" :header="true">
         <p-form-input
@@ -47,31 +45,11 @@
             </tr>
           </point-table>        
         </p-block-inner>
-        <div class="block">
-          <ul class="pagination">
-            <li class="page-item">
-              <a class="page-link" href="javascript:void(0)" @click="paginatePrev" :disabled="customerPagination.current_page == 1">
-                <span aria-hidden="true">
-                  <i class="fa fa-angle-left"></i>
-                </span>
-                <span class="sr-only">Previous</span>
-              </a>
-            </li>
-            <template v-for="(n, index) in customerPagination.last_page">
-            <li :key="index" v-if="showPageNumber(n)">
-                <a class="page-link" :class="{'is-current': customerPagination.current_page == n}" href="javascript:void(0)" @click="paginatePage(n)">{{ n }}</a>
-            </li>
-            </template>
-            <li class="page-item">
-              <a class="page-link" href="javascript:void(0)" @click="paginateNext" :disabled="customerPagination.current_page == customerPagination.last_page">
-                <span aria-hidden="true">
-                  <i class="fa fa-angle-right"></i>
-                </span>
-                <span class="sr-only">Next</span>
-              </a>
-            </li>
-          </ul>
-        </div>
+        <p-pagination
+          :current-page="currentPage"
+          :last-page="customerPagination.last_page"
+          @updatePage="updatePage">
+        </p-pagination>
       </p-block>
     </div>
   </div>
@@ -96,19 +74,22 @@ export default {
     return {
       title: 'Customer',
       loading: true,
-      searchText: ''
+      searchText: this.$route.query.search,
+      currentPage: this.$route.query.page * 1 || 1
     }
   },
   computed: {
     ...mapGetters('Customer', ['customers', 'customerPagination'])
   },
   methods: {
-    ...mapActions('Customer', {
-      getCustomer: 'get'
-    }),
-    paginatePage (n) {
+    ...mapActions('Customer', ['get']),
+    updatePage (value) {
+      this.currentPage = value
+      this.getCustomerRequest()
+    },
+    getCustomerRequest () {
       this.loading = true
-      this.getCustomer({
+      this.get({
         params: {
           sort_by: 'name',
           filter_like: {
@@ -118,71 +99,26 @@ export default {
           },
           limit: 10,
           includes: 'addresses;phones;groups',
-          page: n
+          page: this.currentPage
         }
       }).then(response => {
         this.loading = false
       }).catch(error => {
         this.loading = false
       })
-    },
-    paginatePrev () {
-      //
-    },
-    paginateNext () {
-      //
     },
     filterSearch: debounce(function (value) {
+      this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.loading = true
-      this.getCustomer({
-        params: {
-          sort_by: 'name',
-          filter_like: {
-            name: this.searchText,
-            'addresses.address': this.searchText,
-            'phones.number': this.searchText
-          },
-          includes: 'addresses;phones;groups',
-          limit: 10
-        }
-      }).then(response => {
-        this.loading = false
-      }).catch(error => {
-        this.loading = false
-      })
-    }, 300),
-    showPageNumber(n) {
-      // first three number
-      if (n <= 5 && this.customerPagination.current_page <= 3) {
-        return true
-      }
-      // between first three number and last three number
-      if (this.customerPagination.current_page >= 3 && n > this.customerPagination.current_page - 3 && n < this.customerPagination.current_page + 3) {
-        return true
-      }
-      // last three number
-      if (n > this.customerPagination.last_page - 5 && this.customerPagination.current_page > this.customerPagination.last_page - 3) {
-        return true
-      }
-
-      return false
-    }
+      this.currentPage = 1
+      this.getCustomerRequest()
+    }, 300)
   },
   created () {
-    this.loading = true
-    this.getCustomer({
-      params: {
-        sort_by: 'name',
-        limit: 10,
-        includes: 'addresses;phones;groups'
-      }
-    }).then((response) => {
-      this.loading = false
-    }, (error) => {
-      this.loading = false
-      this.$notifications.error(error.message)
-    })
+    this.getCustomerRequest()
+  },
+  updated () {
+    this.lastPage = this.customerPagination.last_page
   }
 }
 </script>

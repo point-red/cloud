@@ -6,6 +6,7 @@ import PBlock from './templates/PBlock.vue'
 import PBlockInner from './templates/PBlockInner.vue'
 import PBox from './templates/PBox.vue'
 import PTable from './templates/PTable.vue'
+import PPagination from './templates/PPagination.vue'
 import PSelect from './templates/PSelect.vue'
 import PSuggest from './templates/PSuggest.vue'
 import PDatePicker from './templates/PDatePicker.vue'
@@ -25,6 +26,7 @@ export default {
   PBlockInner,
   PBox,
   PTable,
+  PPagination,
   PSelect,
   PSuggest,
   PDatePicker,
