@@ -1,5 +1,5 @@
 <template>
-  <div class="block">
+  <div class="block" v-if="currentPage > lastPage">
     <ul class="pagination">
       <li class="page-item">
         <a class="page-link" href="javascript:void(0)" @click="paginatePrev" :disabled="mutableCurrentPage == 1">

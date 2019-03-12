@@ -7,12 +7,17 @@
 
     <tab-menu/>
 
-    <br>
-
     <div class="row">
       <p-block :title="title" :header="true">
+        <p-form-input
+          id="search-text"
+          name="search-text"
+          placeholder="Search"
+          :value="searchText"
+          @input="filterSearch"/>
+        <hr>
         <p-block-inner :is-loading="loading">
-          <p-table>
+          <point-table>
             <tr slot="p-head">
               <th>Name</th>
               <th>Address</th>
@@ -22,11 +27,11 @@
               v-for="supplier in suppliers"
               :key="supplier.id"
               slot="p-body">
-              <td>
+              <th>
                 <router-link :to="{ name: 'supplier.show', params: { id: supplier.id }}">
                   {{ supplier.name | titlecase }}
                 </router-link>
-              </td>
+              </th>
               <td>
                 <template v-for="supplierAddress in supplier.addresses">
                   {{ supplierAddress.address | lowercase }}
@@ -38,8 +43,13 @@
                 </template>
               </td>
             </tr>
-          </p-table>
+          </point-table>
         </p-block-inner>
+        <p-pagination
+          :current-page="currentPage"
+          :last-page="lastPage"
+          @updatePage="updatePage">
+        </p-pagination>
       </p-block>
     </div>
   </div>
@@ -49,40 +59,67 @@
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
+import PointTable from 'point-table-vue'
+import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster
+    BreadcrumbMaster,
+    PointTable
   },
   data () {
     return {
       title: 'Supplier',
-      loading: true
+      loading: true,
+      searchText: this.$route.query.search,
+      currentPage: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {
-    ...mapGetters('Supplier', ['suppliers'])
+    ...mapGetters('Supplier', ['suppliers', 'supplierPagination'])
   },
   methods: {
-    ...mapActions('Supplier', {
-      getSupplier: 'get'
-    })
+    ...mapActions('Supplier', ['get']),
+    filterSearch: debounce(function (value) {
+      this.$router.push({ query: { search: value } })
+      this.searchText = value
+      this.currentPage = 1
+      this.getSupplierRequest()
+    }, 300),
+    getSupplierRequest () {
+      this.loading = true
+      this.get({
+        params: {
+          sort_by: 'name',
+          filter_like: {
+            name: this.searchText,
+            'addresses.address': this.searchText,
+            'phones.number': this.searchText
+          },
+          limit: 10,
+          includes: 'addresses;phones;groups',
+          page: this.currentPage
+        }
+      }).then(response => {
+        this.loading = false
+      }).catch(error => {
+        this.loading = false
+      })
+    },
+    updatePage (value) {
+      this.currentPage = value
+      this.getSupplierRequest()
+    }
   },
   created () {
-    this.loading = true
-    this.getSupplier({
-      params: {
-        sort_by: 'name'
-      }
-    }).then((response) => {
-      this.loading = false
-    }, (error) => {
-      this.loading = false
-      this.$notifications.error(error.message)
-    })
+    this.getSupplierRequest()
+  },
+  updated () {
+    this.lastPage = this.supplierPagination.last_page
   }
 }
 </script>

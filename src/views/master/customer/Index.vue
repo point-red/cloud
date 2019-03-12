@@ -17,7 +17,7 @@
           @input="filterSearch"/>
         <hr>
         <p-block-inner :is-loading="loading">          
-          <point-table class="table">
+          <point-table>
             <tr slot="p-head">
               <th>Name</th>
               <th>Address</th>
@@ -43,11 +43,11 @@
                 </template>
               </td>
             </tr>
-          </point-table>        
+          </point-table>
         </p-block-inner>
         <p-pagination
           :current-page="currentPage"
-          :last-page="customerPagination.last_page"
+          :last-page="lastPage"
           @updatePage="updatePage">
         </p-pagination>
       </p-block>
@@ -75,7 +75,8 @@ export default {
       title: 'Customer',
       loading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1
+      currentPage: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {

@@ -9,7 +9,8 @@ const state = {
     address: '',
     phone: ''
   },
-  suppliers: []
+  suppliers: [],
+  supplierPagination: {}
 }
 
 const getters = {
@@ -18,12 +19,18 @@ const getters = {
   },
   suppliers: state => {
     return state.suppliers
+  },
+  supplierPagination: state => {
+    return state.supplierPagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.suppliers = payload
+  },
+  'PAGINATION' (state, payload) {
+    state.supplierPagination = payload
   },
   'FETCH_OBJECT' (state, payload) {
     state.supplier = payload
@@ -46,6 +53,7 @@ const actions = {
         .then(
           (response) => {
             commit('FETCH_ARRAY', response.data)
+            commit('PAGINATION', response.meta)
             resolve(response)
           },
           (error) => {
