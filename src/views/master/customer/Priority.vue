@@ -7,8 +7,6 @@
 
     <tab-menu/>
 
-    <br>
-
     <div class="row">
       <p-block :title="title" :header="true">
         <p-block-inner :is-loading="loading">

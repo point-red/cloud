@@ -30,8 +30,10 @@ import VueSelectMenu from 'v-selectmenu'
 require('vue-tour/dist/vue-tour.css')
 require('flag-icon-css/css/flag-icon.min.css')
 
-const bugsnagClient = bugsnag(process.env.VUE_APP_BUGSNAG_API_KEY)
-bugsnagClient.use(bugsnagVue(Vue))
+if (process.env.VUA_APP_NODE_ENV == 'production') {
+  const bugsnagClient = bugsnag(process.env.VUE_APP_BUGSNAG_API_KEY)
+  bugsnagClient.use(bugsnagVue(Vue))
+}
 
 Vue.use(VueSelectMenu, { language: 'en' })
 Vue.use(VueClipboard)

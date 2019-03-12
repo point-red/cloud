@@ -8,8 +8,6 @@
 
     <tab-menu/>
 
-    <br>
-
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="'Create Customer'" :header="true">
         <p-form-row
