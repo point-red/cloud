@@ -61,8 +61,8 @@
           </router-link>
         </p-block-inner>
       </p-block>
-      <p-block>
-        <p-block-inner :is-loading="isLoading">
+      <p-block v-if="forms.length > 0 && isLoadingSalesVisitation == false">
+        <p-block-inner :is-loading="isLoadingSalesVisitation">
           <div class="table-responsive">
             <p-table>
               <tr slot="p-head">
@@ -166,6 +166,7 @@ export default {
       id: this.$route.params.id,
       title: 'Customer',
       isLoading: false,
+      isLoadingSalesVisitation: false,
       data: {
         name: null,
         email: null,
@@ -204,20 +205,22 @@ export default {
             this.data.priority = true
           }
         }
-        this.get({
-          params: {
-            customer_id: this.customer.id,
-            date_from: new Date('2000-01-01'),
-            date_to: this.$moment().format('YYYY-MM-DD 23:59:59')
-          }
-        }).then(response => {
-          this.isLoading = false          
-        }).catch(error => {
-          this.isLoading = false
-          this.$notification.error(error.message)
-        })
       }, (error) => {
         this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    this.isLoadingSalesVisitation = true
+      this.get({
+        params: {
+          customer_id: this.id,
+          date_from: new Date('2000-01-01'),
+          date_to: this.$moment().format('YYYY-MM-DD 23:59:59'),
+          sort_by: '-forms.date'
+        }
+      }).then(response => {
+        this.isLoadingSalesVisitation = false          
+      }).catch(error => {
+        this.isLoadingSalesVisitation = false
         this.$notification.error(error.message)
       })
   }

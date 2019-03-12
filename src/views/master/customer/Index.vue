@@ -19,7 +19,7 @@
           @input="filterSearch"/>
         <hr>
         <p-block-inner :is-loading="loading">          
-          <point-table class="table table-hover">
+          <point-table class="table">
             <tr slot="p-head">
               <th>Name</th>
               <th>Address</th>
@@ -45,33 +45,33 @@
                 </template>
               </td>
             </tr>
-          </point-table>
+          </point-table>        
         </p-block-inner>
-        <nav v-if="customerPagination.last_page > 1">
+        <div class="block">
           <ul class="pagination">
-            <li class="page-item" :class="{'disabled': customerPagination.current_page == 1}">
-              <a class="page-link" href="javascript:void(0)">
+            <li class="page-item">
+              <a class="page-link" href="javascript:void(0)" @click="paginatePrev" :disabled="customerPagination.current_page == 1">
                 <span aria-hidden="true">
-                  <i class="fa fa-angle-double-left"></i>
+                  <i class="fa fa-angle-left"></i>
                 </span>
                 <span class="sr-only">Previous</span>
               </a>
             </li>
             <template v-for="(n, index) in customerPagination.last_page">
-              <li :key="index" class="page-item" :class="{'active': customerPagination.current_page == n}" v-if="showPageNumber(n)">
-                  <a class="page-link" href="javascript:void(0)" @click="paginatePage(n)">{{ n }}</a>
-              </li>
+            <li :key="index" v-if="showPageNumber(n)">
+                <a class="page-link" :class="{'is-current': customerPagination.current_page == n}" href="javascript:void(0)" @click="paginatePage(n)">{{ n }}</a>
+            </li>
             </template>
-            <li class="page-item" :class="{'disabled': customerPagination.current_page == customerPagination.last_page}">
-              <a class="page-link" href="javascript:void(0)">
+            <li class="page-item">
+              <a class="page-link" href="javascript:void(0)" @click="paginateNext" :disabled="customerPagination.current_page == customerPagination.last_page">
                 <span aria-hidden="true">
-                  <i class="fa fa-angle-double-right"></i>
+                  <i class="fa fa-angle-right"></i>
                 </span>
                 <span class="sr-only">Next</span>
               </a>
             </li>
           </ul>
-        </nav>
+        </div>
       </p-block>
     </div>
   </div>
@@ -126,6 +126,12 @@ export default {
         this.loading = false
       })
     },
+    paginatePrev () {
+      //
+    },
+    paginateNext () {
+      //
+    },
     filterSearch: debounce(function (value) {
       this.searchText = value
       this.loading = true
@@ -145,7 +151,7 @@ export default {
       }).catch(error => {
         this.loading = false
       })
-    }, 200),
+    }, 300),
     showPageNumber(n) {
       // first three number
       if (n <= 5 && this.customerPagination.current_page <= 3) {
