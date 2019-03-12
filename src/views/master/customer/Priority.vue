@@ -76,7 +76,7 @@ export default {
     this.getCustomer({
       params: {
         sort_by: 'name',
-        priority: true,
+        group_id: 1,
         limit: 100,
         includes: 'addresses;phones;groups'
       }
