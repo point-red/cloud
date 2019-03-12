@@ -32,7 +32,7 @@
 
         <p-form-row
           id="address"
-          v-model="form.addresses[0].number"
+          v-model="form.addresses[0].address"
           :disabled="loadingSaveButton"
           :label="$t('address')"
           name="address"
