@@ -26,6 +26,7 @@ import UserRole from './modules/master/user-role'
 import Customer from './modules/master/customer'
 import Supplier from './modules/master/supplier'
 import Warehouse from './modules/master/warehouse'
+import Service from './modules/master/service'
 import Allocation from './modules/master/allocation'
 import ChartOfAccount from './modules/accounting/chart-of-account'
 import ChartOfAccountType from './modules/accounting/chart-of-account-type'
@@ -109,6 +110,7 @@ const store = new Vuex.Store({
     Customer,
     Supplier,
     Warehouse,
+    Service,
     Allocation,
     UserInvitation,
     ChartOfAccount,

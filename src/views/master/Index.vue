@@ -37,6 +37,11 @@
         v-if="$permission.has('read allocation')"
         link="/master/allocation"
         icon="si si-list"/>
+      <p-box
+        name="Service"
+        v-if="$permission.has('read service')"
+        link="/master/service"
+        icon="si si-briefcase"/>
     </div>
   </div>
 </template>
