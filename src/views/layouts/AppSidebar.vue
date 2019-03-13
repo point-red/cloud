@@ -165,6 +165,11 @@
                     {{ $t('service') | titlecase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read item')">
+                  <router-link to="/master/item" active-class="active">
+                    {{ $t('item') | titlecase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li :class="{ 'open' : firstUri === 'human-resource' }" v-if="$permission.has('menu human resource')">
