@@ -188,7 +188,6 @@
 <script>
 import Form from '@/utils/Form'
 import AssignScoreModal from './AssignScoreModal'
-import AssignKpiTemplateModal from './AssignKpiTemplateModal'
 import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
@@ -197,7 +196,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     AssignScoreModal,
-    AssignKpiTemplateModal,
     TabMenu,
     Breadcrumb,
     BreadcrumbHumanResource
@@ -209,7 +207,7 @@ export default {
       form: new Form({
         date: '',
         template: {
-          groups:[],
+          groups: []
         }
       }),
       title: 'Kpi',
@@ -270,9 +268,9 @@ export default {
     cancel () {
       this.$router.go(-1)
     },
-    assignSelected() {
+    assignSelected () {
       for (var groupIndex in this.form.template.groups) {
-        var group = this.form.template.groups[groupIndex];
+        var group = this.form.template.groups[groupIndex]
 
         for (var indicatorIndex in group.indicators) {
           var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex]
@@ -345,8 +343,8 @@ export default {
           }
         )
     },
-    getAutomatedScore() {
-      var automatedIDs = [];
+    getAutomatedScore () {
+      var automatedIDs = []
 
       this.form.template.groups.forEach(function (group, key) {
         group.indicators.forEach(function (indicator, key) {
@@ -354,7 +352,7 @@ export default {
             automatedIDs.push(indicator.automated_id)
           }
         })
-      });
+      })
 
       automatedIDs = [...new Set(automatedIDs)]
 
@@ -373,18 +371,17 @@ export default {
               var groupScorePercentage = 0
 
               group.indicators.forEach((indicator, indicatorIndex) => {
-                  var target = this.form.template.groups[groupIndex].indicators[indicatorIndex]['target'] || 0
-                  var score = this.form.template.groups[groupIndex].indicators[indicatorIndex]['score'] || 0
-                  var scorePercentage = score / target * indicator.weight || 0
+                var target = this.form.template.groups[groupIndex].indicators[indicatorIndex]['target'] || 0
+                var score = this.form.template.groups[groupIndex].indicators[indicatorIndex]['score'] || 0
+                var scorePercentage = score / target * indicator.weight || 0
 
                 if (response[indicator.automated_id]) {
-                  target = response[indicator.automated_id]['target'] || 0 
-                  score = response[indicator.automated_id]['score']|| 0 
+                  target = response[indicator.automated_id]['target'] || 0
+                  score = response[indicator.automated_id]['score'] || 0
                   scorePercentage = score / target * indicator.weight || 0
-                  
+
                   this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'automated_id', indicator.automated_id)
-                }
-                else if (indicator.selected) {
+                } else if (indicator.selected) {
                   score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected['score'] || 0
                   scorePercentage = score / target * indicator.weight || 0
                 }
@@ -392,7 +389,7 @@ export default {
                 this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'target', target)
                 this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'score', score)
                 this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'score_percentage', scorePercentage)
-                
+
                 groupTarget += target
                 groupScore += score
                 groupScorePercentage += scorePercentage
@@ -405,18 +402,16 @@ export default {
               this.$set(this.form.template.groups[groupIndex], 'target', groupTarget)
               this.$set(this.form.template.groups[groupIndex], 'score', groupScore)
               this.$set(this.form.template.groups[groupIndex], 'score_percentage', groupScorePercentage)
-            });
+            })
 
             this.$set(this.form.template, 'target', templateTarget)
             this.$set(this.form.template, 'score', templateScore)
             this.$set(this.form.template, 'score_percentage', templateScorePercentage)
-
           }, (error) => {
             this.loading = false
             console.log(JSON.stringify(error))
           })
-      }
-      else {
+      } else {
         this.loading = false
       }
     }
