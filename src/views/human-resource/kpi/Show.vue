@@ -68,7 +68,7 @@
               <td class="text-center">
                 <button
                   class="btn btn-secondary btn-sm mr-5"
-                  v-if="$permission.has('create employee kpi') || $permission.has('update employee kpi')"
+                  v-if="($permission.has('create employee kpi') || $permission.has('update employee kpi')) && !indicator.automated_id"
                   @click="$refs.score.show(indicator)">
                   <i class="si si-badge"></i> Score
                 </button>

@@ -9,7 +9,7 @@ const state = {
 const getters = {
   user_employees: state => {
     return state.user_employees
-  },
+  }
 }
 
 const mutations = {

@@ -715,7 +715,7 @@ export default {
         console.log(response.data)
       }, (error) => {
         console.log(JSON.stringify(error))
-    })
+      })
     this.findEmployee({
       id: this.id
     }).then((response) => {

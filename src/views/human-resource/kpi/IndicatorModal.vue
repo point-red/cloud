@@ -33,10 +33,10 @@
 
           <hr :hidden="!isCreateMode">
 
-          <p-form-check-box 
+          <p-form-check-box
             id="automated-indicator-check"
             name="automated-indicator-check"
-            @click.native="toggleAutomatedIndicator()" 
+            @click.native="toggleAutomatedIndicator()"
             :description="'Use Automated Indicator'"
             :checked="automatedIndicatorChecked"
             :hidden="!isCreateMode">
@@ -75,7 +75,8 @@
             name="target"
             label="target"
             :disabled="loadingSaveButton || automatedIndicatorChecked || !canEditTarget"
-            v-model="form.target">
+            v-model="form.target"
+            :hidden="automatedIndicatorChecked || !canEditTarget">
           </p-form-row>
         </template>
         <template slot="footer">
@@ -168,11 +169,10 @@ export default {
     onSubmit () {
       if (this.isCreateMode) {
         if ((this.automatedIndicatorChecked && this.form.automated_indicator != null) || !this.automatedIndicatorChecked) {
-
           if (this.automatedIndicatorChecked && this.form.automated_indicator != null) {
             this.form.target = 0
           }
-          
+
           this.loadingSaveButton = true
           this.createIndicator(this.form)
             .then(
@@ -185,32 +185,28 @@ export default {
                 this.$notification.error('Create failed', error.message)
                 this.loadingSaveButton = false
               })
-        }
-        else {
+        } else {
           this.$notification.error('Please Select one Automated Indicator')
         }
       } else {
-        if ((this.automatedIndicatorChecked && this.form.automated_indicator != null) || !this.automatedIndicatorChecked) {
-
-          if (this.automatedIndicatorChecked && this.form.automated_indicator != null) {
+        if (this.form.automated_indicator != null || !this.automatedIndicatorChecked) {
+          if (this.form.automated_indicator != null) {
             this.form.target = 0
           }
 
-          this.loadingSaveButton = true      
+          this.loadingSaveButton = true
           this.updateIndicator(this.form)
             .then(
               (response) => {
                 this.$notification.success('Update success')
-                this.form.reset()
                 this.loadingSaveButton = false
-                this.isCreateMode = true
+                this.isCreateMode = false
               },
               (error) => {
                 this.$notification.error('Update failed', error.message)
                 this.loadingSaveButton = false
               })
-        }
-        else {
+        } else {
           this.$notification.error('Please Select one Automated Indicator')
         }
       }
@@ -220,13 +216,15 @@ export default {
         this.$set(this.form, field, indicator[field])
       }
 
-      if (this.form.automated_id) {
+      if (indicator.automated_id) {
         this.automatedIndicatorChecked = false
         this.canEditTarget = false
-      }
-      else {
+        this.form.automated_indicator = indicator
+        this.form.target = ''
+      } else {
         this.automatedIndicatorChecked = false
         this.canEditTarget = true
+        this.form.automated_indicator = null
       }
 
       this.isCreateMode = false
@@ -253,20 +251,21 @@ export default {
         this.canEditTarget = true
       }
     },
-    toggleAutomatedIndicator() {
+    toggleAutomatedIndicator () {
       if (this.automatedIndicatorChecked) {
         this.automatedIndicatorChecked = false
+        this.canEditTarget = true
         this.form.automated_indicator = null
-      }
-      else {
+      } else {
         this.automatedIndicatorChecked = true
+        this.canEditTarget = false
       }
     },
-    showAutomatedIndicatorModal(id) {
+    showAutomatedIndicatorModal (id) {
       this.selectingAutomatedIndicator = true
       this.$refs.assignAutomatedIndicator.show(this.form.automated_indicator)
     },
-    closeAutomatedIndicatorModal(data) {
+    closeAutomatedIndicatorModal (data) {
       this.selectingAutomatedIndicator = false
       this.form.automated_indicator = data
     }

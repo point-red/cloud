@@ -14,17 +14,18 @@
             <tr slot="p-head">
               <th width="100%">{{ $t('name') }}</th>
             </tr>
-            <tr
-              v-for="status in statuses"
-              :key="status.id"
-              v-if="$permission.has('read employee status')"
-              slot="p-body">
-              <td>
-                <router-link :to="{ name: 'EmployeeStatusShow', params: { id: status.id }}">
-                  {{ status.name }}
-                </router-link>
-              </td>
-            </tr>
+            <template v-if="$permission.has('read employee status')">
+              <tr
+                v-for="status in statuses"
+                :key="status.id"
+                slot="p-body">
+                <td>
+                  <router-link :to="{ name: 'EmployeeStatusShow', params: { id: status.id }}">
+                    {{ status.name }}
+                  </router-link>
+                </td>
+              </tr>
+            </template>
           </p-table>
           <nav v-show="pagination.last_page > 1">
             <ul class="pagination justify-content-center">
@@ -88,7 +89,7 @@ export default {
     ...mapActions('EmployeeStatus', { getStatuses: 'get' }),
     paginate (page) {
       this.getStatuses({
-        filter_like: [{'name': this.filter.name }],
+        filter_like: [{ 'name': this.filter.name }],
         sort_by: 'name',
         paginate: 20,
         page: page
@@ -103,7 +104,7 @@ export default {
     filterColumn: debounce(function () {
       this.loading = true
       this.getStatuses({
-        filter_like: [{'name': this.filter.name }],
+        filter_like: [{ 'name': this.filter.name }],
         sort_by: 'name',
         paginate: 20
       }).then((response) => {

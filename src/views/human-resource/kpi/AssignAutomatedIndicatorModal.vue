@@ -9,7 +9,7 @@
         title="Assign Automated Indicator">
         <template slot="content">
           <div class="list-group mb-20">
-            <template v-for="(automated_indicator, index) in automatedIndicators" v-if="automatedIndicators.length > 0">
+            <template v-for="(automated_indicator, index) in automatedIndicators">
               <a
                 :key="index"
                 @click="choose(automated_indicator, index)"
@@ -41,8 +41,6 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-
 export default {
   data () {
     return {
@@ -58,14 +56,14 @@ export default {
     }
   },
   methods: {
-    show (automated_indicator) {
-      if (!automated_indicator) {
+    show (automatedIndicator) {
+      if (!automatedIndicator) {
         this.selectedIndex = null
         this.oldSelectedIndex = null
       }
 
-      this.automated_indicator = automated_indicator
-      this.old_automated_indicator = automated_indicator
+      this.automated_indicator = automatedIndicator
+      this.old_automated_indicator = automatedIndicator
       this.$refs.assignAutomatedIndicator.show()
     },
     close () {
@@ -73,18 +71,18 @@ export default {
       this.selectedIndex = this.oldSelectedIndex
       this.finishSelect()
     },
-    choose (automated_indicator, index) {
-      this.automated_indicator = automated_indicator
+    choose (automatedIndicator, index) {
+      this.automated_indicator = automatedIndicator
       this.selectedIndex = index
     },
     onSubmit () {
       this.finishSelect()
     },
-    chooseAndSubmit (automated_indicator, index) {
-      this.choose(automated_indicator, index)
+    chooseAndSubmit (automatedIndicator, index) {
+      this.choose(automatedIndicator, index)
       this.finishSelect()
     },
-    finishSelect() {
+    finishSelect () {
       this.oldSelectedIndex = this.selectedIndex
       this.$refs.assignAutomatedIndicator.close()
       this.$emit('assigned', this.automated_indicator)
