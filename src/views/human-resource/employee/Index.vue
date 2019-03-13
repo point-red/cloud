@@ -37,12 +37,12 @@
             </tr>
             </template>
           </point-table>
-          <p-pagination
-            :current-page="currentPage"
-            :last-page="lastPage"
-            @updatePage="updatePage">
-          </p-pagination>
         </p-block-inner>
+        <p-pagination
+          :current-page="currentPage"
+          :last-page="lastPage"
+          @updatePage="updatePage">
+        </p-pagination>
       </p-block>
     </div>
   </div>
@@ -67,7 +67,7 @@ export default {
     return {
       loading: false,
       listEmployee: this.employees,
-      searchText: '',
+      searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1
     }

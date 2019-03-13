@@ -11,6 +11,11 @@
       link="/human-resource"
       icon="si si-emoticon-smile"/>
     <p-box
+      :name="$t('accounting')"
+      v-if="$permission.has('menu accounting')"
+      link="/accounting"
+      icon="si si-folder-alt"/>
+    <p-box
       :name="$t('plugin')"
       v-if="$permission.has('menu plugin')"
       link="/plugin"

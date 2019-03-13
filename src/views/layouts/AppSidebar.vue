@@ -192,6 +192,44 @@
                 </li>
               </ul>
             </li>
+            <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting')">
+              <router-link to="/accounting" class="nav-submenu" active-class="active">
+                <i class="si si-folder-alt"/>
+                <span class="sidebar-mini-hide">{{ $t("accounting") | titlecase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read chart of account')">
+                  <router-link
+                    to="/accounting/chart-of-account"
+                    active-class="active">{{ $t('chart of account') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cut off')">
+                  <router-link
+                    to="/accounting/cut-off"
+                    active-class="active">{{ $t('cut off') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read balance sheet')">
+                  <router-link
+                    to="/accounting/balance-sheet"
+                    active-class="active">{{ $t('balance sheet') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read profit and loss')">
+                  <router-link
+                    to="/accounting/profit-and-loss"
+                    active-class="active">{{ $t('profit and loss') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read ratio report')">
+                  <router-link
+                    to="/accounting/ratio-report"
+                    active-class="active">{{ $t('ratio report') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
             <li :class="{ 'open' : firstUri === 'plugin' }" v-if="$permission.has('menu plugin')">
               <router-link
                 to="/plugin"

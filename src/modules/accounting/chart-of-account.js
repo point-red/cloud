@@ -18,7 +18,7 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.chartOfAccounts = payload
+    state.chartOfAccounts = payload.data
   },
   'FETCH_OBJECT' (state, payload) {
     state.chartOfAccount = payload
@@ -35,12 +35,12 @@ const mutations = {
 }
 
 const actions = {
-  get ({ commit }) {
+  get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url)
+      api.get(url, payload)
         .then(
           (response) => {
-            commit('FETCH_ARRAY', response.data)
+            commit('FETCH_ARRAY', response)
             resolve(response)
           },
           (error) => {
