@@ -192,6 +192,34 @@
                 </li>
               </ul>
             </li>
+            <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
+              <router-link to="/purchase" class="nav-submenu" active-class="active">
+                <i class="si si-basket"/>
+                <span class="sidebar-mini-hide">{{ $t("purchase") | titlecase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase request')">
+                  <router-link
+                    to="/purchase/purchase-request"
+                    active-class="active">{{ $t('purchase request') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+            <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">
+              <router-link to="/sales" class="nav-submenu" active-class="active">
+                <i class="si si-basket-loaded"/>
+                <span class="sidebar-mini-hide">{{ $t("sales") | titlecase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read sales quotation')">
+                  <router-link
+                    to="/sales/sales-quotation"
+                    active-class="active">{{ $t('sales quotation') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
             <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting')">
               <router-link to="/accounting" class="nav-submenu" active-class="active">
                 <i class="si si-folder-alt"/>

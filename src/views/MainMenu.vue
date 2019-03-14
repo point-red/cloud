@@ -11,6 +11,16 @@
       link="/human-resource"
       icon="si si-emoticon-smile"/>
     <p-box
+      :name="$t('purchase')"
+      v-if="$permission.has('menu purchase')"
+      link="/purchase"
+      icon="si si-basket"/>
+    <p-box
+      :name="$t('sales')"
+      v-if="$permission.has('menu sales')"
+      link="/sales"
+      icon="si si-basket-loaded"/>
+    <p-box
       :name="$t('accounting')"
       v-if="$permission.has('menu accounting')"
       link="/accounting"

@@ -29,6 +29,7 @@ import Warehouse from './modules/master/warehouse'
 import Service from './modules/master/service'
 import Item from './modules/master/item'
 import Allocation from './modules/master/allocation'
+import PurchaseRequest from './modules/purchase/purchase-request'
 import ChartOfAccount from './modules/accounting/chart-of-account'
 import ChartOfAccountType from './modules/accounting/chart-of-account-type'
 import CutOff from './modules/accounting/cut-off'
@@ -114,6 +115,7 @@ const store = new Vuex.Store({
     Service,
     Item,
     Allocation,
+    PurchaseRequest,
     UserInvitation,
     ChartOfAccount,
     ChartOfAccountType,
