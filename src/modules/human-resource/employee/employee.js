@@ -57,7 +57,7 @@ const actions = {
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url, {
-        params: payload
+        params: payload.params
       }).then((response) => {
         commit('FETCH_ARRAY', response)
         commit('EmployeeGroup/FETCH_ARRAY', response.additional.groups, { root: true })

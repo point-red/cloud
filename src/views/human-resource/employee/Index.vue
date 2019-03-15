@@ -97,15 +97,17 @@ export default {
     getEmployeesRequest() {
       this.loading = true
       this.getEmployees({
-        filter_like: {
-          'name': this.searchText,
-          'job_title': this.searchText
-        },
-        limit: 10,
-        page: this.currentPage,
-        sort_by: 'name',
-        includes: 'scorers',
-        additional: 'groups'
+        params: {
+          filter_like: {
+            'name': this.searchText,
+            'job_title': this.searchText
+          },
+          limit: 10,
+          page: this.currentPage,
+          sort_by: 'name',
+          includes: 'scorers',
+          additional: 'groups'
+        }
       }).then((response) => {
         this.loading = false
       }, (errors) => {

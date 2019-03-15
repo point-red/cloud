@@ -35,10 +35,25 @@
           :label="$t('supplier')">
           <div slot="body" class="col-lg-9">
             <p-select-modal
+              id="supplier"
               :title="'select supplier'"
               :options="supplierOptions"
               @choosen="chooseSupplier"
               @search="searchSupplier"/>
+          </div>
+        </p-form-row>
+
+        <p-form-row
+          id="employee"
+          name="employee"
+          :label="$t('employee')">
+          <div slot="body" class="col-lg-9">
+            <p-select-modal
+              id="employee"
+              :title="'select employee'"
+              :options="employeeOptions"
+              @choosen="chooseEmployee"
+              @search="searchEmployee"/>
           </div>
         </p-form-row>
 
@@ -80,16 +95,25 @@ export default {
         id: null,
         label: null
       },
-      supplierOptions: []
+      supplierOptions: [],
+      employee: {
+        id: null,
+        label: null
+      },
+      employeeOptions: []
     }
   },
   computed: {
     ...mapGetters('Supplier', ['suppliers']),
+    ...mapGetters('Employee', ['employees']),
     ...mapGetters('PurchaseRequest', ['purchaseRequest'])
   },
   methods: {
     ...mapActions('Customer', {
       getSupplier: 'get'
+    }),
+    ...mapActions('Employee', {
+      getEmployee: 'get'
     }),
     ...mapActions('PurchaseRequest', ['create']),
     searchSupplier (value) {
@@ -111,8 +135,33 @@ export default {
         })
       })
     },
+    searchEmployee (value) {
+      console.log('search ' + value)
+      this.getEmployee({
+        params: {
+          filter_like: {
+            name: value  
+          },
+          limit: 50,
+          sort_by: 'name'
+        }
+      }).then(response => {
+        this.employeeOptions = []
+        response.data.map((key, value) => {
+          this.employeeOptions.push({
+            'id': key['id'],
+            'label': key['name']
+          })
+        })
+      })
+    },
     chooseSupplier (supplier) {
+      console.log('choose sp')
       this.supplier = supplier
+    },
+    chooseEmployee (employee) {
+      console.log('choose em')
+      this.employee = employee
     },
     onSubmit () {
       this.loadingSaveButton = true
@@ -130,14 +179,8 @@ export default {
     }
   },
   created () {
-    this.searchSupplier().then(response => {
-      response.data.map((key, value) => {
-        this.supplierOptions.push({
-          'id': key['id'],
-          'label': key['name']
-        })
-      })
-    })
+    this.searchSupplier()
+    this.searchEmployee()
   }
 }
 </script>

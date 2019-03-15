@@ -1,7 +1,7 @@
 <template>
   <div>
     <input type="text" class="form-control" @click="clickInput" readonly placeholder="Select" :value="mutableChoosen">
-    <p-modal ref="select" id="select" :title="title">
+    <p-modal :ref="'select' + id" :id="'select' + id" :title="title">
       <template slot="content">
         <input type="text" class="form-control" v-model="search" placeholder="Search...">
         <hr>
@@ -37,6 +37,10 @@ export default {
     }
   },
   props: {
+    id: {
+      type: String,
+      required: true
+    },
     options: {
       type: Array
     },
@@ -58,7 +62,7 @@ export default {
   },
   methods: {
     clickInput () {
-      this.$refs.select.show()
+      this.$refs['select'+this.id].show()
     },
     choose (option) {
       this.$emit('choosen', option)
@@ -66,10 +70,10 @@ export default {
       this.close()
     },
     show () {
-      this.$refs.select.show()
+      this.$refs['select'+this.id].show()
     },
     close () {
-      this.$refs.select.close()
+      this.$refs['select'+this.id].close()
     },
     isActive (id) {
       return false
