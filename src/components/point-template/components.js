@@ -8,6 +8,7 @@ import PBox from './templates/PBox.vue'
 import PTable from './templates/PTable.vue'
 import PPagination from './templates/PPagination.vue'
 import PSelect from './templates/PSelect.vue'
+import PSelectModal from './templates/PSelectModal.vue'
 import PSuggest from './templates/PSuggest.vue'
 import PDatePicker from './templates/PDatePicker.vue'
 import PDateRangePicker from './templates/PDateRangePicker.vue'
@@ -28,6 +29,7 @@ export default {
   PTable,
   PPagination,
   PSelect,
+  PSelectModal,
   PSuggest,
   PDatePicker,
   PDateRangePicker,

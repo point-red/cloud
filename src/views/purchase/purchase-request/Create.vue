@@ -29,6 +29,19 @@
           </div>
         </p-form-row>
 
+        <p-form-row
+          id="supplier"
+          name="supplier"
+          :label="$t('supplier')">
+          <div slot="body" class="col-lg-9">
+            <p-select-modal
+              :title="'select supplier'"
+              :options="supplierOptions"
+              @choosen="chooseSupplier"
+              @search="searchSupplier"/>
+          </div>
+        </p-form-row>
+
         <div class="form-group row">
           <div class="col-md-3"></div>
           <div class="col-md-9">
@@ -62,14 +75,45 @@ export default {
       loadingSaveButton: false,
       form: new Form({
         date: null
-      })
+      }),
+      supplier: {
+        id: null,
+        label: null
+      },
+      supplierOptions: []
     }
   },
   computed: {
+    ...mapGetters('Supplier', ['suppliers']),
     ...mapGetters('PurchaseRequest', ['purchaseRequest'])
   },
   methods: {
+    ...mapActions('Customer', {
+      getSupplier: 'get'
+    }),
     ...mapActions('PurchaseRequest', ['create']),
+    searchSupplier (value) {
+      this.getSupplier({
+        params: {
+          sort_by: 'name',
+          filter_like: {
+            name: value  
+          },
+          limit: 50
+        }
+      }).then(response => {
+        this.supplierOptions = []
+        response.data.map((key, value) => {
+          this.supplierOptions.push({
+            'id': key['id'],
+            'label': key['name']
+          })
+        })
+      })
+    },
+    chooseSupplier (supplier) {
+      this.supplier = supplier
+    },
     onSubmit () {
       this.loadingSaveButton = true
       
@@ -84,6 +128,16 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
+  },
+  created () {
+    this.searchSupplier().then(response => {
+      response.data.map((key, value) => {
+        this.supplierOptions.push({
+          'id': key['id'],
+          'label': key['name']
+        })
+      })
+    })
   }
 }
 </script>
