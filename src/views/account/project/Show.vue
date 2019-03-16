@@ -59,14 +59,14 @@
               </p-table>
               <div class="mb-20">
                 <button
-                  class="btn btn-sm btn-primary"
+                  class="btn btn-sm btn-primary mr-5"
                   @click="redirectToProject(project)">
                   <i class="fa fa-globe"/> OPEN
                 </button>
                 <router-link
                   tag="button"
                   :to="{ path: '/account/project/' + project.id + '/edit', params: { id: project.id }}"
-                  class="btn btn-sm btn-primary">
+                  class="btn btn-sm btn-primary mr-5">
                   <i class="fa fa-edit"/> EDIT
                 </router-link>
                 <button
