@@ -40,30 +40,30 @@ const mutations = {
 }
 
 const actions = {
-  get ({ commit }) {
+  get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url)
-        .then(
-          (response) => {
-            commit('FETCH_ARRAY', response.data)
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+      api.get(url, {
+        params: payload.params
+      }).then(response => {
+        commit('FETCH_ARRAY', response.data)
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.id)
-        .then(
-          (response) => {
-            commit('FETCH_OBJECT', response.data)
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+      api.get(url + '/' + payload.id, {
+        params: payload.params
+      }).then(
+        (response) => {
+          commit('FETCH_OBJECT', response.data)
+          resolve(response)
+        },
+        (error) => {
+          reject(error)
+        })
     })
   },
   create (context, payload) {

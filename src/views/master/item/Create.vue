@@ -13,6 +13,15 @@
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="'Create Item'" :header="true">
         <p-form-row
+          id="code"
+          v-model="form.code"
+          :disabled="loadingSaveButton"
+          :label="$t('code')"
+          name="code"
+          :errors="form.errors.get('code')"
+          @errors="form.errors.set('code', null)"/>
+
+        <p-form-row
           id="name"
           v-model="form.name"
           :disabled="loadingSaveButton"
@@ -52,17 +61,18 @@ export default {
       loadingSaveButton: false,
       form: new Form({
         code: null,
-        name: null
+        name: null,
+        units: [
+          {
+            label: 'pcs',
+            name: 'pcs'
+          }
+        ]
       })
     }
   },
   computed: {
     ...mapGetters('Item', ['item'])
-  },
-  watch: {
-    'form.name' () {
-      this.form.code = this.form.name
-    }
   },
   methods: {
     ...mapActions('Item', ['create']),

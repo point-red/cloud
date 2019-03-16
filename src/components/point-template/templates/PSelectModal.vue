@@ -86,4 +86,7 @@ export default {
 input:readonly {
   background-color: white
 }
+input {
+  min-width: 200px;
+}
 </style>

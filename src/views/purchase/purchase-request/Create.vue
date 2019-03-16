@@ -57,6 +57,82 @@
           </div>
         </p-form-row>
 
+        <p-form-row
+          id="name"
+          v-model="form.name"
+          :disabled="loadingSaveButton"
+          :label="$t('notes')"
+          name="name"
+          :errors="form.errors.get('name')"
+          @errors="form.errors.set('name', null)"/>
+
+        <p-block-inner>
+          <point-table>
+            <tr slot="p-head">
+              <th>#</th>
+              <th>Item</th>
+              <th>Quantity</th>
+              <th>Estimated Price</th>
+              <th>Allocation</th>
+              <th>Notes</th>
+            </tr>
+            <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
+              <th>{{ index + 1 }}</th>
+              <td>
+                <p-select-modal
+                  :id="'item' + index"
+                  :title="'select item'"
+                  :options="itemOptions"
+                  @choosen="chooseItem(index, $event)"
+                  @search="searchItem"/>
+              </td>
+              <td>
+                <p-form-number
+                  :id="'quantity' + index"
+                  :name="'quantity' + index"
+                  v-model="form.items[index].quantity"/>
+              </td>
+              <td>
+                <p-form-number
+                  :id="'price' + index"
+                  :name="'price' + index"
+                  v-model="form.items[index].price"/>
+              </td>
+              <td>
+                <p-select-modal
+                  :id="'allocation' + index"
+                  :title="'select allocation'"
+                  :options="allocationOptions"
+                  @choosen="chooseAllocation(index, $event)"
+                  @search="searchAllocation"/>
+              </td>
+              <td>
+                <p-form-input
+                  id="notes"
+                  name="notes"
+                  v-model="form.items[index].notes"/>
+              </td>
+            </tr>
+          </point-table>
+          <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
+            <i class="fa fa-plus"/> Add
+          </button>
+        </p-block-inner>
+
+        <p-form-row
+          id="approver"
+          name="approver"
+          :label="$t('approver')">
+          <div slot="body" class="col-lg-9">
+            <p-select-modal
+              id="approver"
+              :title="'select approver'"
+              :options="approverOptions"
+              @choosen="chooseApprover"
+              @search="searchApprover"/>
+          </div>
+        </p-form-row>
+
         <div class="form-group row">
           <div class="col-md-3"></div>
           <div class="col-md-9">
@@ -76,12 +152,14 @@ import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import Form from '@/utils/Form'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     PurchaseMenu,
     TabMenu,
+    PointTable,
     Breadcrumb,
     BreadcrumbPurchase
   },
@@ -89,7 +167,16 @@ export default {
     return {
       loadingSaveButton: false,
       form: new Form({
-        date: null
+        date: null,
+        items: [
+          {
+            item: null,
+            quantity: null,
+            price: null,
+            allocation: null,
+            notes: null
+          }
+        ]        
       }),
       supplier: {
         id: null,
@@ -100,7 +187,22 @@ export default {
         id: null,
         label: null
       },
-      employeeOptions: []
+      employeeOptions: [],
+      item: {
+        id: null,
+        label: null
+      },
+      itemOptions: [],
+      allocation: {
+        id: null,
+        label: null
+      },
+      allocationOptions: [],
+      approver: {
+        id: null,
+        label: null
+      },
+      approverOptions: []
     }
   },
   computed: {
@@ -109,13 +211,31 @@ export default {
     ...mapGetters('PurchaseRequest', ['purchaseRequest'])
   },
   methods: {
-    ...mapActions('Customer', {
+    ...mapActions('Supplier', {
       getSupplier: 'get'
     }),
     ...mapActions('Employee', {
       getEmployee: 'get'
     }),
+    ...mapActions('Allocation', {
+      getAllocation: 'get'
+    }),
+    ...mapActions('Item', {
+      getItem: 'get'
+    }),
+    ...mapActions('User', {
+      getUser: 'get'
+    }),
     ...mapActions('PurchaseRequest', ['create']),
+    addItemRow () {
+      this.form.items.push({
+        item: null,
+        quantity: null,
+        price: null,
+        allocation: null,
+        notes: null
+      })
+    },
     searchSupplier (value) {
       this.getSupplier({
         params: {
@@ -136,7 +256,6 @@ export default {
       })
     },
     searchEmployee (value) {
-      console.log('search ' + value)
       this.getEmployee({
         params: {
           filter_like: {
@@ -155,13 +274,77 @@ export default {
         })
       })
     },
+    searchItem (value) {
+      this.getItem({
+        params: {
+          filter_like: {
+            name: value  
+          },
+          limit: 50,
+          sort_by: 'name'
+        }
+      }).then(response => {
+        this.itemOptions = []
+        response.data.map((key, value) => {
+          this.itemOptions.push({
+            'id': key['id'],
+            'label': key['name']
+          })
+        })
+      })
+    },
+    searchAllocation (value) {
+      this.getAllocation({
+        params: {
+          filter_like: {
+            name: value  
+          },
+          limit: 50,
+          sort_by: 'name'
+        }
+      }).then(response => {
+        this.allocationOptions = []
+        response.data.map((key, value) => {
+          this.allocationOptions.push({
+            'id': key['id'],
+            'label': key['name']
+          })
+        })
+      })
+    },
+    searchApprover (value) {
+      this.getUser({
+        params: {
+          filter_like: {
+            name: value  
+          },
+          limit: 50,
+          sort_by: 'name'
+        }
+      }).then(response => {
+        this.approverOptions = []
+        response.data.map((key, value) => {
+          this.approverOptions.push({
+            'id': key['id'],
+            'label': key['name']
+          })
+        })
+      })
+    },
     chooseSupplier (supplier) {
-      console.log('choose sp')
-      this.supplier = supplier
+      this.form.supplier_id = supplier.id
     },
     chooseEmployee (employee) {
-      console.log('choose em')
-      this.employee = employee
+      this.form.employee_id = employee.id
+    },
+    chooseItem (index, item) {
+      this.form.items[index].item_id = item.id
+    },
+    chooseAllocation (index, allocation) {
+      this.form.items[index].allocation_id = allocation.id
+    },
+    chooseApprover (approver) {
+      this.form.approver = approver
     },
     onSubmit () {
       this.loadingSaveButton = true
@@ -181,6 +364,9 @@ export default {
   created () {
     this.searchSupplier()
     this.searchEmployee()
+    this.searchItem()
+    this.searchAllocation()
+    this.searchApprover()
   }
 }
 </script>

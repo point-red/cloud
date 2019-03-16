@@ -127,4 +127,7 @@ export default {
   font-size: .875rem;
   color: #ef5350;
 }
+input {
+  min-width: 200px;
+}
 </style>
