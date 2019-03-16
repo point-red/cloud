@@ -23,17 +23,19 @@ if (process.env.NODE_ENV === 'production') {
     },
     updated () {
       console.log('New content is available; please refresh.')
-      fetch('./version.json')
-        .then(response => response.json())
-        .then(jsonResponse => {
-          swal.fire({
-            title: 'New update installed',
-            text: jsonResponse.update_description + '. The page will be reloaded',
-            type: 'success',
-            confirmButtonText: 'Ok'
-          }).then(() => {
-            window.location.reload()
-          })
+      fetch('./version.txt')
+        .then(response => response.text())
+        .then(text => {
+          if (text != undefined && text != '0.1.0') {
+            swal.fire({
+              title: 'New update ' + text + ' installed',
+              text: 'The page will be reloaded',
+              type: 'success',
+              confirmButtonText: 'Ok'
+            }).then(() => {
+              window.location.reload()
+            })
+          }
         })
     },
     offline () {
