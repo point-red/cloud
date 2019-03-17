@@ -15,7 +15,9 @@ export default {
     Vue.mixin({
       methods: {
         serverDate (string) {
-          return this.$moment(string).tz('UTC').format('YYYY-MM-DD')
+          if (string) {
+            return this.$moment(string).tz('UTC').format('YYYY-MM-DD')
+          }
         }
       }
     })
