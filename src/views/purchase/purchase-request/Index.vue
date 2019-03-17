@@ -28,27 +28,31 @@
               <th>Employee</th>
               <th>Supplier</th>
               <th>Item</th>
-              <th>Quantity</th>
-              <th>Price</th>
-              <th>Value</th>
+              <th>Notes</th>
+              <th class="text-right">Quantity</th>
+              <th class="text-right">Price</th>
+              <th class="text-right">Value</th>
             </tr>
+            <template v-for="(purchaseRequest, index) in purchaseRequests">
             <tr
-              v-for="purchaseRequest in purchaseRequests"
-              :key="purchaseRequest.id"
+              v-for="(purchaseRequestItem, index2) in purchaseRequest.items"
+              :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
               <th>
                 <router-link :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.id }}">
-                  {{ purchaseRequest.name | titlecase }}
+                  {{ purchaseRequest.form.number }}
                 </router-link>
               </th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td>{{ purchaseRequest.form.date | dateFormat }}</td>
+              <td>{{ purchaseRequest.employee.name }}</td>
+              <td>{{ purchaseRequest.supplier.name }}</td>
+              <td>{{ purchaseRequestItem.item.name }}</td>
+              <td>{{ purchaseRequestItem.notes }}</td>
+              <td class="text-right">{{ purchaseRequestItem.quantity | numberFormat }}</td>
+              <td class="text-right">{{ purchaseRequestItem.price | numberFormat }}</td>
+              <td class="text-right">{{ (purchaseRequestItem.quantity * purchaseRequestItem.price) | numberFormat }}</td>
             </tr>
+            </template>
           </point-table>
         </p-block-inner>
         <p-pagination
@@ -81,7 +85,6 @@ export default {
   data () {
     return {
       loading: true,
-      searchText: '',
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1
@@ -104,7 +107,7 @@ export default {
         params: {
           sort_by: 'name',
           limit: 10,
-          includes: 'form',
+          includes: 'form;employee;supplier;items.item;services',
           page: this.currentPage
         }
       }).then(response => {
