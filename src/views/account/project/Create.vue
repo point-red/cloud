@@ -67,6 +67,20 @@
                 :label="$t('vat identification number')">
               </p-form-row>
 
+              <p-form-row
+                id="timezone"
+                name="timezone"
+                :label="$t('timezone')">
+                <div slot="body" class="col-lg-9">
+                  <p-select-modal
+                    id="timezone"
+                    :title="'select timezone'"
+                    :options="timezoneOptions"
+                    @choosen="chooseTimezone"
+                    @search="searchTimezone"/>
+                </div>
+              </p-form-row>
+
               <div class="form-group row">
                 <div class="col-md-9 offset-3">
                   <button
@@ -99,8 +113,11 @@ export default {
         address: null,
         phone: null,
         code: null,
-        vat_id_number: null
+        vat_id_number: null,
+        timezone: null
       }),
+      availableTimezone: [],
+      timezoneOptions: [],
       loadingSaveButton: false
     }
   },
@@ -110,6 +127,33 @@ export default {
   },
   methods: {
     ...mapActions('AccountProject', ['create']),
+    getAvailableTimezone () {
+      var tzNames = this.$moment.tz.names()
+      for(var i in tzNames) {
+        let tz = "(GMT" + this.$moment.tz(tzNames[i]).format('Z')+") " + tzNames[i]
+        this.availableTimezone.push(tz)
+        this.timezoneOptions.push({
+          id: tz,
+          label: tz
+        })
+      }
+    },
+    searchTimezone (value) {
+      var filtered = this.availableTimezone.filter((str) => {
+        return str.toLowerCase().indexOf(value.toLowerCase()) >= 0; 
+      })
+
+      this.timezoneOptions = []
+      for (var i = 0; i < filtered.length; i++) {
+        this.timezoneOptions.push({
+          id: filtered[i],
+          label: filtered[i]
+        })
+      }
+    },
+    chooseTimezone (value) {
+      this.form.timezone = value.id
+    },
     onSubmit () {
       this.loadingSaveButton = true
       this.create(this.form)
@@ -131,6 +175,9 @@ export default {
           }
         )
     }
+  },
+  created () {
+    this.getAvailableTimezone()
   }
 }
 </script>
