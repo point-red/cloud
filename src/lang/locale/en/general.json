@@ -13,5 +13,6 @@
   "quantity": "quantity",
   "price": "price",
   "total": "total",
-  "report": "report"
+  "report": "report",
+  "timezone": "timezone"
 }

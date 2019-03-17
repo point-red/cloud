@@ -3,7 +3,7 @@
     <input type="text" class="form-control" @click="clickInput" readonly placeholder="Select" :value="mutableChoosen">
     <p-modal :ref="'select' + id" :id="'select' + id" :title="title">
       <template slot="content">
-        <input type="text" class="form-control" v-model="search" placeholder="Search...">
+        <input type="text" class="form-control" v-model="search" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
         <div class="list-group push">
           <template v-for="(option, index) in options">
@@ -48,7 +48,7 @@ export default {
       type: String,
       default: 'select'
     },
-    choosen: {
+    value: {
       type: String
     }
   },
@@ -56,7 +56,7 @@ export default {
     search: debounce(function (value) {
       this.$emit('search', value)
     }, 300),
-    choosen: function (value) {
+    value: function (value) {
       this.mutableChoosen = value
     }
   },

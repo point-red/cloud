@@ -56,6 +56,10 @@
                   <td class="font-w700">{{ $t('vat identification number') | titlecase }}</td>
                   <td>{{ project.vat_id_number }}</td>
                 </tr>
+                <tr slot="p-body">
+                  <td class="font-w700">{{ $t('timezone') | titlecase }}</td>
+                  <td>{{ project.timezone }}</td>
+                </tr>
               </p-table>
               <div class="mb-20">
                 <button

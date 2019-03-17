@@ -75,6 +75,7 @@
                   <p-select-modal
                     id="timezone"
                     :title="'select timezone'"
+                    :value="form.timezone"
                     :options="timezoneOptions"
                     @choosen="chooseTimezone"
                     @search="searchTimezone"/>
@@ -116,7 +117,6 @@ export default {
         vat_id_number: null,
         timezone: null
       }),
-      availableTimezone: [],
       timezoneOptions: [],
       loadingSaveButton: false
     }
@@ -129,25 +129,27 @@ export default {
     ...mapActions('AccountProject', ['create']),
     getAvailableTimezone () {
       var tzNames = this.$moment.tz.names()
+      this.timezoneOptions = []
       for(var i in tzNames) {
         let tz = "(GMT" + this.$moment.tz(tzNames[i]).format('Z')+") " + tzNames[i]
-        this.availableTimezone.push(tz)
         this.timezoneOptions.push({
-          id: tz,
+          id: tzNames[i],
           label: tz
         })
       }
     },
     searchTimezone (value) {
-      var filtered = this.availableTimezone.filter((str) => {
-        return str.toLowerCase().indexOf(value.toLowerCase()) >= 0; 
+      this.getAvailableTimezone()
+
+      var filtered = this.timezoneOptions.filter((str) => {
+        return str.label.toLowerCase().indexOf(value.toLowerCase()) >= 0; 
       })
 
       this.timezoneOptions = []
       for (var i = 0; i < filtered.length; i++) {
         this.timezoneOptions.push({
-          id: filtered[i],
-          label: filtered[i]
+          id: filtered[i].id,
+          label: filtered[i].label
         })
       }
     },

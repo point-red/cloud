@@ -24,6 +24,7 @@
 	"price": "price",
 	"total": "total",
 	"report": "report",
+	"timezone": "timezone",
 	"dashboard": "dashboard",
 	"main menu": "main menu",
 	"master": "master",
