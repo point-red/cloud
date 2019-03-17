@@ -43,9 +43,13 @@
                   {{ purchaseRequest.form.number }}
                 </router-link>
               </th>
-              <td>{{ purchaseRequest.form.date | dateFormat }}</td>
+              <td>{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
               <td>{{ purchaseRequest.employee.name }}</td>
-              <td>{{ purchaseRequest.supplier.name }}</td>
+              <td>
+                <template v-if="purchaseRequest.supplier">
+                  {{ purchaseRequest.supplier.name }}
+                </template>
+              </td>
               <td>{{ purchaseRequestItem.item.name }}</td>
               <td>{{ purchaseRequestItem.notes }}</td>
               <td class="text-right">{{ purchaseRequestItem.quantity | numberFormat }}</td>
@@ -105,7 +109,17 @@ export default {
       this.loading = true
       this.get({
         params: {
-          sort_by: 'name',
+          sort_by: 'forms.number',
+          filter_like: {
+            'forms.number': this.searchText,
+            'forms.date': this.serverDate(this.searchText),
+            'suppliers.name': this.searchText,
+            'employees.name': this.searchText,
+            'items.name': this.searchText,
+            'purchase_request_items.notes': this.searchText,
+            'purchase_request_items.quantity': this.searchText,
+            'purchase_request_items.price': this.searchText
+          },
           limit: 10,
           includes: 'form;employee;supplier;items.item;services',
           page: this.currentPage
