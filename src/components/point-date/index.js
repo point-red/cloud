@@ -11,5 +11,13 @@ export default {
       // return moment(value).add(offset, 'minute').format(format)
       return moment(value).add(0, 'minute').format(format)
     })
+
+    Vue.mixin({
+      methods: {
+        serverDate (string) {
+          return this.$moment(string).tz('UTC').format('YYYY-MM-DD')
+        }
+      }
+    })
   }
 }
