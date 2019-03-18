@@ -63,7 +63,8 @@
         <p-block-inner :is-loading="isLoadingSalesVisitation">
           <point-table>
             <tr slot="p-head">
-              <th style="border: 1px solid black;text-align: center" colspan="5"></th>
+              <th></th>
+              <th colspan="4"></th>
               <th colspan="3" width="250px" style="border: 1px solid black;text-align: center">{{ $t('item sold') }}</th>
             </tr>
             <tr slot="p-head">
@@ -79,35 +80,33 @@
             <template v-for="(form, index) in forms">
               <template v-if="form.details && form.details.length > 0">
                 <tr slot="p-body" v-for="(detail, index2) in form.details" :key="index + '-' + index2">
-                  <td>{{ form.form.date | dateFormat('DD MMM YYYY') }}</td>
+                  <th>{{ form.form.date | dateFormat('DD MMM YYYY') }}</th>
                   <td>{{ form.form.created_at | dateFormat('HH:mm') }}</td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>
-                    <ol v-if="form.interest_reasons">
-                      <li v-for="(interestReason, index) in form.interest_reasons" :key="index">
-                        {{ interestReason.name }}
-                      </li>
-                    </ol>
-                    <ol v-else>
-                      <li v-for="(interestReason, index) in form.interest_reasons" :key="index">
-                        {{ notInterestReason.name }}
-                      </li>
-                    </ol>
+                    <template v-if="form.interest_reasons">
+                      <template v-for="(interestReason, index) in form.interest_reasons">
+                        <p :key="index" class="mb-0">- {{ interestReason.name }}</p>
+                      </template>
+                    </template>
+                    <template v-else>
+                      <template v-for="(notInterestReason, index) in form.not_interest_reasons">
+                        <p :key="index" class="mb-0">- {{ notInterestReason.name }}</p>
+                      </template>
+                    </template>
                   </td>
                   <td>
-                    <ol>
-                      <li v-for="(similarProduct, index) in form.similar_products" :key="index">
-                        {{ similarProduct.name }}
-                      </li>
-                    </ol>
+                    <template v-for="(similarProduct, index) in form.similar_products">
+                      <p :key="index" class="mb-0">- {{ similarProduct.name }}</p>
+                    </template>
                   </td>
-                  <td style="border: 1px solid black;text-align: center" :key="index2">
+                  <td>
                     {{ detail.item.name }}
                   </td>
-                  <td style="border: 1px solid black;text-align: center">
+                  <td class="text-right">
                     {{ detail.quantity | numberFormat }}
                   </td>
-                  <td style="border: 1px solid black;text-align: center">
+                  <td class="text-right">
                     {{ detail.price | numberFormat }}
                   </td>
                 </tr>
@@ -136,7 +135,9 @@
                       </li>
                     </ol>
                   </td>
-                  <td colspan="3"></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
                 </tr>
               </template>
             </template>

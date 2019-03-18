@@ -124,7 +124,9 @@
                       <p :key="index" class="mb-0">- {{ similarProduct.name }}</p>
                     </template>
                   </td>
-                  <td colspan="3"></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
                 </tr>
               </template>
             </template>
