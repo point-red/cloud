@@ -94,7 +94,7 @@ export default {
       this.currentPage = 1
       this.getEmployeesRequest()
     }, 300),
-    getEmployeesRequest() {
+    getEmployeesRequest () {
       this.loading = true
       this.getEmployees({
         filter_like: {
