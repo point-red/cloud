@@ -14,5 +14,6 @@
   "price": "harga",
   "total": "total",
   "report": "laporan",
-  "timezone": "timezone"
+  "timezone": "timezone",
+  "approver": "persetujuan oleh"
 }

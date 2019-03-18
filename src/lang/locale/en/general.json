@@ -14,5 +14,6 @@
   "price": "price",
   "total": "total",
   "report": "report",
-  "timezone": "timezone"
+  "timezone": "timezone",
+  "approver": "approver"
 }
