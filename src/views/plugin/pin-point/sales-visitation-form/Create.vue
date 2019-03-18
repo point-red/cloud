@@ -327,7 +327,7 @@ export default {
       loadingSaveButton: false,
       rows: 1,
       form: new Form({
-        date: this.$moment(),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         customer: this.$route.query.name || '',
         address: this.$route.query.address || '',
         district: this.$route.query.district || '',
