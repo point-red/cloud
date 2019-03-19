@@ -60,6 +60,7 @@
               <th width="250px">{{ $t('interest reason') }}</th>
               <th width="250px">{{ $t('no interest reason') }}</th>
               <th width="250px">{{ $t('similar product') }}</th>
+              <th width="250px">{{ $t('notes') }}</th>
               <th width="250px">{{ $t('item') }}</th>
               <th class="text-right" width="250px">{{ $t('quantity') }}</th>
               <th class="text-right" width="250px">{{ $t('price') }}</th>
@@ -88,6 +89,9 @@
                     <template v-for="(similarProduct, index) in form.similar_products">
                       <p :key="index" class="mb-0">- {{ similarProduct.name }}</p>
                     </template>
+                  </td>
+                  <td>
+                    {{ form.notes }}
                   </td>
                   <td>
                     {{ detail.item.name }}

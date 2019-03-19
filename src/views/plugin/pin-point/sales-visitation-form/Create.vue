@@ -336,6 +336,7 @@ export default {
         longitude: this.$route.query.longitude || '',
         group: null,
         phone: '',
+        notes: '',
         similar_product: '',
         interest_reason: '',
         other_interest_reason: '',
