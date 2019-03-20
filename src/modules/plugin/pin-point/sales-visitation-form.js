@@ -4,7 +4,8 @@ const url = '/plugin/pin-point/sales-visitation-forms'
 
 const state = {
   form: {},
-  forms: []
+  forms: [],
+  pagination: {}
 }
 
 const getters = {
@@ -13,12 +14,16 @@ const getters = {
   },
   forms: state => {
     return state.forms
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.forms = payload
+    state.forms = payload.data
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     state.form = payload
@@ -51,7 +56,7 @@ const actions = {
       api.get(url, payload)
         .then(
           (response) => {
-            commit('FETCH_ARRAY', response.data)
+            commit('FETCH_ARRAY', response)
             resolve(response)
           },
           (error) => {

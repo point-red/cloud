@@ -61,59 +61,58 @@
       </p-block>
       <p-block v-if="forms.length > 0 && isLoadingSalesVisitation == false">
         <p-block-inner :is-loading="isLoadingSalesVisitation">
-          <div class="table-responsive">
-            <p-table>
-              <tr slot="p-head">
-                <th style="border: 1px solid black;text-align: center" colspan="5"></th>
-                <th colspan="3" width="250px" style="border: 1px solid black;text-align: center">{{ $t('item sold') }}</th>
-              </tr>
-              <tr slot="p-head">
-                <th style="border: 1px solid black;text-align: center" width="150px">{{ $t('date') }}</th>
-                <th style="border: 1px solid black;text-align: center" width="50px">{{ $t('time') }}</th>
-                <th style="border: 1px solid black;text-align: center" width="150px">{{ $t('sales') }}</th>
-                <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('reason') }}</th>
-                <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('similar product') }}</th>
-                <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('item') }}</th>
-                <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('quantity') }}</th>
-                <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('price') }}</th>
-              </tr>
-              <template v-for="(form, index) in forms">
-                <tr slot="p-body" v-for="(detail, index2) in form.details">
-                  <td>{{ form.form.date | dateFormat('DD MMM YYYY') }}</td>
+          <point-table>
+            <tr slot="p-head">
+              <th></th>
+              <th colspan="4"></th>
+              <th colspan="3" width="250px" style="border: 1px solid black;text-align: center">{{ $t('item sold') }}</th>
+            </tr>
+            <tr slot="p-head">
+              <th style="border: 1px solid black;text-align: center" width="150px">{{ $t('date') }}</th>
+              <th style="border: 1px solid black;text-align: center" width="50px">{{ $t('time') }}</th>
+              <th style="border: 1px solid black;text-align: center" width="150px">{{ $t('sales') }}</th>
+              <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('reason') }}</th>
+              <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('similar product') }}</th>
+              <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('item') }}</th>
+              <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('quantity') }}</th>
+              <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('price') }}</th>
+            </tr>
+            <template v-for="(form, index) in forms">
+              <template v-if="form.details && form.details.length > 0">
+                <tr slot="p-body" v-for="(detail, index2) in form.details" :key="index + '-' + index2">
+                  <th>{{ form.form.date | dateFormat('DD MMM YYYY') }}</th>
                   <td>{{ form.form.created_at | dateFormat('HH:mm') }}</td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>
-                    <ol v-if="form.interest_reasons">
-                      <li v-for="(interestReason, index) in form.interest_reasons" :key="index">
-                        {{ interestReason.name }}
-                      </li>
-                    </ol>
-                    <ol v-else>
-                      <li v-for="(interestReason, index) in form.interest_reasons" :key="index">
-                        {{ notInterestReason.name }}
-                      </li>
-                    </ol>
+                    <template v-if="form.interest_reasons">
+                      <template v-for="(interestReason, index) in form.interest_reasons">
+                        <p :key="index" class="mb-0">- {{ interestReason.name }}</p>
+                      </template>
+                    </template>
+                    <template v-else>
+                      <template v-for="(notInterestReason, index) in form.not_interest_reasons">
+                        <p :key="index" class="mb-0">- {{ notInterestReason.name }}</p>
+                      </template>
+                    </template>
                   </td>
                   <td>
-                    <ol>
-                      <li v-for="(similarProduct, index) in form.similar_products" :key="index">
-                        {{ similarProduct.name }}
-                      </li>
-                    </ol>
+                    <template v-for="(similarProduct, index) in form.similar_products">
+                      <p :key="index" class="mb-0">- {{ similarProduct.name }}</p>
+                    </template>
                   </td>
-                  <td style="border: 1px solid black;text-align: center" :key="index2">
+                  <td>
                     {{ detail.item.name }}
                   </td>
-                  <td style="border: 1px solid black;text-align: center">
+                  <td class="text-right">
                     {{ detail.quantity | numberFormat }}
                   </td>
-                  <td style="border: 1px solid black;text-align: center">
+                  <td class="text-right">
                     {{ detail.price | numberFormat }}
                   </td>
                 </tr>
               </template>
-              <template v-for="(form, index) in forms">
-                <tr slot="p-body" :key="index" v-if="form.details.length == 0">
+              <template v-else>
+                <tr slot="p-body" :key="index">
                   <td>{{ form.form.date | dateFormat('DD MMM YYYY') }}</td>
                   <td>{{ form.form.created_at | dateFormat('HH:mm') }}</td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
@@ -136,11 +135,18 @@
                       </li>
                     </ol>
                   </td>
-                  <td colspan="3"></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
                 </tr>
               </template>
-            </p-table>
-          </div>
+            </template>
+          </point-table>
+          <p-pagination
+            :current-page="currentPage"
+            :last-page="lastPage"
+            @updatePage="updatePage">
+          </p-pagination>
         </p-block-inner>
       </p-block>
     </div>
@@ -151,13 +157,15 @@
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster
+    BreadcrumbMaster,
+    PointTable
   },
   data () {
     return {
@@ -171,7 +179,9 @@ export default {
         address: null,
         phone: null,
         priority: false,
-      }
+      },
+      currentPage: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {
@@ -180,25 +190,49 @@ export default {
   },
   methods: {
     ...mapActions('Customer', ['find']),
-    ...mapActions('SalesVisitationForm', ['get', 'export'])
+    ...mapActions('SalesVisitationForm', ['get', 'export']),
+    updatePage (value) {
+      this.currentPage = value
+      this.getSalesVisitationRequest()
+    },
+    getSalesVisitationRequest () {
+      this.get({
+        params: {
+          filter_equal: {
+            'customers.id': this.id
+          },
+          date_from: this.$moment('1970-01-01').format('YYYY-MM-DD 00:00:00'),
+          date_to: this.$moment().format('YYYY-MM-DD 23:59:59'),
+          limit: 20,
+          page: this.currentPage,
+          sort_by: '-forms.date'
+        }
+      }).then(response => {
+        console.log(response)
+        this.isLoadingSalesVisitation = false          
+      }).catch(error => {
+        this.isLoadingSalesVisitation = false
+        this.$notification.error(error.message)
+      })
+    }
   },
   created () {
     this.isLoading = true
     this.find({ id: this.id })
       .then((response) => {
         this.isLoading = false
-        console.log('find ' + JSON.stringify(response))
+
         this.data.name = response.data.name
-        if (response.data.emails.length > 0) {
+        if (response.data.emails) {
           this.data.email = response.data.emails[0].email
         }
-        if (response.data.addresses.length > 0) {
+        if (response.data.addresses) {
           this.data.address = response.data.addresses[0].address
         }
-        if (response.data.phones.length > 0) {
+        if (response.data.phones) {
           this.data.phone = response.data.phones[0].number
         }
-        if (response.data.groups.length > 0) {
+        if (response.data.groups) {
           if (response.data.groups[0].name == 'priority') {
             this.data.priority = true
           }
@@ -208,19 +242,7 @@ export default {
         this.$notification.error(error.message)
       })
     this.isLoadingSalesVisitation = true
-      this.get({
-        params: {
-          customer_id: this.id,
-          date_from: new Date('2000-01-01'),
-          date_to: this.$moment().format('YYYY-MM-DD 23:59:59'),
-          sort_by: '-forms.date'
-        }
-      }).then(response => {
-        this.isLoadingSalesVisitation = false          
-      }).catch(error => {
-        this.isLoadingSalesVisitation = false
-        this.$notification.error(error.message)
-      })
+    this.getSalesVisitationRequest()
   }
 }
 </script>
