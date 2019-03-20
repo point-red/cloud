@@ -117,23 +117,21 @@
                   <td>{{ form.form.created_at | dateFormat('HH:mm') }}</td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>
-                    <ol v-if="form.interest_reasons">
-                      <li v-for="(interestReason, index) in form.interest_reasons" :key="index">
-                        {{ interestReason.name }}
-                      </li>
-                    </ol>
-                    <ol v-else>
-                      <li v-for="(interestReason, index) in form.interest_reasons" :key="index">
-                        {{ notInterestReason.name }}
-                      </li>
-                    </ol>
+                    <template v-if="form.interest_reasons">
+                      <template v-for="(interestReason, index) in form.interest_reasons">
+                        <p :key="index" class="mb-0">- {{ interestReason.name }}</p>
+                      </template>
+                    </template>
+                    <template v-else>
+                      <template v-for="(notInterestReason, index) in form.not_interest_reasons">
+                        <p :key="index" class="mb-0">- {{ notInterestReason.name }}</p>
+                      </template>
+                    </template>
                   </td>
                   <td>
-                    <ol>
-                      <li v-for="(similarProduct, index) in form.similar_products" :key="index">
-                        {{ similarProduct.name }}
-                      </li>
-                    </ol>
+                    <template v-for="(similarProduct, index) in form.similar_products">
+                      <p :key="index" class="mb-0">- {{ similarProduct.name }}</p>
+                    </template>
                   </td>
                   <td></td>
                   <td></td>
@@ -218,29 +216,33 @@ export default {
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-
-        this.data.name = response.data.name
-        if (response.data.emails) {
-          this.data.email = response.data.emails[0].email
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'addresses;phones;groups;emails'
+      }
+    }).then(response => {
+      this.isLoading = false
+      this.data.name = response.data.name
+      console.log(response.data)
+      if (response.data.emails.length > 0) {
+        this.data.email = response.data.emails[0].email
+      }
+      if (response.data.addresses.length > 0) {
+        this.data.address = response.data.addresses[0].address
+      }
+      if (response.data.phones.length > 0) {
+        this.data.phone = response.data.phones[0].number
+      }
+      if (response.data.groups.length > 0) {
+        if (response.data.groups[0].name == 'priority') {
+          this.data.priority = true
         }
-        if (response.data.addresses) {
-          this.data.address = response.data.addresses[0].address
-        }
-        if (response.data.phones) {
-          this.data.phone = response.data.phones[0].number
-        }
-        if (response.data.groups) {
-          if (response.data.groups[0].name == 'priority') {
-            this.data.priority = true
-          }
-        }
-      }, (error) => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+      }
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
     this.isLoadingSalesVisitation = true
     this.getSalesVisitationRequest()
   }

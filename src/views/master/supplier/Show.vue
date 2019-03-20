@@ -88,41 +88,40 @@ export default {
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-        console.log('find ' + JSON.stringify(response))
-        this.data.name = response.data.name
-        if (response.data.emails.length > 0) {
-          this.data.email = response.data.emails[0].email
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'addresses;phones;emails'
+      }
+    }).then((response) => {
+      this.isLoading = false
+      this.data.name = response.data.name
+      console.log(response.data)
+      if (response.data.emails.length > 0) {
+        this.data.email = response.data.emails[0].email
+      }
+      if (response.data.addresses.length > 0) {
+        this.data.address = response.data.addresses[0].address
+      }
+      if (response.data.phones.length > 0) {
+        this.data.phone = response.data.phones[0].number
+      }
+      this.get({
+        params: {
+          supplier_id: this.supplier.id,
+          date_from: new Date('2000-01-01'),
+          date_to: this.$moment().format('YYYY-MM-DD 23:59:59')
         }
-        if (response.data.addresses.length > 0) {
-          this.data.address = response.data.addresses[0].address
-        }
-        if (response.data.phones.length > 0) {
-          this.data.phone = response.data.phones[0].number
-        }
-        if (response.data.groups.length > 0) {
-          if (response.data.groups[0].name == 'priority') {
-            this.data.priority = true
-          }
-        }
-        this.get({
-          params: {
-            supplier_id: this.supplier.id,
-            date_from: new Date('2000-01-01'),
-            date_to: this.$moment().format('YYYY-MM-DD 23:59:59')
-          }
-        }).then(response => {
-          this.isLoading = false          
-        }).catch(error => {
-          this.isLoading = false
-          this.$notification.error(error.message)
-        })
-      }, (error) => {
+      }).then(response => {
+        this.isLoading = false          
+      }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
       })
+    }, (error) => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   }
 }
 </script>

@@ -83,21 +83,15 @@ export default {
       form: new Form({
         id: this.$route.params.id,
         name: null,
-        emails: [
-          {
-            email: null
-          }
-        ],
-        addresses: [
-          {
-            address: null
-          }
-        ],
-        phones: [
-          {
-            number: null
-          }
-        ]
+        emails: [{
+          email: null
+        }],
+        addresses: [{
+          address: null
+        }],
+        phones: [{
+          number: null
+        }]
       })
     }
   },
@@ -106,41 +100,43 @@ export default {
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-        this.form.name = this.supplier.name
-        if (this.supplier.emails.length > 0) {
-          this.form.emails[0].email = this.supplier.emails[0].email
-        }
-        if (this.supplier.addresses.length > 0) {
-          this.form.addresses[0].address = this.supplier.addresses[0].address
-        }
-        if (this.supplier.phones.length > 0) {
-          this.form.phones[0].number = this.supplier.phones[0].number
-        }
-      }, (error) => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'addresses;phones;emails'
+      }
+    }).then(response => {
+      this.isLoading = false
+      this.form.name = this.supplier.name
+      
+      if (this.supplier.emails.length > 0) {
+        this.form.emails[0].email = this.supplier.emails[0].email
+      }
+      if (this.supplier.addresses.length > 0) {
+        this.form.addresses[0].address = this.supplier.addresses[0].address
+      }
+      if (this.supplier.phones.length > 0) {
+        this.form.phones[0].number = this.supplier.phones[0].number
+      }
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   },
   methods: {
     ...mapActions('Supplier', ['find', 'update']),
     onSubmit () {
-      this.update(this.form)
-        .then(
-          (response) => {
-            this.loadingSaveButton = false
-            this.form.reset()
-            this.$notification.success('Update success')
-            this.$router.push('/master/supplier/' + this.id)
-          },
-          (error) => {
-            this.loadingSaveButton = false
-            this.$notification.error('Update failed')
-            this.form.errors.record(error.errors)
-          }
-        )
+      this.loadingSaveButton = true
+      this.update(this.form).then(response => {
+        this.loadingSaveButton = false
+        this.form.reset()
+        this.$notification.success('Update success')
+        this.$router.push('/master/supplier/' + this.id)
+      }).catch(error => {
+        this.loadingSaveButton = false
+        this.$notification.error('Update failed')
+        this.form.errors.record(error.errors)
+      })
     }
   }
 }

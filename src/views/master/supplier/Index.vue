@@ -94,14 +94,17 @@ export default {
       this.loading = true
       this.get({
         params: {
+          fields: 'suppliers.*',
           sort_by: 'name',
           filter_like: {
-            name: this.searchText,
+            'name': this.searchText,
             'addresses.address': this.searchText,
-            'phones.number': this.searchText
+            'phones.number': this.searchText,
+            'emails.email': this.searchText
           },
+          join: 'addresses,phones,emails',
+          includes: 'addresses;phones;groups;emails',
           limit: 10,
-          includes: 'addresses;phones;groups',
           page: this.currentPage
         }
       }).then(response => {

@@ -101,21 +101,15 @@ export default {
       form: new Form({
         id: this.$route.params.id,
         name: null,
-        emails: [
-          {
-            email: null
-          }
-        ],
-        addresses: [
-          {
-            address: null
-          }
-        ],
-        phones: [
-          {
-            number: null
-          }
-        ],
+        emails: [{
+          email: null
+        }],
+        addresses: [{
+          address: null
+        }],
+        phones: [{
+          number: null
+        }],
         group: {
           name: ''
         }
@@ -127,30 +121,34 @@ export default {
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-        this.form.name = this.customer.name
-        if (this.customer.emails.length > 0) {
-          this.form.emails[0].email = this.customer.emails[0].email
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'addresses;phones;emails;groups'
+      }
+    }).then(response => {
+      this.isLoading = false
+      this.form.name = this.customer.name
+      if (this.customer.emails.length > 0) {
+        this.form.emails[0].email = this.customer.emails[0].email
+      }
+      if (this.customer.addresses.length > 0) {
+        this.form.addresses[0].address = this.customer.addresses[0].address
+      }
+      if (this.customer.phones.length > 0) {
+        this.form.phones[0].number = this.customer.phones[0].number
+      }
+      if (this.customer.groups.length > 0) {
+        if (this.customer.groups[0].name == 'priority') {
+          this.form.group.name = 'priority'
+        } else {
+          this.form.group.name = ''
         }
-        if (this.customer.addresses.length > 0) {
-          this.form.addresses[0].address = this.customer.addresses[0].address
-        }
-        if (this.customer.phones.length > 0) {
-          this.form.phones[0].number = this.customer.phones[0].number
-        }
-        if (this.customer.groups.length > 0) {
-          if (this.customer.groups[0].name == 'priority') {
-            this.form.group.name = 'priority'
-          } else {
-            this.form.group.name = ''
-          }
-        }
-      }, (error) => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+      }
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   },
   methods: {
     ...mapActions('Customer', ['find', 'update']),
@@ -162,20 +160,17 @@ export default {
       }
     },
     onSubmit () {
-      this.update(this.form)
-        .then(
-          (response) => {
-            this.loadingSaveButton = false
-            this.form.reset()
-            this.$notification.success('Update success')
-            this.$router.push('/master/customer/' + this.id)
-          },
-          (error) => {
-            this.loadingSaveButton = false
-            this.$notification.error('Update failed')
-            this.form.errors.record(error.errors)
-          }
-        )
+      this.loadingSaveButton = true
+      this.update(this.form).then(response => {
+        this.loadingSaveButton = false
+        this.form.reset()
+        this.$notification.success('Update success')
+        this.$router.push('/master/customer/' + this.id)
+      }).catch(error => {
+        this.loadingSaveButton = false
+        this.$notification.error('Update failed')
+        this.form.errors.record(error.errors)
+      })
     }
   }
 }
