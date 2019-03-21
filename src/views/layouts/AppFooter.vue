@@ -23,7 +23,7 @@ export default {
     }
   },
   created () {
-    fetch('./version.txt')
+    fetch('/version.txt')
       .then(response => response.text())
       .then(text => {
         this.version = text
