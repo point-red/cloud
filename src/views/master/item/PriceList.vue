@@ -26,6 +26,9 @@
               <th class="text-right" v-for="(group, index) in groups" :key="index">
                 {{ group.label }}
               </th>
+              <th>
+                <button class="btn btn-secondary btn-sm">Add Group</button>
+              </th>
             </tr>
             <template v-for="item in items">
             <tr
@@ -47,6 +50,7 @@
                   name="price"
                   :value="0"/> -->
               </td>
+              <td></td>
             </tr>
             </template>
           </point-table>
@@ -58,6 +62,7 @@
         </p-pagination>
       </p-block>
     </div>
+    
   </div>
 </template>
 
