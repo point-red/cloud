@@ -153,8 +153,8 @@ export default {
     ...mapActions('KpiAutomated', {
       getAutomatedData: 'get'
     }),
-    getAutomatedScore() {
-      var automatedIDs = [];
+    getAutomatedScore () {
+      var automatedIDs = []
 
       this.assessment.groups.forEach(function (group, key) {
         group.indicators.forEach(function (indicator, key) {
@@ -162,12 +162,12 @@ export default {
             automatedIDs.push(indicator.automated_id)
           }
         })
-      });
+      })
 
       automatedIDs = [...new Set(automatedIDs)]
 
       if (automatedIDs.length > 0) {
-        this.getAutomatedData({ date: this.assessment.date, automated_ids: automatedIDs })
+        this.getAutomatedData({ date: this.assessment.date, automated_ids: automatedIDs, employeeId: this.id })
           .then((response) => {
             this.loading = false
 
@@ -181,22 +181,22 @@ export default {
               var groupScorePercentage = 0
 
               group.indicators.forEach((indicator, indicatorIndex) => {
-                  var target = this.assessment.groups[groupIndex].indicators[indicatorIndex]['target'] || 0
-                  var score = this.assessment.groups[groupIndex].indicators[indicatorIndex]['score'] || 0
-                  var scorePercentage = score / target * indicator.weight || 0
+                var target = this.assessment.groups[groupIndex].indicators[indicatorIndex]['target'] || 0
+                var score = this.assessment.groups[groupIndex].indicators[indicatorIndex]['score'] || 0
+                var scorePercentage = score / target * indicator.weight || 0
 
                 if (response[indicator.automated_id]) {
-                  target = response[indicator.automated_id]['target'] || 0 
-                  score = response[indicator.automated_id]['score']|| 0 
+                  target = response[indicator.automated_id]['target'] || 0
+                  score = response[indicator.automated_id]['score'] || 0
                   scorePercentage = score / target * indicator.weight || 0
-                  
+
                   this.$set(this.assessment.groups[groupIndex].indicators[indicatorIndex], 'automated_id', indicator.automated_id)
                 }
 
                 this.$set(this.assessment.groups[groupIndex].indicators[indicatorIndex], 'target', target)
                 this.$set(this.assessment.groups[groupIndex].indicators[indicatorIndex], 'score', score)
                 this.$set(this.assessment.groups[groupIndex].indicators[indicatorIndex], 'score_percentage', scorePercentage)
-                
+
                 groupTarget += target
                 groupScore += score
                 groupScorePercentage += scorePercentage
@@ -209,18 +209,16 @@ export default {
               this.$set(this.assessment.groups[groupIndex], 'target', groupTarget)
               this.$set(this.assessment.groups[groupIndex], 'score', groupScore)
               this.$set(this.assessment.groups[groupIndex], 'score_percentage', groupScorePercentage)
-            });
+            })
 
             this.$set(this.assessment, 'target', templateTarget)
             this.$set(this.assessment, 'score', templateScore)
             this.$set(this.assessment, 'score_percentage', templateScorePercentage)
-
           }, (error) => {
             this.loading = false
             console.log(JSON.stringify(error))
           })
-      }
-      else {
+      } else {
         this.loading = false
       }
     }

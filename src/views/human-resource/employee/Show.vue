@@ -27,18 +27,15 @@
           <span><i class="si si-note"></i> {{ $t('employee assessment') | titlecase }}</span>
         </router-link>
       </li>
-
-
-      <li class="nav-item" slot="right">
+      <li class="nav-item" v-if="$permission.has('create employee salary')" slot="right">
         <router-link
-          :to="'#'"
+          :to="'/human-resource/employee/' + employee.id + '/salary'"
           exact
           class="nav-link"
-          active-class="">
-          <span><i class="si si-bar-chart"></i> Salary</span>
+          active-class="active">
+          <span><i class="si si-wallet"></i> {{ $t('employee salary') | titlecase }}</span>
         </router-link>
       </li>
-
     </tab-menu>
 
     <div class="row">

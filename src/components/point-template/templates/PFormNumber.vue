@@ -49,7 +49,10 @@ export default {
       type: Boolean,
       default: false
     },
-    value: 0
+    value: {
+      type: [String, Number],
+      default: 0
+    }
   }
 }
 </script>

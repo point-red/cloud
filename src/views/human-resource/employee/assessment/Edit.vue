@@ -357,7 +357,7 @@ export default {
       automatedIDs = [...new Set(automatedIDs)]
 
       if (automatedIDs.length > 0) {
-        this.getAutomatedData({ date: this.form.date, automated_ids: automatedIDs })
+        this.getAutomatedData({ date: this.form.date, automated_ids: automatedIDs, employeeId: this.id })
           .then((response) => {
             this.loading = false
 
