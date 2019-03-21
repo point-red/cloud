@@ -10,6 +10,7 @@ import PPagination from './templates/PPagination.vue'
 import PSelect from './templates/PSelect.vue'
 import PSelectModal from './templates/PSelectModal.vue'
 import PSuggest from './templates/PSuggest.vue'
+import PSeparator from './templates/PSeparator.vue'
 import PDatePicker from './templates/PDatePicker.vue'
 import PDateRangePicker from './templates/PDateRangePicker.vue'
 import PMonthPicker from './templates/PMonthPicker.vue'
@@ -31,6 +32,7 @@ export default {
   PSelect,
   PSelectModal,
   PSuggest,
+  PSeparator,
   PDatePicker,
   PDateRangePicker,
   PMonthPicker,

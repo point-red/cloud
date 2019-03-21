@@ -1,6 +1,6 @@
 <template>
   <div>
-    <input type="text" class="form-control" @click="clickInput" readonly placeholder="Select" :value="mutableChoosen">
+    <span @click="clickInput" class="select"><i class="fa fa-list mr-5"></i>{{ mutableChoosen || 'SELECT'}}</span>
     <p-modal :ref="'select' + id" :id="'select' + id" :title="title">
       <template slot="content">
         <input type="text" class="form-control" v-model="search" placeholder="Search..." @keydown.enter.prevent="">
@@ -88,5 +88,9 @@ input:readonly {
 }
 input {
   min-width: 200px;
+}
+.select {
+  border-bottom: dotted 1px blueviolet;
+  cursor: pointer;
 }
 </style>

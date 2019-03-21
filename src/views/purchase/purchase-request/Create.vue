@@ -66,6 +66,10 @@
           :errors="form.errors.get('name')"
           @errors="form.errors.set('name', null)"/>
 
+        <p-separator></p-separator>
+
+        <h3 class="">Item</h3>
+
         <p-block-inner>
           <point-table>
             <tr slot="p-head">
@@ -118,6 +122,10 @@
             <i class="fa fa-plus"/> Add
           </button>
         </p-block-inner>
+
+        <p-separator></p-separator>
+
+        <h3 class="">Approver</h3>
 
         <p-form-row
           id="approver"
