@@ -5,7 +5,7 @@
       <breadcrumb-pin-point/>
       <router-link
         to="/plugin/pin-point/sales-visitation-form"
-        class="breadcrumb-item">{{ $t('sales visitation form') | titlecase }}</router-link>
+        class="breadcrumb-item">{{ $t('sales visitation') | titlecase }}</router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
@@ -15,7 +15,7 @@
       <p-block
         :is-loading="loading"
         :header="true"
-        :title="$t('sales visitation form')"
+        :title="$t('sales visitation')"
         column="col-sm-12">
 
         <p-form-row :label="$t('date')">

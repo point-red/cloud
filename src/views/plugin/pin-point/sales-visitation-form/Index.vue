@@ -3,13 +3,13 @@
     <breadcrumb>
       <breadcrumb-plugin/>
       <breadcrumb-pin-point></breadcrumb-pin-point>
-      <span class="breadcrumb-item active">{{ $t('sales visitation form') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('sales visitation') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('sales visitation form')" :header="true">
+      <p-block :title="$t('sales visitation')" :header="true">
         <p-form-row id="date" name="date" :label="$t('date')">
           <div slot="body" class="col-lg-9">
             <p-date-range-picker id="date" name="date" v-model="date"/>

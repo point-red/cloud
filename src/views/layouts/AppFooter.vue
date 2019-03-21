@@ -23,10 +23,12 @@ export default {
     }
   },
   created () {
+    console.log('check version ' + this.version)
     fetch('/version.txt')
       .then(response => response.text())
       .then(text => {
         this.version = text
+        console.log('update version ' + this.version)
       })
   }
 }
