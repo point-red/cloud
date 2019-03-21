@@ -887,7 +887,7 @@ export default {
     },
     calculate () {
       this.form.active_days_in_month = this.form.salary.active_days_in_month
-      
+
       this.salary_final_score.week1 = (this.additionalData.total_assessments.week1 + this.additionalData.total_achievements.week1) / 2
       this.salary_final_score.week2 = (this.additionalData.total_assessments.week2 + this.additionalData.total_achievements.week2) / 2
       this.salary_final_score.week3 = (this.additionalData.total_assessments.week3 + this.additionalData.total_achievements.week3) / 2
