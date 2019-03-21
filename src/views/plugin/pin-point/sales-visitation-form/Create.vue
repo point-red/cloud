@@ -259,6 +259,14 @@
               <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'credit'">
               <span class="css-control-indicator"></span> Tempo
             </label>
+            <label class="css-control css-control-primary css-radio">
+              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'taking-order'">
+              <span class="css-control-indicator"></span> Taking Order
+            </label>
+            <label class="css-control css-control-primary css-radio">
+              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'sell-out'">
+              <span class="css-control-indicator"></span> Sell Out
+            </label>
           </div>
         </p-form-row>
 
