@@ -13,6 +13,7 @@
           id="search-text"
           name="search-text"
           placeholder="Search"
+          ref="searchText"
           :value="searchText"
           @input="filterSearch"/>
         <hr>
@@ -101,7 +102,7 @@ export default {
             'phones.number': this.searchText
           },
           join: 'addresses,phones,emails',
-          includes: 'addresses;phones;groups;emails',
+          includes: 'addresses;phones;emails;groups',
           limit: 10,
           page: this.currentPage
         }
@@ -120,6 +121,9 @@ export default {
   },
   created () {
     this.getCustomerRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
   },
   updated () {
     this.lastPage = this.customerPagination.last_page

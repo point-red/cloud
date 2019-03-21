@@ -30,9 +30,9 @@
                 <button class="btn btn-secondary btn-sm">Add Group</button>
               </th>
             </tr>
-            <template v-for="item in items">
+            <template v-for="(item, index) in items">
             <tr
-              v-for="itemUnit in item.units"
+              v-for="(itemUnit, index2) in item.units"
               :key="itemUnit.id"
               slot="p-body">
               <th>
@@ -41,14 +41,15 @@
                 </router-link>
               </th>
               <td>{{ itemUnit.name }} (x{{ itemUnit.converter }})</td>
-              <td class="text-right" v-for="(group, index) in groups" :key="index">
-                <a href="javascript:void(0)" @click="editPrice(index)">
-                  {{ itemUnit.prices[index].price | numberFormat }}
+              <td class="text-right" v-for="(group, index3) in itemUnit.prices" :key="index3">
+                <a href="javascript:void(0)" @click="editPrice(index + '-' + index2 + '-' + index3)" v-if="editPriceIndex != index + '-' + index2 + '-' + index3">
+                  {{ itemUnit.prices[index3].price | numberFormat }}                  
                 </a>
-                <!-- <p-form-number
+                <p-form-number
+                  v-else
                   id="price"
-                  name="price"
-                  :value="0"/> -->
+                  name="price"                
+                  :value="itemUnit.prices[index3].price"/>
               </td>
               <td></td>
             </tr>
@@ -62,7 +63,6 @@
         </p-pagination>
       </p-block>
     </div>
-    
   </div>
 </template>
 
@@ -87,7 +87,8 @@ export default {
       loading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      lastPage: 1,
+      editPriceIndex: ''
     }
   },
   computed: {
@@ -97,8 +98,8 @@ export default {
     ...mapActions('PriceListItem', {
       getItem: 'get'
     }),
-    editPrice () {
-      //
+    editPrice (index) {
+      this.editPriceIndex = index
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
