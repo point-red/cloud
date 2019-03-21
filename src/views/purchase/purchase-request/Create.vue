@@ -38,6 +38,7 @@
               id="supplier"
               :title="'select supplier'"
               :options="supplierOptions"
+              @addData="addSupplier"
               @choosen="chooseSupplier"
               @search="searchSupplier"/>
           </div>
@@ -50,6 +51,7 @@
           <div slot="body" class="col-lg-9">
             <p-select-modal
               id="employee"
+              @addData="addEmployee"
               :title="'select employee'"
               :options="employeeOptions"
               @choosen="chooseEmployee"
@@ -235,6 +237,12 @@ export default {
       getUser: 'get'
     }),
     ...mapActions('PurchaseRequest', ['create']),
+    ...mapActions('Supplier', {
+      createSupplier: 'create' 
+    }),
+    ...mapActions('Employee', {
+      createEmployee: 'create' 
+    }),
     addItemRow () {
       this.form.items.push({
         item: null,
@@ -243,6 +251,15 @@ export default {
         allocation: null,
         notes: null
       })
+    },
+    addSupplier (value) {
+      this.createSupplier({
+        name: value
+      }).then(response => {
+      }).catch(error => {
+        this.$notification.error(error.message)
+      })
+      this.searchSupplier(value)
     },
     searchSupplier (value) {
       this.getSupplier({
@@ -262,6 +279,15 @@ export default {
           })
         })
       })
+    },
+    addEmployee (value) {
+      this.createEmployee({
+        name: value
+      }).then(response => {
+      }).catch(error => {
+        this.$notification.error(error.message)
+      })
+      this.searchEmployee(value)
     },
     searchEmployee (value) {
       this.getEmployee({

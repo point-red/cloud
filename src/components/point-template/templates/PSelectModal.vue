@@ -1,12 +1,12 @@
 <template>
   <div>
-    <span @click="clickInput" class="select"><i class="fa fa-list mr-5"></i>{{ mutableChoosen || 'SELECT'}}</span>
+    <span @click="clickInput" class="link"><i class="fa fa-list mr-5"></i>{{ mutableChoosen || 'SELECT'}}</span>
     <p-modal :ref="'select' + id" :id="'select' + id" :title="title">
       <template slot="content">
         <input type="text" class="form-control" v-model="search" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
         <div class="list-group push">
-          <template v-for="(option, index) in options">
+          <template v-for="(option, index) in mutableOptions">
           <a
             :key="index"
             class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
@@ -16,7 +16,14 @@
             {{ option.label }}
           </a>
           </template>
-        </div>        
+        </div>
+        <div class="alert alert-info text-center" v-if="search && mutableOptions.length == 0">
+          Pencarian "{{ search }}" tidak ditemukan! <br>
+          klik <span class="link" @click="addData"><i class="fa fa-xs" :class="{
+            'fa-refresh fa-spin': isLoadingAddButton,
+            'fa-plus': !isLoadingAddButton
+          }"></i> Add</span> untuk menambahkan data
+        </div>
       </template>
       <template slot="footer">
         <button class="btn btn-primary">Add</button>
@@ -33,7 +40,9 @@ export default {
   data () {
     return {
       search: '',
-      mutableChoosen: this.choosen
+      mutableChoosen: this.choosen,
+      mutableOptions: this.options,
+      isLoadingAddButton: false
     }
   },
   props: {
@@ -58,11 +67,21 @@ export default {
     }, 300),
     value: function (value) {
       this.mutableChoosen = value
+    },
+    options: function (options) {
+      this.mutableOptions = options
+      this.isLoadingAddButton = false
     }
   },
   methods: {
     clickInput () {
       this.$refs['select'+this.id].show()
+    },
+    addData () {
+      if (this.isLoadingAddButton == false) {
+        this.$emit('addData', this.search)
+      }
+      this.isLoadingAddButton = true
     },
     choose (option) {
       this.$emit('choosen', option)
@@ -89,7 +108,7 @@ input:readonly {
 input {
   min-width: 200px;
 }
-.select {
+.link {
   border-bottom: dotted 1px blueviolet;
   cursor: pointer;
 }
