@@ -518,6 +518,10 @@ pre code {
   margin-left: auto;
 }
 
+#main-container {
+  min-height: calc(100vh - 126px);
+}
+
 @media (min-width: 576px) {
   .container {
     max-width: 540px;
