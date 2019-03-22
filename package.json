@@ -21,6 +21,7 @@
     "point-table-vue": "^0.2.2",
     "register-service-worker": "^1.5.2",
     "sweetalert2": "^7.28.4",
+    "v-click-outside": "^2.0.2",
     "v-selectmenu": "^1.0.5",
     "vue": "^2.5.17",
     "vue-autosuggest": "^1.7.3",

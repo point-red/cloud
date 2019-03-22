@@ -26,6 +26,7 @@ import VueTour from 'vue-tour'
 import BlockUI from 'vue-blockui'
 import VueClipboard from 'vue-clipboard2'
 import VueSelectMenu from 'v-selectmenu'
+import ClickOutside from 'v-click-outside'
 
 require('vue-tour/dist/vue-tour.css')
 require('flag-icon-css/css/flag-icon.min.css')
@@ -37,6 +38,7 @@ if (process.env.VUA_APP_NODE_ENV == 'production') {
 
 Vue.use(VueSelectMenu, { language: 'en' })
 Vue.use(VueClipboard)
+Vue.use(ClickOutside)
 Vue.use(BlockUI)
 Vue.use(Vuex)
 Vue.use(VueTour)
