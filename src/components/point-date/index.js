@@ -7,12 +7,7 @@ export default {
     Vue.moment = moment
 
     Vue.filter('dateFormat', function (value, format = 'YYYY-MM-DD') {
-      if (value instanceof Date) {
-      	return moment(value).add(7, 'hour').format(format)
-      }	
-      else {
-      	return value
-      }
+    	return moment(value).add(7, 'hour').format(format)
     })
   }
 }

@@ -78,7 +78,7 @@
           </p-table>
         </p-block-inner>
       </p-block>
-    </div> -->
+    </div>
 
     <p-modal
       id="modal-delete"
