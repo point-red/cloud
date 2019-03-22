@@ -28,7 +28,7 @@ export default class FormError {
    * @param {string} field
    */
   get (field) {
-    if (this.errors[field]) {
+    if (this.errors !== undefined && this.errors[field]) {
       return this.errors[field]
     }
   }

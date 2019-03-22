@@ -84,8 +84,8 @@ export default {
       type: Boolean,
       default: true
     },
-    help: '',
-    errors: ''
+    help: null,
+    errors: null
   },
   watch: {
     value () {

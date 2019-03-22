@@ -1,13 +1,16 @@
 <template>
   <div>
     <date-picker
-      :lang="lang"
       :name="name"
-      :type="type"
+      :overlay="true"
       :format="format"
-      :editable="false"
+      :formatted="formatted"
+      :auto-close="autoClose"
+      :min-date="minDate"
+      :max-date="maxDate"
+      color="#343A40"
+      button-color="#343A40"
       v-model="time">
-      <i class="fa fa-calendar" slot="calendar-icon"></i>
     </date-picker>
 
     <div
@@ -21,7 +24,8 @@
 </template>
 
 <script>
-import DatePicker from 'vue2-datepicker'
+import DatePicker from 'vue-ctk-date-time-picker'
+import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css'
 
 export default {
   components: {
@@ -30,25 +34,26 @@ export default {
   props: {
     name: {
       type: String,
-      required: true
+      required: false
     },
     type: {
       type: String,
       default: 'date'
     },
-    format: {
-      type: String,
-      default: 'YYYY-MM-DD'
-    },
     value: {
-      type: [Date, String]
-    },
-    placeholder: {
-      type: String
+      type: [Object, String]
     },
     readonly: {
       type: Boolean,
       default: false
+    },
+    minDate: {
+      type: String,
+      default: null
+    },
+    maxDate: {
+      type: String,
+      default: null
     },
     help: {
       type: String
@@ -59,33 +64,30 @@ export default {
   },
   data () {
     return {
-      time: new Date(),
-      range: [new Date(), new Date()],
-      emptyTime: '',
-      emptyRange: [],
-      lang: {
-        days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-        months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        pickers: ['next 7 days', 'next 30 days', 'previous 7 days', 'previous 30 days'],
-        placeholder: {
-          date: 'Select Date',
-          dateRange: 'Select Date Range'
-        }
-      }
+      time: this.$moment().format('YYYY-MM-DD'),
+      format: 'YYYY-MM-DD HH:mm:ss',
+      formatted: 'DD MMM YYYY HH:mm',
+      defaultMinDate: this.$moment('2000-01-01').format('YYYY-MM-DD'),
+      defaultMaxDate: this.$moment().format('YYYY-MM-DD'),
+      autoClose: true
     }
   },
   watch: {
     'time' () {
-      this.time = this.$moment(this.time).format(this.format)
       this.$emit('input', this.time)
-    },
-    'value' () {
-      this.value = this.$moment(this.value).format(this.format)
-      this.time = this.value
     }
   },
   mounted () {
     this.time = this.value
+    if (this.type === 'date') {
+      this.format = 'YYYY-MM-DD'
+      this.formatted = 'DD MMM YYYY'
+      this.autoClose = true
+    } else {
+      this.format = 'YYYY-MM-DD HH:mm:ss'
+      this.formatted = 'DD MMM YYYY HH:mm'
+      this.autoClose = false
+    }
   }
 }
 </script>

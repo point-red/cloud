@@ -6,9 +6,11 @@ import PBlock from './templates/PBlock.vue'
 import PBlockInner from './templates/PBlockInner.vue'
 import PBox from './templates/PBox.vue'
 import PTable from './templates/PTable.vue'
+import PPagination from './templates/PPagination.vue'
 import PSelect from './templates/PSelect.vue'
 import PSuggest from './templates/PSuggest.vue'
 import PDatePicker from './templates/PDatePicker.vue'
+import PDateRangePicker from './templates/PDateRangePicker.vue'
 import PMonthPicker from './templates/PMonthPicker.vue'
 import PModal from './templates/PModal.vue'
 import PFormNumber from './templates/PFormNumber.vue'
@@ -24,9 +26,11 @@ export default {
   PBlockInner,
   PBox,
   PTable,
+  PPagination,
   PSelect,
   PSuggest,
   PDatePicker,
+  PDateRangePicker,
   PMonthPicker,
   PModal,
   PLoadingBlock

@@ -5,7 +5,7 @@
       <breadcrumb-pin-point/>
       <router-link
         to="/plugin/pin-point/sales-visitation-form"
-        class="breadcrumb-item">{{ $t('sales visitation form') | titlecase }}</router-link>
+        class="breadcrumb-item">{{ $t('sales visitation') | titlecase }}</router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
@@ -15,19 +15,18 @@
       <p-block
         :is-loading="loading"
         :header="true"
-        :title="$t('sales visitation form')"
+        :title="$t('sales visitation')"
         column="col-sm-12">
 
-        <p-form-row
-          id="date"
-          name="date"
-          :label="$t('date')">
+        <p-form-row :label="$t('date')">
           <div slot="body" class="col-lg-9">
             <p-date-picker
               id="date"
               name="date"
               label="date"
               v-model="form.date"
+              type="datetime"
+              format="YYYY-MM-DD HH:mm:ss"
               :errors="form.errors.get('date')"
               @errors="form.errors.set('date', null)"/>
           </div>
@@ -65,6 +64,26 @@
           v-model="form.address"
           :errors="form.errors.get('address')"
           @errors="form.errors.set('address', null)">
+        </p-form-row>
+
+        <p-form-row
+          id="district"
+          name="district"
+          :placeholder="$t('district')"
+          :disabled="loadingSaveButton"
+          v-model="form.district"
+          :errors="form.errors.get('district')"
+          @errors="form.errors.set('district', null)">
+        </p-form-row>
+
+        <p-form-row
+          id="sub_district"
+          name="sub_district"
+          :placeholder="$t('sub district')"
+          :disabled="loadingSaveButton"
+          v-model="form.sub_district"
+          :errors="form.errors.get('sub_district')"
+          @errors="form.errors.set('sub_district', null)">
         </p-form-row>
 
         <p-form-row
@@ -240,6 +259,14 @@
               <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'credit'">
               <span class="css-control-indicator"></span> Tempo
             </label>
+            <label class="css-control css-control-primary css-radio">
+              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'taking-order'">
+              <span class="css-control-indicator"></span> Taking Order
+            </label>
+            <label class="css-control css-control-primary css-radio">
+              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'sell-out'">
+              <span class="css-control-indicator"></span> Sell Out
+            </label>
           </div>
         </p-form-row>
 
@@ -308,13 +335,16 @@ export default {
       loadingSaveButton: false,
       rows: 1,
       form: new Form({
-        date: new Date(),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         customer: this.$route.query.name || '',
         address: this.$route.query.address || '',
+        district: this.$route.query.district || '',
+        sub_district: this.$route.query.sub_district || '',
         latitude: this.$route.query.latitude || '',
         longitude: this.$route.query.longitude || '',
         group: null,
         phone: '',
+        notes: '',
         similar_product: '',
         interest_reason: '',
         other_interest_reason: '',

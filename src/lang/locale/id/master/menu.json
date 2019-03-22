@@ -1,5 +1,11 @@
 {
   "user" : "user",
   "role & permission" : "hak akses",
-  "customer" : "pelanggan"
+  "customer" : "pelanggan",
+  "supplier" : "supplier",
+  "expedition" : "angkutan",
+  "item" : "barang",
+  "service" : "jasa",
+  "warehouse" : "gudang",
+  "allocation" : "alokasi"
 }

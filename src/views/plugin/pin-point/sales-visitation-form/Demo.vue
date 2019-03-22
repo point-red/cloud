@@ -3,7 +3,7 @@
     <breadcrumb>
       <breadcrumb-plugin/>
       <breadcrumb-pin-point/>
-      <router-link to="/plugin/pin-point/sales-visitation-form" class="breadcrumb-item">{{ $t('sales visitation form') | titlecase }}</router-link>
+      <router-link to="/plugin/pin-point/sales-visitation-form" class="breadcrumb-item">{{ $t('sales visitation') | titlecase }}</router-link>
       <span class="breadcrumb-item active">Demo</span>
     </breadcrumb>
 
@@ -13,7 +13,7 @@
       <p-block
         :is-loading="loading"
         :header="true"
-        :title="$t('sales visitation form')"
+        :title="$t('sales visitation')"
         column="col-sm-12">
 
         <p-form-row
@@ -140,11 +140,11 @@ export default {
   methods: {
     ...mapActions('SalesVisitationForm', ['create', 'get']),
     onSelectedNoInterestReason (selected) {
-      this.form.not_interest_reason = selected;
+      this.form.not_interest_reason = selected
       this.loadSuggestions = false
     },
     onSuggestNoInterestReason: debounce(function (text) {
-      this.form.not_interest_reason = text;
+      this.form.not_interest_reason = text
       this.loadSuggestions = true
       this.noInterestReasonList = [{
         data: [
@@ -152,7 +152,7 @@ export default {
           { name: 'Tidak ada merchandise' },
           { name: 'Perlu kopi biji' },
           { name: 'Perlu kopi bubuk kiloan' },
-          { name: 'Perlu kopi cup yang bisa dibawa kemana mana' },
+          { name: 'Perlu kopi cup yang bisa dibawa kemana mana' }
         ]
       }]
     }, 200),

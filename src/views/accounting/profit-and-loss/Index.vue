@@ -36,14 +36,15 @@
                 <tr slot="p-body">
                   <td colspan="2" class="font-w600">PENDAPATAN OPERATIONAL</td>
                 </tr>
+                <template v-for="(chartOfAccount, index) in chartOfAccounts">
                 <tr
-                  v-for="(chartOfAccount, index) in chartOfAccounts"
                   v-if="chartOfAccount.type.name === 'sales income'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
                   <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
                 </tr>
+                </template>
                 <tr slot="p-body">
                   <td></td>
                   <td class="text-right font-w600">{{ totalSalesIncome | numberFormat }}</td>
@@ -51,14 +52,15 @@
                 <tr slot="p-body">
                   <td colspan="2" class="font-w600">BEBAN POKOK PENJUALAN</td>
                 </tr>
+                <template v-for="(chartOfAccount, index) in chartOfAccounts">
                 <tr
-                  v-for="(chartOfAccount, index) in chartOfAccounts"
                   v-if="chartOfAccount.type.name === 'cost of sales'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
                   <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
                 </tr>
+                </template>
                 <tr slot="p-body">
                   <td></td>
                   <td class="text-right font-w600">{{ totalCostOfSales | numberFormat }}</td>

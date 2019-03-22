@@ -7,7 +7,7 @@
 
     <div class="mb-20">
       <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
-        <slot></slot>
+        <slot></slot>        
         <li class="nav-item ml-auto" v-if="$permission.has('create employee kpi')">
           <router-link
             to=""
@@ -23,6 +23,10 @@
             class="nav-link">
             <span><i class="si si-magic-wand"></i> KPI Result</span>
           </router-link>
+        </li>
+        <li class="nav-item" v-if="$permission.has('create employee kpi')">
+          <a href="javascript:void(0)" class="nav-link" @click="addFiles()"><i class="si si-cloud-upload"></i> Import</a>
+          <input type="file" id="file" ref="file" v-on:change="onFileChange" style="display:none" />
         </li>
         <slot name="right"></slot>
       </ul>
@@ -51,7 +55,11 @@
                 <a
                   href="javascript:void(0)"
                   v-if="$permission.has('update employee kpi')"
-                  class="btn btn-sm btn-secondary" @click="$refs.edit.show(template)"><i class="si si-note"></i> Edit</a></td>
+                  class="btn btn-sm btn-secondary" @click="$refs.edit.show(template)"><i class="si si-note"></i> Edit</a>
+                <button :disabled="isExporting.includes(template.id)" type="submit" class="btn btn-sm btn-primary" @click="exportData(template.id)" style="margin-left:12px">
+                  <i v-show="isExporting.includes(template.id)" class="fa fa-asterisk fa-spin" /> Export
+                </button>
+              </td>
             </tr>
           </p-table>
           <nav v-show="pagination.last_page > 1">
@@ -98,6 +106,7 @@ import ResultModal from './ResultModal'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
+import axios from '@/axios'
 
 export default {
   components: {
@@ -110,20 +119,87 @@ export default {
   data () {
     return {
       title: 'kpi template',
-      loading: false
+      loading: false,
+      isExporting: []
     }
   },
   computed: {
     ...mapGetters('KpiTemplate', ['templates', 'pagination'])
   },
   methods: {
-    ...mapActions('KpiTemplate', { getKpiTemplates: 'get' }),
+    ...mapActions('KpiTemplate', {
+      getKpiTemplates: 'get',
+      export: 'export'
+    }),
+    exportData (value) {
+      this.isExporting.push(value)
+      this.export({
+        id: value
+      }).then((response) => {
+        this.isExporting.splice(this.isExporting.indexOf(value), 1)
+        this.downloadLink = response.data.url
+        window.open(response.data.url, '_blank')
+      }, (error) => {
+        this.isExporting.splice(this.isExporting.indexOf(value), 1)
+        console.log(error)
+      })
+    },
+    addFiles() {
+      this.$refs.file.click()
+    },
+    onFileChange (e) {
+      let files = e.target.files || e.dataTransfer.files
+      if (!files.length) {
+        console.log('no files')
+      }
+
+      let data = new FormData()
+      data.append('file', files[0])
+      var self = this
+      self.loading = true
+      axios.post('/human-resource/kpi/templates/import/check', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function(response, data) {
+        if (response.data.message == 'exist') {
+          if (confirm('Data KPI ' + response.data.name + ' exist, do you want replace ?')) {
+            let data = new FormData()
+            data.append('file', files[0])
+            data.append('replace', response.data.replace)
+            axios.post('/human-resource/kpi/templates/import', data, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              }
+            })
+            .then(function(response) {
+              console.log(response)
+              document.getElementById("file").value = ""
+              self.getKpiTemplates()
+              self.loading = false
+            })
+            .catch(function(error) {
+              console.log(error)
+            })
+          } else {
+            document.getElementById("file").value = ""
+            self.loading = false
+          }
+        } else {
+          document.getElementById("file").value = ""
+          self.getKpiTemplates()
+          self.loading = false
+        }
+      }).catch(function(error) {
+        console.log(error)
+      })
+    },
     paginate (page) {
       this.getKpiTemplates({
         limit: 20,
         page: page
-      }).then((response) => {
-      }, (errors) => {
+      }).then(response => {
+      }).catch(errors => {
         console.log(errors.data)
       })
     }

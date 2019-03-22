@@ -26,12 +26,14 @@ const mutations = {
   },
   'FETCH_SELECT_LIST' (state, payload) {
     let array = []
-    payload.forEach(element => {
-      array.push({
-        id: element.id,
-        label: element.name
+    if (payload) {
+      payload.forEach(element => {
+        array.push({
+          id: element.id,
+          label: element.name
+        })
       })
-    })
+    }
     state.groupList = array
   },
   'FETCH_OBJECT' (state, payload) {

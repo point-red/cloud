@@ -836,7 +836,7 @@ export default {
     return {
       id: this.$route.params.id,
       form: new Form({
-        date: new Date(),
+        date: new Date().toISOString().slice(0,10),
         job_location: '',
         base_salary: 0,
         multiplier_kpi: 0,
@@ -1007,6 +1007,7 @@ export default {
           this.form.base_salary = Number(this.employee.job_location.base_salary)
           this.form.multiplier_kpi = Number(this.employee.job_location.multiplier_kpi)
         }
+        this.getAssessment()
       }, (error) => {
         this.loading = false
         console.log(JSON.stringify(error))

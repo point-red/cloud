@@ -16,6 +16,7 @@ const instance = axios.create({
 })
 
 instance.defaults.headers.common['Authorization'] = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
+instance.defaults.headers.common['Timezone'] = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 instance.interceptors.request.use((config) => {
   console.log('Request: ', config)

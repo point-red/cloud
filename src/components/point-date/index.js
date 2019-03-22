@@ -7,7 +7,19 @@ export default {
     Vue.moment = moment
 
     Vue.filter('dateFormat', function (value, format = 'YYYY-MM-DD') {
-    	return moment(value).add(7, 'hour').format(format)
+      // var offset = new Date().getTimezoneOffset()
+      // return moment(value).add(offset, 'minute').format(format)
+      return moment(value).add(0, 'minute').format(format)
+    })
+
+    Vue.mixin({
+      methods: {
+        serverDate (string) {
+          if (string) {
+            return this.$moment(string).tz('UTC').format('YYYY-MM-DD')
+          }
+        }
+      }
     })
   }
 }

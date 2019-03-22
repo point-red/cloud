@@ -70,16 +70,23 @@ export default {
       document.getElementById(this.id).style.display = 'block'
       document.getElementById(this.id).classList.add('open')
       document.body.classList.add('modal-open')
+      document.addEventListener('keydown', this.onEscListener)
       this.backdrop = true
     },
     close () {
       document.getElementById(this.id).style.display = 'none'
       document.getElementById(this.id).classList.remove('open')
       document.body.classList.remove('modal-open')
+      document.removeEventListener('keydown', this.onEscListener)
       this.backdrop = false
     },
     toggleFullscreen () {
       this.isFullscreen = !this.isFullscreen
+    },
+    onEscListener () {
+      if (event.key === 'Escape') {
+        this.close()
+      }
     }
   }
 }

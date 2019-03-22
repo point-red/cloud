@@ -80,12 +80,12 @@ export default {
   data () {
     return {
       form: new Form({
-        date: new Date(),
+        date: this.$moment(),
         targets: []
       }),
-      date: new Date(),
-      dateFrom: new Date(),
-      dateTo: new Date(),
+      date: this.$moment(),
+      dateFrom: this.$moment(),
+      dateTo: this.$moment(),
       loading: false,
       loadingSaveButton: false
     }
@@ -111,7 +111,7 @@ export default {
         }
       }).then((response) => {
         this.form = new Form({
-          date: new Date(),
+          date: this.$moment(),
           targets: response.data
         })
         this.form.targets.forEach(element => {
@@ -155,7 +155,7 @@ export default {
         }
       }).then((response) => {
         this.form = new Form({
-          date: new Date(),
+          date: this.$moment(),
           targets: response.data
         })
         this.form.targets.forEach(element => {

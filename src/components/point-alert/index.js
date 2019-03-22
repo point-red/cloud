@@ -3,7 +3,7 @@ export default {
     Vue.prototype.$alert = {
       custom (options) {
         return new Promise((resolve) => {
-          Vue.swal({
+          Vue.swal.fire({
             type: options.type,
             title: options.title,
             text: options.text,
@@ -64,7 +64,7 @@ export default {
     })
     Vue.prototype.$toast = {
       custom (options) {
-        toast({
+        toast.fire({
           type: options.type,
           title: options.text
         })

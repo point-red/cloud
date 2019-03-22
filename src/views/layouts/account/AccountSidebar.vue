@@ -110,28 +110,24 @@
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/project"
-                exact
                 active-class="active"
                 class="sidebar-mini-hide"><i class="si si-notebook"/> {{ $t("project") | titlecase }}</router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/billing"
-                exact
                 active-class="active"
                 class="sidebar-mini-hide"><i class="si si-doc"/> {{ $t("billing") | titlecase }}</router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/referral"
-                exact
                 active-class="active"
                 class="sidebar-mini-hide"><i class="si si-share"/> {{ $t("referral") | titlecase }}</router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/email-subscription"
-                exact
                 active-class="active"
                 class="sidebar-mini-hide"><i class="si si-envelope"/> {{ $t("email subscription") | titlecase }}</router-link>
             </li>
