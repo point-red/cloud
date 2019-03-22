@@ -79,7 +79,7 @@
         <p-form-row
           id="sub_district"
           name="sub_district"
-          :placeholder="$t('sub_district')"
+          :placeholder="$t('sub district')"
           :disabled="loadingSaveButton"
           v-model="form.sub_district"
           :errors="form.errors.get('sub_district')"
