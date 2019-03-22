@@ -59,6 +59,9 @@ export default {
     },
     value: {
       type: String
+    },
+    choosen: {
+      type: String
     }
   },
   watch: {

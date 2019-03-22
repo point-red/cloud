@@ -37,13 +37,17 @@
               :is-loading="loading">
               <p-table>
                 <tr slot="p-body">
+                  <td class="font-w700">{{ $t('company group') | titlecase }}</td>
+                  <td>{{ project.group }}</td>
+                </tr>
+                <tr slot="p-body">
                   <td class="font-w700">{{ $t('company identifier') | titlecase }}</td>
                   <td>{{ project.code | uppercase }}</td>
                 </tr>
                 <tr slot="p-body">
                   <td class="font-w700">{{ $t('company name') | titlecase }}</td>
                   <td>{{ project.name }}</td>
-                </tr>
+                </tr>                
                 <tr slot="p-body">
                   <td class="font-w700">{{ $t('company address') | titlecase }}</td>
                   <td>{{ project.address }}</td>
@@ -148,18 +152,15 @@ export default {
     onDelete () {
       this.loadingSaveButton = true
       this.deleteProject({ id: this.id })
-        .then(
-          (response) => {
-            this.loadingSaveButton = false
-            this.$notification.success('Delete success')
-            this.$router.push('/account/project')
-          },
-          (error) => {
-            this.$notification.error('Delete failed')
-            this.form.errors.record(error.errors)
-            this.loadingSaveButton = false
-          }
-        )
+        .then(response => {
+          this.loadingSaveButton = false
+          this.$notification.success('Delete success')
+          this.$router.push('/account/project')
+        }).catch(error => {
+          this.$notification.error('Delete failed')
+          this.form.errors.record(error.errors)
+          this.loadingSaveButton = false
+        })
     }
   }
 }

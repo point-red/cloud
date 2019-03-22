@@ -29,6 +29,15 @@
               @submit.prevent="onSubmit">
 
               <p-form-row
+                id="group"
+                name="group"
+                v-model="form.group"
+                :label="$t('company group')"
+                :errors="form.errors.get('group')"
+                @errors="form.errors.set('group', null)">
+              </p-form-row>
+
+              <p-form-row
                 id="code"
                 name="code"
                 v-model="form.code"
@@ -44,7 +53,7 @@
                 :label="$t('company name')"
                 :errors="form.errors.get('name')"
                 @errors="form.errors.set('name', null)">
-              </p-form-row>
+              </p-form-row>          
 
               <p-form-row
                 id="address"
@@ -71,11 +80,12 @@
                 id="timezone"
                 name="timezone"
                 :label="$t('timezone')">
-                <div slot="body" class="col-lg-9">
+                <div slot="body" class="col-form-label col-lg-9">
                   <p-select-modal
                     id="timezone"
                     :title="'select timezone'"
                     :value="form.timezone"
+                    :choosen="form.timezone"
                     :options="timezoneOptions"
                     @choosen="chooseTimezone"
                     @search="searchTimezone"/>
@@ -111,12 +121,14 @@ export default {
     return {
       form: new Form({
         name: null,
+        group: null,
         address: null,
         phone: null,
         code: null,
         vat_id_number: null,
         timezone: null
       }),
+      localTimezone: '',
       timezoneOptions: [],
       loadingSaveButton: false
     }
@@ -180,6 +192,10 @@ export default {
   },
   created () {
     this.getAvailableTimezone()
+    this.localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    if (this.localTimezone) {
+      this.form.timezone = this.localTimezone
+    }
   }
 }
 </script>

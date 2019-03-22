@@ -23,6 +23,16 @@
           @submit.prevent="onSubmit">
 
           <p-form-row
+            id="group"
+            name="group"
+            v-model="form.group"
+            :disabled="loadingSaveButton"
+            :label="$t('company group')"
+            :errors="form.errors.get('group')"
+            @errors="form.errors.set('group', null)">
+          </p-form-row>
+
+          <p-form-row
             id="code"
             name="code"
             v-model="form.code"
@@ -40,7 +50,7 @@
             :label="$t('company name')"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)">
-          </p-form-row>
+          </p-form-row>          
 
           <p-form-row
             id="address"
@@ -116,6 +126,7 @@ export default {
       form: new Form({
         id: this.$route.params.id,
         name: null,
+        group: null,
         address: null,
         phone: null,
         code: null,
@@ -143,6 +154,7 @@ export default {
         this.form.id = this.project.id
         this.form.code = this.project.code
         this.form.name = this.project.name
+        this.form.group = this.project.group
         this.form.timezone = this.project.timezone
         this.form.address = this.project.address
         this.form.phone = this.project.phone
