@@ -18,7 +18,7 @@
         </router-link>
       </li>
     </tab-menu>
-    <br>
+
     <div class="row">
       <p-block column="col-sm-12 offset-md-2 col-md-8">
         <div class="font-size-h5 font-w300 text-center">

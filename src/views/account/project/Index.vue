@@ -15,7 +15,7 @@
         </router-link>
       </li>
     </tab-menu>
-    <br>
+
     <div class="row">
       <p-block :header="true" :is-loading="loading" title="Project">
         <p-table>

@@ -9,72 +9,70 @@
       <span class="breadcrumb-item active">{{ project.code | uppercase }}</span>
     </breadcrumb>
 
-    <div class="">
-      <tab-menu>
-        <li class="nav-item">
-          <router-link
-            :to="'/account/project/' + id"
-            exact
-            class="nav-link"
-            active-class="active">
-            <span>Project</span>
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link
-            :to="'/account/project/' + id + '/invitation-code'"
-            exact
-            class="nav-link"
-            active-class="active">
-            <span>Invitation Code</span>
-          </router-link>
-        </li>
-      </tab-menu>
-      <br>
-      <div class="row">
-        <p-block column="col-sm-12 offset-md-2 col-md-8">
-          <div class="font-size-h5 font-w300 text-center">
-            {{ $t('invitation code') | titlecase }}
-          </div>
-          <hr/>
-          <div class="font-w300 mt-30">
-            <p>
-              {{ $t('invitation code intro') | capitalize }}
-            </p>
-          </div>
-          <p-form-check-box
-            id="subscibe"
-            name="subscibe"
-            @click.native="invitationCodeToggle"
-            :checked="form.invitation_code_enabled"
-            :description="invitationCodeStatus"/>
-          <hr v-show="form.invitation_code_enabled && !loadingSaveButton"/>
-          <div class="text-center mb-30" v-show="form.invitation_code_enabled && !loadingSaveButton">
-            <p
-              id="referralCode"
-              class="btn btn-outline-secondary"
-              :value="form.invitation_code"
-              @click="copyToClipboard">{{ form.invitation_code }}</p>
-          </div>
-          <h3 v-show="requestJoinProjects.length > 0">Pending Request</h3>
-          <p-table>
-            <tr
-              v-for="(requestJoinProject, index) in requestJoinProjects"
-              :key="index"
-              slot="p-body">
-              <td>{{ index + 1 }}.</td>
-              <td>
-                {{ requestJoinProject.user_name | titlecase }} <br/>
-                {{ requestJoinProject.user_email | lowercase }}
-              </td>
-              <td class="text-right">
-                <button class="btn btn-sm btn-primary" @click="acceptRequest(requestJoinProject)">Accept</button>
-                <button class="btn btn-sm btn-danger" @click="rejectRequest(requestJoinProject)">Reject</button>
-              </td>
-            </tr>
-          </p-table>
-        </p-block>
-      </div>
+    <tab-menu>
+      <li class="nav-item">
+        <router-link
+          :to="'/account/project/' + id"
+          exact
+          class="nav-link"
+          active-class="active">
+          <span>Project</span>
+        </router-link>
+      </li>
+      <li class="nav-item">
+        <router-link
+          :to="'/account/project/' + id + '/invitation-code'"
+          exact
+          class="nav-link"
+          active-class="active">
+          <span>Invitation Code</span>
+        </router-link>
+      </li>
+    </tab-menu>
+
+    <div class="row">
+      <p-block column="col-sm-12 offset-md-2 col-md-8">
+        <div class="font-size-h5 font-w300 text-center">
+          {{ $t('invitation code') | titlecase }}
+        </div>
+        <hr/>
+        <div class="font-w300 mt-30">
+          <p>
+            {{ $t('invitation code intro') | capitalize }}
+          </p>
+        </div>
+        <p-form-check-box
+          id="subscibe"
+          name="subscibe"
+          @click.native="invitationCodeToggle"
+          :checked="form.invitation_code_enabled"
+          :description="invitationCodeStatus"/>
+        <hr v-show="form.invitation_code_enabled && !loadingSaveButton"/>
+        <div class="text-center mb-30" v-show="form.invitation_code_enabled && !loadingSaveButton">
+          <p
+            id="referralCode"
+            class="btn btn-outline-secondary"
+            :value="form.invitation_code"
+            @click="copyToClipboard">{{ form.invitation_code }}</p>
+        </div>
+        <h3 v-show="requestJoinProjects.length > 0">Pending Request</h3>
+        <p-table>
+          <tr
+            v-for="(requestJoinProject, index) in requestJoinProjects"
+            :key="index"
+            slot="p-body">
+            <td>{{ index + 1 }}.</td>
+            <td>
+              {{ requestJoinProject.user_name | titlecase }} <br/>
+              {{ requestJoinProject.user_email | lowercase }}
+            </td>
+            <td class="text-right">
+              <button class="btn btn-sm btn-primary" @click="acceptRequest(requestJoinProject)">Accept</button>
+              <button class="btn btn-sm btn-danger" @click="rejectRequest(requestJoinProject)">Reject</button>
+            </td>
+          </tr>
+        </p-table>
+      </p-block>
     </div>
   </div>
 </template>
