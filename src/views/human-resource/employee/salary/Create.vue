@@ -836,7 +836,7 @@ export default {
     return {
       id: this.$route.params.id,
       form: new Form({
-        date: new Date().toISOString().slice(0,10),
+        date: new Date().toISOString().slice(0, 10),
         job_location: '',
         base_salary: 0,
         multiplier_kpi: 0,
