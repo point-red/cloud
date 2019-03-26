@@ -73,12 +73,7 @@
             <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
-                <p-select-modal
-                  :id="'item' + index"
-                  :title="'select item'"
-                  :options="itemOptions"
-                  @choosen="chooseItem(index, $event)"
-                  @search="searchItem"/>
+                <m-item :id="'item-' + index"/>
               </td>
               <td>
                 <p-form-number
