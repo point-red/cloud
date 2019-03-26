@@ -5,7 +5,7 @@ const url = '/human-resource/employee/employees'
 const state = {
   employee: {},
   employees: [],
-  employeePagination: {
+  pagination: {
     current_page: null,
     from: null,
     to: null,
@@ -23,21 +23,21 @@ const getters = {
   employees: state => {
     return state.employees
   },
-  employeePagination: state => {
-    return state.employeePagination
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.employees = payload.data
-    state.employeePagination.current_page = payload.meta.current_page
-    state.employeePagination.from = payload.meta.from
-    state.employeePagination.to = payload.meta.to
-    state.employeePagination.path = payload.meta.path
-    state.employeePagination.last_page = payload.meta.last_page
-    state.employeePagination.per_page = payload.meta.per_page
-    state.employeePagination.total = payload.meta.total
+    state.pagination.current_page = payload.meta.current_page
+    state.pagination.from = payload.meta.from
+    state.pagination.to = payload.meta.to
+    state.pagination.path = payload.meta.path
+    state.pagination.last_page = payload.meta.last_page
+    state.pagination.per_page = payload.meta.per_page
+    state.pagination.total = payload.meta.total
   },
   'FETCH_OBJECT' (state, payload) {
     state.employee = payload

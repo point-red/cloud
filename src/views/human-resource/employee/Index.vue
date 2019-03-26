@@ -74,7 +74,7 @@ export default {
   },
   computed: {
     ...mapGetters('Auth', ['authUser']),
-    ...mapGetters('Employee', ['employees', 'employeePagination']),
+    ...mapGetters('Employee', ['employees', 'pagination']),
     ...mapGetters('EmployeeGroup', ['groupList'])
   },
   methods: {
@@ -120,7 +120,7 @@ export default {
     this.getEmployeesRequest()
   },
   updated () {
-    this.lastPage = this.employeePagination.last_page
+    this.lastPage = this.pagination.last_page
   }
 }
 </script>

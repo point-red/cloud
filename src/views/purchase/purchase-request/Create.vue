@@ -43,13 +43,7 @@
           name="employee"
           :label="$t('employee')">
           <div slot="body" class="col-lg-9">
-            <p-select-modal
-              id="employee"
-              @addData="addEmployee"
-              :title="'select employee'"
-              :options="employeeOptions"
-              @choosen="chooseEmployee"
-              @search="searchEmployee"/>
+            <m-employee id="employee"/>
           </div>
         </p-form-row>
 
@@ -187,11 +181,6 @@ export default {
         label: null
       },
       supplierOptions: [],
-      employee: {
-        id: null,
-        label: null
-      },
-      employeeOptions: [],
       item: {
         id: null,
         label: null
@@ -210,7 +199,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employees']),
     ...mapGetters('PurchaseRequest', ['purchaseRequest'])
   },
   methods: {
@@ -247,25 +235,6 @@ export default {
         this.$notification.error(error.message)
       })
       this.searchEmployee(value)
-    },
-    searchEmployee (value) {
-      this.getEmployee({
-        params: {
-          filter_like: {
-            name: value  
-          },
-          limit: 50,
-          sort_by: 'name'
-        }
-      }).then(response => {
-        this.employeeOptions = []
-        response.data.map((key, value) => {
-          this.employeeOptions.push({
-            'id': key['id'],
-            'label': key['name']
-          })
-        })
-      })
     },
     searchItem (value) {
       this.getItem({
