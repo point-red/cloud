@@ -80,7 +80,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Supplier', ['suppliers', 'supplierPagination'])
+    ...mapGetters('Supplier', ['suppliers', 'pagination'])
   },
   methods: {
     ...mapActions('Supplier', ['get']),
@@ -103,7 +103,7 @@ export default {
             'emails.email': this.searchText
           },
           join: 'addresses,phones,emails',
-          includes: 'addresses;phones;groups;emails',
+          includes: 'addresses;phones;emails;groups',
           limit: 10,
           page: this.currentPage
         }
@@ -122,7 +122,7 @@ export default {
     this.getSupplierRequest()
   },
   updated () {
-    this.lastPage = this.supplierPagination.last_page
+    this.lastPage = this.pagination.last_page
   }
 }
 </script>

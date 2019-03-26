@@ -34,13 +34,7 @@
           name="supplier"
           :label="$t('supplier')">
           <div slot="body" class="col-lg-9">
-            <p-select-modal
-              id="supplier"
-              :title="'select supplier'"
-              :options="supplierOptions"
-              @addData="addSupplier"
-              @choosen="chooseSupplier"
-              @search="searchSupplier"/>
+            <m-supplier id="supplier"/>
           </div>
         </p-form-row>
 
@@ -216,14 +210,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Supplier', ['suppliers']),
     ...mapGetters('Employee', ['employees']),
     ...mapGetters('PurchaseRequest', ['purchaseRequest'])
   },
   methods: {
-    ...mapActions('Supplier', {
-      getSupplier: 'get'
-    }),
     ...mapActions('Employee', {
       getEmployee: 'get'
     }),
@@ -237,9 +227,6 @@ export default {
       getUser: 'get'
     }),
     ...mapActions('PurchaseRequest', ['create']),
-    ...mapActions('Supplier', {
-      createSupplier: 'create' 
-    }),
     ...mapActions('Employee', {
       createEmployee: 'create' 
     }),
@@ -250,34 +237,6 @@ export default {
         price: null,
         allocation: null,
         notes: null
-      })
-    },
-    addSupplier (value) {
-      this.createSupplier({
-        name: value
-      }).then(response => {
-      }).catch(error => {
-        this.$notification.error(error.message)
-      })
-      this.searchSupplier(value)
-    },
-    searchSupplier (value) {
-      this.getSupplier({
-        params: {
-          sort_by: 'name',
-          filter_like: {
-            name: value  
-          },
-          limit: 50
-        }
-      }).then(response => {
-        this.supplierOptions = []
-        response.data.map((key, value) => {
-          this.supplierOptions.push({
-            'id': key['id'],
-            'label': key['name']
-          })
-        })
       })
     },
     addEmployee (value) {
@@ -396,7 +355,6 @@ export default {
     }
   },
   created () {
-    this.searchSupplier()
     this.searchEmployee()
     this.searchItem()
     this.searchAllocation()

@@ -1,6 +1,6 @@
 import api from '@/api'
 
-const url = '/purchase/purchase-requests'
+const url = '/purchase/requests'
 
 const state = {
   purchaseRequest: {
