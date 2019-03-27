@@ -81,7 +81,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Customer', ['customers', 'customerPagination'])
+    ...mapGetters('Customer', ['customers', 'pagination'])
   },
   methods: {
     ...mapActions('Customer', ['get']),
@@ -126,7 +126,7 @@ export default {
     })
   },
   updated () {
-    this.lastPage = this.customerPagination.last_page
+    this.lastPage = this.pagination.last_page
   }
 }
 </script>

@@ -10,7 +10,7 @@ const state = {
     phone: ''
   },
   customers: [],
-  customerPagination: {}
+  pagination: {}
 }
 
 const getters = {
@@ -20,8 +20,8 @@ const getters = {
   customers: state => {
     return state.customers
   },
-  customerPagination: state => {
-    return state.customerPagination
+  pagination: state => {
+    return state.pagination
   }
 }
 
@@ -30,7 +30,7 @@ const mutations = {
     state.customers = payload
   },
   'PAGINATION' (state, payload) {
-    state.customerPagination = payload
+    state.pagination = payload
   },
   'FETCH_OBJECT' (state, payload) {
     state.customer = payload
