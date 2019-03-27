@@ -197,22 +197,13 @@ export default {
     ...mapGetters('PurchaseRequest', ['purchaseRequest'])
   },
   methods: {
-    ...mapActions('Employee', {
-      getEmployee: 'get'
-    }),
     ...mapActions('Allocation', {
       getAllocation: 'get'
-    }),
-    ...mapActions('Item', {
-      getItem: 'get'
     }),
     ...mapActions('User', {
       getUser: 'get'
     }),
     ...mapActions('PurchaseRequest', ['create']),
-    ...mapActions('Employee', {
-      createEmployee: 'create' 
-    }),
     addItemRow () {
       this.form.items.push({
         item: null,
@@ -230,25 +221,6 @@ export default {
         this.$notification.error(error.message)
       })
       this.searchEmployee(value)
-    },
-    searchItem (value) {
-      this.getItem({
-        params: {
-          filter_like: {
-            name: value  
-          },
-          limit: 50,
-          sort_by: 'name'
-        }
-      }).then(response => {
-        this.itemOptions = []
-        response.data.map((key, value) => {
-          this.itemOptions.push({
-            'id': key['id'],
-            'label': key['name']
-          })
-        })
-      })
     },
     searchAllocation (value) {
       this.getAllocation({

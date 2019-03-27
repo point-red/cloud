@@ -96,7 +96,14 @@ export default {
     add () {
       this.isSaving = true
       this.create({
-        name: this.searchText
+        code: this.searchText,
+        name: this.searchText,
+        units: [
+          {
+            label: 'pcs',
+            name: 'pcs'
+          }
+        ]
       }).then(response => {
         this.search()
         this.isSaving = false
@@ -109,6 +116,7 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.close()
+      this.$emit('')
     },
     show () {
       this.$refs['select-' + this.id].show()

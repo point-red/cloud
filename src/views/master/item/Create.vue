@@ -78,7 +78,6 @@ export default {
     ...mapActions('Item', ['create']),
     onSubmit () {
       this.loadingSaveButton = true
-      
       this.create(this.form)
         .then(response => {
           this.loadingSaveButton = false
