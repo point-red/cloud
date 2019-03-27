@@ -1,7 +1,7 @@
 <template>
   <div>
     <span @click="show" class="link"><i class="fa fa-list mr-5"></i>{{ mutableLabel || 'SELECT'}}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select employee">
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select user">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
@@ -52,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employees', 'pagination'])
+    ...mapGetters('User', ['users', 'pagination'])
   },
   props: {
     id: {
@@ -69,7 +69,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('Employee', ['get', 'create']),
+    ...mapActions('User', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({

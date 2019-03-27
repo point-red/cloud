@@ -7,7 +7,8 @@ const state = {
     code: '',
     name: ''
   },
-  allocations: []
+  allocations: [],
+  pagination: {}
 }
 
 const getters = {
@@ -16,12 +17,16 @@ const getters = {
   },
   allocations: state => {
     return state.allocations
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.allocations = payload
+    state.allocations = payload.data
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     state.allocation = payload
@@ -43,7 +48,7 @@ const actions = {
       api.get(url, payload)
         .then(
           (response) => {
-            commit('FETCH_ARRAY', response.data)
+            commit('FETCH_ARRAY', response)
             resolve(response)
           },
           (error) => {

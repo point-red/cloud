@@ -108,6 +108,7 @@ export default {
     choose (option) {
       this.mutableId = option.id
       this.mutableLabel = option.label
+      this.$emit('input', option.id)
       this.close()
     },
     show () {

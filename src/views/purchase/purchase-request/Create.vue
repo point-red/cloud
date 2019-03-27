@@ -34,7 +34,7 @@
           name="supplier"
           :label="$t('supplier')">
           <div slot="body" class="col-lg-9">
-            <m-supplier id="supplier"/>
+            <m-supplier id="supplier" v-model="form.supplier_id"/>
           </div>
         </p-form-row>
 
@@ -88,12 +88,7 @@
                   v-model="form.items[index].price"/>
               </td>
               <td>
-                <p-select-modal
-                  :id="'allocation' + index"
-                  :title="'select allocation'"
-                  :options="allocationOptions"
-                  @choosen="chooseAllocation(index, $event)"
-                  @search="searchAllocation"/>
+                <m-allocation :id="'allocation-' + index"/>
               </td>
               <td>
                 <p-form-input
@@ -117,12 +112,7 @@
           name="approver"
           :label="$t('approver')">
           <div slot="body" class="col-lg-9">
-            <p-select-modal
-              id="approver"
-              :title="'select approver'"
-              :options="approverOptions"
-              @choosen="chooseApprover"
-              @search="searchApprover"/>
+            <m-user :id="'user'"/>
           </div>
         </p-form-row>
 
@@ -161,48 +151,25 @@ export default {
       loadingSaveButton: false,
       form: new Form({
         date: null,
+        supplier_id: null,
+        employee_id: null,
+        approver_id: null,
         items: [
           {
-            item: null,
+            item_id: null,
             quantity: null,
             price: null,
             allocation: null,
             notes: null
           }
         ]        
-      }),
-      supplier: {
-        id: null,
-        label: null
-      },
-      supplierOptions: [],
-      item: {
-        id: null,
-        label: null
-      },
-      itemOptions: [],
-      allocation: {
-        id: null,
-        label: null
-      },
-      allocationOptions: [],
-      approver: {
-        id: null,
-        label: null
-      },
-      approverOptions: []
+      })
     }
   },
   computed: {
     ...mapGetters('PurchaseRequest', ['purchaseRequest'])
   },
   methods: {
-    ...mapActions('Allocation', {
-      getAllocation: 'get'
-    }),
-    ...mapActions('User', {
-      getUser: 'get'
-    }),
     ...mapActions('PurchaseRequest', ['create']),
     addItemRow () {
       this.form.items.push({
@@ -211,53 +178,6 @@ export default {
         price: null,
         allocation: null,
         notes: null
-      })
-    },
-    addEmployee (value) {
-      this.createEmployee({
-        name: value
-      }).then(response => {
-      }).catch(error => {
-        this.$notification.error(error.message)
-      })
-      this.searchEmployee(value)
-    },
-    searchAllocation (value) {
-      this.getAllocation({
-        params: {
-          filter_like: {
-            name: value  
-          },
-          limit: 50,
-          sort_by: 'name'
-        }
-      }).then(response => {
-        this.allocationOptions = []
-        response.data.map((key, value) => {
-          this.allocationOptions.push({
-            'id': key['id'],
-            'label': key['name']
-          })
-        })
-      })
-    },
-    searchApprover (value) {
-      this.getUser({
-        params: {
-          filter_like: {
-            name: value  
-          },
-          limit: 50,
-          sort_by: 'name'
-        }
-      }).then(response => {
-        this.approverOptions = []
-        response.data.map((key, value) => {
-          this.approverOptions.push({
-            'id': key['id'],
-            'label': key['name']
-          })
-        })
       })
     },
     chooseSupplier (supplier) {
@@ -291,10 +211,6 @@ export default {
     }
   },
   created () {
-    this.searchEmployee()
-    this.searchItem()
-    this.searchAllocation()
-    this.searchApprover()
   }
 }
 </script>
