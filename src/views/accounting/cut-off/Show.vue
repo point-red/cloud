@@ -7,20 +7,7 @@
       <span class="breadcrumb-item active">{{ cutOff.number }}</span>
     </breadcrumb>
 
-    <div class="row gutters-tiny">
-      <p-box
-        :name="$t('add')"
-        icon="si si-plus"
-        v-if="$permission.has('create employee')"
-        link="/accounting/cut-off/create"/>
-      <p-box
-        :name="$t('list')"
-        icon="si si-docs"
-        v-if="$permission.has('read employee')"
-        link="/accounting/cut-off"/>
-    </div>
-
-    <hr>
+    <tab-menu/>
 
     <div class="row">
       <div class="col-sm-12">
@@ -79,6 +66,7 @@
 </template>
 
 <script>
+import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/accounting/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -91,7 +79,8 @@ export default {
     }
   },
   components: {
-    Breadcrumb
+    Breadcrumb,
+    TabMenu
   },
   computed: {
     ...mapGetters('CutOff', ['cutOff'])

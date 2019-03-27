@@ -7,20 +7,7 @@
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
-    <div class="row gutters-tiny">
-      <p-box
-        :name="$t('add')"
-        icon="si si-plus"
-        v-if="$permission.has('create cut off')"
-        link="/accounting/cut-off/create"/>
-      <p-box
-        :name="$t('list')"
-        icon="si si-docs"
-        v-if="$permission.has('read cut off')"
-        link="/accounting/cut-off"/>
-    </div>
-
-    <hr>
+    <tab-menu/>
 
     <div class="row">
       <div class="col-sm-12">
@@ -108,6 +95,7 @@
 </template>
 
 <script>
+import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/accounting/Breadcrumb'
 import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
@@ -126,7 +114,8 @@ export default {
     }
   },
   components: {
-    Breadcrumb
+    Breadcrumb,
+    TabMenu
   },
   computed: {
     ...mapGetters('ChartOfAccount', ['chartOfAccounts'])
