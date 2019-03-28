@@ -20,13 +20,11 @@
           </a>
           </template>
         </div>
-        </p-pagination>
         <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
-          Pencarian "{{ searchText }}" tidak ditemukan! <br>
-          klik <span class="link" @click="add"><i class="fa fa-xs" :class="{
-            'fa-refresh fa-spin': isSaving,
-            'fa-plus': !isSaving
-          }"></i> Add</span> untuk menambahkan data
+          {{ $t('searching not found', [searchText]) | capitalize }} <br>
+        </div>
+        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
+          {{ $t('you doesn\'t have any') | capitalize }} {{ $t('allocation') | capitalize }}
         </div>
       </template>
       <template slot="footer">

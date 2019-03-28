@@ -43,7 +43,7 @@
           name="employee"
           :label="$t('employee')">
           <div slot="body" class="col-lg-9">
-            <m-employee id="employee"/>
+            <m-employee id="employee" v-model="form.employee_id"/>
           </div>
         </p-form-row>
 
@@ -73,7 +73,7 @@
             <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
-                <m-item :id="'item-' + index"/>
+                <m-item :id="'item-' + index" v-model="form.items[index].item_id"/>
               </td>
               <td>
                 <p-form-number
@@ -88,7 +88,7 @@
                   v-model="form.items[index].price"/>
               </td>
               <td>
-                <m-allocation :id="'allocation-' + index"/>
+                <m-allocation :id="'allocation-' + index" v-model="form.items[index].allocation_id"/>
               </td>
               <td>
                 <p-form-input
@@ -112,7 +112,7 @@
           name="approver"
           :label="$t('approver')">
           <div slot="body" class="col-lg-9">
-            <m-user :id="'user'"/>
+            <m-user :id="'user'" v-model="form.approver_id"/>
           </div>
         </p-form-row>
 
@@ -159,10 +159,10 @@ export default {
             item_id: null,
             quantity: null,
             price: null,
-            allocation: null,
+            allocation_id: null,
             notes: null
           }
-        ]        
+        ]
       })
     }
   },
