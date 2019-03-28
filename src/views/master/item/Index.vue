@@ -22,7 +22,7 @@
               slot="p-body">
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: item.id }}">
-                  {{ item.name | titlecase }}
+                  {{ item }}
                 </router-link>
               </td>
             </tr>
@@ -63,7 +63,8 @@ export default {
     this.loading = true
     this.getItem({
       params: {
-        sort_by: 'name'
+        sort_by: 'name',
+        includes: 'account'
       }
     }).then((response) => {
       this.loading = false

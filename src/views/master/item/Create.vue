@@ -14,21 +14,39 @@
       <p-block :title="'Create Item'" :header="true">
         <p-form-row
           id="code"
+          name="code"
+          :label="$t('code')"
           v-model="form.code"
           :disabled="loadingSaveButton"
-          :label="$t('code')"
-          name="code"
           :errors="form.errors.get('code')"
           @errors="form.errors.set('code', null)"/>
 
         <p-form-row
           id="name"
+          name="name"
+          :label="$t('name')"
           v-model="form.name"
           :disabled="loadingSaveButton"
-          :label="$t('name')"
-          name="name"
           :errors="form.errors.get('name')"
           @errors="form.errors.set('name', null)"/>
+
+        <p-form-row
+          id="chart-of-account"
+          name="chart-of-account"
+          :label="$t('chart of account')">
+          <div slot="body" class="col-lg-9">
+            <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id"/>
+          </div>
+        </p-form-row>
+
+        <p-form-row
+          id="unit"
+          name="unit"
+          :label="$t('unit')"
+          v-model="form.units[0].label"
+          :disabled="loadingSaveButton"
+          :errors="form.errors.get('unit')"
+          @errors="form.errors.set('unit', null)"/>
 
         <div class="form-group row">
           <div class="col-md-3"></div>
@@ -62,13 +80,21 @@ export default {
       form: new Form({
         code: null,
         name: null,
-        units: [
-          {
-            label: 'pcs',
-            name: 'pcs'
-          }
-        ]
+        chart_of_account_id: null,
+        units: [{
+          label: null,
+          name: null
+        }]
       })
+    }
+  },
+  watch: {
+    'form.units': {
+       handler: function(newValue) {
+        this.form.units[0].name = this.form.units[0].label
+      },
+      deep: true
+      
     }
   },
   computed: {
