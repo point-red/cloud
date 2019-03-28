@@ -56,7 +56,7 @@
               </p-form-row>
               <p-form-row
                 id="salary-date"
-                :label="$t('salary date')">
+                :label="$t('period')">
                 <div slot="body" class="col-lg-9 col-form-label">
                   {{ form.salary.date | dateFormat('MMM YYYY') }}
                 </div>
@@ -902,6 +902,8 @@ export default {
         this.base_salary_week_3 = baseSalaryPerWeek * Number(this.form.salary.active_days_week3)
         this.base_salary_week_4 = baseSalaryPerWeek * Number(this.form.salary.active_days_week4)
         this.base_salary_week_5 = baseSalaryPerWeek * Number(this.form.salary.active_days_week5)
+      } else {
+        this.form.salary.active_days_in_month = 0
       }
 
       this.real_transport_allowance_week_1 = this.form.salary.daily_transport_allowance * Number(this.form.salary.active_days_week1)

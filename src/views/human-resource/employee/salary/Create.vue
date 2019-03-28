@@ -56,7 +56,7 @@
               </p-form-row>
               <p-form-row
                 id="salary-date"
-                :label="$t('salary period')">
+                :label="$t('period')">
                 <div slot="body" class="col-lg-9">
                   <p-date-picker
                     name="salary-year-month"
@@ -1133,6 +1133,8 @@ export default {
         this.base_salary_week_3 = baseSalaryPerWeek * Number(this.form.active_days_week_3)
         this.base_salary_week_4 = baseSalaryPerWeek * Number(this.form.active_days_week_4)
         this.base_salary_week_5 = baseSalaryPerWeek * Number(this.form.active_days_week_5)
+      } else {
+        this.form.active_days_in_month = 0
       }
 
       this.real_transport_allowance_week_1 = this.form.daily_transport_allowance * Number(this.form.active_days_week_1)
@@ -1177,7 +1179,7 @@ export default {
       this.total_amount_week_4 = this.total_component_amount_week_4 + this.real_transport_allowance_week_4
       this.total_amount_week_5 = this.total_component_amount_week_5 + this.real_transport_allowance_week_5
 
-      this.total_amount_received_week_1 = this.total_amount_week_1 - this.form.receiveable_cut_60_days_week_1  + this.form.communication_allowance + this.form.team_leader_allowance
+      this.total_amount_received_week_1 = this.total_amount_week_1 - this.form.receiveable_cut_60_days_week_1 + this.form.communication_allowance + this.form.team_leader_allowance
       this.total_amount_received_week_2 = this.total_amount_week_2 - this.form.receiveable_cut_60_days_week_2
       this.total_amount_received_week_3 = this.total_amount_week_3 - this.form.receiveable_cut_60_days_week_3
       this.total_amount_received_week_4 = this.total_amount_week_4 - this.form.receiveable_cut_60_days_week_4

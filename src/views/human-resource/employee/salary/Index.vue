@@ -68,9 +68,12 @@
                 <router-link
                   :to="{ path: '/human-resource/employee/' + employee.id + '/salary/' + salary.id + '/edit', params: { id: employee.id, kpiId: salary.id }}"
                   v-if="$permission.has('update employee salary')"
-                  class="btn btn-sm btn-secondary mr-5">
+                  class="btn btn-sm btn-secondary">
                   <i class="si si-note"></i> Edit
                 </router-link>
+                <button :disabled="isExporting.includes(salary.id)" type="submit" class="btn btn-sm btn-primary" @click="exportData(salary.id)" style="margin-left:12px">
+                  <i v-show="isExporting.includes(salary.id)" class="fa fa-asterisk fa-spin" /> Export
+                </button>
                 &nbsp;
                 <i class="fa fa-close" v-show="$permission.has('delete employee salary')" @click="deleteSalary(salary.id)"/>
               </td>
@@ -128,7 +131,8 @@ export default {
       chartData: [],
       hideChart: false,
       loadingSaveButton: false,
-      selectedSalaryId: ''
+      selectedSalaryId: '',
+      isExporting: []
     }
   },
   created () {
@@ -164,7 +168,8 @@ export default {
   methods: {
     ...mapActions('EmployeeSalary', {
       getEmployeeSalary: 'get',
-      deleteEmployeeSalary: 'delete'
+      deleteEmployeeSalary: 'delete',
+      export: 'export'
     }),
     deleteSalary (salaryId) {
       this.selectedSalaryId = salaryId
@@ -181,6 +186,20 @@ export default {
           this.$notification.error('Delete failed', error.message)
           console.log(JSON.stringify(error))
         })
+    },
+    exportData (value) {
+      this.isExporting.push(value)
+      this.export({
+        id: value,
+        employeeId: this.id
+      }).then((response) => {
+        this.isExporting.splice(this.isExporting.indexOf(value), 1)
+        this.downloadLink = response.data.url
+        window.open(response.data.url, '_blank')
+      }, (error) => {
+        this.isExporting.splice(this.isExporting.indexOf(value), 1)
+        console.log(error)
+      })
     }
   }
 }

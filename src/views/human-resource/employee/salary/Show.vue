@@ -53,7 +53,7 @@
               </p-form-row>
               <p-form-row
                 id="salary-date"
-                :label="$t('salary date')">
+                :label="$t('period')">
                 <div slot="body" class="col-lg-9 col-form-label">
                   {{ salary.date | dateFormat('MMM YYYY') }}
                 </div>
