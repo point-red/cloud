@@ -554,13 +554,13 @@ export default {
       this.total_amount_week_4 = this.total_component_amount_week_4 + this.real_transport_allowance_week_4
       this.total_amount_week_5 = this.total_component_amount_week_5 + this.real_transport_allowance_week_5
 
-      this.total_amount_received_week_1 = this.total_amount_week_1 - this.salary.receiveable_cut_60_days_week1
+      this.total_amount_received_week_1 = this.total_amount_week_1 - this.salary.receiveable_cut_60_days_week1 + this.salary.communication_allowance + this.salary.team_leader_allowance
       this.total_amount_received_week_2 = this.total_amount_week_2 - this.salary.receiveable_cut_60_days_week2
       this.total_amount_received_week_3 = this.total_amount_week_3 - this.salary.receiveable_cut_60_days_week3
       this.total_amount_received_week_4 = this.total_amount_week_4 - this.salary.receiveable_cut_60_days_week4
       this.total_amount_received_week_5 = this.total_amount_week_5 - this.salary.receiveable_cut_60_days_week5
 
-      this.total_amount_received = this.total_amount_received_week_1 + this.total_amount_received_week_2 + this.total_amount_received_week_3 + this.total_amount_received_week_4 + this.total_amount_received_week_5 + this.salary.communication_allowance + this.salary.team_leader_allowance
+      this.total_amount_received = this.total_amount_received_week_1 + this.total_amount_received_week_2 + this.total_amount_received_week_3 + this.total_amount_received_week_4 + this.total_amount_received_week_5
 
       this.company_profit_week_1 = (5 / 100) * (Number(this.salary.payment_from_marketing_week1) + Number(this.salary.payment_from_sales_week1) + Number(this.salary.payment_from_spg_week1))
       this.company_profit_week_2 = (5 / 100) * (Number(this.salary.payment_from_marketing_week2) + Number(this.salary.payment_from_sales_week2) + Number(this.salary.payment_from_spg_week2))
