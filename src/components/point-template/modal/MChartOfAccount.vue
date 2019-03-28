@@ -83,7 +83,14 @@ export default {
           limit: 50,
           filter_like: {
             name: this.searchText
-          }
+          },
+          filter_where_has: [
+            {
+              type: {
+                name: 'inventory'
+              }
+            }
+          ]
         }
       }).then(response => {
         this.options = []
