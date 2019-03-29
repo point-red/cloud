@@ -15,6 +15,7 @@
           <p-table>
             <tr slot="p-head">
               <th>Name</th>
+              <th>Account</th>
             </tr>
             <tr
               v-for="item in items"
@@ -22,8 +23,11 @@
               slot="p-body">
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: item.id }}">
-                  {{ item }}
+                  {{ item.name }}
                 </router-link>
+              </td>
+              <td>
+                {{ item.account.number }} - {{ item.account.name | titlecase }}
               </td>
             </tr>
           </p-table>

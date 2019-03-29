@@ -1,7 +1,7 @@
 <template>
   <div>
     <span @click="show" class="link"><i class="fa fa-list mr-5"></i>{{ mutableLabel || 'SELECT'}}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select supplier">
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select warehouse">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
@@ -16,7 +16,7 @@
             :class="{'active': option.id == mutableId }"
             @click="choose(option)"
             href="javascript:void(0)">
-            {{ option.label | titlecase }}
+            {{ option.label }}
           </a>
           </template>
         </div>
@@ -28,8 +28,8 @@
           }"></i> Add</span> {{ $t('to add new data') }}
         </div>
         <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you doesn\'t have any') | capitalize }} {{ $t('chart of account') | capitalize }}, <br/> {{ $t('you can create') }} 
-          <router-link :to="'/accounting/chart-of-account/create'">
+          {{ $t('you doesn\'t have any') | capitalize }} {{ $t('warehouse') | capitalize }}, <br/> {{ $t('you can create') }} 
+          <router-link :to="'/master/warehouse/create'">
             <span>{{ $t('new one') }}</span>
           </router-link>
         </div>
@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('ChartOfAccount', ['chartOfAccounts'])
+    ...mapGetters('Warehouse', ['warehouses', 'pagination'])
   },
   props: {
     id: {
@@ -74,30 +74,23 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('ChartOfAccount', ['get', 'create']),
+    ...mapActions('Warehouse', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
         params: {
-          sort_by: 'number',
+          sort_by: 'name',
           limit: 50,
           filter_like: {
             name: this.searchText
-          },
-          filter_where_has: [
-            {
-              type: {
-                name: 'inventory'
-              }
-            }
-          ]
+          }
         }
       }).then(response => {
         this.options = []
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
-            'label': key['number'] + ' - ' + key['alias']
+            'label': key['name']
           })
         })
         this.isLoading = false
@@ -108,6 +101,7 @@ export default {
     add () {
       this.isSaving = true
       this.create({
+        code: this.searchText,
         name: this.searchText
       }).then(response => {
         this.search()

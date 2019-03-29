@@ -47,6 +47,50 @@
           :disabled="loadingSaveButton"
           :errors="form.errors.get('unit')"
           @errors="form.errors.set('unit', null)"/>
+        
+        <p-separator></p-separator>
+
+        <h3 class="">{{ $t('opening stock') | uppercase }}</h3>
+
+        <p-block-inner>
+          <point-table>
+            <tr slot="p-head">
+              <th>#</th>
+              <th>Warehouse</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Value</th>
+            </tr>
+            <tr slot="p-body" v-for="(row, index) in form.opening_stocks" :key="index">
+              <th>{{ index + 1 }}</th>
+              <td>
+                <m-warehouse :id="'warehouse-' + index" v-model="form.opening_stocks[index].warehouse_id"/>
+              </td>
+              <td>
+                <p-form-number
+                  :id="'quantity' + index"
+                  :name="'quantity' + index"
+                  v-model="form.opening_stocks[index].quantity"/>
+              </td>
+              <td>
+                <p-form-number
+                  :id="'price' + index"
+                  :name="'price' + index"
+                  v-model="form.opening_stocks[index].price"/>
+              </td>
+              <td>
+                <p-form-number
+                  :id="'value' + index"
+                  :name="'value' + index"
+                  :readonly="true"
+                  v-model="form.opening_stocks[index].value"/>
+              </td>
+            </tr>
+          </point-table>
+          <button type="button" class="btn btn-sm btn-secondary" @click="addOpeningStockRow">
+            <i class="fa fa-plus"/> Add
+          </button>
+        </p-block-inner>
 
         <div class="form-group row">
           <div class="col-md-3"></div>
@@ -66,13 +110,15 @@ import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
 import Form from '@/utils/Form'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster
+    BreadcrumbMaster,
+    PointTable
   },
   data () {
     return {
@@ -84,17 +130,32 @@ export default {
         units: [{
           label: null,
           name: null
-        }]
+        }],
+        opening_stocks: [
+          {
+            warehouse_id: null,
+            quantity: null,
+            price: null,
+            value: null
+          }
+        ]
       })
     }
   },
   watch: {
     'form.units': {
-       handler: function(newValue) {
+      handler: function(newValue) {
         this.form.units[0].name = this.form.units[0].label
       },
-      deep: true
-      
+      deep: true      
+    },
+    'form.opening_stocks': {
+      handler: function(newValue) {
+        this.form.opening_stocks.forEach(function(element) {
+          element.value = element.quantity * element.price
+        })
+      },
+      deep: true      
     }
   },
   computed: {
@@ -102,6 +163,14 @@ export default {
   },
   methods: {
     ...mapActions('Item', ['create']),
+    addOpeningStockRow () {
+      this.form.opening_stocks.push({
+        warehouse_id: null,
+        quantity: null,
+        price: null,
+        value: null
+      })
+    },
     onSubmit () {
       this.loadingSaveButton = true
       this.create(this.form)
