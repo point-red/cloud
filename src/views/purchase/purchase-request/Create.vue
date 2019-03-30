@@ -73,13 +73,18 @@
             <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
-                <m-item :id="'item-' + index" v-model="form.items[index].item_id"/>
+                <m-item
+                  :id="'item-' + index"
+                  :data-index="index"
+                  v-model="form.items[index].item_id"
+                  @units="updateUnits"/>
               </td>
               <td>
-                <p-form-number
+                <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.items[index].quantity"/>
+                  v-model="form.items[index].quantity"
+                  :unit="form.items[index].units[0].label"/>
               </td>
               <td>
                 <p-form-number
@@ -157,6 +162,13 @@ export default {
         items: [
           {
             item_id: null,
+            units: [
+              {
+                label: '',
+                name: '',
+                converter: null
+              }
+            ],
             quantity: null,
             price: null,
             allocation_id: null,
@@ -173,27 +185,26 @@ export default {
     ...mapActions('PurchaseRequest', ['create']),
     addItemRow () {
       this.form.items.push({
-        item: null,
+        item_id: null,
+        units: [
+          {
+            label: '',
+            name: '',
+            converter: null
+          }
+        ],
         quantity: null,
         price: null,
         allocation: null,
         notes: null
       })
     },
-    chooseSupplier (supplier) {
-      this.form.supplier_id = supplier.id
-    },
-    chooseEmployee (employee) {
-      this.form.employee_id = employee.id
-    },
-    chooseItem (index, item) {
-      this.form.items[index].item_id = item.id
-    },
-    chooseAllocation (index, allocation) {
-      this.form.items[index].allocation_id = allocation.id
-    },
-    chooseApprover (approver) {
-      this.form.approver = approver
+    updateUnits (itemUnits) {
+      this.form.items.forEach((element, key) => {
+        if (element.item_id == itemUnits.item_id) {
+          this.form.items[key].units = itemUnits.units
+        }
+      })
     },
     onSubmit () {
       this.loadingSaveButton = true

@@ -83,14 +83,16 @@ export default {
           limit: 50,
           filter_like: {
             name: this.searchText
-          }
+          },
+          includes: 'units'
         }
       }).then(response => {
         this.options = []
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
-            'label': key['name']
+            'label': key['name'],
+            'units': key['units']
           })
         })
         this.isLoading = false
@@ -121,6 +123,10 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
+      this.$emit('units', {
+        item_id: option.id,
+        units: option.units
+      })
       this.close()
     },
     show () {
