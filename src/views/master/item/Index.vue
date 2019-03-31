@@ -11,7 +11,15 @@
 
     <div class="row">
       <p-block :title="title" :header="true">
-        <p-block-inner :is-loading="loading">
+        <p-form-input
+          id="search-text"
+          name="search-text"
+          placeholder="Search"
+          ref="searchText"
+          :value="searchText"
+          @input="filterSearch"/>
+        <hr>
+        <p-block-inner :is-loading="isLoading">
           <p-table>
             <tr slot="p-head">
               <th>Name</th>
@@ -28,7 +36,9 @@
                 </router-link>
               </td>
               <td>
-                {{ item.account.number }} - {{ item.account.name | titlecase }}
+                <template v-show="item.account">
+                  {{ item.account.number }} - {{ item.account.name | titlecase }}
+                </template>
               </td>
               <td>
                 {{ item.stock | numberFormat }} {{ item.units[0].label }}
@@ -36,6 +46,11 @@
             </tr>
           </p-table>
         </p-block-inner>
+        <p-pagination
+          :current-page="currentPage"
+          :last-page="lastPage"
+          @updatePage="updatePage">
+        </p-pagination>
       </p-block>
     </div>
   </div>
@@ -45,41 +60,67 @@
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
+import PointTable from 'point-table-vue'
+import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster
+    BreadcrumbMaster,
+    PointTable
   },
   data () {
     return {
       title: 'Item',
-      loading: true
+      isLoading: true,
+      searchText: this.$route.query.search,
+      currentPage: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {
-    ...mapGetters('masterItem', ['items'])
+    ...mapGetters('masterItem', ['items', 'pagination'])
   },
   methods: {
-    ...mapActions('masterItem', {
-      getItem: 'get'
-    })
+    ...mapActions('masterItem', ['get']),
+    updatePage (value) {
+      this.currentPage = value
+      this.getItemRequest()
+    },
+    getItemRequest () {
+      this.isLoading = true
+      this.get({
+        params: {
+          page: this.currentPage,
+          limit: 20,
+          sort_by: 'name',
+          filter_like: {
+            'code': this.searchText,
+            'name': this.searchText
+          },
+          includes: 'account;units'
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+      })
+    },
+    filterSearch: debounce(function (value) {
+      this.$router.push({ query: { search: value } })
+      this.searchText = value
+      this.currentPage = 1
+      this.getItemRequest()
+    }, 300)
   },
   created () {
-    this.loading = true
-    this.getItem({
-      params: {
-        sort_by: 'name',
-        includes: 'account;units'
-      }
-    }).then((response) => {
-      this.loading = false
-    }, (error) => {
-      this.loading = false
-      this.$notifications.error(error.message)
-    })
+    this.isLoading = true
+    this.getItemRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   }
 }
 </script>

@@ -4,7 +4,8 @@ const url = '/master/roles'
 
 const state = {
   role: {},
-  roles: []
+  roles: [],
+  pagination: {}
 }
 
 const getters = {
@@ -13,12 +14,16 @@ const getters = {
   },
   roles: state => {
     return state.roles
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.roles = payload
+    state.roles = payload.data
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     state.role = payload
@@ -35,69 +40,59 @@ const mutations = {
 }
 
 const actions = {
-  get ({ commit }) {
+  get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url)
-        .then(
-          (response) => {
-            commit('FETCH_ARRAY', response.data)
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+      api.get(url, payload)
+        .then(response => {
+          commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.id)
-        .then(
-          (response) => {
-            commit('FETCH_OBJECT', response.data)
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+      api.get(url + '/' + payload.id, payload)
+        .then(response => {
+          commit('FETCH_OBJECT', response.data)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url, payload)
-        .then(
-          (response) => {
-            context.dispatch('get')
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          context.dispatch('get')
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   update (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            context.dispatch('get')
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          context.dispatch('get')
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   delete (context, payload) {
     return new Promise((resolve, reject) => {
       api.delete(url + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            context.dispatch('get')
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          context.dispatch('get')
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   }
 }

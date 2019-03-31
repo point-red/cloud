@@ -10,9 +10,17 @@
     <br>
 
     <div class="row">
-      <p-block :title="title" :header="true">
-        <p-block-inner :is-loading="loading">
-          <p-table>
+      <p-block :title="$t('role and permission')" :header="true">
+        <p-form-input
+          id="search-text"
+          name="search-text"
+          placeholder="Search"
+          ref="searchText"
+          :value="searchText"
+          @input="filterSearch"/>
+        <hr>
+        <p-block-inner :is-loading="isLoading">
+          <point-table>
             <tr slot="p-head">
               <th>Name</th>
             </tr>
@@ -21,16 +29,18 @@
               :key="role.id"
               slot="p-body">
               <td>
-                <template v-if="role.id == 1">
-                  {{ role.name | titlecase }}
-                </template>
-                <router-link v-if="role.id != 1" :to="{ name: 'RoleShow', params: { id: role.id }}">
+                <router-link :to="{ name: 'RoleShow', params: { id: role.id }}">
                   {{ role.name | titlecase }}
                 </router-link>
               </td>
             </tr>
-          </p-table>
+          </point-table>
         </p-block-inner>
+        <p-pagination
+          :current-page="currentPage"
+          :last-page="lastPage"
+          @updatePage="updatePage">
+        </p-pagination>
       </p-block>
     </div>
   </div>
@@ -40,38 +50,66 @@
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
+import PointTable from 'point-table-vue'
+import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster
+    BreadcrumbMaster,
+    PointTable
   },
   data () {
     return {
-      title: 'Role & Permission',
-      loading: true
+      isLoading: true,
+      searchText: this.$route.query.search,
+      currentPage: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {
     ...mapGetters('masterRole', ['roles'])
   },
   created () {
-    this.loading = true
-    this.getRoles()
-      .then((response) => {
-        console.log('reponse role ' + JSON.stringify(response))
-        this.loading = false
-      }, (error) => {
-        this.loading = false
-        this.$notification.error(error.message)
-      })
+    this.getRoleRequest()   
   },
   methods: {
     ...mapActions('masterRole', {
       getRoles: 'get'
-    })
+    }),
+    updatePage (value) {
+      this.currentPage = value
+      this.getRoleRequest()
+    },
+    getRoleRequest () {
+      this.isLoading = true
+      this.getRoles({
+        params: {
+          limit: 20,
+          sort_by: 'name',
+          filter_like: {
+            'name': this.searchText
+          },
+          filter_min: {
+            'id': 2
+          },
+          page: this.currentPage
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    },
+    filterSearch: debounce(function (value) {
+      this.$router.push({ query: { search: value } })
+      this.searchText = value
+      this.currentPage = 1
+      this.getRoleRequest()
+    }, 300)
   }
 }
 </script>

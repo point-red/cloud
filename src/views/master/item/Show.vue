@@ -67,6 +67,14 @@
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>
+          <button
+              type="button"
+              @click="onDelete()"
+              v-if="$permission.has('delete item')"
+              :disabled="isDeleting"
+              class="btn btn-sm btn-danger">
+              <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
+            </button>
         </p-block-inner>
       </p-block>
     </div>
@@ -89,14 +97,27 @@ export default {
     return {
       id: this.$route.params.id,
       title: 'Item',
-      isLoading: false
+      isLoading: false,
+      isDeleting: false
     }
   },
   computed: {
     ...mapGetters('masterItem', ['item']),
   },
   methods: {
-    ...mapActions('masterItem', ['find']),
+    ...mapActions('masterItem', ['find', 'delete']),
+    onDelete () {
+      this.isDeleting = true
+      this.delete({ id: this.id })
+        .then(response => {
+          this.$notification.success('delete success')
+          this.$router.replace('/master/item')
+          this.isDeleting = false
+        }).catch(error => {
+          this.$notification.error(error.message)
+          this.isDeleting = false
+        })
+    }
   },
   created () {
     this.isLoading = true

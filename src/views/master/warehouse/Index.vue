@@ -52,7 +52,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterWarehouse', ['warehouses'])
+    ...mapGetters('masterWarehouse', ['warehouses', 'pagination'])
   },
   methods: {
     ...mapActions('masterWarehouse', {

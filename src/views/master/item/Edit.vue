@@ -110,7 +110,8 @@ export default {
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id }, {
+    this.find({
+      id: this.id,
       params: {
         includes: 'units;account'
       }

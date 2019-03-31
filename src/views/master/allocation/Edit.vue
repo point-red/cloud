@@ -65,10 +65,10 @@ export default {
   created () {
     this.isLoading = true
     this.find({ id: this.id })
-      .then((response) => {
+      .then(response => {
         this.isLoading = false
         this.form.name = this.allocation.name
-      }, (error) => {
+      }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
       })
@@ -77,19 +77,16 @@ export default {
     ...mapActions('masterAllocation', ['find', 'update']),
     onSubmit () {
       this.update(this.form)
-        .then(
-          (response) => {
-            this.loadingSaveButton = false
-            this.form.reset()
-            this.$notification.success('Update success')
-            this.$router.push('/master/allocation/' + this.id)
-          },
-          (error) => {
-            this.loadingSaveButton = false
-            this.$notification.error('Update failed')
-            this.form.errors.record(error.errors)
-          }
-        )
+        .then(response => {
+          this.loadingSaveButton = false
+          this.form.reset()
+          this.$notification.success('Update success')
+          this.$router.push('/master/allocation/' + this.id)
+        }).catch(error => {
+          this.loadingSaveButton = false
+          this.$notification.error('Update failed')
+          this.form.errors.record(error.errors)
+        })
     }
   }
 }
