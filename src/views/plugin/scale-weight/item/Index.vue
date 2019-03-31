@@ -106,7 +106,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('ScaleWeightItem', ['scaleWeights'])
+    ...mapGetters('pluginScaleWeightItem', ['scaleWeights'])
   },
   watch: {
     'date_from' () {
@@ -117,7 +117,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('ScaleWeightItem', ['get', 'export']),
+    ...mapActions('pluginScaleWeightItem', ['get', 'export']),
     updateDateFrom () {
       this.loading = true
       this.date_to = this.date_from

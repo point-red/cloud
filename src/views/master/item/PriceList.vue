@@ -99,10 +99,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('PriceListItem', ['items', 'pagination', 'groups'])
+    ...mapGetters('masterPriceListItem', ['items', 'pagination', 'groups'])
   },
   methods: {
-    ...mapActions('PriceListItem', {
+    ...mapActions('masterPriceListItem', {
       getItem: 'get'
     }),
     addPricingGroup () {

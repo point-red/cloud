@@ -106,7 +106,7 @@ export default {
   },
   computed: {
     ...mapGetters('AccountProject', ['project']),
-    ...mapGetters('RequestJoinProject', ['requestJoinProjects'])
+    ...mapGetters('accountRequestJoinProject', ['requestJoinProjects'])
   },
   created () {
     this.form = this.project
@@ -138,7 +138,7 @@ export default {
       findProject: 'find',
       updateProject: 'update'
     }),
-    ...mapActions('RequestJoinProject', {
+    ...mapActions('accountRequestJoinProject', {
       getRequest: 'get',
       updateRequest: 'update',
       deleteRequest: 'delete'

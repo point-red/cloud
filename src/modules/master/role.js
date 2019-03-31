@@ -40,7 +40,6 @@ const actions = {
       api.get(url)
         .then(
           (response) => {
-            console.log('roles: ' + JSON.stringify(response.data))
             commit('FETCH_ARRAY', response.data)
             resolve(response)
           },

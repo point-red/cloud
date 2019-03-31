@@ -10,6 +10,4 @@ requireModule.keys().forEach(fileName => {
   modules[moduleName] = requireModule(fileName).default
 })
 
-console.log(modules)
-
 export default modules

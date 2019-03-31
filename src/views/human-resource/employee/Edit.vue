@@ -542,11 +542,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employee']),
-    ...mapGetters('EmployeeGroup', ['groupList']),
-    ...mapGetters('EmployeeReligion', ['religionList']),
-    ...mapGetters('EmployeeGender', ['genderList']),
-    ...mapGetters('EmployeeMaritalStatus', ['maritalStatusList'])
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeGroup', ['groupList']),
+    ...mapGetters('humanResourceEmployeeReligion', ['religionList']),
+    ...mapGetters('humanResourceEmployeeGender', ['genderList']),
+    ...mapGetters('humanResourceEmployeeMaritalStatus', ['maritalStatusList'])
   },
   created () {
     this.loading = true
@@ -572,7 +572,6 @@ export default {
       })
     this.getGenders()
       .then((response) => {
-        console.log(response.data)
       }, (error) => {
         console.log(JSON.stringify(error))
       })
@@ -581,23 +580,21 @@ export default {
     }).then((response) => {
       this.loading = false
       for (let field in this.form) {
-        console.log(JSON.stringify(field))
         if (response.data[field]) this.form[field] = response.data[field]
       }
       this.form.id = response.data.id
       this.form.company_emails = response.data.company_emails
-      console.log(response.data)
     }, (error) => {
       this.loading = false
       console.log(JSON.stringify(error))
     })
   },
   methods: {
-    ...mapActions('EmployeeGroup', { getGroups: 'get' }),
-    ...mapActions('EmployeeReligion', { getReligions: 'get' }),
-    ...mapActions('EmployeeGender', { getGenders: 'get' }),
-    ...mapActions('EmployeeMaritalStatus', { getMaritalStatuses: 'get' }),
-    ...mapActions('Employee', { findEmployee: 'find', updateEmployee: 'update' }),
+    ...mapActions('humanResourceEmployeeGroup', { getGroups: 'get' }),
+    ...mapActions('humanResourceEmployeeReligion', { getReligions: 'get' }),
+    ...mapActions('humanResourceEmployeeGender', { getGenders: 'get' }),
+    ...mapActions('humanResourceEmployeeMaritalStatus', { getMaritalStatuses: 'get' }),
+    ...mapActions('humanResourceEmployee', { findEmployee: 'find', updateEmployee: 'update' }),
     onSubmitContract (data) {
       this.form.contracts.push(data)
       this.$refs.contractModal.close()

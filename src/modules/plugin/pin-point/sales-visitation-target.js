@@ -71,12 +71,9 @@ const actions = {
     })
   },
   create (context, payload) {
-    console.log('create')
     return new Promise((resolve, reject) => {
-      console.log('promise')
       api.post(url, payload)
         .then((response) => {
-          console.log('then')
           context.dispatch('get')
           resolve(response)
         }, (error) => {

@@ -184,11 +184,11 @@ export default {
   },
   computed: {
     ...mapGetters('masterCustomer', ['customer']),
-    ...mapGetters('SalesVisitationForm', ['forms'])
+    ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
   },
   methods: {
     ...mapActions('masterCustomer', ['find']),
-    ...mapActions('SalesVisitationForm', ['get', 'export']),
+    ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),
     updatePage (value) {
       this.currentPage = value
       this.getSalesVisitationRequest()

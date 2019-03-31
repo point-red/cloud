@@ -74,7 +74,7 @@ export default {
   },
   methods: {
     ...mapActions('humanResourceKpiTemplate', { getKpiTemplates: 'get' }),
-    ...mapActions('Employee', { assignAssessment: 'assignAssessment' }),
+    ...mapActions('humanResourceEmployee', { assignAssessment: 'assignAssessment' }),
     show (employeeId) {
       this.employeeId = employeeId
       this.$refs.assignKpiTemplate.show()

@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('ChartOfAccount', ['chartOfAccounts'])
+    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts'])
   },
   props: {
     id: {
@@ -80,7 +80,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('ChartOfAccount', ['get', 'create']),
+    ...mapActions('accountingChartOfAccount', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({

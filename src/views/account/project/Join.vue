@@ -91,7 +91,7 @@ export default {
     this.form.invitation_code_enabled = this.project.invitation_code_enabled
   },
   methods: {
-    ...mapActions('RequestJoinProject', ['create']),
+    ...mapActions('accountRequestJoinProject', ['create']),
     onSubmit () {
       this.loadingSaveButton = true
       this.create(this.form)

@@ -46,25 +46,18 @@ const mutations = {
 
 const actions = {
   get ({ commit }, payload) {
-    console.log('get user')
     return new Promise((resolve, reject) => {
-      api.get(url, {
-        params: payload.params
-      }).then(response => {
+      api.get(url, payload).then(response => {
         commit('FETCH_ARRAY', response)
         resolve(response)
       }).catch(error => {
-        console.log('error user')
-        console.log(error)
         reject(error)
       })
     })
   },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.id, {
-        params: payload.params
-      }).then(
+      api.get(url + '/' + payload.id, payload).then(
         (response) => {
           commit('FETCH_OBJECT', response.data)
           resolve(response)

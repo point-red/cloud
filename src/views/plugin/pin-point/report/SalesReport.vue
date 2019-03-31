@@ -91,10 +91,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('SalesVisitationForm', ['forms'])
+    ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
   },
   methods: {
-    ...mapActions('SalesVisitationForm', ['get'])
+    ...mapActions('pluginPinPointSalesVisitationForm', ['get'])
   },
   created () {
     this.get()

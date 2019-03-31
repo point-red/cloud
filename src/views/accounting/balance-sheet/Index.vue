@@ -161,10 +161,10 @@ export default {
     Breadcrumb
   },
   computed: {
-    ...mapGetters('BalanceSheet', ['chartOfAccounts'])
+    ...mapGetters('accountingBalanceSheet', ['chartOfAccounts'])
   },
   methods: {
-    ...mapActions('BalanceSheet', ['get']),
+    ...mapActions('accountingBalanceSheet', ['get']),
     load () {
       this.loading = true
       this.get({ date: this.date })

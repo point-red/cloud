@@ -83,10 +83,10 @@ export default {
     TabMenu
   },
   computed: {
-    ...mapGetters('CutOff', ['cutOff'])
+    ...mapGetters('accountingCutOff', ['cutOff'])
   },
   methods: {
-    ...mapActions('CutOff', ['find', 'delete']),
+    ...mapActions('accountingCutOff', ['find', 'delete']),
     remove () {
       this.loadingSaveButton = true
       this.delete({ id: this.id })

@@ -70,7 +70,7 @@
               slot="p-body">
               <td>
                 <template v-if="reportType == 'all'">
-                  <router-link :to="{ name: 'EmployeeAssessmentShow', params: { id: employee.id, kpiId: assessment.id }}">
+                  <router-link :to="{ name: 'humanResourceEmployeeAssessmentShow', params: { id: employee.id, kpiId: assessment.id }}">
                     {{ assessment.date | dateFormat('DD MMMM YYYY') }}
                     <template v-if="$permission.has('read employee kpi')"> - {{ assessment.scorer.first_name + ' ' + assessment.scorer.last_name | titlecase }}</template>
                   </router-link>
@@ -185,8 +185,8 @@ export default {
   },
   computed: {
     ...mapGetters('auth', ['authUser']),
-    ...mapGetters('Employee', ['employee']),
-    ...mapGetters('EmployeeAssessment', ['assessments', 'dataSet'])
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeAssessment', ['assessments', 'dataSet'])
   },
   watch: {
     dataSet: function (val) {
@@ -205,7 +205,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('EmployeeAssessment', {
+    ...mapActions('humanResourceEmployeeAssessment', {
       getEmployeeAssessment: 'get',
       deleteEmployeeAssessment: 'delete'
     }),

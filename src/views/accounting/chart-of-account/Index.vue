@@ -60,10 +60,10 @@ export default {
     PointTable
   },
   computed: {
-    ...mapGetters('ChartOfAccount', ['chartOfAccounts']),
+    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts']),
   },
   methods: {
-    ...mapActions('ChartOfAccount', {
+    ...mapActions('accountingChartOfAccount', {
       getChartOfAccounts: 'get'
     }),
     filterSearch: debounce(function (value) {

@@ -113,7 +113,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('PinPointPerformanceReport', ['reports', 'items']),
+    ...mapGetters('pluginPinPointReportPerformance', ['reports', 'items']),
     dateView: function () {
       if (this.date.start == this.date.end) {
         return this.$moment(this.date.start).format('D MMM Y')
@@ -125,7 +125,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('PinPointPerformanceReport', ['get', 'export']),
+    ...mapActions('pluginPinPointReportPerformance', ['get', 'export']),
     percentage: function (actual, target) {
       let result = actual / target * 100
       return result >= 100 ? 100 : result

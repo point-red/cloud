@@ -472,10 +472,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('EmployeeGroup', ['groupList']),
-    ...mapGetters('EmployeeReligion', ['religionList']),
-    ...mapGetters('EmployeeGender', ['genderList']),
-    ...mapGetters('EmployeeMaritalStatus', ['maritalStatusList'])
+    ...mapGetters('humanResourceEmployeeGroup', ['groupList']),
+    ...mapGetters('humanResourceEmployeeReligion', ['religionList']),
+    ...mapGetters('humanResourceEmployeeGender', ['genderList']),
+    ...mapGetters('humanResourceEmployeeMaritalStatus', ['maritalStatusList'])
   },
   created () {
     this.getGroups()
@@ -504,19 +504,19 @@ export default {
       })
   },
   methods: {
-    ...mapActions('EmployeeGroup', {
+    ...mapActions('humanResourceEmployeeGroup', {
       getGroups: 'get'
     }),
-    ...mapActions('EmployeeReligion', {
+    ...mapActions('humanResourceEmployeeReligion', {
       getReligions: 'get'
     }),
-    ...mapActions('EmployeeGender', {
+    ...mapActions('humanResourceEmployeeGender', {
       getGenders: 'get'
     }),
-    ...mapActions('EmployeeMaritalStatus', {
+    ...mapActions('humanResourceEmployeeMaritalStatus', {
       getMaritalStatuses: 'get'
     }),
-    ...mapActions('Employee', {
+    ...mapActions('humanResourceEmployee', {
       createEmployee: 'create'
     }),
     onSubmitContract (data) {

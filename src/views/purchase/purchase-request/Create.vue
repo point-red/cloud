@@ -179,10 +179,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('PurchaseRequest', ['purchaseRequest'])
+    ...mapGetters('purchaseRequest', ['purchaseRequest'])
   },
   methods: {
-    ...mapActions('PurchaseRequest', ['create']),
+    ...mapActions('purchaseRequest', ['create']),
     addItemRow () {
       this.form.items.push({
         item_id: null,

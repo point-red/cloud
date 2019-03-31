@@ -36,7 +36,6 @@ const actions = {
       api.get(url(payload.id), payload)
         .then(
           (response) => {
-            console.log('permissions: ' + JSON.stringify(response))
             commit('FETCH_ARRAY', response)
             resolve(response)
           },

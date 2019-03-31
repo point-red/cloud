@@ -64,11 +64,11 @@ export default {
   },
   computed: {
     ...mapGetters('masterWarehouse', ['warehouse']),
-    ...mapGetters('SalesVisitationForm', ['forms'])
+    ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
   },
   methods: {
     ...mapActions('masterWarehouse', ['find']),
-    ...mapActions('SalesVisitationForm', ['get', 'export'])
+    ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export'])
   },
   created () {
     this.isLoading = true

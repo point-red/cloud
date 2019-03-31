@@ -46,7 +46,7 @@ const mutations = {
 const actions = {
   get ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url(payload.employeeId), { params: payload.params })
+      api.get(url(payload.employeeId), payload)
         .then(
           (response) => {
             commit('FETCH_ASSESSMENTS', response.data)

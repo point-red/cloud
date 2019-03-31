@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employees', 'pagination'])
+    ...mapGetters('humanResourceEmployee', ['employees', 'pagination'])
   },
   props: {
     id: {
@@ -80,7 +80,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('Employee', ['get', 'create']),
+    ...mapActions('humanResourceEmployee', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({

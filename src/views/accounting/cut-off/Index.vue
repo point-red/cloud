@@ -52,10 +52,10 @@ export default {
     TabMenu
   },
   computed: {
-    ...mapGetters('CutOff', ['cutOffs'])
+    ...mapGetters('accountingCutOff', ['cutOffs'])
   },
   methods: {
-    ...mapActions('CutOff', ['get'])
+    ...mapActions('accountingCutOff', ['get'])
   },
   created () {
     this.loading = true

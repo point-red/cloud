@@ -249,7 +249,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('ScaleWeightMerge', ['scaleWeights', 'items'])
+    ...mapGetters('pluginScaleWeightMerge', ['scaleWeights', 'items'])
   },
   watch: {
     'date_from' () {
@@ -263,7 +263,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('ScaleWeightMerge', ['get', 'export', 'getItems']),
+    ...mapActions('pluginScaleWeightMerge', ['get', 'export', 'getItems']),
     updateDateFrom () {
       this.loading = true
       this.date_to = this.date_from

@@ -64,10 +64,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('PurchaseRequest', ['purchaseRequest'])
+    ...mapGetters('purchaseRequest', ['purchaseRequest'])
   },
   methods: {
-    ...mapActions('PurchaseRequest', ['find'])
+    ...mapActions('purchaseRequest', ['find'])
   },
   created () {
     this.isLoading = true

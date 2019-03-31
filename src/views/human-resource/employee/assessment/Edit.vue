@@ -203,8 +203,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employee']),
-    ...mapGetters('EmployeeAssessment', ['assessment']),
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeAssessment', ['assessment']),
     ...mapGetters('humanResourceKpiResult', ['result']),
     ...mapGetters('humanResourceKpiTemplate', ['template'])
   },
@@ -228,7 +228,7 @@ export default {
     )
   },
   methods: {
-    ...mapActions('EmployeeAssessment', {
+    ...mapActions('humanResourceEmployeeAssessment', {
       findEmployeeAssessment: 'find', updateEmployeeAssessment: 'update'
     }),
     ...mapActions('humanResourceKpiTemplate', {

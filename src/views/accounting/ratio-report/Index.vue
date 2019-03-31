@@ -176,49 +176,49 @@ export default {
     this.$refs.linechart.updateData()
   },
   methods: {
-    ...mapActions('CurrentRatio', {
+    ...mapActions('accountingRatioReportCurrentRatio', {
       getCurrentRatio: 'get'
     }),
-    ...mapActions('CashRatio', {
+    ...mapActions('accountingRatioReportCashRatio', {
       getCashRatio: 'get'
     }),
-    ...mapActions('AcidTestRatio', {
+    ...mapActions('accountingRatioReportAcidTestRatio', {
       getAcidTestRatio: 'get'
     }),
-    ...mapActions('GrossProfitRatio', {
+    ...mapActions('accountingRatioReportGrossProfitRatio', {
       getGrossProfitRatio: 'get'
     }),
-    ...mapActions('RateOfReturnInvestment', {
+    ...mapActions('accountingRatioReportRateOfReturnInvestment', {
       getRateOfReturnInvestment: 'get'
     }),
-    ...mapActions('NetProfitMargin', {
+    ...mapActions('accountingRatioReportNetProfitMargin', {
       getNetProfitMargin: 'get'
     }),
-    ...mapActions('RateOfReturnOnNetWorth', {
+    ...mapActions('accountingRatioReportRateOfReturnOnNetWorth', {
       getRateOfReturnOnNetWorth: 'get'
     }),
-    ...mapActions('ReturnOnEquity', {
+    ...mapActions('accountingRatioReportReturnOnEquity', {
       getReturnOnEquity: 'get'
     }),
-    ...mapActions('TotalDebtToAssetRatio', {
+    ...mapActions('accountingRatioReportTotalDebtToAssetRatio', {
       getTotalDebtToAssetRatio: 'get'
     }),
-    ...mapActions('TotalDebtToEquityRatio', {
+    ...mapActions('accountingRatioReportTotalDebtToEquityRatio', {
       getTotalDebtToEquityRatio: 'get'
     }),
-    ...mapActions('TotalAssetTurnOver', {
+    ...mapActions('accountingRatioReportTotalAssetTurnOver', {
       getTotalAssetTurnOver: 'get'
     }),
-    ...mapActions('WorkingCapitalTurnOver', {
+    ...mapActions('accountingRatioReportWorkingCapitalTurnOver', {
       getWorkingCapitalTurnOver: 'get'
     }),
-    ...mapActions('FixedAssetTurnOver', {
+    ...mapActions('accountingRatioReportFixedAssetTurnOver', {
       getFixedAssetTurnOver: 'get'
     }),
-    ...mapActions('InventoryTurnOver', {
+    ...mapActions('accountingRatioReportInventoryTurnOver', {
       getInventoryTurnOver: 'get'
     }),
-    ...mapActions('AverageCollectionPeriodRatio', {
+    ...mapActions('accountingRatioReportAverageCollectionPeriodRatio', {
       getAverageCollectionPeriodRatio: 'get'
     }),
     currentRatio () {

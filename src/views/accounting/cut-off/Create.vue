@@ -118,13 +118,13 @@ export default {
     TabMenu
   },
   computed: {
-    ...mapGetters('ChartOfAccount', ['chartOfAccounts'])
+    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts'])
   },
   methods: {
-    ...mapActions('ChartOfAccount', {
+    ...mapActions('accountingChartOfAccount', {
       getChartOfAccounts: 'get'
     }),
-    ...mapActions('CutOff', {
+    ...mapActions('accountingCutOff', {
       storeCutOff: 'create'
     }),
     debit (event, index) {

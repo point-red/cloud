@@ -4,8 +4,8 @@ import Show from './Show'
 import Edit from './Edit'
 
 export default [
-  { path: '/human-resource/employee/:id/assessment/create', name: 'EmployeeAssessmentCreate', component: Create },
-  { path: '/human-resource/employee/:id/assessment', name: 'EmployeeAssessmentIndex', component: Index },
-  { path: '/human-resource/employee/:id/assessment/:kpiId', name: 'EmployeeAssessmentShow', component: Show },
-  { path: '/human-resource/employee/:id/assessment/:kpiId/edit', name: 'EmployeeAssessmentEdit', component: Edit }
+  { path: '/human-resource/employee/:id/assessment/create', name: 'humanResourceEmployeeAssessmentCreate', component: Create },
+  { path: '/human-resource/employee/:id/assessment', name: 'humanResourceEmployeeAssessmentIndex', component: Index },
+  { path: '/human-resource/employee/:id/assessment/:kpiId', name: 'humanResourceEmployeeAssessmentShow', component: Show },
+  { path: '/human-resource/employee/:id/assessment/:kpiId/edit', name: 'humanResourceEmployeeAssessmentEdit', component: Edit }
 ]

@@ -46,7 +46,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('PricingGroup', ['pricingGroups', 'pagination'])
+    ...mapGetters('masterPricingGroup', ['pricingGroups', 'pagination'])
   },
   props: {
     id: {
@@ -69,7 +69,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('PricingGroup', ['get', 'create']),
+    ...mapActions('masterPricingGroup', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({

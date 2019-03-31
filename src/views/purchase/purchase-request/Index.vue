@@ -95,10 +95,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('PurchaseRequest', ['purchaseRequests', 'purchaseRequestPagination'])
+    ...mapGetters('purchaseRequest', ['purchaseRequests', 'purchaseRequestPagination'])
   },
   methods: {
-    ...mapActions('PurchaseRequest', ['get']),
+    ...mapActions('purchaseRequest', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value

@@ -64,11 +64,11 @@ export default {
   },
   computed: {
     ...mapGetters('masterService', ['service']),
-    ...mapGetters('SalesVisitationForm', ['forms'])
+    ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
   },
   methods: {
     ...mapActions('masterService', ['find']),
-    ...mapActions('SalesVisitationForm', ['get', 'export'])
+    ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export'])
   },
   created () {
     this.isLoading = true

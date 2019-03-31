@@ -74,11 +74,11 @@ export default {
   },
   computed: {
     ...mapGetters('auth', ['authUser']),
-    ...mapGetters('Employee', ['employees', 'pagination']),
-    ...mapGetters('EmployeeGroup', ['groupList'])
+    ...mapGetters('humanResourceEmployee', ['employees', 'pagination']),
+    ...mapGetters('humanResourceEmployeeGroup', ['groupList'])
   },
   methods: {
-    ...mapActions('Employee', { getEmployees: 'get' }),
+    ...mapActions('humanResourceEmployee', { getEmployees: 'get' }),
     isShow (scorers) {
       return scorers.some(element => {
         return element.id == this.authUser.id

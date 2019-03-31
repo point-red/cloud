@@ -179,7 +179,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('SalesVisitationForm', ['forms', 'pagination'])
+    ...mapGetters('pluginPinPointSalesVisitationForm', ['forms', 'pagination'])
   },
   watch: {
     date: function () {
@@ -192,7 +192,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('SalesVisitationForm', ['get', 'export']),
+    ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),
     toggleBtnDropdown () {
       this.isDropdown = !this.isDropdown
     },

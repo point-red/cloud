@@ -98,10 +98,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Permission', ['permissions'])
+    ...mapGetters('masterPermission', ['permissions'])
   },
   methods: {
-    ...mapActions('Permission', ['update', 'bulkUpdate']),
+    ...mapActions('masterPermission', ['update', 'bulkUpdate']),
     togglePermission (permissionName) {
       var result = this.permissions.find((element) => {
         if (element.name === permissionName) {

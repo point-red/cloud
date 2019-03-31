@@ -50,7 +50,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('PurchaseRequest', ['purchaseRequest'])
+    ...mapGetters('purchaseRequest', ['purchaseRequest'])
   },
   created () {
     this.isLoading = true
@@ -64,7 +64,7 @@ export default {
       })
   },
   methods: {
-    ...mapActions('PurchaseRequest', ['find', 'update']),
+    ...mapActions('purchaseRequest', ['find', 'update']),
     onSubmit () {
       this.update(this.form)
         .then(

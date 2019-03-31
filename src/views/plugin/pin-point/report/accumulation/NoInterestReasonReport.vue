@@ -121,10 +121,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('NoInterestReasonReport', ['reasons', 'totalPerWeek'])
+    ...mapGetters('pluginPinPointReportNoInterestReason', ['reasons', 'totalPerWeek'])
   },
   methods: {
-    ...mapActions('NoInterestReasonReport', ['get']),
+    ...mapActions('pluginPinPointReportNoInterestReason', ['get']),
     search () {
       this.loading = true
       this.loadingSaveButton = true

@@ -138,7 +138,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('SalesVisitationForm', ['create', 'get']),
+    ...mapActions('pluginPinPointSalesVisitationForm', ['create', 'get']),
     onSelectedNoInterestReason (selected) {
       this.form.not_interest_reason = selected
       this.loadSuggestions = false

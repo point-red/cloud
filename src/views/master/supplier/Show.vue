@@ -80,11 +80,11 @@ export default {
   },
   computed: {
     ...mapGetters('masterSupplier', ['supplier']),
-    ...mapGetters('SalesVisitationForm', ['forms'])
+    ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
   },
   methods: {
     ...mapActions('masterSupplier', ['find']),
-    ...mapActions('SalesVisitationForm', ['get', 'export'])
+    ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export'])
   },
   created () {
     this.isLoading = true
