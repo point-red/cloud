@@ -29,7 +29,7 @@ const mutations = {
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.service = payload
+    state.service = payload.data
   },
   'CREATE' (state, payload) {
     state.service = payload
@@ -58,7 +58,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.get(url + '/' + payload.id)
         .then(response => {
-          commit('FETCH_OBJECT', response.data)
+          commit('FETCH_OBJECT', response)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -69,7 +69,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.post(url, payload)
         .then(response => {
-          context.dispatch('get')
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -80,7 +79,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.patch(url + '/' + payload.id, payload)
         .then(response => {
-          context.dispatch('get')
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -91,7 +89,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.delete(url + '/' + payload.id, payload)
         .then(response => {
-          context.dispatch('get')
           resolve(response)
         }).catch(error => {
           reject(error)
