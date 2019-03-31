@@ -71,7 +71,7 @@ const actions = {
                 kpi_template_group_id: response.data.kpi_template_group_id
               }
             })
-            context.dispatch('KpiTemplate/find', { id: payload.kpi_template_id }, { root: true })
+            context.dispatch('humanResourceKpiTemplate/find', { id: payload.kpi_template_id }, { root: true })
             resolve(response)
           },
           (error) => {
@@ -89,7 +89,7 @@ const actions = {
                 kpi_template_group_id: response.data.kpi_template_group_id
               }
             })
-            context.dispatch('KpiTemplate/find', { id: payload.kpi_template_id }, { root: true })
+            context.dispatch('humanResourceKpiTemplate/find', { id: payload.kpi_template_id }, { root: true })
             resolve(response)
           },
           (error) => {
@@ -107,7 +107,7 @@ const actions = {
                 kpi_template_group_id: response.data.kpi_template_group_id
               }
             })
-            context.dispatch('KpiTemplate/find', { id: response.data.group.kpi_template_id }, { root: true })
+            context.dispatch('humanResourceKpiTemplate/find', { id: response.data.group.kpi_template_id }, { root: true })
           },
           (error) => {
             reject(error)

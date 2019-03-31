@@ -95,7 +95,7 @@ const actions = {
       api.post(url, payload)
         .then(
           (response) => {
-            context.dispatch('KpiTemplate/find', { id: response.data.kpi_template_id }, { root: true })
+            context.dispatch('humanResourceKpiTemplate/find', { id: response.data.kpi_template_id }, { root: true })
             resolve(response)
           },
           (error) => {

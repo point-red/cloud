@@ -124,10 +124,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('KpiTemplate', ['templates', 'pagination'])
+    ...mapGetters('humanResourceKpiTemplate', ['templates', 'pagination'])
   },
   methods: {
-    ...mapActions('KpiTemplate', {
+    ...mapActions('humanResourceKpiTemplate', {
       getKpiTemplates: 'get',
       export: 'export'
     }),

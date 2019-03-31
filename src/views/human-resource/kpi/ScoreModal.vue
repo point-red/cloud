@@ -95,21 +95,21 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('KpiTemplateIndicator', {
+    ...mapGetters('humanResourceKpiTemplateIndicator', {
       indicator: 'indicator'
     }),
-    ...mapGetters('KpiTemplateScore', {
+    ...mapGetters('humanResourceKpiTemplateScore', {
       scores: 'scores'
     })
   },
   methods: {
-    ...mapMutations('KpiTemplateScore', {
+    ...mapMutations('humanResourceKpiTemplateScore', {
       fetchKpiTemplateScores: 'FETCH_ARRAY'
     }),
-    ...mapMutations('KpiTemplateIndicator', {
+    ...mapMutations('humanResourceKpiTemplateIndicator', {
       fetchKpiTemplateIndicator: 'FETCH_OBJECT'
     }),
-    ...mapActions('KpiTemplateScore', {
+    ...mapActions('humanResourceKpiTemplateScore', {
       getScores: 'get',
       createScore: 'create',
       updateScore: 'update',

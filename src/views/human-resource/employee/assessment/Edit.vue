@@ -205,8 +205,8 @@ export default {
   computed: {
     ...mapGetters('Employee', ['employee']),
     ...mapGetters('EmployeeAssessment', ['assessment']),
-    ...mapGetters('KpiResult', ['result']),
-    ...mapGetters('KpiTemplate', ['template'])
+    ...mapGetters('humanResourceKpiResult', ['result']),
+    ...mapGetters('humanResourceKpiTemplate', ['template'])
   },
   created () {
     this.loading = true
@@ -231,10 +231,10 @@ export default {
     ...mapActions('EmployeeAssessment', {
       findEmployeeAssessment: 'find', updateEmployeeAssessment: 'update'
     }),
-    ...mapActions('KpiTemplate', {
+    ...mapActions('humanResourceKpiTemplate', {
       findKpiTemplate: 'find'
     }),
-    ...mapActions('KpiResult', {
+    ...mapActions('humanResourceKpiResult', {
       findKpiResult: 'findByScorePercentage'
     }),
     cancel () {

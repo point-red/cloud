@@ -101,15 +101,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('KpiTemplateIndicator', {
+    ...mapGetters('humanResourceKpiTemplateIndicator', {
       indicators: 'indicators'
     })
   },
   methods: {
-    ...mapMutations('KpiTemplateIndicator', {
+    ...mapMutations('humanResourceKpiTemplateIndicator', {
       fetchKpiTemplateIndicator: 'FETCH_ARRAY'
     }),
-    ...mapActions('KpiTemplateIndicator', {
+    ...mapActions('humanResourceKpiTemplateIndicator', {
       getIndicators: 'get',
       createIndicator: 'create',
       updateIndicator: 'update',

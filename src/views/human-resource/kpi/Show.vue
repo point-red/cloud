@@ -125,13 +125,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('KpiTemplate', ['template', 'templates'])
+    ...mapGetters('humanResourceKpiTemplate', ['template', 'templates'])
   },
   created () {
     this.loading = true
     this.templates.find((element) => {
       if (element.id === this.id) {
-        this.$store.commit('KpiTemplate/FETCH_OBJECT', element)
+        this.$store.commit('humanResourceKpiTemplate/FETCH_OBJECT', element)
         this.loading = false
       }
     })
@@ -141,7 +141,7 @@ export default {
       })
   },
   methods: {
-    ...mapActions('KpiTemplate', {
+    ...mapActions('humanResourceKpiTemplate', {
       findKpiTemplate: 'find'
     })
   }

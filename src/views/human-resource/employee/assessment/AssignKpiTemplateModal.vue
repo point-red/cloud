@@ -60,7 +60,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('KpiTemplate', ['templates'])
+    ...mapGetters('humanResourceKpiTemplate', ['templates'])
   },
   created () {
     this.showLoadingBlock()
@@ -73,7 +73,7 @@ export default {
       })
   },
   methods: {
-    ...mapActions('KpiTemplate', { getKpiTemplates: 'get' }),
+    ...mapActions('humanResourceKpiTemplate', { getKpiTemplates: 'get' }),
     ...mapActions('Employee', { assignAssessment: 'assignAssessment' }),
     show (employeeId) {
       this.employeeId = employeeId

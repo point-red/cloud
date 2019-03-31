@@ -117,12 +117,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('KpiResult', {
+    ...mapGetters('humanResourceKpiResult', {
       results: 'results'
     })
   },
   methods: {
-    ...mapActions('KpiResult', {
+    ...mapActions('humanResourceKpiResult', {
       getResults: 'get',
       createResult: 'create',
       updateResult: 'update',

@@ -46,7 +46,7 @@ export default {
       this.$refs.changeLanguageModalRef.close()
     },
     setLang (lang) {
-      this.$store.dispatch('Lang/setLang', lang)
+      this.$store.dispatch('lang/setLang', lang)
       this.close()
     }
   }
