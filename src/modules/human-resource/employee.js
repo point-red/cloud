@@ -56,32 +56,34 @@ const mutations = {
 const actions = {
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url, payload).then((response) => {
-        commit('FETCH_ARRAY', response)
-        commit('humanResourceEmployeeGroup/FETCH_ARRAY', response.additional.groups, { root: true })
-        commit('humanResourceEmployeeGroup/FETCH_SELECT_LIST', response.additional.groups, { root: true })
-        resolve(response)
-      }, (error) => {
-        reject(error)
-      })
+      api.get(url, payload)
+        .then(response => {
+          commit('FETCH_ARRAY', response)
+          commit('humanResourceEmployeeGroup/FETCH_ARRAY', response.additional.groups, { root: true })
+          commit('humanResourceEmployeeGroup/FETCH_SELECT_LIST', response.additional.groups, { root: true })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.id, payload).then((response) => {
-        commit('FETCH_OBJECT', response.data)
-        resolve(response)
-      }, (error) => {
-        reject(error)
-      })
+      api.get(url + '/' + payload.id, payload)
+        .then(response => {
+          commit('FETCH_OBJECT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   assignAssessment (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/' + payload.employee_id + '/assign-assessment', payload)
-        .then((response) => {
+        .then(response => {
           resolve(response)
-        }, (error) => {
+        }).catch(error => {
           reject(error)
         })
     })
@@ -89,38 +91,32 @@ const actions = {
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url, payload)
-        .then(
-          (response) => {
-            context.dispatch('humanResourceKpiTemplate/find', { id: response.data.kpi_template_id }, { root: true })
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          context.dispatch('humanResourceKpiTemplate/find', { id: response.data.kpi_template_id }, { root: true })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   update (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   delete (context, payload) {
     return new Promise((resolve, reject) => {
       api.delete(url + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   }
 }

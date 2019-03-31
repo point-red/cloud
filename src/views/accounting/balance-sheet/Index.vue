@@ -167,41 +167,44 @@ export default {
     ...mapActions('accountingBalanceSheet', ['get']),
     load () {
       this.loading = true
-      this.get({ date: this.date })
-        .then((response) => {
-          this.loading = false
-          this.chartOfAccounts.forEach(element => {
-            if (element.type.name === 'cash' || element.type.name === 'bank' || element.type.name === 'note receivable' || element.type.name === 'inventory' || element.type.name === 'account receivable' || element.type.name === 'other account receivable') {
-              this.totalCurrentAsset += element.total
-            } else if (element.type.name === 'fixed asset' || element.type.name === 'fixed asset depreciation' || element.type.name === 'other asset' || element.type.name === 'other asset amortization') {
-              this.totalFixedAsset += element.total
-            } else if (element.type.name === 'current liability' || element.type.name === 'other current liability' || element.type.name === 'long term liability') {
-              this.totalLiability += element.total
-            } else if (element.type.name === 'owner equity' || element.type.name === 'shareholder distribution' || element.type.name === 'retained earning') {
-              this.totalEquity += element.total
-            } else if (element.type.name === 'sales income') {
-              this.totalSalesIncome += element.total
-            } else if (element.type.name === 'cost of sales') {
-              this.totalCostOfSales += element.total
-            } else if (element.type.name === 'direct expense') {
-              this.totalDirectExpense += element.total
-            } else if (element.type.name === 'other income') {
-              this.totalOtherIncome += element.total
-            } else if (element.type.name === 'other expense') {
-              this.totalOtherExpense += element.total
-            }
-          })
-
-          this.totalProfitAndLossGross = this.totalSalesIncome - this.totalCostOfSales
-          this.totalProfitAndLossOperation = this.totalProfitAndLossGross - this.totalDirectExpense
-          this.totalProfitAndLossNet = this.totalProfitAndLossOperation + this.totalOtherIncome - this.totalOtherExpense
-
-          this.totalEquity = this.totalProfitAndLossNet
-          this.totalAsset = this.totalCurrentAsset + this.totalFixedAsset
-        }, (error) => {
-          this.loading = false
-          this.$notification.error(error.message)
+      this.get({
+        params: {
+          date: this.date
+        }
+      }).then((response) => {
+        this.loading = false
+        this.chartOfAccounts.forEach(element => {
+          if (element.type.name === 'cash' || element.type.name === 'bank' || element.type.name === 'note receivable' || element.type.name === 'inventory' || element.type.name === 'account receivable' || element.type.name === 'other account receivable') {
+            this.totalCurrentAsset += element.total
+          } else if (element.type.name === 'fixed asset' || element.type.name === 'fixed asset depreciation' || element.type.name === 'other asset' || element.type.name === 'other asset amortization') {
+            this.totalFixedAsset += element.total
+          } else if (element.type.name === 'current liability' || element.type.name === 'other current liability' || element.type.name === 'long term liability') {
+            this.totalLiability += element.total
+          } else if (element.type.name === 'owner equity' || element.type.name === 'shareholder distribution' || element.type.name === 'retained earning') {
+            this.totalEquity += element.total
+          } else if (element.type.name === 'sales income') {
+            this.totalSalesIncome += element.total
+          } else if (element.type.name === 'cost of sales') {
+            this.totalCostOfSales += element.total
+          } else if (element.type.name === 'direct expense') {
+            this.totalDirectExpense += element.total
+          } else if (element.type.name === 'other income') {
+            this.totalOtherIncome += element.total
+          } else if (element.type.name === 'other expense') {
+            this.totalOtherExpense += element.total
+          }
         })
+
+        this.totalProfitAndLossGross = this.totalSalesIncome - this.totalCostOfSales
+        this.totalProfitAndLossOperation = this.totalProfitAndLossGross - this.totalDirectExpense
+        this.totalProfitAndLossNet = this.totalProfitAndLossOperation + this.totalOtherIncome - this.totalOtherExpense
+
+        this.totalEquity = this.totalProfitAndLossNet
+        this.totalAsset = this.totalCurrentAsset + this.totalFixedAsset
+      }, (error) => {
+        this.loading = false
+        this.$notification.error(error.message)
+      })
     }
   },
   created () {
