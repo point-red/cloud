@@ -27,7 +27,7 @@
                 {{ group.label }}
               </th>
               <th>
-                <button class="btn btn-secondary btn-sm">Add Group</button>
+                <button class="btn btn-secondary btn-sm" @click="addPricingGroup">Add Group</button>
               </th>
             </tr>
             <template v-for="(item, index) in items">
@@ -63,6 +63,13 @@
         </p-pagination>
       </p-block>
     </div>
+
+    <m-pricing-group
+      id="pricing-gorup"
+      name="pricing_gorup"
+      ref="pricingGroupModal"
+      title="Pricing Group"
+      @add="onSubmitPricingGroup"/>
   </div>
 </template>
 
@@ -98,6 +105,13 @@ export default {
     ...mapActions('PriceListItem', {
       getItem: 'get'
     }),
+    addPricingGroup () {
+      console.log('add pricing group')
+      this.$refs.pricingGroupModal.show()
+    },
+    onSubmitPricingGroup () {
+
+    },
     editPrice (index) {
       this.editPriceIndex = index
     },

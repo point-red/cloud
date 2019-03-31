@@ -168,7 +168,7 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      title: 'Customer',
+      title: 'customer',
       isLoading: false,
       isLoadingSalesVisitation: false,
       data: {
@@ -183,11 +183,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Customer', ['customer']),
+    ...mapGetters('masterCustomer', ['customer']),
     ...mapGetters('SalesVisitationForm', ['forms'])
   },
   methods: {
-    ...mapActions('Customer', ['find']),
+    ...mapActions('masterCustomer', ['find']),
     ...mapActions('SalesVisitationForm', ['get', 'export']),
     updatePage (value) {
       this.currentPage = value

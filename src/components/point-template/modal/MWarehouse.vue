@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Warehouse', ['warehouses', 'pagination'])
+    ...mapGetters('masterWarehouse', ['warehouses', 'pagination'])
   },
   props: {
     id: {
@@ -80,7 +80,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('Warehouse', ['get', 'create']),
+    ...mapActions('masterWarehouse', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({

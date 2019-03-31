@@ -83,7 +83,7 @@ export default {
     Breadcrumb
   },
   computed: {
-    ...mapGetters('Auth', ['authUser'])
+    ...mapGetters('auth', ['authUser'])
   },
   data () {
     return {
@@ -100,7 +100,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Auth', ['updateProfile', 'tryAutoLogin']),
+    ...mapActions('auth', ['updateProfile', 'tryAutoLogin']),
     onSubmit () {
       this.loadingSaveButton = true
       this.updateProfile(this.form)

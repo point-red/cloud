@@ -61,7 +61,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Service', ['service'])
+    ...mapGetters('masterService', ['service'])
   },
   watch: {
     'form.name' () {
@@ -81,7 +81,7 @@ export default {
       })
   },
   methods: {
-    ...mapActions('Service', ['find', 'update']),
+    ...mapActions('masterService', ['find', 'update']),
     onSubmit () {
       this.update(this.form)
         .then(

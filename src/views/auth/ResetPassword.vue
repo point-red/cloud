@@ -77,7 +77,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Auth', ['resetPassword']),
+    ...mapActions('auth', ['resetPassword']),
     onSubmit () {
       this.loadingSaveButton = true
       this.resetPassword(this.form)

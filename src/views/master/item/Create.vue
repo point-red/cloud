@@ -159,10 +159,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Item', ['item'])
+    ...mapGetters('masterItem', ['item'])
   },
   methods: {
-    ...mapActions('Item', ['create']),
+    ...mapActions('masterItem', ['create']),
     addOpeningStockRow () {
       this.form.opening_stocks.push({
         warehouse_id: null,

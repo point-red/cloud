@@ -115,7 +115,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('UIHandler', ['openLeftSidebar', 'openLeftSidebarXs', 'isSidebarInverse'])
+    ...mapGetters('uiHandler', ['openLeftSidebar', 'openLeftSidebarXs', 'isSidebarInverse'])
   },
   components: {
     AccountHeader,
@@ -123,14 +123,14 @@ export default {
     AccountFooter
   },
   created () {
-    this.$store.dispatch('Path/updateUri', this.$route.path)
-    this.firstUri = this.$store.state.Path['firstUri']
-    this.secondUri = this.$store.state.Path['secondUri']
+    this.$store.dispatch('path/updateUri', this.$route.path)
+    this.firstUri = this.$store.state.path['firstUri']
+    this.secondUri = this.$store.state.path['secondUri']
   },
   updated () {
-    this.$store.dispatch('Path/updateUri', this.$route.path)
-    this.firstUri = this.$store.state.Path['firstUri']
-    this.secondUri = this.$store.state.Path['secondUri']
+    this.$store.dispatch('path/updateUri', this.$route.path)
+    this.firstUri = this.$store.state.path['firstUri']
+    this.secondUri = this.$store.state.path['secondUri']
   }
 }
 </script>

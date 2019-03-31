@@ -165,8 +165,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Auth', ['logout']),
-    ...mapActions('UIHandler', ['toggleLeftSidebar', 'toggleSidebarInverse']),
+    ...mapActions('auth', ['logout']),
+    ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSidebarInverse']),
     handleResize (event) {
       this.options.height = window.innerHeight + 'px'
       document.getElementById('sidebar-scroll').style.height = window.innerHeight + 'px'

@@ -184,7 +184,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Auth', ['authUser']),
+    ...mapGetters('auth', ['authUser']),
     ...mapGetters('Employee', ['employee']),
     ...mapGetters('EmployeeAssessment', ['assessments', 'dataSet'])
   },

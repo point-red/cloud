@@ -66,10 +66,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('UserInvitation', ['user'])
+    ...mapGetters('masterUserInvitation', ['user'])
   },
   methods: {
-    ...mapActions('UserInvitation', ['create']),
+    ...mapActions('masterUserInvitation', ['create']),
     onSubmit () {
       this.loadingSaveButton = true
       this.create(this.form)

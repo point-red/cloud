@@ -47,8 +47,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.get(url, payload)
         .then(response => {
-          commit('FETCH_ARRAY', response.data)
-          commit('FETCH_ARRAY', response.meta)
+          commit('FETCH_ARRAY', response)
           resolve(response)
         }).catch(error => {
           reject(error)

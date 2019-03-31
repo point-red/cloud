@@ -96,7 +96,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Supplier', ['supplier'])
+    ...mapGetters('masterSupplier', ['supplier'])
   },
   created () {
     this.isLoading = true
@@ -124,7 +124,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('Supplier', ['find', 'update']),
+    ...mapActions('masterSupplier', ['find', 'update']),
     onSubmit () {
       this.loadingSaveButton = true
       this.update(this.form).then(response => {

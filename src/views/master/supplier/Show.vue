@@ -79,11 +79,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Supplier', ['supplier']),
+    ...mapGetters('masterSupplier', ['supplier']),
     ...mapGetters('SalesVisitationForm', ['forms'])
   },
   methods: {
-    ...mapActions('Supplier', ['find']),
+    ...mapActions('masterSupplier', ['find']),
     ...mapActions('SalesVisitationForm', ['get', 'export'])
   },
   created () {

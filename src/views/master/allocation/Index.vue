@@ -52,10 +52,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Allocation', ['allocations'])
+    ...mapGetters('masterAllocation', ['allocations'])
   },
   methods: {
-    ...mapActions('Allocation', {
+    ...mapActions('masterAllocation', {
       getAllocation: 'get'
     })
   },

@@ -50,7 +50,7 @@ export default {
     NotificationDropdown
   },
   methods: {
-    ...mapActions('UIHandler', ['toggleLeftSidebar'])
+    ...mapActions('uiHandler', ['toggleLeftSidebar'])
   }
 }
 </script>

@@ -44,7 +44,7 @@ export default new Router({
       ],
       beforeEnter: (to, from, next) => {
         // redirect to sign in page if not authenticated
-        if (!store.state.Auth['user']) {
+        if (!store.state.auth['user']) {
           if (Vue.cookie.get('TAT') !== null && Vue.cookie.get('TTT') !== null) {
             store.dispatch('reloadVuex')
             next()
@@ -76,7 +76,7 @@ export default new Router({
       ],
       beforeEnter: (to, from, next) => {
         // redirect to sign in page if not authenticated
-        if (!store.state.Auth['user']) {
+        if (!store.state.auth['user']) {
           if (Vue.cookie.get('TAT') !== null) {
             store.dispatch('reloadVuex')
             next()

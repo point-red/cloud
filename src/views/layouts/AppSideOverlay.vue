@@ -98,7 +98,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('UIHandler', ['toggleSideOverlay']),
+    ...mapActions('uiHandler', ['toggleSideOverlay']),
     vesaTalk (response) {
       if (this.vesaChats.length === 1) {
         this.vesaChats.push({

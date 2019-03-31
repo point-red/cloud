@@ -80,10 +80,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Supplier', ['suppliers', 'pagination'])
+    ...mapGetters('masterSupplier', ['suppliers', 'pagination'])
   },
   methods: {
-    ...mapActions('Supplier', ['get']),
+    ...mapActions('masterSupplier', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value

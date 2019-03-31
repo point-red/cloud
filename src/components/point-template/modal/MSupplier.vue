@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Supplier', ['suppliers', 'pagination'])
+    ...mapGetters('masterSupplier', ['suppliers', 'pagination'])
   },
   props: {
     id: {
@@ -80,7 +80,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('Supplier', ['get', 'create']),
+    ...mapActions('masterSupplier', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({

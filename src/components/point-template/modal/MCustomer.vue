@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Customer', ['customers', 'pagination'])
+    ...mapGetters('masterCustomer', ['customers', 'pagination'])
   },
   props: {
     id: {
@@ -80,7 +80,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('Customer', ['get', 'create']),
+    ...mapActions('customer', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({

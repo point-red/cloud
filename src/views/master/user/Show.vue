@@ -76,21 +76,25 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('User', ['user']),
-    ...mapGetters('Role', ['roles'])
+    ...mapGetters('masterUser', ['user']),
+    ...mapGetters('masterRole', ['roles'])
   },
   methods: {
-    ...mapActions('User', ['find'])
+    ...mapActions('masterUser', ['find'])
   },
   created () {
     this.loading = true
-    this.find({ id: this.id })
-      .then((response) => {
-        this.loading = false
-      }, (error) => {
-        this.loading = false
-        this.$notification.error(error.message)
-      })
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'roles'
+      }
+    }).then((response) => {
+      this.loading = false
+    }, (error) => {
+      this.loading = false
+      this.$notification.error(error.message)
+    })
   }
 }
 </script>

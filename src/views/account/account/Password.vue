@@ -75,10 +75,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Auth', ['authUser'])
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
-    ...mapActions('Auth', ['updatePassword', 'tryAutoLogin']),
+    ...mapActions('auth', ['updatePassword', 'tryAutoLogin']),
     onSubmit () {
       this.loadingSaveButton = true
       this.updatePassword(this.form)

@@ -85,11 +85,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Auth', ['tryAutoLogin']),
-    ...mapActions('UIHandler', ['showLoadingBlock', 'dismissLoadingBlock']),
+    ...mapActions('auth', ['tryAutoLogin']),
+    ...mapActions('uiHandler', ['showLoadingBlock', 'dismissLoadingBlock']),
     onSubmit () {
       this.loadingSaveButton = true
-      this.$store.dispatch('Auth/login', {
+      this.$store.dispatch('auth/login', {
         username: this.username,
         password: this.password
       }).then(

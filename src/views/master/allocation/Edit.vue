@@ -60,7 +60,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Allocation', ['allocation'])
+    ...mapGetters('masterAllocation', ['allocation'])
   },
   created () {
     this.isLoading = true
@@ -74,7 +74,7 @@ export default {
       })
   },
   methods: {
-    ...mapActions('Allocation', ['find', 'update']),
+    ...mapActions('masterAllocation', ['find', 'update']),
     onSubmit () {
       this.update(this.form)
         .then(

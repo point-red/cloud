@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Warehouse', ['warehouse'])
+    ...mapGetters('masterWarehouse', ['warehouse'])
   },
   watch: {
     'form.name' () {
@@ -65,7 +65,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Warehouse', ['create']),
+    ...mapActions('masterWarehouse', ['create']),
     onSubmit () {
       this.loadingSaveButton = true
       

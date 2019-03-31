@@ -96,7 +96,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Item', ['item'])
+    ...mapGetters('masterItem', ['item'])
   },
   watch: {
     'form.units': {
@@ -128,7 +128,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('Item', ['find', 'update']),
+    ...mapActions('masterItem', ['find', 'update']),
     onSubmit () {
       this.update(this.form)
         .then(

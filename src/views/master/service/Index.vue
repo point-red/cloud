@@ -52,10 +52,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Service', ['services'])
+    ...mapGetters('masterService', ['services'])
   },
   methods: {
-    ...mapActions('Service', {
+    ...mapActions('masterService', {
       getService: 'get'
     })
   },

@@ -50,7 +50,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('User', ['users', 'pagination'])
+    ...mapGetters('masterUser', ['users', 'pagination'])
   },
   props: {
     id: {
@@ -73,7 +73,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('User', ['get', 'create']),
+    ...mapActions('masterUser', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({

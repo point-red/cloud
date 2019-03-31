@@ -61,7 +61,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Warehouse', ['warehouse'])
+    ...mapGetters('masterWarehouse', ['warehouse'])
   },
   watch: {
     'form.name' () {
@@ -81,7 +81,7 @@ export default {
       })
   },
   methods: {
-    ...mapActions('Warehouse', ['find', 'update']),
+    ...mapActions('masterWarehouse', ['find', 'update']),
     onSubmit () {
       this.update(this.form)
         .then(

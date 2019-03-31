@@ -93,10 +93,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Item', ['item']),
+    ...mapGetters('masterItem', ['item']),
   },
   methods: {
-    ...mapActions('Item', ['find']),
+    ...mapActions('masterItem', ['find']),
   },
   created () {
     this.isLoading = true

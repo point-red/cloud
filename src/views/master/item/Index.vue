@@ -60,10 +60,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Item', ['items'])
+    ...mapGetters('masterItem', ['items'])
   },
   methods: {
-    ...mapActions('Item', {
+    ...mapActions('masterItem', {
       getItem: 'get'
     })
   },

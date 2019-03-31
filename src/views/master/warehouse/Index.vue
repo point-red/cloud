@@ -52,10 +52,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Warehouse', ['warehouses'])
+    ...mapGetters('masterWarehouse', ['warehouses'])
   },
   methods: {
-    ...mapActions('Warehouse', {
+    ...mapActions('masterWarehouse', {
       getWarehouse: 'get'
     })
   },

@@ -237,7 +237,7 @@ export default {
   },
   computed: {
     ...mapGetters('Employee', ['employee', 'employees']),
-    ...mapGetters('Auth', ['authUser'])
+    ...mapGetters('auth', ['authUser'])
   },
   created () {
     this.loading = true

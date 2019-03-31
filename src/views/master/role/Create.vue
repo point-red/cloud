@@ -68,7 +68,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Role', ['create']),
+    ...mapActions('masterRole', ['create']),
     onSubmit () {
       this.loadingSaveButton = true
       this.create(this.form)

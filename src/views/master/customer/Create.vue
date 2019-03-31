@@ -117,10 +117,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Customer', ['customer'])
+    ...mapGetters('masterCustomer', ['customer'])
   },
   methods: {
-    ...mapActions('Customer', ['create']),
+    ...mapActions('masterCustomer', ['create']),
     togglePriority () {
       if (this.form.group.name == 'priority') {
         this.form.group.name = ''

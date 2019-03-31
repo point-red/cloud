@@ -73,7 +73,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Auth', ['authUser']),
+    ...mapGetters('auth', ['authUser']),
     ...mapGetters('Employee', ['employees', 'pagination']),
     ...mapGetters('EmployeeGroup', ['groupList'])
   },

@@ -96,10 +96,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Supplier', ['supplier'])
+    ...mapGetters('masterSupplier', ['supplier'])
   },
   methods: {
-    ...mapActions('Supplier', ['create']),
+    ...mapActions('masterSupplier', ['create']),
     onSubmit () {
       this.loadingSaveButton = true
       

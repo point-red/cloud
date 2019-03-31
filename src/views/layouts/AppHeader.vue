@@ -119,7 +119,7 @@ export default {
     NotificationDropdown
   },
   methods: {
-    ...mapActions('UIHandler', ['toggleLeftSidebar', 'toggleSideOverlay'])
+    ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSideOverlay'])
   }
 }
 </script>

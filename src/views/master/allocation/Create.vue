@@ -56,10 +56,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Allocation', ['allocation'])
+    ...mapGetters('masterAllocation', ['allocation'])
   },
   methods: {
-    ...mapActions('Allocation', ['create']),
+    ...mapActions('masterAllocation', ['create']),
     onSubmit () {
       this.loadingSaveButton = true
       

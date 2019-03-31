@@ -63,11 +63,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Warehouse', ['warehouse']),
+    ...mapGetters('masterWarehouse', ['warehouse']),
     ...mapGetters('SalesVisitationForm', ['forms'])
   },
   methods: {
-    ...mapActions('Warehouse', ['find']),
+    ...mapActions('masterWarehouse', ['find']),
     ...mapActions('SalesVisitationForm', ['get', 'export'])
   },
   created () {

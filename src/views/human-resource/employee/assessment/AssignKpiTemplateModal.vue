@@ -75,7 +75,6 @@ export default {
   methods: {
     ...mapActions('KpiTemplate', { getKpiTemplates: 'get' }),
     ...mapActions('Employee', { assignAssessment: 'assignAssessment' }),
-    ...mapActions('UIHandler', ['showLoadingBlock', 'dismissLoadingBlock']),
     show (employeeId) {
       this.employeeId = employeeId
       this.$refs.assignKpiTemplate.show()

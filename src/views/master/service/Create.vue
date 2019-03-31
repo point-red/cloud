@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Service', ['service'])
+    ...mapGetters('masterService', ['service'])
   },
   watch: {
     'form.name' () {
@@ -65,7 +65,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Service', ['create']),
+    ...mapActions('masterService', ['create']),
     onSubmit () {
       this.loadingSaveButton = true
       

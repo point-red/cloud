@@ -63,11 +63,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Service', ['service']),
+    ...mapGetters('masterService', ['service']),
     ...mapGetters('SalesVisitationForm', ['forms'])
   },
   methods: {
-    ...mapActions('Service', ['find']),
+    ...mapActions('masterService', ['find']),
     ...mapActions('SalesVisitationForm', ['get', 'export'])
   },
   created () {

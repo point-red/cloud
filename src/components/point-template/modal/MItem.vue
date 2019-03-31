@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Item', ['items', 'pagination'])
+    ...mapGetters('masterItem', ['items', 'pagination'])
   },
   props: {
     id: {
@@ -80,7 +80,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('Item', ['get', 'create']),
+    ...mapActions('masterItem', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({

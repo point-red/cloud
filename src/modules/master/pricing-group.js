@@ -1,77 +1,67 @@
 import api from '@/api'
 
-const url = '/master/users'
+const url = '/master/pricing-groups'
 
 const state = {
-  user: {
-    name: '',
-    email: '',
-    address: '',
-    phone: ''
+  pricingGroup: {
+    code: '',
+    name: ''
   },
-  users: [],
-  pagination: {}
+  pricingGroups: []
 }
 
 const getters = {
-  user: state => {
-    return state.user
+  pricingGroup: state => {
+    return state.pricingGroup
   },
-  users: state => {
-    return state.users
-  },
-  pagination: state => {
-    return state.pagination
+  pricingGroups: state => {
+    return state.pricingGroups
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.users = payload.data
-    state.pagination = payload.meta
+    state.pricingGroups = payload
   },
   'FETCH_OBJECT' (state, payload) {
-    state.user = payload
+    state.pricingGroup = payload
   },
   'CREATE' (state, payload) {
-    state.user = payload
+    state.pricingGroup = payload
   },
   'UPDATE' (state, payload) {
-    state.user = payload
+    state.pricingGroup = payload
   },
   'DELETE' (state, payload) {
-    state.user = {}
+    state.pricingGroup = {}
   }
 }
 
 const actions = {
   get ({ commit }, payload) {
-    console.log('get user')
     return new Promise((resolve, reject) => {
-      api.get(url, {
-        params: payload.params
-      }).then(response => {
-        commit('FETCH_ARRAY', response)
-        resolve(response)
-      }).catch(error => {
-        console.log('error user')
-        console.log(error)
-        reject(error)
-      })
+      api.get(url, payload)
+        .then(
+          (response) => {
+            commit('FETCH_ARRAY', response.data)
+            resolve(response)
+          },
+          (error) => {
+            reject(error)
+          })
     })
   },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.id, {
-        params: payload.params
-      }).then(
-        (response) => {
-          commit('FETCH_OBJECT', response.data)
-          resolve(response)
-        },
-        (error) => {
-          reject(error)
-        })
+      api.get(url + '/' + payload.id)
+        .then(
+          (response) => {
+            commit('FETCH_OBJECT', response.data)
+            resolve(response)
+          },
+          (error) => {
+            reject(error)
+          })
     })
   },
   create (context, payload) {

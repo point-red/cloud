@@ -63,11 +63,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Allocation', ['allocation']),
+    ...mapGetters('masterAllocation', ['allocation']),
     ...mapGetters('SalesVisitationForm', ['forms'])
   },
   methods: {
-    ...mapActions('Allocation', ['find']),
+    ...mapActions('masterAllocation', ['find']),
     ...mapActions('SalesVisitationForm', ['get', 'export'])
   },
   created () {

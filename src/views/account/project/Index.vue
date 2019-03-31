@@ -93,13 +93,13 @@ export default {
   },
   computed: {
     ...mapGetters('AccountProject', ['projects']),
-    ...mapGetters('Auth', ['authUser'])
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
     ...mapActions('AccountProject', {
       getProject: 'get'
     }),
-    ...mapActions('UserInvitation', {
+    ...mapActions('masterUserInvitation', {
       updateProject: 'update'
     }),
     redirectToProject (project) {

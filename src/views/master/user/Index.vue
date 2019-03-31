@@ -74,26 +74,30 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('User', ['users']),
-    ...mapGetters('UserInvitation', ['userInvitations'])
+    ...mapGetters('masterUser', ['users']),
+    ...mapGetters('masterUserInvitation', ['userInvitations'])
   },
   methods: {
-    ...mapActions('User', {
+    ...mapActions('masterUser', {
       getUser: 'get'
     }),
-    ...mapActions('UserInvitation', {
+    ...mapActions('masterUserInvitation', {
       getUserInvitation: 'get'
     })
   },
   created () {
     this.loading = true
-    this.getUser()
-      .then((response) => {
-        this.loading = false
-      }, (error) => {
-        this.loading = false
-        this.$notifications.error(error.message)
-      })
+    this.getUser({
+      params: {
+        limit: 10,
+        includes: 'roles'
+      }
+    }).then((response) => {
+      this.loading = false
+    }, (error) => {
+      this.loading = false
+      this.$notifications.error(error)
+    })
     this.getUserInvitation()
       .then((response) => {
         this.loading = false

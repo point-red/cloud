@@ -117,7 +117,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Customer', ['customer'])
+    ...mapGetters('masterCustomer', ['customer'])
   },
   created () {
     this.isLoading = true
@@ -151,7 +151,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('Customer', ['find', 'update']),
+    ...mapActions('masterCustomer', ['find', 'update']),
     togglePriority () {
       if (this.form.group.name == 'priority') {
         this.form.group.name = ''

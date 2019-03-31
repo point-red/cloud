@@ -55,7 +55,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Role', ['roles'])
+    ...mapGetters('masterRole', ['roles'])
   },
   created () {
     this.loading = true
@@ -69,7 +69,7 @@ export default {
       })
   },
   methods: {
-    ...mapActions('Role', {
+    ...mapActions('masterRole', {
       getRoles: 'get'
     })
   }

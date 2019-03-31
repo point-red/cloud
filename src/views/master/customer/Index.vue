@@ -73,7 +73,7 @@ export default {
   },
   data () {
     return {
-      title: 'Customer',
+      title: 'customer',
       loading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
@@ -81,10 +81,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Customer', ['customers', 'pagination'])
+    ...mapGetters('masterCustomer', ['customers', 'pagination'])
   },
   methods: {
-    ...mapActions('Customer', ['get']),
+    ...mapActions('masterCustomer', ['get']),
     updatePage (value) {
       this.currentPage = value
       this.getCustomerRequest()
