@@ -16,6 +16,7 @@
             <tr slot="p-head">
               <th>Name</th>
               <th>Account</th>
+              <th>Stock</th>
             </tr>
             <tr
               v-for="item in items"
@@ -28,6 +29,9 @@
               </td>
               <td>
                 {{ item.account.number }} - {{ item.account.name | titlecase }}
+              </td>
+              <td>
+                {{ item.stock | numberFormat }} {{ item.units[0].label }}
               </td>
             </tr>
           </p-table>
@@ -68,7 +72,7 @@ export default {
     this.getItem({
       params: {
         sort_by: 'name',
-        includes: 'account'
+        includes: 'account;units'
       }
     }).then((response) => {
       this.loading = false

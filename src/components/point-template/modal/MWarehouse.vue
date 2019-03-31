@@ -63,12 +63,18 @@ export default {
     id: {
       type: String,
       required: true
+    },
+    value: {
+      type: [String, Number]
     }
   },
   watch: {
     searchText: debounce(function () {
       this.search()
-    }, 300)
+    }, 300),
+    value () {
+      this.search()
+    }
   },
   created () {
     this.search()
@@ -92,6 +98,10 @@ export default {
             'id': key['id'],
             'label': key['name']
           })
+
+          if (this.value == key['id']) {
+            this.mutableLabel = key['number'] + ' - ' + key['alias']
+          }
         })
         this.isLoading = false
       }).catch(error => {

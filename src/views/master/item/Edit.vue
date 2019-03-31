@@ -13,6 +13,15 @@
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="'Create Item'" :header="true">
         <p-form-row
+          id="code"
+          v-model="form.code"
+          :disabled="loadingSaveButton"
+          :label="$t('code')"
+          name="code"
+          :errors="form.errors.get('code')"
+          @errors="form.errors.set('code', null)"/>
+          
+        <p-form-row
           id="name"
           v-model="form.name"
           :disabled="loadingSaveButton"
@@ -20,6 +29,24 @@
           name="name"
           :errors="form.errors.get('name')"
           @errors="form.errors.set('name', null)"/>
+
+        <p-form-row
+          id="chart-of-account"
+          name="chart-of-account"
+          :label="$t('chart of account')">
+          <div slot="body" class="col-lg-9">
+            <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id"/>
+          </div>
+        </p-form-row>
+
+        <p-form-row
+          id="unit"
+          v-model="form.units[0].label"
+          :disabled="loadingSaveButton"
+          :label="$t('unit')"
+          name="unit"
+          :errors="form.errors.get('unit')"
+          @errors="form.errors.set('unit', null)"/>
 
         <div class="form-group row">
           <div class="col-md-3"></div>
@@ -56,7 +83,15 @@ export default {
       form: new Form({
         id: this.$route.params.id,
         code: null,
-        name: null
+        name: null,
+        chart_of_account_id: null,
+        units: [
+          {
+            label: '',
+            name: '',
+            converter: null
+          }
+        ]
       })
     }
   },
@@ -64,21 +99,33 @@ export default {
     ...mapGetters('Item', ['item'])
   },
   watch: {
-    'form.name' () {
-      this.form.code = this.form.name
+    'form.units': {
+      handler: function(newValue) {
+        this.form.units.forEach(function(element) {
+          element.name = element.label
+        })
+      },
+      deep: true
     }
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-        this.form.code = this.item.code
-        this.form.name = this.item.name
-      }, (error) => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.find({ id: this.id }, {
+      params: {
+        includes: 'units;account'
+      }
+    }).then(response => {
+      this.isLoading = false
+      this.form.code = this.item.code
+      this.form.name = this.item.name
+      this.form.chart_of_account_id = this.item.chart_of_account_id
+      this.form.units[0].label = this.item.units[0].label
+      this.form.units[0].name = this.item.units[0].name
+      this.form.units[0].converter = this.item.units[0].converter
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   },
   methods: {
     ...mapActions('Item', ['find', 'update']),

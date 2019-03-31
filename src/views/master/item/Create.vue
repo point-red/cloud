@@ -155,7 +155,7 @@ export default {
           element.value = element.quantity * element.price
         })
       },
-      deep: true      
+      deep: true
     }
   },
   computed: {

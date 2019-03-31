@@ -5,9 +5,42 @@ const url = '/master/items'
 const state = {
   item: {
     code: '',
-    name: ''
+    name: '',
+    stock: null,
+    units: [
+      {
+        label: '',
+        name: '',
+        converter: null
+      }
+    ],
+    account: [
+      {
+        number: '',
+        name: ''
+      }
+    ]
   },
-  items: [],
+  items: [
+    {
+      code: '',
+      name: '',
+      stock: null,
+      units: [
+        {
+          label: '',
+          name: '',
+          converter: null
+        }
+      ],
+      account: [
+        {
+          number: '',
+          name: ''
+        }
+      ]
+    }
+  ],
   pagination: {}
 }
 
@@ -58,7 +91,9 @@ const actions = {
   },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.id)
+      api.get(url + '/' + payload.id, {
+        params: payload.params
+      })
         .then(
           (response) => {
             commit('FETCH_OBJECT', response.data)

@@ -16,11 +16,48 @@
       <p-block :title="title" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
-            id="name"
-            label="Name"
-            name="name"
-            v-model="data.name"
+            id="code"
+            :label="$t('code')"
+            name="code"
+            v-model="item.code"
             readonly/>
+          
+          <p-form-row
+            id="name"
+            :label="$t('name')"
+            name="name"
+            v-model="item.name"
+            readonly/>
+
+          <p-form-row
+            id="chart-of-account"
+            :label="$t('chart of account')"
+            name="chart-of-account"
+            v-model="item.account.alias"
+            readonly/>
+
+          <p-form-row
+            id="unit"
+            :label="$t('unit')"
+            name="unit"
+            v-model="item.units[0].label"
+            readonly/>
+
+          <p-form-row
+            id="stock"
+            :label="$t('stock')"
+            name="stock"
+            readonly>
+            <div slot="body" class="col-lg-9">
+              <p-form-number
+                id="stock"
+                label="Stock"
+                name="stock"
+                v-model="item.stock"
+                :is-text-right="false"
+                readonly/>
+            </div>
+          </p-form-row>
 
           <hr>
 
@@ -52,61 +89,28 @@ export default {
     return {
       id: this.$route.params.id,
       title: 'Item',
-      isLoading: false,
-      data: {
-        name: null,
-        email: null,
-        address: null,
-        phone: null,
-        priority: false,
-      }
+      isLoading: false
     }
   },
   computed: {
     ...mapGetters('Item', ['item']),
-    ...mapGetters('SalesVisitationForm', ['forms'])
   },
   methods: {
     ...mapActions('Item', ['find']),
-    ...mapActions('SalesVisitationForm', ['get', 'export'])
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-        console.log('find ' + JSON.stringify(response))
-        this.data.name = response.data.name
-        if (response.data.emails.length > 0) {
-          this.data.email = response.data.emails[0].email
-        }
-        if (response.data.addresses.length > 0) {
-          this.data.address = response.data.addresses[0].address
-        }
-        if (response.data.phones.length > 0) {
-          this.data.phone = response.data.phones[0].number
-        }
-        if (response.data.groups.length > 0) {
-          if (response.data.groups[0].name == 'priority') {
-            this.data.priority = true
-          }
-        }
-        this.get({
-          params: {
-            item_id: this.item.id,
-            date_from: new Date('2000-01-01'),
-            date_to: this.$moment().format('YYYY-MM-DD 23:59:59')
-          }
-        }).then(response => {
-          this.isLoading = false          
-        }).catch(error => {
-          this.isLoading = false
-          this.$notification.error(error.message)
-        })
-      }, (error) => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'account;units;groups'
+      }
+    }).then(response => {
+      this.isLoading = false
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   }
 }
 </script>
