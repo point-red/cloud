@@ -105,7 +105,7 @@ export default {
     TabMenu
   },
   computed: {
-    ...mapGetters('AccountProject', ['project']),
+    ...mapGetters('accountProject', ['project']),
     ...mapGetters('accountRequestJoinProject', ['requestJoinProjects'])
   },
   created () {
@@ -134,7 +134,7 @@ export default {
       })
   },
   methods: {
-    ...mapActions('AccountProject', {
+    ...mapActions('accountProject', {
       findProject: 'find',
       updateProject: 'update'
     }),

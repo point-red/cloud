@@ -134,7 +134,7 @@ export default {
     TabMenu
   },
   methods: {
-    ...mapActions('AccountProject', ['create']),
+    ...mapActions('accountProject', ['create']),
     getAvailableTimezone () {
       var tzNames = this.$moment.tz.names()
       this.timezoneOptions = []

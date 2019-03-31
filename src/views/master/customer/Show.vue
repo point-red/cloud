@@ -11,7 +11,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block :title="$t('customer')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"

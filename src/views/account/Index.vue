@@ -40,10 +40,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('AccountProject', ['projects'])
+    ...mapGetters('accountProject', ['projects'])
   },
   methods: {
-    ...mapActions('AccountProject', ['get'])
+    ...mapActions('accountProject', ['get'])
   },
   created () {
     if (this.projects.length == 0) {

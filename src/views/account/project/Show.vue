@@ -134,7 +134,7 @@ export default {
     TabMenu
   },
   computed: {
-    ...mapGetters('AccountProject', ['project', 'projects'])
+    ...mapGetters('accountProject', ['project', 'projects'])
   },
   created () {
     this.loading = true
@@ -147,7 +147,7 @@ export default {
       // Without parsing this.id into int it will always return false
       // Even this.id should be int already
       if (element.id === parseInt(this.id)) {
-        this.$store.commit('AccountProject/FETCH_OBJECT', element)
+        this.$store.commit('accountProject/FETCH_OBJECT', element)
         this.loading = false
       }
     })
@@ -162,7 +162,7 @@ export default {
       })
   },
   methods: {
-    ...mapActions('AccountProject', {
+    ...mapActions('accountProject', {
       findProject: 'find',
       deleteProject: 'delete'
     }),

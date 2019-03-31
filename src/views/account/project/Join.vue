@@ -77,7 +77,7 @@ export default {
     TabMenu
   },
   computed: {
-    ...mapGetters('AccountProject', ['project'])
+    ...mapGetters('accountProject', ['project'])
   },
   created () {
     this.form.id = this.project.id

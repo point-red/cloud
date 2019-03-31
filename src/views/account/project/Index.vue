@@ -92,11 +92,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('AccountProject', ['projects']),
+    ...mapGetters('accountProject', ['projects']),
     ...mapGetters('auth', ['authUser'])
   },
   methods: {
-    ...mapActions('AccountProject', {
+    ...mapActions('accountProject', {
       getProject: 'get'
     }),
     ...mapActions('masterUserInvitation', {

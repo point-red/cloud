@@ -18,10 +18,7 @@
         :header="true"
         :is-loading="loading"
         title="Project">
-        <form
-          class="px-30"
-          @submit.prevent="onSubmit">
-
+        <form @submit.prevent="onSubmit">
           <p-form-row
             id="group"
             name="group"
@@ -144,7 +141,7 @@ export default {
     Breadcrumb
   },
   computed: {
-    ...mapGetters('AccountProject', ['project'])
+    ...mapGetters('accountProject', ['project'])
   },
   created () {
     this.loading = true
@@ -168,7 +165,7 @@ export default {
       })
   },
   methods: {
-    ...mapActions('AccountProject', {
+    ...mapActions('accountProject', {
       update: 'update',
       findProject: 'find'
     }),
