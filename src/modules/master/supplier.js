@@ -28,7 +28,7 @@ const getters = {
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.suppliers = payload.data
-    state.suppliers = payload.meta
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     state.supplier = payload.data
