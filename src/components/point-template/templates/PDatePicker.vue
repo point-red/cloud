@@ -64,7 +64,7 @@ export default {
   },
   data () {
     return {
-      time: this.$moment().format('YYYY-MM-DD'),
+      time: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
       format: 'YYYY-MM-DD HH:mm:ss',
       formatted: 'DD MMM YYYY HH:mm',
       defaultMinDate: this.$moment('2000-01-01').format('YYYY-MM-DD'),
@@ -75,13 +75,15 @@ export default {
   watch: {
     'time' () {
       this.$emit('input', this.time)
+    },
+    value () {
+      this.time = this.value
     }
   },
   mounted () {
-    this.time = this.value
     if (this.type === 'date') {
-      this.format = 'YYYY-MM-DD'
-      this.formatted = 'DD MMM YYYY'
+      this.format = 'YYYY-MM-DD HH:mm:ss'
+      this.formatted = 'DD MMM YYYY HH:mm'
       this.autoClose = true
     } else {
       this.format = 'YYYY-MM-DD HH:mm:ss'

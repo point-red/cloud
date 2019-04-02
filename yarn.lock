@@ -10562,10 +10562,10 @@ vue-cookie@^1.1.4:
   dependencies:
     tiny-cookie "^1.0"
 
-vue-ctk-date-time-picker@^2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/vue-ctk-date-time-picker/-/vue-ctk-date-time-picker-2.0.6.tgz#6f9f095fbe8c9b5be8d70928c074bb21f302de6b"
-  integrity sha512-jxYMyNje7jLtkD2TUqmNbWj2YQdtmrsLr+3ul0mNZ/ZYKZ9/O6Oai10rS39l+nZzrviOLlu+TPVrjDupEzg/sw==
+vue-ctk-date-time-picker@^2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/vue-ctk-date-time-picker/-/vue-ctk-date-time-picker-2.0.9.tgz#c08a300839b02e35d7888678552543ae5807e4b9"
+  integrity sha512-jM8iK9hm09k1Dp4+f1KcnQYTwECkeHRy7xe8OgtcDjiUkwmvoGq5mgxbT7XlhcI4pHc6DfDNdjo7urGeN8mxLg==
   dependencies:
     moment "^2.24.0"
     moment-range "^4.0.1"
