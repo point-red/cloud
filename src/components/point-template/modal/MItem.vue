@@ -102,7 +102,7 @@ export default {
           })
 
           if (this.value == key['id']) {
-            this.mutableLabel = key['number'] + ' - ' + key['alias']
+            this.mutableLabel = key['name']
           }
         })
         this.isLoading = false
