@@ -3,7 +3,7 @@
     <breadcrumb>
       <breadcrumb-purchase/>
     </breadcrumb>
-    
+
     <purchase-menu></purchase-menu>
   </div>
 </template>

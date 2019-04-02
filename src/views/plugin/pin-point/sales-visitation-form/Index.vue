@@ -47,7 +47,7 @@
           :value="searchText"
           @input="filterSearch"/>
         <hr>
-        <p-block-inner :is-loading="isLoading">          
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th width="250px">{{ $t('date') }}</th>
@@ -229,7 +229,7 @@ export default {
           limit: 20,
           page: this.currentPage,
           sort_by: '-forms.date'
-        }        
+        }
       }).then(response => {
         this.isLoading = false
         this.lastPage = this.pagination.last_page

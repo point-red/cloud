@@ -58,7 +58,7 @@ export default {
         email: null,
         address: null,
         phone: null,
-        priority: false,
+        priority: false
       }
     }
   },
@@ -98,7 +98,7 @@ export default {
             date_to: this.$moment().format('YYYY-MM-DD 23:59:59')
           }
         }).then(response => {
-          this.isLoading = false          
+          this.isLoading = false
         }).catch(error => {
           this.isLoading = false
           this.$notification.error(error.message)

@@ -38,7 +38,7 @@
           name="address"
           :errors="form.errors.get('address')"
           @errors="form.errors.set('address', null)"/>
-        
+
         <p-form-row
           id="phone"
           v-model="form.phones[0].number"
@@ -108,7 +108,7 @@ export default {
     }).then(response => {
       this.isLoading = false
       this.form.name = this.supplier.name
-      
+
       if (this.supplier.emails.length > 0) {
         this.form.emails[0].email = this.supplier.emails[0].email
       }

@@ -17,7 +17,7 @@
           :value="searchText"
           @input="filterSearch"/>
         <hr>
-        <p-block-inner :is-loading="loading">          
+        <p-block-inner :is-loading="loading">
           <point-table>
             <tr slot="p-head">
               <th>Name</th>

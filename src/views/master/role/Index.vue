@@ -73,7 +73,7 @@ export default {
     ...mapGetters('masterRole', ['roles'])
   },
   created () {
-    this.getRoleRequest()   
+    this.getRoleRequest()
   },
   methods: {
     ...mapActions('masterRole', {

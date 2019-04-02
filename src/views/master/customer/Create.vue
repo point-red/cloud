@@ -36,7 +36,7 @@
           name="address"
           :errors="form.errors.get('address')"
           @errors="form.errors.set('address', null)"/>
-        
+
         <p-form-row
           id="phone"
           v-model="form.phones[0].number"
@@ -45,7 +45,7 @@
           name="phone"
           :errors="form.errors.get('phone')"
           @errors="form.errors.set('phone', null)"/>
-        
+
         <p-form-row
           id="phone"
           v-model="form.phones[0].number"
@@ -61,7 +61,7 @@
               @click.native="togglePriority"
               :checked="form.group.name == 'priority'"
               :description="'Priority Customer'"/>
-          </div>          
+          </div>
         </p-form-row>
 
         <div class="form-group row">
@@ -130,12 +130,12 @@ export default {
     },
     onSubmit () {
       this.loadingSaveButton = true
-      
+
       this.create(this.form)
         .then(response => {
           this.loadingSaveButton = false
-          this.$notification.success('create success')          
-          Object.assign(this.$data, this.$options.data.call(this));
+          this.$notification.success('create success')
+          Object.assign(this.$data, this.$options.data.call(this))
         }).catch(error => {
           this.loadingSaveButton = false
           this.$notification.error(error.message)

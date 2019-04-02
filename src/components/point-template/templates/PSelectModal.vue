@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     clickInput () {
-      this.$refs['select'+this.id].show()
+      this.$refs['select' + this.id].show()
     },
     addData () {
       if (this.isLoadingAddButton == false) {
@@ -92,10 +92,10 @@ export default {
       this.close()
     },
     show () {
-      this.$refs['select'+this.id].show()
+      this.$refs['select' + this.id].show()
     },
     close () {
-      this.$refs['select'+this.id].close()
+      this.$refs['select' + this.id].close()
     },
     isActive (id) {
       return false

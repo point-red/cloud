@@ -47,7 +47,7 @@
                 name="priority"
                 :checked="data.priority"
                 :description="'Priority Customer'"/>
-            </div>          
+            </div>
           </p-form-row>
 
           <hr/>
@@ -176,7 +176,7 @@ export default {
         email: null,
         address: null,
         phone: null,
-        priority: false,
+        priority: false
       },
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1
@@ -207,7 +207,7 @@ export default {
         }
       }).then(response => {
         console.log(response)
-        this.isLoadingSalesVisitation = false          
+        this.isLoadingSalesVisitation = false
       }).catch(error => {
         this.isLoadingSalesVisitation = false
         this.$notification.error(error.message)

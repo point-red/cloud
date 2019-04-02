@@ -83,7 +83,7 @@
           <p class="text-muted text-center">Thank you very much for doing business with us. We look forward to working with you again!</p>
           <!-- END Footer -->
         </p-block-inner>
-      </p-block> 
+      </p-block>
     </div>
   </div>
 </template>

@@ -89,7 +89,7 @@ export default {
           filter_like: {
             'code': this.searchText,
             'name': this.searchText
-          },
+          }
         }
       }).then(response => {
         this.isLoading = false

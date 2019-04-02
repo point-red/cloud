@@ -142,7 +142,7 @@ export default {
   created () {
     this.isLoading = true
     this.getUserRequest()
-    
+
     this.getUserInvitation()
       .then(response => {
         this.isLoading = false

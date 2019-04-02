@@ -47,7 +47,7 @@
           :disabled="loadingSaveButton"
           :errors="form.errors.get('unit')"
           @errors="form.errors.set('unit', null)"/>
-        
+
         <p-separator></p-separator>
 
         <h3 class="">{{ $t('opening stock') | uppercase }}</h3>
@@ -144,14 +144,14 @@ export default {
   },
   watch: {
     'form.units': {
-      handler: function(newValue) {
+      handler: function (newValue) {
         this.form.units[0].name = this.form.units[0].label
       },
-      deep: true      
+      deep: true
     },
     'form.opening_stocks': {
-      handler: function(newValue) {
-        this.form.opening_stocks.forEach(function(element) {
+      handler: function (newValue) {
+        this.form.opening_stocks.forEach(function (element) {
           element.value = element.quantity * element.price
         })
       },
@@ -176,8 +176,8 @@ export default {
       this.create(this.form)
         .then(response => {
           this.loadingSaveButton = false
-          this.$notification.success('create success')          
-          Object.assign(this.$data, this.$options.data.call(this));
+          this.$notification.success('create success')
+          Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/master/item/' + response.data.id)
         }).catch(error => {
           this.loadingSaveButton = false

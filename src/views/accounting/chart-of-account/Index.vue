@@ -6,7 +6,7 @@
 
     <tab-menu/>
 
-    <div class="row">      
+    <div class="row">
       <p-block :header="true" title="Chart Of Account">
         <p-form-input
           id="search-text"
@@ -60,7 +60,7 @@ export default {
     PointTable
   },
   computed: {
-    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts']),
+    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts'])
   },
   methods: {
     ...mapActions('accountingChartOfAccount', {
@@ -90,7 +90,7 @@ export default {
       })
     }
   },
-  created () {    
+  created () {
     this.getChartOfAccountsRequest()
   }
 }

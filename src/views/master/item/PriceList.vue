@@ -43,12 +43,12 @@
               <td>{{ itemUnit.name }} (x{{ itemUnit.converter }})</td>
               <td class="text-right" v-for="(group, index3) in itemUnit.prices" :key="index3">
                 <a href="javascript:void(0)" @click="editPrice(index + '-' + index2 + '-' + index3)" v-if="editPriceIndex != index + '-' + index2 + '-' + index3">
-                  {{ itemUnit.prices[index3].price | numberFormat }}                  
+                  {{ itemUnit.prices[index3].price | numberFormat }}
                 </a>
                 <p-form-number
                   v-else
                   id="price"
-                  name="price"                
+                  name="price"
                   :value="itemUnit.prices[index3].price"/>
               </td>
               <td></td>

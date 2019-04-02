@@ -21,7 +21,7 @@
             name="code"
             v-model="item.code"
             readonly/>
-          
+
           <p-form-row
             id="name"
             :label="$t('name')"
@@ -102,7 +102,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterItem', ['item']),
+    ...mapGetters('masterItem', ['item'])
   },
   methods: {
     ...mapActions('masterItem', ['find', 'delete']),

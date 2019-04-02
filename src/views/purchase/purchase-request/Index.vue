@@ -135,7 +135,7 @@ export default {
       this.getPurchaseRequest()
     }
   },
-  created () {    
+  created () {
     this.getPurchaseRequest()
   },
   updated () {

@@ -20,7 +20,7 @@
           name="code"
           :errors="form.errors.get('code')"
           @errors="form.errors.set('code', null)"/>
-          
+
         <p-form-row
           id="name"
           v-model="form.name"
@@ -100,8 +100,8 @@ export default {
   },
   watch: {
     'form.units': {
-      handler: function(newValue) {
-        this.form.units.forEach(function(element) {
+      handler: function (newValue) {
+        this.form.units.forEach(function (element) {
           element.name = element.label
         })
       },

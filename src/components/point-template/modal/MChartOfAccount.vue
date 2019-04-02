@@ -28,7 +28,7 @@
           }"></i> Add</span> {{ $t('to add new data') }}
         </div>
         <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you doesn\'t have any') | capitalize }} {{ $t('chart of account') | capitalize }}, <br/> {{ $t('you can create') }} 
+          {{ $t('you doesn\'t have any') | capitalize }} {{ $t('chart of account') | capitalize }}, <br/> {{ $t('you can create') }}
           <router-link :to="'/accounting/chart-of-account/create'">
             <span>{{ $t('new one') }}</span>
           </router-link>

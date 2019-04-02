@@ -47,7 +47,7 @@
             :label="$t('company name')"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)">
-          </p-form-row>          
+          </p-form-row>
 
           <p-form-row
             id="address"
@@ -172,8 +172,8 @@ export default {
     getAvailableTimezone () {
       var tzNames = this.$moment.tz.names()
       this.timezoneOptions = []
-      for(var i in tzNames) {
-        let tz = "(GMT" + this.$moment.tz(tzNames[i]).format('Z')+") " + tzNames[i]
+      for (var i in tzNames) {
+        let tz = '(GMT' + this.$moment.tz(tzNames[i]).format('Z') + ') ' + tzNames[i]
         this.timezoneOptions.push({
           id: tzNames[i],
           label: tz
@@ -184,7 +184,7 @@ export default {
       this.getAvailableTimezone()
 
       var filtered = this.timezoneOptions.filter((str) => {
-        return str.label.toLowerCase().indexOf(value.toLowerCase()) >= 0; 
+        return str.label.toLowerCase().indexOf(value.toLowerCase()) >= 0
       })
 
       this.timezoneOptions = []

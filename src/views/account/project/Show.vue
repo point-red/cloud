@@ -4,7 +4,7 @@
       <router-link to="/account/project" class="breadcrumb-item">Project</router-link>
       <span class="breadcrumb-item active">{{ project.code }}</span>
     </breadcrumb>
-  
+
     <tab-menu>
       <li class="nav-item">
         <router-link
@@ -25,7 +25,7 @@
         </router-link>
       </li>
     </tab-menu>
-    
+
     <div class="row gutters-tiny">
       <div class="col-md-6 col-xl-3">
         <a class="block block-link-shadow text-right" href="javascript:void(0)">
@@ -72,7 +72,7 @@
           <tr slot="p-body">
             <td class="font-w700">{{ $t('company name') | titlecase }}</td>
             <td>{{ project.name }}</td>
-          </tr>                
+          </tr>
           <tr slot="p-body">
             <td class="font-w700">{{ $t('company address') | titlecase }}</td>
             <td>{{ project.address }}</td>

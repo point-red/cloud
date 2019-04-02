@@ -59,7 +59,7 @@ export default {
         email: null,
         address: null,
         phone: null,
-        priority: false,
+        priority: false
       }
     }
   },
@@ -73,7 +73,7 @@ export default {
     this.isLoading = true
     this.find({ id: this.id })
       .then(response => {
-        this.isLoading = false          
+        this.isLoading = false
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
