@@ -1,6 +1,13 @@
 <template>
   <div>
     <span @click="show" class="link"><i class="fa fa-list mr-5"></i>{{ mutableLabel || 'SELECT'}}</span>
+    <div
+      v-for="(error, index) in errors"
+      :key="index"
+      class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
+    <div
+      v-show="help"
+      class="form-text text-muted">{{ help }}</div>
     <p-modal :ref="'select-' + id" :id="'select-' + id" title="select user">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
@@ -59,6 +66,13 @@ export default {
     },
     value: {
       type: [String, Number]
+    },
+    help: {
+      type: String
+    },
+    errors: {
+      type: Array,
+      default: null
     }
   },
   watch: {

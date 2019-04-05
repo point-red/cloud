@@ -6,5 +6,8 @@
   "delete" : "hapus",
   "list" : "list",
   "submit" : "simpan",
-  "cancel" : "batal"
+  "cancel" : "batal",
+  "pending" : "pending",
+  "approved" : "disetujui",
+  "rejected" : "ditolak"
 }
