@@ -11,7 +11,7 @@
 
     <tab-menu/>
 
-    <br>
+    {{ form }}
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="'Purchase Request'" :header="true">
@@ -195,6 +195,25 @@ export default {
       .then((response) => {
         this.isLoading = false
         this.form.date = this.purchaseRequest.date
+        this.form.required_date = this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        this.form.supplier_id = null,
+        this.form.employee_id = null,
+        this.form.approver_id = null,
+        this.form.notes = null,
+        this.form.items = [{
+          item_id: null,
+          unit: null,
+          converter: null,
+          units: [{
+            label: '',
+            name: '',
+            converter: null
+          }],
+          quantity: null,
+          price: null,
+          allocation_id: null,
+          notes: null
+        }]
       }, (error) => {
         this.isLoading = false
         this.$notification.error(error.message)

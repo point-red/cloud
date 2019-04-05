@@ -4,10 +4,19 @@ const url = '/purchase/requests'
 
 const state = {
   purchaseRequest: {
-    name: '',
-    email: '',
-    address: '',
-    phone: ''
+    date: null,
+    required_date: null,
+    supplier_id: null,
+    employee_id: null,
+    form: {
+      number: null
+    },
+    employee: {
+      name: null
+    },
+    supplier: {
+      name: null
+    }
   },
   purchaseRequests: [],
   purchaseRequestPagination: {}

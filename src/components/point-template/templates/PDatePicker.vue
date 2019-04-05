@@ -64,7 +64,7 @@ export default {
   },
   data () {
     return {
-      time: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+      time: this.value,
       format: 'YYYY-MM-DD HH:mm:ss',
       formatted: 'DD MMM YYYY HH:mm',
       defaultMinDate: this.$moment('2000-01-01').format('YYYY-MM-DD'),
@@ -73,7 +73,7 @@ export default {
     }
   },
   watch: {
-    'time' () {
+    time () {
       this.$emit('input', this.time)
     },
     value () {

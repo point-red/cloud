@@ -128,6 +128,7 @@ export default {
         this.loading = false
       }).catch(error => {
         this.loading = false
+        this.$notification.error(error.message)
       })
     },
     updatePage (value) {
