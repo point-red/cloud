@@ -36,12 +36,14 @@
                 </router-link>
               </td>
               <td>
-                <template v-show="item.account">
+                <template v-if="item.account">
                   {{ item.account.number }} - {{ item.account.name | titlecase }}
                 </template>
               </td>
               <td>
-                {{ item.stock | numberFormat }} {{ item.units[0].label }}
+                <template v-if="item.units.length">
+                  {{ item.stock | numberFormat }} {{ item.units[0].label }}
+                </template>
               </td>
             </tr>
           </p-table>
