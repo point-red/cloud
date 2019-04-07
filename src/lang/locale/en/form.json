@@ -9,5 +9,7 @@
   "cancel" : "cancel",
   "pending" : "pending",
   "approved" : "approved",
-  "rejected" : "rejected"
+  "rejected" : "rejected",
+  "archived": "archived",
+  "number": "number"
 }

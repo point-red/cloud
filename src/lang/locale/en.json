@@ -12,6 +12,8 @@
 	"pending": "pending",
 	"approved": "approved",
 	"rejected": "rejected",
+	"archived": "archived",
+	"number": "number",
 	"new": "new",
 	"join": "join",
 	"group": "group",

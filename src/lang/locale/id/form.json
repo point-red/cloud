@@ -9,5 +9,7 @@
   "cancel" : "batal",
   "pending" : "pending",
   "approved" : "disetujui",
-  "rejected" : "ditolak"
+  "rejected" : "ditolak",
+  "archived": "archived",
+  "number": "number"
 }

@@ -12,6 +12,8 @@
 	"pending": "pending",
 	"approved": "disetujui",
 	"rejected": "ditolak",
+	"archived": "archived",
+	"number": "number",
 	"new": "tambah",
 	"join": "bergabung",
 	"group": "grup",

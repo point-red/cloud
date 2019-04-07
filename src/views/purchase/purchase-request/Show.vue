@@ -3,7 +3,14 @@
     <breadcrumb>
       <breadcrumb-purchase/>
       <router-link to="/purchase/purchase-request" class="breadcrumb-item">Purchase Request</router-link>
-      <span class="breadcrumb-item active">{{ purchaseRequest.form.number | uppercase }}</span>
+      <template v-if="purchaseRequest.form.number">
+        <span class="breadcrumb-item active">{{ purchaseRequest.form.number | uppercase }}</span>
+      </template>
+      <template v-else>
+        <router-link v-if="purchaseRequest.origin" :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.origin.id }}" class="breadcrumb-item">
+          {{ purchaseRequest.form.edited_number | uppercase }}
+        </router-link>
+      </template>
     </breadcrumb>
 
     <purchase-menu/>
@@ -137,6 +144,29 @@
             </tr>
           </point-table>
 
+          <p-separator></p-separator>
+
+          <h3 v-if="purchaseRequest.archives">Archives</h3>
+
+          <point-table v-if="purchaseRequest.archives">
+            <tr slot="p-head">
+              <th>#</th>
+              <th>Edited Date</th>
+              <th>Edited Reason</th>
+            </tr>
+            <tr slot="p-body" v-for="(archived, index) in purchaseRequest.archives" :key="index">
+              <th>{{ index + 1 }}</th>
+              <td>
+                <router-link :to="{ name: 'purchase.request.show', params: { id: archived.id }}">
+                  {{ archived.form.updated_at | dateFormat('DD MMMM YYYY HH:mm') }}
+                </router-link>
+              </td>
+              <td>
+                {{ archived.edited_notes }}
+              </td>
+            </tr>
+          </point-table>
+
           <router-link
             :to="{ path: '/purchase/purchase-request/' + purchaseRequest.id + '/edit', params: { id: purchaseRequest.id }}"
             v-if="$permission.has('update purchase request') && $formRules.allowedToUpdate(purchaseRequest.form)"
@@ -174,22 +204,34 @@ export default {
   computed: {
     ...mapGetters('purchaseRequest', ['purchaseRequest'])
   },
+  watch: {
+    '$route' (to, from) {
+      if (to.params.id != from.params.id) {
+        this.id = to.params.id
+        this.purchaseRequestRequest()
+      }
+    }
+  },
   methods: {
-    ...mapActions('purchaseRequest', ['find'])
+    ...mapActions('purchaseRequest', ['find']),
+    purchaseRequestRequest () {
+      this.isLoading = true
+      this.find({
+        id: this.id,
+        params: {
+          with_archives: true,
+          includes: 'employee;supplier;items.item;items.allocation;services.service;services.allocation;approvers.requestedBy;approvers.requestedTo'
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    }
   },
   created () {
-    this.isLoading = true
-    this.find({
-      id: this.id,
-      params: {
-        includes: 'employee;supplier;items.item;items.allocation;services.service;services.allocation;approvers.requestedBy;approvers.requestedTo'
-      }
-    }).then(response => {
-      this.isLoading = false
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    this.purchaseRequestRequest()
   }
 }
 </script>
