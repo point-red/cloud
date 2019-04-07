@@ -6,13 +6,28 @@
       <span class="breadcrumb-item active">{{ purchaseRequest.form.number | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <purchase-menu/>
 
-    <br/>
+    <tab-menu/>
 
     <div class="row">
       <p-block :title="$t('purchase request')" :header="true">
         <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="number"
+            name="number"
+            :label="$t('number')">
+            <div slot="body" class="col-lg-9">
+              <template v-if="purchaseRequest.form.number">
+                {{ purchaseRequest.form.number }}
+              </template>
+              <template v-else>
+                <span class="badge badge-danger">{{ $t('archived') }}</span>
+                {{ purchaseRequest.form.edited_number }}
+              </template>
+            </div>
+          </p-form-row>
+
           <p-form-row
             id="date"
             name="date"
@@ -97,7 +112,6 @@
               <th>Requested By</th>
               <th>Requested To</th>
               <th>Approval Status</th>
-              <th>Reason</th>
             </tr>
             <tr slot="p-body" v-for="(approver, index) in purchaseRequest.approvers" :key="index">
               <th>{{ index + 1 }}</th>
@@ -120,15 +134,12 @@
                   <span class="badge badge-secondary">{{ $t('pending') }}</span>
                 </template>
               </td>
-              <td>
-                {{ approver.reason }}
-              </td>
             </tr>
           </point-table>
 
           <router-link
             :to="{ path: '/purchase/purchase-request/' + purchaseRequest.id + '/edit', params: { id: purchaseRequest.id }}"
-            v-if="$permission.has('update purchase request')"
+            v-if="$permission.has('update purchase request') && $formRules.allowedToUpdate(purchaseRequest.form)"
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>
@@ -168,13 +179,17 @@ export default {
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then(response => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'employee;supplier;items.item;items.allocation;services.service;services.allocation;approvers.requestedBy;approvers.requestedTo'
+      }
+    }).then(response => {
+      this.isLoading = false
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   }
 }
 </script>

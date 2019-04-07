@@ -16,7 +16,7 @@ export default {
   },
   data () {
     return {
-      number: null,
+      number: this.value,
       options: {
         numeral: true,
         numeralDecimalScale: 15,
@@ -25,9 +25,6 @@ export default {
     }
   },
   watch: {
-    value () {
-      this.number = this.value
-    },
     number () {
       this.$emit('input', this.number)
     }

@@ -224,7 +224,6 @@ export default {
     },
     onSubmit () {
       this.isSaving = true
-
       if (this.form.approver_id == null) {
         this.$notification.error('approval cannot be null')
         this.isSaving = false
@@ -233,7 +232,6 @@ export default {
         })
         return
       }
-
       this.create(this.form)
         .then(response => {
           this.isSaving = false

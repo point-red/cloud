@@ -95,7 +95,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchaseRequest', ['purchaseRequests', 'purchaseRequestPagination'])
+    ...mapGetters('purchaseRequest', ['purchaseRequests', 'pagination'])
   },
   methods: {
     ...mapActions('purchaseRequest', ['get']),
@@ -109,7 +109,7 @@ export default {
       this.loading = true
       this.get({
         params: {
-          sort_by: 'forms.number',
+          sort_by: '-forms.number',
           filter_like: {
             'forms.number': this.searchText,
             'forms.date': this.serverDate(this.searchText),
@@ -140,7 +140,7 @@ export default {
     this.getPurchaseRequest()
   },
   updated () {
-    this.lastPage = this.purchaseRequestPagination.last_page
+    this.lastPage = this.pagination.last_page
   }
 }
 </script>

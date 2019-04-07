@@ -10541,7 +10541,7 @@ vue-chartjs@^3.4.0:
   resolved "https://registry.yarnpkg.com/vue-chartjs/-/vue-chartjs-3.4.0.tgz#669e4453be0676605fc9290b3b581867ccd15c88"
   integrity sha512-uikAXl66g49rawH7Uto3gKh/7vxflcd5xyYbnQVGKSYEh9VI9JGMZ1KNPAEr+8ViRd2FX1hPDVevKBONK6v1fw==
 
-vue-cleave-component@^2.1.1:
+vue-cleave-component@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/vue-cleave-component/-/vue-cleave-component-2.1.2.tgz#7736adca0520093d711eae6677e8ddb23fd26a03"
   integrity sha512-h1H+yUJJDU28/HLUwxpFtK9JqLfATI8ve17vTGaT3Mfrkd8QuKl0db4/aGY9FMfkv05VQBquglf+P/cn1WgrAA==
@@ -10679,6 +10679,11 @@ vue@^2.5.11, vue@^2.5.17, vue@^2.5.22:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.7.tgz#254f188e7621d2d19ee28d0c0442c6d21b53ae2d"
   integrity sha512-g7ADfQ82QU+j6F/bVDioVQf2ccIMYLuR4E8ev+RsDBlmwRkhGO3HhgF4PF9vpwjdPpxyb1zzLur2nQ2oIMAMEg==
+
+vue@^2.6.10:
+  version "2.6.10"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
+  integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==
 
 vue@^2.6.8:
   version "2.6.8"
