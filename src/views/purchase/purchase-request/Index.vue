@@ -9,8 +9,6 @@
 
     <tab-menu/>
 
-    <br>
-
     <div class="row">
       <p-block :title="'Purchase Request'" :header="true">
         <p-form-input
