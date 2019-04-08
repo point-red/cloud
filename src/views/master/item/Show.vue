@@ -68,13 +68,34 @@
             Edit
           </router-link>
           <button
-              type="button"
-              @click="onDelete()"
-              v-if="$permission.has('delete item')"
-              :disabled="isDeleting"
-              class="btn btn-sm btn-danger">
-              <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
-            </button>
+            type="button"
+            @click="onDelete()"
+            v-if="$permission.has('delete item')"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-danger">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
+          </button>
+
+          <p-separator></p-separator>
+
+          <h3>Stock History</h3>
+
+          <point-table>
+            <tr slot="p-head">
+              <th>#</th>
+              <th>Date</th>
+              <th>Warehouse</th>
+              <th class="text-right">Quantity</th>
+              <th class="text-right">Total Quantity</th>
+            </tr>
+            <tr slot="p-body" v-for="(row, index) in item.inventories" :key="index">
+              <th>{{ index + 1 }}</th>
+              <td>{{ row.form.date | dateFormat }}</td>
+              <td>{{ row.warehouse.name }}</td>
+              <td class="text-right">{{ row.quantity | numberFormat }}</td>
+              <td class="text-right">{{ row.total_quantity | numberFormat }}</td>
+            </tr>
+          </point-table>
         </p-block-inner>
       </p-block>
     </div>
@@ -85,13 +106,15 @@
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster
+    BreadcrumbMaster,
+    PointTable
   },
   data () {
     return {
@@ -124,7 +147,7 @@ export default {
     this.find({
       id: this.id,
       params: {
-        includes: 'account;units;groups'
+        includes: 'account;units;groups;inventories.form;inventories.warehouse'
       }
     }).then(response => {
       this.isLoading = false
