@@ -79,9 +79,15 @@ export default {
           limit: 1000,
           filter_like: {
             'chart_of_accounts.name': this.searchText,
-            'chart_of_accounts.number': this.searchText,
-            'chart_of_account_types.name': this.searchText
-          }
+            'chart_of_accounts.number': this.searchText
+          },
+          or_filter_where_has_like: [
+            {
+              type: {
+                name: this.searchText
+              }
+            }
+          ]
         }
       }).then(response => {
         this.loading = false
