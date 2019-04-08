@@ -15,6 +15,20 @@
       <p-block :title="'Purchase Request'" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
+            id="number"
+            name="number"
+            :label="$t('number')">
+            <div slot="body" class="col-lg-9">
+              <template v-if="purchaseRequest.form.number">
+                {{ purchaseRequest.form.number }}
+              </template>
+              <template v-else>
+                <span class="badge badge-danger">{{ $t('archived') }}</span>
+                {{ purchaseRequest.form.edited_number }}
+              </template>
+            </div>
+          </p-form-row>
+          <p-form-row
             id="date"
             name="date"
             :label="$t('date')">
@@ -173,6 +187,11 @@ export default {
   },
   computed: {
     ...mapGetters('purchaseRequest', ['purchaseRequest'])
+  },
+  watch: {
+    'form.required_date': function () {
+      this.form.date = this.form.required_date
+    }
   },
   created () {
     this.isLoading = true    

@@ -189,6 +189,11 @@ export default {
   computed: {
     ...mapGetters('purchaseRequest', ['purchaseRequest'])
   },
+  watch: {
+    'form.required_date': function () {
+      this.form.date = this.form.required_date
+    }
+  },
   methods: {
     ...mapActions('purchaseRequest', ['create']),
     addItemRow () {
