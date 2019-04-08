@@ -49,7 +49,9 @@
             name="supplier"
             :label="$t('supplier')">
             <div slot="body" class="col-lg-9">
-              {{ purchaseRequest.supplier.name }}
+              <template v-if="purchaseRequest.supplier">
+                {{ purchaseRequest.supplier.name }}
+              </template>
             </div>
           </p-form-row>
 
