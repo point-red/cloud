@@ -72,11 +72,12 @@ export default {
     onSubmit () {
       this.loadingSaveButton = true
       this.create(this.form)
-        .then((response) => {
+        .then(response => {
           this.loadingSaveButton = false
           this.$notification.success('Create success')
           this.form.reset()
-        }, (error) => {
+          this.$router.push('/master/role/' + response.data.id)
+        }).catch(error => {
           this.loadingSaveButton = false
           this.$notification.error('Create failed')
           this.form.errors.record(error.errors)

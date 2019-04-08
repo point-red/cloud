@@ -136,6 +136,7 @@ export default {
           this.loadingSaveButton = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
+          this.$router.push('/master/customer/' + response.data.id)
         }).catch(error => {
           this.loadingSaveButton = false
           this.$notification.error(error.message)

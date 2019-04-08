@@ -75,7 +75,6 @@ export default {
     this.find({ id: this.id })
       .then((response) => {
         this.isLoading = false
-        console.log('find ' + JSON.stringify(response))
         this.data.name = response.data.name
         if (response.data.emails.length > 0) {
           this.data.email = response.data.emails[0].email
