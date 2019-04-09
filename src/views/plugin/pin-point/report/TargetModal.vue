@@ -24,7 +24,6 @@
                 <p-form-number
                   id="call"
                   v-model="target.call"
-                  :disabled="true"
                   :is-text-right="true"
                   name="call"
                   :errors="form.errors.get('call')"
@@ -34,7 +33,6 @@
                 <p-form-number
                   id="effective-call"
                   v-model="target.effective_call"
-                  :disabled="true"
                   :is-text-right="true"
                   name="effectiveCall"
                   :errors="form.errors.get('effectiveCall')"
@@ -44,7 +42,6 @@
                 <p-form-number
                   id="value"
                   v-model="target.value"
-                  :disabled="true"
                   :is-text-right="true"
                   name="value"
                   :errors="form.errors.get('value')"
