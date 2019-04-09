@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <span class="breadcrumb-item active">Purchase Request</span>
+      <span class="breadcrumb-item active">Purchase Order</span>
     </breadcrumb>
 
     <purchase-menu/>
@@ -10,7 +10,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="'Purchase Request'" :header="true">
+      <p-block :title="'Purchase Order'" :header="true">
         <p-form-input
           id="search-text"
           name="search-text"
@@ -31,30 +31,30 @@
               <th class="text-right">Price</th>
               <th class="text-right">Value</th>
             </tr>
-            <template v-for="(purchaseRequest, index) in purchaseRequests">
+            <template v-for="(purchaseOrder, index) in purchaseOrders">
             <tr
-              v-for="(purchaseRequestItem, index2) in purchaseRequest.items"
+              v-for="(purchaseOrderItem, index2) in purchaseOrder.items"
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
               <th>
-                <router-link :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.id }}">
-                  {{ purchaseRequest.form.number }}
+                <router-link :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
+                  {{ purchaseOrder.form.number }}
                 </router-link>
               </th>
-              <td>{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-              <td>{{ purchaseRequest.employee.name }}</td>
+              <td>{{ purchaseOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+              <td>{{ purchaseOrder.employee.name }}</td>
               <td>
-                <template v-if="purchaseRequest.supplier">
-                  {{ purchaseRequest.supplier.name }}
+                <template v-if="purchaseOrder.supplier">
+                  {{ purchaseOrder.supplier.name }}
                 </template>
               </td>
-              <td>{{ purchaseRequestItem.item.name }}</td>
-              <td>{{ purchaseRequestItem.notes }}</td>
-              <td class="text-right">{{ purchaseRequestItem.quantity | numberFormat }}</td>
-              <td class="text-right">{{ purchaseRequestItem.price | numberFormat }}</td>
-              <td class="text-right">{{ (purchaseRequestItem.quantity * purchaseRequestItem.price) | numberFormat }}</td>
+              <td>{{ purchaseOrderItem.item.name }}</td>
+              <td>{{ purchaseOrderItem.notes }}</td>
+              <td class="text-right">{{ purchaseOrderItem.quantity | numberFormat }}</td>
+              <td class="text-right">{{ purchaseOrderItem.price | numberFormat }}</td>
+              <td class="text-right">{{ (purchaseOrderItem.quantity * purchaseOrderItem.price) | numberFormat }}</td>
               <td>
-                <router-link class="btn btn-sm btn-secondary" :to="{ name: 'purchase.order.create', params: { id: purchaseRequest.id }}">
+                <router-link class="btn btn-sm btn-secondary" :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
                   <i class="fa fa-share-square-o"></i> Purchase Order
                 </router-link>
               </td>
@@ -98,17 +98,17 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchaseRequest', ['purchaseRequests', 'pagination'])
+    ...mapGetters('purchaseOrder', ['purchaseOrders', 'pagination'])
   },
   methods: {
-    ...mapActions('purchaseRequest', ['get']),
+    ...mapActions('purchaseOrder', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getPurchaseRequest()
+      this.getPurchaseOrder()
     }, 300),
-    getPurchaseRequest () {
+    getPurchaseOrder () {
       this.loading = true
       this.get({
         params: {
@@ -119,9 +119,9 @@ export default {
             'suppliers.name': this.searchText,
             'employees.name': this.searchText,
             'items.name': this.searchText,
-            'purchase_request_items.notes': this.searchText,
-            'purchase_request_items.quantity': this.searchText,
-            'purchase_request_items.price': this.searchText
+            'purchase_order_items.notes': this.searchText,
+            'purchase_order_items.quantity': this.searchText,
+            'purchase_order_items.price': this.searchText
           },
           filter_where_has: [
             {
@@ -143,11 +143,11 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getPurchaseRequest()
+      this.getPurchaseOrder()
     }
   },
   created () {
-    this.getPurchaseRequest()
+    this.getPurchaseOrder()
   },
   updated () {
     this.lastPage = this.pagination.last_page

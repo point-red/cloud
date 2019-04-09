@@ -6,5 +6,7 @@
   "purchase receive" : "penerimaan barang",
   "purchase invoice" : "nota pembelian",
   "purchase down payment" : "uang muka pembelian",
-  "purchase return" : "pengembalian barang pembelian"
+  "purchase return" : "pengembalian barang pembelian",
+  "require down payment" : "dibutuhkan uang muka",
+  "cash only" : "transaksi tunai"
 }

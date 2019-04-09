@@ -6,5 +6,7 @@
   "purchase receive" : "purchase receive",
   "purchase invoice" : "purchase invoice",
   "purchase down payment" : "purchase down payment",
-  "purchase return" : "purchase return"
+  "purchase return" : "purchase return",
+  "require down payment" : "required down payment",
+  "cash only" : "cash only"
 }

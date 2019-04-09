@@ -204,6 +204,12 @@
                     active-class="active">{{ $t('purchase request') | titlecase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
+                  <router-link
+                    to="/purchase/order"
+                    active-class="active">{{ $t('purchase order') | titlecase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">

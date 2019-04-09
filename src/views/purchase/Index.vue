@@ -21,7 +21,11 @@
               <th>{{ index + 1 }}</th>
               <td>{{ form.date | dateFormat('DD MMMM YYYY') }}</td>
               <td>{{ form.number }}</td>
-              <td></td>
+              <td class="text-right">
+                <router-link class="btn btn-sm btn-secondary" :to="{ name: 'purchase.order.show' }">
+                  <i class="fa fa-share-square-o"></i> Purchase Order
+                </router-link>
+              </td>
             </tr>
           </point-table>
         </p-block-inner>
@@ -46,7 +50,11 @@
               <th>{{ index + 1 }}</th>
               <td>{{ form.date | dateFormat('DD MMMM YYYY') }}</td>
               <td>{{ form.number }}</td>
-              <td></td>
+              <td class="text-right">
+                <router-link class="btn btn-sm btn-secondary" :to="{ name: 'purchase.order.show' }">
+                  <i class="fa fa-share-square-o"></i> Receive Order
+                </router-link>
+              </td>
             </tr>
           </point-table>
         </p-block-inner>

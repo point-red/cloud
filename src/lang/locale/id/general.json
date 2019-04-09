@@ -1,6 +1,7 @@
 {
   "new" : "tambah",
   "join" : "bergabung",
+  "action" : "action",
   "group" : "grup",
   "due date": "tanggal jatuh tempo",
   "date from": "periode awal",

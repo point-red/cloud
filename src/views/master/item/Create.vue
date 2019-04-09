@@ -17,7 +17,7 @@
           name="code"
           :label="$t('code')"
           v-model="form.code"
-          :disabled="loadingSaveButton"
+          :disabled="isSaving"
           :errors="form.errors.get('code')"
           @errors="form.errors.set('code', null)"/>
 
@@ -26,7 +26,7 @@
           name="name"
           :label="$t('name')"
           v-model="form.name"
-          :disabled="loadingSaveButton"
+          :disabled="isSaving"
           :errors="form.errors.get('name')"
           @errors="form.errors.set('name', null)"/>
 
@@ -44,7 +44,7 @@
           name="unit"
           :label="$t('unit')"
           v-model="form.units[0].label"
-          :disabled="loadingSaveButton"
+          :disabled="isSaving"
           :errors="form.errors.get('unit')"
           @errors="form.errors.set('unit', null)"/>
 
@@ -95,8 +95,8 @@
         <div class="form-group row">
           <div class="col-md-3"></div>
           <div class="col-md-9">
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+            <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
             </button>
           </div>
         </div>
@@ -122,7 +122,7 @@ export default {
   },
   data () {
     return {
-      loadingSaveButton: false,
+      isSaving: false,
       form: new Form({
         code: null,
         name: null,
@@ -172,15 +172,15 @@ export default {
       })
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.create(this.form)
         .then(response => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/master/item/' + response.data.id)
         }).catch(error => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
