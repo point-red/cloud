@@ -133,8 +133,8 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('units', {
-        item_id: option.id,
+      this.$emit('choosen', {
+        name: option.label,
         units: option.units
       })
       this.close()

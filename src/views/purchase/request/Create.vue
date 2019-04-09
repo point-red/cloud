@@ -32,7 +32,7 @@
           name="supplier"
           :label="$t('supplier')">
           <div slot="body" class="col-lg-9">
-            <m-supplier id="supplier" v-model="form.supplier_id"/>
+            <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
           </div>
         </p-form-row>
 
@@ -41,7 +41,7 @@
           name="employee"
           :label="$t('employee')">
           <div slot="body" class="col-lg-9">
-            <m-employee id="employee" v-model="form.employee_id"/>
+            <m-employee id="employee" v-model="form.employee_id" @choosen="chooseEmployee"/>
           </div>
         </p-form-row>
 
@@ -63,9 +63,9 @@
             <tr slot="p-head">
               <th>#</th>
               <th>Item</th>
+              <th>Allocation</th>
               <th>Quantity</th>
               <th>Estimated Price</th>
-              <th>Allocation</th>
               <th>Notes</th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
@@ -74,32 +74,32 @@
                 <m-item
                   :id="'item-' + index"
                   :data-index="index"
-                  v-model="form.items[index].item_id"
-                  @units="updateUnits"/>
+                  v-model="row.item_id"
+                  @choosen="chooseItem($event, row)"/>
+              </td>
+              <td>
+                <m-allocation
+                  :id="'allocation-' + index"
+                  v-model="row.allocation_id"/>
               </td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.items[index].quantity"
-                  :unit="form.items[index].units[0].label"/>
+                  v-model="row.quantity"
+                  :unit="row.units[0].label"/>
               </td>
               <td>
                 <p-form-number
                   :id="'price' + index"
                   :name="'price' + index"
-                  v-model="form.items[index].price"/>
-              </td>
-              <td>
-                <m-allocation
-                  :id="'allocation-' + index"
-                  v-model="form.items[index].allocation_id"/>
+                  v-model="row.price"/>
               </td>
               <td>
                 <p-form-input
                   id="notes"
                   name="notes"
-                  v-model="form.items[index].notes"/>
+                  v-model="row.notes"/>
               </td>
             </tr>
           </point-table>
@@ -162,12 +162,15 @@ export default {
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         required_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         supplier_id: null,
+        supplier_name: null,
         employee_id: null,
+        employee_name: null,
         approver_id: null,
         notes: null,
         items: [
           {
             item_id: null,
+            item_name: null,
             unit: null,
             converter: null,
             units: [{
@@ -197,6 +200,7 @@ export default {
     addItemRow () {
       this.form.items.push({
         item_id: null,
+        item_name: null,
         unit: null,
         converter: null,
         units: [
@@ -212,17 +216,20 @@ export default {
         notes: null
       })
     },
-    updateUnits (itemUnits) {
-      this.form.items.forEach((item, keyItem) => {
-        if (item.item_id == itemUnits.item_id) {
-          this.form.items[keyItem].units = itemUnits.units
+    chooseEmployee (value) {
+      this.form.employee_name = value
+    },
+    chooseSupplier (value) {
+      this.form.supplier_name = value
+    },
+    chooseItem (item, row) {
+      row.item_name = item.name
+      row.units = item.units
+      row.units.forEach((unit, keyUnit) => {
+        if (unit.converter == 1) {
+          row.unit = unit.label
+          row.converter = unit.converter
         }
-        item.units.forEach((unit, keyUnit) => {
-          if (unit.converter == 1) {
-            this.form.items[keyItem].unit = unit.label
-            this.form.items[keyItem].converter = unit.converter
-          }
-        })
       })
     },
     onSubmit () {

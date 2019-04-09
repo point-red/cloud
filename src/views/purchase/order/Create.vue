@@ -32,7 +32,7 @@
           name="supplier"
           :label="$t('supplier')">
           <div slot="body" class="col-lg-9">
-            <m-supplier id="supplier" v-model="form.supplier_id"/>
+            <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
           </div>
         </p-form-row>
 
@@ -95,7 +95,7 @@
                   :id="'item-' + index"
                   :data-index="index"
                   v-model="form.items[index].item_id"
-                  @units="updateUnits"/>
+                  @choosen="chooseItem($event, row)"/>
               </td>
               <td>
                 <m-allocation
@@ -192,6 +192,7 @@ export default {
       form: new Form({
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         supplier_id: null,
+        supplier_name: null,
         approver_id: null,
         need_down_payment: false,
         cash_only: false,
@@ -199,6 +200,7 @@ export default {
         items: [
           {
             item_id: null,
+            item_name: null,
             unit: null,
             converter: null,
             units: [{
@@ -224,6 +226,7 @@ export default {
     addItemRow () {
       this.form.items.push({
         item_id: null,
+        item_name: null,
         unit: null,
         converter: null,
         units: [
@@ -239,24 +242,24 @@ export default {
         notes: null
       })
     },
+    chooseSupplier (value) {
+      this.form.supplier_name = value
+    },
+    chooseItem (item, row) {
+      row.item_name = item.name
+      row.units = item.units
+      row.units.forEach((unit, keyUnit) => {
+        if (unit.converter == 1) {
+          row.unit = unit.label
+          row.converter = unit.converter
+        }
+      })
+    },
     calculate: debounce (function () {
       this.form.items.forEach(function (element) {
         element.total = element.quantity * (element.price - (element.price * element.discount / 100))
       })
     }, 300),
-    updateUnits (itemUnits) {
-      this.form.items.forEach((item, keyItem) => {
-        if (item.item_id == itemUnits.item_id) {
-          this.form.items[keyItem].units = itemUnits.units
-        }
-        item.units.forEach((unit, keyUnit) => {
-          if (unit.converter == 1) {
-            this.form.items[keyItem].unit = unit.label
-            this.form.items[keyItem].converter = unit.converter
-          }
-        })
-      })
-    },
     onSubmit () {
       this.isSaving = true
       if (this.form.approver_id == null) {
