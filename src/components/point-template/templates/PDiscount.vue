@@ -42,6 +42,9 @@ export default {
     }
   },
   watch: {
+    value () {
+      this.number = this.value
+    },
     number () {
       if (this.number > 100) {
         this.number = 100

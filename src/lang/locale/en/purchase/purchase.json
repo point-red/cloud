@@ -8,5 +8,9 @@
   "purchase down payment" : "purchase down payment",
   "purchase return" : "purchase return",
   "require down payment" : "required down payment",
-  "cash only" : "cash only"
+  "cash only" : "cash only",
+  "include tax" : "include tax",
+  "exclude tax" : "exclude tax",
+  "tax" : "tax",
+  "discount" : "discount"
 }

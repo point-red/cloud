@@ -8,5 +8,9 @@
   "purchase down payment" : "uang muka pembelian",
   "purchase return" : "pengembalian barang pembelian",
   "require down payment" : "dibutuhkan uang muka",
-  "cash only" : "transaksi tunai"
+  "cash only" : "transaksi tunai",
+  "include tax" : "sudah termasuk ppn",
+  "exclude tax" : "belum termasuk ppn",
+  "tax" : "ppn",
+  "discount" : "diskon"
 }

@@ -66,14 +66,17 @@ export default {
     },
     value: {
       type: [String, Number]
+    },
+    label: {
+      type: String
     }
   },
   watch: {
     searchText: debounce(function () {
       this.search()
     }, 300),
-    value () {
-      this.search()
+    label () {
+      this.mutableLabel = this.label
     }
   },
   created () {
@@ -94,6 +97,7 @@ export default {
         }
       }).then(response => {
         this.options = []
+        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
