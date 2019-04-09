@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="input-group">
-      <cleave
+    <div class="input-group" style="min-width: 180px">
+      <cleave        
         :readonly="readonly"
         v-model="number"
         :options="options"

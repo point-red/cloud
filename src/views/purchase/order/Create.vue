@@ -31,38 +31,10 @@
           id="supplier"
           name="supplier"
           :label="$t('supplier')">
-          <div slot="body" class="col-lg-9">
+          <div slot="body" class="col-lg-9 mt-5">
             <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
           </div>
-        </p-form-row>
-
-        <p-form-row
-          id="need-down-payment"
-          name="need-down-payment"
-          :label="$t('require down payment')">
-          <div slot="body" class="col-lg-9">
-            <p-form-check-box
-              id="need-down-payment"
-              name="need-down-payment"
-              @click.native="form.need_down_payment = !form.need_down_payment"
-              :checked="form.need_down_payment"
-              :description="''"/>
-          </div>
-        </p-form-row>
-
-        <p-form-row
-          id="cash-only"
-          name="cash-only"
-          :label="$t('cash only')">
-          <div slot="body" class="col-lg-9">
-            <p-form-check-box
-              id="cash-only"
-              name="cash-only"
-              @click.native="form.cash_only = !form.cash_only"
-              :checked="form.cash_only"
-              :description="''"/>
-          </div>
-        </p-form-row>
+        </p-form-row>        
 
         <p-form-row
           id="notes"
@@ -75,14 +47,14 @@
 
         <p-separator></p-separator>
 
-        <h3 class="">Item</h3>
-
+        <h3>Item</h3>
+        <hr>
         <p-block-inner>
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th>Item</th>
-              <th>Allocation</th>
+              <th style="min-width: 120px">Item</th>
+              <th style="min-width: 120px">Allocation</th>
               <th>Quantity</th>
               <th>Price</th>
               <th>Discount</th>
@@ -132,6 +104,39 @@
                   v-model="form.items[index].total"/>
               </td>
             </tr>
+            <tr slot="p-body">
+              <th></th>
+              <td colspan="5" class="text-right">{{ $t('discount') | uppercase }}</td>
+              <td>
+                <p-form-number
+                  :id="'discount'"
+                  :name="'discount'"
+                  :readonly="true"
+                  v-model="form.discount"/>
+              </td>
+            </tr>
+            <tr slot="p-body">
+              <th></th>
+              <td colspan="5" class="text-right">{{ $t('vat') | uppercase }}</td>
+              <td>
+                <p-form-number
+                  :id="'vat'"
+                  :name="'vat'"
+                  :readonly="true"
+                  v-model="form.vat"/>
+              </td>
+            </tr>
+            <tr slot="p-body">
+              <th></th>
+              <td colspan="5" class="text-right">{{ $t('total') | uppercase }}</td>
+              <td>
+                <p-form-number
+                  :id="'total'"
+                  :name="'total'"
+                  :readonly="true"
+                  v-model="form.total"/>
+              </td>
+            </tr>
           </point-table>
           <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
             <i class="fa fa-plus"/> Add
@@ -140,24 +145,58 @@
 
         <p-separator></p-separator>
 
-        <h3 class="">Approver</h3>
+        <div class="row">
+          <div class="col-sm-6">
+            <h3>Options</h3>        
+            <hr>
+            <p-form-row
+              id="need-down-payment"
+              name="need-down-payment"
+              :label="$t('require down payment')">
+              <div slot="body" class="col-lg-9">
+                <p-form-check-box
+                  id="need-down-payment"
+                  name="need-down-payment"
+                  @click.native="form.need_down_payment = !form.need_down_payment"
+                  :checked="form.need_down_payment"
+                  :description="''"/>
+              </div>
+            </p-form-row>
 
-        <p-form-row
-          id="approver"
-          name="approver"
-          :label="$t('approver')">
-          <div slot="body" class="col-lg-9">
-            <m-user
-              :id="'user'"
-              v-model="form.approver_id"
-              :errors="form.errors.get('approver_id')"
-              @errors="form.errors.set('approver_id', null)"/>
+            <p-form-row
+              id="cash-only"
+              name="cash-only"
+              :label="$t('cash only')">
+              <div slot="body" class="col-lg-9">
+                <p-form-check-box
+                  id="cash-only"
+                  name="cash-only"
+                  @click.native="form.cash_only = !form.cash_only"
+                  :checked="form.cash_only"
+                  :description="''"/>
+              </div>
+            </p-form-row>
           </div>
-        </p-form-row>
+          <div class="col-sm-6">
+            <h3>Approver</h3>
+            <hr>
+            <p-form-row
+              id="approver"
+              name="approver"
+              :label="$t('approver')">
+              <div slot="body" class="col-lg-9 mt-5">
+                <m-user
+                  :id="'user'"
+                  v-model="form.approver_id"
+                  :errors="form.errors.get('approver_id')"
+                  @errors="form.errors.set('approver_id', null)"/>
+              </div>
+            </p-form-row>
+          </div>
+        </div>        
 
         <div class="form-group row">
-          <div class="col-md-3"></div>
-          <div class="col-md-9">
+          <div class="col-md-12">
             <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
               <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
             </button>
@@ -197,6 +236,7 @@ export default {
         need_down_payment: false,
         cash_only: false,
         notes: null,
+        total: null,
         items: [
           {
             item_id: null,
