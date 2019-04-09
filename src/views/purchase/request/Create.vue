@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link to="/purchase/purchase-request" class="breadcrumb-item">Purchase Request</router-link>
+      <router-link to="/purchase/request" class="breadcrumb-item">Purchase Request</router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
@@ -240,7 +240,7 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/purchase/purchase-request/' + response.data.id)
+          this.$router.push('/purchase/request/' + response.data.id)
         }).catch(error => {
           console.log(error.errors)
           this.isSaving = false

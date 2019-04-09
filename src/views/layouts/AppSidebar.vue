@@ -200,7 +200,7 @@
               <ul>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase request')">
                   <router-link
-                    to="/purchase/purchase-request"
+                    to="/purchase/request"
                     active-class="active">{{ $t('purchase request') | titlecase }}
                   </router-link>
                 </li>

@@ -18,7 +18,7 @@
     "lodash": "^4.17.11",
     "moment-timezone": "^0.5.23",
     "numeral": "^2.0.6",
-    "point-table-vue": "^0.2.2",
+    "point-table-vue": "^0.2.4",
     "register-service-worker": "^1.6.2",
     "sweetalert2": "^7.28.4",
     "v-click-outside": "^2.0.2",

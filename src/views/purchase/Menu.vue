@@ -1,9 +1,9 @@
 <template>
   <div class="d-flex flex-nowrap" style="overflow-x:auto">
     <router-link
-      to="/purchase/purchase-request"
+      to="/purchase/request"
       class="btn mr-5 mb-15"
-      :class="{'btn-secondary': !isMatch('/purchase/purchase-request')}"
+      :class="{'btn-secondary': !isMatch('/purchase/request')}"
       active-class="btn-primary">
       <span><i class="si si-folder-alt"></i> Purchase Request</span>
     </router-link>

@@ -202,7 +202,7 @@ export default {
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
-        this.$router.replace('/purchase/purchase-request/' + response.data.id)
+        this.$router.replace('/purchase/request/' + response.data.id)
       }
       this.isLoading = false
       this.form.date = response.data.form.date
@@ -264,7 +264,7 @@ export default {
           this.loadingSaveButton = false
           this.form.reset()
           this.$notification.success('Update success')
-          this.$router.push('/purchase/purchase-request/' + response.data.id)
+          this.$router.push('/purchase/request/' + response.data.id)
         }).catch(error => {
           this.loadingSaveButton = false
           this.$notification.error(error.message)

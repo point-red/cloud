@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link to="/purchase/purchase-request" class="breadcrumb-item">Purchase Request</router-link>
+      <router-link to="/purchase/request" class="breadcrumb-item">Purchase Request</router-link>
       <template v-if="purchaseRequest.form.number">
         <span class="breadcrumb-item active">{{ purchaseRequest.form.number | uppercase }}</span>
       </template>
@@ -148,9 +148,9 @@
 
           <p-separator></p-separator>
 
-          <h3 v-if="purchaseRequest.archives">Archives</h3>
+          <h3 v-if="purchaseRequest.archives != undefined && purchaseRequest.archives.length > 0">Archives</h3>
 
-          <point-table v-if="purchaseRequest.archives">
+          <point-table v-if="purchaseRequest.archives != undefined && purchaseRequest.archives.length > 0">
             <tr slot="p-head">
               <th>#</th>
               <th>Edited Date</th>
@@ -170,7 +170,7 @@
           </point-table>
 
           <router-link
-            :to="{ path: '/purchase/purchase-request/' + purchaseRequest.id + '/edit', params: { id: purchaseRequest.id }}"
+            :to="{ path: '/purchase/request/' + purchaseRequest.id + '/edit', params: { id: purchaseRequest.id }}"
             v-if="$permission.has('update purchase request') && $formRules.allowedToUpdate(purchaseRequest.form)"
             class="btn btn-sm btn-primary mr-5">
             Edit

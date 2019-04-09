@@ -3,7 +3,7 @@
     <slot></slot>
     <li class="nav-item ml-auto" v-if="$permission.has('create purchase request')">
       <router-link
-        to="/purchase/purchase-request/create"
+        to="/purchase/request/create"
         exact
         class="nav-link"
         active-class="active">
@@ -12,11 +12,20 @@
     </li>
     <li class="nav-item" v-if="$permission.has('read purchase request')">
       <router-link
-        to="/purchase/purchase-request"
+        to="/purchase/request"
         exact
         class="nav-link"
         active-class="active">
         <span><i class="si si-docs"></i> List</span>
+      </router-link>
+    </li>
+    <li class="nav-item" v-if="$permission.has('read purchase request')">
+      <router-link
+        to="/purchase/request/pending"
+        exact
+        class="nav-link"
+        active-class="active">
+        <span><i class="si si-magnifier"></i> Pending</span>
       </router-link>
     </li>
     <slot name="right"></slot>
