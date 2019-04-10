@@ -159,6 +159,7 @@ export default {
     return {
       isSaving: false,
       form: new Form({
+        increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         required_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         supplier_id: null,
@@ -193,6 +194,7 @@ export default {
   watch: {
     'form.required_date': function () {
       this.form.date = this.form.required_date
+      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
     }
   },
   methods: {

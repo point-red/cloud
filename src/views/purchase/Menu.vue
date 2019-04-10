@@ -8,23 +8,23 @@
       <span><i class="si si-folder-alt"></i> Purchase Request</span>
     </router-link>
     <router-link
-      to="/purchase/purchase-order"
+      to="/purchase/order"
       class="btn mr-5 mb-15"
-      :class="{'btn-secondary': !isMatch('/purchase/purchase-order')}"
+      :class="{'btn-secondary': !isMatch('/purchase/order')}"
       active-class="btn-primary">
       <span><i class="si si-folder-alt"></i> Purchase Order</span>
     </router-link>
     <router-link
-      to="/purchase/downpayment"
+      to="/purchase/down-payment"
       class="btn mr-5 mb-15"
-      :class="{'btn-secondary': !isMatch('/purchase/downpayment')}"
+      :class="{'btn-secondary': !isMatch('/purchase/down-payment')}"
       active-class="btn-primary">
       <span><i class="si si-folder-alt"></i> Downpayment</span>
     </router-link>
     <router-link
-      to="/purchase/purchase-receive"
+      to="/purchase/receive"
       class="btn mr-5 mb-15"
-      :class="{'btn-secondary': !isMatch('/purchase/purchase-receive')}"
+      :class="{'btn-secondary': !isMatch('/purchase/receive')}"
       active-class="btn-primary">
       <span><i class="si si-folder-alt"></i> Purchase Receive</span>
     </router-link>
