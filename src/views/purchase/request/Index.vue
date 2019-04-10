@@ -119,7 +119,7 @@ export default {
             'purchase_request_items.price': this.searchText
           },
           limit: 10,
-          includes: 'form;employee;supplier;items.item;services',
+          includes: 'form;employee;supplier;items.item;services.service',
           page: this.currentPage
         }
       }).then(response => {

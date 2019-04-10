@@ -110,14 +110,13 @@ export default {
             'forms.number': this.searchText,
             'forms.date': this.serverDate(this.searchText),
             'suppliers.name': this.searchText,
-            'employees.name': this.searchText,
             'items.name': this.searchText,
             'purchase_order_items.notes': this.searchText,
             'purchase_order_items.quantity': this.searchText,
             'purchase_order_items.price': this.searchText
           },
           limit: 10,
-          includes: 'form;employee;supplier;items.item;services',
+          includes: 'form;supplier;items.item;services.service',
           page: this.currentPage
         }
       }).then(response => {

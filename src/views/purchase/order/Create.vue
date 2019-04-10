@@ -45,11 +45,12 @@
             <tr slot="p-head">
               <th>#</th>
               <th style="min-width: 120px">Item</th>
-              <th style="min-width: 120px">Allocation</th>
+              <th>Notes</th>
               <th>Quantity</th>
               <th>Price</th>
               <th>Discount</th>
               <th>Total</th>
+              <th style="min-width: 120px">Allocation</th>
               <th></th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
@@ -63,11 +64,10 @@
                   @choosen="chooseItem($event, row)"/>
               </td>
               <td>
-                <m-allocation
-                  :id="'allocation-' + index"
-                  v-model="form.items[index].allocation_id"
-                  :label="row.allocation_name"
-                  @choosen="chooseAllocation($event, row)"/>
+                <p-form-input
+                  :id="'notes-' + index"
+                  :name="'notes-' + index"
+                  v-model="form.items[index].notes"/>
               </td>
               <td>
                 <p-quantity
@@ -97,6 +97,13 @@
                   :name="'total-' + index"
                   :readonly="true"
                   v-model="form.items[index].total"/>
+              </td>
+              <td>
+                <m-allocation
+                  :id="'allocation-' + index"
+                  v-model="form.items[index].allocation_id"
+                  :label="row.allocation_name"
+                  @choosen="chooseAllocation($event, row)"/>
               </td>
               <td>
                 <i class="btn btn-sm fa fa-times" @click="deleteRow(index)"></i>
@@ -133,7 +140,7 @@
 
         <div class="row">
           <div class="col-sm-6">
-            <textarea rows="10" class="form-control" placeholder="Notes"></textarea>
+            <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
           </div>
           <div class="col-sm-6">
             <p-form-row
@@ -158,14 +165,14 @@
                   style="float:left"
                   id="need-down-payment"
                   name="need-down-payment"
-                  @click.native="form.tax_type = 'include'"
-                  :checked="form.tax_type == 'include'"
+                  @click.native="chooseTax('include')"
+                  :checked="form.type_of_tax == 'include'"
                   :description="$t('include tax')"/>
                 <p-form-check-box
                   id="need-down-payment"
                   name="need-down-payment"
-                  @click.native="form.tax_type = 'exclude'"
-                  :checked="form.tax_type == 'exclude'"
+                  @click.native="chooseTax('exclude')"
+                  :checked="form.type_of_tax == 'exclude'"
                   :description="$t('exclude tax')"/>
                 <p-form-number
                   :id="'total'"
@@ -200,12 +207,11 @@
               name="need-down-payment"
               :label="$t('require down payment')">
               <div slot="body" class="col-lg-9">
-                <p-form-check-box
+                <p-form-number
                   id="need-down-payment"
                   name="need-down-payment"
-                  @click.native="form.need_down_payment = !form.need_down_payment"
-                  :checked="form.need_down_payment"
-                  :description="''"/>
+                  :is-text-right="false"
+                  v-model="form.need_down_payment"/>
               </div>
             </p-form-row>
 
@@ -279,14 +285,14 @@ export default {
         supplier_id: null,
         supplier_name: null,
         approver_id: null,
-        need_down_payment: false,
+        need_down_payment: 0,
         cash_only: false,
         notes: null,
         subtotal: 0,
         discount: 0,
         tax_base: 0,
         tax: 0,
-        tax_type: 'exclude',
+        type_of_tax: 'exclude',
         total_quantity: 0,
         total: 0,
         items: [
@@ -355,19 +361,35 @@ export default {
     chooseAllocation (allocation, row) {
       row.allocation_name = allocation
     },
+    chooseTax (taxType) {
+      if (taxType == this.form.type_of_tax) {
+        this.form.type_of_tax = null
+      } else {
+        this.form.type_of_tax = taxType
+      }
+      this.calculate()
+    },
     calculate: debounce (function () {
       var subtotal = 0
       var totalQuantity = 0
       this.form.items.forEach(function (element) {
         element.total = element.quantity * (element.price - (element.price * element.discount / 100))
         subtotal += element.total
-        totalQuantity += element.quantity
+        totalQuantity += parseFloat(element.quantity)
       })
       this.form.subtotal = subtotal
       this.form.total_quantity = totalQuantity
       this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount / 100)
-      this.form.tax = this.form.tax_base * 10 / 100
-      this.form.total = this.form.tax_base + this.form.tax
+      if (this.form.type_of_tax == 'include') {
+        this.form.tax = this.form.tax_base * 10 / 100
+        this.form.total = this.form.tax_base
+      } else if (this.form.type_of_tax == 'exclude') {
+        this.form.tax = this.form.tax_base * 10 / 100
+        this.form.total = this.form.tax_base + this.form.tax
+      } else {
+        this.form.tax = 0
+        this.form.total = this.form.tax_base
+      }
     }, 300),
     onSubmit () {
       this.isSaving = true
