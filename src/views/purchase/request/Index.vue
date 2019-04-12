@@ -11,6 +11,13 @@
 
     <div class="row">
       <p-block :title="'Purchase Request'" :header="true">
+        <div class="row mb-10">
+          <p-date-range-picker
+            id="date"
+            name="date"
+            class="col-sm-4"
+            v-model="date"/>
+        </div>
         <p-form-input
           id="search-text"
           name="search-text"
@@ -22,6 +29,7 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
+              <th>Number</th>
               <th>Date</th>
               <th>Employee</th>
               <th>Supplier</th>
@@ -36,11 +44,12 @@
               v-for="(purchaseRequestItem, index2) in purchaseRequest.items"
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
-              <th>
+              <th>{{ index + 1 }}</th>
+              <td>
                 <router-link :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.id }}">
                   {{ purchaseRequest.form.number }}
                 </router-link>
-              </th>
+              </td>
               <td>{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
               <td>{{ purchaseRequest.employee.name }}</td>
               <td>
@@ -89,16 +98,37 @@ export default {
       loading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      lastPage: 1,
+      date: {
+        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD HH:mm:ss') : this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD HH:mm:ss') : this.$moment().format('YYYY-MM-DD HH:mm:ss')
+      },
     }
   },
   computed: {
     ...mapGetters('purchaseRequest', ['purchaseRequests', 'pagination'])
   },
+  watch: {
+    date: function () {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          date_from: this.date.start,
+          date_to: this.date.end
+        }
+      })
+      this.getPurchaseRequest()
+    }
+  },
   methods: {
     ...mapActions('purchaseRequest', ['get']),
     filterSearch: debounce(function (value) {
-      this.$router.push({ query: { search: value } })
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          search: value
+        }
+      })
       this.searchText = value
       this.currentPage = 1
       this.getPurchaseRequest()
@@ -112,13 +142,18 @@ export default {
           sort_by: '-forms.number',
           filter_like: {
             'form.number': this.searchText,
-            'form.date': this.serverDate(this.searchText),
             'supplier.name': this.searchText,
             'employee.name': this.searchText,
             'items.item.name': this.searchText,
             'items.notes': this.searchText,
             'items.quantity': this.searchText,
             'items.price': this.searchText
+          },
+          filter_min: {
+            'form.date': this.serverDate(this.date.start)
+          },
+          filter_max: {
+            'form.date': this.serverDate(this.date.end)
           },
           limit: 10,
           includes: 'form;employee;supplier;items.item;services.service',
