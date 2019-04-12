@@ -11,13 +11,6 @@
 
     <div class="row">
       <p-block :title="'Purchase Request'" :header="true">
-        <div class="row mb-10">
-          <p-date-range-picker
-            id="date"
-            name="date"
-            class="col-sm-4"
-            v-model="date"/>
-        </div>
         <p-form-input
           id="search-text"
           name="search-text"
@@ -103,27 +96,11 @@ export default {
       loading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1,
-      date: {
-        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD HH:mm:ss') : this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD HH:mm:ss') : this.$moment().format('YYYY-MM-DD HH:mm:ss')
-      }
+      lastPage: 1
     }
   },
   computed: {
     ...mapGetters('purchaseRequest', ['purchaseRequests', 'pagination'])
-  },
-  watch: {
-    date: function () {
-      this.$router.push({
-        query: {
-          ...this.$route.query,
-          date_from: this.date.start,
-          date_to: this.date.end
-        }
-      })
-      this.getPurchaseRequest()
-    }
   },
   methods: {
     ...mapActions('purchaseRequest', ['get']),
@@ -150,16 +127,11 @@ export default {
             'items.quantity': this.searchText,
             'items.price': this.searchText
           },
-          filter_where_has: [{
-            form: {
-              done: false
-            }
-          }],
-          filter_min: {
-            'form.date': this.serverDate(this.date.start)
+          filter_equal: {
+            'form.done': false
           },
-          filter_max: {
-            'form.date': this.serverDate(this.date.end)
+          filter_not_equal: {
+            'form.number': null
           },
           limit: 10,
           includes: 'form;employee;supplier;items.item;services.service',
