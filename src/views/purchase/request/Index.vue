@@ -107,16 +107,18 @@ export default {
       this.loading = true
       this.get({
         params: {
+          join: 'form',
+          fields: 'purchase_requests.*',
           sort_by: '-forms.number',
           filter_like: {
-            'forms.number': this.searchText,
-            'forms.date': this.serverDate(this.searchText),
-            'suppliers.name': this.searchText,
-            'employees.name': this.searchText,
-            'items.name': this.searchText,
-            'purchase_request_items.notes': this.searchText,
-            'purchase_request_items.quantity': this.searchText,
-            'purchase_request_items.price': this.searchText
+            'form.number': this.searchText,
+            'form.date': this.serverDate(this.searchText),
+            'supplier.name': this.searchText,
+            'employee.name': this.searchText,
+            'items.item.name': this.searchText,
+            'items.notes': this.searchText,
+            'items.quantity': this.searchText,
+            'items.price': this.searchText
           },
           limit: 10,
           includes: 'form;employee;supplier;items.item;services.service',

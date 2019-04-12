@@ -393,6 +393,7 @@ export default {
     }, 300),
     onSubmit () {
       this.isSaving = true
+      this.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.approver_id == null) {
         this.$notification.error('approval cannot be null')
         this.isSaving = false

@@ -22,6 +22,7 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
+              <th>Number</th>
               <th>Date</th>
               <th>Supplier</th>
               <th>Item</th>
@@ -35,11 +36,12 @@
               v-for="(purchaseOrderItem, index2) in purchaseOrder.items"
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
-              <th>
+              <th>{{ index + 1 }}</th>
+              <td>
                 <router-link :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
                   {{ purchaseOrder.form.number }}
                 </router-link>
-              </th>
+              </td>
               <td>{{ purchaseOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
               <td>
                 <template v-if="purchaseOrder.supplier">
@@ -105,15 +107,17 @@ export default {
       this.loading = true
       this.get({
         params: {
+          join: 'form',
           sort_by: '-forms.number',
+          fields: 'purchase_orders.*',
           filter_like: {
-            'forms.number': this.searchText,
-            'forms.date': this.serverDate(this.searchText),
-            'suppliers.name': this.searchText,
-            'items.name': this.searchText,
-            'purchase_order_items.notes': this.searchText,
-            'purchase_order_items.quantity': this.searchText,
-            'purchase_order_items.price': this.searchText
+            'form.number': this.searchText,
+            'form.date': this.serverDate(this.searchText),
+            'supplier.name': this.searchText,
+            'items.item.name': this.searchText,
+            'items.notes': this.searchText,
+            'items.quantity': this.searchText,
+            'items.price': this.searchText
           },
           limit: 10,
           includes: 'form;supplier;items.item;services.service',

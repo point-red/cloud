@@ -22,6 +22,7 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
+              <th>Number</th>
               <th>Date</th>
               <th>Employee</th>
               <th>Supplier</th>
@@ -36,11 +37,12 @@
               v-for="(purchaseRequestItem, index2) in purchaseRequest.items"
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
-              <th>
+              <th>{{ index + 1 }}</th>
+              <td>
                 <router-link :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.id }}">
                   {{ purchaseRequest.form.number }}
                 </router-link>
-              </th>
+              </td>
               <td>{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
               <td>{{ purchaseRequest.employee.name }}</td>
               <td>
@@ -54,7 +56,7 @@
               <td class="text-right">{{ purchaseRequestItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseRequestItem.quantity * purchaseRequestItem.price) | numberFormat }}</td>
               <td>
-                <router-link class="btn btn-sm btn-secondary" :to="{ name: 'purchase.order.create', params: { id: purchaseRequest.id }}">
+                <router-link class="btn btn-sm btn-secondary" :to="{ name: 'purchase.order.create', query: { id: purchaseRequest.id }}">
                   <i class="fa fa-share-square-o"></i> Purchase Order
                 </router-link>
               </td>
@@ -112,26 +114,26 @@ export default {
       this.loading = true
       this.get({
         params: {
+          join: 'form',
+          fields: 'purchase_requests.*',
           sort_by: '-forms.number',
-          filter_like: {
-            'forms.number': this.searchText,
-            'forms.date': this.serverDate(this.searchText),
-            'suppliers.name': this.searchText,
-            'employees.name': this.searchText,
-            'items.name': this.searchText,
-            'purchase_request_items.notes': this.searchText,
-            'purchase_request_items.quantity': this.searchText,
-            'purchase_request_items.price': this.searchText
+          filter_like: {            
+            'form.number': this.searchText,
+            'form.date': this.serverDate(this.searchText),
+            'supplier.name': this.searchText,
+            'employee.name': this.searchText,
+            'items.item.name': this.searchText,
+            'items.notes': this.searchText,
+            'items.quantity': this.searchText,
+            'items.price': this.searchText
           },
-          filter_where_has: [
-            {
-              form: {
-                done: false
-              }
+          filter_where_has: [{
+            form: {
+              done: false
             }
-          ],
+          }],
           limit: 10,
-          includes: 'form;employee;supplier;items.item;services',
+          includes: 'form;employee;supplier;items.item;services.service',
           page: this.currentPage
         }
       }).then(response => {

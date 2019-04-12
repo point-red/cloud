@@ -210,6 +210,30 @@
                     active-class="active">{{ $t('purchase order') | titlecase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
+                  <router-link
+                    to="/purchase/down-payment"
+                    active-class="active">{{ $t('purchase down payment') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase receive')">
+                  <router-link
+                    to="/purchase/receive"
+                    active-class="active">{{ $t('purchase receive') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase invoice')">
+                  <router-link
+                    to="/purchase/invoice"
+                    active-class="active">{{ $t('purchase invoice') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase return')">
+                  <router-link
+                    to="/purchase/return"
+                    active-class="active">{{ $t('purchase return') | titlecase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">

@@ -191,12 +191,6 @@ export default {
   computed: {
     ...mapGetters('purchaseRequest', ['purchaseRequest'])
   },
-  watch: {
-    'form.required_date': function () {
-      this.form.date = this.form.required_date
-      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-    }
-  },
   methods: {
     ...mapActions('purchaseRequest', ['create']),
     addItemRow () {
@@ -236,6 +230,8 @@ export default {
     },
     onSubmit () {
       this.isSaving = true
+      this.form.date = this.form.required_date
+      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.approver_id == null) {
         this.$notification.error('approval cannot be null')
         this.isSaving = false
