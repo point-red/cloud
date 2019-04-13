@@ -36,8 +36,8 @@ export default {
     return {
       searchText: '',
       options: [],
-      mutableId: null,
-      mutableLabel: this.value,
+      mutableId: this.value,
+      mutableLabel: this.label,
       isSaving: false,
       isLoading: false,
       form: new Form({
@@ -55,6 +55,9 @@ export default {
     },
     value: {
       type: [String, Number]
+    },
+    label: {
+      type: String
     }
   },
   watch: {

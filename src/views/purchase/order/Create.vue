@@ -12,29 +12,31 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('purchase order')" :header="true">
-        <p-form-row
-          id="date"
-          name="date"
-          :label="$t('date')">
-          <div slot="body" class="col-lg-9">
-            <p-date-picker
-              id="date"
-              name="date"
-              label="Date"
-              v-model="form.date"
-              :errors="form.errors.get('date')"
-              @errors="form.errors.set('date', null)"/>
-          </div>
-        </p-form-row>
+        <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="date"
+            name="date"
+            :label="$t('date')">
+            <div slot="body" class="col-lg-9">
+              <p-date-picker
+                id="date"
+                name="date"
+                label="Date"
+                v-model="form.date"
+                :errors="form.errors.get('date')"
+                @errors="form.errors.set('date', null)"/>
+            </div>
+          </p-form-row>
 
-        <p-form-row
-          id="supplier"
-          name="supplier"
-          :label="$t('supplier')">
-          <div slot="body" class="col-lg-9 mt-5">
-            <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
-          </div>
-        </p-form-row>        
+          <p-form-row
+            id="supplier"
+            name="supplier"
+            :label="$t('supplier')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier" :label="form.supplier_name"/>
+            </div>
+          </p-form-row>
+        </p-block-inner>
 
         <p-separator></p-separator>
 
@@ -245,7 +247,7 @@
               </div>
             </p-form-row>
           </div>
-        </div>        
+        </div>
 
         <div class="form-group row">
           <div class="col-md-12">
@@ -279,6 +281,7 @@ export default {
   },
   data () {
     return {
+      pr: null,
       isSaving: false,
       form: new Form({
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -318,9 +321,11 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('purchaseRequest', ['purchaseRequest']),
     ...mapGetters('purchaseOrder', ['purchaseOrder'])
   },
   methods: {
+    ...mapActions('purchaseRequest', ['find']),
     ...mapActions('purchaseOrder', ['create']),
     addItemRow () {
       this.form.items.push({
@@ -416,6 +421,28 @@ export default {
     }
   },
   created () {
+    if (this.$route.query.id) {
+      this.isLoading = true
+      this.find({
+        id: this.$route.query.id,
+        params: {
+          includes: 'form;supplier;items.item;services.service'
+        }
+      }).then(response => {
+        this.isLoading = false
+        this.form.date = response.data.form.date
+        this.form.supplier_id = response.data.supplier_id
+        this.form.supplier_name = response.data.supplier_name
+        // this.form.tax = response.data.tax
+        // this.form.discount_percent = response.data.discount_percent
+        // this.form.discount_value = response.data.discount_value
+        // this.form.total = response.data.total
+        // this.form.notes = response.data.form.notes
+        // this.form.items = response.data.items
+      }).catch(error => {
+        this.isLoading = false
+      })
+    }
   }
 }
 </script>
