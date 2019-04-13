@@ -159,9 +159,14 @@
             <tr slot="p-body" v-for="(archived, index) in purchaseRequest.archives" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
-                <router-link :to="{ name: 'purchase.request.show', params: { id: archived.id }}">
+                <template v-if="archived.id != id">
+                  <router-link :to="{ name: 'purchase.request.show', params: { id: archived.id }}">
+                    {{ archived.form.updated_at | dateFormat('DD MMMM YYYY HH:mm') }}
+                  </router-link>
+                </template>
+                <template v-else>
                   {{ archived.form.updated_at | dateFormat('DD MMMM YYYY HH:mm') }}
-                </router-link>
+                </template>
               </td>
               <td>
                 {{ archived.edited_notes }}
@@ -222,6 +227,7 @@ export default {
         id: this.id,
         params: {
           with_archives: true,
+          with_origin: true,
           includes: 'employee;supplier;items.item;items.allocation;services.service;services.allocation;approvers.requestedBy;approvers.requestedTo'
         }
       }).then(response => {

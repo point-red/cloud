@@ -127,9 +127,7 @@ export default {
             'items.quantity': this.searchText,
             'items.price': this.searchText
           },
-          filter_equal: {
-            'form.done': false
-          },
+          filter_form: 'notDone',
           filter_not_equal: {
             'form.number': null
           },
