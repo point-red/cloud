@@ -76,7 +76,7 @@
                   :id="'quantity' + index"
                   :name="'quantity' + index"
                   v-model="form.items[index].quantity"
-                  :unit="form.items[index].units[0].label"
+                  :unit="form.items[index].item.units[0].label"
                   @keyup.native="calculate()"/>
               </td>
               <td>
@@ -90,7 +90,7 @@
                 <p-discount
                   :id="'discount' + index"
                   :name="'discount' + index"
-                  v-model="form.items[index].discount"
+                  v-model="form.items[index].discount_percent"
                   @keyup.native="calculate()"/>
               </td>              
               <td>
@@ -117,8 +117,8 @@
               <td></td>
               <td>
                 <p-form-number
-                  :id="'discount'"
-                  :name="'discount'"
+                  :id="'total_quantity'"
+                  :name="'total_quantity'"
                   :readonly="true"
                   v-model="form.total_quantity"/>
               </td>
@@ -126,8 +126,8 @@
               <td></td>
               <td>
                 <p-form-number
-                  :id="'discount'"
-                  :name="'discount'"
+                  :id="'subtotal'"
+                  :name="'subtotal'"
                   :readonly="true"
                   v-model="form.subtotal"/>
               </td>
@@ -153,7 +153,7 @@
                 <p-discount
                   id="discount"
                   name="discount"
-                  v-model="form.discount"
+                  v-model="form.discount_percent"
                   @keyup.native="calculate()"/>
               </div>
             </p-form-row>
@@ -192,7 +192,7 @@
                   :id="'total'"
                   :name="'total'"
                   :readonly="true"
-                  v-model="form.total"/>
+                  v-model="form.amount"/>
               </div>
             </p-form-row>
           </div>
@@ -281,8 +281,8 @@ export default {
   },
   data () {
     return {
-      pr: null,
       isSaving: false,
+      isLoading: false,
       form: new Form({
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         supplier_id: null,
@@ -292,23 +292,26 @@ export default {
         cash_only: false,
         notes: null,
         subtotal: 0,
-        discount: 0,
+        discount_percent: 0,
+        discount_value: 0,
         tax_base: 0,
         tax: 0,
         type_of_tax: 'exclude',
         total_quantity: 0,
-        total: 0,
+        amount: 0,
         items: [
           {
             item_id: null,
             item_name: null,
+            item: {
+              units: [{
+                label: '',
+                name: '',
+                converter: null
+              }],
+            },
             unit: null,
             converter: null,
-            units: [{
-              label: '',
-              name: '',
-              converter: null
-            }],
             quantity: null,
             price: null,
             total: null,
@@ -331,15 +334,15 @@ export default {
       this.form.items.push({
         item_id: null,
         item_name: null,
-        unit: null,
-        converter: null,
-        units: [
-          {
+        item: {
+          units: [{
             label: '',
             name: '',
             converter: null
-          }
-        ],
+          }],
+        },
+        unit: null,
+        converter: null,
         quantity: null,
         price: null,
         allocation_id: null,
@@ -355,8 +358,8 @@ export default {
     },
     chooseItem (item, row) {
       row.item_name = item.name
-      row.units = item.units
-      row.units.forEach((unit, keyUnit) => {
+      row.item.units = item.units
+      row.item.units.forEach((unit, keyUnit) => {
         if (unit.converter == 1) {
           row.unit = unit.label
           row.converter = unit.converter
@@ -378,27 +381,27 @@ export default {
       var subtotal = 0
       var totalQuantity = 0
       this.form.items.forEach(function (element) {
-        element.total = element.quantity * (element.price - (element.price * element.discount / 100))
-        subtotal += element.total
+        element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
+        subtotal += parseFloat(element.total)
         totalQuantity += parseFloat(element.quantity)
       })
       this.form.subtotal = subtotal
       this.form.total_quantity = totalQuantity
-      this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount / 100)
+      this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount_percent / 100)
       if (this.form.type_of_tax == 'include') {
         this.form.tax = this.form.tax_base * 10 / 100
-        this.form.total = this.form.tax_base
+        this.form.amount = this.form.tax_base
       } else if (this.form.type_of_tax == 'exclude') {
         this.form.tax = this.form.tax_base * 10 / 100
-        this.form.total = this.form.tax_base + this.form.tax
+        this.form.amount = this.form.tax_base + this.form.tax
       } else {
         this.form.tax = 0
-        this.form.total = this.form.tax_base
+        this.form.amount = this.form.tax_base
       }
     }, 300),
     onSubmit () {
       this.isSaving = true
-      this.increment_group = this.$moment(this.form.date).format('YYYYMM')
+      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.approver_id == null) {
         this.$notification.error('approval cannot be null')
         this.isSaving = false
@@ -426,19 +429,17 @@ export default {
       this.find({
         id: this.$route.query.id,
         params: {
-          includes: 'form;supplier;items.item;services.service'
+          includes: 'form;supplier;items.item.units;services.service'
         }
       }).then(response => {
         this.isLoading = false
         this.form.date = response.data.form.date
         this.form.supplier_id = response.data.supplier_id
         this.form.supplier_name = response.data.supplier_name
-        // this.form.tax = response.data.tax
-        // this.form.discount_percent = response.data.discount_percent
-        // this.form.discount_value = response.data.discount_value
-        // this.form.total = response.data.total
-        // this.form.notes = response.data.form.notes
-        // this.form.items = response.data.items
+        this.form.notes = response.data.form.notes
+        this.form.amount = response.data.amount
+        this.form.items = response.data.items
+        this.calculate()
       }).catch(error => {
         this.isLoading = false
       })

@@ -56,15 +56,6 @@
           </p-form-row>
 
           <p-form-row
-            id="employee"
-            name="employee"
-            :label="$t('employee')">
-            <div slot="body" class="col-lg-9">
-              {{ purchaseOrder.employee.name }}
-            </div>
-          </p-form-row>
-
-          <p-form-row
             id="notes"
             name="notes"
             :label="$t('notes')">
@@ -122,22 +113,22 @@
               <th>Ordered To</th>
               <th>Approval Status</th>
             </tr>
-            <tr slot="p-body" v-for="(approver, index) in purchaseOrder.approvers" :key="index">
+            <tr slot="p-body" v-for="(approval, index) in purchaseOrder.form.approvals" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
-                {{ approver.ordered_at | dateFormat('DD MMMM YYYY HH:mm') }}
+                {{ approval.requested_at | dateFormat('DD MMMM YYYY HH:mm') }}
               </td>
               <td>
-                {{ approver.ordered_by.first_name }} {{ approver.ordered_by.last_name }} 
+                {{ approval.requested_by.first_name }} {{ approval.requested_by.last_name }} 
               </td>
               <td>
-                {{ approver.ordered_to.first_name }} {{ approver.ordered_to.last_name }}
+                {{ approval.requested_to.first_name }} {{ approval.requested_to.last_name }}
               </td>
               <td>
-                <template v-if="approver.approval_at">
-                  <span v-if="approver.approved == true" class="badge badge-primary">{{ $t('approved') }}</span>
-                  <span v-if="approver.approved == false" class="badge badge-danger">{{ $t('rejected') }}</span>
-                  {{ approver.approval_at | dateFormat('DD MMMM YYYY HH:mm') }}
+                <template v-if="approval.approval_at">
+                  <span v-if="approval.approved == true" class="badge badge-primary">{{ $t('approved') }}</span>
+                  <span v-if="approval.approved == false" class="badge badge-danger">{{ $t('rejected') }}</span>
+                  {{ approval.approval_at | dateFormat('DD MMMM YYYY HH:mm') }}
                 </template>
                 <template v-else>
                   <span class="badge badge-secondary">{{ $t('pending') }}</span>
@@ -222,7 +213,7 @@ export default {
         id: this.id,
         params: {
           with_archives: true,
-          includes: 'employee;supplier;items.item;items.allocation;services.service;services.allocation;approvers.orderedBy;approvers.orderedTo'
+          includes: 'supplier;items.item.units;items.allocation;services.service;services.allocation;form.approvals.requestedBy;form.approvals.requestedTo'
         }
       }).then(response => {
         this.isLoading = false

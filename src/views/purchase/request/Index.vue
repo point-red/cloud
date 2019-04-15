@@ -155,9 +155,7 @@ export default {
           filter_max: {
             'form.date': this.serverDate(this.date.end)
           },
-          filter_not_equal: {
-            'form.number': null
-          },
+          filter_form: 'active',
           limit: 10,
           includes: 'form;employee;supplier;items.item;services.service',
           page: this.currentPage

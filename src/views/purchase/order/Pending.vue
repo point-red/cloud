@@ -23,7 +23,6 @@
             <tr slot="p-head">
               <th>#</th>
               <th>Date</th>
-              <th>Employee</th>
               <th>Supplier</th>
               <th>Item</th>
               <th>Notes</th>
@@ -42,7 +41,6 @@
                 </router-link>
               </th>
               <td>{{ purchaseOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-              <td>{{ purchaseOrder.employee.name }}</td>
               <td>
                 <template v-if="purchaseOrder.supplier">
                   {{ purchaseOrder.supplier.name }}
@@ -112,26 +110,21 @@ export default {
       this.loading = true
       this.get({
         params: {
+          join: 'form',
           sort_by: '-forms.number',
+          fields: 'purchase_orders.*',
           filter_like: {
-            'forms.number': this.searchText,
-            'forms.date': this.serverDate(this.searchText),
-            'suppliers.name': this.searchText,
-            'employees.name': this.searchText,
+            'form.number': this.searchText,
+            'form.date': this.serverDate(this.searchText),
+            'supplier.name': this.searchText,
             'items.name': this.searchText,
-            'purchase_order_items.notes': this.searchText,
-            'purchase_order_items.quantity': this.searchText,
-            'purchase_order_items.price': this.searchText
+            'items.notes': this.searchText,
+            'items.quantity': this.searchText,
+            'items.price': this.searchText
           },
-          filter_where_has: [
-            {
-              form: {
-                done: false
-              }
-            }
-          ],
+          filter_form: 'activePending',
           limit: 10,
-          includes: 'form;employee;supplier;items.item;services',
+          includes: 'form;supplier;items.item.units;services.service',
           page: this.currentPage
         }
       }).then(response => {

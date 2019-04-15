@@ -197,7 +197,7 @@ export default {
       this.get({
         params: {
           filter_equal: {
-            'customers.id': this.id
+            'customer.id': this.id
           },
           date_from: this.$moment('1970-01-01').format('YYYY-MM-DD 00:00:00'),
           date_to: this.$moment().format('YYYY-MM-DD 23:59:59'),

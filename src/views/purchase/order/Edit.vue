@@ -198,7 +198,7 @@ export default {
     this.find({
       id: this.id,
       params: {
-        includes: 'employee;supplier;items.item;items.allocation;services.service;services.allocation;approvers.orderedBy;approvers.orderedTo'
+        includes: 'employee;supplier;items.item;items.allocation;services.service;services.allocation;form.approvals.requestedBy;form.approvals.requestedTo'
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {

@@ -110,22 +110,30 @@
 
         <p-separator></p-separator>
 
-        <h3 class="">Approver</h3>
-
-        <p-form-row
-          id="approver"
-          name="approver"
-          :label="$t('approver')">
-          <div slot="body" class="col-lg-9">
-            <m-user
-              :id="'user'"
-              v-model="form.approver_id"
-              :errors="form.errors.get('approver_id')"
-              @errors="form.errors.set('approver_id', null)"/>
+        <div class="row">
+          <div class="col-sm-6">
+            <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
           </div>
-        </p-form-row>
+          <div class="col-sm-6">
+            <h3 class="">Approver</h3>
+            <p-form-row
+              id="approver"
+              name="approver"
+              :label="$t('approver')">
+              <div slot="body" class="col-lg-9">
+                <m-user
+                  :id="'user'"
+                  v-model="form.approver_id"
+                  :errors="form.errors.get('approver_id')"
+                  @errors="form.errors.set('approver_id', null)"/>
+              </div>
+            </p-form-row>
+          </div>
+        </div>
 
-        <div class="form-group row">
+        <p-separator></p-separator>
+
+        <div class="form-group">
           <div class="col-md-3"></div>
           <div class="col-md-9">
             <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
