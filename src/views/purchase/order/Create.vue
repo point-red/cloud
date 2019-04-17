@@ -299,27 +299,25 @@ export default {
         type_of_tax: 'exclude',
         total_quantity: 0,
         amount: 0,
-        items: [
-          {
-            item_id: null,
-            item_name: null,
-            item: {
-              units: [{
-                label: '',
-                name: '',
-                converter: null
-              }],
-            },
-            unit: null,
-            converter: null,
-            quantity: null,
-            price: null,
-            total: null,
-            allocation_id: null,
-            allocation_name: null,
-            notes: null
-          }
-        ]
+        items: [{
+          item_id: null,
+          item_name: null,
+          item: {
+            units: [{
+              label: '',
+              name: '',
+              converter: null
+            }],
+          },
+          unit: null,
+          converter: null,
+          quantity: null,
+          price: null,
+          total: null,
+          allocation_id: null,
+          allocation_name: null,
+          notes: null
+        }]
       })
     }
   },

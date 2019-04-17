@@ -37,7 +37,7 @@
                 id="date"
                 name="date"
                 label="date"
-                v-model="form.required_date"
+                v-model="form.date"
                 :errors="form.errors.get('date')"
                 @errors="form.errors.set('date', null)"/>
             </div>
@@ -48,16 +48,7 @@
             name="supplier"
             :label="$t('supplier')">
             <div slot="body" class="col-lg-9">
-              <m-supplier id="supplier" v-model="form.supplier_id"/>
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="employee"
-            name="employee"
-            :label="$t('employee')">
-            <div slot="body" class="col-lg-9">
-              <m-employee id="employee" v-model="form.employee_id"/>
+              <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier" :label="form.supplier_name"/>
             </div>
           </p-form-row>
 
@@ -126,6 +117,66 @@
 
           <p-separator></p-separator>
 
+          <div class="row">
+            <div class="col-sm-6">
+              <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+            </div>
+            <div class="col-sm-6">
+              <p-form-row
+                id="discount"
+                name="discount"
+                :label="$t('discount')">
+                <div slot="body" class="col-lg-9 mt-5">
+                  <p-discount
+                    id="discount"
+                    name="discount"
+                    v-model="form.discount_percent"
+                    @keyup.native="calculate()"/>
+                </div>
+              </p-form-row>
+              <p-form-row
+                id="need-down-payment"
+                name="need-down-payment"
+                :label="$t('tax')">
+                <div slot="body" class="col-lg-9">                
+                  <p-form-check-box
+                    class="mb-0"
+                    style="float:left"
+                    id="need-down-payment"
+                    name="need-down-payment"
+                    @click.native="chooseTax('include')"
+                    :checked="form.type_of_tax == 'include'"
+                    :description="$t('include tax')"/>
+                  <p-form-check-box
+                    id="need-down-payment"
+                    name="need-down-payment"
+                    @click.native="chooseTax('exclude')"
+                    :checked="form.type_of_tax == 'exclude'"
+                    :description="$t('exclude tax')"/>
+                  <p-form-number
+                    :id="'total'"
+                    :name="'total'"
+                    :readonly="true"
+                    v-model="form.tax"/>
+                </div>
+              </p-form-row>
+              <p-form-row
+                id="total"
+                name="total"
+                :label="$t('total')">
+                <div slot="body" class="col-lg-9 mt-5">
+                  <p-form-number
+                    :id="'total'"
+                    :name="'total'"
+                    :readonly="true"
+                    v-model="form.amount"/>
+                </div>
+              </p-form-row>
+            </div>
+          </div>
+
+          <p-separator></p-separator>
+
           <h3 class="">Approver</h3>
 
           <p-form-row
@@ -176,11 +227,20 @@ export default {
       form: new Form({
         id: this.$route.params.id,
         date: null,
-        required_date: null,
         supplier_id: null,
-        employee_id: null,
+        supplier_name: null,
         approver_id: null,
+        need_down_payment: 0,
+        cash_only: false,
         notes: null,
+        subtotal: 0,
+        discount_percent: 0,
+        discount_value: 0,
+        tax_base: 0,
+        tax: 0,
+        type_of_tax: 'exclude',
+        total_quantity: 0,
+        amount: 0,
         items: []
       })
     }
@@ -198,7 +258,7 @@ export default {
     this.find({
       id: this.id,
       params: {
-        includes: 'employee;supplier;items.item;items.allocation;services.service;services.allocation;form.approvals.requestedBy;form.approvals.requestedTo'
+        includes: 'supplier;items.item.units;items.allocation;services.service;services.allocation;form.approvals.requestedBy;form.approvals.requestedTo'
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
@@ -209,7 +269,7 @@ export default {
       this.form.edited_form_number = response.data.form.edited_form_number
       this.form.required_date = response.data.required_date
       this.form.supplier_id = response.data.supplier_id
-      this.form.employee_id = response.data.employee_id
+      this.form.supplier_name = response.data.supplier_name
       this.form.notes = response.data.form.notes
       response.data.items.forEach((item, keyItem) => {
         this.form.items.push({
@@ -244,6 +304,9 @@ export default {
         allocation: null,
         notes: null
       })
+    },
+    chooseSupplier (value) {
+      this.form.supplier_name = value
     },
     updateUnits (itemUnits) {
       this.form.items.forEach((item, keyItem) => {

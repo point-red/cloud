@@ -103,6 +103,44 @@
 
           <p-separator></p-separator>
 
+          <div class="row">
+            <div class="col-sm-6">
+              <h3>Notes</h3>
+              <hr>
+              {{ purchaseOrder.form.notes }}
+            </div>
+            <div class="col-sm-6">
+              <p-form-row
+                id="discount"
+                name="discount"
+                :label="$t('discount')">
+                <div slot="body" class="col-lg-9 mt-5">
+                  {{ purchaseOrder.discount_percent }} %
+                </div>
+              </p-form-row>
+              <p-form-row
+                id="need-down-payment"
+                name="need-down-payment"
+                :label="$t('tax')">
+                <div slot="body" class="col-lg-9">                
+                  {{ purchaseOrder.type_of_tax }}
+                  <br>
+                  {{ purchaseOrder.tax | numberFormat }}
+                </div>
+              </p-form-row>
+              <p-form-row
+                id="total"
+                name="total"
+                :label="$t('total')">
+                <div slot="body" class="col-lg-9 mt-5">
+                  {{ purchaseOrder.amount | numberFormat }}
+                </div>
+              </p-form-row>
+            </div>
+          </div>
+
+          <p-separator></p-separator>
+
           <h3 class="">Approver</h3>
 
           <point-table>
