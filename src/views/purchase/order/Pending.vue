@@ -52,8 +52,11 @@
               <td class="text-right">{{ purchaseOrderItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseOrderItem.quantity * purchaseOrderItem.price) | numberFormat }}</td>
               <td>
+                <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
+                  <i class="fa fa-share-square-o"></i> Receive
+                </router-link>
                 <router-link class="btn btn-sm btn-secondary" :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
-                  <i class="fa fa-share-square-o"></i> Purchase Order
+                  <i class="fa fa-share-square-o"></i> Down Payment
                 </router-link>
               </td>
             </tr>

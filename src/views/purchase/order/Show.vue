@@ -73,15 +73,20 @@
               <tr slot="p-head">
                 <th>#</th>
                 <th>Item</th>
-                <th class="text-right">Quantity</th>
-                <th class="text-right">Estimated Price</th>
-                <th>Allocation</th>
                 <th>Notes</th>
+                <th class="text-right">Quantity</th>
+                <th class="text-right">Price</th>
+                <th class="text-right">Discount</th>
+                <th class="text-right">Total</th>
+                <th>Allocation</th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in purchaseOrder.items" :key="index">
                 <th>{{ index + 1 }}</th>
                 <td>
                   [{{ row.item.code }}] {{ row.item.name }}
+                </td>
+                <td>
+                  {{ row.notes }}
                 </td>
                 <td class="text-right">
                   {{ row.quantity | numberFormat }} {{ row.unit }}
@@ -89,14 +94,27 @@
                 <td class="text-right">
                   {{ row.price | numberFormat }}
                 </td>
+                <td class="text-right">
+                  {{ row.discount_percent | numberFormat }}
+                </td>
+                <td class="text-right">
+                  {{ row.total | numberFormat }}
+                </td>
                 <td>
                   <template v-if="row.allocation">
                     {{ row.allocation.name }}
                   </template>
                 </td>
-                <td>
-                  {{ row.notes }}
-                </td>
+              </tr>
+              <tr slot="p-body">
+                <th></th>
+                <td></td>
+                <td></td>
+                <td class="text-right">{{ purchaseOrder.total_quantity | numberFormat }}</td>
+                <td></td>
+                <td></td>
+                <td class="text-right">{{ purchaseOrder.subtotal | numberFormat }}</td>
+                <td></td>
               </tr>
             </point-table>
           </p-block-inner>
@@ -115,7 +133,7 @@
                 name="discount"
                 :label="$t('discount')">
                 <div slot="body" class="col-lg-9 mt-5">
-                  {{ purchaseOrder.discount_percent }} %
+                  {{ purchaseOrder.discount_percent }}%
                 </div>
               </p-form-row>
               <p-form-row
