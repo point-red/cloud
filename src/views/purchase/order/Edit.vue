@@ -52,15 +52,6 @@
             </div>
           </p-form-row>
 
-          <p-form-row
-            id="notes"
-            v-model="form.notes"
-            :disabled="loadingSaveButton"
-            :label="$t('notes')"
-            name="notes"
-            :errors="form.errors.get('notes')"
-            @errors="form.errors.set('notes', null)"/>
-
           <p-separator></p-separator>
 
           <h3 class="">Item</h3>
@@ -69,11 +60,14 @@
             <point-table>
               <tr slot="p-head">
                 <th>#</th>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Estimated Price</th>
-                <th>Allocation</th>
+                <th style="min-width: 120px">Item</th>
                 <th>Notes</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Total</th>
+                <th style="min-width: 120px">Allocation</th>
+                <th></th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
                 <th>{{ index + 1 }}</th>
@@ -83,6 +77,12 @@
                     :data-index="index"
                     v-model="form.items[index].item_id"
                     @units="updateUnits"/>
+                </td>
+                <td>
+                  <p-form-input
+                    id="notes"
+                    name="notes"
+                    v-model="form.items[index].notes"/>
                 </td>
                 <td>
                   <p-quantity
@@ -98,15 +98,44 @@
                     v-model="form.items[index].price"/>
                 </td>
                 <td>
+                  <p-discount
+                    :id="'discount' + index"
+                    :name="'discount' + index"
+                    v-model="form.items[index].discount_percent"
+                    @keyup.native="calculate()"/>
+                </td>
+                <td>
+                  <p-form-number
+                    :id="'total-' + index"
+                    :name="'total-' + index"
+                    :readonly="true"
+                    v-model="form.items[index].total"/>
+                </td>
+                <td>
                   <m-allocation
                     :id="'allocation-' + index"
                     v-model="form.items[index].allocation_id"/>
                 </td>
+              </tr>
+              <tr slot="p-body">
+                <th></th>
+                <td></td>
+                <td></td>
                 <td>
-                  <p-form-input
-                    id="notes"
-                    name="notes"
-                    v-model="form.items[index].notes"/>
+                  <p-form-number
+                    :id="'total_quantity'"
+                    :name="'total_quantity'"
+                    :readonly="true"
+                    v-model="form.total_quantity"/>
+                </td>
+                <td></td>
+                <td></td>
+                <td>
+                  <p-form-number
+                    :id="'subtotal'"
+                    :name="'subtotal'"
+                    :readonly="true"
+                    v-model="form.subtotal"/>
                 </td>
               </tr>
             </point-table>
@@ -209,6 +238,7 @@ import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import Form from '@/utils/Form'
 import PurchaseMenu from '../Menu'
 import PointTable from 'point-table-vue'
+import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -270,6 +300,9 @@ export default {
       this.form.required_date = response.data.required_date
       this.form.supplier_id = response.data.supplier_id
       this.form.supplier_name = response.data.supplier_name
+      this.form.discount_percent = response.data.discount_percent
+      this.form.discount_value = response.data.discount_value
+      this.form.amount = response.data.amount
       this.form.notes = response.data.form.notes
       response.data.items.forEach((item, keyItem) => {
         this.form.items.push({
@@ -282,6 +315,7 @@ export default {
           notes: item.notes
         })
       })
+      this.calculate()
     }).catch(error => {
       this.isLoading = false
       this.$notification.error(error.message)
@@ -321,6 +355,28 @@ export default {
         })
       })
     },
+    calculate: debounce (function () {
+      var subtotal = 0
+      var totalQuantity = 0
+      this.form.items.forEach(function (element) {
+        element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
+        subtotal += parseFloat(element.total)
+        totalQuantity += parseFloat(element.quantity)
+      })
+      this.form.subtotal = subtotal
+      this.form.total_quantity = totalQuantity
+      this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount_percent / 100)
+      if (this.form.type_of_tax == 'include') {
+        this.form.tax = this.form.tax_base * 10 / 100
+        this.form.amount = this.form.tax_base
+      } else if (this.form.type_of_tax == 'exclude') {
+        this.form.tax = this.form.tax_base * 10 / 100
+        this.form.amount = this.form.tax_base + this.form.tax
+      } else {
+        this.form.tax = 0
+        this.form.amount = this.form.tax_base
+      }
+    }, 300),
     onSubmit () {
       this.update(this.form)
         .then(response => {

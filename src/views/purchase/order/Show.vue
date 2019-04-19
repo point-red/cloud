@@ -55,15 +55,6 @@
             </div>
           </p-form-row>
 
-          <p-form-row
-            id="notes"
-            name="notes"
-            :label="$t('notes')">
-            <div slot="body" class="col-lg-9">
-              {{ purchaseOrder.form.notes }}
-            </div>
-          </p-form-row>
-
           <p-separator></p-separator>
 
           <h3 class="">Item</h3>
@@ -133,17 +124,36 @@
                 name="discount"
                 :label="$t('discount')">
                 <div slot="body" class="col-lg-9 mt-5">
-                  {{ purchaseOrder.discount_percent }}%
+                  <p-discount
+                    id="discount"
+                    name="discount"
+                    v-model="purchaseOrder.discount_percent"
+                    :readonly="true"
+                    @keyup.native="calculate()"/>
                 </div>
               </p-form-row>
               <p-form-row
                 id="need-down-payment"
                 name="need-down-payment"
                 :label="$t('tax')">
-                <div slot="body" class="col-lg-9">                
-                  {{ purchaseOrder.type_of_tax }}
-                  <br>
-                  {{ purchaseOrder.tax | numberFormat }}
+                <div slot="body" class="col-lg-9">
+                  <p-form-check-box
+                    class="mb-0"
+                    style="float:left"
+                    id="need-down-payment"
+                    name="need-down-payment"
+                    :checked="purchaseOrder.type_of_tax == 'include'"
+                    :description="$t('include tax')"/>
+                  <p-form-check-box
+                    id="need-down-payment"
+                    name="need-down-payment"
+                    :checked="purchaseOrder.type_of_tax == 'exclude'"
+                    :description="$t('exclude tax')"/>
+                  <p-form-number
+                    :id="'total'"
+                    :name="'total'"
+                    :readonly="true"
+                    v-model="purchaseOrder.tax"/>
                 </div>
               </p-form-row>
               <p-form-row
@@ -151,7 +161,11 @@
                 name="total"
                 :label="$t('total')">
                 <div slot="body" class="col-lg-9 mt-5">
-                  {{ purchaseOrder.amount | numberFormat }}
+                  <p-form-number
+                    :id="'total'"
+                    :name="'total'"
+                    :readonly="true"
+                    v-model="purchaseOrder.amount"/>
                 </div>
               </p-form-row>
             </div>
@@ -257,13 +271,13 @@ export default {
     '$route' (to, from) {
       if (to.params.id != from.params.id) {
         this.id = to.params.id
-        this.purchaseOrderOrder()
+        this.purchaseOrderRequest()
       }
     }
   },
   methods: {
     ...mapActions('purchaseOrder', ['find']),
-    purchaseOrderOrder () {
+    purchaseOrderRequest () {
       this.isLoading = true
       this.find({
         id: this.id,
@@ -273,14 +287,37 @@ export default {
         }
       }).then(response => {
         this.isLoading = false
+        this.calculate()
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
       })
+    },
+    calculate () {
+      var subtotal = 0
+      var totalQuantity = 0
+      this.purchaseOrder.items.forEach(function (element) {
+        element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
+        subtotal += parseFloat(element.total)
+        totalQuantity += parseFloat(element.quantity)
+      })
+      this.purchaseOrder.subtotal = subtotal
+      this.purchaseOrder.total_quantity = totalQuantity
+      this.purchaseOrder.tax_base = this.purchaseOrder.subtotal - (this.purchaseOrder.subtotal * this.purchaseOrder.discount_percent / 100)
+      if (this.purchaseOrder.type_of_tax == 'include') {
+        this.purchaseOrder.tax = this.purchaseOrder.tax_base * 10 / 100
+        this.purchaseOrder.amount = this.purchaseOrder.tax_base
+      } else if (this.purchaseOrder.type_of_tax == 'exclude') {
+        this.purchaseOrder.tax = this.purchaseOrder.tax_base * 10 / 100
+        this.purchaseOrder.amount = this.purchaseOrder.tax_base + this.purchaseOrder.tax
+      } else {
+        this.purchaseOrder.tax = 0
+        this.purchaseOrder.amount = this.purchaseOrder.tax_base
+      }
     }
   },
   created () {
-    this.purchaseOrderOrder()
+    this.purchaseOrderRequest()
   }
 }
 </script>
