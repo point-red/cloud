@@ -107,9 +107,10 @@ export default {
       this.loading = true
       this.get({
         params: {
-          join: 'form',
+          join: 'form,supplier',
           sort_by: '-forms.number',
           fields: 'purchase_orders.*',
+          filter_form: 'activePending',
           filter_like: {
             'form.number': this.searchText,
             'form.date': this.serverDate(this.searchText),
