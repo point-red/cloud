@@ -75,33 +75,34 @@
                   <m-item
                     :id="'item-' + index"
                     :data-index="index"
-                    v-model="form.items[index].item_id"
+                    v-model="row.item_id"
                     @units="updateUnits"/>
                 </td>
                 <td>
                   <p-form-input
                     id="notes"
                     name="notes"
-                    v-model="form.items[index].notes"/>
+                    v-model="row.notes"/>
                 </td>
                 <td>
                   <p-quantity
                     :id="'quantity' + index"
                     :name="'quantity' + index"
-                    v-model="form.items[index].quantity"
-                    :unit="form.items[index].unit"/>
+                    v-model="row.quantity"
+                    :unit="row.unit"/>
                 </td>
                 <td>
                   <p-form-number
                     :id="'price' + index"
                     :name="'price' + index"
-                    v-model="form.items[index].price"/>
+                    v-model="row.price"/>
                 </td>
                 <td>
+                  {{ row }}
                   <p-discount
                     :id="'discount' + index"
                     :name="'discount' + index"
-                    v-model="form.items[index].discount_percent"
+                    v-model="row.discount_percent"
                     @keyup.native="calculate()"/>
                 </td>
                 <td>
@@ -109,12 +110,12 @@
                     :id="'total-' + index"
                     :name="'total-' + index"
                     :readonly="true"
-                    v-model="form.items[index].total"/>
+                    v-model="row.total"/>
                 </td>
                 <td>
                   <m-allocation
                     :id="'allocation-' + index"
-                    v-model="form.items[index].allocation_id"/>
+                    v-model="row.allocation_id"/>
                 </td>
               </tr>
               <tr slot="p-body">
