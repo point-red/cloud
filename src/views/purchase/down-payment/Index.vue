@@ -54,19 +54,6 @@
               <td class="text-right">{{ purchaseOrderItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseOrderItem.quantity * purchaseOrderItem.price) | numberFormat }}</td>
             </tr>
-            <template v-if="purchaseOrder.down_payments">
-              <tr :key="'down-payment-'+index+'-'+index2" slot="p-body">
-                <th></th>
-                <td colspan="8">Down Payment</td>
-              </tr>
-            </template>
-            <template v-for="(downPayment, index2) in purchaseOrder.down_payments">
-              <tr :key="'down-payment-'+index+'-'+index2" slot="p-body">
-                <th></th>
-                <td>{{ downPayment.form.number }}</td>
-                <td colspan="7">{{ downPayment.remaining | numberFormat }}</td>
-              </tr>
-            </template>
             </template>
           </point-table>
         </p-block-inner>
@@ -134,7 +121,7 @@ export default {
             'items.price': this.searchText
           },
           limit: 10,
-          includes: 'form;supplier;items.item;services.service;downPayments.form',
+          includes: 'form;supplier;items.item;services.service',
           page: this.currentPage
         }
       }).then(response => {

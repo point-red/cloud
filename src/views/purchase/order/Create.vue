@@ -284,6 +284,7 @@ export default {
       isSaving: false,
       isLoading: false,
       form: new Form({
+        increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         supplier_id: null,
         supplier_name: null,

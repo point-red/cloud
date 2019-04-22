@@ -98,7 +98,6 @@
                     v-model="row.price"/>
                 </td>
                 <td>
-                  {{ row }}
                   <p-discount
                     :id="'discount' + index"
                     :name="'discount' + index"

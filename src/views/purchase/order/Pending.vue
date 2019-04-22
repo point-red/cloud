@@ -22,6 +22,7 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
+              <th>Number</th>
               <th>Date</th>
               <th>Supplier</th>
               <th>Item</th>
@@ -35,11 +36,12 @@
               v-for="(purchaseOrderItem, index2) in purchaseOrder.items"
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
-              <th>
+              <th>{{ index + 1 }}</th>
+              <td>
                 <router-link :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
                   {{ purchaseOrder.form.number }}
                 </router-link>
-              </th>
+              </td>
               <td>{{ purchaseOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
               <td>
                 <template v-if="purchaseOrder.supplier">
@@ -55,11 +57,18 @@
                 <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
                   <i class="fa fa-share-square-o"></i> Receive
                 </router-link>
-                <router-link class="btn btn-sm btn-secondary" :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
+                <button class="btn btn-sm btn-secondary" @click="$refs.downPaymentModal.show(purchaseOrder)">
                   <i class="fa fa-share-square-o"></i> Down Payment
-                </router-link>
+                </button>
               </td>
             </tr>
+            <template v-for="(downPayment, index2) in purchaseOrder.down_payments">
+              <tr :key="'down-payment-'+index+'-'+index2" slot="p-body">
+                <th></th>
+                <td>{{ downPayment.form.number }}</td>
+                <td colspan="7">{{ downPayment.remaining | numberFormat }}</td>
+              </tr>
+            </template>
             </template>
           </point-table>
         </p-block-inner>
@@ -70,11 +79,18 @@
         </p-pagination>
       </p-block>
     </div>
+
+    <down-payment-modal
+      id="downPayment"
+      ref="downPaymentModal"
+      title="down payment"
+      @close="refresh"/>
   </div>
 </template>
 
 <script>
 import TabMenu from './TabMenu'
+import DownPaymentModal from './DownPaymentModal'
 import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
@@ -85,6 +101,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     TabMenu,
+    DownPaymentModal,
     PurchaseMenu,
     Breadcrumb,
     BreadcrumbPurchase,
@@ -127,7 +144,7 @@ export default {
           },
           filter_form: 'activePending',
           limit: 10,
-          includes: 'form;supplier;items.item.units;services.service',
+          includes: 'form;supplier;items.item.units;services.service;downPayments.form',
           page: this.currentPage
         }
       }).then(response => {
@@ -139,6 +156,9 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
+      this.getPurchaseOrder()
+    },
+    refresh () {
       this.getPurchaseOrder()
     }
   },

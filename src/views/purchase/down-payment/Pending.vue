@@ -22,7 +22,6 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th>Number</th>
               <th>Date</th>
               <th>Supplier</th>
               <th>Item</th>
@@ -36,12 +35,11 @@
               v-for="(purchaseOrderItem, index2) in purchaseOrder.items"
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
-              <td>
+              <th>
                 <router-link :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
                   {{ purchaseOrder.form.number }}
                 </router-link>
-              </td>
+              </th>
               <td>{{ purchaseOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
               <td>
                 <template v-if="purchaseOrder.supplier">
@@ -53,20 +51,15 @@
               <td class="text-right">{{ purchaseOrderItem.quantity | numberFormat }}</td>
               <td class="text-right">{{ purchaseOrderItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseOrderItem.quantity * purchaseOrderItem.price) | numberFormat }}</td>
+              <td>
+                <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
+                  <i class="fa fa-share-square-o"></i> Receive
+                </router-link>
+                <router-link class="btn btn-sm btn-secondary" :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
+                  <i class="fa fa-share-square-o"></i> Down Payment
+                </router-link>
+              </td>
             </tr>
-            <template v-if="purchaseOrder.down_payments">
-              <tr :key="'down-payment-'+index+'-'+index2" slot="p-body">
-                <th></th>
-                <td colspan="8">Down Payment</td>
-              </tr>
-            </template>
-            <template v-for="(downPayment, index2) in purchaseOrder.down_payments">
-              <tr :key="'down-payment-'+index+'-'+index2" slot="p-body">
-                <th></th>
-                <td>{{ downPayment.form.number }}</td>
-                <td colspan="7">{{ downPayment.remaining | numberFormat }}</td>
-              </tr>
-            </template>
             </template>
           </point-table>
         </p-block-inner>
@@ -120,21 +113,21 @@ export default {
       this.loading = true
       this.get({
         params: {
-          join: 'form,supplier',
+          join: 'form',
           sort_by: '-forms.number',
           fields: 'purchase_orders.*',
-          filter_form: 'activePending',
           filter_like: {
             'form.number': this.searchText,
             'form.date': this.serverDate(this.searchText),
             'supplier.name': this.searchText,
-            'items.item.name': this.searchText,
+            'items.name': this.searchText,
             'items.notes': this.searchText,
             'items.quantity': this.searchText,
             'items.price': this.searchText
           },
+          filter_form: 'activePending',
           limit: 10,
-          includes: 'form;supplier;items.item;services.service;downPayments.form',
+          includes: 'form;supplier;items.item.units;services.service',
           page: this.currentPage
         }
       }).then(response => {
