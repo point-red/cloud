@@ -11,5 +11,6 @@
   "approved" : "disetujui",
   "rejected" : "ditolak",
   "archived": "archived",
-  "number": "number"
+  "number": "number",
+  "amount": "amount"
 }
