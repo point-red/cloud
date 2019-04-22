@@ -432,12 +432,16 @@ export default {
         }
       }).then(response => {
         this.isLoading = false
+        this.form.purchase_request_id = response.data.id
         this.form.date = response.data.form.date
         this.form.supplier_id = response.data.supplier_id
         this.form.supplier_name = response.data.supplier_name
         this.form.notes = response.data.form.notes
         this.form.amount = response.data.amount
         this.form.items = response.data.items
+        this.form.items.forEach(function (element) {
+          element.purchase_request_item_id = element.id
+        })
         this.calculate()
       }).catch(error => {
         this.isLoading = false

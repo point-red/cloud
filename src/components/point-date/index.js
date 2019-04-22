@@ -18,6 +18,11 @@ export default {
           if (string) {
             return this.$moment(string).tz('UTC').format('YYYY-MM-DD')
           }
+        },
+        serverDateTime (string) {
+          if (string) {
+            return this.$moment(string).tz('UTC').format('YYYY-MM-DD HH:mm:ss')
+          }
         }
       }
     })

@@ -100,8 +100,8 @@ export default {
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
       date: {
-        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD HH:mm:ss') : this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD HH:mm:ss') : this.$moment().format('YYYY-MM-DD HH:mm:ss')
+        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-DD 00:00:00'),
+        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
       },
     }
   },
@@ -135,6 +135,7 @@ export default {
     }, 300),
     getPurchaseRequest () {
       this.loading = true
+      console.log(this.serverDateTime(this.date.start))
       this.get({
         params: {
           join: 'form',
@@ -150,10 +151,10 @@ export default {
             'items.price': this.searchText
           },
           filter_min: {
-            'form.date': this.serverDate(this.date.start)
+            'form.date': this.serverDateTime(this.date.start)
           },
           filter_max: {
-            'form.date': this.serverDate(this.date.end)
+            'form.date': this.serverDateTime(this.date.end)
           },
           filter_form: 'active',
           limit: 10,

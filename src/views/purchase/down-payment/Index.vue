@@ -113,7 +113,7 @@ export default {
           filter_form: 'activePending',
           filter_like: {
             'form.number': this.searchText,
-            'form.date': this.serverDate(this.searchText),
+            'form.date': this.serverDateTime(this.searchText),
             'supplier.name': this.searchText,
             'items.item.name': this.searchText,
             'items.notes': this.searchText,
