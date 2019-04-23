@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <span class="breadcrumb-item active">Purchase Order</span>
+      <span class="breadcrumb-item active">Down Payment</span>
     </breadcrumb>
 
     <purchase-menu/>
@@ -10,7 +10,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="'Purchase Order'" :header="true">
+      <p-block :title="'Down Payment'" :header="true">
         <p-form-input
           id="search-text"
           name="search-text"
@@ -22,43 +22,28 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
+              <th>Number</th>
               <th>Date</th>
               <th>Supplier</th>
-              <th>Item</th>
-              <th>Notes</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">Value</th>
+              <th>Amount</th>
             </tr>
-            <template v-for="(purchaseOrder, index) in purchaseOrders">
+            <template v-for="(downPayment, index) in downPayments">
             <tr
-              v-for="(purchaseOrderItem, index2) in purchaseOrder.items"
-              :key="'pr-' + index + '-i-' + index2"
+              :key="'down-payment-' + index"
               slot="p-body">
-              <th>
-                <router-link :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
-                  {{ purchaseOrder.form.number }}
-                </router-link>
-              </th>
-              <td>{{ purchaseOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+              <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
               <td>
-                <template v-if="purchaseOrder.supplier">
-                  {{ purchaseOrder.supplier.name }}
+                <router-link :to="{ name: 'purchase.down-payment.show', params: { id: downPayment.id }}">
+                  {{ downPayment.form.number }}
+                </router-link>
+              </td>
+              <td>{{ downPayment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+              <td>
+                <template v-if="downPayment.supplier">
+                  {{ downPayment.supplier.name }}
                 </template>
               </td>
-              <td>{{ purchaseOrderItem.item.name }}</td>
-              <td>{{ purchaseOrderItem.notes }}</td>
-              <td class="text-right">{{ purchaseOrderItem.quantity | numberFormat }}</td>
-              <td class="text-right">{{ purchaseOrderItem.price | numberFormat }}</td>
-              <td class="text-right">{{ (purchaseOrderItem.quantity * purchaseOrderItem.price) | numberFormat }}</td>
-              <td>
-                <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
-                  <i class="fa fa-share-square-o"></i> Receive
-                </router-link>
-                <router-link class="btn btn-sm btn-secondary" :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
-                  <i class="fa fa-share-square-o"></i> Down Payment
-                </router-link>
-              </td>
+              <td>{{ downPayment.amount | numberFormat }}</td>
             </tr>
             </template>
           </point-table>
@@ -95,39 +80,36 @@ export default {
       loading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      lastPage: 1,
+      limit: 10
     }
   },
   computed: {
-    ...mapGetters('purchaseOrder', ['purchaseOrders', 'pagination'])
+    ...mapGetters('purchaseDownPayment', ['downPayments', 'pagination'])
   },
   methods: {
-    ...mapActions('purchaseOrder', ['get']),
+    ...mapActions('purchaseDownPayment', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getPurchaseOrder()
+      this.getDownPayments()
     }, 300),
-    getPurchaseOrder () {
+    getDownPayments () {
       this.loading = true
       this.get({
         params: {
-          join: 'form',
+          join: 'form,supplier',
           sort_by: '-forms.number',
-          fields: 'purchase_orders.*',
+          fields: 'purchase_down_payments.*',
+          filter_form: 'activePending',
           filter_like: {
             'form.number': this.searchText,
-            'form.date': this.serverDate(this.searchText),
             'supplier.name': this.searchText,
-            'items.name': this.searchText,
-            'items.notes': this.searchText,
-            'items.quantity': this.searchText,
-            'items.price': this.searchText
+            'amount': this.searchText,
           },
-          filter_form: 'activePending',
-          limit: 10,
-          includes: 'form;supplier;items.item.units;services.service',
+          limit: this.limit,
+          includes: 'form;supplier',
           page: this.currentPage
         }
       }).then(response => {
@@ -139,11 +121,11 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getPurchaseOrder()
+      this.getDownPayments()
     }
   },
   created () {
-    this.getPurchaseOrder()
+    this.getDownPayments()
   },
   updated () {
     this.lastPage = this.pagination.last_page

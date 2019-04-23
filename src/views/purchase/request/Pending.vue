@@ -18,7 +18,7 @@
           :value="searchText"
           @input="filterSearch"/>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -93,10 +93,11 @@ export default {
   },
   data () {
     return {
-      loading: true,
+      isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      lastPage: 1,
+      limit: 10
     }
   },
   computed: {
@@ -111,7 +112,7 @@ export default {
       this.getPurchaseRequest()
     }, 300),
     getPurchaseRequest () {
-      this.loading = true
+      this.isLoading = true
       this.get({
         params: {
           join: 'form',
@@ -119,7 +120,7 @@ export default {
           sort_by: '-forms.number',
           filter_like: {            
             'form.number': this.searchText,
-            'form.date': this.serverDate(this.searchText),
+            'form.date': this.searchText,
             'supplier.name': this.searchText,
             'employee.name': this.searchText,
             'items.item.name': this.searchText,
@@ -131,14 +132,14 @@ export default {
           filter_not_equal: {
             'form.number': null
           },
-          limit: 10,
+          limit: this.limit,
           includes: 'form;employee;supplier;items.item;services.service',
           page: this.currentPage
         }
       }).then(response => {
-        this.loading = false
+        this.isLoading = false
       }).catch(error => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
     },

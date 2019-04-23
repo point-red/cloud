@@ -11,6 +11,13 @@
 
     <div class="row">
       <p-block :title="'Purchase Order'" :header="true">
+        <div class="row mb-10">
+          <p-date-range-picker
+            id="date"
+            name="date"
+            class="col-sm-4"
+            v-model="date"/>
+        </div>
         <p-form-input
           id="search-text"
           name="search-text"
@@ -18,7 +25,7 @@
           :value="searchText"
           @input="filterSearch"/>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -36,7 +43,7 @@
               v-for="(purchaseOrderItem, index2) in purchaseOrder.items"
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
+              <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
               <td>
                 <router-link :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
                   {{ purchaseOrder.form.number }}
@@ -54,17 +61,17 @@
               <td class="text-right">{{ purchaseOrderItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseOrderItem.quantity * purchaseOrderItem.price) | numberFormat }}</td>
             </tr>
-            <template v-if="purchaseOrder.down_payments">
+            <template v-if="purchaseOrder.down_payments.length > 0">
               <tr :key="'down-payment-'+index" slot="p-body">
                 <th></th>
-                <td colspan="8"><b>{{ $t('down payment') }}</b></td>
+                <td class="bg-info-light" colspan="8"><b>{{ $t('down payment') }}</b></td>
               </tr>
             </template>
             <template v-for="(downPayment, index2) in purchaseOrder.down_payments">
               <tr :key="'down-payment-'+index+'-'+index2" slot="p-body">
                 <th></th>
-                <td>{{ downPayment.form.number }}</td>
-                <td colspan="7">{{ downPayment.remaining | numberFormat }}</td>
+                <td class="bg-info-light">{{ downPayment.form.number }}</td>
+                <td class="bg-info-light" colspan="7">{{ downPayment.remaining | numberFormat }}</td>
                 <td>
                   <button class="btn btn-sm btn-secondary" @click="deleteDownPaymentRequest(downPayment.id)">
                     <i class="fa fa-trash"></i> Delete
@@ -104,10 +111,27 @@ export default {
   },
   data () {
     return {
-      loading: true,
+      date: {
+        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-DD 00:00:00'),
+        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
+      },
+      isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      lastPage: 1,
+      limit: 10
+    }
+  },
+  watch: {
+    date: function () {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          date_from: this.date.start,
+          date_to: this.date.end
+        }
+      })
+      this.getPurchaseOrder()
     }
   },
   computed: {
@@ -125,30 +149,35 @@ export default {
       this.getPurchaseOrder()
     }, 300),
     getPurchaseOrder () {
-      this.loading = true
+      this.isLoading = true
       this.get({
         params: {
           join: 'form,supplier',
           sort_by: '-forms.number',
           fields: 'purchase_orders.*',
-          filter_form: 'activePending',
+          filter_form: 'active',
           filter_like: {
             'form.number': this.searchText,
-            'form.date': this.serverDate(this.searchText),
             'supplier.name': this.searchText,
             'items.item.name': this.searchText,
             'items.notes': this.searchText,
             'items.quantity': this.searchText,
             'items.price': this.searchText
           },
-          limit: 10,
+          filter_min: {
+            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
+          },
+          filter_max: {
+            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+          },
+          limit: this.limit,
           includes: 'form;supplier;items.item;services.service;downPayments.form',
           page: this.currentPage
         }
       }).then(response => {
-        this.loading = false
+        this.isLoading = false
       }).catch(error => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
     },

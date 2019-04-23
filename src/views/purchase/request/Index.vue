@@ -25,7 +25,7 @@
           :value="searchText"
           @input="filterSearch"/>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -95,7 +95,7 @@ export default {
   },
   data () {
     return {
-      loading: true,
+      isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
@@ -134,13 +134,13 @@ export default {
       this.getPurchaseRequest()
     }, 300),
     getPurchaseRequest () {
-      this.loading = true
-      console.log(this.serverDateTime(this.date.start))
+      this.isLoading = true
       this.get({
         params: {
           join: 'form',
           fields: 'purchase_requests.*',
           sort_by: '-forms.number',
+          filter_form: 'active',
           filter_like: {
             'form.number': this.searchText,
             'supplier.name': this.searchText,
@@ -151,20 +151,19 @@ export default {
             'items.price': this.searchText
           },
           filter_min: {
-            'form.date': this.serverDateTime(this.date.start)
+            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
           },
           filter_max: {
-            'form.date': this.serverDateTime(this.date.end)
-          },
-          filter_form: 'active',
+            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+          },          
           limit: 10,
           includes: 'form;employee;supplier;items.item;services.service',
           page: this.currentPage
         }
       }).then(response => {
-        this.loading = false
+        this.isLoading = false
       }).catch(error => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
     },

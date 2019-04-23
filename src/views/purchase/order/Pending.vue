@@ -18,7 +18,7 @@
           :value="searchText"
           @input="filterSearch"/>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -36,7 +36,7 @@
               v-for="(purchaseOrderItem, index2) in purchaseOrder.items"
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
+              <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
               <td>
                 <router-link :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
                   {{ purchaseOrder.form.number }}
@@ -62,7 +62,7 @@
                 </button>
               </td>
             </tr>
-            <template v-if="purchaseOrder.down_payments">
+            <template v-if="purchaseOrder.down_payments.length > 0">
               <tr :key="'down-payment-'+index" slot="p-body">
                 <th></th>
                 <td colspan="8"><b>{{ $t('down payment') }}</b></td>
@@ -120,10 +120,11 @@ export default {
   },
   data () {
     return {
-      loading: true,
+      isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      lastPage: 1,
+      limit: 10
     }
   },
   computed: {
@@ -151,7 +152,7 @@ export default {
       })
     },
     getPurchaseOrder () {
-      this.loading = true
+      this.isLoading = true
       this.get({
         params: {
           join: 'form',
@@ -167,14 +168,14 @@ export default {
             'items.price': this.searchText
           },
           filter_form: 'activePending',
-          limit: 10,
+          limit: this.limit,
           includes: 'form;supplier;items.item.units;services.service;downPayments.form',
           page: this.currentPage
         }
       }).then(response => {
-        this.loading = false
+        this.isLoading = false
       }).catch(error => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
     },

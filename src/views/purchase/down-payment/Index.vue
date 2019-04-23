@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <span class="breadcrumb-item active">Purchase Order</span>
+      <span class="breadcrumb-item active">Down Payment</span>
     </breadcrumb>
 
     <purchase-menu/>
@@ -10,7 +10,14 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="'Purchase Order'" :header="true">
+      <p-block :title="'Down Payment'" :header="true">
+        <div class="row mb-10">
+          <p-date-range-picker
+            id="date"
+            name="date"
+            class="col-sm-4"
+            v-model="date"/>
+        </div>
         <p-form-input
           id="search-text"
           name="search-text"
@@ -18,41 +25,32 @@
           :value="searchText"
           @input="filterSearch"/>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>#</th>
               <th>Number</th>
               <th>Date</th>
               <th>Supplier</th>
-              <th>Item</th>
-              <th>Notes</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">Value</th>
+              <th>Amount</th>
             </tr>
-            <template v-for="(purchaseOrder, index) in purchaseOrders">
+            <template v-for="(downPayment, index) in downPayments">
             <tr
-              v-for="(purchaseOrderItem, index2) in purchaseOrder.items"
-              :key="'pr-' + index + '-i-' + index2"
+              :key="'down-payment-' + index"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
+              <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
               <td>
-                <router-link :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
-                  {{ purchaseOrder.form.number }}
+                <router-link :to="{ name: 'purchase.down-payment.show', params: { id: downPayment.id }}">
+                  {{ downPayment.form.number }}
                 </router-link>
               </td>
-              <td>{{ purchaseOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+              <td>{{ downPayment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
               <td>
-                <template v-if="purchaseOrder.supplier">
-                  {{ purchaseOrder.supplier.name }}
+                <template v-if="downPayment.supplier">
+                  {{ downPayment.supplier.name }}
                 </template>
               </td>
-              <td>{{ purchaseOrderItem.item.name }}</td>
-              <td>{{ purchaseOrderItem.notes }}</td>
-              <td class="text-right">{{ purchaseOrderItem.quantity | numberFormat }}</td>
-              <td class="text-right">{{ purchaseOrderItem.price | numberFormat }}</td>
-              <td class="text-right">{{ (purchaseOrderItem.quantity * purchaseOrderItem.price) | numberFormat }}</td>
+              <td>{{ downPayment.amount | numberFormat }}</td>
             </tr>
             </template>
           </point-table>
@@ -86,58 +84,77 @@ export default {
   },
   data () {
     return {
-      loading: true,
+      isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      lastPage: 1,
+      limit: 10,
+      date: {
+        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-DD 00:00:00'),
+        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
+      }
+    }
+  },
+  watch: {
+    date: function () {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          date_from: this.date.start,
+          date_to: this.date.end
+        }
+      })
+      this.getDownPayments()
     }
   },
   computed: {
-    ...mapGetters('purchaseOrder', ['purchaseOrders', 'pagination'])
+    ...mapGetters('purchaseDownPayment', ['downPayments', 'pagination'])
   },
   methods: {
-    ...mapActions('purchaseOrder', ['get']),
+    ...mapActions('purchaseDownPayment', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getPurchaseOrder()
+      this.getDownPayments()
     }, 300),
-    getPurchaseOrder () {
-      this.loading = true
+    getDownPayments () {
+      this.isLoading = true
       this.get({
         params: {
           join: 'form,supplier',
           sort_by: '-forms.number',
-          fields: 'purchase_orders.*',
-          filter_form: 'activePending',
+          fields: 'purchase_down_payments.*',
+          filter_form: 'active',
           filter_like: {
             'form.number': this.searchText,
-            'form.date': this.serverDateTime(this.searchText),
             'supplier.name': this.searchText,
-            'items.item.name': this.searchText,
-            'items.notes': this.searchText,
-            'items.quantity': this.searchText,
-            'items.price': this.searchText
+            'amount': this.searchText,
           },
-          limit: 10,
-          includes: 'form;supplier;items.item;services.service',
+          filter_min: {
+            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
+          },
+          filter_max: {
+            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+          },   
+          limit: this.limit,
+          includes: 'form;supplier',
           page: this.currentPage
         }
       }).then(response => {
-        this.loading = false
+        this.isLoading = false
       }).catch(error => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
     },
     updatePage (value) {
       this.currentPage = value
-      this.getPurchaseOrder()
+      this.getDownPayments()
     }
   },
   created () {
-    this.getPurchaseOrder()
+    this.getDownPayments()
   },
   updated () {
     this.lastPage = this.pagination.last_page
