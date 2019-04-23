@@ -61,15 +61,6 @@
             </div>
           </p-form-row>
 
-          <p-form-row
-            id="notes"
-            v-model="form.notes"
-            :disabled="loadingSaveButton"
-            :label="$t('notes')"
-            name="notes"
-            :errors="form.errors.get('notes')"
-            @errors="form.errors.set('notes', null)"/>
-
           <p-separator></p-separator>
 
           <h3 class="">Item</h3>
@@ -126,20 +117,31 @@
 
           <p-separator></p-separator>
 
-          <h3 class="">Approver</h3>
-
-          <p-form-row
-            id="approver"
-            name="approver"
-            :label="$t('approver')">
-            <div slot="body" class="col-lg-9">
-              <m-user :id="'user'" v-model="form.approver_id"/>
+          <div class="row">
+            <div class="col-sm-6">
+              <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
             </div>
-          </p-form-row>
+            <div class="col-sm-6">
+              <h3 class="">Approver</h3>
+              <p-form-row
+                id="approver"
+                name="approver"
+                :label="$t('approver')">
+                <div slot="body" class="col-lg-9">
+                  <m-user
+                    :id="'user'"
+                    v-model="form.approver_id"
+                    :errors="form.errors.get('approver_id')"
+                    @errors="form.errors.set('approver_id', null)"/>
+                </div>
+              </p-form-row>
+            </div>
+          </div>
+
+          <p-separator></p-separator>
 
           <div class="form-group row">
-            <div class="col-md-3"></div>
-            <div class="col-md-9">
+            <div class="col-md-12">
               <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
                 <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
               </button>

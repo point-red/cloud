@@ -45,15 +45,6 @@
           </div>
         </p-form-row>
 
-        <p-form-row
-          id="notes"
-          v-model="form.notes"
-          :disabled="isSaving"
-          :label="$t('notes')"
-          name="notes"
-          :errors="form.errors.get('notes')"
-          @errors="form.errors.set('notes', null)"/>
-
         <p-separator></p-separator>
 
         <h3 class="">Item</h3>
