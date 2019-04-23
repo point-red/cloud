@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <span class="breadcrumb-item active">Down Payment</span>
+      <span class="breadcrumb-item active">{{ $t('down payment') | titlecase }}</span>
     </breadcrumb>
 
     <purchase-menu/>
@@ -10,7 +10,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="'Down Payment'" :header="true">
+      <p-block :title="$t('down payment')" :header="true">
         <div class="row mb-10">
           <p-date-range-picker
             id="date"

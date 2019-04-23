@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link to="/purchase/order" class="breadcrumb-item">Purchase Order</router-link>
+      <router-link to="/purchase/order" class="breadcrumb-item">{{ $t('down payment') | titlecase }}</router-link>
       <template v-if="downPayment.form && downPayment.form.number">
         <span class="breadcrumb-item active">{{ downPayment.form.number | uppercase }}</span>
       </template>

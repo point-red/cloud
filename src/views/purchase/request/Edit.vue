@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link :to="{ name: 'purchase.request.index' }" class="breadcrumb-item">Purchase Request</router-link>
+      <router-link :to="{ name: 'purchase.request.index' }" class="breadcrumb-item">{{ $t('purchase request') | titlecase }}</router-link>
       <router-link :to="{ name: 'purchase.request.show', params: { id: id }}" class="breadcrumb-item">{{ purchaseRequest.form.number | uppercase }}</router-link>
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
@@ -12,7 +12,7 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="'Purchase Request'" :header="true">
+      <p-block :title="$t('purchase request')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="number"

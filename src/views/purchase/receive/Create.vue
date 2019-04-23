@@ -12,7 +12,7 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="'Purchase Order'" :header="true">
+      <p-block :title="$t('purchase receive')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="number"

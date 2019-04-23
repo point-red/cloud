@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link to="/purchase/request" class="breadcrumb-item">Purchase Request</router-link>
+      <router-link to="/purchase/request" class="breadcrumb-item">{{ $t('purchase request') | titlecase }}</router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
@@ -11,7 +11,7 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="'Purchase Request'" :header="true">
+      <p-block :title="$t('purchase request')" :header="true">
         <p-form-row
           id="date"
           name="date"

@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link to="/purchase/order" class="breadcrumb-item">Purchase Order</router-link>
+      <router-link to="/purchase/order" class="breadcrumb-item">{{ $t('purchase receive') | titlecase }}</router-link>
       <template v-if="purchaseReceive.form.number">
         <span class="breadcrumb-item active">{{ purchaseReceive.form.number | uppercase }}</span>
       </template>
@@ -18,7 +18,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('purchase order')" :header="true">
+      <p-block :title="$t('purchase receive')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="number"
