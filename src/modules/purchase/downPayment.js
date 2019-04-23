@@ -3,7 +3,11 @@ import api from '@/api'
 const url = '/purchase/down-payments'
 
 const state = {
-  downPayment: {},
+  downPayment: {
+    form: {
+      approvals: []
+    }
+  },
   downPayments: [],
   pagination: {}
 }

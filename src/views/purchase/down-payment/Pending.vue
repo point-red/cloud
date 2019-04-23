@@ -44,6 +44,11 @@
                 </template>
               </td>
               <td>{{ downPayment.amount | numberFormat }}</td>
+              <td>
+                <button class="btn btn-sm btn-secondary" @click="deleteDownPayment(downPayment.id)">
+                  <i class="fa fa-trash"></i> Delete
+                </button>
+              </td>
             </tr>
             </template>
           </point-table>
@@ -88,7 +93,7 @@ export default {
     ...mapGetters('purchaseDownPayment', ['downPayments', 'pagination'])
   },
   methods: {
-    ...mapActions('purchaseDownPayment', ['get']),
+    ...mapActions('purchaseDownPayment', ['get', 'delete']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
@@ -116,6 +121,16 @@ export default {
         this.loading = false
       }).catch(error => {
         this.loading = false
+        this.$notification.error(error.message)
+      })
+    },
+    deleteDownPayment (id) {
+      this.delete({
+        id: id
+      }).then(response => {
+        this.$notification.success('delete success')
+        this.getDownPayments()
+      }).catch(error => {
         this.$notification.error(error.message)
       })
     },

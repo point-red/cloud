@@ -40,7 +40,7 @@
             name="date"
             :label="$t('date')">
             <div slot="body" class="col-lg-9">
-              {{ purchaseOrder.required_date | dateFormat('DD MMMM YYYY HH:mm') }}
+              {{ purchaseOrder.date | dateFormat('DD MMMM YYYY HH:mm') }}
             </div>
           </p-form-row>
 
@@ -178,9 +178,9 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th>Ordered At</th>
-              <th>Ordered By</th>
-              <th>Ordered To</th>
+              <th>Requested At</th>
+              <th>Requested By</th>
+              <th>Requested To</th>
               <th>Approval Status</th>
             </tr>
             <tr slot="p-body" v-for="(approval, index) in purchaseOrder.form.approvals" :key="index">
