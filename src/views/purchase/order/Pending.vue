@@ -54,7 +54,7 @@
               <td class="text-right">{{ purchaseOrderItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseOrderItem.quantity * purchaseOrderItem.price) | numberFormat }}</td>
               <td>
-                <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
+                <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'purchase.receive.create', query: { id: purchaseOrder.id }}">
                   <i class="fa fa-share-square-o"></i> Receive
                 </router-link>
                 <button class="btn btn-sm btn-secondary" @click="$refs.downPaymentModal.show(purchaseOrder)">
