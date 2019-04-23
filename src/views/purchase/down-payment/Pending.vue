@@ -23,6 +23,7 @@
             <tr slot="p-head">
               <th>#</th>
               <th>Number</th>
+              <th>Purchase</th>
               <th>Date</th>
               <th>Supplier</th>
               <th>Amount</th>
@@ -35,6 +36,11 @@
               <td>
                 <router-link :to="{ name: 'purchase.down-payment.show', params: { id: downPayment.id }}">
                   {{ downPayment.form.number }}
+                </router-link>
+              </td>
+              <td>
+                <router-link :to="{ name: 'purchase.order.show', params: { id: downPayment.downpaymentable_id }}">
+                  {{ downPayment.downpaymentable.form.number }}
                 </router-link>
               </td>
               <td>{{ downPayment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
@@ -114,7 +120,7 @@ export default {
             'amount': this.searchText,
           },
           limit: this.limit,
-          includes: 'form;supplier',
+          includes: 'form;supplier;downpaymentable.form',
           page: this.currentPage
         }
       }).then(response => {

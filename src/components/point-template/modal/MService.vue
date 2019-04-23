@@ -136,6 +136,7 @@ export default {
     },
     close () {
       this.$refs['select-' + this.id].close()
+      this.$emit('close', true)
     }
   }
 }

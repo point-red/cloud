@@ -71,7 +71,12 @@
             <template v-for="(downPayment, index2) in purchaseOrder.down_payments">
               <tr :key="'down-payment-'+index+'-'+index2" slot="p-body">
                 <th></th>
-                <td>{{ downPayment.form.number }}</td>
+                <td>
+                  <router-link :to="{ name: 'purchase.down-payment.show', params: { id: downPayment.id }}">
+                    {{ downPayment.form.number }}
+                  </router-link>
+                  
+                </td>
                 <td colspan="7">{{ downPayment.remaining | numberFormat }}</td>
                 <td>
                   <button class="btn btn-sm btn-secondary" @click="deleteDownPaymentRequest(downPayment.id)">

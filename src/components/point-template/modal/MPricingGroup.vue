@@ -118,6 +118,7 @@ export default {
     },
     close () {
       this.$refs['pricing-group-' + this.id].close()
+      this.$emit('close', true)
     }
   }
 }

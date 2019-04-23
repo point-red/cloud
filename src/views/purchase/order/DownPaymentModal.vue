@@ -71,7 +71,20 @@
                 :errors="form.errors.get('amount')"
                 @errors="form.errors.set('amount', null)"/>
             </div>
-          </p-form-row>          
+          </p-form-row>
+          <p-form-row
+            id="approver"
+            name="approver"
+            :label="$t('approver')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-user
+                :id="'user'"
+                v-model="form.approver_id"
+                @close="additionalModalClosed"
+                :errors="form.errors.get('approver_id')"
+                @errors="form.errors.set('approver_id', null)"/>
+            </div>
+          </p-form-row>
         </template>
         <template slot="footer">
           <button class="btn btn-primary">Add</button>
@@ -122,6 +135,9 @@ export default {
     },
     close () {
       this.$refs.downPaymentModal.close()
+    },
+    additionalModalClosed () {
+      document.body.classList.add('modal-open')
     },
     onSubmit () {
       this.isSaving = true
