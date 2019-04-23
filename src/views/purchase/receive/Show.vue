@@ -220,14 +220,14 @@ export default {
       this.delete({
         id: this.id
       }).then(response => {
-          this.isDeleting = false
-          this.$notification.success('cancel success')
-          this.$router.push('/purchase/receive')
-        }).catch(error => {
-          this.isDeleting = false
-          this.$notification.error(error.message)
-          this.form.errors.record(error.errors)
-        })
+        this.isDeleting = false
+        this.$notification.success('cancel success')
+        this.$router.push('/purchase/receive')
+      }).catch(error => {
+        this.isDeleting = false
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
+      })
     }
   },
   created () {

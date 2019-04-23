@@ -180,6 +180,12 @@
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>
+          <a
+            href="javascript:void(0)"
+            @click="onDelete"
+            class="btn btn-sm btn-danger mr-5">
+            Cancel
+          </a>
         </p-block-inner>
       </p-block>
     </div>
@@ -220,7 +226,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('purchaseRequest', ['find']),
+    ...mapActions('purchaseRequest', ['find', 'delete']),
     purchaseRequestRequest () {
       this.isLoading = true
       this.find({
@@ -235,6 +241,20 @@ export default {
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
+      })
+    },
+    onDelete () {
+      this.isDeleting = true
+      this.delete({
+        id: this.id
+      }).then(response => {
+        this.isDeleting = false
+        this.$notification.success('cancel success')
+        this.$router.push('/purchase/request')
+      }).catch(error => {
+        this.isDeleting = false
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
       })
     }
   },
