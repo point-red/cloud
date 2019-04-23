@@ -234,6 +234,12 @@
                     active-class="active">{{ $t('purchase return') | titlecase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase invoice')">
+                  <router-link
+                    to="/purchase/payment-order"
+                    active-class="active">{{ $t('payment order') | titlecase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">
@@ -246,6 +252,34 @@
                   <router-link
                     to="/sales/sales-quotation"
                     active-class="active">{{ $t('sales quotation') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+            <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
+              <router-link to="/inventory" class="nav-submenu" active-class="active">
+                <i class="si si-tag"/>
+                <span class="sidebar-mini-hide">{{ $t("inventory") | titlecase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
+                  <router-link
+                    to="/inventory/usage"
+                    active-class="active">{{ $t('inventory usage') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+            <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance')">
+              <router-link to="/finance" class="nav-submenu" active-class="active">
+                <i class="si si-wallet"/>
+                <span class="sidebar-mini-hide">{{ $t("finance") | titlecase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read finance cash')">
+                  <router-link
+                    to="/finance/cash"
+                    active-class="active">{{ $t('finance cash') | titlecase }}
                   </router-link>
                 </li>
               </ul>

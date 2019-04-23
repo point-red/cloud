@@ -28,6 +28,7 @@
               <th>Item</th>
               <th>Notes</th>
               <th class="text-right">Quantity</th>
+              <th></th>
             </tr>
             <template v-for="(purchaseReceive, index) in purchaseReceives">
             <tr
@@ -49,6 +50,11 @@
               <td>{{ purchaseReceiveItem.item.name }}</td>
               <td>{{ purchaseReceiveItem.notes }}</td>
               <td class="text-right">{{ purchaseReceiveItem.quantity | numberFormat }}</td>
+              <td>
+                <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'purchase.invoice.create', query: { id: purchaseReceive.id }}">
+                  <i class="fa fa-share-square-o"></i> Invoice
+                </router-link>
+              </td>
             </tr>
             </template>
           </point-table>

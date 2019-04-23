@@ -75,6 +75,7 @@
                   <router-link :to="{ name: 'purchase.down-payment.show', params: { id: downPayment.id }}">
                     {{ downPayment.form.number }}
                   </router-link>
+                  
                 </td>
                 <td colspan="7">{{ downPayment.remaining | numberFormat }}</td>
                 <td>
