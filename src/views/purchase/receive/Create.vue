@@ -218,6 +218,8 @@ export default {
           item: item.item,
           quantity: item.quantity,
           price: item.price,
+          discount_value: item.discount_value,
+          discount_percent: item.discount_percent,
           unit: item.unit,
           converter: item.converter,
           allocation_id: item.allocation_id,
@@ -233,23 +235,6 @@ export default {
   methods: {
     ...mapActions('purchaseOrder', ['find']),
     ...mapActions('purchaseReceive', ['create']),
-    addItemRow () {
-      this.form.items.push({
-        item_id: null,
-        item_name: null,
-        unit: '',
-        converter: null,
-        units: [{
-          label: '',
-          name: '',
-          converter: ''
-        }],
-        quantity: 0,
-        price: 0,
-        allocation: null,
-        notes: null
-      })
-    },
     chooseWarehouse (value) {
       this.form.warehouse_name = value
     },

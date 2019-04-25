@@ -61,24 +61,6 @@
               <td class="text-right">{{ purchaseOrderItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseOrderItem.quantity * purchaseOrderItem.price) | numberFormat }}</td>
             </tr>
-            <template v-if="purchaseOrder.down_payments.length > 0">
-              <tr :key="'down-payment-'+index" slot="p-body">
-                <th></th>
-                <td class="bg-info-light" colspan="8"><b>{{ $t('down payment') }}</b></td>
-              </tr>
-            </template>
-            <template v-for="(downPayment, index2) in purchaseOrder.down_payments">
-              <tr :key="'down-payment-'+index+'-'+index2" slot="p-body">
-                <th></th>
-                <td class="bg-info-light">{{ downPayment.form.number }}</td>
-                <td class="bg-info-light" colspan="7">{{ downPayment.remaining | numberFormat }}</td>
-                <td>
-                  <button class="btn btn-sm btn-secondary" @click="deleteDownPaymentRequest(downPayment.id)">
-                    <i class="fa fa-trash"></i> Delete
-                  </button>
-                </td>
-              </tr>
-            </template>
             </template>
           </point-table>
         </p-block-inner>
@@ -139,9 +121,6 @@ export default {
   },
   methods: {
     ...mapActions('purchaseOrder', ['get']),
-    ...mapActions('purchaseDownPayment', {
-      deleteDownPayment: 'delete'
-    }),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
@@ -171,7 +150,7 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;supplier;items.item;services.service;downPayments.form',
+          includes: 'form;supplier;items.item;services.service',
           page: this.currentPage
         }
       }).then(response => {
@@ -184,17 +163,7 @@ export default {
     updatePage (value) {
       this.currentPage = value
       this.getPurchaseOrder()
-    },
-    deleteDownPaymentRequest (id) {
-      this.deleteDownPayment({
-        id: id
-      }).then(response => {
-        this.$notification.success('delete success')
-        this.getPurchaseOrder()
-      }).catch(error => {
-        this.$notification.error(error.message)
-      })
-    }
+    }    
   },
   created () {
     this.getPurchaseOrder()

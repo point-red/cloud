@@ -36,13 +36,11 @@
               <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier" :label="form.supplier_name"/>
             </div>
           </p-form-row>
-        </p-block-inner>
 
-        <p-separator></p-separator>
+          <p-separator></p-separator>
 
-        <h3>Item</h3>
-        <hr>
-        <p-block-inner>
+          <h3>Item</h3>
+          <hr>
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -136,126 +134,127 @@
           <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
             <i class="fa fa-plus"/> Add
           </button>
-        </p-block-inner>
 
-        <p-separator></p-separator>
+          <p-separator></p-separator>
 
-        <div class="row">
-          <div class="col-sm-6">
-            <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+          <div class="row">
+            <div class="col-sm-6">
+              <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+            </div>
+            <div class="col-sm-6">
+              <p-form-row
+                id="discount"
+                name="discount"
+                :label="$t('discount')">
+                <div slot="body" class="col-lg-9 mt-5">
+                  <p-discount
+                    id="discount"
+                    name="discount"
+                    v-model="form.discount_percent"
+                    @keyup.native="calculate()"/>
+                </div>
+              </p-form-row>
+              <p-form-row
+                id="need-down-payment"
+                name="need-down-payment"
+                :label="$t('tax')">
+                <div slot="body" class="col-lg-9">                
+                  <p-form-check-box
+                    class="mb-0"
+                    style="float:left"
+                    id="need-down-payment"
+                    name="need-down-payment"
+                    @click.native="chooseTax('include')"
+                    :checked="form.type_of_tax == 'include'"
+                    :description="$t('include tax')"/>
+                  <p-form-check-box
+                    id="need-down-payment"
+                    name="need-down-payment"
+                    @click.native="chooseTax('exclude')"
+                    :checked="form.type_of_tax == 'exclude'"
+                    :description="$t('exclude tax')"/>
+                  <p-form-number
+                    :id="'total'"
+                    :name="'total'"
+                    :readonly="true"
+                    v-model="form.tax"/>
+                </div>
+              </p-form-row>
+              <p-form-row
+                id="total"
+                name="total"
+                :label="$t('total')">
+                <div slot="body" class="col-lg-9 mt-5">
+                  <p-form-number
+                    :id="'total'"
+                    :name="'total'"
+                    :readonly="true"
+                    v-model="form.amount"/>
+                </div>
+              </p-form-row>
+            </div>
           </div>
-          <div class="col-sm-6">
-            <p-form-row
-              id="discount"
-              name="discount"
-              :label="$t('discount')">
-              <div slot="body" class="col-lg-9 mt-5">
-                <p-discount
-                  id="discount"
-                  name="discount"
-                  v-model="form.discount_percent"
-                  @keyup.native="calculate()"/>
-              </div>
-            </p-form-row>
-            <p-form-row
-              id="need-down-payment"
-              name="need-down-payment"
-              :label="$t('tax')">
-              <div slot="body" class="col-lg-9">                
-                <p-form-check-box
-                  class="mb-0"
-                  style="float:left"
-                  id="need-down-payment"
-                  name="need-down-payment"
-                  @click.native="chooseTax('include')"
-                  :checked="form.type_of_tax == 'include'"
-                  :description="$t('include tax')"/>
-                <p-form-check-box
-                  id="need-down-payment"
-                  name="need-down-payment"
-                  @click.native="chooseTax('exclude')"
-                  :checked="form.type_of_tax == 'exclude'"
-                  :description="$t('exclude tax')"/>
-                <p-form-number
-                  :id="'total'"
-                  :name="'total'"
-                  :readonly="true"
-                  v-model="form.tax"/>
-              </div>
-            </p-form-row>
-            <p-form-row
-              id="total"
-              name="total"
-              :label="$t('total')">
-              <div slot="body" class="col-lg-9 mt-5">
-                <p-form-number
-                  :id="'total'"
-                  :name="'total'"
-                  :readonly="true"
-                  v-model="form.amount"/>
-              </div>
-            </p-form-row>
-          </div>
-        </div>
 
-        <p-separator></p-separator>
+          <p-separator></p-separator>
 
-        <div class="row">
-          <div class="col-sm-6">
-            <h3>Options</h3>        
-            <hr>
-            <p-form-row
-              id="need-down-payment"
-              name="need-down-payment"
-              :label="$t('require down payment')">
-              <div slot="body" class="col-lg-9">
-                <p-form-number
-                  id="need-down-payment"
-                  name="need-down-payment"
-                  :is-text-right="false"
-                  v-model="form.need_down_payment"/>
-              </div>
-            </p-form-row>
+          <div class="row">
+            <div class="col-sm-6">
+              <h3>Options</h3>        
+              <hr>
+              <p-form-row
+                id="need-down-payment"
+                name="need-down-payment"
+                :help="'* surat jalan bisa dibuat setelah pembayaran uang muka'"
+                :label="$t('require down payment')">
+                <!-- <div slot="body" class="col-lg-9">
+                  <p-form-number
+                    id="need-down-payment"
+                    name="need-down-payment"
+                    :is-text-right="false"
+                    v-model="form.need_down_payment"/>
+                </div> -->
+              </p-form-row>
 
-            <p-form-row
-              id="cash-only"
-              name="cash-only"
-              :label="$t('cash only')">
-              <div slot="body" class="col-lg-9">
-                <p-form-check-box
-                  id="cash-only"
-                  name="cash-only"
-                  @click.native="form.cash_only = !form.cash_only"
-                  :checked="form.cash_only"
-                  :description="''"/>
-              </div>
-            </p-form-row>
+              <p-form-row
+                id="cash-only"
+                name="cash-only"
+                :label="$t('cash only')">
+                <div slot="body" class="col-lg-9">
+                  <p-form-check-box
+                    id="cash-only"
+                    name="cash-only"
+                    @click.native="form.cash_only = !form.cash_only"
+                    :checked="form.cash_only"
+                    :description="'surat jalan dapat dibuat sebesar jumlah pembayaran'"/>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-6">
+              <h3>Approver</h3>
+              <hr>
+              <p-form-row
+                id="approver"
+                name="approver"
+                :label="$t('approver')">
+                <div slot="body" class="col-lg-9 mt-5">
+                  <m-user
+                    :id="'user'"
+                    v-model="form.approver_id"
+                    :errors="form.errors.get('approver_id')"
+                    @errors="form.errors.set('approver_id', null)"/>
+                </div>
+              </p-form-row>
+            </div>
           </div>
-          <div class="col-sm-6">
-            <h3>Approver</h3>
-            <hr>
-            <p-form-row
-              id="approver"
-              name="approver"
-              :label="$t('approver')">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-user
-                  :id="'user'"
-                  v-model="form.approver_id"
-                  :errors="form.errors.get('approver_id')"
-                  @errors="form.errors.set('approver_id', null)"/>
-              </div>
-            </p-form-row>
-          </div>
-        </div>
 
-        <div class="form-group row">
-          <div class="col-md-12">
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
-            </button>
+          <div class="form-group row">
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+              </button>
+            </div>
           </div>
-        </div>
+        </p-block-inner>        
       </p-block>
     </form>
   </div>
@@ -381,10 +380,12 @@ export default {
       var totalQuantity = 0
       this.form.items.forEach(function (element) {
         element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
+        element.discount_value = element.discount_percent * element.price / 100
         subtotal += parseFloat(element.total)
         totalQuantity += parseFloat(element.quantity)
       })
       this.form.subtotal = subtotal
+      this.form.discount_value = this.form.discount_percent * subtotal / 100
       this.form.total_quantity = totalQuantity
       this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount_percent / 100)
       if (this.form.type_of_tax == 'include') {

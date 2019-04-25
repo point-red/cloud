@@ -62,28 +62,6 @@
                 </button>
               </td>
             </tr>
-            <template v-if="purchaseOrder.down_payments.length > 0">
-              <tr :key="'down-payment-'+index" slot="p-body">
-                <th></th>
-                <td colspan="8"><b>{{ $t('down payment') }}</b></td>
-              </tr>
-            </template>
-            <template v-for="(downPayment, index2) in purchaseOrder.down_payments">
-              <tr :key="'down-payment-'+index+'-'+index2" slot="p-body">
-                <th></th>
-                <td>
-                  <router-link :to="{ name: 'purchase.down-payment.show', params: { id: downPayment.id }}">
-                    {{ downPayment.form.number }}
-                  </router-link>
-                </td>
-                <td colspan="7">{{ downPayment.remaining | numberFormat }}</td>
-                <td>
-                  <button class="btn btn-sm btn-secondary" @click="deleteDownPaymentRequest(downPayment.id)">
-                    <i class="fa fa-trash"></i> Delete
-                  </button>
-                </td>
-              </tr>
-            </template>
             </template>
           </point-table>
         </p-block-inner>
@@ -136,25 +114,12 @@ export default {
   },
   methods: {
     ...mapActions('purchaseOrder', ['get']),
-    ...mapActions('purchaseDownPayment', {
-      deleteDownPayment: 'delete'
-    }),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
       this.getPurchaseOrder()
     }, 300),
-    deleteDownPaymentRequest (id) {
-      this.deleteDownPayment({
-        id: id
-      }).then(response => {
-        this.$notification.success('delete success')
-        this.getPurchaseOrder()
-      }).catch(error => {
-        this.$notification.error(error.message)
-      })
-    },
     getPurchaseOrder () {
       this.isLoading = true
       this.get({
