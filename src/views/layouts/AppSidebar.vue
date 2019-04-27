@@ -276,10 +276,16 @@
                 <span class="sidebar-mini-hide">{{ $t("finance") | titlecase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read finance cash')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cash')">
                   <router-link
                     to="/finance/cash"
-                    active-class="active">{{ $t('finance cash') | titlecase }}
+                    active-class="active">{{ $t('cash') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read bank')">
+                  <router-link
+                    to="/finance/bank"
+                    active-class="active">{{ $t('bank') | titlecase }}
                   </router-link>
                 </li>
               </ul>

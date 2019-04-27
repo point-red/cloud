@@ -1,17 +1,15 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-purchase/>
-      <router-link to="/purchase/invoice" class="breadcrumb-item">{{ $t('purchase invoice') | titlecase }}</router-link>
+      <breadcrumb-finance/>
+      <router-link to="/purchase/order" class="breadcrumb-item">{{ $t('cash') | titlecase }}</router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
-
-    <purchase-menu/>
 
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('purchase invoice')" :header="true">
+      <p-block :title="$t('cash')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="date"
@@ -33,16 +31,14 @@
             name="supplier"
             :label="$t('supplier')">
             <div slot="body" class="col-lg-9 mt-5">
-              {{ form.supplier_name }}
+              <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier" :label="form.supplier_name"/>
             </div>
           </p-form-row>
 
           <p-separator></p-separator>
 
           <h3>Item</h3>
-
           <hr>
-          
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -53,6 +49,7 @@
               <th>Discount</th>
               <th>Total</th>
               <th style="min-width: 120px">Allocation</th>
+              <th></th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
               <th>{{ index + 1 }}</th>
@@ -106,15 +103,19 @@
                   :label="row.allocation_name"
                   @choosen="chooseAllocation($event, row)"/>
               </td>
+              <td>
+                <i class="btn btn-sm fa fa-times" @click="deleteRow(index)"></i>
+              </td>
             </tr>
             <tr slot="p-body">
               <th></th>
               <td></td>
               <td></td>
               <td>
-                <p-quantity
-                  :id="'quantity' + index"
-                  :name="'quantity' + index"
+                <p-form-number
+                  :id="'total_quantity'"
+                  :name="'total_quantity'"
+                  :readonly="true"
                   v-model="form.total_quantity"/>
               </td>
               <td></td>
@@ -128,52 +129,9 @@
               </td>
             </tr>
           </point-table>
-
-          <p-separator></p-separator>
-
-          <h3>{{ $t('down payment') | titlecase }}</h3>
-
-          <hr>
-          
-          <point-table>
-            <tr slot="p-head">
-              <th>#</th>
-              <th>Use</th>
-              <th>{{ $t('down payment') }}</th>
-              <th>{{ $t('amount') }}</th>
-            </tr>
-            <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
-              <th>{{ index + 1 }}</th>
-              <td>
-                <p-form-check-box
-                  id="need-down-payment"
-                  name="need-down-payment"
-                  class="mt-15"
-                  @click.native="chooseTax('exclude')"
-                  :checked="form.type_of_tax == 'exclude'"/>
-              </td>
-              <td>PDP19040001</td>
-              <td>
-                <p-form-number
-                  :id="'price' + index"
-                  :name="'price' + index"
-                  v-model="form.subtotal"
-                  @keyup.native="calculate()"/>
-              </td>
-            </tr>
-            <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td>
-                <p-form-number
-                  :id="'subtotal'"
-                  :name="'subtotal'"
-                  :readonly="true"
-                  v-model="form.subtotal"/>
-              </td>
-            </tr>
-          </point-table>
+          <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
+            <i class="fa fa-plus"/> Add
+          </button>
 
           <p-separator></p-separator>
 
@@ -238,7 +196,38 @@
           <p-separator></p-separator>
 
           <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
+              <h3>Options</h3>        
+              <hr>
+              <p-form-row
+                id="need-down-payment"
+                name="need-down-payment"
+                :help="'* surat jalan bisa dibuat setelah pembayaran uang muka'"
+                :label="$t('require down payment')">
+                <!-- <div slot="body" class="col-lg-9">
+                  <p-form-number
+                    id="need-down-payment"
+                    name="need-down-payment"
+                    :is-text-right="false"
+                    v-model="form.need_down_payment"/>
+                </div> -->
+              </p-form-row>
+
+              <p-form-row
+                id="cash-only"
+                name="cash-only"
+                :label="$t('cash only')">
+                <div slot="body" class="col-lg-9">
+                  <p-form-check-box
+                    id="cash-only"
+                    name="cash-only"
+                    @click.native="form.cash_only = !form.cash_only"
+                    :checked="form.cash_only"
+                    :description="'surat jalan dapat dibuat sebesar jumlah pembayaran'"/>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-6">
               <h3>Approver</h3>
               <hr>
               <p-form-row
@@ -263,8 +252,7 @@
               </button>
             </div>
           </div>
-
-        </p-block-inner>
+        </p-block-inner>        
       </p-block>
     </form>
   </div>
@@ -272,21 +260,19 @@
 
 <script>
 import debounce from 'lodash/debounce'
-import PurchaseMenu from '../Menu'
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
+import BreadcrumbFinance from '../Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    PurchaseMenu,
     TabMenu,
     PointTable,
     Breadcrumb,
-    BreadcrumbPurchase
+    BreadcrumbFinance
   },
   data () {
     return {
@@ -332,12 +318,35 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchaseReceive', ['purchaseReceive']),
-    ...mapGetters('purchaseInvoice', ['purchaseInvoice'])
+    ...mapGetters('purchaseRequest', ['purchaseRequest']),
+    ...mapGetters('purchaseOrder', ['purchaseOrder'])
   },
   methods: {
-    ...mapActions('purchaseReceive', ['find']),
-    ...mapActions('purchaseInvoice', ['create']),
+    ...mapActions('purchaseRequest', ['find']),
+    ...mapActions('purchaseOrder', ['create']),
+    addItemRow () {
+      this.form.items.push({
+        item_id: null,
+        item_name: null,
+        item: {
+          units: [{
+            label: '',
+            name: '',
+            converter: null
+          }],
+        },
+        unit: null,
+        converter: null,
+        quantity: null,
+        price: null,
+        allocation_id: null,
+        allocation_name: null,
+        notes: null
+      })
+    },
+    deleteRow (index) {
+      this.$delete(this.form.items, index)
+    },
     chooseSupplier (value) {
       this.form.supplier_name = value
     },
@@ -367,10 +376,12 @@ export default {
       var totalQuantity = 0
       this.form.items.forEach(function (element) {
         element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
+        element.discount_value = element.discount_percent * element.price / 100
         subtotal += parseFloat(element.total)
         totalQuantity += parseFloat(element.quantity)
       })
       this.form.subtotal = subtotal
+      this.form.discount_value = this.form.discount_percent * subtotal / 100
       this.form.total_quantity = totalQuantity
       this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount_percent / 100)
       if (this.form.type_of_tax == 'include') {
@@ -400,7 +411,7 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/purchase/invoice/' + response.data.id)
+          this.$router.push('/purchase/order/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)
@@ -414,7 +425,7 @@ export default {
       this.find({
         id: this.$route.query.id,
         params: {
-          includes: 'form;supplier;items.item.units;services.service;purchaseOrder.remainingDownPayments'
+          includes: 'form;supplier;items.item.units;services.service'
         }
       }).then(response => {
         this.isLoading = false
@@ -426,7 +437,7 @@ export default {
         this.form.amount = response.data.amount
         this.form.items = response.data.items
         this.form.items.forEach(function (element) {
-          element.purchase_receive_item_id = element.id
+          element.purchase_request_item_id = element.id
         })
         this.calculate()
       }).catch(error => {
