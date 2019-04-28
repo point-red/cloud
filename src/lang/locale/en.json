@@ -75,6 +75,8 @@
 	"ratio report": "ratio report",
 	"cash": "cash",
 	"bank": "bank",
+	"payment type": "payment type",
+	"payment to": "payment to",
 	"scorer": "scorer",
 	"assessment date help": "if the assessment is monthly, the date can be filled the last date of the month",
 	"employee": "employee",

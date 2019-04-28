@@ -6,6 +6,11 @@
 
     <div class="row gutters-tiny">
       <p-box
+        :name="$t('payment order')"
+        v-if="$permission.has('read payment order')"
+        link="/finance/payment-order"
+        icon="si si-doc"/>
+      <p-box
         :name="$t('cash')"
         v-if="$permission.has('read cash')"
         link="/finance/cash"

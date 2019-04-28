@@ -276,6 +276,12 @@
                 <span class="sidebar-mini-hide">{{ $t("finance") | titlecase }}</span>
               </router-link>
               <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read payment order')">
+                  <router-link
+                    to="/finance/payment-order"
+                    active-class="active">{{ $t('payment order') | titlecase }}
+                  </router-link>
+                </li>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cash')">
                   <router-link
                     to="/finance/cash"

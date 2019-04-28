@@ -69,6 +69,9 @@ export default {
     },
     label: {
       type: String
+    },
+    type: {
+      type: Array
     }
   },
   watch: {
@@ -86,8 +89,16 @@ export default {
     ...mapActions('accountingChartOfAccount', ['get', 'create']),
     search () {
       this.isLoading = true
-      this.get({
-        params: {
+      var type = ''
+      var params = {};
+      if (this.type) {
+        for (var i = 0; i < this.type.length; i++) {
+          type = type.concat(this.type[i])
+          if (i + 1 != this.type.length) {
+            type = type.concat(';')
+          }
+        }
+        params = {
           sort_by: 'number',
           limit: 50,
           filter_like: {
@@ -96,11 +107,22 @@ export default {
           filter_where_has: [
             {
               type: {
-                name: 'inventory'
+                name: type
               }
             }
           ]
         }
+      } else {
+        params = {
+          sort_by: 'number',
+          limit: 50,
+          filter_like: {
+            name: this.searchText
+          }
+        }
+      }
+      this.get({
+        params: params
       }).then(response => {
         this.options = []
         this.mutableLabel = ''

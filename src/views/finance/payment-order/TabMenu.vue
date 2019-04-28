@@ -1,36 +1,27 @@
 <template>
   <ul class="nav nav-tabs nav-tabs-alt mb-15" data-toggle="tabs" role="tablist">
     <slot></slot>
-    <li class="nav-item ml-auto" v-if="$permission.has('create cash')">
+    <li class="nav-item ml-auto" v-if="$permission.has('create payment order')">
       <router-link
-        to="/finance/cash/in"
+        to="/finance/payment-order/create"
         exact
         class="nav-link"
         active-class="active">
-        <span><i class="si si-plus"></i> Cash In</span>
+        <span><i class="si si-plus"></i> Create</span>
       </router-link>
     </li>
-    <li class="nav-item" v-if="$permission.has('create cash')">
+    <li class="nav-item" v-if="$permission.has('read payment order')">
       <router-link
-        to="/finance/cash/out"
-        exact
-        class="nav-link"
-        active-class="active">
-        <span><i class="si si-plus"></i> Cash Out</span>
-      </router-link>
-    </li>
-    <li class="nav-item" v-if="$permission.has('read cash')">
-      <router-link
-        to="/finance/cash"
+        to="/finance/payment-order"
         exact
         class="nav-link"
         active-class="active">
         <span><i class="si si-docs"></i> List</span>
       </router-link>
     </li>
-    <li class="nav-item" v-if="$permission.has('read cash')">
+    <li class="nav-item" v-if="$permission.has('read payment order')">
       <router-link
-        to="/finance/cash/pending"
+        to="/finance/payment-order/pending"
         exact
         class="nav-link"
         active-class="active">
