@@ -21,10 +21,10 @@
                 {{ optionSupplier.label }}
               </a>
             </template>
-            <div class="alert alert-info text-center" v-if="searchText && optionSuppliers.length == 0 && !isLoading">
+            <div class="alert alert-info text-center" v-if="searchText && optionSuppliers.length == 0 && !isLoadingSupplier">
               {{ $t('searching not found', [searchText]) | capitalize }}
             </div>
-            <div class="alert alert-info text-center" v-if="!searchText && optionSuppliers.length == 0 && !isLoading">
+            <div class="alert alert-info text-center" v-if="!searchText && optionSuppliers.length == 0 && !isLoadingSupplier">
               {{ $t('you doesn\'t have any') | capitalize }} {{ $t('supplier') | capitalize }}
             </div>
           </div>
@@ -41,10 +41,10 @@
                 {{ optionCustomer.label }}
               </a>
             </template>
-            <div class="alert alert-info text-center" v-if="searchText && optionCustomers.length == 0 && !isLoading">
+            <div class="alert alert-info text-center" v-if="searchText && optionCustomers.length == 0 && !isLoadingCustomer">
               {{ $t('searching not found', [searchText]) | capitalize }}
             </div>
-            <div class="alert alert-info text-center" v-if="!searchText && optionCustomers.length == 0 && !isLoading">
+            <div class="alert alert-info text-center" v-if="!searchText && optionCustomers.length == 0 && !isLoadingCustomer">
               {{ $t('you doesn\'t have any') | capitalize }} {{ $t('customer') | capitalize }}
             </div>
           </div>
@@ -61,10 +61,10 @@
                 {{ optionEmployee.label }}
               </a>
             </template>
-            <div class="alert alert-info text-center" v-if="searchText && optionEmployees.length == 0 && !isLoading">
+            <div class="alert alert-info text-center" v-if="searchText && optionEmployees.length == 0 && !isLoadingEmployee">
               {{ $t('searching not found', [searchText]) | capitalize }}
             </div>
-            <div class="alert alert-info text-center" v-if="!searchText && optionEmployees.length == 0 && !isLoading">
+            <div class="alert alert-info text-center" v-if="!searchText && optionEmployees.length == 0 && !isLoadingEmployee">
               {{ $t('you doesn\'t have any') | capitalize }} {{ $t('employee') | capitalize }}
             </div>
           </div>
@@ -239,7 +239,7 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', option.label)
+      this.$emit('choosen', option)
       this.close()
     },
     show () {

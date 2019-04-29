@@ -30,15 +30,15 @@
               <th>Number</th>
               <th>Date</th>
             </tr>
-            <template v-for="(payment, index) in payments">
-            <tr :key="'payment-' + index" slot="p-body">
+            <template v-for="(paymentOrder, index) in paymentOrders">
+            <tr :key="'payment-order-' + index" slot="p-body">
               <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
               <td>
-                <router-link :to="{ name: 'finance.payment.show', params: { id: payment.id }}">
-                  {{ payment.form.number }}
+                <router-link :to="{ name: 'finance.payment-order.show', params: { id: paymentOrder.id }}">
+                  {{ paymentOrder.form.number }}
                 </router-link>
               </td>
-              <td>{{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+              <td>{{ paymentOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
             </tr>
             </template>
           </point-table>
@@ -90,27 +90,27 @@ export default {
           date_to: this.date.end
         }
       })
-      this.getPayments()
+      this.getPaymentOrders()
     }
   },
   computed: {
-    ...mapGetters('financePayment', ['payments', 'pagination'])
+    ...mapGetters('financePaymentOrder', ['paymentOrders', 'pagination'])
   },
   methods: {
-    ...mapActions('financePayment', ['get']),
+    ...mapActions('financePaymentOrder', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getPayments()
+      this.getPaymentOrders()
     }, 300),
-    getPayments () {
+    getPaymentOrders () {
       this.isLoading = true
       this.get({
         params: {
           join: 'form',
           sort_by: '-forms.number',
-          fields: 'payments.*',
+          fields: 'payment_orders.*',
           filter_form: 'active',
           filter_like: {
             'form.number': this.searchText
@@ -134,11 +134,11 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getPayments()
+      this.getPaymentOrders()
     }    
   },
   created () {
-    this.getPayments()
+    this.getPaymentOrders()
   },
   updated () {
     this.lastPage = this.pagination.last_page

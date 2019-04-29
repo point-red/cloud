@@ -37,13 +37,13 @@
                 id="payment-type"
                 name="payment-type"
                 @click.native="choosePaymentType('cash')"
-                :checked="form.payment_type == 'cash'"
+                :checked="form.payment_type_replacement == 'cash'"
                 :description="$t('cash')"/>
               <p-form-check-box
                 id="payment-type"
                 name="payment-type"
                 @click.native="choosePaymentType('bank')"
-                :checked="form.payment_type == 'bank'"
+                :checked="form.payment_type_replacement == 'bank'"
                 :description="$t('bank')"/>
             </div>
           </p-form-row>
@@ -53,7 +53,7 @@
             name="payment-to"
             :label="$t('payment to')">
             <div slot="body" class="col-lg-9 mt-5">
-              <m-paymentable id="paymentable" v-model="form.paymentable_id" @choosen="choosePaymentType" :label="form.paymentable_name"/>
+              <m-paymentable id="paymentable" v-model="form.paymentable_id" @choosen="choosePaymentTo" :label="form.paymentable_name"/>
             </div>
           </p-form-row>
 
@@ -70,33 +70,33 @@
               <th style="min-width: 120px">Allocation</th>
               <th></th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.details" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 <m-chart-of-account
                   :id="'item-' + index"
                   :data-index="index"
                   v-model="row.item_id"
-                  :label="row.item_name"
-                  @choosen="chooseItem($event, row)"/>
+                  @choosen="chooseAccount($event, row)"
+                  :label="row.item_name"/>
               </td>
               <td>
                 <p-form-input
                   :id="'notes-' + index"
                   :name="'notes-' + index"
-                  v-model="form.items[index].notes"/>
+                  v-model="row.notes"/>
               </td>
               <td>
                 <p-form-number
                   :id="'amount-' + index"
                   :name="'amount-' + index"
-                  v-model="form.items[index].amount"
+                  v-model="row.amount"
                   @keyup.native="calculate()"/>
               </td>
               <td>
                 <m-allocation
                   :id="'allocation-' + index"
-                  v-model="form.items[index].allocation_id"
+                  v-model="row.allocation_id"
                   :label="row.allocation_name"
                   @choosen="chooseAllocation($event, row)"/>
               </td>
@@ -110,15 +110,15 @@
               <td></td>
               <td>
                 <p-form-number
-                  :id="'total_amount'"
-                  :name="'total_amount'"
+                  :id="'amount'"
+                  :name="'amount'"
                   :readonly="true"
-                  v-model="form.total_amount"/>
+                  v-model="form.amount"/>
               </td>
               <td></td>
             </tr>
           </point-table>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
+          <button type="button" class="btn btn-sm btn-secondary" @click="addRow">
             <i class="fa fa-plus"/> Add
           </button>
 
@@ -184,36 +184,20 @@ export default {
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        payment_type: null,
-        supplier_id: null,
-        supplier_name: null,
+        due_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        payment_type: 'payment-order',
+        payment_type_replacement: null,
+        paymentable_id: null,
+        paymentable_type: null,
+        paymentable_name: null,
         approver_id: null,
-        need_down_payment: 0,
-        cash_only: false,
+        disbursed: true,
         notes: null,
-        subtotal: 0,
-        discount_percent: 0,
-        discount_value: 0,
-        tax_base: 0,
-        tax: 0,
-        type_of_tax: 'exclude',
-        total_amount: 0,
         amount: 0,
-        items: [{
-          item_id: null,
-          item_name: null,
-          item: {
-            units: [{
-              label: '',
-              name: '',
-              converter: null
-            }],
-          },
-          unit: null,
-          converter: null,
-          quantity: null,
-          price: null,
-          total: null,
+        details: [{
+          chart_of_account_id: null,
+          chart_of_account_name: null,
+          amount: null,
           allocation_id: null,
           allocation_name: null,
           notes: null
@@ -221,91 +205,54 @@ export default {
       })
     }
   },
+  watch: {
+    'form.date': function () {
+      this.form.due_date = this.form.date
+    }
+  },
   computed: {
-    ...mapGetters('purchaseRequest', ['purchaseRequest']),
-    ...mapGetters('purchaseOrder', ['purchaseOrder'])
+    ...mapGetters('financePaymentOrder', ['payment'])
   },
   methods: {
-    ...mapActions('purchaseRequest', ['find']),
-    ...mapActions('purchaseOrder', ['create']),
-    addItemRow () {
-      this.form.items.push({
-        item_id: null,
-        item_name: null,
-        item: {
-          units: [{
-            label: '',
-            name: '',
-            converter: null
-          }],
-        },
-        unit: null,
-        converter: null,
-        quantity: null,
-        price: null,
+    ...mapActions('financePaymentOrder', ['create']),
+    addRow () {
+      this.form.details.push({
+        chart_of_account_id: null,
+        chart_of_account_name: null,
+        amount: null,
         allocation_id: null,
         allocation_name: null,
         notes: null
       })
     },
     deleteRow (index) {
-      this.$delete(this.form.items, index)
-    },
-    chooseSupplier (value) {
-      this.form.supplier_name = value
-    },
-    chooseItem (item, row) {
-      row.item_name = item.name
-      row.item.units = item.units
-      row.item.units.forEach((unit, keyUnit) => {
-        if (unit.converter == 1) {
-          row.unit = unit.label
-          row.converter = unit.converter
-        }
-      })
+      this.$delete(this.form.details, index)
     },
     chooseAllocation (allocation, row) {
       row.allocation_name = allocation
     },
-    choosePaymentType (type) {
-      if (type == this.form.payment_type) {
-        this.form.payment_type = null
-      } else {
-        this.form.payment_type = type
-      }
-      this.calculate()
+    chooseAccount (account, row) {
+      row.chart_of_account_id = account.id
+      row.chart_of_account_name = account.label
     },
-    chooseTax (taxType) {
-      if (taxType == this.form.type_of_tax) {
-        this.form.type_of_tax = null
+    choosePaymentType (type) {
+      if (type == this.form.payment_type_replacement) {
+        this.form.payment_type_replacement = null
       } else {
-        this.form.type_of_tax = taxType
+        this.form.payment_type_replacement = type
       }
-      this.calculate()
+    },
+    choosePaymentTo (choosen) {
+      this.form.paymentable_id = choosen.id
+      this.form.paymentable_name = choosen.label
+      this.form.paymentable_type = choosen.type
     },
     calculate: debounce (function () {
-      var subtotal = 0
-      var totalQuantity = 0
-      this.form.items.forEach(function (element) {
-        element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
-        element.discount_value = element.discount_percent * element.price / 100
-        subtotal += parseFloat(element.total)
-        totalQuantity += parseFloat(element.quantity)
+      var totalAmount = 0
+      this.form.details.forEach(function (element) {
+        totalAmount += parseFloat(element.amount)
       })
-      this.form.subtotal = subtotal
-      this.form.discount_value = this.form.discount_percent * subtotal / 100
-      this.form.total_amount = totalQuantity
-      this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount_percent / 100)
-      if (this.form.type_of_tax == 'include') {
-        this.form.tax = this.form.tax_base * 10 / 100
-        this.form.amount = this.form.tax_base
-      } else if (this.form.type_of_tax == 'exclude') {
-        this.form.tax = this.form.tax_base * 10 / 100
-        this.form.amount = this.form.tax_base + this.form.tax
-      } else {
-        this.form.tax = 0
-        this.form.amount = this.form.tax_base
-      }
+      this.form.amount = totalAmount
     }, 300),
     onSubmit () {
       this.isSaving = true
@@ -323,7 +270,7 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/purchase/order/' + response.data.id)
+          this.$router.push('/finance/payment/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)
@@ -332,30 +279,6 @@ export default {
     }
   },
   created () {
-    if (this.$route.query.id) {
-      this.isLoading = true
-      this.find({
-        id: this.$route.query.id,
-        params: {
-          includes: 'form;supplier;items.item.units;services.service'
-        }
-      }).then(response => {
-        this.isLoading = false
-        this.form.purchase_request_id = response.data.id
-        this.form.date = response.data.form.date
-        this.form.supplier_id = response.data.supplier_id
-        this.form.supplier_name = response.data.supplier_name
-        this.form.notes = response.data.form.notes
-        this.form.amount = response.data.amount
-        this.form.items = response.data.items
-        this.form.items.forEach(function (element) {
-          element.purchase_request_item_id = element.id
-        })
-        this.calculate()
-      }).catch(error => {
-        this.isLoading = false
-      })
-    }
   }
 }
 </script>

@@ -21,6 +21,11 @@
       link="/sales"
       icon="si si-basket-loaded"/>
     <p-box
+      :name="$t('finance')"
+      v-if="$permission.has('menu finance')"
+      link="/finance"
+      icon="si si-wallet"/>
+    <p-box
       :name="$t('accounting')"
       v-if="$permission.has('menu accounting')"
       link="/accounting"

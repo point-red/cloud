@@ -1,7 +1,7 @@
 <template>
   <div>
     <span @click="show" class="link"><i class="fa fa-list mr-5"></i>{{ mutableLabel || 'SELECT'}}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select supplier">
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select account">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
@@ -100,9 +100,10 @@ export default {
         }
         params = {
           sort_by: 'number',
-          limit: 50,
+          limit: 250,
           filter_like: {
-            name: this.searchText
+            name: this.searchText,
+            number: this.searchText
           },
           filter_where_has: [
             {
@@ -115,9 +116,10 @@ export default {
       } else {
         params = {
           sort_by: 'number',
-          limit: 50,
+          limit: 250,
           filter_like: {
-            name: this.searchText
+            name: this.searchText,
+            number: this.searchText
           }
         }
       }
@@ -157,7 +159,7 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', option.label)
+      this.$emit('choosen', option)
       this.close()
     },
     show () {
