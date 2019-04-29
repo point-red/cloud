@@ -106,6 +106,7 @@ export default {
       loading: false,
       loadingSaveButton: false,
       form: new Form({
+        increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD'),
         details: []
       }),
