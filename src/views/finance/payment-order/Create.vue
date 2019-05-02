@@ -37,13 +37,13 @@
                 id="payment-type"
                 name="payment-type"
                 @click.native="choosePaymentType('cash')"
-                :checked="form.payment_type_replacement == 'cash'"
+                :checked="form.payment_type == 'cash'"
                 :description="$t('cash')"/>
               <p-form-check-box
                 id="payment-type"
                 name="payment-type"
                 @click.native="choosePaymentType('bank')"
-                :checked="form.payment_type_replacement == 'bank'"
+                :checked="form.payment_type == 'bank'"
                 :description="$t('bank')"/>
             </div>
           </p-form-row>
@@ -185,8 +185,7 @@ export default {
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         due_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        payment_type: 'payment-order',
-        payment_type_replacement: null,
+        payment_type: null,
         paymentable_id: null,
         paymentable_type: null,
         paymentable_name: null,
@@ -209,9 +208,6 @@ export default {
     'form.date': function () {
       this.form.due_date = this.form.date
     }
-  },
-  computed: {
-    ...mapGetters('financePaymentOrder', ['payment'])
   },
   methods: {
     ...mapActions('financePaymentOrder', ['create']),
@@ -236,10 +232,10 @@ export default {
       row.chart_of_account_name = account.label
     },
     choosePaymentType (type) {
-      if (type == this.form.payment_type_replacement) {
-        this.form.payment_type_replacement = null
+      if (type == this.form.payment_type) {
+        this.form.payment_type = null
       } else {
-        this.form.payment_type_replacement = type
+        this.form.payment_type = type
       }
     },
     choosePaymentTo (choosen) {
