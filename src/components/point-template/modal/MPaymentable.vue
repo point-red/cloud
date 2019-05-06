@@ -155,10 +155,10 @@ export default {
           this.optionSuppliers.push({
             'id': key['id'],
             'label': key['name'],
-            'type': 'supplier'
+            'type': 'Supplier'
           })
 
-          if (this.value == key['id'] && this.type == 'supplier') {
+          if (this.value == key['id'] && this.type == 'Supplier') {
             this.mutableLabel = key['name']
           }
         })
@@ -183,10 +183,10 @@ export default {
           this.optionCustomers.push({
             'id': key['id'],
             'label': key['name'],
-            'type': 'customer'
+            'type': 'Customer'
           })
 
-          if (this.value == key['id'] && this.type == 'customer') {
+          if (this.value == key['id'] && this.type == 'Customer') {
             this.mutableLabel = key['name']
           }
         })
@@ -211,10 +211,10 @@ export default {
           this.optionEmployees.push({
             'id': key['id'],
             'label': key['name'],
-            'type': 'employee'
+            'type': 'Employee'
           })
 
-          if (this.value == key['id'] && this.type == 'employee') {
+          if (this.value == key['id'] && this.type == 'Employee') {
             this.mutableLabel = key['name']
           }
         })

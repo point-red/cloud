@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance/>
-      <router-link to="/purchase/order" class="breadcrumb-item">{{ $t('payment order') | titlecase }}</router-link>
+      <router-link to="/finance/payment-order" class="breadcrumb-item">{{ $t('payment order') | titlecase }}</router-link>
       <span class="breadcrumb-item active">{{ paymentOrder.form.number }}</span>
     </breadcrumb>
 
@@ -56,7 +56,7 @@
               <th>#</th>
               <th style="min-width: 120px">Account</th>
               <th>Notes</th>
-              <th>Amount</th>
+              <th class="text-right">Amount</th>
               <th style="min-width: 120px">Allocation</th>
               <th></th>
             </tr>
@@ -64,7 +64,7 @@
               <th>{{ index + 1 }}</th>
               <td>{{ row.account.number }} - {{ row.account.alias }}</td>
               <td>{{ row.notes }}</td>
-              <td>{{ row.amount | numberFormat }}</td>
+              <td class="text-right">{{ row.amount | numberFormat }}</td>
               <td>
                 <template v-if="row.allocation">
                   {{ row.allocation.name }}
@@ -75,7 +75,7 @@
               <th></th>
               <td></td>
               <td></td>
-              <td>{{ paymentOrder.amount | numberFormat }}</td>
+              <td class="text-right">{{ paymentOrder.amount | numberFormat }}</td>
               <td></td>
             </tr>
           </point-table>
@@ -120,7 +120,18 @@
 
           <div class="form-group row">
             <div class="col-md-12">
-              
+              <router-link
+                :to="{ path: '/finance/payment-order/' + paymentOrder.id + '/edit', params: { id: paymentOrder.id }}"
+                v-if="$permission.has('update payment order') && $formRules.allowedToUpdate(paymentOrder.form)"
+                class="btn btn-sm btn-primary mr-5">
+                Edit
+              </router-link>
+              <a
+                href="javascript:void(0)"
+                @click="onDelete"
+                class="btn btn-sm btn-danger mr-5">
+                Cancel
+              </a>
             </div>
           </div>
         </p-block-inner>        
@@ -155,14 +166,28 @@ export default {
     ...mapGetters('financePaymentOrder', ['paymentOrder'])
   },
   methods: {
-    ...mapActions('financePaymentOrder', ['find']),
+    ...mapActions('financePaymentOrder', ['find', 'delete']),
     calculate: debounce (function () {
       var totalAmount = 0
       this.paymentOrder.details.forEach(function (element) {
         totalAmount += parseFloat(element.amount)
       })
       this.paymentOrder.amount = totalAmount
-    }, 300)
+    }, 300),
+    onDelete () {
+      this.isDeleting = true
+      this.delete({
+        id: this.id
+      }).then(response => {
+          this.isDeleting = false
+          this.$notification.success('cancel success')
+          this.$router.push('/finance/payment-order')
+        }).catch(error => {
+          this.isDeleting = false
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        })
+    }
   },
   created () {
     this.isLoading = true
