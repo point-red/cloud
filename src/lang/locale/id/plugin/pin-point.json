@@ -1,5 +1,5 @@
 {
-  "sales visitation form" : "form kunjungan sales",
+  "sales visitation" : "kunjungan sales",
   "daily report" : "laporan harian",
   "similar product" : "produk yang serupa",
   "reason" : "alasan",
@@ -10,6 +10,8 @@
   "repeat order" : "repeat order",
   "payment method" : "metode pembayaran",
   "payment received" : "pembayaran sebagian yang diterima",
+  "district" : "kelurahan",
+  "sub district" : "kecamatan",
   "cash" : "tunai",
   "credit" : "tempo",
   "item sold" : "produk terjual",

@@ -1,5 +1,5 @@
 {
-  "sales visitation form" : "sales visitation form",
+  "sales visitation" : "sales visitation",
   "daily report" : "daily report",
   "similar product" : "similar product",
   "reason" : "reason",
@@ -10,6 +10,8 @@
   "repeat order" : "repeat order",
   "payment method" : "payment method",
   "payment received" : "payment received",
+  "district" : "district",
+  "sub district" : "sub district",
   "cash" : "cash",
   "credit" : "credit",
   "item sold" : "item sold",

@@ -6,7 +6,7 @@
     </breadcrumb>
     <div class="row gutters-tiny">
       <p-box
-        :name="$t('sales visitation form') | titlecase"
+        :name="$t('sales visitation') | titlecase"
         v-if="$permission.has('create pin point sales visitation form') || $permission.has('read pin point sales visitation form')"
         link="/plugin/pin-point/sales-visitation-form"
         icon="fa fa-opencart"/>

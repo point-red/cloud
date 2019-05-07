@@ -5,7 +5,7 @@
       <breadcrumb-pin-point/>
       <router-link
         to="/plugin/pin-point/sales-visitation-form"
-        class="breadcrumb-item">{{ $t('sales visitation form') | titlecase }}</router-link>
+        class="breadcrumb-item">{{ $t('sales visitation') | titlecase }}</router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
@@ -15,7 +15,7 @@
       <p-block
         :is-loading="loading"
         :header="true"
-        :title="$t('sales visitation form')"
+        :title="$t('sales visitation')"
         column="col-sm-12">
 
         <p-form-row :label="$t('date')">
@@ -60,6 +60,8 @@
           id="address"
           name="address"
           :label="$t('address')"
+          :placeholder="$t('address')"
+          help="*wajib diisi dan akan diverifikasi, jika alamat tidak ditemukan maka piutang dibebankan pada SA"
           :disabled="loadingSaveButton"
           v-model="form.address"
           :errors="form.errors.get('address')"
@@ -90,6 +92,7 @@
           id="phone"
           name="phone"
           :label="$t('phone')"
+          help="*wajib diisi dan akan diverifikasi, jika nomer tidak valid maka piutang dibebankan pada SA"
           :disabled="loadingSaveButton"
           v-model="form.phone"
           :errors="form.errors.get('phone')"

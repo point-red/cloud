@@ -1,20 +1,35 @@
 <template>
   <footer
-    id="page-footer"
-    class="opacity-0">
+    id="page-footer">
     <div class="content py-20 font-size-xs clearfix">
       <div class="float-right">
         Crafted with <i class="fa fa-heart text-pulse"/> by <a
           class="font-w600"
-          href="#"
-          target="_blank">point</a>
+          href="javascript:void(0)"
+          target="_blank">RED POINT</a>
       </div>
       <div class="float-left">
-        <a
-          class="font-w600"
-          href="#"
-          target="_blank">POINT.</a> &copy; <span class="js-year-copy"/>
+        VERSION {{ version }} | &copy; 2019
       </div>
     </div>
   </footer>
 </template>
+
+<script>
+export default {
+  data () {
+    return {
+      version: 'X.Y.Z'
+    }
+  },
+  created () {
+    console.log('check version ' + this.version)
+    fetch('/version.txt')
+      .then(response => response.text())
+      .then(text => {
+        this.version = text
+        console.log('update version ' + this.version)
+      })
+  }
+}
+</script>
