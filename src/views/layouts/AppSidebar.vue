@@ -3,9 +3,8 @@
     id="sidebar"
     ref="sidebarRef">
     <!-- Sidebar Scroll Container -->
-    <div
-      v-slimscroll="options"
-      id="sidebar-scroll">
+    <!-- v-slimscroll="options" -->
+    <div id="sidebar-scroll">
       <!-- Sidebar Content -->
       <div class="sidebar-content">
         <!-- Side Header -->
