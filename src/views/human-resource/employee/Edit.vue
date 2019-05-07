@@ -278,6 +278,16 @@
             </p-form-row>
 
             <p-form-row
+              id="employee-group-name"
+              name="employee-group-name"
+              :label="$t('')"
+              :disabled="loadingSaveButton"
+              v-model="form.employee_group_name"
+              :errors="form.errors.get('employe_group_name')"
+              @errors="form.errors.set('employe_group_name', null)">
+            </p-form-row>
+
+            <p-form-row
               id="job-title"
               name="job-title"
               :label="$t('job title')"
