@@ -3,7 +3,7 @@
     <breadcrumb>
       <breadcrumb-purchase/>
       <router-link to="/purchase/order" class="breadcrumb-item">{{ $t('purchase receive') | titlecase }}</router-link>
-      <template v-if="purchaseReceive.form.number">
+      <template v-if="purchaseReceive.form">
         <span class="breadcrumb-item active">{{ purchaseReceive.form.number | uppercase }}</span>
       </template>
       <template v-else>
@@ -25,12 +25,14 @@
             name="number"
             :label="$t('number')">
             <div slot="body" class="col-lg-9">
-              <template v-if="purchaseReceive.form.number">
-                {{ purchaseReceive.form.number }}
-              </template>
-              <template v-else>
-                <span class="badge badge-danger">{{ $t('archived') }}</span>
-                {{ purchaseReceive.form.edited_number }}
+              <template v-if="purchaseReceive.form">
+                <template v-if="purchaseReceive.form.number">
+                  {{ purchaseReceive.form.number }}
+                </template>
+                <template v-else>
+                  <span class="badge badge-danger">{{ $t('archived') }}</span>
+                  {{ purchaseReceive.form.edited_number }}
+                </template>
               </template>
             </div>
           </p-form-row>
@@ -106,12 +108,6 @@
                   {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
               </tr>
-              <tr slot="p-body">
-                <th></th>
-                <td></td>
-                <td></td>
-                <td class="text-right">{{ purchaseReceive.total_quantity | numberFormat }}</td>
-              </tr>
             </point-table>
           </p-block-inner>
 
@@ -139,8 +135,8 @@
           </point-table>
 
           <router-link
-            :to="{ path: '/purchase/order/' + purchaseReceive.id + '/edit', params: { id: purchaseReceive.id }}"
-            v-if="$permission.has('update purchase order') && $formRules.allowedToUpdate(purchaseReceive.form)"
+            :to="{ path: '/purchase/receive/' + purchaseReceive.id + '/edit', params: { id: purchaseReceive.id }}"
+            v-if="$permission.has('update purchase receive') && $formRules.allowedToUpdate(purchaseReceive.form)"
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>

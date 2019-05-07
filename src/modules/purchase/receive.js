@@ -69,6 +69,17 @@ const actions = {
         })
     })
   },
+  edit ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/' + payload.id + '/edit', payload)
+        .then(response => {
+          commit('FETCH_OBJECT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url, payload)

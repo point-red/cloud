@@ -99,7 +99,7 @@
                 <td>{{ row.item.name }}</td>
                 <td>{{ row.notes }}</td>
                 <td class="text-right">
-                  {{ row.quantity }} {{ row.unit }}
+                  {{ row.quantity_pending }} {{ row.unit }}
                 </td>
                 <td>
                   <p-quantity
@@ -108,25 +108,6 @@
                     v-model="row.quantity"
                     @keyup.native="calculate"
                     :unit="row.unit"/>
-                </td>
-              </tr>
-              <tr slot="p-body">
-                <th></th>
-                <td></td>
-                <td></td>
-                <td>
-                  <p-form-number
-                    :id="'total_quantity'"
-                    :name="'total_quantity'"
-                    :readonly="true"
-                    v-model="form.total_quantity"/>
-                </td>
-                <td>
-                  <p-form-number
-                    :id="'total_quantity'"
-                    :name="'total_quantity'"
-                    :readonly="true"
-                    v-model="form.total_quantity"/>
                 </td>
               </tr>
             </point-table>
@@ -197,7 +178,8 @@ export default {
     this.find({
       id: this.id,
       params: {
-        includes: 'supplier;items.item.units;items.allocation;services.service;services.allocation;form.approvals.requestedBy;form.approvals.requestedTo'
+        includes: 'supplier;items.item.units;items.allocation;services.service;services.allocation;form.approvals.requestedBy;form.approvals.requestedTo',
+        remaining_info: true
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
@@ -216,6 +198,7 @@ export default {
           item_id: item.item_id,
           item_name: item.item_name,
           item: item.item,
+          quantity_pending: item.quantity_pending,
           quantity: item.quantity,
           price: item.price,
           discount_value: item.discount_value,

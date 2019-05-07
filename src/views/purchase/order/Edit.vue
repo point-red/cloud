@@ -255,6 +255,7 @@ export default {
       loading: true,
       loadingSaveButton: false,
       form: new Form({
+        increment_group: this.$moment().format('YYYYMM'),
         id: this.$route.params.id,
         date: null,
         supplier_id: null,
@@ -307,6 +308,7 @@ export default {
       response.data.items.forEach((item, keyItem) => {
         this.form.items.push({
           item_id: item.item_id,
+          item_name: item.item_name,
           quantity: item.quantity,
           price: item.price,
           unit: item.unit,
