@@ -2,12 +2,12 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link to="/purchase/order" class="breadcrumb-item">{{ $t('purchase receive') | titlecase }}</router-link>
+      <router-link to="/purchase/receive" class="breadcrumb-item">{{ $t('purchase receive') | titlecase }}</router-link>
       <template v-if="purchaseReceive.form">
         <span class="breadcrumb-item active">{{ purchaseReceive.form.number | uppercase }}</span>
       </template>
       <template v-else>
-        <router-link v-if="purchaseReceive.origin" :to="{ name: 'purchase.order.show', params: { id: purchaseReceive.origin.id }}" class="breadcrumb-item">
+        <router-link v-if="purchaseReceive.origin" :to="{ name: 'purchase.receive.show', params: { id: purchaseReceive.origin.id }}" class="breadcrumb-item">
           {{ purchaseReceive.form.edited_number | uppercase }}
         </router-link>
       </template>
@@ -124,7 +124,7 @@
             <tr slot="p-body" v-for="(archived, index) in purchaseReceive.archives" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
-                <router-link :to="{ name: 'purchase.order.show', params: { id: archived.id }}">
+                <router-link :to="{ name: 'purchase.receive.show', params: { id: archived.id }}">
                   {{ archived.form.updated_at | dateFormat('DD MMMM YYYY HH:mm') }}
                 </router-link>
               </td>
@@ -198,18 +198,10 @@ export default {
         }
       }).then(response => {
         this.isLoading = false
-        this.calculate()
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
       })
-    },
-    calculate () {
-      var totalQuantity = 0
-      this.purchaseReceive.items.forEach(function (element) {
-        totalQuantity += parseFloat(element.quantity)
-      })
-      this.purchaseReceive.total_quantity = totalQuantity
     },
     onDelete () {
       this.isDeleting = true

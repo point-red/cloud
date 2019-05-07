@@ -9,7 +9,11 @@ const state = {
     form: {},
     supplier: {},
     warehouse: {},
-    items: []
+    items: [
+      {
+        item: {}
+      }
+    ]
   },
   purchaseReceives: [],
   pagination: {}

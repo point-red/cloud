@@ -175,7 +175,7 @@ export default {
   created () {
     this.isLoading = true        
 
-    this.findPurchaseReceive({
+    this.edit({
       id: this.id,
       params: {
         includes: 'supplier;items.item.units;items.allocation;services.service;services.allocation;form.approvals.requestedBy;form.approvals.requestedTo',
@@ -187,7 +187,7 @@ export default {
       }
       this.isLoading = false
       this.form.date = response.data.form.date
-      this.form.purchase_order_id = response.data.id
+      this.form.purchase_order_id = response.data.purchase_order_id
       this.form.warehouse_id = response.data.warehouse_id
       this.form.supplier_id = response.data.supplier_id
       this.form.supplier_name = response.data.supplier_name
@@ -204,10 +204,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('purchaseReceive', {
-      findPurchaseReceive: 'edit',
-      updatePurchaseReceive: 'update'
-    }),
+    ...mapActions('purchaseReceive', ['edit', 'update']),
     chooseWarehouse (value) {
       this.form.warehouse_name = value
     },

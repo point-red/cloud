@@ -106,7 +106,6 @@
                     :id="'quantity' + index"
                     :name="'quantity' + index"
                     v-model="row.quantity"
-                    @keyup.native="calculate"
                     :unit="row.unit"/>
                 </td>
               </tr>
@@ -199,7 +198,7 @@ export default {
           item_name: item.item_name,
           item: item.item,
           quantity_pending: item.quantity_pending,
-          quantity: item.quantity,
+          quantity: item.quantity_pending,
           price: item.price,
           discount_value: item.discount_value,
           discount_percent: item.discount_percent,
@@ -209,7 +208,6 @@ export default {
           notes: item.notes
         })
       })
-      this.calculate()
     }).catch(error => {
       this.isLoading = false
       this.$notification.error(error.message)
@@ -234,13 +232,6 @@ export default {
         })
       })
     },
-    calculate: debounce (function () {
-      var totalQuantity = 0
-      this.form.items.forEach(function (element) {
-        totalQuantity += parseFloat(element.quantity)
-      })
-      this.form.total_quantity = totalQuantity
-    }, 300),
     onSubmit () {
       this.create(this.form)
         .then(response => {
