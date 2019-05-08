@@ -48,7 +48,7 @@
                 <td>{{ paymentOrderDetail.notes }}</td>
                 <td class="text-right">{{ paymentOrderDetail.amount | numberFormat }}</td>
                 <td>
-                  <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'finance.payment.out', query: { id: paymentOrder.id }}">
+                  <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'finance.cash.out', query: { id: paymentOrder.id }}">
                     <i class="fa fa-share-square-o"></i> Payment
                   </router-link>
                 </td>
