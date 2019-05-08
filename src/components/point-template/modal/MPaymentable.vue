@@ -9,63 +9,42 @@
           <h3 class="text-center">Loading ...</h3>
         </div>
         <template v-else>
-          <div class="list-group push">
-            <h4>Supplier</h4>
+          <div class="list-group push" v-if="optionSuppliers">
             <template v-for="(optionSupplier, index) in optionSuppliers">
               <a
-                :key="index"
+                :key="'supplier-' + index"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 :class="{'active': optionSupplier.id == mutableId && type == 'supplier' }"
                 @click="choose(optionSupplier)"
                 href="javascript:void(0)">
-                {{ optionSupplier.label }}
+                [Supplier] {{ optionSupplier.label }}
               </a>
             </template>
-            <div class="alert alert-info text-center" v-if="searchText && optionSuppliers.length == 0 && !isLoadingSupplier">
-              {{ $t('searching not found', [searchText]) | capitalize }}
-            </div>
-            <div class="alert alert-info text-center" v-if="!searchText && optionSuppliers.length == 0 && !isLoadingSupplier">
-              {{ $t('you doesn\'t have any') | capitalize }} {{ $t('supplier') | capitalize }}
-            </div>
-          </div>
-
-          <div class="list-group push">
-            <h4>Customer</h4>
             <template v-for="(optionCustomer, index) in optionCustomers">
               <a
-                :key="index"
+                :key="'customer-' + index"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 :class="{'active': optionCustomer.id == mutableId && type == 'customer' }"
                 @click="choose(optionCustomer)"
                 href="javascript:void(0)">
-                {{ optionCustomer.label }}
+                [Customer] {{ optionCustomer.label }}
               </a>
             </template>
-            <div class="alert alert-info text-center" v-if="searchText && optionCustomers.length == 0 && !isLoadingCustomer">
-              {{ $t('searching not found', [searchText]) | capitalize }}
-            </div>
-            <div class="alert alert-info text-center" v-if="!searchText && optionCustomers.length == 0 && !isLoadingCustomer">
-              {{ $t('you doesn\'t have any') | capitalize }} {{ $t('customer') | capitalize }}
-            </div>
-          </div>
-
-          <div class="list-group push">
-            <h4>Employee</h4>
             <template v-for="(optionEmployee, index) in optionEmployees">
               <a
-                :key="index"
+                :key="'employee-' + index"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 :class="{'active': optionEmployee.id == mutableId && type == 'employee' }"
                 @click="choose(optionEmployee)"
                 href="javascript:void(0)">
-                {{ optionEmployee.label }}
+                [Employee] {{ optionEmployee.label }}
               </a>
             </template>
-            <div class="alert alert-info text-center" v-if="searchText && optionEmployees.length == 0 && !isLoadingEmployee">
+          </div>
+
+          <div class="list-group push" v-if="searchText && !isLoadingEmployee && !isLoadingCustomer && !isLoadingSupplier && optionEmployees.length == 0 && optionCustomers.length == 0 && optionSuppliers.length == 0">
+            <div class="alert alert-info text-center">
               {{ $t('searching not found', [searchText]) | capitalize }}
-            </div>
-            <div class="alert alert-info text-center" v-if="!searchText && optionEmployees.length == 0 && !isLoadingEmployee">
-              {{ $t('you doesn\'t have any') | capitalize }} {{ $t('employee') | capitalize }}
             </div>
           </div>
         </template>

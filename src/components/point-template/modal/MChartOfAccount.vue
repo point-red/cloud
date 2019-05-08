@@ -71,7 +71,7 @@ export default {
       type: String
     },
     type: {
-      type: Array
+      type: String
     }
   },
   watch: {
@@ -89,42 +89,16 @@ export default {
     ...mapActions('accountingChartOfAccount', ['get', 'create']),
     search () {
       this.isLoading = true
-      var type = ''
-      var params = {};
-      if (this.type) {
-        for (var i = 0; i < this.type.length; i++) {
-          type = type.concat(this.type[i])
-          if (i + 1 != this.type.length) {
-            type = type.concat(';')
-          }
-        }
-        params = {
+      this.get({
+        params: {
           sort_by: 'number',
           limit: 250,
           filter_like: {
-            name: this.searchText,
+              name: this.searchText,
             number: this.searchText
           },
-          filter_where_has: [
-            {
-              type: {
-                name: type
-              }
-            }
-          ]
+          filter_type: this.type
         }
-      } else {
-        params = {
-          sort_by: 'number',
-          limit: 250,
-          filter_like: {
-            name: this.searchText,
-            number: this.searchText
-          }
-        }
-      }
-      this.get({
-        params: params
       }).then(response => {
         this.options = []
         this.mutableLabel = ''
