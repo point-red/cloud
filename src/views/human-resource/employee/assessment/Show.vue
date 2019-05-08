@@ -87,7 +87,7 @@
               <td class="text-center">{{ indicator.weight }}%</td>
               <td class="text-center">{{ indicator.target | numberFormat }}</td>
               <td class="text-center">{{ indicator.score | numberFormat }}</td>
-              <td class="text-center">{{ indicator.weight * indicator.score / indicator.target | numberFormat }}</td>
+              <td class="text-center">{{ indicator.score_percentage | numberFormat }}</td>
               <td class="text-center">{{ indicator.score_description }}</td>
               <td class="text-center"></td>
             </tr>
@@ -129,8 +129,7 @@ export default {
   },
   computed: {
     ...mapGetters('Employee', ['employee']),
-    ...mapGetters('EmployeeAssessment', ['assessment']),
-    ...mapGetters('KpiAutomated', ['automated_ids'])
+    ...mapGetters('EmployeeAssessment', ['assessment'])
   },
   created () {
     this.loading = true
@@ -139,89 +138,18 @@ export default {
       kpiId: this.kpiId
     }).then(
       (response) => {
-        this.getAutomatedScore()
+        this.loading = false
       },
       (error) => {
         console.log(JSON.stringify(error))
+        this.loading = false
       }
     )
   },
   methods: {
     ...mapActions('EmployeeAssessment', {
       findEmployeeAssessment: 'find'
-    }),
-    ...mapActions('KpiAutomated', {
-      getAutomatedData: 'get'
-    }),
-    getAutomatedScore () {
-      var automatedIDs = []
-
-      this.assessment.groups.forEach(function (group, key) {
-        group.indicators.forEach(function (indicator, key) {
-          if (indicator.automated_id) {
-            automatedIDs.push(indicator.automated_id)
-          }
-        })
-      })
-
-      automatedIDs = [...new Set(automatedIDs)]
-
-      if (automatedIDs.length > 0) {
-        this.getAutomatedData({ date: this.assessment.date, automated_ids: automatedIDs, employeeId: this.id })
-          .then((response) => {
-            this.loading = false
-
-            var templateTarget = 0
-            var templateScore = 0
-            var templateScorePercentage = 0
-
-            this.assessment.groups.forEach((group, groupIndex) => {
-              var groupTarget = 0
-              var groupScore = 0
-              var groupScorePercentage = 0
-
-              group.indicators.forEach((indicator, indicatorIndex) => {
-                var target = this.assessment.groups[groupIndex].indicators[indicatorIndex]['target'] || 0
-                var score = this.assessment.groups[groupIndex].indicators[indicatorIndex]['score'] || 0
-                var scorePercentage = score / target * indicator.weight || 0
-
-                if (response[indicator.automated_id]) {
-                  target = response[indicator.automated_id]['target'] || 0
-                  score = response[indicator.automated_id]['score'] || 0
-                  scorePercentage = score / target * indicator.weight || 0
-
-                  this.$set(this.assessment.groups[groupIndex].indicators[indicatorIndex], 'automated_id', indicator.automated_id)
-                }
-
-                this.$set(this.assessment.groups[groupIndex].indicators[indicatorIndex], 'target', target)
-                this.$set(this.assessment.groups[groupIndex].indicators[indicatorIndex], 'score', score)
-                this.$set(this.assessment.groups[groupIndex].indicators[indicatorIndex], 'score_percentage', scorePercentage)
-
-                groupTarget += target
-                groupScore += score
-                groupScorePercentage += scorePercentage
-
-                templateTarget += target
-                templateScore += score
-                templateScorePercentage += scorePercentage
-              })
-
-              this.$set(this.assessment.groups[groupIndex], 'target', groupTarget)
-              this.$set(this.assessment.groups[groupIndex], 'score', groupScore)
-              this.$set(this.assessment.groups[groupIndex], 'score_percentage', groupScorePercentage)
-            })
-
-            this.$set(this.assessment, 'target', templateTarget)
-            this.$set(this.assessment, 'score', templateScore)
-            this.$set(this.assessment, 'score_percentage', templateScorePercentage)
-          }, (error) => {
-            this.loading = false
-            console.log(JSON.stringify(error))
-          })
-      } else {
-        this.loading = false
-      }
-    }
+    })
   }
 }
 </script>

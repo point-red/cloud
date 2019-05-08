@@ -49,14 +49,14 @@
             id="assessment-date"
             :label="$t('assessment period')">
             <div slot="body" class="col-lg-9">
-              <p-date-picker
+              <p-date-range-picker
                 name="assessment-date"
                 :help="$t('assessment date help')"
                 v-model="form.date"/>
             </div>
           </p-form-row>
           <p-form-row
-            id="assessment-date"
+            id="assessment-category"
             :label="$t('assessment category')">
             <div slot="body" class="col-lg-9 col-form-label" v-if="form.template.name">
               <a href="javascript:void(0)" @click="$refs.assignKpiTemplate.show(id)">{{ form.template.name }}</a>
@@ -207,7 +207,10 @@ export default {
     return {
       id: this.$route.params.id,
       form: new Form({
-        date: new Date().toISOString().slice(0, 10),
+        date: {
+          start: this.$moment(),
+          end: this.$moment()
+        },
         template: {
           groups: []
         }
@@ -360,8 +363,8 @@ export default {
 
       automatedIDs = [...new Set(automatedIDs)]
 
-      if (automatedIDs.length > 0) {
-        this.getAutomatedData({ date: this.form.date, automated_ids: automatedIDs, employeeId: this.id })
+      if (automatedIDs.length > 0 && this.form.date.start && this.form.date.end) {
+        this.getAutomatedData({ startDate: this.form.date.start, endDate: this.form.date.end, automated_ids: automatedIDs, employeeId: this.id })
           .then((response) => {
             this.loading = false
 
@@ -382,7 +385,12 @@ export default {
                 if (response[indicator.automated_id]) {
                   target = response[indicator.automated_id]['target'] || 0
                   score = response[indicator.automated_id]['score'] || 0
+
                   scorePercentage = score / target * indicator.weight || 0
+
+                  if (scorePercentage > indicator.weight) {
+                    scorePercentage = parseFloat(indicator.weight) || 0
+                  }
 
                   this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'automated_id', indicator.automated_id)
                 } else if (indicator.selected) {

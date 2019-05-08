@@ -32,19 +32,6 @@
       </li>
     </tab-menu>
 
-    <div class="row" v-show="!hideChart">
-      <p-block
-        :title="$t('salary graph')"
-        :header="true"
-        column="col-lg-12">
-        <line-chart
-          ref="linechart"
-          :chart-title="$t('salary') | uppercase"
-          :chart-label="chartLabel"
-          :chart-data="chartData"/>
-      </p-block>
-    </div>
-
     <div class="row">
       <p-block :title="title" :header="true">
         <p-block-inner :is-loading="loading">
@@ -59,8 +46,7 @@
               slot="p-body">
               <td>
                 <router-link :to="{ name: 'EmployeeSalaryShow', params: { id: employee.id, salaryId: salary.id }}">
-                  {{ salary.date | dateFormat('MMMM YYYY') }}
-                  <template v-if="$permission.has('read employee salary')"> - {{ employee.name | titlecase }}</template>
+                  {{ dataSet.startDates[salaryIndex] | dateFormat('DD MMMM YYYY') }} - {{ dataSet.endDates[salaryIndex] | dateFormat('DD MMMM YYYY') }}
                 </router-link>
               </td>
               <td class="text-center">Rp {{ dataSet.scores[salaryIndex] | numberFormat }}</td>
@@ -112,12 +98,10 @@
 import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
-import LineChart from '@/components/point-chart/LineChart'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    LineChart,
     TabMenu,
     Breadcrumb,
     BreadcrumbHumanResource
@@ -127,9 +111,6 @@ export default {
       id: this.$route.params.id,
       title: 'Salary',
       loading: true,
-      chartLabel: [],
-      chartData: [],
-      hideChart: false,
       loadingSaveButton: false,
       selectedSalaryId: '',
       isExporting: []
@@ -148,22 +129,6 @@ export default {
   computed: {
     ...mapGetters('Employee', ['employee']),
     ...mapGetters('EmployeeSalary', ['salaries', 'dataSet'])
-  },
-  watch: {
-    dataSet: function (val) {
-      console.log('data set updated')
-      if (val.scores.length >= 2) {
-        this.hideChart = false
-        this.chartLabel.splice(0, this.chartLabel.length)
-        this.chartData.splice(0, this.chartData.length)
-        Array.prototype.push.apply(this.chartLabel, val.dates)
-        Array.prototype.push.apply(this.chartData, val.scores)
-        console.log(JSON.stringify(this.chartData))
-        this.$refs.linechart.updateData()
-      } else {
-        this.hideChart = true
-      }
-    }
   },
   methods: {
     ...mapActions('EmployeeSalary', {

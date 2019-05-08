@@ -58,7 +58,7 @@
                 id="salary-date"
                 :label="$t('period')">
                 <div slot="body" class="col-lg-9 col-form-label">
-                  {{ form.salary.date | dateFormat('MMM YYYY') }}
+                  {{ form.salary.start_date | dateFormat('DD MMMM YYYY') }} - {{ form.salary.end_date | dateFormat('DD MMMM YYYY') }}
                 </div>
               </p-form-row>
               <p-form-row
@@ -161,11 +161,11 @@
             <tr slot="p-body" v-for="(indicator, indicatorIndex) in form.salary.assessments" :key="'indicator' + indicator.id">
               <td>{{ indicatorIndex + 1 }}</td>
               <td>{{ indicator.name }}</td>
-              <td>{{ additionalData.score_percentages_assessments[indicator.name].week1 | numberFormat }}%</td>
-              <td>{{ additionalData.score_percentages_assessments[indicator.name].week2 | numberFormat }}%</td>
-              <td>{{ additionalData.score_percentages_assessments[indicator.name].week3 | numberFormat }}%</td>
-              <td>{{ additionalData.score_percentages_assessments[indicator.name].week4 | numberFormat }}%</td>
-              <td>{{ additionalData.score_percentages_assessments[indicator.name].week5 | numberFormat }}%</td>
+              <td>{{ additionalData.score_percentages_assessments[indicatorIndex].week1 | numberFormat }}%</td>
+              <td>{{ additionalData.score_percentages_assessments[indicatorIndex].week2 | numberFormat }}%</td>
+              <td>{{ additionalData.score_percentages_assessments[indicatorIndex].week3 | numberFormat }}%</td>
+              <td>{{ additionalData.score_percentages_assessments[indicatorIndex].week4 | numberFormat }}%</td>
+              <td>{{ additionalData.score_percentages_assessments[indicatorIndex].week5 | numberFormat }}%</td>
               <td>
                 <p-form-input
                   id="indicator-weight"
@@ -725,7 +725,7 @@ export default {
       id: this.$route.params.id,
       salaryId: this.$route.params.salaryId,
       form: new Form({
-        active_days_in_mont: 0,
+        active_days_in_month: 0,
         salary: {}
       }),
       additionalData: {
@@ -858,13 +858,15 @@ export default {
       this.additionalData.total_assessments.weight = 0
 
       this.form.salary.assessments.forEach((indicator, key) => {
-        this.additionalData.total_assessments.weight += Number(indicator.weight)
-        for (const key in this.additionalData.score_percentages_assessments[indicator.name]) {
-          this.additionalData.total_assessments[key] += Number(indicator.weight) * this.additionalData.score_percentages_assessments[indicator.name][key] / 100
+        this.additionalData.total_assessments.weight += Number(indicator.weight || 0)
+        for (const keyWeek in this.additionalData.score_percentages_assessments[key]) {
+          this.additionalData.total_assessments[key] += (Number(indicator.weight || 0) * ((this.additionalData.score_percentages_assessments[key][keyWeek] || 0) / 100))
         }
       })
 
-      this.calculate()
+      if (!this.loading) {
+        this.calculate()
+      }
     },
     salaryAchievementWeight () {
       this.additionalData.total_achievements.week1 = 0
@@ -875,104 +877,106 @@ export default {
       this.additionalData.total_achievements.weight = 0
 
       this.form.salary.achievements.forEach((achievement, key) => {
-        this.additionalData.total_achievements.weight += Number(achievement.weight)
-        this.additionalData.total_achievements.week1 += Number(achievement.week1) * Number(achievement.weight) / 100
-        this.additionalData.total_achievements.week2 += Number(achievement.week2) * Number(achievement.weight) / 100
-        this.additionalData.total_achievements.week3 += Number(achievement.week3) * Number(achievement.weight) / 100
-        this.additionalData.total_achievements.week4 += Number(achievement.week4) * Number(achievement.weight) / 100
-        this.additionalData.total_achievements.week5 += Number(achievement.week5) * Number(achievement.weight) / 100
+        this.additionalData.total_achievements.weight += Number(achievement.weight || 0)
+        this.additionalData.total_achievements.week1 += Number(achievement.week1 || 0) * Number(achievement.weight || 0) / 100
+        this.additionalData.total_achievements.week2 += Number(achievement.week2 || 0) * Number(achievement.weight || 0) / 100
+        this.additionalData.total_achievements.week3 += Number(achievement.week3 || 0) * Number(achievement.weight || 0) / 100
+        this.additionalData.total_achievements.week4 += Number(achievement.week4 || 0) * Number(achievement.weight || 0) / 100
+        this.additionalData.total_achievements.week5 += Number(achievement.week5 || 0) * Number(achievement.weight || 0) / 100
       })
 
-      this.calculate()
+      if (!this.loading) {
+        this.calculate()
+      }
     },
     calculate () {
-      this.form.active_days_in_month = this.form.salary.active_days_in_month
+      this.salary_final_score.week1 = ((this.additionalData.total_assessments.week1 || 0) + (this.additionalData.total_achievements.week1 || 0)) / 2
+      this.salary_final_score.week2 = ((this.additionalData.total_assessments.week2 || 0) + (this.additionalData.total_achievements.week2 || 0)) / 2
+      this.salary_final_score.week3 = ((this.additionalData.total_assessments.week3 || 0) + (this.additionalData.total_achievements.week3 || 0)) / 2
+      this.salary_final_score.week4 = ((this.additionalData.total_assessments.week4 || 0) + (this.additionalData.total_achievements.week4 || 0)) / 2
+      this.salary_final_score.week5 = ((this.additionalData.total_assessments.week5 || 0) + (this.additionalData.total_achievements.week5 || 0)) / 2
 
-      this.salary_final_score.week1 = (this.additionalData.total_assessments.week1 + this.additionalData.total_achievements.week1) / 2
-      this.salary_final_score.week2 = (this.additionalData.total_assessments.week2 + this.additionalData.total_achievements.week2) / 2
-      this.salary_final_score.week3 = (this.additionalData.total_assessments.week3 + this.additionalData.total_achievements.week3) / 2
-      this.salary_final_score.week4 = (this.additionalData.total_assessments.week4 + this.additionalData.total_achievements.week4) / 2
-      this.salary_final_score.week5 = (this.additionalData.total_assessments.week5 + this.additionalData.total_achievements.week5) / 2
+      this.form.salary.active_days_in_month = this.form.salary.active_days_in_month || 0
 
-      if (this.form.salary.active_days_in_month != null && Number(this.form.salary.active_days_in_month != 0)) {
-        let baseSalaryPerWeek = this.form.salary.base_salary / Number(this.form.salary.active_days_in_month)
+      if (Number(this.form.salary.active_days_in_month) != 0) {
+        let baseSalaryPerWeek = (this.form.salary.base_salary || 0) / Number(this.form.salary.active_days_in_month || 0)
 
-        this.base_salary_week_1 = baseSalaryPerWeek * Number(this.form.salary.active_days_week1)
-        this.base_salary_week_2 = baseSalaryPerWeek * Number(this.form.salary.active_days_week2)
-        this.base_salary_week_3 = baseSalaryPerWeek * Number(this.form.salary.active_days_week3)
-        this.base_salary_week_4 = baseSalaryPerWeek * Number(this.form.salary.active_days_week4)
-        this.base_salary_week_5 = baseSalaryPerWeek * Number(this.form.salary.active_days_week5)
-      } else {
-        this.form.salary.active_days_in_month = 0
+        if (this.additionalData.score_percentages_assessments.length != 0) {
+          this.base_salary_week_1 = baseSalaryPerWeek * Number(this.form.salary.active_days_week1 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week1 || 0)) / 100)
+          this.base_salary_week_2 = baseSalaryPerWeek * Number(this.form.salary.active_days_week2 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week2 || 0)) / 100)
+          this.base_salary_week_3 = baseSalaryPerWeek * Number(this.form.salary.active_days_week3 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week3 || 0)) / 100)
+          this.base_salary_week_4 = baseSalaryPerWeek * Number(this.form.salary.active_days_week4 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week4 || 0)) / 100)
+          this.base_salary_week_5 = baseSalaryPerWeek * Number(this.form.salary.active_days_week5 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week5 || 0)) / 100)
+
+          this.real_transport_allowance_week_1 = this.form.salary.daily_transport_allowance * Number(this.form.salary.active_days_week1 || 0) * (Number(this.additionalData.score_percentages_assessments[0].week1 || 0) / 100)
+          this.real_transport_allowance_week_2 = this.form.salary.daily_transport_allowance * Number(this.form.salary.active_days_week2 || 0) * (Number(this.additionalData.score_percentages_assessments[0].week2 || 0) / 100)
+          this.real_transport_allowance_week_3 = this.form.salary.daily_transport_allowance * Number(this.form.salary.active_days_week3 || 0) * (Number(this.additionalData.score_percentages_assessments[0].week3 || 0) / 100)
+          this.real_transport_allowance_week_4 = this.form.salary.daily_transport_allowance * Number(this.form.salary.active_days_week4 || 0) * (Number(this.additionalData.score_percentages_assessments[0].week4 || 0) / 100)
+          this.real_transport_allowance_week_5 = this.form.salary.daily_transport_allowance * Number(this.form.salary.active_days_week5 || 0) * (Number(this.additionalData.score_percentages_assessments[0].week5 || 0) / 100)
+
+          this.multiplier_kpi_week_1 = (Number(this.form.salary.multiplier_kpi || 0) * Number(this.form.salary.active_days_week1 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week1 || 0)) / 100) / Number(this.form.salary.active_days_in_month || 0)) || 0
+          this.multiplier_kpi_week_2 = (Number(this.form.salary.multiplier_kpi || 0) * Number(this.form.salary.active_days_week2 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week2 || 0)) / 100) / Number(this.form.salary.active_days_in_month || 0)) || 0
+          this.multiplier_kpi_week_3 = (Number(this.form.salary.multiplier_kpi || 0) * Number(this.form.salary.active_days_week3 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week3 || 0)) / 100) / Number(this.form.salary.active_days_in_month || 0)) || 0
+          this.multiplier_kpi_week_4 = (Number(this.form.salary.multiplier_kpi || 0) * Number(this.form.salary.active_days_week4 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week4 || 0)) / 100) / Number(this.form.salary.active_days_in_month || 0)) || 0
+          this.multiplier_kpi_week_5 = (Number(this.form.salary.multiplier_kpi || 0) * Number(this.form.salary.active_days_week5 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week5 || 0)) / 100) / Number(this.form.salary.active_days_in_month || 0)) || 0
+        }
       }
 
-      this.real_transport_allowance_week_1 = this.form.salary.daily_transport_allowance * Number(this.form.salary.active_days_week1)
-      this.real_transport_allowance_week_2 = this.form.salary.daily_transport_allowance * Number(this.form.salary.active_days_week2)
-      this.real_transport_allowance_week_3 = this.form.salary.daily_transport_allowance * Number(this.form.salary.active_days_week3)
-      this.real_transport_allowance_week_4 = this.form.salary.daily_transport_allowance * Number(this.form.salary.active_days_week4)
-      this.real_transport_allowance_week_5 = this.form.salary.daily_transport_allowance * Number(this.form.salary.active_days_week5)
+      this.minimum_component_amount_week_1 = Number(this.additionalData.total_assessments.week1 || 0) * (Number(this.base_salary_week_1 || 0) / 100)
+      this.minimum_component_amount_week_2 = Number(this.additionalData.total_assessments.week2 || 0) * (Number(this.base_salary_week_2 || 0) / 100)
+      this.minimum_component_amount_week_3 = Number(this.additionalData.total_assessments.week3 || 0) * (Number(this.base_salary_week_3 || 0) / 100)
+      this.minimum_component_amount_week_4 = Number(this.additionalData.total_assessments.week4 || 0) * (Number(this.base_salary_week_4 || 0) / 100)
+      this.minimum_component_amount_week_5 = Number(this.additionalData.total_assessments.week5 || 0) * (Number(this.base_salary_week_5 || 0) / 100)
 
-      this.minimum_component_amount_week_1 = Number(Number(this.additionalData.total_assessments.week1) * Number(this.base_salary_week_1)) / 100
-      this.minimum_component_amount_week_2 = Number(Number(this.additionalData.total_assessments.week2) * Number(this.base_salary_week_2)) / 100
-      this.minimum_component_amount_week_3 = Number(Number(this.additionalData.total_assessments.week3) * Number(this.base_salary_week_3)) / 100
-      this.minimum_component_amount_week_4 = Number(Number(this.additionalData.total_assessments.week4) * Number(this.base_salary_week_4)) / 100
-      this.minimum_component_amount_week_5 = Number(Number(this.additionalData.total_assessments.week5) * Number(this.base_salary_week_5)) / 100
+      this.additional_component_point_week_1 = Number(this.additionalData.total_achievements.week1 || 0) * (Number(this.multiplier_kpi_week_1 || 0) / 100)
+      this.additional_component_point_week_2 = Number(this.additionalData.total_achievements.week2 || 0) * (Number(this.multiplier_kpi_week_2 || 0) / 100)
+      this.additional_component_point_week_3 = Number(this.additionalData.total_achievements.week3 || 0) * (Number(this.multiplier_kpi_week_3 || 0) / 100)
+      this.additional_component_point_week_4 = Number(this.additionalData.total_achievements.week4 || 0) * (Number(this.multiplier_kpi_week_4 || 0) / 100)
+      this.additional_component_point_week_5 = Number(this.additionalData.total_achievements.week5 || 0) * (Number(this.multiplier_kpi_week_5 || 0) / 100)
 
-      this.multiplier_kpi_week_1 = Number(this.form.salary.multiplier_kpi * Number(this.form.salary.active_days_week1)) / Number(this.form.salary.active_days_in_month)
-      this.multiplier_kpi_week_2 = Number(this.form.salary.multiplier_kpi * Number(this.form.salary.active_days_week2)) / Number(this.form.salary.active_days_in_month)
-      this.multiplier_kpi_week_3 = Number(this.form.salary.multiplier_kpi * Number(this.form.salary.active_days_week3)) / Number(this.form.salary.active_days_in_month)
-      this.multiplier_kpi_week_4 = Number(this.form.salary.multiplier_kpi * Number(this.form.salary.active_days_week4)) / Number(this.form.salary.active_days_in_month)
-      this.multiplier_kpi_week_5 = Number(this.form.salary.multiplier_kpi * Number(this.form.salary.active_days_week5)) / Number(this.form.salary.active_days_in_month)
+      this.additional_component_amount_week_1 = Number(this.additional_component_point_week_1 || 0) * 1000
+      this.additional_component_amount_week_2 = Number(this.additional_component_point_week_2 || 0) * 1000
+      this.additional_component_amount_week_3 = Number(this.additional_component_point_week_3 || 0) * 1000
+      this.additional_component_amount_week_4 = Number(this.additional_component_point_week_4 || 0) * 1000
+      this.additional_component_amount_week_5 = Number(this.additional_component_point_week_5 || 0) * 1000
 
-      this.additional_component_point_week_1 = Number(Number(this.additionalData.total_achievements.week1) * Number(this.multiplier_kpi_week_1)) / 100
-      this.additional_component_point_week_2 = Number(Number(this.additionalData.total_achievements.week2) * Number(this.multiplier_kpi_week_2)) / 100
-      this.additional_component_point_week_3 = Number(Number(this.additionalData.total_achievements.week3) * Number(this.multiplier_kpi_week_3)) / 100
-      this.additional_component_point_week_4 = Number(Number(this.additionalData.total_achievements.week4) * Number(this.multiplier_kpi_week_4)) / 100
-      this.additional_component_point_week_5 = Number(Number(this.additionalData.total_achievements.week5) * Number(this.multiplier_kpi_week_5)) / 100
+      this.total_component_amount_week_1 = Number(this.minimum_component_amount_week_1 || 0) + Number(this.additional_component_amount_week_1 || 0)
+      this.total_component_amount_week_2 = Number(this.minimum_component_amount_week_2 || 0) + Number(this.additional_component_amount_week_2 || 0)
+      this.total_component_amount_week_3 = Number(this.minimum_component_amount_week_3 || 0) + Number(this.additional_component_amount_week_3 || 0)
+      this.total_component_amount_week_4 = Number(this.minimum_component_amount_week_4 || 0) + Number(this.additional_component_amount_week_4 || 0)
+      this.total_component_amount_week_5 = Number(this.minimum_component_amount_week_5 || 0) + Number(this.additional_component_amount_week_5 || 0)
 
-      this.additional_component_amount_week_1 = this.additional_component_point_week_1 * 1000
-      this.additional_component_amount_week_2 = this.additional_component_point_week_2 * 1000
-      this.additional_component_amount_week_3 = this.additional_component_point_week_3 * 1000
-      this.additional_component_amount_week_4 = this.additional_component_point_week_4 * 1000
-      this.additional_component_amount_week_5 = this.additional_component_point_week_5 * 1000
+      this.total_amount_week_1 = Number(this.total_component_amount_week_1 || 0) + Number(this.real_transport_allowance_week_1 || 0)
+      this.total_amount_week_2 = Number(this.total_component_amount_week_2 || 0) + Number(this.real_transport_allowance_week_2 || 0)
+      this.total_amount_week_3 = Number(this.total_component_amount_week_3 || 0) + Number(this.real_transport_allowance_week_3 || 0)
+      this.total_amount_week_4 = Number(this.total_component_amount_week_4 || 0) + Number(this.real_transport_allowance_week_4 || 0)
+      this.total_amount_week_5 = Number(this.total_component_amount_week_5 || 0) + Number(this.real_transport_allowance_week_5 || 0)
 
-      this.total_component_amount_week_1 = this.minimum_component_amount_week_1 + this.additional_component_amount_week_1
-      this.total_component_amount_week_2 = this.minimum_component_amount_week_2 + this.additional_component_amount_week_2
-      this.total_component_amount_week_3 = this.minimum_component_amount_week_3 + this.additional_component_amount_week_3
-      this.total_component_amount_week_4 = this.minimum_component_amount_week_4 + this.additional_component_amount_week_4
-      this.total_component_amount_week_5 = this.minimum_component_amount_week_5 + this.additional_component_amount_week_5
+      this.total_amount_received_week_1 = Number(this.total_amount_week_1 || 0) + Number(this.form.salary.communication_allowance || 0) + Number(this.form.salary.team_leader_allowance || 0)
+      this.total_amount_received_week_2 = Number(this.total_amount_week_2 || 0)
+      this.total_amount_received_week_3 = Number(this.total_amount_week_3 || 0)
+      this.total_amount_received_week_4 = Number(this.total_amount_week_4 || 0)
+      this.total_amount_received_week_5 = Number(this.total_amount_week_5 || 0)
 
-      this.total_amount_week_1 = this.total_component_amount_week_1 + this.real_transport_allowance_week_1
-      this.total_amount_week_2 = this.total_component_amount_week_2 + this.real_transport_allowance_week_2
-      this.total_amount_week_3 = this.total_component_amount_week_3 + this.real_transport_allowance_week_3
-      this.total_amount_week_4 = this.total_component_amount_week_4 + this.real_transport_allowance_week_4
-      this.total_amount_week_5 = this.total_component_amount_week_5 + this.real_transport_allowance_week_5
+      this.total_amount_received = Number(this.total_amount_received_week_1 || 0) + Number(this.total_amount_received_week_2 || 0) + Number(this.total_amount_received_week_3 || 0) + Number(this.total_amount_received_week_4 || 0) + Number(this.total_amount_received_week_5 || 0)
 
-      this.total_amount_received_week_1 = this.total_amount_week_1 - this.form.salary.receiveable_cut_60_days_week1 + this.form.salary.communication_allowance + this.form.salary.team_leader_allowance
-      this.total_amount_received_week_2 = this.total_amount_week_2 - this.form.salary.receiveable_cut_60_days_week2
-      this.total_amount_received_week_3 = this.total_amount_week_3 - this.form.salary.receiveable_cut_60_days_week3
-      this.total_amount_received_week_4 = this.total_amount_week_4 - this.form.salary.receiveable_cut_60_days_week4
-      this.total_amount_received_week_5 = this.total_amount_week_5 - this.form.salary.receiveable_cut_60_days_week5
+      this.company_profit_week_1 = 0.05 * (Number(this.form.salary.payment_from_marketing_week1 || 0) + Number(this.form.salary.payment_from_sales_week1 || 0) + Number(this.form.salary.payment_from_spg_week1 || 0) + Number(this.form.salary.cash_payment_week1 || 0))
+      this.company_profit_week_2 = 0.05 * (Number(this.form.salary.payment_from_marketing_week2 || 0) + Number(this.form.salary.payment_from_sales_week2 || 0) + Number(this.form.salary.payment_from_spg_week2 || 0) + Number(this.form.salary.cash_payment_week2 || 0))
+      this.company_profit_week_3 = 0.05 * (Number(this.form.salary.payment_from_marketing_week3 || 0) + Number(this.form.salary.payment_from_sales_week3 || 0) + Number(this.form.salary.payment_from_spg_week3 || 0) + Number(this.form.salary.cash_payment_week3 || 0))
+      this.company_profit_week_4 = 0.05 * (Number(this.form.salary.payment_from_marketing_week4 || 0) + Number(this.form.salary.payment_from_sales_week4 || 0) + Number(this.form.salary.payment_from_spg_week4 || 0) + Number(this.form.salary.cash_payment_week4 || 0))
+      this.company_profit_week_5 = 0.05 * (Number(this.form.salary.payment_from_marketing_week5 || 0) + Number(this.form.salary.payment_from_sales_week5 || 0) + Number(this.form.salary.payment_from_spg_week5 || 0) + Number(this.form.salary.cash_payment_week5 || 0))
 
-      this.total_amount_received = this.total_amount_received_week_1 + this.total_amount_received_week_2 + this.total_amount_received_week_3 + this.total_amount_received_week_4 + this.total_amount_received_week_5
+      this.settlement_difference_minus_amount_week_1 = Number(this.form.salary.payment_from_marketing_week1 || 0) + Number(this.form.salary.payment_from_sales_week1 || 0) + Number(this.form.salary.payment_from_spg_week1 || 0) + Number(this.form.salary.cash_payment_week1 || 0) - Number(this.total_amount_received_week_1 || 0)
+      this.settlement_difference_minus_amount_week_2 = Number(this.form.salary.payment_from_marketing_week2 || 0) + Number(this.form.salary.payment_from_sales_week2 || 0) + Number(this.form.salary.payment_from_spg_week2 || 0) + Number(this.form.salary.cash_payment_week2 || 0) - Number(this.total_amount_received_week_2 || 0)
+      this.settlement_difference_minus_amount_week_3 = Number(this.form.salary.payment_from_marketing_week3 || 0) + Number(this.form.salary.payment_from_sales_week3 || 0) + Number(this.form.salary.payment_from_spg_week3 || 0) + Number(this.form.salary.cash_payment_week3 || 0) - Number(this.total_amount_received_week_3 || 0)
+      this.settlement_difference_minus_amount_week_4 = Number(this.form.salary.payment_from_marketing_week4 || 0) + Number(this.form.salary.payment_from_sales_week4 || 0) + Number(this.form.salary.payment_from_spg_week4 || 0) + Number(this.form.salary.cash_payment_week4 || 0) - Number(this.total_amount_received_week_4 || 0)
+      this.settlement_difference_minus_amount_week_5 = Number(this.form.salary.payment_from_marketing_week5 || 0) + Number(this.form.salary.payment_from_sales_week5 || 0) + Number(this.form.salary.payment_from_spg_week5 || 0) + Number(this.form.salary.cash_payment_week5 || 0) - Number(this.total_amount_received_week_5 || 0)
 
-      this.company_profit_week_1 = (5 / 100) * (Number(this.form.salary.payment_from_marketing_week1) + Number(this.form.salary.payment_from_sales_week1) + Number(this.form.salary.payment_from_spg_week1))
-      this.company_profit_week_2 = (5 / 100) * (Number(this.form.salary.payment_from_marketing_week2) + Number(this.form.salary.payment_from_sales_week2) + Number(this.form.salary.payment_from_spg_week2))
-      this.company_profit_week_3 = (5 / 100) * (Number(this.form.salary.payment_from_marketing_week3) + Number(this.form.salary.payment_from_sales_week3) + Number(this.form.salary.payment_from_spg_week3))
-      this.company_profit_week_4 = (5 / 100) * (Number(this.form.salary.payment_from_marketing_week4) + Number(this.form.salary.payment_from_sales_week4) + Number(this.form.salary.payment_from_spg_week4))
-      this.company_profit_week_5 = (5 / 100) * (Number(this.form.salary.payment_from_marketing_week5) + Number(this.form.salary.payment_from_sales_week5) + Number(this.form.salary.payment_from_spg_week5))
-
-      this.settlement_difference_minus_amount_week_1 = Number(this.form.salary.payment_from_marketing_week1) + Number(this.form.salary.payment_from_sales_week1) + Number(this.form.salary.payment_from_spg_week1) - Number(this.total_amount_received_week_1)
-      this.settlement_difference_minus_amount_week_2 = Number(this.form.salary.payment_from_marketing_week2) + Number(this.form.salary.payment_from_sales_week2) + Number(this.form.salary.payment_from_spg_week2) - Number(this.total_amount_received_week_2)
-      this.settlement_difference_minus_amount_week_3 = Number(this.form.salary.payment_from_marketing_week3) + Number(this.form.salary.payment_from_sales_week3) + Number(this.form.salary.payment_from_spg_week3) - Number(this.total_amount_received_week_3)
-      this.settlement_difference_minus_amount_week_4 = Number(this.form.salary.payment_from_marketing_week4) + Number(this.form.salary.payment_from_sales_week4) + Number(this.form.salary.payment_from_spg_week4) - Number(this.total_amount_received_week_4)
-      this.settlement_difference_minus_amount_week_5 = Number(this.form.salary.payment_from_marketing_week5) + Number(this.form.salary.payment_from_sales_week5) + Number(this.form.salary.payment_from_spg_week5) - Number(this.total_amount_received_week_5)
-
-      this.company_profit_difference_minus_amount_week_1 = Number(this.company_profit_week_1) - Number(this.total_amount_received_week_1)
-      this.company_profit_difference_minus_amount_week_2 = Number(this.company_profit_week_2) - Number(this.total_amount_received_week_2)
-      this.company_profit_difference_minus_amount_week_3 = Number(this.company_profit_week_3) - Number(this.total_amount_received_week_3)
-      this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4) - Number(this.total_amount_received_week_4)
-      this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5) - Number(this.total_amount_received_week_5)
+      this.company_profit_difference_minus_amount_week_1 = Number(this.company_profit_week_1 || 0) - Number(this.total_amount_week_1 || 0)
+      this.company_profit_difference_minus_amount_week_2 = Number(this.company_profit_week_2 || 0) - Number(this.total_amount_week_2 || 0)
+      this.company_profit_difference_minus_amount_week_3 = Number(this.company_profit_week_3 || 0) - Number(this.total_amount_week_3 || 0)
+      this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4 || 0) - Number(this.total_amount_week_4 || 0)
+      this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5 || 0) - Number(this.total_amount_week_5 || 0)
     }
   }
 }

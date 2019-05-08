@@ -47,16 +47,13 @@
           </p-form-row>
           <p-form-row
             id="assessment-date"
-            :label="$t('assessment period')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                name="assessment-date"
-                :help="$t('assessment date help')"
-                v-model="form.date"/>
+            :label="$t('assessment date')">
+            <div slot="body" class="col-lg-9 col-form-label">
+              {{ assessment.date | dateFormat('DD MMM YYYY') }}
             </div>
           </p-form-row>
           <p-form-row
-            id="assessment-date"
+            id="assessment-category"
             :label="$t('assessment category')">
             <div slot="body" class="col-lg-9 col-form-label" v-if="form.template.name">
               {{ form.template.name }}
@@ -205,7 +202,6 @@ export default {
       id: this.$route.params.id,
       kpiId: this.$route.params.kpiId,
       form: new Form({
-        date: '',
         template: {
           groups: []
         }
@@ -219,12 +215,6 @@ export default {
   props: {
     name: {
       type: String
-    }
-  },
-  watch: {
-    'form.date' () {
-      this.loading = true
-      this.getAutomatedScore()
     }
   },
   computed: {
@@ -242,13 +232,13 @@ export default {
       kpiId: this.kpiId
     }).then(
       (response) => {
-        this.form.date = this.assessment.date
         this.form.template = this.assessment
-
         this.assignSelected()
+        this.loading = false
       },
       (error) => {
         console.log(JSON.stringify(error))
+        this.loading = false
       }
     )
   },
@@ -261,9 +251,6 @@ export default {
     }),
     ...mapActions('KpiResult', {
       findKpiResult: 'findByScorePercentage'
-    }),
-    ...mapActions('KpiAutomated', {
-      getAutomatedData: 'get'
     }),
     cancel () {
       this.$router.go(-1)
@@ -342,78 +329,6 @@ export default {
             this.form.errors.record(error.errors)
           }
         )
-    },
-    getAutomatedScore () {
-      var automatedIDs = []
-
-      this.form.template.groups.forEach(function (group, key) {
-        group.indicators.forEach(function (indicator, key) {
-          if (indicator.automated_id) {
-            automatedIDs.push(indicator.automated_id)
-          }
-        })
-      })
-
-      automatedIDs = [...new Set(automatedIDs)]
-
-      if (automatedIDs.length > 0) {
-        this.getAutomatedData({ date: this.form.date, automated_ids: automatedIDs, employeeId: this.id })
-          .then((response) => {
-            this.loading = false
-
-            var templateTarget = 0
-            var templateScore = 0
-            var templateScorePercentage = 0
-
-            this.form.template.groups.forEach((group, groupIndex) => {
-              var groupTarget = 0
-              var groupScore = 0
-              var groupScorePercentage = 0
-
-              group.indicators.forEach((indicator, indicatorIndex) => {
-                var target = this.form.template.groups[groupIndex].indicators[indicatorIndex]['target'] || 0
-                var score = this.form.template.groups[groupIndex].indicators[indicatorIndex]['score'] || 0
-                var scorePercentage = score / target * indicator.weight || 0
-
-                if (response[indicator.automated_id]) {
-                  target = response[indicator.automated_id]['target'] || 0
-                  score = response[indicator.automated_id]['score'] || 0
-                  scorePercentage = score / target * indicator.weight || 0
-
-                  this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'automated_id', indicator.automated_id)
-                } else if (indicator.selected) {
-                  score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected['score'] || 0
-                  scorePercentage = score / target * indicator.weight || 0
-                }
-
-                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'target', target)
-                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'score', score)
-                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'score_percentage', scorePercentage)
-
-                groupTarget += target
-                groupScore += score
-                groupScorePercentage += scorePercentage
-
-                templateTarget += target
-                templateScore += score
-                templateScorePercentage += scorePercentage
-              })
-
-              this.$set(this.form.template.groups[groupIndex], 'target', groupTarget)
-              this.$set(this.form.template.groups[groupIndex], 'score', groupScore)
-              this.$set(this.form.template.groups[groupIndex], 'score_percentage', groupScorePercentage)
-            })
-
-            this.$set(this.form.template, 'target', templateTarget)
-            this.$set(this.form.template, 'score', templateScore)
-            this.$set(this.form.template, 'score_percentage', templateScorePercentage)
-          }, (error) => {
-            this.loading = false
-            console.log(JSON.stringify(error))
-          })
-      } else {
-        this.loading = false
-      }
     }
   }
 }
