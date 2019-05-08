@@ -194,7 +194,14 @@ export default {
         id: this.id,
         params: {
           with_archives: true,
-          includes: 'supplier;warehouse;items.item.units;items.allocation;services.service;services.allocation;form.approvals.requestedBy;form.approvals.requestedTo'
+          includes: 'supplier;'
+            + 'warehouse;'
+            + 'items.item.units;'
+            + 'items.allocation;'
+            + 'services.service;'
+            + 'services.allocation;'
+            + 'form.approvals.requestedBy;'
+            + 'form.approvals.requestedTo'
         }
       }).then(response => {
         this.isLoading = false

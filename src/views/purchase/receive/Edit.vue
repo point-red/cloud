@@ -178,7 +178,13 @@ export default {
     this.edit({
       id: this.id,
       params: {
-        includes: 'supplier;items.item.units;items.allocation;services.service;services.allocation;form.approvals.requestedBy;form.approvals.requestedTo',
+        includes: 'supplier;'
+          + 'items.item.units;'
+          + 'items.allocation;'
+          + 'services.service;'
+          + 'services.allocation;'
+          + 'form.approvals.requestedBy;'
+          + 'form.approvals.requestedTo',
         remaining_info: true
       }
     }).then(response => {

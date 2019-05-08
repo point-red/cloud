@@ -414,7 +414,11 @@ export default {
       this.find({
         id: this.$route.query.id,
         params: {
-          includes: 'form;supplier;items.item.units;services.service;purchaseOrder.remainingDownPayments'
+          includes: 'form;'
+            + 'supplier;'
+            + 'items.item.units;'
+            + 'services.service;'
+            + 'purchaseOrder.remainingDownPayments'
         }
       }).then(response => {
         this.isLoading = false
