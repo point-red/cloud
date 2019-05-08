@@ -3,7 +3,7 @@
     <breadcrumb>
       <breadcrumb-finance/>
       <router-link to="/finance/cash" class="breadcrumb-item">{{ $t('cash') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Create</span>
+      <span class="breadcrumb-item active">In</span>
     </breadcrumb>
 
     <tab-menu/>

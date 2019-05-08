@@ -29,17 +29,25 @@
               <th>#</th>
               <th>Number</th>
               <th>Date</th>
+              <th>Account</th>
+              <th>Notes</th>
+              <th class="text-right">Amount</th>
             </tr>
             <template v-for="(payment, index) in payments">
-            <tr :key="'payment-' + index" slot="p-body">
-              <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
-              <td>
-                <router-link :to="{ name: 'finance.payment.show', params: { id: payment.id }}">
-                  {{ payment.form.number }}
-                </router-link>
-              </td>
-              <td>{{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-            </tr>
+              <template v-for="(paymentDetail, index2) in payment.details">
+              <tr :key="'payment-' + index + '-' + index2" slot="p-body">
+                <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
+                <td>
+                  <router-link :to="{ name: 'finance.cash.show', params: { id: payment.id }}">
+                    {{ payment.form.number }}
+                  </router-link>
+                </td>
+                <td>{{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ paymentDetail.chart_of_account.number }} - {{ paymentDetail.chart_of_account.alias }}</td>
+                <td>{{ paymentDetail.notes }}</td>
+                <td class="text-right">{{ paymentDetail.amount | numberFormat }}</td>
+              </tr>
+              </template>
             </template>
           </point-table>
         </p-block-inner>
@@ -122,7 +130,7 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form',
+          includes: 'form;details.chartOfAccount',
           page: this.currentPage
         }
       }).then(response => {

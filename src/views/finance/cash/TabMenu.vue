@@ -28,15 +28,6 @@
         <span><i class="si si-docs"></i> List</span>
       </router-link>
     </li>
-    <li class="nav-item" v-if="$permission.has('read cash')">
-      <router-link
-        to="/finance/cash/pending"
-        exact
-        class="nav-link"
-        active-class="active">
-        <span><i class="si si-magnifier"></i> Pending</span>
-      </router-link>
-    </li>
     <slot name="right"></slot>
   </ul>
 </template>

@@ -2,13 +2,20 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance/>
-      <span class="breadcrumb-item active">{{ $t('cash') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('payment order') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('cash')" :header="true">
+      <p-block :title="$t('payment order')" :header="true">
+        <div class="row mb-10">
+          <p-date-range-picker
+            id="date"
+            name="date"
+            class="col-sm-4"
+            v-model="date"/>
+        </div>
         <p-form-input
           id="search-text"
           name="search-text"
@@ -22,44 +29,31 @@
               <th>#</th>
               <th>Number</th>
               <th>Date</th>
-              <th>Supplier</th>
-              <th>Item</th>
+              <th>Account</th>
               <th>Notes</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">Value</th>
+              <th class="text-right">Amount</th>
+              <th></th>
             </tr>
-            <template v-for="(purchaseOrder, index) in purchaseOrders">
-            <tr
-              v-for="(purchaseOrderItem, index2) in purchaseOrder.items"
-              :key="'pr-' + index + '-i-' + index2"
-              slot="p-body">
-              <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
-              <td>
-                <router-link :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
-                  {{ purchaseOrder.form.number }}
-                </router-link>
-              </td>
-              <td>{{ purchaseOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-              <td>
-                <template v-if="purchaseOrder.supplier">
-                  {{ purchaseOrder.supplier.name }}
-                </template>
-              </td>
-              <td>{{ purchaseOrderItem.item.name }}</td>
-              <td>{{ purchaseOrderItem.notes }}</td>
-              <td class="text-right">{{ purchaseOrderItem.quantity | numberFormat }}</td>
-              <td class="text-right">{{ purchaseOrderItem.price | numberFormat }}</td>
-              <td class="text-right">{{ (purchaseOrderItem.quantity * purchaseOrderItem.price) | numberFormat }}</td>
-              <td>
-                <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'purchase.receive.create', query: { id: purchaseOrder.id }}">
-                  <i class="fa fa-share-square-o"></i> Receive
-                </router-link>
-                <button class="btn btn-sm btn-secondary" @click="$refs.downPaymentModal.show(purchaseOrder)">
-                  <i class="fa fa-share-square-o"></i> Down Payment
-                </button>
-              </td>
-            </tr>
+            <template v-for="(paymentOrder, index) in paymentOrders">
+              <template v-for="(paymentOrderDetail, index2) in paymentOrder.details">
+              <tr :key="'payment-order-' + index + '-' + index2" slot="p-body">
+                <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
+                <td>
+                  <router-link :to="{ name: 'finance.payment-order.show', params: { id: paymentOrder.id }}">
+                    {{ paymentOrder.form.number }}
+                  </router-link>
+                </td>
+                <td>{{ paymentOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ paymentOrderDetail.account.number }} - {{ paymentOrderDetail.account.alias }}</td>
+                <td>{{ paymentOrderDetail.notes }}</td>
+                <td class="text-right">{{ paymentOrderDetail.amount | numberFormat }}</td>
+                <td>
+                  <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'finance.payment.out', query: { id: paymentOrder.id }}">
+                    <i class="fa fa-share-square-o"></i> Payment
+                  </router-link>
+                </td>
+              </tr>
+              </template>
             </template>
           </point-table>
         </p-block-inner>
@@ -90,6 +84,10 @@ export default {
   },
   data () {
     return {
+      date: {
+        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
+        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
+      },
       isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
@@ -97,36 +95,48 @@ export default {
       limit: 10
     }
   },
+  watch: {
+    date: function () {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          date_from: this.date.start,
+          date_to: this.date.end
+        }
+      })
+      this.getPaymentOrders()
+    }
+  },
   computed: {
-    ...mapGetters('purchaseOrder', ['purchaseOrders', 'pagination'])
+    ...mapGetters('financePaymentOrder', ['paymentOrders', 'pagination'])
   },
   methods: {
-    ...mapActions('purchaseOrder', ['get']),
+    ...mapActions('financePaymentOrder', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getPurchaseOrder()
+      this.getPaymentOrders()
     }, 300),
-    getPurchaseOrder () {
+    getPaymentOrders () {
       this.isLoading = true
       this.get({
         params: {
           join: 'form',
           sort_by: '-forms.number',
-          fields: 'purchase_orders.*',
+          fields: 'payment_orders.*',
+          filter_form: 'active',
           filter_like: {
-            'form.number': this.searchText,
-            'form.date': this.serverDate(this.searchText),
-            'supplier.name': this.searchText,
-            'items.name': this.searchText,
-            'items.notes': this.searchText,
-            'items.quantity': this.searchText,
-            'items.price': this.searchText
+            'form.number': this.searchText
           },
-          filter_form: 'activePending',
+          filter_min: {
+            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
+          },
+          filter_max: {
+            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+          },
           limit: this.limit,
-          includes: 'form;supplier;items.item.units;services.service;downPayments.form',
+          includes: 'form;details.account;details.allocation',
           page: this.currentPage
         }
       }).then(response => {
@@ -138,14 +148,11 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getPurchaseOrder()
-    },
-    refresh () {
-      this.getPurchaseOrder()
-    }
+      this.getPaymentOrders()
+    }    
   },
   created () {
-    this.getPurchaseOrder()
+    this.getPaymentOrders()
   },
   updated () {
     this.lastPage = this.pagination.last_page

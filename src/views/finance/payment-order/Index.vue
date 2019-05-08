@@ -29,17 +29,25 @@
               <th>#</th>
               <th>Number</th>
               <th>Date</th>
+              <th>Account</th>
+              <th>Notes</th>
+              <th class="text-right">Amount</th>
             </tr>
             <template v-for="(paymentOrder, index) in paymentOrders">
-            <tr :key="'payment-order-' + index" slot="p-body">
-              <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
-              <td>
-                <router-link :to="{ name: 'finance.payment-order.show', params: { id: paymentOrder.id }}">
-                  {{ paymentOrder.form.number }}
-                </router-link>
-              </td>
-              <td>{{ paymentOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-            </tr>
+              <template v-for="(paymentOrderDetail, index2) in paymentOrder.details">
+              <tr :key="'payment-order-' + index + '-' + index2" slot="p-body">
+                <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
+                <td>
+                  <router-link :to="{ name: 'finance.payment-order.show', params: { id: paymentOrder.id }}">
+                    {{ paymentOrder.form.number }}
+                  </router-link>
+                </td>
+                <td>{{ paymentOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ paymentOrderDetail.account.number }} - {{ paymentOrderDetail.account.alias }}</td>
+                <td>{{ paymentOrderDetail.notes }}</td>
+                <td class="text-right">{{ paymentOrderDetail.amount | numberFormat }}</td>
+              </tr>
+              </template>
             </template>
           </point-table>
         </p-block-inner>
@@ -122,7 +130,7 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form',
+          includes: 'form;details.account;details.allocation',
           page: this.currentPage
         }
       }).then(response => {
