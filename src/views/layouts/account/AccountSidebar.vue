@@ -4,7 +4,7 @@
     ref="sidebarRef">
     <!-- Sidebar Scroll Container -->
     <!-- v-slimscroll="options" -->
-    <div id="sidebar-scroll">
+    <div id="sidebar-scroll" v-slimscroll="options">
       <!-- Sidebar Content -->
       <div class="sidebar-content">
         <!-- Side Header -->
@@ -180,3 +180,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+#sidebar-scroll {
+  overflow-y: auto
+}
+</style>
