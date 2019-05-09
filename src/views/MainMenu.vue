@@ -10,7 +10,7 @@
       v-if="$permission.has('menu human resource')"
       link="/human-resource"
       icon="si si-emoticon-smile"/>
-    <p-box
+    <!-- <p-box
       :name="$t('purchase')"
       v-if="$permission.has('menu purchase')"
       link="/purchase"
@@ -29,7 +29,7 @@
       :name="$t('accounting')"
       v-if="$permission.has('menu accounting')"
       link="/accounting"
-      icon="si si-folder-alt"/>
+      icon="si si-folder-alt"/> -->
     <p-box
       :name="$t('plugin')"
       v-if="$permission.has('menu plugin')"
