@@ -28,7 +28,7 @@ const mutations = {
     state.dataSet = payload.data_set
   },
   'FETCH_ASSESSMENT' (state, payload) {
-    state.assessment = payload
+    state.assessment = payload.data
   },
   'CREATE' (state, payload) {
     state.assessment = payload
@@ -49,7 +49,7 @@ const actions = {
           commit('FETCH_ASSESSMENTS', response)
           dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
           resolve(response)
-        }).actions(error => {
+        }).catch(error => {
           reject(error)
         })
     })
