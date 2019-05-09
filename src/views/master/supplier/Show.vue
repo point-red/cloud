@@ -92,11 +92,15 @@ export default {
     ...mapActions('masterSupplier', ['find', 'delete']),
     onDelete () {
       this.isDeleting = true
-      this.delete({ id: this.id })
-        .then(response => {
-          this.$router.push('/master/supplier')
-        }).catch(response => {
-        })
+      this.delete({
+        id: this.id
+      }).then(response => {
+        this.isDeleting = false
+        this.$router.push('/master/supplier')
+      }).catch(response => {
+        this.isDeleting = false
+        this.$notification.error('cannot delete this supplier')
+      })
     }
   },
   created () {

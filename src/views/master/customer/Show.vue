@@ -57,6 +57,14 @@
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>
+          <button
+            type="button"
+            @click="onDelete()"
+            v-if="$permission.has('delete customer')"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-danger">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
+          </button>
         </p-block-inner>
       </p-block>
       <p-block v-if="forms.length > 0 && isLoadingSalesVisitation == false">
@@ -170,6 +178,7 @@ export default {
       id: this.$route.params.id,
       title: 'customer',
       isLoading: false,
+      isDeleting: false,
       isLoadingSalesVisitation: false,
       data: {
         name: null,
@@ -187,7 +196,7 @@ export default {
     ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
   },
   methods: {
-    ...mapActions('masterCustomer', ['find']),
+    ...mapActions('masterCustomer', ['find', 'delete']),
     ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),
     updatePage (value) {
       this.currentPage = value
@@ -211,6 +220,18 @@ export default {
       }).catch(error => {
         this.isLoadingSalesVisitation = false
         this.$notification.error(error.message)
+      })
+    },
+    onDelete () {
+      this.isDeleting = true
+      this.delete({
+        id: this.id
+      }).then(response => {
+        this.isDeleting = false
+        this.$router.push('/master/customer')
+      }).catch(response => {
+        this.isDeleting = false
+        this.$notification.error('cannot delete this supplier')
       })
     }
   },
