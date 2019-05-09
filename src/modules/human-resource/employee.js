@@ -40,7 +40,7 @@ const mutations = {
     state.pagination.total = payload.meta.total
   },
   'FETCH_OBJECT' (state, payload) {
-    state.employee = payload
+    state.employee = payload.data
   },
   'CREATE' (state, payload) {
     state.employee = payload

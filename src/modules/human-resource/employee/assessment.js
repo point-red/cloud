@@ -47,7 +47,7 @@ const actions = {
       api.get(url(payload.employeeId), payload)
         .then(response => {
           commit('FETCH_ASSESSMENTS', response)
-          dispatch('masterEmployee/find', { id: payload.employeeId }, { root: true })
+          dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
           resolve(response)
         }).actions(error => {
           reject(error)
@@ -59,7 +59,7 @@ const actions = {
       api.get(url(payload.employeeId) + '/' + payload.kpiId)
         .then(response => {
           commit('FETCH_ASSESSMENT', response)
-          dispatch('masterEmployee/find', { id: payload.employeeId }, { root: true })
+          dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
           resolve(response)
         }).catch(error => {
           reject(error)
