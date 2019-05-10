@@ -14,7 +14,7 @@
           id="account-type"
           name="account-type"
           :label="$t('account type')">
-          <div slot="body" class="col-lg-9">
+          <div slot="body" class="col-lg-9 mt-5">
             <m-chart-of-account-type :id="'account-type'" v-model="form.type_id"/>
           </div>
         </p-form-row>

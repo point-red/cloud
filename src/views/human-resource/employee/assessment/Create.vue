@@ -191,7 +191,7 @@ export default {
     return {
       id: this.$route.params.id,
       form: new Form({
-        date: new Date(),
+        date: new this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         template: {}
       }),
       title: 'Kpi',
@@ -212,18 +212,19 @@ export default {
   },
   created () {
     this.loading = true
-    this.findEmployee({ id: this.id })
-      .then((response) => {
-        this.loading = false
-        if (this.employee.kpi_template_id === null) {
-          this.$refs.assignKpiTemplate.show(this.id)
-        } else {
-          this.getKpiTemplate(this.employee.kpi_template_id)
-        }
-      }, (error) => {
-        this.loading = false
-        console.log(JSON.stringify(error))
-      })
+    this.findEmployee({
+      id: this.id
+    }).then(response => {
+      this.loading = false
+      if (this.employee.kpi_template_id === null) {
+        this.$refs.assignKpiTemplate.show(this.id)
+      } else {
+        this.getKpiTemplate(this.employee.kpi_template_id)
+      }
+    }).catch(error => {
+      this.loading = false
+      console.log(JSON.stringify(error))
+    })
   },
   methods: {
     ...mapActions('humanResourceEmployee', {
@@ -296,28 +297,22 @@ export default {
     onSubmit () {
       this.loadingSaveButton = true
       this.createEmployeeAssessment({ employeeId: this.employee.id, form: this.form })
-        .then(
-          (response) => {
-            this.loadingSaveButton = false
-            this.$notification.success('Create success')
-            this.findKpiResult(this.form.template.score_percentage)
-              .then(
-                (response) => {
-                  this.$alert.success(response.data.criteria, response.data.notes).then(() => {
-                    this.$router.go()
-                  })
-                },
-                (error) => {
-                  console.log(JSON.stringify(error))
-                  this.$router.go()
-                }
-              )
-          },
-          (error) => {
-            this.loadingSaveButton = false
-            this.$notification.error('Create failed', error.message)
-          }
-        )
+        .then(response => {
+          this.loadingSaveButton = false
+          this.$notification.success('Create success')
+          this.findKpiResult(this.form.template.score_percentage)
+            .then(response => {
+              this.$alert.success(response.data.criteria, response.data.notes).then(() => {
+                this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
+              })
+            }).catch(error => {
+              console.log(JSON.stringify(error))
+              this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
+            })
+        }).catch(error => {
+          this.loadingSaveButton = false
+          this.$notification.error('Create failed', error.message)
+        })
     }
   }
 }

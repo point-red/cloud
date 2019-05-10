@@ -63,14 +63,11 @@ export default {
     ...mapGetters('humanResourceKpiTemplate', ['templates'])
   },
   created () {
-    this.showLoadingBlock()
-    this.getKpiTemplates()
-      .then((response) => {
-        this.dismissLoadingBlock()
-      }, (error) => {
-        this.dismissLoadingBlock()
-        console.log(JSON.stringify(error))
-      })
+    this.getKpiTemplates().then(response => {
+      //
+    }).catch(error => {
+      console.log(JSON.stringify(error))
+    })
   },
   methods: {
     ...mapActions('humanResourceKpiTemplate', { getKpiTemplates: 'get' }),

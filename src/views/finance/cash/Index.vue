@@ -27,8 +27,9 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th>Number</th>
               <th>Date</th>
+              <th>Payment From / To</th>
+              <th>Number</th>
               <th>Account</th>
               <th>Notes</th>
               <th class="text-right">Amount</th>
@@ -37,12 +38,13 @@
               <template v-for="(paymentDetail, index2) in payment.details">
               <tr :key="'payment-' + index + '-' + index2" slot="p-body">
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
+                <td>{{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ payment.paymentable.name }}</td>
                 <td>
                   <router-link :to="{ name: 'finance.cash.show', params: { id: payment.id }}">
                     {{ payment.form.number }}
                   </router-link>
                 </td>
-                <td>{{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>{{ paymentDetail.chart_of_account.number }} - {{ paymentDetail.chart_of_account.alias }}</td>
                 <td>{{ paymentDetail.notes }}</td>
                 <td class="text-right">{{ paymentDetail.amount | numberFormat }}</td>
@@ -116,12 +118,13 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form',
+          join: 'form,paymentable',
           sort_by: '-forms.number',
           fields: 'payments.*',
           filter_form: 'active',
           filter_like: {
-            'form.number': this.searchText
+            'form.number': this.searchText,
+            'paymentable_name': this.searchText
           },
           filter_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
@@ -130,7 +133,7 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;details.chartOfAccount',
+          includes: 'form;details.chartOfAccount;paymentable',
           page: this.currentPage
         }
       }).then(response => {
