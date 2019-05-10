@@ -1,6 +1,7 @@
 <template>
   <div>
     <breadcrumb>
+      <breadcrumb-accounting/>
       <span class="breadcrumb-item active">Chart of Account</span>
     </breadcrumb>
 
@@ -28,7 +29,11 @@
               :key="chartOfAccount.id"
               slot="p-body">
               <td>{{ chartOfAccount.number }}</td>
-              <td>{{ chartOfAccount.name }}</td>
+              <td>
+                <router-link :to="{ name: 'accounting.chart-of-account.show', params: { id: chartOfAccount.id }}">
+                  {{ chartOfAccount.name }}
+                </router-link>
+              </td>
               <td>{{ chartOfAccount.type.name }}</td>
             </tr>
           </point-table>
@@ -39,7 +44,8 @@
 </template>
 
 <script>
-import Breadcrumb from '@/views/accounting/Breadcrumb'
+import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import TabMenu from './TabMenu'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
@@ -56,6 +62,7 @@ export default {
   },
   components: {
     Breadcrumb,
+    BreadcrumbAccounting,
     TabMenu,
     PointTable
   },
@@ -78,16 +85,10 @@ export default {
         params: {
           limit: 1000,
           filter_like: {
-            'chart_of_accounts.name': this.searchText,
-            'chart_of_accounts.number': this.searchText
+            'name': this.searchText,
+            'number': this.searchText
           },
-          or_filter_where_has_like: [
-            {
-              type: {
-                name: this.searchText
-              }
-            }
-          ]
+          sort_by: 'number,name'
         }
       }).then(response => {
         this.loading = false

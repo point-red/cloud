@@ -67,7 +67,7 @@
               {{ requestJoinProject.user_email | lowercase }}
             </td>
             <td class="text-right">
-              <button class="btn btn-sm btn-primary" @click="acceptRequest(requestJoinProject)">Accept</button>
+              <button class="btn btn-sm btn-primary mr-5" @click="acceptRequest(requestJoinProject)">Accept</button>
               <button class="btn btn-sm btn-danger" @click="rejectRequest(requestJoinProject)">Reject</button>
             </td>
           </tr>
@@ -125,13 +125,16 @@ export default {
         this.loading = false
         this.$notification.error(error.message)
       })
-    this.getRequest({ project_id: this.id })
-      .then((response) => {
-        //
-      }, (error) => {
-        this.$router.replace('/account/whoops')
-        this.$notification.error(error.message)
-      })
+    this.getRequest({
+      params: {
+        project_id: this.id
+      }
+    }).then((response) => {
+      //
+    }, (error) => {
+      this.$router.replace('/account/whoops')
+      this.$notification.error(error.message)
+    })
   },
   methods: {
     ...mapActions('accountProject', {

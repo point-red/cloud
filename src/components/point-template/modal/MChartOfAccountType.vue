@@ -20,19 +20,6 @@
           </a>
           </template>
         </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
-          {{ $t('searching not found', [searchText]) | capitalize }} <br>
-          {{ $t('click') }} <span class="link" @click="add"><i class="fa fa-xs" :class="{
-            'fa-refresh fa-spin': isSaving,
-            'fa-plus': !isSaving
-          }"></i> Add</span> {{ $t('to add new data') }}
-        </div>
-        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you doesn\'t have any') | capitalize }} {{ $t('chart of account') | capitalize }}, <br/> {{ $t('you can create') }}
-          <router-link :to="'/accounting/chart-of-account/create'">
-            <span>{{ $t('new one') }}</span>
-          </router-link>
-        </div>
       </template>
       <template slot="footer">
         <button type="button" @click="close()" class="btn btn-outline-danger">Close</button>
@@ -57,7 +44,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts'])
+    ...mapGetters('accountingChartOfAccountType', ['chartOfAccountTypes'])
   },
   props: {
     id: {
@@ -68,9 +55,6 @@ export default {
       type: [String, Number]
     },
     label: {
-      type: String
-    },
-    type: {
       type: String
     }
   },
@@ -86,18 +70,16 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('accountingChartOfAccount', ['get', 'create']),
+    ...mapActions('accountingChartOfAccountType', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
         params: {
-          sort_by: 'number',
+          sort_by: 'id',
           limit: 250,
           filter_like: {
-            name: this.searchText,
-            number: this.searchText
-          },
-          filter_type: this.type
+            alias: this.searchText
+          }
         }
       }).then(response => {
         this.options = []
@@ -105,11 +87,11 @@ export default {
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
-            'label': key['number'] + ' - ' + key['alias']
+            'label': key['alias']
           })
 
           if (this.value == key['id']) {
-            this.mutableLabel = key['number'] + ' - ' + key['alias']
+            this.mutableLabel = key['alias']
           }
         })
         this.isLoading = false
