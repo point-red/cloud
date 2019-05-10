@@ -173,6 +173,11 @@ export default {
         .then((response) => {
           this.loadingSaveButton = false
           this.$notification.success('Request accepted')
+          this.getRequest({
+            params: {
+              project_id: this.id
+            }
+          })
         }, (error) => {
           this.loadingSaveButton = false
           this.$notification.error(error.message)
@@ -186,6 +191,11 @@ export default {
         .then((response) => {
           this.loadingSaveButton = false
           this.$notification.error('Request rejected')
+          this.getRequest({
+            params: {
+              project_id: this.id
+            }
+          })
         }, (error) => {
           this.loadingSaveButton = false
           console.log(error)
