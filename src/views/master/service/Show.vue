@@ -4,16 +4,14 @@
       <breadcrumb-master/>
       <router-link
         to="/master/service"
-        class="breadcrumb-item">Service</router-link>
+        class="breadcrumb-item">{{ $t('service') | titlecase }}</router-link>
       <span class="breadcrumb-item active">{{ service.name | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
-    <br/>
-
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block :title="$t('service')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
@@ -22,7 +20,7 @@
             v-model="data.name"
             readonly/>
 
-          <hr>
+          <hr/>
 
           <router-link
             :to="{ path: '/master/service/' + service.id + '/edit', params: { id: service.id }}"
@@ -59,7 +57,6 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      title: 'Service',
       isLoading: false,
       isDeleting: false,
       data: {
@@ -80,8 +77,11 @@ export default {
       this.isDeleting = true
       this.delete({ id: this.id })
         .then(response => {
+          this.isDeleting = false
           this.$router.push('/master/service')
         }).catch(response => {
+          this.isDeleting = false
+          this.$notification.error('cannot delete this service')
         })
     }
   },
