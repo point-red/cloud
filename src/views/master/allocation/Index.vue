@@ -2,13 +2,13 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">Allocation</span>
+      <span class="breadcrumb-item active">{{ $t('allocation') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block :title="$t('allocation')" :header="true">
         <p-form-input
           id="search-text"
           name="search-text"
@@ -16,23 +16,27 @@
           ref="searchText"
           :value="searchText"
           @input="filterSearch"/>
-        <hr>
+
+        <hr/>
+
         <p-block-inner :is-loading="isLoading">
-          <p-table>
+          <point-table>
             <tr slot="p-head">
+              <th>#</th>
               <th>Name</th>
             </tr>
             <tr
-              v-for="allocation in allocations"
+              v-for="(allocation, index) in allocations"
               :key="allocation.id"
               slot="p-body">
+              <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'allocation.show', params: { id: allocation.id }}">
-                  {{ allocation.name | titlecase }}
+                  {{ allocation.name }}
                 </router-link>
               </td>
             </tr>
-          </p-table>
+          </point-table>
         </p-block-inner>
         <p-pagination
           :current-page="currentPage"
@@ -61,7 +65,6 @@ export default {
   },
   data () {
     return {
-      title: 'Allocation',
       isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,

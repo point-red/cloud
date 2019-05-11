@@ -18,16 +18,18 @@
           @input="filterSearch"/>
         <hr>
         <p-block-inner :is-loading="isLoading">
-          <p-table>
+          <point-table>
             <tr slot="p-head">
+              <th>#</th>
               <th>Name</th>
               <th>Account</th>
               <th>Stock</th>
             </tr>
             <tr
-              v-for="item in items"
+              v-for="(item, index) in items"
               :key="item.id"
               slot="p-body">
+              <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: item.id }}">
                   {{ item.name }}
@@ -44,7 +46,7 @@
                 </template>
               </td>
             </tr>
-          </p-table>
+          </point-table>
         </p-block-inner>
         <p-pagination
           :current-page="currentPage"
@@ -73,7 +75,6 @@ export default {
   },
   data () {
     return {
-      title: 'Item',
       isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,

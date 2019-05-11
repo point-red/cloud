@@ -20,6 +20,7 @@
         <p-block-inner :is-loading="loading">
           <point-table>
             <tr slot="p-head">
+              <th>#</th>
               <th>Name</th>
               <th>Address</th>
               <th>Phone</th>
@@ -28,11 +29,12 @@
               v-for="(customer, index) in customers"
               :key="index"
               slot="p-body">
-              <th>
+              <th>{{ index + 1}}</th>
+              <td>
                 <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">
                   <i class="fa fa-star" v-show="customer.groups.length > 0"></i> {{ customer.name | titlecase }}
                 </router-link>
-              </th>
+              </td>
               <td>
                 <template v-for="customerAddress in customer.addresses">
                   {{ customerAddress.address | lowercase }}

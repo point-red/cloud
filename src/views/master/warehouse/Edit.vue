@@ -4,8 +4,8 @@
       <breadcrumb-master/>
       <router-link
         to="/master/warehouse"
-        class="breadcrumb-item">Warehouse</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+        class="breadcrumb-item">{{ $t('warehouse') | titlecase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
@@ -69,11 +69,11 @@ export default {
   created () {
     this.isLoading = true
     this.find({ id: this.id })
-      .then((response) => {
+      .then(response => {
         this.isLoading = false
         this.form.code = this.warehouse.code
         this.form.name = this.warehouse.name
-      }, (error) => {
+      }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
       })

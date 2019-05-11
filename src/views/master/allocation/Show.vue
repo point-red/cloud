@@ -4,7 +4,7 @@
       <breadcrumb-master/>
       <router-link
         to="/master/allocation"
-        class="breadcrumb-item">Allocation</router-link>
+        class="breadcrumb-item">{{ $t('allocation') | titlecase }}</router-link>
       <span class="breadcrumb-item active">{{ allocation.name | titlecase }}</span>
     </breadcrumb>
 
@@ -17,10 +17,10 @@
             id="name"
             label="Name"
             name="name"
-            v-model="data.name"
+            v-model="allocation.name"
             readonly/>
 
-          <hr>
+          <hr/>
 
           <router-link
             :to="{ path: '/master/allocation/' + allocation.id + '/edit', params: { id: allocation.id }}"
@@ -58,14 +58,7 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: false,
-      isDeleting: false,
-      data: {
-        name: null,
-        email: null,
-        address: null,
-        phone: null,
-        priority: false
-      }
+      isDeleting: false
     }
   },
   computed: {
@@ -77,8 +70,11 @@ export default {
       this.isDeleting = true
       this.delete({ id: this.id })
         .then(response => {
-          this.$router.push('/master/service')
-        }).catch(response => {
+          this.isDeleting = false
+          this.$router.push('/master/allocation')
+        }).catch(error => {
+          this.isDeleting = false
+          this.$notification.error('cannot delete this supplier')
         })
     }
   },
@@ -87,7 +83,6 @@ export default {
     this.find({ id: this.id })
       .then(response => {
         this.isLoading = false        
-        this.data.name = response.data.name
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)

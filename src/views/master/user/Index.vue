@@ -22,6 +22,7 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
+              <th>#</th>
               <th>Username</th>
               <th>Full Name</th>
               <th>Email</th>
@@ -29,9 +30,10 @@
               <th>Roles</th>
             </tr>
             <tr
-              v-for="user in users"
+              v-for="(user, index) in users"
               :key="user.id"
               slot="p-body">
+              <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'UserShow', params: { id: user.id }}">
                   {{ user.name | titlecase }}

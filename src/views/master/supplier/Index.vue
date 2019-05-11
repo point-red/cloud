@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">Supplier</span>
+      <span class="breadcrumb-item active">{{ $t('supplier') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
@@ -19,6 +19,7 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
+              <th>#</th>
               <th>Name</th>
               <th>Address</th>
               <th>Phone</th>
@@ -27,11 +28,12 @@
               v-for="supplier in suppliers"
               :key="supplier.id"
               slot="p-body">
-              <th>
+              <th>{{ index + 1 }}</th>
+              <td>
                 <router-link :to="{ name: 'supplier.show', params: { id: supplier.id }}">
                   {{ supplier.name | titlecase }}
                 </router-link>
-              </th>
+              </td>
               <td>
                 <template v-for="supplierAddress in supplier.addresses">
                   {{ supplierAddress.address | lowercase }}
