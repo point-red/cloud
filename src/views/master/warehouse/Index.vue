@@ -15,7 +15,7 @@
           placeholder="Search"
           :value="searchText"
           @input="filterSearch"/>
-        <hr>
+        <hr/>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
@@ -99,7 +99,7 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getSupplierRequest()
+      this.getWarehouseRequest()
     }
   },
   created () {
