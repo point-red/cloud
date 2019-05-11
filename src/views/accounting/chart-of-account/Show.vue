@@ -89,7 +89,7 @@ export default {
     TabMenu,
     Breadcrumb,
     BreadcrumbAccounting,
-    PointTableVue
+    PointTable
   },
   data () {
     return {
