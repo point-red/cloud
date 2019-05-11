@@ -10,10 +10,8 @@
 
     <tab-menu/>
 
-    <br/>
-
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block :title="$t('warehouse')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
@@ -22,7 +20,7 @@
             v-model="data.name"
             readonly/>
 
-          <hr>
+          <hr/>
 
           <router-link
             :to="{ path: '/master/warehouse/' + warehouse.id + '/edit', params: { id: warehouse.id }}"

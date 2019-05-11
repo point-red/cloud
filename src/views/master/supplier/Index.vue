@@ -8,7 +8,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block :title="$t('supplier')" :header="true">
         <p-form-input
           id="search-text"
           name="search-text"
@@ -16,7 +16,7 @@
           :value="searchText"
           @input="filterSearch"/>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>Name</th>
@@ -72,8 +72,7 @@ export default {
   },
   data () {
     return {
-      title: 'Supplier',
-      loading: true,
+      isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1
@@ -91,7 +90,7 @@ export default {
       this.getSupplierRequest()
     }, 300),
     getSupplierRequest () {
-      this.loading = true
+      this.isLoading = true
       this.get({
         params: {
           fields: 'suppliers.*',
@@ -108,9 +107,9 @@ export default {
           page: this.currentPage
         }
       }).then(response => {
-        this.loading = false
+        this.isLoading = false
       }).catch(error => {
-        this.loading = false
+        this.isLoading = false
       })
     },
     updatePage (value) {

@@ -110,7 +110,7 @@ export default {
       params: {
         includes: 'addresses;phones;emails'
       }
-    }).then((response) => {
+    }).then(response => {
       this.isLoading = false
       this.data.name = response.data.name
       if (response.data.emails.length > 0) {
@@ -122,7 +122,7 @@ export default {
       if (response.data.phones.length > 0) {
         this.data.phone = response.data.phones[0].number
       }
-    }, (error) => {
+    }).catch(error => {
       this.isLoading = false
       this.$notification.error(error.message)
     })

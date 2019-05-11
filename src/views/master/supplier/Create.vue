@@ -9,51 +9,50 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="'Create Supplier'" :header="true">
-        <p-form-row
-          id="name"
-          v-model="form.name"
-          :disabled="loadingSaveButton"
-          :label="$t('name')"
-          name="name"
-          :errors="form.errors.get('name')"
-          @errors="form.errors.set('name', null)"/>
+      <p-block :title="$t('create') + ' ' + $t('supplier')" :header="true">
+        <p-block-inner>
+          <p-form-row
+            id="name"
+            v-model="form.name"
+            :disabled="isSaving"
+            :label="$t('name')"
+            name="name"
+            :errors="form.errors.get('name')"
+            @errors="form.errors.set('name', null)"/>
 
-        <p-form-row
-          id="email"
-          v-model="form.emails[0].email"
-          :disabled="loadingSaveButton"
-          :label="$t('email')"
-          name="email"
-          :errors="form.errors.get('email')"
-          @errors="form.errors.set('email', null)"/>
+          <p-form-row
+            id="email"
+            v-model="form.emails[0].email"
+            :disabled="isSaving"
+            :label="$t('email')"
+            name="email"
+            :errors="form.errors.get('email')"
+            @errors="form.errors.set('email', null)"/>
 
-        <p-form-row
-          id="address"
-          v-model="form.addresses[0].address"
-          :disabled="loadingSaveButton"
-          :label="$t('address')"
-          name="address"
-          :errors="form.errors.get('address')"
-          @errors="form.errors.set('address', null)"/>
+          <p-form-row
+            id="address"
+            v-model="form.addresses[0].address"
+            :disabled="isSaving"
+            :label="$t('address')"
+            name="address"
+            :errors="form.errors.get('address')"
+            @errors="form.errors.set('address', null)"/>
 
-        <p-form-row
-          id="phone"
-          v-model="form.phones[0].number"
-          :disabled="loadingSaveButton"
-          :label="$t('phone')"
-          name="phone"
-          :errors="form.errors.get('phone')"
-          @errors="form.errors.set('phone', null)"/>
+          <p-form-row
+            id="phone"
+            v-model="form.phones[0].number"
+            :disabled="isSaving"
+            :label="$t('phone')"
+            name="phone"
+            :errors="form.errors.get('phone')"
+            @errors="form.errors.set('phone', null)"/>
 
-        <div class="form-group row">
-          <div class="col-md-3"></div>
-          <div class="col-md-9">
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
-            </button>
-          </div>
-        </div>
+          <hr/>
+
+          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+          </button>
+        </p-block-inner>
       </p-block>
     </form>
   </div>
@@ -74,24 +73,18 @@ export default {
   },
   data () {
     return {
-      loadingSaveButton: false,
+      isSaving: false,
       form: new Form({
         name: null,
-        emails: [
-          {
-            email: null
-          }
-        ],
-        addresses: [
-          {
-            address: null
-          }
-        ],
-        phones: [
-          {
-            number: null
-          }
-        ]
+        emails: [{
+          email: null
+        }],
+        addresses: [{
+          address: null
+        }],
+        phones: [{
+          number: null
+        }]
       })
     }
   },
@@ -101,16 +94,16 @@ export default {
   methods: {
     ...mapActions('masterSupplier', ['create']),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
 
       this.create(this.form)
         .then(response => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/master/supplier/' + response.data.id)
         }).catch(error => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })

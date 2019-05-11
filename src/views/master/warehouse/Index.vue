@@ -7,11 +7,9 @@
 
     <tab-menu/>
 
-    <br>
-
     <div class="row">
-      <p-block :title="title" :header="true">
-        <p-block-inner :is-loading="loading">
+      <p-block :title="$t('warehouse')" :header="true">
+        <p-block-inner :is-loading="isLoading">
           <p-table>
             <tr slot="p-head">
               <th>Name</th>
@@ -48,7 +46,7 @@ export default {
   data () {
     return {
       title: 'Warehouse',
-      loading: true
+      isLoading: true
     }
   },
   computed: {
@@ -60,15 +58,15 @@ export default {
     })
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.getWarehouse({
       params: {
         sort_by: 'name'
       }
-    }).then((response) => {
-      this.loading = false
-    }, (error) => {
-      this.loading = false
+    }).then(response => {
+      this.isLoading = false
+    }).catch(error => {
+      this.isLoading = false
       this.$notifications.error(error.message)
     })
   }

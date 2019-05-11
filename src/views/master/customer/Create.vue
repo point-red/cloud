@@ -94,21 +94,15 @@ export default {
       isSaving: false,
       form: new Form({
         name: null,
-        emails: [
-          {
-            email: null
-          }
-        ],
-        addresses: [
-          {
-            address: null
-          }
-        ],
-        phones: [
-          {
-            number: null
-          }
-        ],
+        emails: [{
+          email: null
+        }],
+        addresses: [{
+          address: null
+        }],
+        phones: [{
+          number: null
+        }],
         group: {
           name: ''
         }

@@ -230,7 +230,7 @@ export default {
         this.$router.push('/master/customer')
       }).catch(response => {
         this.isDeleting = false
-        this.$notification.error('cannot delete this supplier')
+        this.$notification.error('cannot delete this customer')
       })
     }
   },
