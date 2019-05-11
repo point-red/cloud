@@ -8,7 +8,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block :title="$t('customer')" :header="true">
         <p-form-input
           id="search-text"
           name="search-text"
@@ -72,8 +72,7 @@ export default {
     PointTable
   },
   data () {
-    return {
-      title: 'customer',
+    return {      
       loading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,

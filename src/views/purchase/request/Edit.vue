@@ -47,7 +47,7 @@
             id="supplier"
             name="supplier"
             :label="$t('supplier')">
-            <div slot="body" class="col-lg-9">
+            <div slot="body" class="col-lg-9 mt-5">
               <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
             </div>
           </p-form-row>
@@ -56,7 +56,7 @@
             id="employee"
             name="employee"
             :label="$t('employee')">
-            <div slot="body" class="col-lg-9">
+            <div slot="body" class="col-lg-9 mt-5">
               <m-employee id="employee" v-model="form.employee_id" @choosen="chooseEmployee"/>
             </div>
           </p-form-row>

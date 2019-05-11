@@ -8,8 +8,6 @@
 
     <tab-menu/>
 
-    <br>
-
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="'Create Item'" :header="true">
         <p-form-row
@@ -34,8 +32,8 @@
           id="chart-of-account"
           name="chart-of-account"
           :label="$t('chart of account')">
-          <div slot="body" class="col-lg-9">
-            <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id"/>
+          <div slot="body" class="col-lg-9 mt-5">
+            <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" type="inventory"/>
           </div>
         </p-form-row>
 
@@ -87,19 +85,17 @@
               </td>
             </tr>
           </point-table>
+
           <button type="button" class="btn btn-sm btn-secondary" @click="addOpeningStockRow">
             <i class="fa fa-plus"/> Add
           </button>
-        </p-block-inner>
 
-        <div class="form-group row">
-          <div class="col-md-3"></div>
-          <div class="col-md-9">
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
-            </button>
-          </div>
-        </div>
+          <hr>
+
+          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+          </button>
+        </p-block-inner>
       </p-block>
     </form>
   </div>

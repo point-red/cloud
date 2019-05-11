@@ -176,7 +176,6 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      title: 'customer',
       isLoading: false,
       isDeleting: false,
       isLoadingSalesVisitation: false,

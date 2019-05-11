@@ -11,51 +11,50 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="'Create Item'" :header="true">
-        <p-form-row
-          id="code"
-          v-model="form.code"
-          :disabled="loadingSaveButton"
-          :label="$t('code')"
-          name="code"
-          :errors="form.errors.get('code')"
-          @errors="form.errors.set('code', null)"/>
+      <p-block :title="$t('edit') + ' ' + $t('item')" :header="true">
+        <p-block-inner>
+          <p-form-row
+            id="code"
+            v-model="form.code"
+            :disabled="loadingSaveButton"
+            :label="$t('code')"
+            name="code"
+            :errors="form.errors.get('code')"
+            @errors="form.errors.set('code', null)"/>
 
-        <p-form-row
-          id="name"
-          v-model="form.name"
-          :disabled="loadingSaveButton"
-          :label="$t('name')"
-          name="name"
-          :errors="form.errors.get('name')"
-          @errors="form.errors.set('name', null)"/>
+          <p-form-row
+            id="name"
+            v-model="form.name"
+            :disabled="loadingSaveButton"
+            :label="$t('name')"
+            name="name"
+            :errors="form.errors.get('name')"
+            @errors="form.errors.set('name', null)"/>
 
-        <p-form-row
-          id="chart-of-account"
-          name="chart-of-account"
-          :label="$t('chart of account')">
-          <div slot="body" class="col-lg-9">
-            <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id"/>
-          </div>
-        </p-form-row>
+          <p-form-row
+            id="chart-of-account"
+            name="chart-of-account"
+            :label="$t('chart of account')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" type="inventory"/>
+            </div>
+          </p-form-row>
 
-        <p-form-row
-          id="unit"
-          v-model="form.units[0].label"
-          :disabled="loadingSaveButton"
-          :label="$t('unit')"
-          name="unit"
-          :errors="form.errors.get('unit')"
-          @errors="form.errors.set('unit', null)"/>
+          <p-form-row
+            id="unit"
+            v-model="form.units[0].label"
+            :disabled="loadingSaveButton"
+            :label="$t('unit')"
+            name="unit"
+            :errors="form.errors.get('unit')"
+            @errors="form.errors.set('unit', null)"/>
 
-        <div class="form-group row">
-          <div class="col-md-3"></div>
-          <div class="col-md-9">
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
-            </button>
-          </div>
-        </div>
+          <hr/>
+
+          <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
+            <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+          </button>
+        </p-block-inner>
       </p-block>
     </form>
   </div>
