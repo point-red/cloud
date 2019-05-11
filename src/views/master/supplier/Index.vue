@@ -25,7 +25,7 @@
               <th>Phone</th>
             </tr>
             <tr
-              v-for="supplier in suppliers"
+              v-for="(supplier, index) in suppliers"
               :key="supplier.id"
               slot="p-body">
               <th>{{ index + 1 }}</th>
