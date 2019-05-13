@@ -26,6 +26,9 @@
         @click="clickLanguage">
         <i class="si si-flag mr-5"/> Language
       </a>
+      <router-link :to="'/storage'" class="dropdown-item">
+        <i class="si si-drawer mr-5"/> Storage
+      </router-link>
 
       <div class="dropdown-divider"/>
       <a
