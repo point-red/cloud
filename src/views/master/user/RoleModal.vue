@@ -38,7 +38,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Role', ['roles'])
+    ...mapGetters('masterRole', ['roles'])
   },
   watch: {
     'assignRole' () {
@@ -49,9 +49,9 @@ export default {
     this.get()
   },
   methods: {
-    ...mapActions('Role', ['get']),
-    ...mapActions('UserRole', ['update']),
-    ...mapActions('User', {
+    ...mapActions('masterRole', ['get']),
+    ...mapActions('masterUserRole', ['update']),
+    ...mapActions('masterUser', {
       findUser: 'find'
     }),
     show (user) {

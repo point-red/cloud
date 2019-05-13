@@ -107,10 +107,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('RepeatOrderReport', ['sales'])
+    ...mapGetters('pluginPinPointReportRepeatOrder', ['sales'])
   },
   methods: {
-    ...mapActions('RepeatOrderReport', ['get']),
+    ...mapActions('pluginPinPointReportRepeatOrder', ['get']),
     search () {
       this.loading = true
       this.loadingSaveButton = true

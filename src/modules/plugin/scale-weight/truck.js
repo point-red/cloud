@@ -47,7 +47,7 @@ const actions = {
   },
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url, { params: payload.params })
+      api.get(url, payload)
         .then((response) => {
           commit('FETCH_ARRAY', response.data)
           resolve(response)

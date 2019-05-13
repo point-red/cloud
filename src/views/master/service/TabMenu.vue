@@ -1,5 +1,5 @@
 <template>
-  <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
+  <ul class="nav nav-tabs nav-tabs-alt mb-10" data-toggle="tabs" role="tablist">
     <slot></slot>
     <li class="nav-item ml-auto" v-if="$permission.has('create service')">
       <router-link

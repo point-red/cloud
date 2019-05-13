@@ -2,32 +2,47 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">Allocation</span>
+      <span class="breadcrumb-item active">{{ $t('allocation') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
-    <br>
-
     <div class="row">
-      <p-block :title="title" :header="true">
-        <p-block-inner :is-loading="loading">
-          <p-table>
+      <p-block :title="$t('allocation')" :header="true">
+        <p-form-input
+          id="search-text"
+          name="search-text"
+          placeholder="Search"
+          ref="searchText"
+          :value="searchText"
+          @input="filterSearch"/>
+
+        <hr/>
+
+        <p-block-inner :is-loading="isLoading">
+          <point-table>
             <tr slot="p-head">
+              <th>#</th>
               <th>Name</th>
             </tr>
             <tr
-              v-for="allocation in allocations"
+              v-for="(allocation, index) in allocations"
               :key="allocation.id"
               slot="p-body">
+              <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'allocation.show', params: { id: allocation.id }}">
-                  {{ allocation.name | titlecase }}
+                  {{ allocation.name }}
                 </router-link>
               </td>
             </tr>
-          </p-table>
+          </point-table>
         </p-block-inner>
+        <p-pagination
+          :current-page="currentPage"
+          :last-page="lastPage"
+          @updatePage="updatePage">
+        </p-pagination>
       </p-block>
     </div>
   </div>
@@ -37,40 +52,64 @@
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
+import PointTable from 'point-table-vue'
+import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster
+    BreadcrumbMaster,
+    PointTable
   },
   data () {
     return {
-      title: 'Allocation',
-      loading: true
+      isLoading: true,
+      searchText: this.$route.query.search,
+      currentPage: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {
-    ...mapGetters('Allocation', ['allocations'])
+    ...mapGetters('masterAllocation', ['allocations', 'pagination'])
   },
   methods: {
-    ...mapActions('Allocation', {
-      getAllocation: 'get'
-    })
+    ...mapActions('masterAllocation', ['get']),
+    updatePage (value) {
+      this.currentPage = value
+      this.getAllocationRequest()
+    },
+    getAllocationRequest () {
+      this.isLoading = true
+      this.get({
+        params: {
+          sort_by: 'name',
+          limit: 20,
+          page: this.currentPage,
+          filter_like: {
+            'code': this.searchText,
+            'name': this.searchText
+          }
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+      })
+    },
+    filterSearch: debounce(function (value) {
+      this.$router.push({ query: { search: value } })
+      this.searchText = value
+      this.currentPage = 1
+      this.getAllocationRequest()
+    }, 300)
   },
   created () {
-    this.loading = true
-    this.getAllocation({
-      params: {
-        sort_by: 'name'
-      }
-    }).then((response) => {
-      this.loading = false
-    }, (error) => {
-      this.loading = false
-      this.$notifications.error(error.message)
-    })
+    this.getAllocationRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   }
 }
 </script>

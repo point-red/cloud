@@ -88,14 +88,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('SalesVisitationTarget', ['targets'])
+    ...mapGetters('pluginPinPointSalesVisitationTarget', ['targets'])
   },
   methods: {
-    ...mapActions('SalesVisitationTarget', {
+    ...mapActions('pluginPinPointSalesVisitationTarget', {
       get: 'get',
       create: 'create'
     }),
-    ...mapActions('PinPointPerformanceReport', {
+    ...mapActions('pluginPinPointReportPerformance', {
       getReport: 'get'
     }),
     show (dateFrom, dateTo) {

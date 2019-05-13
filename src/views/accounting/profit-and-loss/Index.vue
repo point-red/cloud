@@ -170,10 +170,10 @@ export default {
     Breadcrumb
   },
   computed: {
-    ...mapGetters('BalanceSheet', ['chartOfAccounts'])
+    ...mapGetters('accountingBalanceSheet', ['chartOfAccounts'])
   },
   methods: {
-    ...mapActions('BalanceSheet', {
+    ...mapActions('accountingBalanceSheet', {
       getChartOfAccounts: 'get'
     })
   },

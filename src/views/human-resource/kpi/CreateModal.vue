@@ -61,7 +61,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('KpiTemplate', {
+    ...mapActions('humanResourceKpiTemplate', {
       createKpiTemplate: 'create'
     }),
     show () {

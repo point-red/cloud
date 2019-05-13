@@ -218,11 +218,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employee']),
-    ...mapGetters('EmployeeAssessment', ['assessment']),
-    ...mapGetters('KpiResult', ['result']),
-    ...mapGetters('KpiTemplate', ['template']),
-    ...mapGetters('KpiAutomated', ['automated_ids'])
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeAssessment', ['assessment']),
+    ...mapGetters('humanResourceKpiResult', ['result']),
+    ...mapGetters('humanResourceKpiTemplate', ['template']),
+    ...mapGetters('humanResourceKpiAutomated', ['template'])
   },
   created () {
     this.loading = true
@@ -243,13 +243,13 @@ export default {
     )
   },
   methods: {
-    ...mapActions('EmployeeAssessment', {
+    ...mapActions('humanResourceEmployeeAssessment', {
       findEmployeeAssessment: 'find', updateEmployeeAssessment: 'update'
     }),
-    ...mapActions('KpiTemplate', {
+    ...mapActions('humanResourceKpiTemplate', {
       findKpiTemplate: 'find'
     }),
-    ...mapActions('KpiResult', {
+    ...mapActions('humanResourceKpiResult', {
       findKpiResult: 'findByScorePercentage'
     }),
     cancel () {

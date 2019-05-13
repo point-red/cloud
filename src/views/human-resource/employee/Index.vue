@@ -37,12 +37,12 @@
             </tr>
             </template>
           </point-table>
-          <p-pagination
-            :current-page="currentPage"
-            :last-page="lastPage"
-            @updatePage="updatePage">
-          </p-pagination>
         </p-block-inner>
+        <p-pagination
+          :current-page="currentPage"
+          :last-page="lastPage"
+          @updatePage="updatePage">
+        </p-pagination>
       </p-block>
     </div>
   </div>
@@ -67,18 +67,18 @@ export default {
     return {
       loading: false,
       listEmployee: this.employees,
-      searchText: '',
+      searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
   computed: {
-    ...mapGetters('Auth', ['authUser']),
-    ...mapGetters('Employee', ['employees', 'employeePagination']),
-    ...mapGetters('EmployeeGroup', ['groupList'])
+    ...mapGetters('auth', ['authUser']),
+    ...mapGetters('humanResourceEmployee', ['employees', 'pagination']),
+    ...mapGetters('humanResourceEmployeeGroup', ['groupList'])
   },
   methods: {
-    ...mapActions('Employee', { getEmployees: 'get' }),
+    ...mapActions('humanResourceEmployee', { getEmployees: 'get' }),
     isShow (scorers) {
       return scorers.some(element => {
         return element.id == this.authUser.id
@@ -97,15 +97,17 @@ export default {
     getEmployeesRequest () {
       this.loading = true
       this.getEmployees({
-        filter_like: {
-          'name': this.searchText,
-          'job_title': this.searchText
-        },
-        limit: 10,
-        page: this.currentPage,
-        sort_by: 'name',
-        includes: 'scorers',
-        additional: 'groups'
+        params: {
+          filter_like: {
+            'name': this.searchText,
+            'job_title': this.searchText
+          },
+          limit: 10,
+          page: this.currentPage,
+          sort_by: 'name',
+          includes: 'scorers',
+          additional: 'groups'
+        }
       }).then((response) => {
         this.loading = false
       }, (errors) => {
@@ -118,7 +120,7 @@ export default {
     this.getEmployeesRequest()
   },
   updated () {
-    this.lastPage = this.employeePagination.last_page
+    this.lastPage = this.pagination.last_page
   }
 }
 </script>

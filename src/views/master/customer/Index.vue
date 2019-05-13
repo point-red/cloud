@@ -8,17 +8,19 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block :title="$t('customer')" :header="true">
         <p-form-input
           id="search-text"
           name="search-text"
           placeholder="Search"
+          ref="searchText"
           :value="searchText"
           @input="filterSearch"/>
         <hr>
-        <p-block-inner :is-loading="loading">          
+        <p-block-inner :is-loading="loading">
           <point-table>
             <tr slot="p-head">
+              <th>#</th>
               <th>Name</th>
               <th>Address</th>
               <th>Phone</th>
@@ -27,11 +29,12 @@
               v-for="(customer, index) in customers"
               :key="index"
               slot="p-body">
-              <th>
+              <th>{{ index + 1}}</th>
+              <td>
                 <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">
                   <i class="fa fa-star" v-show="customer.groups.length > 0"></i> {{ customer.name | titlecase }}
                 </router-link>
-              </th>
+              </td>
               <td>
                 <template v-for="customerAddress in customer.addresses">
                   {{ customerAddress.address | lowercase }}
@@ -71,8 +74,7 @@ export default {
     PointTable
   },
   data () {
-    return {
-      title: 'Customer',
+    return {      
       loading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
@@ -80,10 +82,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Customer', ['customers', 'customerPagination'])
+    ...mapGetters('masterCustomer', ['customers', 'pagination'])
   },
   methods: {
-    ...mapActions('Customer', ['get']),
+    ...mapActions('masterCustomer', ['get']),
     updatePage (value) {
       this.currentPage = value
       this.getCustomerRequest()
@@ -92,14 +94,17 @@ export default {
       this.loading = true
       this.get({
         params: {
+          fields: 'customers.*',
           sort_by: 'name',
           filter_like: {
-            name: this.searchText,
+            'name': this.searchText,
             'addresses.address': this.searchText,
+            'emails.email': this.searchText,
             'phones.number': this.searchText
           },
+          join: 'addresses,phones,emails',
+          includes: 'addresses;phones;emails;groups',
           limit: 10,
-          includes: 'addresses;phones;groups',
           page: this.currentPage
         }
       }).then(response => {
@@ -117,9 +122,12 @@ export default {
   },
   created () {
     this.getCustomerRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
   },
   updated () {
-    this.lastPage = this.customerPagination.last_page
+    this.lastPage = this.pagination.last_page
   }
 }
 </script>

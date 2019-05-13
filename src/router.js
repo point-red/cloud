@@ -12,6 +12,9 @@ import Dashboard from '@/views/Dashboard'
 import MainMenu from '@/views/MainMenu'
 import Master from '@/views/master/routes'
 import HumanResource from '@/views/human-resource/routes'
+import Purchase from '@/views/purchase/routes'
+import Finance from '@/views/finance/routes'
+import Accounting from '@/views/accounting/routes'
 import Account from '@/views/account/routes'
 import Plugin from '@/views/plugin/routes'
 
@@ -42,7 +45,7 @@ export default new Router({
       ],
       beforeEnter: (to, from, next) => {
         // redirect to sign in page if not authenticated
-        if (!store.state.Auth['user']) {
+        if (!store.state.auth['user']) {
           if (Vue.cookie.get('TAT') !== null && Vue.cookie.get('TTT') !== null) {
             store.dispatch('reloadVuex')
             next()
@@ -68,11 +71,14 @@ export default new Router({
         { path: '/whoops', component: Whoops },
         ...Master,
         ...HumanResource,
+        ...Purchase,
+        ...Finance,
+        ...Accounting,
         ...Plugin
       ],
       beforeEnter: (to, from, next) => {
         // redirect to sign in page if not authenticated
-        if (!store.state.Auth['user']) {
+        if (!store.state.auth['user']) {
           if (Vue.cookie.get('TAT') !== null) {
             store.dispatch('reloadVuex')
             next()

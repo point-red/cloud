@@ -59,11 +59,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('UIHandler', ['openHeaderDropdown'])
+    ...mapGetters('uiHandler', ['openHeaderDropdown'])
   },
   methods: {
-    ...mapActions('Auth', ['logout']),
-    ...mapActions('UIHandler', ['toggleHeaderDropdown']),
+    ...mapActions('auth', ['logout']),
+    ...mapActions('uiHandler', ['toggleHeaderDropdown']),
     clickLanguage () {
       this.$refs.changeLanguageModalRef.show()
       this.toggleHeaderDropdown()

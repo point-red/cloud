@@ -16,7 +16,7 @@ export default {
   },
   data () {
     return {
-      number: null,
+      number: this.value,
       options: {
         numeral: true,
         numeralDecimalScale: 15,

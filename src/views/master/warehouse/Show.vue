@@ -10,10 +10,8 @@
 
     <tab-menu/>
 
-    <br/>
-
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block :title="$t('warehouse')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
@@ -22,7 +20,7 @@
             v-model="data.name"
             readonly/>
 
-          <hr>
+          <hr/>
 
           <router-link
             :to="{ path: '/master/warehouse/' + warehouse.id + '/edit', params: { id: warehouse.id }}"
@@ -58,24 +56,23 @@ export default {
         email: null,
         address: null,
         phone: null,
-        priority: false,
+        priority: false
       }
     }
   },
   computed: {
-    ...mapGetters('Warehouse', ['warehouse']),
-    ...mapGetters('SalesVisitationForm', ['forms'])
+    ...mapGetters('masterWarehouse', ['warehouse']),
+    ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
   },
   methods: {
-    ...mapActions('Warehouse', ['find']),
-    ...mapActions('SalesVisitationForm', ['get', 'export'])
+    ...mapActions('masterWarehouse', ['find']),
+    ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export'])
   },
   created () {
     this.isLoading = true
     this.find({ id: this.id })
       .then((response) => {
         this.isLoading = false
-        console.log('find ' + JSON.stringify(response))
         this.data.name = response.data.name
         if (response.data.emails.length > 0) {
           this.data.email = response.data.emails[0].email
@@ -98,7 +95,7 @@ export default {
             date_to: this.$moment().format('YYYY-MM-DD 23:59:59')
           }
         }).then(response => {
-          this.isLoading = false          
+          this.isLoading = false
         }).catch(error => {
           this.isLoading = false
           this.$notification.error(error.message)

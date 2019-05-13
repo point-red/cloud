@@ -19,6 +19,7 @@ instance.defaults.headers.common['Authorization'] = Vue.cookie.get('TTT') + ' ' 
 instance.defaults.headers.common['Timezone'] = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 instance.interceptors.request.use((config) => {
+  console.log('Request: ', config.url)
   console.log('Request: ', config)
   return config
 }, function (error) {
@@ -27,7 +28,8 @@ instance.interceptors.request.use((config) => {
 })
 
 instance.interceptors.response.use((response) => {
-  console.log('Response: ', response)
+  console.log('Response: ', response.config.url)
+  console.log('Response: ', response.data)
   return response
 }, function (error) {
   if (!error.response) {

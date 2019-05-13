@@ -70,7 +70,7 @@
               slot="p-body">
               <td>
                 <template v-if="reportType == 'all'">
-                  <router-link :to="{ name: 'EmployeeAssessmentShow', params: { id: employee.id, kpiId: assessment.id }}">
+                  <router-link :to="{ name: 'humanResourceEmployeeAssessmentShow', params: { id: id, kpiId: assessment.id }}">
                     {{ assessment.date | dateFormat('DD MMMM YYYY') }}
                     <template v-if="$permission.has('read employee kpi')"> - {{ assessment.scorer.first_name + ' ' + assessment.scorer.last_name | titlecase }}</template>
                   </router-link>
@@ -170,9 +170,10 @@ export default {
       params: {
         type: this.reportType
       }
-    }).then((response) => {
+    }).then(response => {
       this.loading = false
-    }, (error) => {
+    }).catch(error => {
+      this.loading = false
       console.log(JSON.stringify(error))
     })
     if (this.employee.scorers) {
@@ -184,20 +185,18 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Auth', ['authUser']),
-    ...mapGetters('Employee', ['employee']),
-    ...mapGetters('EmployeeAssessment', ['assessments', 'dataSet'])
+    ...mapGetters('auth', ['authUser']),
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeAssessment', ['assessments', 'dataSet'])
   },
   watch: {
     dataSet: function (val) {
-      console.log('data set updated')
       if (val.scores.length >= 2) {
         this.hideChart = false
         this.chartLabel.splice(0, this.chartLabel.length)
         this.chartData.splice(0, this.chartData.length)
         Array.prototype.push.apply(this.chartLabel, val.dates)
         Array.prototype.push.apply(this.chartData, val.scores)
-        console.log(JSON.stringify(this.chartData))
         this.$refs.linechart.updateData()
       } else {
         this.hideChart = true
@@ -205,7 +204,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('EmployeeAssessment', {
+    ...mapActions('humanResourceEmployeeAssessment', {
       getEmployeeAssessment: 'get',
       deleteEmployeeAssessment: 'delete'
     }),

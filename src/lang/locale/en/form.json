@@ -6,5 +6,11 @@
   "delete" : "delete",
   "list" : "list",
   "submit" : "submit",
-  "cancel" : "cancel"
+  "cancel" : "cancel",
+  "pending" : "pending",
+  "approved" : "approved",
+  "rejected" : "rejected",
+  "archived": "archived",
+  "number": "number",
+  "amount": "amount"
 }

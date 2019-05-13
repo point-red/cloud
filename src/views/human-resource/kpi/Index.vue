@@ -7,7 +7,7 @@
 
     <div class="mb-20">
       <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
-        <slot></slot>        
+        <slot></slot>
         <li class="nav-item ml-auto" v-if="$permission.has('create employee kpi')">
           <router-link
             to=""
@@ -124,10 +124,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('KpiTemplate', ['templates', 'pagination'])
+    ...mapGetters('humanResourceKpiTemplate', ['templates', 'pagination'])
   },
   methods: {
-    ...mapActions('KpiTemplate', {
+    ...mapActions('humanResourceKpiTemplate', {
       getKpiTemplates: 'get',
       export: 'export'
     }),
@@ -144,7 +144,7 @@ export default {
         console.log(error)
       })
     },
-    addFiles() {
+    addFiles () {
       this.$refs.file.click()
     },
     onFileChange (e) {
@@ -161,7 +161,7 @@ export default {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-      }).then(function(response, data) {
+      }).then(function (response, data) {
         if (response.data.message == 'exist') {
           if (confirm('Data KPI ' + response.data.name + ' exist, do you want replace ?')) {
             let data = new FormData()
@@ -169,28 +169,28 @@ export default {
             data.append('replace', response.data.replace)
             axios.post('/human-resource/kpi/templates/import', data, {
               headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': 'multipart/form-data'
               }
             })
-            .then(function(response) {
-              console.log(response)
-              document.getElementById("file").value = ""
-              self.getKpiTemplates()
-              self.loading = false
-            })
-            .catch(function(error) {
-              console.log(error)
-            })
+              .then(function (response) {
+                console.log(response)
+                document.getElementById('file').value = ''
+                self.getKpiTemplates()
+                self.loading = false
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
           } else {
-            document.getElementById("file").value = ""
+            document.getElementById('file').value = ''
             self.loading = false
           }
         } else {
-          document.getElementById("file").value = ""
+          document.getElementById('file').value = ''
           self.getKpiTemplates()
           self.loading = false
         }
-      }).catch(function(error) {
+      }).catch(function (error) {
         console.log(error)
       })
     },

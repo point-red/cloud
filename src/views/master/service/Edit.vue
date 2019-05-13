@@ -4,31 +4,30 @@
       <breadcrumb-master/>
       <router-link
         to="/master/service"
-        class="breadcrumb-item">Service</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+        class="breadcrumb-item">{{ $t('service') | titlecase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="'Create Service'" :header="true">
-        <p-form-row
-          id="name"
-          v-model="form.name"
-          :disabled="loadingSaveButton"
-          :label="$t('name')"
-          name="name"
-          :errors="form.errors.get('name')"
-          @errors="form.errors.set('name', null)"/>
+      <p-block :title="$t('edit') + ' ' + $t('service')" :header="true">
+        <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="name"
+            v-model="form.name"
+            :disabled="isSaving"
+            :label="$t('name')"
+            name="name"
+            :errors="form.errors.get('name')"
+            @errors="form.errors.set('name', null)"/>
 
-        <div class="form-group row">
-          <div class="col-md-3"></div>
-          <div class="col-md-9">
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
-            </button>
-          </div>
-        </div>
+          <hr/>
+
+          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+          </button>
+        </p-block-inner>
       </p-block>
     </form>
   </div>
@@ -52,7 +51,7 @@ export default {
       title: 'Edit Service',
       id: this.$route.params.id,
       loading: true,
-      loadingSaveButton: false,
+      isSaving: false,
       form: new Form({
         id: this.$route.params.id,
         code: null,
@@ -61,7 +60,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Service', ['service'])
+    ...mapGetters('masterService', ['service'])
   },
   watch: {
     'form.name' () {
@@ -81,18 +80,18 @@ export default {
       })
   },
   methods: {
-    ...mapActions('Service', ['find', 'update']),
+    ...mapActions('masterService', ['find', 'update']),
     onSubmit () {
       this.update(this.form)
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.form.reset()
             this.$notification.success('Update success')
             this.$router.push('/master/service/' + this.id)
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.error('Update failed')
             this.form.errors.record(error.errors)
           }

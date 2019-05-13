@@ -121,10 +121,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('SimilarProductReport', ['products', 'totalPerWeek'])
+    ...mapGetters('pluginPinPointReportSimilarProduct', ['products', 'totalPerWeek'])
   },
   methods: {
-    ...mapActions('SimilarProductReport', ['get']),
+    ...mapActions('pluginPinPointReportSimilarProduct', ['get']),
     search () {
       this.loading = true
       this.loadingSaveButton = true

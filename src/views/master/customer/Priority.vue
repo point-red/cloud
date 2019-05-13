@@ -57,15 +57,15 @@ export default {
   },
   data () {
     return {
-      title: 'Customer',
+      title: 'customer',
       loading: true
     }
   },
   computed: {
-    ...mapGetters('Customer', ['customers'])
+    ...mapGetters('masterCustomer', ['customers'])
   },
   methods: {
-    ...mapActions('Customer', {
+    ...mapActions('masterCustomer', {
       getCustomer: 'get'
     })
   },

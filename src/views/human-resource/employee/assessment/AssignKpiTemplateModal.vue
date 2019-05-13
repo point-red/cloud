@@ -60,22 +60,18 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('KpiTemplate', ['templates'])
+    ...mapGetters('humanResourceKpiTemplate', ['templates'])
   },
   created () {
-    this.showLoadingBlock()
-    this.getKpiTemplates()
-      .then((response) => {
-        this.dismissLoadingBlock()
-      }, (error) => {
-        this.dismissLoadingBlock()
-        console.log(JSON.stringify(error))
-      })
+    this.getKpiTemplates().then(response => {
+      //
+    }).catch(error => {
+      console.log(JSON.stringify(error))
+    })
   },
   methods: {
-    ...mapActions('KpiTemplate', { getKpiTemplates: 'get' }),
-    ...mapActions('Employee', { assignAssessment: 'assignAssessment' }),
-    ...mapActions('UIHandler', ['showLoadingBlock', 'dismissLoadingBlock']),
+    ...mapActions('humanResourceKpiTemplate', { getKpiTemplates: 'get' }),
+    ...mapActions('humanResourceEmployee', { assignAssessment: 'assignAssessment' }),
     show (employeeId) {
       this.employeeId = employeeId
       this.$refs.assignKpiTemplate.show()

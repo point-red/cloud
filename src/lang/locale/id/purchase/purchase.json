@@ -1,0 +1,22 @@
+{
+  "purchase" : "pembelian",
+  "purchase request" : "permintaan pembelian",
+  "purchase contract" : "kontrak pembelian",
+  "purchase order" : "order pembelian",
+  "purchase receive" : "penerimaan barang",
+  "purchase invoice" : "nota pembelian",
+  "purchase down payment" : "uang muka",
+  "purchase return" : "pengembalian barang",
+  "payment order" : "perintah bayar",
+  "invoice" : "nota pembelian",
+  "down payment" : "uang muka",
+  "return" : "pengembalian barang",
+  "driver" : "sopir",
+  "license plate" : "plat nomer",
+  "require down payment" : "dibutuhkan uang muka",
+  "cash only" : "transaksi tunai",
+  "include tax" : "sudah termasuk ppn",
+  "exclude tax" : "belum termasuk ppn",
+  "tax" : "ppn",
+  "discount" : "diskon"
+}

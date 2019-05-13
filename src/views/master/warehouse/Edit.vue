@@ -4,31 +4,30 @@
       <breadcrumb-master/>
       <router-link
         to="/master/warehouse"
-        class="breadcrumb-item">Warehouse</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+        class="breadcrumb-item">{{ $t('warehouse') | titlecase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="'Create Warehouse'" :header="true">
-        <p-form-row
-          id="name"
-          v-model="form.name"
-          :disabled="loadingSaveButton"
-          :label="$t('name')"
-          name="name"
-          :errors="form.errors.get('name')"
-          @errors="form.errors.set('name', null)"/>
+      <p-block :title="$t('edit') + ' ' + $t('warehouse')" :header="true">
+        <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="name"
+            v-model="form.name"
+            :disabled="isSaving"
+            :label="$t('name')"
+            name="name"
+            :errors="form.errors.get('name')"
+            @errors="form.errors.set('name', null)"/>
 
-        <div class="form-group row">
-          <div class="col-md-3"></div>
-          <div class="col-md-9">
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
-            </button>
-          </div>
-        </div>
+          <hr/>
+
+          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+          </button>
+        </p-block-inner>
       </p-block>
     </form>
   </div>
@@ -49,10 +48,9 @@ export default {
   },
   data () {
     return {
-      title: 'Edit Warehouse',
       id: this.$route.params.id,
-      loading: true,
-      loadingSaveButton: false,
+      isLoading: true,
+      isSaving: false,
       form: new Form({
         id: this.$route.params.id,
         code: null,
@@ -61,7 +59,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Warehouse', ['warehouse'])
+    ...mapGetters('masterWarehouse', ['warehouse'])
   },
   watch: {
     'form.name' () {
@@ -71,32 +69,29 @@ export default {
   created () {
     this.isLoading = true
     this.find({ id: this.id })
-      .then((response) => {
+      .then(response => {
         this.isLoading = false
         this.form.code = this.warehouse.code
         this.form.name = this.warehouse.name
-      }, (error) => {
+      }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
       })
   },
   methods: {
-    ...mapActions('Warehouse', ['find', 'update']),
+    ...mapActions('masterWarehouse', ['find', 'update']),
     onSubmit () {
       this.update(this.form)
-        .then(
-          (response) => {
-            this.loadingSaveButton = false
-            this.form.reset()
-            this.$notification.success('Update success')
-            this.$router.push('/master/warehouse/' + this.id)
-          },
-          (error) => {
-            this.loadingSaveButton = false
-            this.$notification.error('Update failed')
-            this.form.errors.record(error.errors)
-          }
-        )
+        .then(response => {
+          this.isSaving = false
+          this.form.reset()
+          this.$notification.success('Update success')
+          this.$router.push('/master/warehouse/' + this.id)
+        }).catch(error => {
+          this.isSaving = false
+          this.$notification.error('Update failed')
+          this.form.errors.record(error.errors)
+        })
     }
   }
 }

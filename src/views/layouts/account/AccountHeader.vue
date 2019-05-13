@@ -18,6 +18,7 @@
 
       <!-- Right Section -->
       <div class="content-header-section">
+        <notification-dropdown/>
         <header-dropdown/>
       </div>
       <!-- END Right Section -->
@@ -41,13 +42,15 @@
 <script>
 import { mapActions } from 'vuex'
 import HeaderDropdown from '../HeaderDropdown'
+import NotificationDropdown from '../NotificationDropdown'
 
 export default {
   components: {
-    HeaderDropdown
+    HeaderDropdown,
+    NotificationDropdown
   },
   methods: {
-    ...mapActions('UIHandler', ['toggleLeftSidebar'])
+    ...mapActions('uiHandler', ['toggleLeftSidebar'])
   }
 }
 </script>

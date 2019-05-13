@@ -1,6 +1,7 @@
 {
   "new" : "new",
   "join" : "join",
+  "action" : "action",
   "group" : "group",
   "due date": "due date",
   "date from": "date from",
@@ -13,5 +14,10 @@
   "quantity": "quantity",
   "price": "price",
   "total": "total",
-  "report": "report"
+  "report": "report",
+  "timezone": "timezone",
+  "click": "click",
+  "please": "please",
+  "approver": "approver",
+  "code": "code"
 }

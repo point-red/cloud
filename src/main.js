@@ -21,11 +21,13 @@ import PointNumber from '@/components/point-number'
 import PointMask from '@/components/point-mask'
 import PointPermission from '@/components/point-permission'
 import PointRolePermission from '@/components/point-permission/role-permission'
+import PointFormRules from '@/components/point-form-rules'
 import PointTemplate from '@/components/point-template'
 import VueTour from 'vue-tour'
 import BlockUI from 'vue-blockui'
 import VueClipboard from 'vue-clipboard2'
 import VueSelectMenu from 'v-selectmenu'
+import ClickOutside from 'v-click-outside'
 
 require('vue-tour/dist/vue-tour.css')
 require('flag-icon-css/css/flag-icon.min.css')
@@ -37,6 +39,7 @@ if (process.env.VUA_APP_NODE_ENV == 'production') {
 
 Vue.use(VueSelectMenu, { language: 'en' })
 Vue.use(VueClipboard)
+Vue.use(ClickOutside)
 Vue.use(BlockUI)
 Vue.use(Vuex)
 Vue.use(VueTour)
@@ -54,6 +57,7 @@ Vue.use(PointNumber)
 Vue.use(PointMask)
 Vue.use(PointPermission)
 Vue.use(PointRolePermission)
+Vue.use(PointFormRules)
 Vue.use(PointTemplate)
 
 Vue.config.productionTip = false

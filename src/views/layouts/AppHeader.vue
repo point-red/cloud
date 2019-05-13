@@ -31,6 +31,7 @@
 
       <!-- Right Section -->
       <div class="content-header-section">
+        <notification-dropdown/>
         <header-dropdown/>
 
         <!-- Toggle Side Overlay -->
@@ -105,6 +106,7 @@
 <script>
 import { mapActions } from 'vuex'
 import HeaderDropdown from './HeaderDropdown'
+import NotificationDropdown from './NotificationDropdown'
 
 export default {
   data () {
@@ -113,10 +115,11 @@ export default {
     }
   },
   components: {
-    HeaderDropdown
+    HeaderDropdown,
+    NotificationDropdown
   },
   methods: {
-    ...mapActions('UIHandler', ['toggleLeftSidebar', 'toggleSideOverlay'])
+    ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSideOverlay'])
   }
 }
 </script>

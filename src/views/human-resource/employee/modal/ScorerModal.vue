@@ -42,7 +42,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('User', ['users'])
+    ...mapGetters('masterUser', ['users'])
   },
   watch: {
     'scorer' () {
@@ -53,7 +53,7 @@ export default {
     this.get()
   },
   methods: {
-    ...mapActions('User', ['get']),
+    ...mapActions('masterUser', ['get']),
     show () {
       this.$refs.scorerModal.show()
     },

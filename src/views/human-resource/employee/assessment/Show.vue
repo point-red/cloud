@@ -128,8 +128,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employee']),
-    ...mapGetters('EmployeeAssessment', ['assessment'])
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeAssessment', ['assessment'])
+  },
+  methods: {
+    ...mapActions('humanResourceEmployeeAssessment', {
+      findEmployeeAssessment: 'find'
+    })
   },
   created () {
     this.loading = true
@@ -145,11 +150,6 @@ export default {
         this.loading = false
       }
     )
-  },
-  methods: {
-    ...mapActions('EmployeeAssessment', {
-      findEmployeeAssessment: 'find'
-    })
   }
 }
 </script>

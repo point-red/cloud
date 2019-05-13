@@ -104,8 +104,8 @@ export default {
     return {
       loading: true,
       isExporting: false,
-      date_from: new Date(),
-      date_to: new Date(),
+      date_from: this.$moment().startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      date_to: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
       downloadLink: ''
     }
   },
@@ -118,10 +118,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('ScaleWeightTruck', ['scaleWeights'])
+    ...mapGetters('pluginScaleWeightTruck', ['scaleWeights'])
   },
   methods: {
-    ...mapActions('ScaleWeightTruck', ['get', 'export']),
+    ...mapActions('pluginScaleWeightTruck', ['get', 'export']),
     updateDateFrom () {
       this.loading = true
       this.date_to = this.date_from

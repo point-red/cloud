@@ -1,0 +1,22 @@
+{
+  "purchase" : "purchase",
+  "purchase request" : "purchase request",
+  "purchase contract" : "purchase contract",
+  "purchase order" : "purchase order",
+  "purchase receive" : "purchase receive",
+  "purchase invoice" : "purchase invoice",
+  "purchase down payment" : "purchase down payment",
+  "purchase return" : "purchase return",
+  "payment order" : "payment order",
+  "require down payment" : "required down payment",
+  "invoice" : "invoice",
+  "down payment" : "down payment",
+  "return" : "return",
+  "driver" : "driver",
+  "license plate" : "license plate",
+  "cash only" : "cash only",
+  "include tax" : "include tax",
+  "exclude tax" : "exclude tax",
+  "tax" : "tax",
+  "discount" : "discount"
+}

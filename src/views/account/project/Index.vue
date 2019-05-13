@@ -15,13 +15,14 @@
         </router-link>
       </li>
     </tab-menu>
-    <br>
+
     <div class="row">
       <p-block :header="true" :is-loading="loading" title="Project">
         <p-table>
           <tr slot="p-head">
             <th>Company Id</th>
             <th>Company Name</th>
+            <th>Company Group</th>
             <th></th>
           </tr>
           <tr
@@ -37,6 +38,7 @@
               </template>
               <template v-else>{{ project.name }}</template>
             </td>
+            <td>{{ project.group | uppercase }}</td>
             <td class="text-right">
               <template v-if="project.joined == false && project.request_join_at == null">
                 <button
@@ -90,14 +92,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('AccountProject', ['projects']),
-    ...mapGetters('Auth', ['authUser'])
+    ...mapGetters('accountProject', ['projects']),
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
-    ...mapActions('AccountProject', {
+    ...mapActions('accountProject', {
       getProject: 'get'
     }),
-    ...mapActions('UserInvitation', {
+    ...mapActions('masterUserInvitation', {
       updateProject: 'update'
     }),
     redirectToProject (project) {

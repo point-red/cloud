@@ -51,7 +51,7 @@
             </tr>
           </point-table>
         </p-block-inner>
-      </p-block>    
+      </p-block>
     </div>
   </div>
 </template>

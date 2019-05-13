@@ -2,33 +2,30 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link to="/master/allocation" class="breadcrumb-item">Allocation</router-link>
-      <span class="breadcrumb-item active">Create</span>
+      <router-link to="/master/allocation" class="breadcrumb-item">{{ $t('allocation') | titlecase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
-    <br>
-
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="'Create Allocation'" :header="true">
-        <p-form-row
-          id="name"
-          v-model="form.name"
-          :disabled="loadingSaveButton"
-          :label="$t('name')"
-          name="name"
-          :errors="form.errors.get('name')"
-          @errors="form.errors.set('name', null)"/>
+      <p-block :title="$t('create') + ' ' + $t('allocation')" :header="true">
+        <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="name"
+            v-model="form.name"
+            :disabled="isSaving"
+            :label="$t('name')"
+            name="name"
+            :errors="form.errors.get('name')"
+            @errors="form.errors.set('name', null)"/>
 
-        <div class="form-group row">
-          <div class="col-md-3"></div>
-          <div class="col-md-9">
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
-            </button>
-          </div>
-        </div>
+          <hr/>
+
+          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+          </button>
+        </p-block-inner>
       </p-block>
     </form>
   </div>
@@ -49,27 +46,28 @@ export default {
   },
   data () {
     return {
-      loadingSaveButton: false,
+      isSaving: false,
       form: new Form({
         name: null
       })
     }
   },
   computed: {
-    ...mapGetters('Allocation', ['allocation'])
+    ...mapGetters('masterAllocation', ['allocation'])
   },
   methods: {
-    ...mapActions('Allocation', ['create']),
+    ...mapActions('masterAllocation', ['create']),
     onSubmit () {
-      this.loadingSaveButton = true
-      
+      this.isSaving = true
+
       this.create(this.form)
         .then(response => {
-          this.loadingSaveButton = false
-          this.$notification.success('create success')          
-          Object.assign(this.$data, this.$options.data.call(this));
+          this.isSaving = false
+          this.$notification.success('create success')
+          Object.assign(this.$data, this.$options.data.call(this))
+          this.$router.push('/master/allocation/' + response.data.id)
         }).catch(error => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })

@@ -1,6 +1,7 @@
 {
   "new" : "tambah",
   "join" : "bergabung",
+  "action" : "action",
   "group" : "grup",
   "due date": "tanggal jatuh tempo",
   "date from": "periode awal",
@@ -13,5 +14,10 @@
   "quantity": "jumlah",
   "price": "harga",
   "total": "total",
-  "report": "laporan"
+  "report": "laporan",
+  "timezone": "timezone",
+  "click": "klik",
+  "please": "tolong",
+  "approver": "persetujuan oleh",
+  "code": "kode"
 }

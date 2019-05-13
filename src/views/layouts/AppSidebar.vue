@@ -3,9 +3,8 @@
     id="sidebar"
     ref="sidebarRef">
     <!-- Sidebar Scroll Container -->
-    <div
-      v-slimscroll="options"
-      id="sidebar-scroll">
+    <!-- v-slimscroll="options" -->
+    <div id="sidebar-scroll" v-slimscroll="options">
       <!-- Sidebar Content -->
       <div class="sidebar-content">
         <!-- Side Header -->
@@ -165,6 +164,11 @@
                     {{ $t('service') | titlecase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read item')">
+                  <router-link to="/master/item" active-class="active">
+                    {{ $t('item') | titlecase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li :class="{ 'open' : firstUri === 'human-resource' }" v-if="$permission.has('menu human resource')">
@@ -199,6 +203,148 @@
                 </li>
               </ul>
             </li>
+            <!-- <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
+              <router-link to="/purchase" class="nav-submenu" active-class="active">
+                <i class="si si-basket"/>
+                <span class="sidebar-mini-hide">{{ $t("purchase") | titlecase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase request')">
+                  <router-link
+                    to="/purchase/request"
+                    active-class="active">{{ $t('purchase request') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
+                  <router-link
+                    to="/purchase/order"
+                    active-class="active">{{ $t('purchase order') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
+                  <router-link
+                    to="/purchase/down-payment"
+                    active-class="active">{{ $t('purchase down payment') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase receive')">
+                  <router-link
+                    to="/purchase/receive"
+                    active-class="active">{{ $t('purchase receive') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase invoice')">
+                  <router-link
+                    to="/purchase/invoice"
+                    active-class="active">{{ $t('purchase invoice') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase return')">
+                  <router-link
+                    to="/purchase/return"
+                    active-class="active">{{ $t('purchase return') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase invoice')">
+                  <router-link
+                    to="/purchase/payment-order"
+                    active-class="active">{{ $t('payment order') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+            <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">
+              <router-link to="/sales" class="nav-submenu" active-class="active">
+                <i class="si si-basket-loaded"/>
+                <span class="sidebar-mini-hide">{{ $t("sales") | titlecase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read sales quotation')">
+                  <router-link
+                    to="/sales/sales-quotation"
+                    active-class="active">{{ $t('sales quotation') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+            <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
+              <router-link to="/inventory" class="nav-submenu" active-class="active">
+                <i class="si si-tag"/>
+                <span class="sidebar-mini-hide">{{ $t("inventory") | titlecase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
+                  <router-link
+                    to="/inventory/usage"
+                    active-class="active">{{ $t('inventory usage') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+            <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance')">
+              <router-link to="/finance" class="nav-submenu" active-class="active">
+                <i class="si si-wallet"/>
+                <span class="sidebar-mini-hide">{{ $t("finance") | titlecase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read payment order')">
+                  <router-link
+                    to="/finance/payment-order"
+                    active-class="active">{{ $t('payment order') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cash')">
+                  <router-link
+                    to="/finance/cash"
+                    active-class="active">{{ $t('cash') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read bank')">
+                  <router-link
+                    to="/finance/bank"
+                    active-class="active">{{ $t('bank') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+            <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting')">
+              <router-link to="/accounting" class="nav-submenu" active-class="active">
+                <i class="si si-folder-alt"/>
+                <span class="sidebar-mini-hide">{{ $t("accounting") | titlecase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read chart of account')">
+                  <router-link
+                    to="/accounting/chart-of-account"
+                    active-class="active">{{ $t('chart of account') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cut off')">
+                  <router-link
+                    to="/accounting/cut-off"
+                    active-class="active">{{ $t('cut off') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read balance sheet')">
+                  <router-link
+                    to="/accounting/balance-sheet"
+                    active-class="active">{{ $t('balance sheet') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read profit and loss')">
+                  <router-link
+                    to="/accounting/profit-and-loss"
+                    active-class="active">{{ $t('profit and loss') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read ratio report')">
+                  <router-link
+                    to="/accounting/ratio-report"
+                    active-class="active">{{ $t('ratio report') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
+            </li> -->
             <li :class="{ 'open' : firstUri === 'plugin' }" v-if="$permission.has('menu plugin')">
               <router-link
                 to="/plugin"
@@ -256,8 +402,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Auth', ['logout']),
-    ...mapActions('UIHandler', ['toggleLeftSidebar', 'toggleSidebarInverse']),
+    ...mapActions('auth', ['logout']),
+    ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSidebarInverse']),
     handleResize (event) {
       this.options.height = window.innerHeight + 'px'
       document.getElementById('sidebar-scroll').style.height = window.innerHeight + 'px'
@@ -272,3 +418,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+#sidebar-scroll {
+  overflow-y: auto
+}
+</style>

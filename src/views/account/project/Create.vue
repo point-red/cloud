@@ -19,68 +19,89 @@
       </li>
     </tab-menu>
     <div class="row">
-      <div class="block-content tab-content">
-        <div class="row">
-          <p-block
-            :header="true"
-            title="Project">
-            <form
-              class="px-30"
-              @submit.prevent="onSubmit">
+      <p-block
+        :header="true"
+        title="Project">
+        <form
+          class="px-30"
+          @submit.prevent="onSubmit">
 
-              <p-form-row
-                id="code"
-                name="code"
-                v-model="form.code"
-                :label="$t('company identifier')"
-                :errors="form.errors.get('code')"
-                @errors="form.errors.set('code', null)">
-              </p-form-row>
+          <p-form-row
+            id="group"
+            name="group"
+            v-model="form.group"
+            :label="$t('company group')"
+            :errors="form.errors.get('group')"
+            @errors="form.errors.set('group', null)">
+          </p-form-row>
 
-              <p-form-row
-                id="name"
-                name="name"
-                v-model="form.name"
-                :label="$t('company name')"
-                :errors="form.errors.get('name')"
-                @errors="form.errors.set('name', null)">
-              </p-form-row>
+          <p-form-row
+            id="code"
+            name="code"
+            v-model="form.code"
+            :label="$t('company identifier')"
+            :errors="form.errors.get('code')"
+            @errors="form.errors.set('code', null)">
+          </p-form-row>
 
-              <p-form-row
-                id="address"
-                name="address"
-                v-model="form.address"
-                :label="$t('company address')">
-              </p-form-row>
+          <p-form-row
+            id="name"
+            name="name"
+            v-model="form.name"
+            :label="$t('company name')"
+            :errors="form.errors.get('name')"
+            @errors="form.errors.set('name', null)">
+          </p-form-row>
 
-              <p-form-row
-                id="phone"
-                name="phone"
-                v-model="form.phone"
-                :label="$t('company phone')">
-              </p-form-row>
+          <p-form-row
+            id="address"
+            name="address"
+            v-model="form.address"
+            :label="$t('company address')">
+          </p-form-row>
 
-              <p-form-row
-                id="vat-id-number"
-                name="vat_id_number"
-                v-model="form.vat_id_number"
-                :label="$t('vat identification number')">
-              </p-form-row>
+          <p-form-row
+            id="phone"
+            name="phone"
+            v-model="form.phone"
+            :label="$t('company phone')">
+          </p-form-row>
 
-              <div class="form-group row">
-                <div class="col-md-9 offset-3">
-                  <button
-                    :disabled="loadingSaveButton"
-                    type="submit"
-                    class="btn btn-sm btn-primary">
-                    <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
-                  </button>
-                </div>
-              </div>
-            </form>
-          </p-block>
-        </div>
-      </div>
+          <p-form-row
+            id="vat-id-number"
+            name="vat_id_number"
+            v-model="form.vat_id_number"
+            :label="$t('vat identification number')">
+          </p-form-row>
+
+          <p-form-row
+            id="timezone"
+            name="timezone"
+            :label="$t('timezone')">
+            <div slot="body" class="col-form-label col-lg-9">
+              <p-select-modal
+                id="timezone"
+                :title="'select timezone'"
+                :value="form.timezone"
+                :choosen="form.timezone"
+                :options="timezoneOptions"
+                @choosen="chooseTimezone"
+                @search="searchTimezone"/>
+            </div>
+          </p-form-row>
+
+          <div class="form-group row">
+            <div class="col-md-9 offset-3">
+              <button
+                :disabled="loadingSaveButton"
+                type="submit"
+                class="btn btn-sm btn-primary">
+                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+              </button>
+            </div>
+          </div>
+        </form>
+      </p-block>
     </div>
   </div>
 </template>
@@ -96,11 +117,15 @@ export default {
     return {
       form: new Form({
         name: null,
+        group: null,
         address: null,
         phone: null,
         code: null,
-        vat_id_number: null
+        vat_id_number: null,
+        timezone: null
       }),
+      localTimezone: '',
+      timezoneOptions: [],
       loadingSaveButton: false
     }
   },
@@ -109,7 +134,36 @@ export default {
     TabMenu
   },
   methods: {
-    ...mapActions('AccountProject', ['create']),
+    ...mapActions('accountProject', ['create']),
+    getAvailableTimezone () {
+      var tzNames = this.$moment.tz.names()
+      this.timezoneOptions = []
+      for (var i in tzNames) {
+        let tz = '(GMT' + this.$moment.tz(tzNames[i]).format('Z') + ') ' + tzNames[i]
+        this.timezoneOptions.push({
+          id: tzNames[i],
+          label: tz
+        })
+      }
+    },
+    searchTimezone (value) {
+      this.getAvailableTimezone()
+
+      var filtered = this.timezoneOptions.filter((str) => {
+        return str.label.toLowerCase().indexOf(value.toLowerCase()) >= 0
+      })
+
+      this.timezoneOptions = []
+      for (var i = 0; i < filtered.length; i++) {
+        this.timezoneOptions.push({
+          id: filtered[i].id,
+          label: filtered[i].label
+        })
+      }
+    },
+    chooseTimezone (value) {
+      this.form.timezone = value.id
+    },
     onSubmit () {
       this.loadingSaveButton = true
       this.create(this.form)
@@ -130,6 +184,13 @@ export default {
             }
           }
         )
+    }
+  },
+  created () {
+    this.getAvailableTimezone()
+    this.localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    if (this.localTimezone) {
+      this.form.timezone = this.localTimezone
     }
   }
 }

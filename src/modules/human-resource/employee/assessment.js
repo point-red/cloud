@@ -24,13 +24,11 @@ const getters = {
 
 const mutations = {
   'FETCH_ASSESSMENTS' (state, payload) {
-    state.assessments = payload
-  },
-  'FETCH_DATA_SET' (state, payload) {
-    state.dataSet = payload
+    state.assessments = payload.data
+    state.dataSet = payload.data_set
   },
   'FETCH_ASSESSMENT' (state, payload) {
-    state.assessment = payload
+    state.assessment = payload.data
   },
   'CREATE' (state, payload) {
     state.assessment = payload
@@ -46,70 +44,59 @@ const mutations = {
 const actions = {
   get ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url(payload.employeeId), { params: payload.params })
-        .then(
-          (response) => {
-            commit('FETCH_ASSESSMENTS', response.data)
-            commit('FETCH_DATA_SET', response.data_set)
-            dispatch('Employee/find', { id: payload.employeeId }, { root: true })
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+      api.get(url(payload.employeeId), payload)
+        .then(response => {
+          commit('FETCH_ASSESSMENTS', response)
+          dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   find ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url(payload.employeeId) + '/' + payload.kpiId)
-        .then(
-          (response) => {
-            commit('FETCH_ASSESSMENT', response.data)
-            dispatch('Employee/find', { id: payload.employeeId }, { root: true })
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          commit('FETCH_ASSESSMENT', response)
+          dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url(payload.employeeId), payload.form)
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   update (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url(payload.employeeId) + '/' + payload.kpiId, payload.form)
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   delete (context, payload) {
     return new Promise((resolve, reject) => {
       api.delete(url(payload.employeeId) + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            context.dispatch('get', {
-              employeeId: response.data.employee.id
-            })
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
+        .then(response => {
+          context.dispatch('get', {
+            employeeId: response.data.employee.id
           })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   }
 }

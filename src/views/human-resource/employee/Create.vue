@@ -257,6 +257,16 @@
             </p-form-row>
 
             <p-form-row
+              id="employee-group-name"
+              name="employee-group-name"
+              :label="$t('')"
+              :disabled="loadingSaveButton"
+              v-model="form.employee_group_name"
+              :errors="form.errors.get('employe_group_name')"
+              @errors="form.errors.set('employe_group_name', null)">
+            </p-form-row>
+
+            <p-form-row
               id="employee-code"
               name="employee-code"
               :label="$t('employee code')"
@@ -542,6 +552,7 @@ export default {
         married_with: '',
         religion: '',
         employee_group_id: '',
+        employee_group_name: '',
         job_title: '',
         join_date: '',
         employee_code: '',
@@ -561,12 +572,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('EmployeeGroup', ['groupList']),
-    ...mapGetters('EmployeeReligion', ['religionList']),
-    ...mapGetters('EmployeeGender', ['genderList']),
-    ...mapGetters('EmployeeMaritalStatus', ['maritalStatusList']),
-    ...mapGetters('EmployeeStatus', ['statusList']),
-    ...mapGetters('EmployeeJobLocation', ['jobLocationList'])
+    ...mapGetters('humanResourceEmployeeGroup', ['groupList']),
+    ...mapGetters('humanResourceEmployeeReligion', ['religionList']),
+    ...mapGetters('humanResourceEmployeeGender', ['genderList']),
+    ...mapGetters('humanResourceEmployeeMaritalStatus', ['maritalStatusList']),
+    ...mapGetters('humanResourceEmployeeStatus', ['statusList']),
+    ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocationList'])
   },
   created () {
     this.getGroups()
@@ -607,25 +618,25 @@ export default {
     })
   },
   methods: {
-    ...mapActions('EmployeeGroup', {
+    ...mapActions('humanResourceEmployeeGroup', {
       getGroups: 'get'
     }),
-    ...mapActions('EmployeeReligion', {
+    ...mapActions('humanResourceEmployeeReligion', {
       getReligions: 'get'
     }),
-    ...mapActions('EmployeeGender', {
+    ...mapActions('humanResourceEmployeeGender', {
       getGenders: 'get'
     }),
-    ...mapActions('EmployeeMaritalStatus', {
+    ...mapActions('humanResourceEmployeeMaritalStatus', {
       getMaritalStatuses: 'get'
     }),
-    ...mapActions('EmployeeStatus', {
+    ...mapActions('humanResourceEmployeeStatus', {
       getStatuses: 'get'
     }),
-    ...mapActions('EmployeeJobLocation', {
+    ...mapActions('humanResourceEmployeeJobLocation', {
       getJobLocations: 'get'
     }),
-    ...mapActions('Employee', {
+    ...mapActions('humanResourceEmployee', {
       createEmployee: 'create'
     }),
     onSubmitContract (data) {

@@ -26,9 +26,9 @@ if (process.env.NODE_ENV === 'production') {
       fetch('./version.txt')
         .then(response => response.text())
         .then(text => {
-          if (text != undefined && text != '0.1.3') {
+          if (text != undefined && text != '0.1.6') {
             swal.fire({
-              title: 'New update 0.1.3 installed',
+              title: 'New update 0.1.6 installed',
               text: 'The page will be reloaded',
               type: 'success',
               confirmButtonText: 'Ok'

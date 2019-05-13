@@ -243,13 +243,13 @@ export default {
       isShowCat: false,
       loading: true,
       isExporting: false,
-      date_from: new Date(),
-      date_to: new Date(),
+      date_from: this.$moment().startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+      date_to: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
       downloadLink: ''
     }
   },
   computed: {
-    ...mapGetters('ScaleWeightMerge', ['scaleWeights', 'items'])
+    ...mapGetters('pluginScaleWeightMerge', ['scaleWeights', 'items'])
   },
   watch: {
     'date_from' () {
@@ -263,7 +263,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('ScaleWeightMerge', ['get', 'export', 'getItems']),
+    ...mapActions('pluginScaleWeightMerge', ['get', 'export', 'getItems']),
     updateDateFrom () {
       this.loading = true
       this.date_to = this.date_from

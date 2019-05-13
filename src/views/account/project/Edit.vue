@@ -18,9 +18,16 @@
         :header="true"
         :is-loading="loading"
         title="Project">
-        <form
-          class="px-30"
-          @submit.prevent="onSubmit">
+        <form @submit.prevent="onSubmit">
+          <p-form-row
+            id="group"
+            name="group"
+            v-model="form.group"
+            :disabled="loadingSaveButton"
+            :label="$t('company group')"
+            :errors="form.errors.get('group')"
+            @errors="form.errors.set('group', null)">
+          </p-form-row>
 
           <p-form-row
             id="code"
@@ -66,12 +73,27 @@
             :label="$t('vat identification number')">
           </p-form-row>
 
+          <p-form-row
+            id="timezone"
+            name="timezone"
+            :label="$t('timezone')">
+            <div slot="body" class="col-lg-9">
+              <p-select-modal
+                id="timezone"
+                :title="'select timezone'"
+                :value="form.timezone"
+                :options="timezoneOptions"
+                @choosen="chooseTimezone"
+                @search="searchTimezone"/>
+            </div>
+          </p-form-row>
+
           <div class="form-group row">
             <div class="col-md-9 offset-3">
               <button
                 :disabled="loadingSaveButton"
                 type="submit"
-                class="btn btn-sm btn-primary">
+                class="btn btn-sm btn-primary mr-5">
                 <i
                   v-show="loadingSaveButton"
                   class="fa fa-asterisk fa-spin"/> Update
@@ -101,30 +123,36 @@ export default {
       form: new Form({
         id: this.$route.params.id,
         name: null,
+        group: null,
         address: null,
         phone: null,
         code: null,
         vat_id_number: null,
         invitation_code: null,
-        invitation_code_enabled: null
+        invitation_code_enabled: null,
+        timezone: null
       }),
       loading: false,
-      loadingSaveButton: false
+      loadingSaveButton: false,
+      timezoneOptions: []
     }
   },
   components: {
     Breadcrumb
   },
   computed: {
-    ...mapGetters('AccountProject', ['project'])
+    ...mapGetters('accountProject', ['project'])
   },
   created () {
     this.loading = true
+    this.getAvailableTimezone()
     this.findProject({ id: this.id })
       .then((response) => {
         this.form.id = this.project.id
         this.form.code = this.project.code
         this.form.name = this.project.name
+        this.form.group = this.project.group
+        this.form.timezone = this.project.timezone
         this.form.address = this.project.address
         this.form.phone = this.project.phone
         this.form.vat_id_number = this.project.vat_id_number
@@ -137,10 +165,39 @@ export default {
       })
   },
   methods: {
-    ...mapActions('AccountProject', {
+    ...mapActions('accountProject', {
       update: 'update',
       findProject: 'find'
     }),
+    getAvailableTimezone () {
+      var tzNames = this.$moment.tz.names()
+      this.timezoneOptions = []
+      for (var i in tzNames) {
+        let tz = '(GMT' + this.$moment.tz(tzNames[i]).format('Z') + ') ' + tzNames[i]
+        this.timezoneOptions.push({
+          id: tzNames[i],
+          label: tz
+        })
+      }
+    },
+    searchTimezone (value) {
+      this.getAvailableTimezone()
+
+      var filtered = this.timezoneOptions.filter((str) => {
+        return str.label.toLowerCase().indexOf(value.toLowerCase()) >= 0
+      })
+
+      this.timezoneOptions = []
+      for (var i = 0; i < filtered.length; i++) {
+        this.timezoneOptions.push({
+          id: filtered[i].id,
+          label: filtered[i].label
+        })
+      }
+    },
+    chooseTimezone (value) {
+      this.form.timezone = value.id
+    },
     onSubmit () {
       this.loadingSaveButton = true
       this.update(this.form)

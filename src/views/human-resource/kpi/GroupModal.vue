@@ -77,15 +77,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('KpiTemplateGroup', {
+    ...mapGetters('humanResourceKpiTemplateGroup', {
       groups: 'groups'
     })
   },
   methods: {
-    ...mapMutations('KpiTemplateGroup', {
+    ...mapMutations('humanResourceKpiTemplateGroup', {
       fetchKpiTemplateGroup: 'FETCH_ARRAY'
     }),
-    ...mapActions('KpiTemplateGroup', {
+    ...mapActions('humanResourceKpiTemplateGroup', {
       getGroups: 'get',
       createGroup: 'create',
       updateGroup: 'update',

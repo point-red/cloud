@@ -278,6 +278,16 @@
             </p-form-row>
 
             <p-form-row
+              id="employee-group-name"
+              name="employee-group-name"
+              :label="$t('')"
+              :disabled="loadingSaveButton"
+              v-model="form.employee_group_name"
+              :errors="form.errors.get('employe_group_name')"
+              @errors="form.errors.set('employe_group_name', null)">
+            </p-form-row>
+
+            <p-form-row
               id="employee-code"
               name="employee-code"
               :label="$t('employee code')"
@@ -668,13 +678,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employee']),
-    ...mapGetters('EmployeeGroup', ['groupList']),
-    ...mapGetters('EmployeeReligion', ['religionList']),
-    ...mapGetters('EmployeeGender', ['genderList']),
-    ...mapGetters('EmployeeMaritalStatus', ['maritalStatusList']),
-    ...mapGetters('EmployeeStatus', ['statusList']),
-    ...mapGetters('EmployeeJobLocation', ['jobLocationList'])
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeGroup', ['groupList']),
+    ...mapGetters('humanResourceEmployeeReligion', ['religionList']),
+    ...mapGetters('humanResourceEmployeeGender', ['genderList']),
+    ...mapGetters('humanResourceEmployeeMaritalStatus', ['maritalStatusList']),
+    ...mapGetters('humanResourceEmployeeStatus', ['statusList']),
+    ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocationList'])
   },
   created () {
     this.loading = true
@@ -700,7 +710,6 @@ export default {
       })
     this.getGenders()
       .then((response) => {
-        console.log(response.data)
       }, (error) => {
         console.log(JSON.stringify(error))
       })
@@ -721,25 +730,23 @@ export default {
     }).then((response) => {
       this.loading = false
       for (let field in this.form) {
-        console.log(JSON.stringify(field))
         if (response.data[field]) this.form[field] = response.data[field]
       }
       this.form.id = response.data.id
       this.form.company_emails = response.data.company_emails
-      console.log(response.data)
     }, (error) => {
       this.loading = false
       console.log(JSON.stringify(error))
     })
   },
   methods: {
-    ...mapActions('EmployeeGroup', { getGroups: 'get' }),
-    ...mapActions('EmployeeReligion', { getReligions: 'get' }),
-    ...mapActions('EmployeeGender', { getGenders: 'get' }),
-    ...mapActions('EmployeeMaritalStatus', { getMaritalStatuses: 'get' }),
-    ...mapActions('EmployeeStatus', { getStatuses: 'get' }),
-    ...mapActions('EmployeeJobLocation', { getJobLocations: 'get' }),
-    ...mapActions('Employee', { findEmployee: 'find', updateEmployee: 'update' }),
+    ...mapActions('humanResourceEmployeeGroup', { getGroups: 'get' }),
+    ...mapActions('humanResourceEmployeeReligion', { getReligions: 'get' }),
+    ...mapActions('humanResourceEmployeeGender', { getGenders: 'get' }),
+    ...mapActions('humanResourceEmployeeMaritalStatus', { getMaritalStatuses: 'get' }),
+    ...mapActions('humanResourceEmployeeStatus', { getStatuses: 'get' }),
+    ...mapActions('humanResourceEmployeeJobLocation', { getJobLocations: 'get' }),
+    ...mapActions('humanResourceEmployee', { findEmployee: 'find', updateEmployee: 'update' }),
     onSubmitContract (data) {
       this.form.contracts.push(data)
       this.$refs.contractModal.close()

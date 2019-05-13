@@ -18,7 +18,7 @@
         </router-link>
       </li>
     </tab-menu>
-    <br>
+
     <div class="row">
       <p-block column="col-sm-12 offset-md-2 col-md-8">
         <div class="font-size-h5 font-w300 text-center">
@@ -77,7 +77,7 @@ export default {
     TabMenu
   },
   computed: {
-    ...mapGetters('AccountProject', ['project'])
+    ...mapGetters('accountProject', ['project'])
   },
   created () {
     this.form.id = this.project.id
@@ -91,7 +91,7 @@ export default {
     this.form.invitation_code_enabled = this.project.invitation_code_enabled
   },
   methods: {
-    ...mapActions('RequestJoinProject', ['create']),
+    ...mapActions('accountRequestJoinProject', ['create']),
     onSubmit () {
       this.loadingSaveButton = true
       this.create(this.form)

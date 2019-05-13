@@ -10,7 +10,7 @@ import { mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters('UIHandler', ['isPageLoaderOpened'])
+    ...mapGetters('uiHandler', ['isPageLoaderOpened'])
   }
 }
 </script>

@@ -34,41 +34,34 @@ const actions = {
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url(payload.id), payload)
-        .then(
-          (response) => {
-            console.log('permissions: ' + JSON.stringify(response))
-            commit('FETCH_ARRAY', response)
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   update (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url(payload.role_id), payload)
-        .then(
-          (response) => {
-            context.dispatch('get', { id: payload.role_id })
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          context.dispatch('get', { id: payload.role_id })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   bulkUpdate (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url(payload.role_id) + '/bulk-update', payload)
-        .then(
-          (response) => {
-            context.dispatch('get', { id: payload.role_id })
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          context.dispatch('get', { id: payload.role_id })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   }
 }

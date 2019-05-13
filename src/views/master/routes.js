@@ -6,6 +6,7 @@ import Supplier from './supplier/routes'
 import Warehouse from './warehouse/routes'
 import Allocation from './allocation/routes'
 import Service from './service/routes'
+import Item from './item/routes'
 
 export default [
   { path: '/master', name: 'Master', component: Master },
@@ -15,5 +16,6 @@ export default [
   ...Supplier,
   ...Warehouse,
   ...Allocation,
-  ...Service
+  ...Service,
+  ...Item
 ]

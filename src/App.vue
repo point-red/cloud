@@ -43,7 +43,7 @@ export default {
     Network
   },
   computed: {
-    ...mapGetters('UIHandler', ['isLoadingBlock'])
+    ...mapGetters('uiHandler', ['isLoadingBlock'])
   },
   mounted () {
     window.addEventListener('resize', this.handleResize)
@@ -55,7 +55,7 @@ export default {
   methods: {
     closeHeaderDropdown (event) {
       if (event.target.id !== 'page-header-user-dropdown') {
-        this.$store.dispatch('UIHandler/closeHeaderDropdown')
+        this.$store.dispatch('uiHandler/closeHeaderDropdown')
       }
     },
     handleResize (event) {

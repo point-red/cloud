@@ -63,7 +63,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('KpiTemplate', {
+    ...mapGetters('humanResourceKpiTemplate', {
       template: 'template'
     })
   },
@@ -75,10 +75,10 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('KpiTemplate', {
+    ...mapMutations('humanResourceKpiTemplate', {
       fetchKpiTemplate: 'FETCH_OBJECT'
     }),
-    ...mapActions('KpiTemplate', {
+    ...mapActions('humanResourceKpiTemplate', {
       updateKpiTemplate: 'update',
       deleteKpiTemplate: 'delete'
     }),

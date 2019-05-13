@@ -10,24 +10,36 @@
     <br>
 
     <div class="row">
-      <p-block :title="title" :header="true">
-        <p-block-inner :is-loading="loading">
-          <p-table>
+      <p-block :title="$t('user')" :header="true">
+        <p-form-input
+          id="search-text"
+          name="search-text"
+          placeholder="Search"
+          ref="searchText"
+          :value="searchText"
+          @input="filterSearch"/>
+        <hr>
+        <p-block-inner :is-loading="isLoading">
+          <point-table>
             <tr slot="p-head">
-              <th>Name</th>
+              <th>#</th>
+              <th>Username</th>
+              <th>Full Name</th>
               <th>Email</th>
               <th>Phone</th>
               <th>Roles</th>
             </tr>
             <tr
-              v-for="user in users"
+              v-for="(user, index) in users"
               :key="user.id"
               slot="p-body">
+              <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'UserShow', params: { id: user.id }}">
                   {{ user.name | titlecase }}
                 </router-link>
               </td>
+              <td>{{ user.first_name | lowercase }} {{ user.last_name | lowercase }}</td>
               <td>{{ user.email | lowercase }}</td>
               <td>{{ user.phone }}</td>
               <td>
@@ -48,8 +60,13 @@
               <td>{{ userInvitation.user_email }}</td>
               <td></td>
             </tr>
-          </p-table>
+          </point-table>
         </p-block-inner>
+        <p-pagination
+          :current-page="currentPage"
+          :last-page="lastPage"
+          @updatePage="updatePage">
+        </p-pagination>
       </p-block>
     </div>
   </div>
@@ -57,48 +74,82 @@
 
 <script>
 import TabMenu from './TabMenu'
+import debounce from 'lodash/debounce'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster
+    BreadcrumbMaster,
+    PointTable
   },
   data () {
     return {
-      title: 'User',
-      loading: true
+      isLoading: true,
+      searchText: this.$route.query.search,
+      currentPage: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {
-    ...mapGetters('User', ['users']),
-    ...mapGetters('UserInvitation', ['userInvitations'])
+    ...mapGetters('masterUser', ['users']),
+    ...mapGetters('masterUserInvitation', ['userInvitations'])
   },
   methods: {
-    ...mapActions('User', {
+    ...mapActions('masterUser', {
       getUser: 'get'
     }),
-    ...mapActions('UserInvitation', {
+    ...mapActions('masterUserInvitation', {
       getUserInvitation: 'get'
-    })
+    }),
+    updatePage (value) {
+      this.currentPage = value
+      this.getUserRequest()
+    },
+    getUserRequest () {
+      this.isLoading = true
+      this.getUser({
+        params: {
+          limit: 10,
+          sort_by: 'name',
+          includes: 'roles',
+          filter_like: {
+            'name': this.searchText,
+            'first_name': this.searchText,
+            'last_name': this.searchText,
+            'address': this.searchText,
+            'phone': this.searchText,
+            'email': this.searchText
+          },
+          page: this.currentPage
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notifications.error(error)
+      })
+    },
+    filterSearch: debounce(function (value) {
+      this.$router.push({ query: { search: value } })
+      this.searchText = value
+      this.currentPage = 1
+      this.getUserRequest()
+    }, 300)
   },
   created () {
-    this.loading = true
-    this.getUser()
-      .then((response) => {
-        this.loading = false
-      }, (error) => {
-        this.loading = false
-        this.$notifications.error(error.message)
-      })
+    this.isLoading = true
+    this.getUserRequest()
+
     this.getUserInvitation()
-      .then((response) => {
-        this.loading = false
-      }, (error) => {
-        this.loading = false
+      .then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
         this.$notifications.error(error.message)
       })
   }

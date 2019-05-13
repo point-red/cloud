@@ -283,8 +283,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employee', 'employees']),
-    ...mapGetters('Auth', ['authUser'])
+    ...mapGetters('humanResourceEmployee', ['employee', 'employees']),
+    ...mapGetters('auth', ['authUser'])
   },
   created () {
     this.loading = true
@@ -292,7 +292,7 @@ export default {
       this.employees.find((element) => {
         console.log(element.id + ' = ' + this.id)
         if (element.id === this.id) {
-          this.$store.commit('Employee/FETCH_OBJECT', element)
+          this.$store.commit('humanResourceEmployee/FETCH_OBJECT', element)
           this.loading = false
         }
       })
@@ -312,7 +312,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('Employee', { findEmployee: 'find', deleteEmployee: 'delete' }),
+    ...mapActions('humanResourceEmployee', { findEmployee: 'find', deleteEmployee: 'delete' }),
     onDelete () {
       this.loadingSaveButton = true
       this.deleteEmployee({ id: this.id })

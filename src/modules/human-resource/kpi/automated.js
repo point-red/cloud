@@ -15,7 +15,7 @@ const getters = {
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.automated_ids = payload
-  },
+  }
 }
 
 const actions = {

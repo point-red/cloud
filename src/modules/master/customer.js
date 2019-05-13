@@ -10,7 +10,7 @@ const state = {
     phone: ''
   },
   customers: [],
-  customerPagination: {}
+  pagination: {}
 }
 
 const getters = {
@@ -20,20 +20,18 @@ const getters = {
   customers: state => {
     return state.customers
   },
-  customerPagination: state => {
-    return state.customerPagination
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.customers = payload
-  },
-  'PAGINATION' (state, payload) {
-    state.customerPagination = payload
+    state.customers = payload.data
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.customer = payload
+    state.customer = payload.data
   },
   'CREATE' (state, payload) {
     state.customer = payload
@@ -50,67 +48,53 @@ const actions = {
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url, payload)
-        .then(
-          (response) => {
-            commit('FETCH_ARRAY', response.data)
-            commit('PAGINATION', response.meta)
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.id)
-        .then(
-          (response) => {
-            commit('FETCH_OBJECT', response.data)
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+      api.get(url + '/' + payload.id, payload)
+        .then(response => {
+          commit('FETCH_OBJECT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url, payload)
-        .then(
-          (response) => {
-            context.dispatch('get')
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   update (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            context.dispatch('get')
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   delete (context, payload) {
     return new Promise((resolve, reject) => {
       api.delete(url + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            context.dispatch('get')
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   }
 }

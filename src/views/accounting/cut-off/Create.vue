@@ -7,20 +7,7 @@
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
-    <div class="row gutters-tiny">
-      <p-box
-        :name="$t('add')"
-        icon="si si-plus"
-        v-if="$permission.has('create employee')"
-        link="/accounting/cut-off/create"/>
-      <p-box
-        :name="$t('list')"
-        icon="si si-docs"
-        v-if="$permission.has('read employee')"
-        link="/accounting/cut-off"/>
-    </div>
-
-    <hr>
+    <tab-menu/>
 
     <div class="row">
       <div class="col-sm-12">
@@ -56,7 +43,7 @@
                     <p-form-number
                       :id="'debit-' + index"
                       value="0"
-                      @input.native="debit($event)"
+                      @input.native="debit($event, index)"
                       :disabled="loadingSaveButton"
                       :is-text-right="true"
                       name="debit[]"/>
@@ -65,7 +52,7 @@
                     <p-form-number
                       :id="'credit-' + index"
                       value="0"
-                      @input.native="credit($event)"
+                      @input.native="credit($event, index)"
                       :disabled="loadingSaveButton"
                       :is-text-right="true"
                       name="credit[]"/>
@@ -108,6 +95,7 @@
 </template>
 
 <script>
+import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/accounting/Breadcrumb'
 import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
@@ -118,7 +106,8 @@ export default {
       loading: false,
       loadingSaveButton: false,
       form: new Form({
-        date: new Date(),
+        increment_group: this.$moment().format('YYYYMM'),
+        date: this.$moment().format('YYYY-MM-DD'),
         details: []
       }),
       totalDebit: 0,
@@ -126,26 +115,26 @@ export default {
     }
   },
   components: {
-    Breadcrumb
+    Breadcrumb,
+    TabMenu
   },
   computed: {
-    ...mapGetters('ChartOfAccount', ['chartOfAccounts'])
+    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts'])
   },
   methods: {
-    ...mapActions('ChartOfAccount', {
+    ...mapActions('accountingChartOfAccount', {
       getChartOfAccounts: 'get'
     }),
-    ...mapActions('CutOff', {
+    ...mapActions('accountingCutOff', {
       storeCutOff: 'create'
     }),
-    debit (event) {
-      var chartOfAccountIndex = event.target.id.split('-')[1]
-      this.form.details[chartOfAccountIndex].debit = event.target.value.split(',').join('')
+    debit (event, index) {
+      this.form.details[index].debit = event.target.value.split(',').join('')
       this.calculate()
     },
-    credit (event) {
+    credit (event, index) {
       var chartOfAccountIndex = event.target.id.split('-')[1]
-      this.form.details[chartOfAccountIndex].credit = event.target.value.split(',').join('')
+      this.form.details[index].credit = event.target.value.split(',').join('')
       this.calculate()
     },
     onSubmit () {

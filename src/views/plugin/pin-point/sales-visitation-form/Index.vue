@@ -47,7 +47,7 @@
           :value="searchText"
           @input="filterSearch"/>
         <hr>
-        <p-block-inner :is-loading="isLoading">          
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th width="250px">{{ $t('date') }}</th>
@@ -179,7 +179,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('SalesVisitationForm', ['forms', 'pagination'])
+    ...mapGetters('pluginPinPointSalesVisitationForm', ['forms', 'pagination'])
   },
   watch: {
     date: function () {
@@ -192,7 +192,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('SalesVisitationForm', ['get', 'export']),
+    ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),
     toggleBtnDropdown () {
       this.isDropdown = !this.isDropdown
     },
@@ -215,21 +215,23 @@ export default {
         params: {
           date_from: this.date.start,
           date_to: this.date.end,
+          join: 'form',
+          fields: 'pin_point_sales_visitations.*',
+          sort_by: '-forms.date',
           filter_like: {
-            'forms.date': this.searchText,
-            'pin_point_sales_visitations.name': this.searchText,
-            'pin_point_sales_visitations.group': this.searchText,
-            'pin_point_sales_visitations.address': this.searchText,
-            'pin_point_sales_visitations.district': this.searchText,
-            'pin_point_sales_visitations.sub_district': this.searchText,
-            'pin_point_sales_visitations.phone': this.searchText,
-            'pin_point_sales_visitations.notes': this.searchText,
-            'users.name': this.searchText
+            'form.date': this.searchText,
+            // 'name': this.searchText,
+            // 'group': this.searchText,
+            // 'address': this.searchText,
+            // 'district': this.searchText,
+            // 'sub_district': this.searchText,
+            // 'phone': this.searchText,
+            // 'notes': this.searchText,
+            'form.createdBy.name': this.searchText
           },
           limit: 20,
-          page: this.currentPage,
-          sort_by: '-forms.date'
-        }        
+          page: this.currentPage
+        }
       }).then(response => {
         this.isLoading = false
         this.lastPage = this.pagination.last_page

@@ -58,8 +58,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Role', ['role']),
-    ...mapGetters('Permission', ['permissions'])
+    ...mapGetters('masterRole', ['role']),
+    ...mapGetters('masterPermission', ['permissions'])
   },
   created () {
     this.loading = true
@@ -79,8 +79,8 @@ export default {
       })
   },
   methods: {
-    ...mapActions('Role', { findRole: 'find' }),
-    ...mapActions('Permission', { getPermissions: 'get' }),
+    ...mapActions('masterRole', { findRole: 'find' }),
+    ...mapActions('masterPermission', { getPermissions: 'get' }),
     choose (feature) {
       this.choosen = feature
     }

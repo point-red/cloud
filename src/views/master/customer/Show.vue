@@ -11,7 +11,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block :title="$t('customer')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
@@ -47,7 +47,7 @@
                 name="priority"
                 :checked="data.priority"
                 :description="'Priority Customer'"/>
-            </div>          
+            </div>
           </p-form-row>
 
           <hr/>
@@ -57,6 +57,14 @@
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>
+          <button
+            type="button"
+            @click="onDelete()"
+            v-if="$permission.has('delete customer')"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-danger">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
+          </button>
         </p-block-inner>
       </p-block>
       <p-block v-if="forms.length > 0 && isLoadingSalesVisitation == false">
@@ -117,23 +125,21 @@
                   <td>{{ form.form.created_at | dateFormat('HH:mm') }}</td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>
-                    <ol v-if="form.interest_reasons">
-                      <li v-for="(interestReason, index) in form.interest_reasons" :key="index">
-                        {{ interestReason.name }}
-                      </li>
-                    </ol>
-                    <ol v-else>
-                      <li v-for="(interestReason, index) in form.interest_reasons" :key="index">
-                        {{ notInterestReason.name }}
-                      </li>
-                    </ol>
+                    <template v-if="form.interest_reasons">
+                      <template v-for="(interestReason, index) in form.interest_reasons">
+                        <p :key="index" class="mb-0">- {{ interestReason.name }}</p>
+                      </template>
+                    </template>
+                    <template v-else>
+                      <template v-for="(notInterestReason, index) in form.not_interest_reasons">
+                        <p :key="index" class="mb-0">- {{ notInterestReason.name }}</p>
+                      </template>
+                    </template>
                   </td>
                   <td>
-                    <ol>
-                      <li v-for="(similarProduct, index) in form.similar_products" :key="index">
-                        {{ similarProduct.name }}
-                      </li>
-                    </ol>
+                    <template v-for="(similarProduct, index) in form.similar_products">
+                      <p :key="index" class="mb-0">- {{ similarProduct.name }}</p>
+                    </template>
                   </td>
                   <td></td>
                   <td></td>
@@ -170,27 +176,27 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      title: 'Customer',
       isLoading: false,
+      isDeleting: false,
       isLoadingSalesVisitation: false,
       data: {
         name: null,
         email: null,
         address: null,
         phone: null,
-        priority: false,
+        priority: false
       },
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
   computed: {
-    ...mapGetters('Customer', ['customer']),
-    ...mapGetters('SalesVisitationForm', ['forms'])
+    ...mapGetters('masterCustomer', ['customer']),
+    ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
   },
   methods: {
-    ...mapActions('Customer', ['find']),
-    ...mapActions('SalesVisitationForm', ['get', 'export']),
+    ...mapActions('masterCustomer', ['find', 'delete']),
+    ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),
     updatePage (value) {
       this.currentPage = value
       this.getSalesVisitationRequest()
@@ -199,7 +205,7 @@ export default {
       this.get({
         params: {
           filter_equal: {
-            'customers.id': this.id
+            'customer.id': this.id
           },
           date_from: this.$moment('1970-01-01').format('YYYY-MM-DD 00:00:00'),
           date_to: this.$moment().format('YYYY-MM-DD 23:59:59'),
@@ -209,38 +215,54 @@ export default {
         }
       }).then(response => {
         console.log(response)
-        this.isLoadingSalesVisitation = false          
+        this.isLoadingSalesVisitation = false
       }).catch(error => {
         this.isLoadingSalesVisitation = false
         this.$notification.error(error.message)
+      })
+    },
+    onDelete () {
+      this.isDeleting = true
+      this.delete({
+        id: this.id
+      }).then(response => {
+        this.isDeleting = false
+        this.$router.push('/master/customer')
+      }).catch(response => {
+        this.isDeleting = false
+        this.$notification.error('cannot delete this customer')
       })
     }
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-
-        this.data.name = response.data.name
-        if (response.data.emails) {
-          this.data.email = response.data.emails[0].email
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'addresses;phones;groups;emails'
+      }
+    }).then(response => {
+      this.isLoading = false
+      this.data.name = response.data.name
+      console.log(response.data)
+      if (response.data.emails.length > 0) {
+        this.data.email = response.data.emails[0].email
+      }
+      if (response.data.addresses.length > 0) {
+        this.data.address = response.data.addresses[0].address
+      }
+      if (response.data.phones.length > 0) {
+        this.data.phone = response.data.phones[0].number
+      }
+      if (response.data.groups.length > 0) {
+        if (response.data.groups[0].name == 'priority') {
+          this.data.priority = true
         }
-        if (response.data.addresses) {
-          this.data.address = response.data.addresses[0].address
-        }
-        if (response.data.phones) {
-          this.data.phone = response.data.phones[0].number
-        }
-        if (response.data.groups) {
-          if (response.data.groups[0].name == 'priority') {
-            this.data.priority = true
-          }
-        }
-      }, (error) => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+      }
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
     this.isLoadingSalesVisitation = true
     this.getSalesVisitationRequest()
   }

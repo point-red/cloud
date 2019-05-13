@@ -114,7 +114,7 @@ export default {
       rows: 1,
       form: new Form({
         date: new Date(),
-        customer: this.$route.query.name || 'Customer',
+        customer: this.$route.query.name || 'customer',
         address: this.$route.query.address || 'Event Location',
         latitude: this.$route.query.latitude || '',
         longitude: this.$route.query.longitude || '',
@@ -138,7 +138,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('SalesVisitationForm', ['create', 'get']),
+    ...mapActions('pluginPinPointSalesVisitationForm', ['create', 'get']),
     onSelectedNoInterestReason (selected) {
       this.form.not_interest_reason = selected
       this.loadSuggestions = false

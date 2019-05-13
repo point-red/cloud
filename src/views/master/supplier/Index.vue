@@ -2,36 +2,38 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">Supplier</span>
+      <span class="breadcrumb-item active">{{ $t('supplier') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block :title="$t('supplier')" :header="true">
         <p-form-input
           id="search-text"
           name="search-text"
           placeholder="Search"
           :value="searchText"
           @input="filterSearch"/>
-        <hr>
-        <p-block-inner :is-loading="loading">
+        <hr/>
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
+              <th>#</th>
               <th>Name</th>
               <th>Address</th>
               <th>Phone</th>
             </tr>
             <tr
-              v-for="supplier in suppliers"
+              v-for="(supplier, index) in suppliers"
               :key="supplier.id"
               slot="p-body">
-              <th>
+              <th>{{ index + 1 }}</th>
+              <td>
                 <router-link :to="{ name: 'supplier.show', params: { id: supplier.id }}">
                   {{ supplier.name | titlecase }}
                 </router-link>
-              </th>
+              </td>
               <td>
                 <template v-for="supplierAddress in supplier.addresses">
                   {{ supplierAddress.address | lowercase }}
@@ -72,18 +74,17 @@ export default {
   },
   data () {
     return {
-      title: 'Supplier',
-      loading: true,
+      isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
   computed: {
-    ...mapGetters('Supplier', ['suppliers', 'supplierPagination'])
+    ...mapGetters('masterSupplier', ['suppliers', 'pagination'])
   },
   methods: {
-    ...mapActions('Supplier', ['get']),
+    ...mapActions('masterSupplier', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
@@ -91,23 +92,26 @@ export default {
       this.getSupplierRequest()
     }, 300),
     getSupplierRequest () {
-      this.loading = true
+      this.isLoading = true
       this.get({
         params: {
+          fields: 'suppliers.*',
           sort_by: 'name',
           filter_like: {
-            name: this.searchText,
+            'name': this.searchText,
             'addresses.address': this.searchText,
-            'phones.number': this.searchText
+            'phones.number': this.searchText,
+            'emails.email': this.searchText
           },
+          join: 'addresses,phones,emails',
+          includes: 'addresses;phones;emails;groups',
           limit: 10,
-          includes: 'addresses;phones;groups',
           page: this.currentPage
         }
       }).then(response => {
-        this.loading = false
+        this.isLoading = false
       }).catch(error => {
-        this.loading = false
+        this.isLoading = false
       })
     },
     updatePage (value) {
@@ -119,7 +123,7 @@ export default {
     this.getSupplierRequest()
   },
   updated () {
-    this.lastPage = this.supplierPagination.last_page
+    this.lastPage = this.pagination.last_page
   }
 }
 </script>

@@ -60,6 +60,8 @@
           id="address"
           name="address"
           :label="$t('address')"
+          :placeholder="$t('address')"
+          help="*wajib diisi dan akan diverifikasi, jika alamat tidak ditemukan maka piutang dibebankan pada SA"
           :disabled="loadingSaveButton"
           v-model="form.address"
           :errors="form.errors.get('address')"
@@ -90,6 +92,7 @@
           id="phone"
           name="phone"
           :label="$t('phone')"
+          help="*wajib diisi dan akan diverifikasi, jika nomer tidak valid maka piutang dibebankan pada SA"
           :disabled="loadingSaveButton"
           v-model="form.phone"
           :errors="form.errors.get('phone')"
@@ -417,7 +420,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('SalesVisitationForm', ['create']),
+    ...mapActions('pluginPinPointSalesVisitationForm', ['create']),
     updateItem (row) {
       if (this.rows === row) {
         this.rows++

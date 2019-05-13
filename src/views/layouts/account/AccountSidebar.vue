@@ -3,9 +3,8 @@
     id="sidebar"
     ref="sidebarRef">
     <!-- Sidebar Scroll Container -->
-    <div
-      v-slimscroll="options"
-      id="sidebar-scroll">
+    <!-- v-slimscroll="options" -->
+    <div id="sidebar-scroll" v-slimscroll="options">
       <!-- Sidebar Content -->
       <div class="sidebar-content">
         <!-- Side Header -->
@@ -165,8 +164,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions('Auth', ['logout']),
-    ...mapActions('UIHandler', ['toggleLeftSidebar', 'toggleSidebarInverse']),
+    ...mapActions('auth', ['logout']),
+    ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSidebarInverse']),
     handleResize (event) {
       this.options.height = window.innerHeight + 'px'
       document.getElementById('sidebar-scroll').style.height = window.innerHeight + 'px'
@@ -181,3 +180,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+#sidebar-scroll {
+  overflow-y: auto
+}
+</style>

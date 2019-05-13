@@ -208,12 +208,13 @@ export default {
       id: this.$route.params.id,
       form: new Form({
         date: {
-          start: this.$moment(),
-          end: this.$moment()
+          start: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+          end: this.$moment().format('YYYY-MM-DD HH:mm:ss')
         },
         template: {
           groups: []
         }
+
       }),
       title: 'Kpi',
       loading: true,
@@ -233,37 +234,38 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employee']),
-    ...mapGetters('KpiResult', ['result']),
-    ...mapGetters('KpiTemplate', ['template']),
-    ...mapGetters('KpiAutomated', ['automated_ids'])
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceKpiResult', ['result']),
+    ...mapGetters('humanResourceKpiTemplate', ['template']),
+    ...mapGetters('humanResourceKpiAutomated', ['automated_ids'])
   },
   created () {
     this.loading = true
-    this.findEmployee({ id: this.id })
-      .then((response) => {
-        this.loading = false
-        if (this.employee.kpi_template_id === null) {
-          this.$refs.assignKpiTemplate.show(this.id)
-        } else {
-          this.getKpiTemplate(this.employee.kpi_template_id)
-        }
-      }, (error) => {
-        this.loading = false
-        console.log(JSON.stringify(error))
-      })
+    this.findEmployee({
+      id: this.id
+    }).then(response => {
+      this.loading = false
+      if (this.employee.kpi_template_id === null) {
+        this.$refs.assignKpiTemplate.show(this.id)
+      } else {
+        this.getKpiTemplate(this.employee.kpi_template_id)
+      }
+    }).catch(error => {
+      this.loading = false
+      console.log(JSON.stringify(error))
+    })
   },
   methods: {
-    ...mapActions('Employee', {
+    ...mapActions('humanResourceEmployee', {
       findEmployee: 'find'
     }),
-    ...mapActions('KpiTemplate', {
+    ...mapActions('humanResourceKpiTemplate', {
       findKpiTemplate: 'find'
     }),
-    ...mapActions('KpiResult', {
+    ...mapActions('humanResourceKpiResult', {
       findKpiResult: 'findByScorePercentage'
     }),
-    ...mapActions('EmployeeAssessment', {
+    ...mapActions('humanResourceEmployeeAssessment', {
       createEmployeeAssessment: 'create'
     }),
     ...mapActions('KpiAutomated', {
@@ -332,23 +334,18 @@ export default {
             this.loadingSaveButton = false
             this.$notification.success('Create success')
             this.findKpiResult(this.form.template.score_percentage)
-              .then(
-                (response) => {
+              .then(response => {
                   this.$alert.success(response.data.criteria, response.data.notes).then(() => {
-                    this.$router.go()
+                    this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
                   })
-                },
-                (error) => {
-                  console.log(JSON.stringify(error))
-                  this.$router.go()
-                }
-              )
-          },
-          (error) => {
+            }).catch(error => {
+              console.log(JSON.stringify(error))
+              this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
+            })
+          }).catch(error => {
             this.loadingSaveButton = false
             this.$notification.error('Create failed', error.message)
-          }
-        )
+        })
     },
     getAutomatedScore () {
       var automatedIDs = []
