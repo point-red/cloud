@@ -806,8 +806,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employee']),
-    ...mapGetters('EmployeeSalary', ['salary', 'additional'])
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeSalary', ['salary', 'additional'])
   },
   created () {
     this.loading = true
@@ -827,7 +827,7 @@ export default {
     )
   },
   methods: {
-    ...mapActions('EmployeeSalary', {
+    ...mapActions('humanResourceEmployeeSalary', {
       findEmployeeSalary: 'find', updateEmployeeSalary: 'update'
     }),
     cancel () {

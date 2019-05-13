@@ -98,7 +98,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('EmployeeJobLocation', {
+    ...mapActions('humanResourceEmployeeJobLocation', {
       createEmployeeJobLocation: 'create'
     }),
     onSubmit () {

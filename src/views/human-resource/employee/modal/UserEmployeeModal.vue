@@ -42,7 +42,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('UserEmployee', ['user_employees'])
+    ...mapGetters('humanResourceEmployeeUserEmployee', ['user_employees'])
   },
   watch: {
     'user_employee' () {
@@ -53,7 +53,7 @@ export default {
     this.get()
   },
   methods: {
-    ...mapActions('UserEmployee', ['get']),
+    ...mapActions('humanResourceEmployeeUserEmployee', ['get']),
     show () {
       this.$refs.userEmployeeModal.show()
     },

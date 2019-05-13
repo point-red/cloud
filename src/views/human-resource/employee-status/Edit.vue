@@ -77,7 +77,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('EmployeeStatus', ['status'])
+    ...mapGetters('humanResourceEmployeeStatus', ['status'])
   },
   created () {
     this.loading = true
@@ -97,7 +97,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('EmployeeStatus', { findStatus: 'find', updateStatus: 'update' }),
+    ...mapActions('humanResourceEmployeeStatus', { findStatus: 'find', updateStatus: 'update' }),
     onSubmit () {
       this.loadingSaveButton = true
       this.updateStatus(this.form)

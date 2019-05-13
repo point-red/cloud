@@ -74,7 +74,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('EmployeeJobLocation', ['jobLocation', 'jobLocations']),
+    ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocation', 'jobLocations'])
   },
   created () {
     this.loading = true
@@ -82,7 +82,7 @@ export default {
       this.jobLocations.find((element) => {
         console.log(element.id + ' = ' + this.id)
         if (element.id === this.id) {
-          this.$store.commit('EmployeeJobLocation/FETCH_OBJECT', element)
+          this.$store.commit('humanResourceEmployeeJobLocation/FETCH_OBJECT', element)
           this.loading = false
         }
       })
@@ -94,7 +94,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('EmployeeJobLocation', { findJobLocation: 'find', deleteJobLocation: 'delete' }),
+    ...mapActions('humanResourceEmployeeJobLocation', { findJobLocation: 'find', deleteJobLocation: 'delete' }),
     onDelete () {
       this.loadingSaveButton = true
       this.deleteJobLocation({ id: this.id })

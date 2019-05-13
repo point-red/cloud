@@ -1005,9 +1005,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('Employee', ['employee']),
-    ...mapGetters('EmployeeAssessment', ['assessment']),
-    ...mapGetters('EmployeeSalary', ['salary', 'salaryAssessment', 'salaryAchievement'])
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeAssessment', ['assessment']),
+    ...mapGetters('humanResourceEmployeeSalary', ['salary', 'salaryAssessment', 'salaryAchievement'])
   },
   created () {
     this.loading = true
@@ -1028,10 +1028,10 @@ export default {
       })
   },
   methods: {
-    ...mapActions('Employee', {
+    ...mapActions('humanResourceEmployee', {
       findEmployee: 'find'
     }),
-    ...mapActions('EmployeeSalary', {
+    ...mapActions('humanResourceEmployeeSalary', {
       createEmployeeSalary: 'create',
       getSalaryAssessment: 'getAssessment',
       getSalaryAchievement: 'getAchievement'

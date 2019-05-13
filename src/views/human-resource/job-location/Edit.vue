@@ -113,7 +113,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('EmployeeJobLocation', ['jobLocation'])
+    ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocation'])
   },
   created () {
     this.loading = true
@@ -133,7 +133,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('EmployeeJobLocation', { findJobLocation: 'find', updateJobLocation: 'update' }),
+    ...mapActions('humanResourceEmployeeJobLocation', { findJobLocation: 'find', updateJobLocation: 'update' }),
     onSubmit () {
       this.loadingSaveButton = true
       this.updateJobLocation(this.form)

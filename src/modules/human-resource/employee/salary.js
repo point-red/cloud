@@ -82,7 +82,7 @@ const actions = {
           (response) => {
             commit('FETCH_SALARIES', response.data)
             commit('FETCH_DATA_SET', response.data_set)
-            dispatch('Employee/find', { id: payload.employeeId }, { root: true })
+            dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
             resolve(response)
           },
           (error) => {
@@ -123,7 +123,7 @@ const actions = {
           (response) => {
             commit('FETCH_SALARY', response.data)
             commit('FETCH_SALARY_ADDITIONAL', response.additional)
-            dispatch('Employee/find', { id: payload.employeeId }, { root: true })
+            dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
             resolve(response)
           },
           (error) => {

@@ -268,7 +268,7 @@ export default {
     ...mapActions('humanResourceEmployeeAssessment', {
       createEmployeeAssessment: 'create'
     }),
-    ...mapActions('KpiAutomated', {
+    ...mapActions('humanResourceKpiAutomated', {
       getAutomatedData: 'get'
     }),
     getKpiTemplate (kpiTemplateId) {

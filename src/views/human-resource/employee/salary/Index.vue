@@ -45,7 +45,7 @@
               :key="salary.id"
               slot="p-body">
               <td>
-                <router-link :to="{ name: 'EmployeeSalaryShow', params: { id: employee.id, salaryId: salary.id }}">
+                <router-link :to="{ name: 'humanResourceEmployeeSalaryShow', params: { id: employee.id, salaryId: salary.id }}">
                   {{ dataSet.startDates[salaryIndex] | dateFormat('DD MMMM YYYY') }} - {{ dataSet.endDates[salaryIndex] | dateFormat('DD MMMM YYYY') }}
                 </router-link>
               </td>
@@ -127,11 +127,11 @@ export default {
     })
   },
   computed: {
-    ...mapGetters('Employee', ['employee']),
-    ...mapGetters('EmployeeSalary', ['salaries', 'dataSet'])
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeSalary', ['salaries', 'dataSet'])
   },
   methods: {
-    ...mapActions('EmployeeSalary', {
+    ...mapActions('humanResourceEmployeeSalary', {
       getEmployeeSalary: 'get',
       deleteEmployeeSalary: 'delete',
       export: 'export'

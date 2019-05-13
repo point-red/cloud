@@ -66,7 +66,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('EmployeeStatus', {
+    ...mapActions('humanResourceEmployeeStatus', {
       createEmployeeStatus: 'create'
     }),
     onSubmit () {

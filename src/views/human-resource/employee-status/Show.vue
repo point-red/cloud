@@ -66,7 +66,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('EmployeeStatus', ['status', 'statuses']),
+    ...mapGetters('humanResourceEmployeeStatus', ['status', 'statuses']),
   },
   created () {
     this.loading = true
@@ -74,7 +74,7 @@ export default {
       this.statuses.find((element) => {
         console.log(element.id + ' = ' + this.id)
         if (element.id === this.id) {
-          this.$store.commit('EmployeeStatus/FETCH_OBJECT', element)
+          this.$store.commit('humanResourceEmployeeStatus/FETCH_OBJECT', element)
           this.loading = false
         }
       })
@@ -86,7 +86,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('EmployeeStatus', { findStatus: 'find', deleteStatus: 'delete' }),
+    ...mapActions('humanResourceEmployeeStatus', { findStatus: 'find', deleteStatus: 'delete' }),
     onDelete () {
       this.loadingSaveButton = true
       this.deleteStatus({ id: this.id })
