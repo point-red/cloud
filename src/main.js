@@ -28,6 +28,7 @@ import BlockUI from 'vue-blockui'
 import VueClipboard from 'vue-clipboard2'
 import VueSelectMenu from 'v-selectmenu'
 import ClickOutside from 'v-click-outside'
+import '@/firebase'
 
 require('vue-tour/dist/vue-tour.css')
 require('flag-icon-css/css/flag-icon.min.css')

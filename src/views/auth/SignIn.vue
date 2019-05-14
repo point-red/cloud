@@ -29,14 +29,14 @@
 
       <div class="form-group text-center">
         <button
-          :disabled="loadingSaveButton"
+          :disabled="isLoading"
           type="submit"
           class="btn btn-sm btn-hero btn-primary">
           <i
-            v-show="loadingSaveButton"
+            v-show="isLoading"
             class="fa fa-asterisk fa-spin"/>
           <i
-            v-show="!loadingSaveButton"
+            v-show="!isLoading"
             class="si si-login mr-10"/> Sign In
         </button>
         <div class="mt-30">
@@ -54,13 +54,15 @@
 
 <script>
 import { mapActions } from 'vuex'
+import firebase from 'firebase'
 
 export default {
   data () {
     return {
       username: '',
       password: '',
-      loadingSaveButton: false
+      token: '',
+      isLoading: false
     }
   },
   computed: {
@@ -83,25 +85,41 @@ export default {
         console.log(error.message)
       })
     }
+
+    const messaging = firebase.messaging()
+    console.log('Created Messaging.')
+    messaging.requestPermission().then(function () {
+      console.log('Notification permission granted.')
+      return messaging.getToken()
+    }).then(token => {
+      this.token = token      
+    }).catch(error => {
+      console.log('Unable to get permission to notify.', error)
+    })
   },
   methods: {
     ...mapActions('auth', ['tryAutoLogin']),
     ...mapActions('uiHandler', ['showLoadingBlock', 'dismissLoadingBlock']),
+    ...mapActions('firebaseToken', ['create']),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isLoading = true
       this.$store.dispatch('auth/login', {
         username: this.username,
         password: this.password
-      }).then(
-        (response) => {
-          this.loadingSaveButton = false
+      }).then(response => {
+        this.create({
+          token: this.token
+        }).then(response => {
+        }).catch(error => {
+          console.log(error)
+        }).then(() => {
+          this.isLoading = false
           this.$router.replace(this.redirectTo)
-        },
-        (error) => {
-          this.$notification.error(error.data.message)
-          this.loadingSaveButton = false
-        }
-      )
+        })
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.data.message)
+      })
     }
   }
 }

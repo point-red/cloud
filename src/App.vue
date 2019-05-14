@@ -37,6 +37,8 @@
 <script>
 import Network from '@/network'
 import { mapGetters } from 'vuex'
+import firebase from 'firebase'
+
 export default {
   name: 'App',
   components: {
@@ -44,6 +46,16 @@ export default {
   },
   computed: {
     ...mapGetters('uiHandler', ['isLoadingBlock'])
+  },
+  created () {
+    const messaging = firebase.messaging()
+    messaging.requestPermission().then(() => {
+      messaging.onMessage((payload) => {
+        console.log('Message received. ', payload)
+      })
+    }).catch(error => {
+      console.log('Unable to get permission to notify.', error)
+    })
   },
   mounted () {
     window.addEventListener('resize', this.handleResize)
