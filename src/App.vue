@@ -57,6 +57,8 @@ export default {
       }).catch(error => {
         console.log('Unable to get permission to notify.', error)
       })
+    } else {
+      console.log('Push API not supported in this browser.')
     }
   },
   mounted () {

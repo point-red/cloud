@@ -120,8 +120,10 @@ export default {
             this.isLoading = false
             this.$router.replace(this.redirectTo)
           })
+        } else {
+          this.isLoading = false
+          this.$router.replace(this.redirectTo)
         }
-        this.isLoading = false
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.data.message)
