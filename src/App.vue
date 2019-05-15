@@ -48,14 +48,16 @@ export default {
     ...mapGetters('uiHandler', ['isLoadingBlock'])
   },
   created () {
-    const messaging = firebase.messaging()
-    messaging.requestPermission().then(() => {
-      messaging.onMessage((payload) => {
-        console.log('Message received. ', payload)
+    if (firebase.messaging.isSupported()) {
+      const messaging = firebase.messaging()
+      messaging.requestPermission().then(() => {
+        messaging.onMessage((payload) => {
+          console.log('Message received. ', payload)
+        })
+      }).catch(error => {
+        console.log('Unable to get permission to notify.', error)
       })
-    }).catch(error => {
-      console.log('Unable to get permission to notify.', error)
-    })
+    }
   },
   mounted () {
     window.addEventListener('resize', this.handleResize)
