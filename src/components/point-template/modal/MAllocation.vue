@@ -96,7 +96,7 @@ export default {
         }
       }).then(response => {
         this.options = []
-        this.mutableLabel = ''
+        // this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],

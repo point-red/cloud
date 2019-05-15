@@ -206,13 +206,13 @@
                 name="need-down-payment"
                 :help="'* surat jalan bisa dibuat setelah pembayaran uang muka'"
                 :label="$t('require down payment')">
-                <!-- <div slot="body" class="col-lg-9">
+                <div slot="body" class="col-lg-9">
                   <p-form-number
                     id="need-down-payment"
                     name="need-down-payment"
                     :is-text-right="false"
                     v-model="form.need_down_payment"/>
-                </div> -->
+                </div>
               </p-form-row>
 
               <p-form-row
@@ -379,6 +379,10 @@ export default {
       var subtotal = 0
       var totalQuantity = 0
       this.form.items.forEach(function (element) {
+        element.allocation_name = ''
+        if (element.allocation) {
+          element.allocation_name = element.allocation.name
+        }
         element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
         element.discount_value = element.discount_percent * element.price / 100
         subtotal += parseFloat(element.total)
@@ -429,7 +433,7 @@ export default {
       this.find({
         id: this.$route.query.id,
         params: {
-          includes: 'form;supplier;items.item.units;services.service'
+          includes: 'form;supplier;items.item.units;items.allocation;services.service;services.allocation'
         }
       }).then(response => {
         this.isLoading = false
@@ -446,6 +450,7 @@ export default {
         this.calculate()
       }).catch(error => {
         this.isLoading = false
+        this.$notification.error(error.message)
       })
     }
   }

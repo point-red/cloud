@@ -196,7 +196,7 @@ export default {
     }
   },
   created () {
-    this.isLoading = true    
+    this.isLoading = true
     this.find({
       id: this.id,
       params: {

@@ -68,6 +68,7 @@ export default new Router({
       children: [
         { path: '/', name: 'Dashboard', component: Dashboard },
         { path: '/menu', name: 'MainMenu', component: MainMenu },
+        { path: '/storage', name: 'storage', component: () => import('./views/Storage.vue') },
         { path: '/whoops', component: Whoops },
         ...Master,
         ...HumanResource,

@@ -4,6 +4,13 @@
       :class="{
         'text-right' : isTextRight
       }"></cleave>
+    <div
+      v-for="(error, index) in errors"
+      :key="index"
+      class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
+    <div
+      v-show="help"
+      class="form-text text-muted">{{ help }}</div>
   </div>
 </template>
 
@@ -52,6 +59,13 @@ export default {
     value: {
       type: [String, Number],
       default: 0
+    },
+    help: {
+      type: String
+    },
+    errors: {
+      type: Array,
+      default: null
     }
   }
 }
