@@ -328,6 +328,8 @@ export default {
     },
     onSubmit () {
       this.loadingSaveButton = true
+      this.form.date.start =  this.serverDateTime(this.$moment(this.form.date.start))
+      this.form.date.end =  this.serverDateTime(this.$moment(this.form.date.end))
       this.createEmployeeAssessment({ employeeId: this.employee.id, form: this.form })
         .then(
           (response) => {
@@ -361,7 +363,7 @@ export default {
       automatedIDs = [...new Set(automatedIDs)]
 
       if (automatedIDs.length > 0 && this.form.date.start && this.form.date.end) {
-        this.getAutomatedData({ startDate: this.form.date.start, endDate: this.form.date.end, automated_ids: automatedIDs, employeeId: this.id })
+        this.getAutomatedData({ startDate: this.serverDateTime(this.$moment(this.form.date.start)), endDate: this.serverDateTime(this.$moment(this.form.date.end)), automated_ids: automatedIDs, employeeId: this.id })
           .then((response) => {
             this.loading = false
 

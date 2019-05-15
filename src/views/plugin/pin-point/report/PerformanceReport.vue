@@ -141,8 +141,8 @@ export default {
       this.loading = true
       this.get({
         params: {
-          date_from: this.date.start,
-          date_to: this.date.end
+          date_from: this.serverDateTime(this.$moment(this.date.start)),
+          date_to: this.serverDateTime(this.$moment(this.date.end))
         }
       }).then((response) => {
         this.loading = false
@@ -154,8 +154,8 @@ export default {
     exportData () {
       this.isExporting = true
       this.export({
-        date_from: this.date.start,
-        date_to: this.date.end
+        date_from: this.serverDateTime(this.$moment(this.date.start)),
+        date_to: this.serverDateTime(this.$moment(this.date.end))
       }).then((response) => {
         this.isExporting = false
         this.downloadFiles = response.data.files

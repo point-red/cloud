@@ -1059,8 +1059,8 @@ export default {
       this.getSalaryAssessment({
         employeeId: this.id,
         params: {
-          startDate: this.form.date.start,
-          endDate: this.form.date.end
+          startDate: this.serverDateTime(this.$moment(this.form.date.start)),
+          endDate: this.serverDateTime(this.$moment(this.form.date.end))
         }
       }).then(
         (response) => {
@@ -1078,8 +1078,8 @@ export default {
       this.getSalaryAchievement({
         employeeId: this.id,
         params: {
-          startDate: this.form.date.start,
-          endDate: this.form.date.end
+          startDate: this.serverDateTime(this.$moment(this.form.date.start)),
+          endDate: this.serverDateTime(this.$moment(this.form.date.end))
         }
       }).then(
         (response) => {
