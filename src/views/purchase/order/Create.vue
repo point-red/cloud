@@ -450,6 +450,7 @@ export default {
         this.calculate()
       }).catch(error => {
         this.isLoading = false
+        this.$notification.error(error.message)
       })
     }
   }
