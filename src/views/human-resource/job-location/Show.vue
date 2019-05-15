@@ -8,6 +8,8 @@
       <span class="breadcrumb-item active">{{ jobLocation.name | titlecase }}</span>
     </breadcrumb>
 
+    <tab-menu/>
+
     <div class="row">
       <p-block :title="$t('job location')" :header="true">
         <p-block-inner :is-loading="loading">
@@ -78,15 +80,6 @@ export default {
   },
   created () {
     this.loading = true
-    if (this.jobLocations) {
-      this.jobLocations.find((element) => {
-        console.log(element.id + ' = ' + this.id)
-        if (element.id === this.id) {
-          this.$store.commit('humanResourceEmployeeJobLocation/FETCH_OBJECT', element)
-          this.loading = false
-        }
-      })
-    }
     this.findJobLocation({ id: this.id }).then((response) => {
       this.loading = false
     }, (error) => {

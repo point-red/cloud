@@ -3,7 +3,11 @@ import api from '@/api'
 const url = '/human-resource/employee/job-locations'
 
 const state = {
-  jobLocation: {},
+  jobLocation: {
+    name: '',
+    base_salary: null,
+    multiplier_kpi: null
+  },
   jobLocations: [],
   jobLocationList: [],
   pagination: {
@@ -68,9 +72,9 @@ const mutations = {
 }
 
 const actions = {
-  get ({ commit }) {
+  get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url)
+      api.get(url, payload)
         .then(
           (response) => {
             commit('FETCH_ARRAY', response)

@@ -11,7 +11,6 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-
       <p-block
         :is-loading="loading"
         :header="true"

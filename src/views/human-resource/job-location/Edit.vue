@@ -11,8 +11,9 @@
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
-    <form class="row" @submit.prevent="onSubmit">
+    <tab-menu/>
 
+    <form class="row" @submit.prevent="onSubmit">
       <p-block
         :is-loading="loading"
         :header="true"

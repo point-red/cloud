@@ -14,26 +14,7 @@
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item" v-if="$permission.has('read employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-bar-chart"></i> {{ $t('kpi') | titlecase }}</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('create employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment/create'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-note"></i> {{ $t('employee assessment') | titlecase }}</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('employee assessment')" :header="true">
@@ -96,7 +77,7 @@
                 <td class="text-center">
                   <a
                     href="javascript:void(0)"
-                    v-show="!indicator.selected && !indicator.automated_id"
+                    v-show="!indicator.selected && !indicator.automated_code"
                     class="btn btn-sm btn-primary"
                     @click="$refs.score.show(indicator)">
                       <i class="si si-note"></i>
@@ -104,10 +85,10 @@
                   <span v-if="indicator.selected">
                     {{ indicator.selected.score | numberFormat }}
                   </span>
-                  <span v-else-if="indicator.automated_id && indicator.score">
+                  <span v-else-if="indicator.automated_code && indicator.score">
                     {{ indicator.score | numberFormat }}
                   </span>
-                  <span v-else-if="indicator.automated_id && !indicator.score">
+                  <span v-else-if="indicator.automated_code && !indicator.score">
                     {{ 0 }}
                   </span>
                 </td>
@@ -115,10 +96,10 @@
                   <span v-if="indicator.selected">
                     {{ indicator.selected.score_percentage | numberFormat }}
                   </span>
-                  <span v-else-if="indicator.automated_id && indicator.score_percentage">
+                  <span v-else-if="indicator.automated_code && indicator.score_percentage">
                     {{ indicator.score_percentage | numberFormat }}
                   </span>
-                  <span v-else-if="indicator.automated_id && !indicator.score">
+                  <span v-else-if="indicator.automated_code && !indicator.score">
                     {{ 0 }}
                   </span>
                 </td>
@@ -133,7 +114,7 @@
                 <td class="text-center">
                   <span>
                     <button
-                      v-show="indicator.selected && !indicator.automated_id"
+                      v-show="indicator.selected && !indicator.automated_code"
                       @click="removeScore(indicator.kpi_template_group_id, indicator.id)"
                       type="button"
                       class="btn btn-sm btn-danger">
@@ -190,7 +171,7 @@
 import Form from '@/utils/Form'
 import AssignScoreModal from './AssignScoreModal'
 import AssignKpiTemplateModal from './AssignKpiTemplateModal'
-import TabMenu from '../TabMenu'
+import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
@@ -237,7 +218,7 @@ export default {
     ...mapGetters('humanResourceEmployee', ['employee']),
     ...mapGetters('humanResourceKpiResult', ['result']),
     ...mapGetters('humanResourceKpiTemplate', ['template']),
-    ...mapGetters('humanResourceKpiAutomated', ['automated_ids'])
+    ...mapGetters('humanResourceKpiAutomated', ['automated_codes'])
   },
   created () {
     this.loading = true
@@ -354,8 +335,8 @@ export default {
 
       this.form.template.groups.forEach(function (group, key) {
         group.indicators.forEach(function (indicator, key) {
-          if (indicator.automated_id) {
-            automatedIDs.push(indicator.automated_id)
+          if (indicator.automated_code) {
+            automatedIDs.push(indicator.automated_code)
           }
         })
       })
@@ -363,7 +344,7 @@ export default {
       automatedIDs = [...new Set(automatedIDs)]
 
       if (automatedIDs.length > 0 && this.form.date.start && this.form.date.end) {
-        this.getAutomatedData({ startDate: this.serverDateTime(this.$moment(this.form.date.start)), endDate: this.serverDateTime(this.$moment(this.form.date.end)), automated_ids: automatedIDs, employeeId: this.id })
+        this.getAutomatedData({ startDate: this.serverDateTime(this.$moment(this.form.date.start)), endDate: this.serverDateTime(this.$moment(this.form.date.end)), automated_codes: automatedIDs, employeeId: this.id })
           .then((response) => {
             this.loading = false
 
@@ -381,9 +362,9 @@ export default {
                 var score = 0
                 var scorePercentage = 0
 
-                if (response[indicator.automated_id]) {
-                  target = response[indicator.automated_id]['target'] || 0
-                  score = response[indicator.automated_id]['score'] || 0
+                if (response[indicator.automated_code]) {
+                  target = response[indicator.automated_code]['target'] || 0
+                  score = response[indicator.automated_code]['score'] || 0
 
                   scorePercentage = score / target * indicator.weight || 0
 
@@ -391,7 +372,7 @@ export default {
                     scorePercentage = parseFloat(indicator.weight) || 0
                   }
 
-                  this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'automated_id', indicator.automated_id)
+                  this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'automated_code', indicator.automated_code)
                 } else if (indicator.selected) {
                   score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected['score'] || 0
                   scorePercentage = score / target * indicator.weight || 0

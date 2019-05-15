@@ -18,22 +18,13 @@
           <span><i class="si si-bar-chart"></i> {{ $t('kpi') | titlecase }}</span>
         </router-link>
       </li>
-      <li class="nav-item" v-if="$permission.has('create employee assessment') && isScorer" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment/create'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-note"></i> {{ $t('employee assessment') | titlecase }}</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('create employee salary')" slot="right">
+      <li class="nav-item" v-if="$permission.has('read employee salary')" slot="right">
         <router-link
           :to="'/human-resource/employee/' + employee.id + '/salary'"
           exact
           class="nav-link"
           active-class="active">
-          <span><i class="si si-wallet"></i> {{ $t('employee salary') | titlecase }}</span>
+          <span><i class="si si-wallet"></i> {{ $t('salary') | titlecase }}</span>
         </router-link>
       </li>
     </tab-menu>
@@ -288,15 +279,6 @@ export default {
   },
   created () {
     this.loading = true
-    if (this.employees) {
-      this.employees.find((element) => {
-        console.log(element.id + ' = ' + this.id)
-        if (element.id === this.id) {
-          this.$store.commit('humanResourceEmployee/FETCH_OBJECT', element)
-          this.loading = false
-        }
-      })
-    }
     this.findEmployee({ id: this.id }).then((response) => {
       if (this.employee.scorers) {
         this.employee.scorers.find((element) => {

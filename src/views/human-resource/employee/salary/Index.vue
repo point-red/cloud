@@ -11,26 +11,7 @@
       <span class="breadcrumb-item active">{{ title | titlecase }}</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item" v-if="$permission.has('read employee salary')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/salary'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-wallet"></i> {{ $t('salary') | titlecase }}</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('create employee salary')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/salary/create'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-wallet"></i> {{ $t('employee salary') | titlecase }}</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu/>
 
     <div class="row">
       <p-block :title="title" :header="true">
@@ -95,7 +76,7 @@
 </template>
 
 <script>
-import TabMenu from '../TabMenu'
+import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'

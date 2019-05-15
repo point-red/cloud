@@ -14,26 +14,7 @@
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item" v-if="$permission.has('read employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-bar-chart"></i> {{ $t('kpi') | titlecase }}</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('create employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment/create'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-note"></i> {{ $t('employee assessment') | titlecase }}</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('employee assessment')" :header="true">
@@ -94,7 +75,7 @@
                 <td class="text-center">
                   <a
                     href="javascript:void(0)"
-                    v-show="!indicator.selected && !indicator.automated_id"
+                    v-show="!indicator.selected && !indicator.automated_code"
                     class="btn btn-sm btn-primary"
                     @click="$refs.score.show(indicator)">
                       <i class="si si-note"></i>
@@ -102,10 +83,10 @@
                   <span v-if="indicator.selected">
                     {{ indicator.selected.score | numberFormat }}
                   </span>
-                  <span v-else-if="indicator.automated_id && indicator.score">
+                  <span v-else-if="indicator.automated_code && indicator.score">
                     {{ indicator.score | numberFormat }}
                   </span>
-                  <span v-else-if="indicator.automated_id && !indicator.score">
+                  <span v-else-if="indicator.automated_code && !indicator.score">
                     {{ 0 }}
                   </span>
                 </td>
@@ -113,10 +94,10 @@
                   <span v-if="indicator.selected">
                     {{ indicator.selected.score_percentage | numberFormat }}
                   </span>
-                  <span v-else-if="indicator.automated_id && indicator.score_percentage">
+                  <span v-else-if="indicator.automated_code && indicator.score_percentage">
                     {{ indicator.score_percentage | numberFormat }}
                   </span>
-                  <span v-else-if="indicator.automated_id && !indicator.score">
+                  <span v-else-if="indicator.automated_code && !indicator.score">
                     {{ 0 }}
                   </span>
                 </td>
@@ -131,7 +112,7 @@
                 <td class="text-center">
                   <span>
                     <button
-                      v-show="indicator.selected && !indicator.automated_id"
+                      v-show="indicator.selected && !indicator.automated_code"
                       @click="removeScore(indicator.kpi_template_group_id, indicator.id)"
                       type="button"
                       class="btn btn-sm btn-danger">
@@ -185,7 +166,7 @@
 <script>
 import Form from '@/utils/Form'
 import AssignScoreModal from './AssignScoreModal'
-import TabMenu from '../TabMenu'
+import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
@@ -262,7 +243,7 @@ export default {
         for (var indicatorIndex in group.indicators) {
           var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex]
 
-          if (!indicator['automated_id']) {
+          if (!indicator['automated_code']) {
             var score = indicator.scores.find(o => o.description === indicator.score_description && o.score === indicator.score && o.kpi_indicator_id === indicator.id)
             var scorePercentage = score.score / indicator.target * indicator.weight
 

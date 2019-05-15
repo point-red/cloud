@@ -8,6 +8,8 @@
       <span class="breadcrumb-item active">{{ status.name | titlecase }}</span>
     </breadcrumb>
 
+    <tab-menu/>
+
     <div class="row">
       <p-block :title="$t('employee status')" :header="true">
         <p-block-inner :is-loading="loading">
@@ -66,19 +68,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('humanResourceEmployeeStatus', ['status', 'statuses']),
+    ...mapGetters('humanResourceEmployeeStatus', ['status', 'statuses'])
   },
   created () {
     this.loading = true
-    if (this.statuses) {
-      this.statuses.find((element) => {
-        console.log(element.id + ' = ' + this.id)
-        if (element.id === this.id) {
-          this.$store.commit('humanResourceEmployeeStatus/FETCH_OBJECT', element)
-          this.loading = false
-        }
-      })
-    }
     this.findStatus({ id: this.id }).then((response) => {
       this.loading = false
     }, (error) => {

@@ -23,7 +23,7 @@
               :key="indicator.id">
               <td>{{ indicator.name }}</td>
               <td class="text-center">{{ indicator.weight }}%</td>
-              <td class="text-center"><template v-if="!indicator.automated_id">{{ indicator.target }}</template></td>
+              <td class="text-center"><template v-if="!indicator.automated_code">{{ indicator.target }}</template></td>
               <td>
                 <a href="javascript:void(0)" class="badge badge-primary" @click="edit(indicator)"><i class="fa fa-pencil"></i></a>
                 <a href="javascript:void(0)" class="badge badge-danger" @click="remove(indicator)"><i class="fa fa-close"></i></a>
@@ -216,7 +216,7 @@ export default {
         this.$set(this.form, field, indicator[field])
       }
 
-      if (indicator.automated_id) {
+      if (indicator.automated_code) {
         this.automatedIndicatorChecked = false
         this.canEditTarget = false
         this.form.automated_indicator = indicator

@@ -3,18 +3,18 @@ import api from '@/api'
 const url = '/human-resource/kpi/automated'
 
 const state = {
-  automated_ids: []
+  automated_codes: []
 }
 
 const getters = {
-  automated_ids: state => {
-    return state.automated_ids
+  automated_codes: state => {
+    return state.automated_codes
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.automated_ids = payload
+    state.automated_codes = payload
   }
 }
 

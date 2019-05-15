@@ -11,7 +11,6 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-
       <p-block
         :is-loading="loading"
         :header="true"
@@ -48,7 +47,7 @@ import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import Form from '@/utils/Form'
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   components: {
