@@ -37,7 +37,7 @@
 <script>
 import Network from '@/network'
 import { mapGetters } from 'vuex'
-import firebase from 'firebase'
+import firebase from 'firebase/app'
 
 export default {
   name: 'App',
