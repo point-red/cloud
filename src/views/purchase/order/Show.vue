@@ -101,7 +101,7 @@
                 <th></th>
                 <td></td>
                 <td></td>
-                <td class="text-right">{{ purchaseOrder.total_quantity | numberFormat }}</td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td class="text-right">{{ purchaseOrder.subtotal | numberFormat }}</td>
@@ -302,14 +302,11 @@ export default {
     },
     calculate () {
       var subtotal = 0
-      var totalQuantity = 0
       this.purchaseOrder.items.forEach(function (element) {
         element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
         subtotal += parseFloat(element.total)
-        totalQuantity += parseFloat(element.quantity)
       })
       this.purchaseOrder.subtotal = subtotal
-      this.purchaseOrder.total_quantity = totalQuantity
       this.purchaseOrder.tax_base = this.purchaseOrder.subtotal - (this.purchaseOrder.subtotal * this.purchaseOrder.discount_percent / 100)
       if (this.purchaseOrder.type_of_tax == 'include') {
         this.purchaseOrder.tax = this.purchaseOrder.tax_base * 10 / 100
