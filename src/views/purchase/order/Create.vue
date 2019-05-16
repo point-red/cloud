@@ -113,13 +113,7 @@
               <th></th>
               <td></td>
               <td></td>
-              <td>
-                <p-form-number
-                  :id="'total_quantity'"
-                  :name="'total_quantity'"
-                  :readonly="true"
-                  v-model="form.total_quantity"/>
-              </td>
+              <td></td>
               <td></td>
               <td></td>
               <td>
@@ -297,7 +291,6 @@ export default {
         tax_base: 0,
         tax: 0,
         type_of_tax: 'exclude',
-        total_quantity: 0,
         amount: 0,
         items: [{
           item_id: null,
@@ -377,7 +370,6 @@ export default {
     },
     calculate: debounce (function () {
       var subtotal = 0
-      var totalQuantity = 0
       this.form.items.forEach(function (element) {
         element.allocation_name = ''
         if (element.allocation) {
@@ -386,11 +378,9 @@ export default {
         element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
         element.discount_value = element.discount_percent * element.price / 100
         subtotal += parseFloat(element.total)
-        totalQuantity += parseFloat(element.quantity)
       })
       this.form.subtotal = subtotal
       this.form.discount_value = this.form.discount_percent * subtotal / 100
-      this.form.total_quantity = totalQuantity
       this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount_percent / 100)
       if (this.form.type_of_tax == 'include') {
         this.form.tax = this.form.tax_base * 10 / 100
