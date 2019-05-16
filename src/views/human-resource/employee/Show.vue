@@ -18,13 +18,13 @@
           <span><i class="si si-bar-chart"></i> {{ $t('kpi') | titlecase }}</span>
         </router-link>
       </li>
-      <li class="nav-item" v-if="$permission.has('create employee assessment') && isScorer" slot="right">
+      <li class="nav-item" v-if="$permission.has('read employee salary')" slot="right">
         <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment/create'"
+          :to="'/human-resource/employee/' + employee.id + '/salary'"
           exact
           class="nav-link"
           active-class="active">
-          <span><i class="si si-note"></i> {{ $t('employee assessment') | titlecase }}</span>
+          <span><i class="si si-wallet"></i> {{ $t('salary') | titlecase }}</span>
         </router-link>
       </li>
     </tab-menu>
@@ -132,12 +132,32 @@
                     <td><span v-if="employee.group">{{ employee.group.name }}</span></td>
                   </tr>
                   <tr>
+                    <td><span class="font-w700">{{ $t('employee code') | titlecase }}</span></td>
+                    <td>{{ employee.employee_code }}</td>
+                  </tr>
+                  <tr>
                     <td><span class="font-w700">{{ $t('join date') | titlecase }}</span></td>
                     <td><span v-if="employee.join_date">{{ employee.join_date | dateFormat('DD MMM YYYY') }}</span></td>
                   </tr>
                   <tr>
                     <td><span class="font-w700">{{ $t('job title') | titlecase }}</span></td>
                     <td>{{ employee.job_title }}</td>
+                  </tr>
+                  <tr>
+                    <td><span class="font-w700">{{ $t('job location') | titlecase }}</span></td>
+                    <td><span v-if="employee.job_location">{{ employee.job_location.name }}</span></td>
+                  </tr>
+                  <tr v-if="$permission.has('read employee job location') && employee.job_location">
+                    <td><span class="font-w700">{{ $t('base salary') | titlecase }}</span></td>
+                    <td><span>{{ employee.job_location.base_salary | numberFormat }}</span></td>
+                  </tr>
+                  <tr v-if="$permission.has('read employee job location') && employee.job_location">
+                    <td><span class="font-w700">{{ $t('multiplier kpi') | titlecase }}</span></td>
+                    <td><span>{{ employee.job_location.multiplier_kpi | numberFormat }}</span></td>
+                  </tr>
+                  <tr>
+                    <td><span class="font-w700">{{ $t('status') | titlecase }}</span></td>
+                    <td><span v-if="employee.status">{{ employee.status.name }}</span></td>
                   </tr>
                   <tr>
                     <td><span class="font-w700">{{ $t('email') | titlecase }}</span></td>
@@ -179,6 +199,18 @@
                     </td>
                   </tr>
                   <tr>
+                    <td><span class="font-w700">{{ $t('daily transport allowance') | titlecase }}</span></td>
+                    <td>{{ employee.daily_transport_allowance | numberFormat }}</td>
+                  </tr>
+                  <tr>
+                    <td><span class="font-w700">{{ $t('team leader allowance') | titlecase }}</span></td>
+                    <td>{{ employee.team_leader_allowance | numberFormat }}</td>
+                  </tr>
+                  <tr>
+                    <td><span class="font-w700">{{ $t('communication allowance') | titlecase }}</span></td>
+                    <td>{{ employee.communication_allowance | numberFormat }}</td>
+                  </tr>
+                  <tr>
                     <td><span class="font-w700">{{ $t('employee scorer') | titlecase }}</span></td>
                     <td>
                       <ul>
@@ -187,6 +219,12 @@
                         </li>
                       </ul>
                     </td>
+                  </tr>
+                  <tr>
+                    <td><span class="font-w700">{{ $t('user account') | titlecase }}</span></td>
+                    <td><span v-for="(userEmployee, index) in employee.user_employee" :key="index">
+                      {{ userEmployee.first_name | titlecase }} {{ userEmployee.last_name | titlecase }}
+                    </span></td>
                   </tr>
                 </template>
               </p-table>
@@ -241,15 +279,6 @@ export default {
   },
   created () {
     this.loading = true
-    if (this.employees) {
-      this.employees.find((element) => {
-        console.log(element.id + ' = ' + this.id)
-        if (element.id === this.id) {
-          this.$store.commit('humanResourceEmployee/FETCH_OBJECT', element)
-          this.loading = false
-        }
-      })
-    }
     this.findEmployee({ id: this.id }).then((response) => {
       if (this.employee.scorers) {
         this.employee.scorers.find((element) => {

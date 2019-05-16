@@ -11,26 +11,7 @@
       <span class="breadcrumb-item active">Assessment</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item" v-if="$permission.has('read employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-bar-chart"></i> {{ $t('kpi') | titlecase }}</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('create employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment/create'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-note"></i> {{ $t('employee assessment') | titlecase }}</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block
@@ -85,9 +66,9 @@
               <td>{{ index+1 }}</td>
               <td>{{ indicator.name }}</td>
               <td class="text-center">{{ indicator.weight }}%</td>
-              <td class="text-center">{{ indicator.target }}</td>
-              <td class="text-center">{{ indicator.score }}</td>
-              <td class="text-center">{{ indicator.weight * indicator.score / indicator.target }}</td>
+              <td class="text-center">{{ indicator.target | numberFormat }}</td>
+              <td class="text-center">{{ indicator.score | numberFormat }}</td>
+              <td class="text-center">{{ indicator.score_percentage | numberFormat }}</td>
               <td class="text-center">{{ indicator.score_description }}</td>
               <td class="text-center"></td>
             </tr>
@@ -108,7 +89,7 @@
 </template>
 
 <script>
-import TabMenu from '../TabMenu'
+import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
@@ -147,6 +128,7 @@ export default {
       },
       (error) => {
         console.log(JSON.stringify(error))
+        this.loading = false
       }
     )
   }

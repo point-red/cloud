@@ -11,26 +11,7 @@
       <span class="breadcrumb-item active">{{ title | titlecase }}</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item" v-if="$permission.has('read employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-bar-chart"></i> {{ $t('kpi') | titlecase }}</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('create employee assessment') && isScorer" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment/create'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-note"></i> {{ $t('employee assessment') | titlecase }}</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu/>
 
     <div class="row" v-show="!hideChart">
       <p-block
@@ -136,7 +117,7 @@
 </template>
 
 <script>
-import TabMenu from '../TabMenu'
+import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import LineChart from '@/components/point-chart/LineChart'

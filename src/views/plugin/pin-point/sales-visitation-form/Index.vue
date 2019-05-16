@@ -228,7 +228,7 @@ export default {
             // 'phone': this.searchText,
             // 'notes': this.searchText,
             'form.createdBy.name': this.searchText
-          },        
+          },
           limit: 20,
           page: this.currentPage
         }

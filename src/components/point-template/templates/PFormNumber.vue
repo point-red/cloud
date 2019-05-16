@@ -1,6 +1,6 @@
 <template>
   <div>
-    <cleave :readonly="readonly" v-model="number" :options="options" class="form-control form-number"
+    <cleave :readonly="readonly" v-model="number" :options="options" :disabled="disabled" class="form-control form-number"
       :class="{
         'text-right' : isTextRight
       }"></cleave>
@@ -52,14 +52,21 @@ export default {
       type: Boolean,
       default: true
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    value: {
+      type: [String, Number],
+      default: 0
+    },
     help: {
       type: String
     },
     errors: {
       type: Array,
       default: null
-    },
-    value: 0
+    }
   }
 }
 </script>

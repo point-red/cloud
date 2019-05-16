@@ -21,8 +21,12 @@
           <p-form-row
             id="salary"
             name="salary"
-            :label="$t('salary')"
-            v-model="salary">
+            :label="$t('salary')">
+            <div slot="body" class="col-lg-9">
+              <p-form-number
+                v-model="salary"
+                :is-text-right="false"/>
+            </div>
           </p-form-row>
         </template>
         <template slot="footer">

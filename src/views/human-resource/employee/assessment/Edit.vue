@@ -14,26 +14,7 @@
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item" v-if="$permission.has('read employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-bar-chart"></i> {{ $t('kpi') | titlecase }}</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('create employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment/create'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-note"></i> {{ $t('employee assessment') | titlecase }}</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('employee assessment')" :header="true">
@@ -47,16 +28,13 @@
           </p-form-row>
           <p-form-row
             id="assessment-date"
-            :label="$t('assessment period')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                name="assessment-date"
-                :help="$t('assessment date help')"
-                v-model="form.date"/>
+            :label="$t('assessment date')">
+            <div slot="body" class="col-lg-9 col-form-label">
+              {{ assessment.date | dateFormat('DD MMM YYYY') }}
             </div>
           </p-form-row>
           <p-form-row
-            id="assessment-date"
+            id="assessment-category"
             :label="$t('assessment category')">
             <div slot="body" class="col-lg-9 col-form-label" v-if="form.template.name">
               {{ form.template.name }}
@@ -92,20 +70,37 @@
                 <td>{{ index+1 }}</td>
                 <td>{{ indicator.name }}</td>
                 <td class="text-center">{{ indicator.weight }}%</td>
-                <td class="text-center">{{ indicator.target }}</td>
+                <td class="text-center">{{ indicator.target | numberFormat }}</td>
+
                 <td class="text-center">
                   <a
                     href="javascript:void(0)"
-                    v-show="!indicator.selected"
+                    v-show="!indicator.selected && !indicator.automated_code"
                     class="btn btn-sm btn-primary"
                     @click="$refs.score.show(indicator)">
                       <i class="si si-note"></i>
                   </a>
                   <span v-if="indicator.selected">
-                    {{ indicator.selected.score }}
+                    {{ indicator.selected.score | numberFormat }}
+                  </span>
+                  <span v-else-if="indicator.automated_code && indicator.score">
+                    {{ indicator.score | numberFormat }}
+                  </span>
+                  <span v-else-if="indicator.automated_code && !indicator.score">
+                    {{ 0 }}
                   </span>
                 </td>
-                <td class="text-center"><span v-if="indicator.selected">{{ indicator.selected.score_percentage }}</span></td>
+                <td class="text-center">
+                  <span v-if="indicator.selected">
+                    {{ indicator.selected.score_percentage | numberFormat }}
+                  </span>
+                  <span v-else-if="indicator.automated_code && indicator.score_percentage">
+                    {{ indicator.score_percentage | numberFormat }}
+                  </span>
+                  <span v-else-if="indicator.automated_code && !indicator.score">
+                    {{ 0 }}
+                  </span>
+                </td>
                 <td class="text-center">
                   <span v-if="indicator.selected && indicator.selected.notes !== ''">
                     {{ indicator.selected.notes }}
@@ -117,7 +112,7 @@
                 <td class="text-center">
                   <span>
                     <button
-                      v-show="indicator.selected"
+                      v-show="indicator.selected && !indicator.automated_code"
                       @click="removeScore(indicator.kpi_template_group_id, indicator.id)"
                       type="button"
                       class="btn btn-sm btn-danger">
@@ -171,7 +166,7 @@
 <script>
 import Form from '@/utils/Form'
 import AssignScoreModal from './AssignScoreModal'
-import TabMenu from '../TabMenu'
+import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
@@ -188,8 +183,9 @@ export default {
       id: this.$route.params.id,
       kpiId: this.$route.params.kpiId,
       form: new Form({
-        date: '',
-        template: {}
+        template: {
+          groups: []
+        }
       }),
       title: 'Kpi',
       loading: false,
@@ -206,7 +202,8 @@ export default {
     ...mapGetters('humanResourceEmployee', ['employee']),
     ...mapGetters('humanResourceEmployeeAssessment', ['assessment']),
     ...mapGetters('humanResourceKpiResult', ['result']),
-    ...mapGetters('humanResourceKpiTemplate', ['template'])
+    ...mapGetters('humanResourceKpiTemplate', ['template']),
+    ...mapGetters('humanResourceKpiAutomated', ['template'])
   },
   created () {
     this.loading = true
@@ -216,14 +213,13 @@ export default {
       kpiId: this.kpiId
     }).then(
       (response) => {
-        this.loading = false
-        this.form.date = this.assessment.date
         this.form.template = this.assessment
-
         this.assignSelected()
+        this.loading = false
       },
       (error) => {
         console.log(JSON.stringify(error))
+        this.loading = false
       }
     )
   },
@@ -246,12 +242,15 @@ export default {
 
         for (var indicatorIndex in group.indicators) {
           var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex]
-          var score = indicator.scores.find(o => o.description === indicator.score_description && o.score === indicator.score && o.kpi_indicator_id === indicator.id)
-          var scorePercentage = score.score / indicator.target * indicator.weight
 
-          this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected', score)
-          this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'score_percentage', scorePercentage)
-          this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'notes', '')
+          if (!indicator['automated_code']) {
+            var score = indicator.scores.find(o => o.description === indicator.score_description && o.score === indicator.score && o.kpi_indicator_id === indicator.id)
+            var scorePercentage = score.score / indicator.target * indicator.weight
+
+            this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected', score)
+            this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'score_percentage', scorePercentage)
+            this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'notes', '')
+          }
         }
       }
     },

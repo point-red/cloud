@@ -288,6 +288,16 @@
             </p-form-row>
 
             <p-form-row
+              id="employee-code"
+              name="employee-code"
+              :label="$t('employee code')"
+              :disabled="loadingSaveButton"
+              v-model="form.employee_code"
+              :errors="form.errors.get('employee_code')"
+              @errors="form.errors.set('employee_code', null)">
+            </p-form-row>
+
+            <p-form-row
               id="job-title"
               name="job-title"
               :label="$t('job title')"
@@ -295,6 +305,21 @@
               v-model="form.job_title"
               :errors="form.errors.get('job_title')"
               @errors="form.errors.set('job_title', null)">
+            </p-form-row>
+
+            <p-form-row
+              id="job-location"
+              name="job-location"
+              :label="$t('job location')">
+              <div slot="body" class="col-lg-9">
+                <p-select
+                  id="employee-job-location"
+                  name="employee-job-location"
+                  v-model="form.employee_job_location_id"
+                  :options="jobLocationList"
+                  :errors="form.errors.get('employee_job_location_id')"
+                  @errors="form.errors.set('employee_job_location_id', null)"/>
+              </div>
             </p-form-row>
 
             <p-form-row
@@ -309,6 +334,21 @@
                   v-model="form.join_date"
                   :errors="form.errors.get('join_date')"
                   @errors="form.errors.set('join_date', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="status"
+              name="status"
+              :label="$t('status')">
+              <div slot="body" class="col-lg-9">
+                <p-select
+                  id="status"
+                  name="status"
+                  v-model="form.employee_status_id"
+                  :options="statusList"
+                  :errors="form.errors.get('employee_status_id')"
+                  @errors="form.errors.set('employee_status_id', null)"/>
               </div>
             </p-form-row>
 
@@ -418,6 +458,75 @@
                 </p-table>
               </div>
             </p-form-row>
+
+            <p-form-row
+              id="user-employee"
+              :label="$t('user account')">
+              <div slot="body" class="col-lg-9">
+                <button v-if="form.user_employee.length == 0"
+                  type="button"
+                  class="btn btn-alt-primary mb-15"
+                  :disabled="loadingSaveButton"
+                  @click="$refs.userEmployeeModal.show()">
+                  <i class="fa fa-plus"/> {{ $t('user account') | titlecase }}
+                </button>
+                <p-table v-else>
+                  <tr slot="p-head"/>
+                  <tr
+                    v-for="(user_employee, index) in form.user_employee"
+                    slot="p-body"
+                    :key="index">
+                    <td>{{ user_employee.name }}</td>
+                    <td class="text-right">
+                      <i class="fa fa-close" @click="removeUserEmployee(index)"/>
+                    </td>
+                  </tr>
+                </p-table>
+              </div>
+            </p-form-row>
+
+            <h2 class="content-heading">{{ $t('allowance info') | uppercase }}</h2>
+            <p-form-row
+              id="daily-transport-allowance"
+              name="daily-transport-allowance"
+              :label="$t('daily transport allowance')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.daily_transport_allowance"
+                  :disabled="loadingSaveButton"
+                  :is-text-right="false"
+                  :errors="form.errors.get('daily_transport_allowance')"
+                  @errors="form.errors.set('daily_transport_allowance', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="team-leader-allowance"
+              name="team-leader-allowance"
+              :label="$t('team leader allowance')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.team_leader_allowance"
+                  :disabled="loadingSaveButton"
+                  :is-text-right="false"
+                  :errors="form.errors.get('team_leader_allowance')"
+                  @errors="form.errors.set('team_leader_allowance', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="communication-allowance"
+              name="communication-allowance"
+              :label="$t('communication allowance')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.communication_allowance"
+                  :disabled="loadingSaveButton"
+                  :is-text-right="false"
+                  :errors="form.errors.get('communication_allowance')"
+                  @errors="form.errors.set('communication_allowance', null)"/>
+              </div>
+            </p-form-row>
           </div>
         </div>
         <div class="form-group row">
@@ -487,6 +596,12 @@
       ref="scorerModal"
       title="Scorer"
       @add="onSubmitScorer"/>
+
+    <user-employee-modal
+      id="userEmployee"
+      ref="userEmployeeModal"
+      title="User Account"
+      @add="onSubmitUserEmployee"/>
   </div>
 </template>
 
@@ -502,6 +617,7 @@ import SocialMediaModal from './modal/SocialMediaModal'
 import ContractModal from './modal/ContractModal'
 import SalaryModal from './modal/SalaryModal'
 import ScorerModal from './modal/ScorerModal'
+import UserEmployeeModal from './modal/UserEmployeeModal'
 import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -517,7 +633,8 @@ export default {
     SocialMediaModal,
     ContractModal,
     SalaryModal,
-    ScorerModal
+    ScorerModal,
+    UserEmployeeModal
   },
   data () {
     return {
@@ -538,8 +655,16 @@ export default {
         employee_religion_id: '',
         employee_marital_status_id: '',
         employee_gender_id: '',
+        employee_status_id: '',
+        employee_job_location_id: '',
         job_title: '',
         join_date: '',
+        employee_code: '',
+        status: '',
+        job_location: '',
+        daily_transport_allowance: '',
+        team_leader_allowance: '',
+        communication_allowance: '',
         phones: [],
         emails: [],
         company_emails: [],
@@ -547,7 +672,8 @@ export default {
         social_media: [],
         contracts: [],
         salary_histories: [],
-        scorers: []
+        scorers: [],
+        user_employee: []
       })
     }
   },
@@ -556,7 +682,9 @@ export default {
     ...mapGetters('humanResourceEmployeeGroup', ['groupList']),
     ...mapGetters('humanResourceEmployeeReligion', ['religionList']),
     ...mapGetters('humanResourceEmployeeGender', ['genderList']),
-    ...mapGetters('humanResourceEmployeeMaritalStatus', ['maritalStatusList'])
+    ...mapGetters('humanResourceEmployeeMaritalStatus', ['maritalStatusList']),
+    ...mapGetters('humanResourceEmployeeStatus', ['statusList']),
+    ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocationList'])
   },
   created () {
     this.loading = true
@@ -585,6 +713,18 @@ export default {
       }, (error) => {
         console.log(JSON.stringify(error))
       })
+    this.getStatuses()
+      .then((response) => {
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+    this.getJobLocations()
+      .then((response) => {
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
     this.findEmployee({
       id: this.id
     }).then((response) => {
@@ -604,6 +744,8 @@ export default {
     ...mapActions('humanResourceEmployeeReligion', { getReligions: 'get' }),
     ...mapActions('humanResourceEmployeeGender', { getGenders: 'get' }),
     ...mapActions('humanResourceEmployeeMaritalStatus', { getMaritalStatuses: 'get' }),
+    ...mapActions('humanResourceEmployeeStatus', { getStatuses: 'get' }),
+    ...mapActions('humanResourceEmployeeJobLocation', { getJobLocations: 'get' }),
     ...mapActions('humanResourceEmployee', { findEmployee: 'find', updateEmployee: 'update' }),
     onSubmitContract (data) {
       this.form.contracts.push(data)
@@ -632,6 +774,13 @@ export default {
     },
     removeScorer (index) {
       this.form.scorers.splice(index, 1)
+    },
+    onSubmitUserEmployee (data) {
+      this.form.user_employee.push(data)
+      this.$refs.userEmployeeModal.close()
+    },
+    removeUserEmployee (index) {
+      this.form.user_employee.splice(index, 1)
     },
     onSubmitAddress (data) {
       this.form.addresses.push(data)
