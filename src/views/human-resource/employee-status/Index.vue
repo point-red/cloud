@@ -21,7 +21,7 @@
             <tr slot="p-head">
               <th width="100%">{{ $t('name') }}</th>
             </tr>
-            <template v-if="$permission.has('read employee status')">
+            <template v-if="$permission.has('read employee')">
               <tr
                 v-for="status in statuses"
                 :key="status.id"

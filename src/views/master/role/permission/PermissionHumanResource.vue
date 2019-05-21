@@ -20,6 +20,15 @@
         <td><p-form-check-box ref="delete employee" @click.native="togglePermission('delete employee')" :checked="$rolePermission.has('delete employee', permissions)" :description="'Delete'"/></td>
       </tr>
       <tr slot="p-body">
+        <td><p-form-check-box @click.native="togglePermissionRow(['create employee salary', 'read employee salary', 'update employee', 'delete employee'], permissions)" :checked="checkPermissionRow(['create employee', 'read employee', 'update employee salary', 'delete employee salary', 'print employee salary'], permissions)" :description="''"/></td>
+        <td><i class="si si-users fa-fw"></i> Employee Salary</td>
+        <td><p-form-check-box ref="create employee salary" @click.native="togglePermission('create employee salary')" :checked="$rolePermission.has('create employee salary', permissions)" :description="'Create'"/></td>
+        <td><p-form-check-box ref="read employee salary" @click.native="togglePermission('read employee salary')" :checked="$rolePermission.has('read employee salary', permissions)" :description="'Read'"/></td>
+        <td><p-form-check-box ref="update employee salary" @click.native="togglePermission('update employee salary')" :checked="$rolePermission.has('update employee salary', permissions)" :description="'Update'"/></td>
+        <td><p-form-check-box ref="delete employee salary" @click.native="togglePermission('delete employee salary')" :checked="$rolePermission.has('delete employee salary', permissions)" :description="'Delete'"/></td>
+        <td><p-form-check-box ref="print employee salary" @click.native="togglePermission('print employee salary')" :checked="$rolePermission.has('print employee salary', permissions)" :description="'Delete'"/></td>
+      </tr>
+      <tr slot="p-body">
         <td><p-form-check-box @click.native="togglePermissionRow(['create employee kpi', 'read employee kpi', 'update employee kpi', 'delete employee kpi'], permissions)" :checked="checkPermissionRow(['create employee kpi', 'read employee kpi', 'update employee kpi', 'delete employee kpi'], permissions)" :description="''"/></td>
         <td><i class="si si-badge fa-fw"></i> KPI Template</td>
         <td><p-form-check-box ref="create employee kpi" @click.native="togglePermission('create employee kpi')" :checked="$rolePermission.has('create employee kpi', permissions)" :description="'Create'"/></td>

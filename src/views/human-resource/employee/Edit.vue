@@ -10,30 +10,12 @@
         class="breadcrumb-item">{{ employee.name | titlecase }}</router-link>
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
+    
+    <employee-widget :id="id"></employee-widget>
 
-    <tab-menu>
-      <li class="nav-item" v-if="$permission.has('read employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-bar-chart"></i> {{ $t('kpi') | titlecase }}</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('create employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment/create'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-note"></i> {{ $t('employee assessment') | titlecase }}</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu></tab-menu>
 
     <form class="row" @submit.prevent="onSubmit">
-
       <p-block
         :is-loading="loading"
         :header="true"
@@ -46,7 +28,7 @@
               id="name"
               name="name"
               :label="$t('name')"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               v-model="form.name"
               :errors="form.errors.get('name')"
               @errors="form.errors.set('name', null)">
@@ -59,7 +41,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.addressModal.show()">
                   <i class="fa fa-plus"/> {{ $t('address') | titlecase }}
                 </button>
@@ -85,7 +67,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.phoneModal.show()">
                   <i class="fa fa-plus"/> {{ $t('phone') | titlecase }}
                 </button>
@@ -111,7 +93,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.emailModal.show()">
                   <i class="fa fa-plus"/> {{ $t('email') | titlecase }}
                 </button>
@@ -137,7 +119,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.socialMedia.show()">
                   <i class="fa fa-plus"/> {{ $t('social media') | titlecase }}
                 </button>
@@ -163,7 +145,7 @@
               id="personal-identity"
               name="personal-identity"
               :label="$t('personal id')"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               v-model="form.personal_identity"
               :errors="form.errors.get('personal_identity')"
               @errors="form.errors.set('personal_identity', null)">
@@ -173,7 +155,7 @@
               id="last-education"
               name="last-education"
               :label="$t('last education')"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               v-model="form.last_education"
               :errors="form.errors.get('last_education')"
               @errors="form.errors.set('last_education', null)">
@@ -197,7 +179,7 @@
             <p-form-row
               id="birth-place"
               name="birth-place"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               :label="$t('birth place')"
               v-model="form.birth_place"
               :errors="form.errors.get('birth_place')"
@@ -238,7 +220,7 @@
               id="married-with"
               name="married-with"
               v-if="form.employee_marital_status_id == 2"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               :label="$t('married with')"
               v-model="form.married_with"
               :errors="form.errors.get('married_with')"
@@ -281,27 +263,27 @@
               id="employee-group-name"
               name="employee-group-name"
               :label="$t('')"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               v-model="form.employee_group_name"
               :errors="form.errors.get('employe_group_name')"
               @errors="form.errors.set('employe_group_name', null)">
             </p-form-row>
 
             <p-form-row
-              id="employee-code"
-              name="employee-code"
-              :label="$t('employee code')"
-              :disabled="loadingSaveButton"
-              v-model="form.employee_code"
-              :errors="form.errors.get('employee_code')"
-              @errors="form.errors.set('employee_code', null)">
+              id="code"
+              name="code"
+              :label="$t('code')"
+              :disabled="isSaving"
+              v-model="form.code"
+              :errors="form.errors.get('code')"
+              @errors="form.errors.set('code', null)">
             </p-form-row>
 
             <p-form-row
               id="job-title"
               name="job-title"
               :label="$t('job title')"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               v-model="form.job_title"
               :errors="form.errors.get('job_title')"
               @errors="form.errors.set('job_title', null)">
@@ -359,7 +341,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.emailCompanyModal.show()">
                   <i class="fa fa-plus"/> {{ $t('email') | titlecase }}
                 </button>
@@ -385,7 +367,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.contractModal.show()">
                   <i class="fa fa-plus"/> {{ $t('contract') | titlecase }}
                 </button>
@@ -413,7 +395,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.salaryModal.show()">
                   <i class="fa fa-plus"/> {{ $t('salary history') | titlecase }}
                 </button>
@@ -440,7 +422,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.scorerModal.show()">
                   <i class="fa fa-plus"/> {{ $t('employee scorer') | titlecase }}
                 </button>
@@ -460,28 +442,17 @@
             </p-form-row>
 
             <p-form-row
-              id="user-employee"
+              id="user-account"
+              name="user-account"
               :label="$t('user account')">
               <div slot="body" class="col-lg-9">
-                <button v-if="form.user_employee.length == 0"
-                  type="button"
-                  class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
-                  @click="$refs.userEmployeeModal.show()">
-                  <i class="fa fa-plus"/> {{ $t('user account') | titlecase }}
-                </button>
-                <p-table v-else>
-                  <tr slot="p-head"/>
-                  <tr
-                    v-for="(user_employee, index) in form.user_employee"
-                    slot="p-body"
-                    :key="index">
-                    <td>{{ user_employee.name }}</td>
-                    <td class="text-right">
-                      <i class="fa fa-close" @click="removeUserEmployee(index)"/>
-                    </td>
-                  </tr>
-                </p-table>
+                <p-select
+                  id="user-account"
+                  name="user-account"
+                  v-model="form.user_id"
+                  :options="userList"
+                  :errors="form.errors.get('user_id')"
+                  @errors="form.errors.set('user_id', null)"/>
               </div>
             </p-form-row>
 
@@ -493,7 +464,7 @@
               <div slot="body" class="col-lg-9">
                 <p-form-number
                   v-model="form.daily_transport_allowance"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('daily_transport_allowance')"
                   @errors="form.errors.set('daily_transport_allowance', null)"/>
@@ -501,16 +472,16 @@
             </p-form-row>
 
             <p-form-row
-              id="team-leader-allowance"
-              name="team-leader-allowance"
-              :label="$t('team leader allowance')">
+              id="functional-allowance"
+              name="functional-allowance"
+              :label="$t('functional allowance')">
               <div slot="body" class="col-lg-9">
                 <p-form-number
-                  v-model="form.team_leader_allowance"
-                  :disabled="loadingSaveButton"
+                  v-model="form.functional_allowance"
+                  :disabled="isSaving"
                   :is-text-right="false"
-                  :errors="form.errors.get('team_leader_allowance')"
-                  @errors="form.errors.set('team_leader_allowance', null)"/>
+                  :errors="form.errors.get('functional_allowance')"
+                  @errors="form.errors.set('functional_allowance', null)"/>
               </div>
             </p-form-row>
 
@@ -521,7 +492,7 @@
               <div slot="body" class="col-lg-9">
                 <p-form-number
                   v-model="form.communication_allowance"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('communication_allowance')"
                   @errors="form.errors.set('communication_allowance', null)"/>
@@ -534,9 +505,9 @@
             <hr>
             <button
               type="submit"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               class="btn btn-sm btn-primary mr-5">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Update
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Update
             </button>
             <button
               type="button"
@@ -597,11 +568,6 @@
       title="Scorer"
       @add="onSubmitScorer"/>
 
-    <user-employee-modal
-      id="userEmployee"
-      ref="userEmployeeModal"
-      title="User Account"
-      @add="onSubmitUserEmployee"/>
   </div>
 </template>
 
@@ -612,12 +578,12 @@ import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import PhoneModal from './modal/PhoneModal'
 import EmailModal from './modal/EmailModal'
 import EmailCompanyModal from './modal/EmailCompanyModal'
+import EmployeeWidget from './EmployeeWidget'
 import AddressModal from './modal/AddressModal'
 import SocialMediaModal from './modal/SocialMediaModal'
 import ContractModal from './modal/ContractModal'
 import SalaryModal from './modal/SalaryModal'
 import ScorerModal from './modal/ScorerModal'
-import UserEmployeeModal from './modal/UserEmployeeModal'
 import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -629,18 +595,18 @@ export default {
     PhoneModal,
     EmailModal,
     EmailCompanyModal,
+    EmployeeWidget,
     AddressModal,
     SocialMediaModal,
     ContractModal,
     SalaryModal,
-    ScorerModal,
-    UserEmployeeModal
+    ScorerModal
   },
   data () {
     return {
       id: this.$route.params.id,
       loading: false,
-      loadingSaveButton: false,
+      isSaving: false,
       form: new Form({
         name: '',
         birth_date: '',
@@ -659,11 +625,11 @@ export default {
         employee_job_location_id: '',
         job_title: '',
         join_date: '',
-        employee_code: '',
+        code: '',
         status: '',
         job_location: '',
         daily_transport_allowance: '',
-        team_leader_allowance: '',
+        functional_allowance: '',
         communication_allowance: '',
         phones: [],
         emails: [],
@@ -672,12 +638,12 @@ export default {
         social_media: [],
         contracts: [],
         salary_histories: [],
-        scorers: [],
-        user_employee: []
+        scorers: []
       })
     }
   },
   computed: {
+    ...mapGetters('masterUser', ['userList']),
     ...mapGetters('humanResourceEmployee', ['employee']),
     ...mapGetters('humanResourceEmployeeGroup', ['groupList']),
     ...mapGetters('humanResourceEmployeeReligion', ['religionList']),
@@ -775,13 +741,6 @@ export default {
     removeScorer (index) {
       this.form.scorers.splice(index, 1)
     },
-    onSubmitUserEmployee (data) {
-      this.form.user_employee.push(data)
-      this.$refs.userEmployeeModal.close()
-    },
-    removeUserEmployee (index) {
-      this.form.user_employee.splice(index, 1)
-    },
     onSubmitAddress (data) {
       this.form.addresses.push(data)
       this.$refs.addressModal.close()
@@ -810,21 +769,18 @@ export default {
     removeEmailCompany (index) {
       this.form.company_emails.splice(index, 1)
     },
-    onSubmit () {
-      this.loadingSaveButton = true
+    onSubmit () { 
+      this.isSaving = true
       this.updateEmployee(this.form)
-        .then(
-          (response) => {
-            this.loadingSaveButton = false
-            this.$notification.success('Update success')
-            this.$router.replace('/human-resource/employee/' + this.employee.id)
-          },
-          (error) => {
-            this.loadingSaveButton = false
-            this.$notification.error('Update failed', error.message)
-            this.form.errors.record(error.errors)
-          }
-        )
+        .then(response => {
+          this.isSaving = false
+          this.$notification.success('Update success')
+          this.$router.replace('/human-resource/employee/' + this.employee.id)
+        }).catch(error => {
+          this.isSaving = false
+          this.$notification.error('Update failed', error.message)
+          this.form.errors.record(error.errors)
+        })
     }
   }
 }

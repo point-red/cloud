@@ -36,14 +36,14 @@
               <hr>
               <router-link
                 :to="{ path: '/human-resource/job-location/' + jobLocation.id + '/edit', params: { id: jobLocation.id }}"
-                v-if="$permission.has('update employee job location')"
+                v-if="$permission.has('update employee')"
                 class="btn btn-sm btn-primary mr-5">
                 Edit
               </router-link>
               <button
                 type="button"
                 @click="onDelete()"
-                v-if="$permission.has('delete employee job location')"
+                v-if="$permission.has('delete employee')"
                 :disabled="loadingSaveButton"
                 class="btn btn-sm btn-danger">
                 <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Delete

@@ -11,24 +11,32 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-
       <p-block
         :is-loading="loading"
         :header="true"
-        :title="$t('employee')"
+        :title="$t('personal info')"
         column="col-sm-12">
 
         <div class="row">
-          <div class="col-sm-6">
-            <h2 class="content-heading">{{ $t('personal info') | uppercase }}</h2>
+          <div class="col-sm-6">            
             <p-form-row
               id="name"
               name="name"
               :label="$t('name')"
               v-model="form.name"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               :errors="form.errors.get('name')"
               @errors="form.errors.set('name', null)">
+            </p-form-row>
+
+            <p-form-row
+              id="personal-identity"
+              name="personal-identity"
+              :label="$t('personal id')"
+              :disabled="isSaving"
+              v-model="form.personal_identity"
+              :errors="form.errors.get('personal_identity')"
+              @errors="form.errors.set('personal_identity', null)">
             </p-form-row>
 
             <p-form-row
@@ -38,7 +46,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.addressModal.show()">
                   <i class="fa fa-plus"/> {{ $t('address') | titlecase }}
                 </button>
@@ -64,7 +72,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.phoneModal.show()">
                   <i class="fa fa-plus"/> {{ $t('phone') | titlecase }}
                 </button>
@@ -90,7 +98,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.emailModal.show()">
                   <i class="fa fa-plus"/> {{ $t('email') | titlecase }}
                 </button>
@@ -116,7 +124,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.socialMedia.show()">
                   <i class="fa fa-plus"/> {{ $t('social media') | titlecase }}
                 </button>
@@ -136,23 +144,14 @@
                   </tr>
                 </p-table>
               </div>
-            </p-form-row>
-
-            <p-form-row
-              id="personal-identity"
-              name="personal-identity"
-              :label="$t('personal id')"
-              :disabled="loadingSaveButton"
-              v-model="form.personal_identity"
-              :errors="form.errors.get('personal_identity')"
-              @errors="form.errors.set('personal_identity', null)">
-            </p-form-row>
-
+            </p-form-row>            
+          </div>
+          <div class="col-sm-6">
             <p-form-row
               id="last-education"
               name="last-education"
               :label="$t('last education')"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               v-model="form.last_education"
               :errors="form.errors.get('last_education')"
               @errors="form.errors.set('last_education', null)">
@@ -177,7 +176,7 @@
               id="birth-place"
               name="birth-place"
               :label="$t('birth place')"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               v-model="form.birth_place"
               :errors="form.errors.get('birth_place')"
               @errors="form.errors.set('birth_place', null)">
@@ -191,7 +190,7 @@
                 <p-select
                   id="gender"
                   name="gender"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   v-model="form.employee_gender_id"
                   :options="genderList"
                   :errors="form.errors.get('employee_gender_id')"
@@ -218,7 +217,7 @@
               id="married-with"
               name="married-with"
               :label="$t('married with')"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               v-model="form.married_with"
               :errors="form.errors.get('married_with')"
               @errors="form.errors.set('married_with', null)">
@@ -239,6 +238,11 @@
               </div>
             </p-form-row>
           </div>
+        </div>
+
+        <p-separator></p-separator>
+
+        <div class="row">
           <div class="col-sm-6">
             <h2 class="content-heading">{{ $t('job info') | uppercase }}</h2>
             <p-form-row
@@ -260,27 +264,27 @@
               id="employee-group-name"
               name="employee-group-name"
               :label="$t('')"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               v-model="form.employee_group_name"
               :errors="form.errors.get('employe_group_name')"
               @errors="form.errors.set('employe_group_name', null)">
             </p-form-row>
 
             <p-form-row
-              id="employee-code"
-              name="employee-code"
-              :label="$t('employee code')"
-              :disabled="loadingSaveButton"
-              v-model="form.employee_code"
-              :errors="form.errors.get('employee_code')"
-              @errors="form.errors.set('employee_code', null)">
+              id="code"
+              name="code"
+              :label="$t('code')"
+              :disabled="isSaving"
+              v-model="form.code"
+              :errors="form.errors.get('code')"
+              @errors="form.errors.set('code', null)">
             </p-form-row>
 
             <p-form-row
               id="job-title"
               name="job-title"
               :label="$t('job title')"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               v-model="form.job_title"
               :errors="form.errors.get('job_title')"
               @errors="form.errors.set('job_title', null)">
@@ -292,7 +296,7 @@
               :label="$t('job location')">
               <div slot="body" class="col-lg-9">
                 <p-select
-                  id="employee-job-location"
+                  id="job-location"
                   name="employee-job-location"
                   v-model="form.employee_job_location_id"
                   :options="jobLocationList"
@@ -310,6 +314,7 @@
                   id="join-date"
                   name="join-date"
                   label="join date"
+                  type="date"
                   v-model="form.join_date"
                   :errors="form.errors.get('join_date')"
                   @errors="form.errors.set('join_date', null)"/>
@@ -338,7 +343,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.emailCompanyModal.show()">
                   <i class="fa fa-plus"/> {{ $t('email') | titlecase }}
                 </button>
@@ -364,7 +369,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.contractModal.show()">
                   <i class="fa fa-plus"/> {{ $t('contract') | titlecase }}
                 </button>
@@ -392,7 +397,7 @@
                 <button
                   type="button"
                   class="btn btn-alt-primary mb-15"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="$refs.salaryModal.show()">
                   <i class="fa fa-plus"/> {{ $t('salary history') | titlecase }}
                 </button>
@@ -411,7 +416,8 @@
                 </p-table>
               </div>
             </p-form-row>
-
+          </div>
+          <div class="col-sm-6">
             <h2 class="content-heading">{{ $t('allowance info') | uppercase }}</h2>
             <p-form-row
               id="daily-transport-allowance"
@@ -420,7 +426,7 @@
               <div slot="body" class="col-lg-9">
                 <p-form-number
                   v-model="form.daily_transport_allowance"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('daily_transport_allowance')"
                   @errors="form.errors.set('daily_transport_allowance', null)"/>
@@ -428,16 +434,16 @@
             </p-form-row>
 
             <p-form-row
-              id="team-leader-allowance"
-              name="team-leader-allowance"
-              :label="$t('team leader allowance')">
+              id="functional-allowance"
+              name="functional-allowance"
+              :label="$t('functional allowance')">
               <div slot="body" class="col-lg-9">
                 <p-form-number
-                  v-model="form.team_leader_allowance"
-                  :disabled="loadingSaveButton"
+                  v-model="form.functional_allowance"
+                  :disabled="isSaving"
                   :is-text-right="false"
-                  :errors="form.errors.get('team_leader_allowance')"
-                  @errors="form.errors.set('team_leader_allowance', null)"/>
+                  :errors="form.errors.get('functional_allowance')"
+                  @errors="form.errors.set('functional_allowance', null)"/>
               </div>
             </p-form-row>
 
@@ -448,7 +454,7 @@
               <div slot="body" class="col-lg-9">
                 <p-form-number
                   v-model="form.communication_allowance"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('communication_allowance')"
                   @errors="form.errors.set('communication_allowance', null)"/>
@@ -456,10 +462,245 @@
             </p-form-row>
           </div>
         </div>
+
         <div class="form-group row">
           <div class="col-md-12">
-            <button :disabled="loadingSaveButton" type="submit" class="btn btn-sm btn-primary">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+            <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+            </button>
+          </div>
+        </div>
+      </p-block>
+      <p-block
+        :is-loading="loading"
+        :header="true"
+        :title="$t('job info')"
+        column="col-sm-12">
+
+        <div class="row">
+          <div class="col-sm-6">
+            <p-form-row
+              id="group"
+              name="group"
+              :label="$t('employee group')">
+              <div slot="body" class="col-lg-9">
+                <p-select
+                  id="employee-group"
+                  name="employee-group"
+                  v-model="form.employee_group_id"
+                  :options="groupList"
+                  :errors="form.errors.get('employee_group_id')"
+                  @errors="form.errors.set('employee_group_id', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="employee-group-name"
+              name="employee-group-name"
+              :label="$t('')"
+              :disabled="isSaving"
+              v-model="form.employee_group_name"
+              :errors="form.errors.get('employe_group_name')"
+              @errors="form.errors.set('employe_group_name', null)">
+            </p-form-row>
+
+            <p-form-row
+              id="code"
+              name="code"
+              :label="$t('code')"
+              :disabled="isSaving"
+              v-model="form.code"
+              :errors="form.errors.get('code')"
+              @errors="form.errors.set('code', null)">
+            </p-form-row>
+
+            <p-form-row
+              id="job-title"
+              name="job-title"
+              :label="$t('job title')"
+              :disabled="isSaving"
+              v-model="form.job_title"
+              :errors="form.errors.get('job_title')"
+              @errors="form.errors.set('job_title', null)">
+            </p-form-row>
+
+            <p-form-row
+              id="job-location"
+              name="job-location"
+              :label="$t('job location')">
+              <div slot="body" class="col-lg-9">
+                <p-select
+                  id="job-location"
+                  name="employee-job-location"
+                  v-model="form.employee_job_location_id"
+                  :options="jobLocationList"
+                  :errors="form.errors.get('employee_job_location_id')"
+                  @errors="form.errors.set('employee_job_location_id', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="join-date"
+              name="join-date"
+              :label="$t('join date')">
+              <div slot="body" class="col-lg-9">
+                <p-date-picker
+                  id="join-date"
+                  name="join-date"
+                  label="join date"
+                  type="date"
+                  v-model="form.join_date"
+                  :errors="form.errors.get('join_date')"
+                  @errors="form.errors.set('join_date', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="status"
+              name="status"
+              :label="$t('status')">
+              <div slot="body" class="col-lg-9">
+                <p-select
+                  id="status"
+                  name="status"
+                  v-model="form.employee_status_id"
+                  :options="statusList"
+                  :errors="form.errors.get('employee_status_id')"
+                  @errors="form.errors.set('employee_status_id', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="email"
+              :label="$t('email')">
+              <div slot="body" class="col-lg-9">
+                <button
+                  type="button"
+                  class="btn btn-alt-primary mb-15"
+                  :disabled="isSaving"
+                  @click="$refs.emailCompanyModal.show()">
+                  <i class="fa fa-plus"/> {{ $t('email') | titlecase }}
+                </button>
+                <p-table>
+                  <tr slot="p-head"/>
+                  <tr
+                    v-for="(email, index) in form.company_emails"
+                    slot="p-body"
+                    :key="email.index">
+                    <td>{{ email.email }}</td>
+                    <td class="text-right"><i
+                      class="fa fa-close"
+                      @click="removeEmailCompany(index)"/></td>
+                  </tr>
+                </p-table>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="contract"
+              :label="$t('contract')">
+              <div slot="body" class="col-lg-9">
+                <button
+                  type="button"
+                  class="btn btn-alt-primary mb-15"
+                  :disabled="isSaving"
+                  @click="$refs.contractModal.show()">
+                  <i class="fa fa-plus"/> {{ $t('contract') | titlecase }}
+                </button>
+                <p-table>
+                  <tr slot="p-head"/>
+                  <tr
+                    v-for="(contract, index) in form.contracts"
+                    slot="p-body"
+                    :key="contract.index">
+                    <td>{{ contract.contract_begin | dateFormat('DD MMM YYYY') }}</td>
+                    <td>{{ contract.contract_end | dateFormat('DD MMM YYYY') }}</td>
+                    <td>{{ contract.notes }}</td>
+                    <td class="text-right"><i
+                      class="fa fa-close"
+                      @click="removeContract(index)"/></td>
+                  </tr>
+                </p-table>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="salary"
+              :label="$t('salary history')">
+              <div slot="body" class="col-lg-9">
+                <button
+                  type="button"
+                  class="btn btn-alt-primary mb-15"
+                  :disabled="isSaving"
+                  @click="$refs.salaryModal.show()">
+                  <i class="fa fa-plus"/> {{ $t('salary history') | titlecase }}
+                </button>
+                <p-table>
+                  <tr slot="p-head"/>
+                  <tr
+                    v-for="(salary, index) in form.salary_histories"
+                    slot="p-body"
+                    :key="salary.index">
+                    <td>{{ salary.date | dateFormat('DD MMM YYYY') }}</td>
+                    <td>{{ salary.salary | numberFormat }}</td>
+                    <td class="text-right">
+                      <i class="fa fa-close" @click="removeSalary(index)"/>
+                    </td>
+                  </tr>
+                </p-table>
+              </div>
+            </p-form-row>
+          </div>
+          <div class="col-sm-6">
+            <h2 class="content-heading">{{ $t('allowance info') | uppercase }}</h2>
+            <p-form-row
+              id="daily-transport-allowance"
+              name="daily-transport-allowance"
+              :label="$t('daily transport allowance')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.daily_transport_allowance"
+                  :disabled="isSaving"
+                  :is-text-right="false"
+                  :errors="form.errors.get('daily_transport_allowance')"
+                  @errors="form.errors.set('daily_transport_allowance', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="functional-allowance"
+              name="functional-allowance"
+              :label="$t('functional allowance')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.functional_allowance"
+                  :disabled="isSaving"
+                  :is-text-right="false"
+                  :errors="form.errors.get('functional_allowance')"
+                  @errors="form.errors.set('functional_allowance', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="communication-allowance"
+              name="communication-allowance"
+              :label="$t('communication allowance')">
+              <div slot="body" class="col-lg-9">
+                <p-form-number
+                  v-model="form.communication_allowance"
+                  :disabled="isSaving"
+                  :is-text-right="false"
+                  :errors="form.errors.get('communication_allowance')"
+                  @errors="form.errors.set('communication_allowance', null)"/>
+              </div>
+            </p-form-row>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-md-12">
+            <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
             </button>
           </div>
         </div>
@@ -540,7 +781,7 @@ export default {
   data () {
     return {
       loading: false,
-      loadingSaveButton: false,
+      isSaving: false,
       form: new Form({
         name: '',
         birth_date: '',
@@ -555,11 +796,11 @@ export default {
         employee_group_name: '',
         job_title: '',
         join_date: '',
-        employee_code: '',
+        code: '',
         status: '',
         job_location: '',
         daily_transport_allowance: '',
-        team_leader_allowance: '',
+        functional_allowance: '',
         communication_allowance: '',
         phones: [],
         emails: [],
@@ -689,16 +930,16 @@ export default {
       this.form.company_emails.splice(index, 1)
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.createEmployee(this.form)
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.success('Create success')
             this.$router.push('/human-resource/employee/' + response.data.id)
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.error('Create failed', error.message)
             this.form.errors.record(error.errors)
           }

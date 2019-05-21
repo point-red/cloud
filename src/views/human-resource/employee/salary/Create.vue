@@ -14,6 +14,8 @@
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
+    <employee-widget :id="id"></employee-widget>
+
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
@@ -800,16 +802,18 @@
 
 <script>
 import Form from '@/utils/Form'
-import TabMenu from './TabMenu'
+import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
+import EmployeeWidget from '../EmployeeWidget'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource
+    BreadcrumbHumanResource,
+    EmployeeWidget
   },
   data () {
     return {
@@ -824,7 +828,7 @@ export default {
         multiplier_kpi: 0,
         daily_transport_allowance: 0,
         communication_allowance: 0,
-        team_leader_allowance: 0,
+        functional_allowance: 0,
         salary_assessment: {
           indicators: [],
           total: {}
@@ -996,7 +1000,7 @@ export default {
       .then((response) => {
         this.form.daily_transport_allowance = Number(this.employee.daily_transport_allowance) || 0
         this.form.communication_allowance = Number(this.employee.communication_allowance) || 0
-        this.form.team_leader_allowance = Number(this.employee.team_leader_allowance) || 0
+        this.form.functional_allowance = Number(this.employee.functional_allowance) || 0
         if (this.employee.job_location) {
           this.form.job_location = this.employee.job_location.name
           this.form.base_salary = Number(this.employee.job_location.base_salary) || 0
@@ -1192,7 +1196,7 @@ export default {
       this.total_amount_week_4 = Number(this.total_component_amount_week_4 || 0) + Number(this.real_transport_allowance_week_4 || 0)
       this.total_amount_week_5 = Number(this.total_component_amount_week_5 || 0) + Number(this.real_transport_allowance_week_5 || 0)
 
-      this.total_amount_received_week_1 = Number(this.total_amount_week_1 || 0) + Number(this.form.communication_allowance || 0) + Number(this.form.team_leader_allowance || 0)
+      this.total_amount_received_week_1 = Number(this.total_amount_week_1 || 0) + Number(this.form.communication_allowance || 0) + Number(this.form.functional_allowance || 0)
       this.total_amount_received_week_2 = Number(this.total_amount_week_2 || 0)
       this.total_amount_received_week_3 = Number(this.total_amount_week_3 || 0)
       this.total_amount_received_week_4 = Number(this.total_amount_week_4 || 0)

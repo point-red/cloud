@@ -11,6 +11,8 @@
       <span class="breadcrumb-item active">Salary</span>
     </breadcrumb>
 
+    <employee-widget :id="id"></employee-widget>
+
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
@@ -361,16 +363,18 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
+import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
+import EmployeeWidget from '../EmployeeWidget'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource
+    BreadcrumbHumanResource,
+    EmployeeWidget
   },
   data () {
     return {
@@ -539,7 +543,7 @@ export default {
       this.total_amount_week_4 = Number(this.total_component_amount_week_4 || 0) + Number(this.real_transport_allowance_week_4 || 0)
       this.total_amount_week_5 = Number(this.total_component_amount_week_5 || 0) + Number(this.real_transport_allowance_week_5 || 0)
 
-      this.total_amount_received_week_1 = Number(this.total_amount_week_1 || 0) + Number(this.salary.communication_allowance || 0) + Number(this.salary.team_leader_allowance || 0)
+      this.total_amount_received_week_1 = Number(this.total_amount_week_1 || 0) + Number(this.salary.communication_allowance || 0) + Number(this.salary.functional_allowance || 0)
       this.total_amount_received_week_2 = Number(this.total_amount_week_2 || 0)
       this.total_amount_received_week_3 = Number(this.total_amount_week_3 || 0)
       this.total_amount_received_week_4 = Number(this.total_amount_week_4 || 0)

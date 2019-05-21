@@ -8,30 +8,13 @@
       <span class="breadcrumb-item active">{{ employee.name | titlecase }}</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item" v-if="$permission.has('read employee assessment')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/assessment'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-bar-chart"></i> {{ $t('kpi') | titlecase }}</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('read employee salary')" slot="right">
-        <router-link
-          :to="'/human-resource/employee/' + employee.id + '/salary'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-wallet"></i> {{ $t('salary') | titlecase }}</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <employee-widget :id="id"></employee-widget>
+
+    <tab-menu></tab-menu>
 
     <div class="row">
-      <p-block :title="$t('personal info')" :header="true">
-        <p-block-inner :is-loading="loading">
+      <p-block :title="$t('employee')" :header="true">
+        <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-6">
               <p-table>
@@ -39,6 +22,10 @@
                   <tr>
                     <td><span class="font-w700">{{ $t('name') | titlecase }}</span></td>
                     <td>{{ employee.name }}</td>
+                  </tr>
+                  <tr>
+                    <td><span class="font-w700">{{ $t('code') | titlecase }}</span></td>
+                    <td>{{ employee.code }}</td>
                   </tr>
                   <tr v-if="$permission.has('read employee')">
                     <td><span class="font-w700">{{ $t('address') | titlecase }}</span></td>
@@ -132,10 +119,6 @@
                     <td><span v-if="employee.group">{{ employee.group.name }}</span></td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('employee code') | titlecase }}</span></td>
-                    <td>{{ employee.employee_code }}</td>
-                  </tr>
-                  <tr>
                     <td><span class="font-w700">{{ $t('join date') | titlecase }}</span></td>
                     <td><span v-if="employee.join_date">{{ employee.join_date | dateFormat('DD MMM YYYY') }}</span></td>
                   </tr>
@@ -147,11 +130,11 @@
                     <td><span class="font-w700">{{ $t('job location') | titlecase }}</span></td>
                     <td><span v-if="employee.job_location">{{ employee.job_location.name }}</span></td>
                   </tr>
-                  <tr v-if="$permission.has('read employee job location') && employee.job_location">
+                  <tr v-if="$permission.has('read employee') && employee.job_location">
                     <td><span class="font-w700">{{ $t('base salary') | titlecase }}</span></td>
                     <td><span>{{ employee.job_location.base_salary | numberFormat }}</span></td>
                   </tr>
-                  <tr v-if="$permission.has('read employee job location') && employee.job_location">
+                  <tr v-if="$permission.has('read employee') && employee.job_location">
                     <td><span class="font-w700">{{ $t('multiplier kpi') | titlecase }}</span></td>
                     <td><span>{{ employee.job_location.multiplier_kpi | numberFormat }}</span></td>
                   </tr>
@@ -203,8 +186,8 @@
                     <td>{{ employee.daily_transport_allowance | numberFormat }}</td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('team leader allowance') | titlecase }}</span></td>
-                    <td>{{ employee.team_leader_allowance | numberFormat }}</td>
+                    <td><span class="font-w700">{{ $t('functional allowance') | titlecase }}</span></td>
+                    <td>{{ employee.functional_allowance | numberFormat }}</td>
                   </tr>
                   <tr>
                     <td><span class="font-w700">{{ $t('communication allowance') | titlecase }}</span></td>
@@ -222,9 +205,11 @@
                   </tr>
                   <tr>
                     <td><span class="font-w700">{{ $t('user account') | titlecase }}</span></td>
-                    <td><span v-for="(userEmployee, index) in employee.user_employee" :key="index">
-                      {{ userEmployee.first_name | titlecase }} {{ userEmployee.last_name | titlecase }}
-                    </span></td>
+                    <td>
+                      <template v-if="employee.user">
+                      {{ employee.user.first_name | titlecase }} {{ employee.user.last_name | titlecase }}
+                      </template>
+                    </td>
                   </tr>
                 </template>
               </p-table>
@@ -241,9 +226,9 @@
                 type="button"
                 @click="onDelete()"
                 v-if="$permission.has('delete employee')"
-                :disabled="loadingSaveButton"
+                :disabled="isDeleting"
                 class="btn btn-sm btn-danger">
-                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Delete
+                <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
               </button>
             </div>
           </div>
@@ -255,6 +240,7 @@
 
 <script>
 import TabMenu from './TabMenu'
+import EmployeeWidget from './EmployeeWidget'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
@@ -263,14 +249,15 @@ export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource
+    BreadcrumbHumanResource,
+    EmployeeWidget
   },
   data () {
     return {
       id: this.$route.params.id,
       isScorer: false,
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isDeleting: false
     }
   },
   computed: {
@@ -278,31 +265,30 @@ export default {
     ...mapGetters('auth', ['authUser'])
   },
   created () {
-    this.loading = true
-    this.findEmployee({ id: this.id }).then((response) => {
+    this.isLoading = true
+    this.findEmployee({ id: this.id }).then(response => {
       if (this.employee.scorers) {
         this.employee.scorers.find((element) => {
           if (element.id == this.authUser.id) {
             this.isScorer = true
-            this.loading = false
           }
         })
       }
-      this.loading = false
-    }, (error) => {
+      this.isLoading = false
+    }).catch(error => {
       console.log(JSON.stringify(error))
     })
   },
   methods: {
     ...mapActions('humanResourceEmployee', { findEmployee: 'find', deleteEmployee: 'delete' }),
     onDelete () {
-      this.loadingSaveButton = true
+      this.isDeleting = true
       this.deleteEmployee({ id: this.id })
-        .then((response) => {
-          this.loadingSaveButton = false
+        .then(response => {
+          this.isDeleting = false
           this.$router.push('/human-resource/employee')
-        }, (error) => {
-          this.loadingSaveButton = false
+        }).catch(error => {
+          this.isDeleting = false
           console.log(JSON.stringify(error))
         })
     }

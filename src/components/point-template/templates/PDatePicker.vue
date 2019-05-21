@@ -8,6 +8,7 @@
       :auto-close="autoClose"
       :min-date="minDate"
       :max-date="maxDate"
+      :only-date="onlyDate"
       color="#343A40"
       button-color="#343A40"
       v-model="time">
@@ -55,6 +56,10 @@ export default {
       type: String,
       default: null
     },
+    onlyDate: {
+      type: Boolean,
+      default: true
+    },
     help: {
       type: String
     },
@@ -83,7 +88,7 @@ export default {
   mounted () {
     if (this.type === 'date') {
       this.format = 'YYYY-MM-DD HH:mm:ss'
-      this.formatted = 'DD MMM YYYY HH:mm'
+      this.formatted = 'DD MMM YYYY'
       this.autoClose = true
     } else {
       this.format = 'YYYY-MM-DD HH:mm:ss'

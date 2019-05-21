@@ -7,10 +7,10 @@
         'block-mode-pinned' : pinned,
         'block-mode-hidden' : hidden
       }"
-      class="block block-themed">
+      class="block">
       <div
         v-show="header"
-        class="block-header bg-gray-darker">
+        class="block-header bg-gray-lighter">
         <h3 class="block-title">{{ title | uppercase }}</h3>
         <div
           v-show="showOptions"

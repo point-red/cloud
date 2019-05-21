@@ -11,6 +11,8 @@
       <span class="breadcrumb-item active">{{ title | titlecase }}</span>
     </breadcrumb>
 
+    <employee-widget :id="id"></employee-widget>
+
     <tab-menu/>
 
     <div class="row" v-show="!hideChart">
@@ -117,9 +119,10 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
+import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
+import EmployeeWidget from '../EmployeeWidget'
 import LineChart from '@/components/point-chart/LineChart'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -128,7 +131,8 @@ export default {
     LineChart,
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource
+    BreadcrumbHumanResource,
+    EmployeeWidget
   },
   data () {
     return {

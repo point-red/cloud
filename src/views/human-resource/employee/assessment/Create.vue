@@ -14,6 +14,8 @@
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
+    <employee-widget :id="id"></employee-widget>
+
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
@@ -171,9 +173,10 @@
 import Form from '@/utils/Form'
 import AssignScoreModal from './AssignScoreModal'
 import AssignKpiTemplateModal from './AssignKpiTemplateModal'
-import TabMenu from './TabMenu'
+import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
+import EmployeeWidget from '../EmployeeWidget'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -182,7 +185,8 @@ export default {
     AssignKpiTemplateModal,
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource
+    BreadcrumbHumanResource,
+    EmployeeWidget
   },
   data () {
     return {

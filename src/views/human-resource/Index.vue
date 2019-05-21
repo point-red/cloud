@@ -16,12 +16,12 @@
         icon="si si-badge"/>
       <p-box
         name="Job Locations"
-        v-if="$permission.has('read employee job location')"
+        v-if="$permission.has('read employee')"
         link="/human-resource/job-location"
         icon="si si-badge"/>
       <p-box
         name="Employee Status"
-        v-if="$permission.has('read employee status')"
+        v-if="$permission.has('read employee')"
         link="/human-resource/employee-status"
         icon="si si-badge"/>
     </div>

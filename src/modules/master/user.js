@@ -10,6 +10,7 @@ const state = {
     phone: ''
   },
   users: [],
+  userList: [],
   pagination: {}
 }
 
@@ -20,6 +21,9 @@ const getters = {
   users: state => {
     return state.users
   },
+  userList: state => {
+    return state.userList
+  },
   pagination: state => {
     return state.pagination
   }
@@ -29,6 +33,16 @@ const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.users = payload.data
     state.pagination = payload.meta
+  },
+  'FETCH_SELECT_LIST' (state, payload) {
+    let array = []
+    payload.forEach(element => {
+      array.push({
+        id: element.id,
+        label: element.name
+      })
+    })
+    state.userList = array
   },
   'FETCH_OBJECT' (state, payload) {
     state.user = payload.data
@@ -50,6 +64,7 @@ const actions = {
       api.get(url, payload)
         .then(response => {
           commit('FETCH_ARRAY', response)
+          commit('FETCH_SELECT_LIST', response.data)
           resolve(response)
         }).catch(error => {
           reject(error)

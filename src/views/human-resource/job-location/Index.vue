@@ -26,7 +26,7 @@
             <tr
               v-for="jobLocation in jobLocations"
               :key="jobLocation.id"
-              v-if="$permission.has('read employee job location')"
+              v-if="$permission.has('read employee')"
               slot="p-body">
               <td>
                 <router-link :to="{ name: 'JobLocationShow', params: { id: jobLocation.id }}">
