@@ -1,8 +1,6 @@
 <template>
   <div>
-    <form
-      class="row"
-      @submit.prevent="onSubmitEmployeeAssessment">
+    <form class="row" @submit.prevent="onSubmitEmployeeAssessment">
       <p-modal
         ref="employeeAssessment"
         id="assign-score"
