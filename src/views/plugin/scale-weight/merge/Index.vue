@@ -27,6 +27,7 @@
               id="date-from"
               name="date_from"
               type="datetime"
+              :only-date="false"
               format="YYYY-MM-DD HH:mm"
               v-model="date_from"/>
           </div>
@@ -40,6 +41,7 @@
               id="date-to"
               name="date_to"
               type="datetime"
+              :only-date="false"
               format="YYYY-MM-DD HH:mm"
               v-model="date_to"/>
           </div>
