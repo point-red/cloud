@@ -1,5 +1,6 @@
 {
   "scorer" : "penilai",
+  "assessment date" : "tanggal penilaian",
   "assessment date help" : "apabila penilaian dilakukan bulanan, maka tanggal bisa di isi tanggal terakhir di bulan tersebut",
   "automated indicator" : "indikator otomatis"
 }

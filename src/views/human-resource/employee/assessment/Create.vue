@@ -316,22 +316,22 @@ export default {
       this.form.date.start =  this.serverDateTime(this.$moment(this.form.date.start))
       this.form.date.end =  this.serverDateTime(this.$moment(this.form.date.end))
       this.createEmployeeAssessment({ employeeId: this.employee.id, form: this.form })
-        .then(
-          (response) => {
+        .then(response => {
             this.loadingSaveButton = false
             this.$notification.success('Create success')
             this.findKpiResult(this.form.template.score_percentage)
               .then(response => {
-                  this.$alert.success(response.data.criteria, response.data.notes).then(() => {
+                this.$alert.success(response.data.criteria, response.data.notes)
+                  .then(() => {
                     this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
                   })
-            }).catch(error => {
-              console.log(JSON.stringify(error))
-              this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
-            })
-          }).catch(error => {
-            this.loadingSaveButton = false
-            this.$notification.error('Create failed', error.message)
+              }).catch(error => {
+                console.log(JSON.stringify(error))
+                this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
+              })
+        }).catch(error => {
+          this.loadingSaveButton = false
+          this.$notification.error('Create failed', error.message)
         })
     },
     getAutomatedScore () {
