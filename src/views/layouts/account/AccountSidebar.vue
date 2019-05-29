@@ -186,9 +186,9 @@ export default {
   overflow-y: auto
 }
 #page-container.sidebar-inverse #sidebar {
-  background-color: #311B92;
+  background-color: #212121;
 }
 #page-container.sidebar-inverse #sidebar .content-side-user {
-  background-color: #4527A0;
+  background-color: #424242;
 }
 </style>
