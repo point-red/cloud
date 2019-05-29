@@ -28,9 +28,12 @@
           </p-form-row>
           <p-form-row
             id="assessment-date"
-            :label="$t('assessment date')">
-            <div slot="body" class="col-lg-9 col-form-label">
-              {{ assessment.date | dateFormat('DD MMM YYYY') }}
+            :label="$t('assessment period')">
+            <div slot="body" class="col-lg-9">
+              <p-date-picker
+                name="assessment-date"
+                :help="$t('assessment date help')"
+                v-model="form.date"/>
             </div>
           </p-form-row>
           <p-form-row
@@ -185,6 +188,7 @@ export default {
       id: this.$route.params.id,
       kpiId: this.$route.params.kpiId,
       form: new Form({
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         template: {
           groups: []
         }
@@ -215,6 +219,7 @@ export default {
       kpiId: this.kpiId
     }).then(
       (response) => {
+        this.form.date = this.assessment.date
         this.form.template = this.assessment
         this.assignSelected()
         this.loading = false
