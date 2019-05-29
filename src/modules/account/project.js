@@ -3,7 +3,10 @@ import api from '@/api'
 const url = '/project/projects'
 
 const state = {
-  project: {},
+  project: {
+    code: null,
+    name: null
+  },
   projects: []
 }
 

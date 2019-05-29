@@ -15,45 +15,9 @@
           <span>Project</span>
         </router-link>
       </li>
-      <li class="nav-item">
-        <router-link
-          :to="'/account/project/' + id + '/invitation-code'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span>Invitation Code</span>
-        </router-link>
-      </li>
     </tab-menu>
 
-    <div class="row gutters-tiny">
-      <div class="col-md-6 col-xl-3">
-        <a class="block block-link-shadow text-right" href="javascript:void(0)">
-          <div class="block-content block-content-full clearfix">
-            <div class="float-left mt-10 d-none d-sm-block">
-              <i class="fa fa-database fa-3x text-body-bg-dark"></i>
-            </div>
-            <div class="font-size-h3 font-w600">
-              {{ project.db_size }}
-            </div>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">DB Storage</div>
-          </div>
-        </a>
-      </div>
-      <div class="col-md-6 col-xl-3">
-        <a class="block block-link-shadow text-right" href="javascript:void(0)">
-          <div class="block-content block-content-full clearfix">
-            <div class="float-left mt-10 d-none d-sm-block">
-              <i class="fa fa-users fa-3x text-body-bg-dark"></i>
-            </div>
-            <div class="font-size-h3 font-w600" v-if="project.users">
-              {{ project.users.length }}
-            </div>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">Users</div>
-          </div>
-        </a>
-      </div>
-    </div>
+    <project-widget :project="project"></project-widget>
 
     <hr>
 
@@ -119,6 +83,7 @@
 <script>
 import Breadcrumb from '@/views/account/Breadcrumb'
 import TabMenu from './TabMenu'
+import ProjectWidget from './Widget'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -131,7 +96,8 @@ export default {
   },
   components: {
     Breadcrumb,
-    TabMenu
+    TabMenu,
+    ProjectWidget
   },
   computed: {
     ...mapGetters('accountProject', ['project', 'projects'])

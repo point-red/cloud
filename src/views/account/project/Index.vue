@@ -4,17 +4,7 @@
       <span class="breadcrumb-item active">Project</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item" slot="right">
-        <router-link
-          :to="'/account/project/join'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="fa fa-building"></i> Join</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu></tab-menu>
 
     <div class="row">
       <p-block :header="true" :is-loading="loading" title="Project">
@@ -51,6 +41,13 @@
                 </button>
               </template>
               <template v-if="project.joined == false && project.request_join_at != null && project.owner_id == userId">
+                <a
+                  class="btn btn-sm btn-secondary"
+                  href="javascript:void(0)">
+                  <i class="fa fa-users"/> Pending Request
+                </a>
+              </template>
+              <template v-if="project.joined == false && project.request_join_at != null && project.owner_id != userId">
                 <a
                   class="btn btn-sm btn-secondary"
                   href="javascript:void(0)">

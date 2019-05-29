@@ -19,6 +19,15 @@
         <span><i class="si si-docs"></i> List</span>
       </router-link>
     </li>
+    <li class="nav-item">
+      <router-link
+        :to="'/account/project/join'"
+        exact
+        class="nav-link"
+        active-class="active">
+        <span><i class="fa fa-building"></i> Join</span>
+      </router-link>
+    </li>
     <slot name="right"></slot>
   </ul>
 </template>

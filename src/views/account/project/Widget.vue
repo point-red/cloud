@@ -1,0 +1,43 @@
+<template>
+  <div class="row gutters-tiny">
+    <div class="col-md-6 col-xl-3">
+      <a class="block block-link-shadow text-right" href="javascript:void(0)">
+        <div class="block-content block-content-full clearfix">
+          <div class="float-left mt-10 d-none d-sm-block">
+            <i class="fa fa-database fa-3x text-body-bg-dark"></i>
+          </div>
+          <div class="font-size-h3 font-w600">
+            {{ project.db_size }}
+          </div>
+          <div class="font-size-sm font-w600 text-uppercase text-muted">DB Storage</div>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-6 col-xl-3">
+      <router-link
+        :to="'/account/project/' + project.id + '/invitation-code'"
+        class="block block-link-shadow text-right">
+        <div class="block-content block-content-full clearfix">
+          <div class="float-left mt-10 d-none d-sm-block">
+            <i class="fa fa-users fa-3x text-body-bg-dark"></i>
+          </div>
+          <div class="font-size-h3 font-w600" v-if="project.users">
+            {{ project.users.length }}
+          </div>
+          <div class="font-size-sm font-w600 text-uppercase text-muted">Users</div>
+        </div>
+      </router-link>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    project: {
+      type: Object,
+      required: true
+    }
+  }
+}
+</script>
