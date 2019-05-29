@@ -185,4 +185,10 @@ export default {
 #sidebar-scroll {
   overflow-y: auto
 }
+#page-container.sidebar-inverse #sidebar {
+  background-color: #311B92;
+}
+#page-container.sidebar-inverse #sidebar .content-side-user {
+  background-color: #4527A0;
+}
 </style>
