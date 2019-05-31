@@ -4,12 +4,14 @@ import ProjectJoin from '@/views/account/project/Join'
 import ProjectShow from '@/views/account/project/Show'
 import ProjectEdit from '@/views/account/project/Edit'
 import ProjectInvitationCode from '@/views/account/project/InvitationCode'
+import ProjectDatabase from '@/views/account/project/Database'
 
 export default [
-  { path: 'project', name: 'ProjectIndex', component: ProjectIndex },
-  { path: 'project/create', name: 'ProjectCreate', component: ProjectCreate },
-  { path: 'project/join', name: 'ProjectJoin', component: ProjectJoin },
-  { path: 'project/:id/edit', name: 'ProjectEdit', component: ProjectEdit },
-  { path: 'project/:id', name: 'ProjectShow', component: ProjectShow },
-  { path: 'project/:id/invitation-code', name: 'ProjectInvitationCode', component: ProjectInvitationCode }
+  { path: 'project', name: 'project.index', component: ProjectIndex },
+  { path: 'project/create', name: 'project.create', component: ProjectCreate },
+  { path: 'project/join', name: 'project.join', component: ProjectJoin },
+  { path: 'project/:id/edit', name: 'project.edit', component: ProjectEdit },
+  { path: 'project/:id', name: 'project.show', component: ProjectShow },
+  { path: 'project/:id/invitation-code', name: 'project.invitation.code', component: ProjectInvitationCode },
+  { path: 'project/:id/database', name: 'project.database', component: ProjectDatabase }
 ]
