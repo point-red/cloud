@@ -1,6 +1,8 @@
 import api from '@/api'
 
-const url = '/database/tables'
+const url = function (id) {
+  return 'project/projects/' + id + '/database/tables'
+}
 
 const state = {
   tables: [],
@@ -28,7 +30,7 @@ const mutations = {
 const actions = {
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url, {
+      api.get(url(payload.id), {
         params: payload.params
       }).then(response => {
         commit('FETCH_ARRAY', response)
@@ -39,9 +41,8 @@ const actions = {
     })
   },
   show ({ commit }, payload) {
-    console.log(payload)
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.params.table_name, {
+      api.get(url(payload.id) + '/' + payload.params.table_name, {
         params: payload.params
       }).then(response => {
         commit('FETCH_ROWS', response)

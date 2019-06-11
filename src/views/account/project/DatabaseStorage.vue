@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Rows</h3>
+    <h3>{{ tableName }}</h3>
       <p-block-inner>
         <template :is-loading="loading" v-if="rows && rows.length > 0">
           <point-table>

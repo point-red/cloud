@@ -42,6 +42,7 @@ export default {
   },
   data () {
     return {
+      id: this.projectId,
       isLoading: false,
       isSaving: false
     }
@@ -49,19 +50,29 @@ export default {
   props: {
     code: {
       type: String
+    },
+    projectId: {
+      type: [String, Number]
     }
   },
   computed: {
-    ...mapGetters('databaseBackup', ['backups'])
+    ...mapGetters('accountProjectDatabaseBackup', ['backups'])
+  },
+  watch: {
+    projectId () {
+      this.id = this.projectId
+    }
   },
   methods: {
-    ...mapActions('databaseBackup', ['get', 'create']),
+    ...mapActions('accountProjectDatabaseBackup', ['get', 'create']),
     createBackup () {
       this.isSaving = true
       this.create({
+        id: this.id,
         code: this.code
       }).then(response => {
         this.get({
+          id: this.id,
           params: {
             code: this.code
           }
@@ -79,6 +90,7 @@ export default {
   },
   created () {
     this.get({
+      id: this.id,
       params: {
         code: this.code
       }

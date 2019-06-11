@@ -1,6 +1,8 @@
 import api from '@/api'
 
-const url = '/database/backups'
+const url = function (id) {
+  return 'project/projects/' + id + '/database/backups'
+}
 
 const state = {
   backups: []
@@ -21,7 +23,7 @@ const mutations = {
 const actions = {
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url, payload).then(response => {
+      api.get(url(payload.id), payload).then(response => {
         commit('FETCH_ARRAY', response)
         resolve(response)
       }).catch(error => {
@@ -31,7 +33,7 @@ const actions = {
   },
   create (context, payload) {
     return new Promise((resolve, reject) => {
-      api.post(url, payload)
+      api.post(url(payload.id), payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

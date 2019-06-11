@@ -41,8 +41,8 @@
         </point-table>
       </p-block>
       <p-block column="col-sm-9">
-        <database-storage v-if="content == 'storage'" :data="rows" :table-name="tableName" :is-loading="isLoading"></database-storage>
-        <database-backup v-if="content == 'backup'" :code="projectCode"></database-backup>
+        <database-storage v-if="content == 'storage'" :data="rows" :table-name="tableName" :is-loading="isLoading" :project-id="id"></database-storage>
+        <database-backup v-if="content == 'backup'" :project-id="id"></database-backup>
       </p-block>
     </div>
   </div>
@@ -65,7 +65,6 @@ export default {
       isLoading: false,
       loadingMessage: 'Loading',
       tableName: this.$route.query.table_name,
-      projectCode: this.$route.query.project_code,
       content: 'storage' // should be 'storage' or 'backup'
     }
   },
@@ -79,7 +78,7 @@ export default {
   },
   computed: {
     ...mapGetters('accountProject', ['project']),
-    ...mapGetters('databaseTable', ['tables', 'rows'])
+    ...mapGetters('accountProjectDatabaseTable', ['tables', 'rows'])
   },
   created () {
     this.isLoading = true
@@ -87,16 +86,13 @@ export default {
     this.findProject({ id: this.id })
       .then(response => {
         this.isLoading = false
-        this.projectCode = response.data.code
         this.getTable({
-          params: {
-            project_code: this.projectCode
-          }
+          id: this.id
         })
         if (this.tableName) {
           this.getRows({
+            id: this.id,
             params: {
-              project_code: this.projectCode,
               table_name: this.tableName
             }
           })
@@ -112,7 +108,7 @@ export default {
     ...mapActions('accountProject', {
       findProject: 'find'
     }),
-    ...mapActions('databaseTable', {
+    ...mapActions('accountProjectDatabaseTable', {
       getTable: 'get',
       getRows: 'show'
     }),
@@ -122,14 +118,13 @@ export default {
       this.$router.push({
         query: {
           ...this.$route.query,
-          project_code: this.projectCode,
           table_name: table
         }
       })
       if (this.tableName) {
         this.getRows({
-          params: {
-            project_code: this.projectCode,
+          id: this.id,
+          params: {            
             table_name: table
           }
         })
