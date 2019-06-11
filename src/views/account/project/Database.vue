@@ -43,29 +43,7 @@
         </point-table>
       </p-block>
       <p-block column="col-sm-9">
-        <template>
-          <h3>Rows</h3>
-          <p-block-inner :is-loading="isLoading" v-if="rows && rows.length > 0">
-            <point-table>
-              <tr slot="p-head">
-                <th>#</th>
-                <th v-for="(row, index) in Object.keys(rows[0])" :key="index">
-                  {{ row }}
-                </th>
-              </tr>
-              <tr
-                v-for="(row, index) in rows"
-                :key="index"
-                slot="p-body">
-                <th>{{ index + 1 }}</th>
-                <td v-for="(col, index2) in row" :key="index + '-' + index2">{{ col }}</td>
-              </tr>            
-            </point-table>
-          </p-block-inner>
-          <p-block-inner :is-loading="isLoading" v-else-if="!isLoading">
-            There is no data for table "{{ tableName }}"
-          </p-block-inner>
-        </template>
+        <database-storage :data="rows" :table-name="tableName"></database-storage>
       </p-block>
     </div>
   </div>
@@ -77,6 +55,7 @@ import TabMenu from './TabMenu'
 import ProjectWidget from './Widget'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
+import DatabaseStorage from './DatabaseStorage'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -93,7 +72,8 @@ export default {
     Breadcrumb,
     TabMenu,
     ProjectWidget,
-    PointTable
+    PointTable,
+    DatabaseStorage
   },
   computed: {
     ...mapGetters('accountProject', ['project']),
