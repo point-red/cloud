@@ -26,15 +26,13 @@
       <p-block column="col-sm-3">
         <div class="row">
           <div class="col text-center">
-            <button class="btn btn-primary btn-sm"><i class="fa fa-database"></i> BACKUP</button>
-          </div>
-          <div class="col text-center">
-            <button class="btn btn-primary btn-sm"><i class="fa fa-archive"></i> RESTORE</button>
+            <button class="btn btn-primary btn-sm" v-if="content == 'storage'" @click="content = 'backup'"><i class="fa fa-database"></i> BACKUP & RESTORE</button>
+            <button class="btn btn-primary btn-sm" v-if="content == 'backup'" @click="content = 'storage'"><i class="fa fa-database"></i> MY DATABASE</button>
           </div>
         </div>
         <hr>
-        <h3>Tables</h3>
-        <point-table>
+        <h3 v-show="content == 'storage'">Tables</h3>
+        <point-table v-show="content == 'storage'">
           <tr slot="p-body" v-for="(table, index) in tables" :key="index">
             <td>
               <a href="javascript:void(0)" @click="chooseTable(table)">{{ table }}</a>
@@ -43,7 +41,8 @@
         </point-table>
       </p-block>
       <p-block column="col-sm-9">
-        <database-storage :data="rows" :table-name="tableName"></database-storage>
+        <database-storage v-if="content == 'storage'" :data="rows" :table-name="tableName" :is-loading="isLoading"></database-storage>
+        <database-backup v-if="content == 'backup'" :code="projectCode"></database-backup>
       </p-block>
     </div>
   </div>
@@ -56,6 +55,7 @@ import ProjectWidget from './Widget'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import DatabaseStorage from './DatabaseStorage'
+import DatabaseBackup from './DatabaseBackup'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -65,7 +65,8 @@ export default {
       isLoading: false,
       loadingMessage: 'Loading',
       tableName: this.$route.query.table_name,
-      projectCode: this.$route.query.project_code
+      projectCode: this.$route.query.project_code,
+      content: 'storage' // should be 'storage' or 'backup'
     }
   },
   components: {
@@ -73,7 +74,8 @@ export default {
     TabMenu,
     ProjectWidget,
     PointTable,
-    DatabaseStorage
+    DatabaseStorage,
+    DatabaseBackup
   },
   computed: {
     ...mapGetters('accountProject', ['project']),
@@ -91,12 +93,15 @@ export default {
             project_code: this.projectCode
           }
         })
-        this.getRows({
-          params: {
-            project_code: this.projectCode,
-            table_name: this.tableName
-          }
-        })
+        if (this.tableName) {
+          this.getRows({
+            params: {
+              project_code: this.projectCode,
+              table_name: this.tableName
+            }
+          })
+        }
+        
       }).catch(error => {
         this.$router.replace('/account/whoops')
         this.isLoading = false
@@ -121,12 +126,14 @@ export default {
           table_name: table
         }
       })
-      this.getRows({
-        params: {
-          project_code: this.projectCode,
-          table_name: table
-        }
-      })
+      if (this.tableName) {
+        this.getRows({
+          params: {
+            project_code: this.projectCode,
+            table_name: table
+          }
+        })
+      }
       this.isLoading = false
     }
   }

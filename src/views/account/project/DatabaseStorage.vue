@@ -2,7 +2,7 @@
   <div>
     <h3>Rows</h3>
       <p-block-inner>
-        <template :is-loading="isLoading" v-if="rows && rows.length > 0">
+        <template :is-loading="loading" v-if="rows && rows.length > 0">
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -19,7 +19,7 @@
             </tr>            
           </point-table>
         </template>
-        <template v-else-if="!isLoading">
+        <template v-else-if="!loading">
           There is no data for table "{{ name }}"
         </template>
       </p-block-inner>
@@ -36,7 +36,8 @@ export default {
   data () {
     return {
       rows: this.data,
-      name: this.tableName
+      name: this.tableName,
+      loading: this.isLoading
     }
   },
   props: {
@@ -45,6 +46,10 @@ export default {
     },
     tableName: {
       type: String
+    },
+    isLoading: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -53,6 +58,9 @@ export default {
     },
     tableName () {
       this.name = this.tableName
+    },
+    isLoading () {
+      this.loading = this.isLoading
     }
   }
 }
