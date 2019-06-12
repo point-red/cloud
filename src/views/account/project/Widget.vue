@@ -30,6 +30,21 @@
         </div>
       </router-link>
     </div>
+    <div class="col-md-6 col-xl-3">
+      <router-link
+        :to="'/account/project/' + project.id + '/preferences'"
+        class="block block-link-shadow text-right">
+        <div class="block-content block-content-full clearfix">
+          <div class="float-left mt-10 d-none d-sm-block">
+            <i class="fa fa-list-alt fa-3x text-body-bg-dark"></i>
+          </div>
+          <div class="font-size-h3 font-w600">
+            _
+          </div>
+          <div class="font-size-sm font-w600 text-uppercase text-muted">Preferences</div>
+        </div>
+      </router-link>
+    </div>
   </div>
 </template>
 

@@ -97,9 +97,7 @@ export default {
             }
           })
         }
-        
       }).catch(error => {
-        this.$router.replace('/account/whoops')
         this.isLoading = false
         this.$notification.error(error.message)
       })

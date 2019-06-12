@@ -1,57 +1,32 @@
 import api from '@/api'
 
-const url = '/project/projects'
+const url = function (id) {
+  return 'project/projects/' + id + '/preferences'
+}
 
 const state = {
-  project: {
-    code: null,
-    name: null
-  },
-  projects: []
+  preference: {}
 }
 
 const getters = {
-  project: state => {
-    return state.project
-  },
-  projects: state => {
-    return state.projects
+  preference: state => {
+    return state.preference
   }
 }
 
 const mutations = {
-  'FETCH_ARRAY' (state, payload) {
-    state.projects = payload.data
-  },
   'FETCH_OBJECT' (state, payload) {
-    state.project = payload.data
-  },
-  'CREATE' (state, payload) {
-    state.project = payload
+    state.preference = payload.data
   },
   'UPDATE' (state, payload) {
-    state.project = payload
-  },
-  'DELETE' (state, payload) {
-    state.project = {}
+    state.preference = payload
   }
 }
 
 const actions = {
-  get ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      api.get(url, payload)
-        .then(response => {
-          commit('FETCH_ARRAY', response)
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.id, payload)
+      api.get(url(payload.id), payload)
         .then(response => {
           commit('FETCH_OBJECT', response)
           resolve(response)
@@ -60,29 +35,10 @@ const actions = {
         })
     })
   },
-  create (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url, payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
   update ({ context, commit }, payload) {
+    console.log(payload)
     return new Promise((resolve, reject) => {
-      api.patch(url + '/' + payload.id, payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  delete (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.delete(url + '/' + payload.id, payload)
+      api.patch(url(payload.id), payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

@@ -1,0 +1,14 @@
+{
+  "preferences" : "preferences",
+  "preference" : "preference",
+  "driver" : "driver",
+  "host" : "host",
+  "username" : "username",
+  "password" : "password",
+  "from name" : "from name",
+  "from address" : "from address",
+  "port" : "port",
+  "encryption" : "encryption",
+  "domain" : "domain",
+  "secret" : "secret"
+}
