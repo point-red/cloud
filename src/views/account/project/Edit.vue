@@ -66,6 +66,30 @@
           </p-form-row>
 
           <p-form-row
+            id="whatsapp"
+            name="whatsapp"
+            v-model="form.whatsapp"
+            :disabled="loadingSaveButton"
+            :label="$t('company whatsapp')">
+          </p-form-row>
+
+          <p-form-row
+            id="website"
+            name="website"
+            v-model="form.website"
+            :disabled="loadingSaveButton"
+            :label="$t('company website')">
+          </p-form-row>
+
+          <p-form-row
+            id="marketplace-notes"
+            name="marketplace-notes"
+            v-model="form.marketplace_notes"
+            :disabled="loadingSaveButton"
+            :label="$t('marketplace notes')">
+          </p-form-row>
+
+          <p-form-row
             id="vat-id-number"
             name="vat_id_number"
             v-model="form.vat_id_number"
@@ -155,6 +179,9 @@ export default {
         this.form.timezone = this.project.timezone
         this.form.address = this.project.address
         this.form.phone = this.project.phone
+        this.form.whatsapp = this.project.whatsapp
+        this.form.website = this.project.website
+        this.form.marketplace_notes = this.project.marketplace_notes
         this.form.vat_id_number = this.project.vat_id_number
         this.form.invitation_code = this.project.invitation_code
         this.form.invitation_code_enabled = this.project.invitation_code_enabled

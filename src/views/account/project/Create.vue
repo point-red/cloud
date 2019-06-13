@@ -68,6 +68,27 @@
           </p-form-row>
 
           <p-form-row
+            id="whatsapp"
+            name="whatsapp"
+            v-model="form.whatsapp"
+            :label="$t('company whatsapp')">
+          </p-form-row>
+
+          <p-form-row
+            id="website"
+            name="website"
+            v-model="form.website"
+            :label="$t('company website')">
+          </p-form-row>
+
+          <p-form-row
+            id="marketplace-notes"
+            name="marketplace-notes"
+            v-model="form.marketplace_notes"
+            :label="$t('marketplace notes')">
+          </p-form-row>
+
+          <p-form-row
             id="vat-id-number"
             name="vat_id_number"
             v-model="form.vat_id_number"
@@ -120,6 +141,9 @@ export default {
         group: null,
         address: null,
         phone: null,
+        whatsapp: null,
+        website: null,
+        marketplace_notes: null,
         code: null,
         vat_id_number: null,
         timezone: null

@@ -46,6 +46,18 @@
             <td>{{ project.phone }}</td>
           </tr>
           <tr slot="p-body">
+            <td class="font-w700">{{ $t('company whatsapp') | titlecase }}</td>
+            <td>{{ project.whatsapp }}</td>
+          </tr>
+          <tr slot="p-body">
+            <td class="font-w700">{{ $t('company website') | titlecase }}</td>
+            <td>{{ project.website }}</td>
+          </tr>
+          <tr slot="p-body">
+            <td class="font-w700">{{ $t('marketplace notes') | titlecase }}</td>
+            <td>{{ project.marketplace_notes }}</td>
+          </tr>
+          <tr slot="p-body">
             <td class="font-w700">{{ $t('vat identification number') | titlecase }}</td>
             <td>{{ project.vat_id_number }}</td>
           </tr>
