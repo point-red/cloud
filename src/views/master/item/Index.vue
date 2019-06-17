@@ -8,7 +8,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block :header="true">
         <p-form-input
           id="search-text"
           name="search-text"
