@@ -56,20 +56,7 @@
               @errors="form.errors.set('group', null)"/>
           </div>
         </p-form-row>
-      
-        <p-form-row
-          id="address"
-          name="address"
-          :label="$t('address')"
-          :placeholder="$t('address')"
-          :disabled="isSaving"
-          v-model="form.address"
-          :errors="form.errors.get('address')"
-          @errors="form.errors.set('address', null)">
-        </p-form-row>
 
-        {{ markers[0] }}
-        {{ addressComponent }}
         <p-form-row
           id="gmap"
           name="gmap"
@@ -79,7 +66,7 @@
             <gmap-autocomplete :value="description"
               @place_changed="setPlace"
               v-on:keypress.enter.prevent
-              :disabled="isSaving"
+              :disabled="true"
               class="form-control">
             </gmap-autocomplete>
             <gmap-map
@@ -119,6 +106,17 @@
                   @click="center=m.position"></gmap-marker>
             </gmap-map>
           </div>
+        </p-form-row>
+
+        <p-form-row
+          id="address"
+          name="address"
+          :label="$t('address')"
+          :placeholder="$t('address')"
+          :disabled="isSaving"
+          v-model="form.address"
+          :errors="form.errors.get('address')"
+          @errors="form.errors.set('address', null)">
         </p-form-row>
 
         <p-form-row
@@ -515,10 +513,27 @@ export default {
       this.description = description
     },
     setPlace (place) {
-      this.latLng = {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng()
-      }
+      console.log(place)
+      this.center.lat = place.geometry.location.lat()
+      this.center.lng = place.geometry.location.lng()
+      this.markers[0].position.lat = place.geometry.location.lat()
+      this.markers[0].position.lng = place.geometry.location.lng()
+      this.addressComponent = place
+      this.setDescription(this.addressComponent.formatted_address)
+      this.form.address = this.addressComponent.formatted_address
+      this.form.district = ''
+      this.form.sub_district = ''
+      this.addressComponent.address_components.forEach(component => {
+        if (component.types) {
+          component.types.forEach(types => {
+            if (types == 'administrative_area_level_3') {
+              this.form.district = component.long_name
+            } else if (types == 'administrative_area_level_4') {
+              this.form.sub_district = component.long_name
+            }
+          })
+        }
+      })
     },
     geocodeLatLng (geocoder, map, infowindow){
       var self = this
@@ -526,8 +541,19 @@ export default {
         console.log(results)
         if (status == 'OK') {
           self.addressComponent = results[0]
-          console.log('OK ' + JSON.stringify(self.addressComponent.address_components[0]))
           self.setDescription(self.addressComponent.formatted_address)
+          self.form.address = self.addressComponent.formatted_address
+          self.addressComponent.address_components.forEach(component => {
+            if (component.types) {
+              component.types.forEach(types => {
+                if (types == 'administrative_area_level_3') {
+                  self.form.district = component.long_name
+                } else if (types == 'administrative_area_level_4') {
+                  self.form.sub_district = component.long_name
+                }
+              })
+            }
+          })
         }
       })
     },
