@@ -312,27 +312,32 @@ export default {
       this.$set(this.form.template, 'score_percentage', scorePercentage + (template.score_percentage || 0))
     },
     onSubmit () {
-      this.loadingSaveButton = true
-      this.form.date.start =  this.serverDateTime(this.$moment(this.form.date.start))
-      this.form.date.end =  this.serverDateTime(this.$moment(this.form.date.end))
-      this.createEmployeeAssessment({ employeeId: this.employee.id, form: this.form })
-        .then(response => {
+      if (this.form.date.start && this.form.date.end) {
+        this.loadingSaveButton = true
+        this.form.date.start =  this.serverDateTime(this.$moment(this.form.date.start))
+        this.form.date.end =  this.serverDateTime(this.$moment(this.form.date.end))
+        this.createEmployeeAssessment({ employeeId: this.employee.id, form: this.form })
+          .then(response => {
+              this.loadingSaveButton = false
+              this.$notification.success('Create success')
+              this.findKpiResult(this.form.template.score_percentage)
+                .then(response => {
+                  this.$alert.success(response.data.criteria, response.data.notes)
+                    .then(() => {
+                      this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
+                    })
+                }).catch(error => {
+                  console.log(JSON.stringify(error))
+                  this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
+                })
+          }).catch(error => {
             this.loadingSaveButton = false
-            this.$notification.success('Create success')
-            this.findKpiResult(this.form.template.score_percentage)
-              .then(response => {
-                this.$alert.success(response.data.criteria, response.data.notes)
-                  .then(() => {
-                    this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
-                  })
-              }).catch(error => {
-                console.log(JSON.stringify(error))
-                this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
-              })
-        }).catch(error => {
-          this.loadingSaveButton = false
-          this.$notification.error('Create failed', error.message)
-        })
+            this.$notification.error('Create failed', error.message)
+          })
+      }
+      else {
+        this.$notification.error('Please select a valid date range')
+      }
     },
     getAutomatedScore () {
       var automatedIDs = []
