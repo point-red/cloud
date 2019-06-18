@@ -20,7 +20,7 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('employee assessment')" :header="true">
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
             :label="$t('name')">
@@ -142,10 +142,10 @@
               <hr>
               <button
                 v-if="form.template.weight > 0"
-                :disabled="loadingSaveButton"
+                :disabled="isSaving"
                 type="submit"
                 class="btn btn-sm btn-primary mr-5">
-                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
               </button>
               <button
                 type="button"
@@ -202,8 +202,8 @@ export default {
 
       }),
       title: 'Kpi',
-      loading: true,
-      loadingSaveButton: false,
+      isLoading: true,
+      isSaving: false,
       scoreModalTitle: ''
     }
   },
@@ -214,7 +214,7 @@ export default {
   },
   watch: {
     'form.date' () {
-      this.loading = true
+      this.isLoading = true
       this.getAutomatedScore()
     }
   },
@@ -225,18 +225,18 @@ export default {
     ...mapGetters('humanResourceKpiAutomated', ['automated_codes'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.findEmployee({
       id: this.id
     }).then(response => {
-      this.loading = false
+      this.isLoading = false
       if (this.employee.kpi_template_id === null) {
         this.$refs.assignKpiTemplate.show(this.id)
       } else {
         this.getKpiTemplate(this.employee.kpi_template_id)
       }
     }).catch(error => {
-      this.loading = false
+      this.isLoading = false
       console.log(JSON.stringify(error))
     })
   },
@@ -257,13 +257,13 @@ export default {
       getAutomatedData: 'get'
     }),
     getKpiTemplate (kpiTemplateId) {
-      this.loading = true
+      this.isLoading = true
       this.findKpiTemplate({ id: kpiTemplateId })
-        .then((response) => {
+        .then(response => {
           this.form.template = response.data
           this.getAutomatedScore()
-        }, (error) => {
-          this.loading = false
+        }).catch(error => {
+          this.isLoading = false
           console.log(JSON.stringify(error))
         })
     },
@@ -312,32 +312,31 @@ export default {
       this.$set(this.form.template, 'score_percentage', scorePercentage + (template.score_percentage || 0))
     },
     onSubmit () {
-      if (this.form.date.start && this.form.date.end) {
-        this.loadingSaveButton = true
-        this.form.date.start =  this.serverDateTime(this.$moment(this.form.date.start))
-        this.form.date.end =  this.serverDateTime(this.$moment(this.form.date.end))
-        this.createEmployeeAssessment({ employeeId: this.employee.id, form: this.form })
-          .then(response => {
-              this.loadingSaveButton = false
-              this.$notification.success('Create success')
-              this.findKpiResult(this.form.template.score_percentage)
-                .then(response => {
-                  this.$alert.success(response.data.criteria, response.data.notes)
-                    .then(() => {
-                      this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
-                    })
-                }).catch(error => {
-                  console.log(JSON.stringify(error))
-                  this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
-                })
-          }).catch(error => {
-            this.loadingSaveButton = false
-            this.$notification.error('Create failed', error.message)
-          })
-      }
-      else {
+      if (!this.form.date.start || !this.form.date.end) {
         this.$notification.error('Please select a valid date range')
+        return
       }
+      this.isSaving = true
+      this.form.date.start =  this.serverDateTime(this.$moment(this.form.date.start))
+      this.form.date.end =  this.serverDateTime(this.$moment(this.form.date.end))
+      this.createEmployeeAssessment({ employeeId: this.employee.id, form: this.form })
+        .then(response => {
+            this.isSaving = false
+            this.$notification.success('Create success')
+            this.findKpiResult(this.form.template.score_percentage)
+              .then(response => {
+                this.$alert.success(response.data.criteria, response.data.notes)
+                  .then(() => {
+                    this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
+                  })
+              }).catch(error => {
+                console.log(JSON.stringify(error))
+                this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
+              })
+        }).catch(error => {
+          this.isSaving = false
+          this.$notification.error('Create failed', error.message)
+        })            
     },
     getAutomatedScore () {
       var automatedIDs = []
@@ -355,7 +354,7 @@ export default {
       if (automatedIDs.length > 0 && this.form.date.start && this.form.date.end) {
         this.getAutomatedData({ startDate: this.serverDateTime(this.$moment(this.form.date.start)), endDate: this.serverDateTime(this.$moment(this.form.date.end)), automated_codes: automatedIDs, employeeId: this.id })
           .then((response) => {
-            this.loading = false
+            this.isLoading = false
 
             var templateTarget = 0
             var templateScore = 0
@@ -409,11 +408,11 @@ export default {
             this.$set(this.form.template, 'score', templateScore)
             this.$set(this.form.template, 'score_percentage', templateScorePercentage)
           }, (error) => {
-            this.loading = false
+            this.isLoading = false
             console.log(JSON.stringify(error))
           })
       } else {
-        this.loading = false
+        this.isLoading = false
       }
     }
   }
