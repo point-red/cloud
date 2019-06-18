@@ -42,6 +42,9 @@
           v-model="form.customer"
           :errors="form.errors.get('customer')"
           @errors="form.errors.set('customer', null)">
+          <div class="col-lg-9" slot="body">
+            <m-customer id="customer" v-model="form.customer_id" :label="form.customer_name"/>
+          </div>
         </p-form-row>
 
         <p-form-row :label="'group'">

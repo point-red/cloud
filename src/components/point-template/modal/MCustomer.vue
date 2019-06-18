@@ -83,7 +83,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('customer', ['get', 'create']),
+    ...mapActions('masterCustomer', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
