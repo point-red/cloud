@@ -43,20 +43,13 @@
           :errors="form.errors.get('customer')"
           @errors="form.errors.set('customer', null)">
           <div class="col-lg-9" slot="body">
-            <m-customer id="customer" v-model="form.customer_id" :label="form.customer_name"/>
+            <m-customer id="customer" v-model="form.customer_id" @choosen="chooseCustomer" :label="form.customer_name"/>
           </div>
         </p-form-row>
 
         <p-form-row :label="'group'">
-          <div slot="body" class="col-lg-9">
-            <p-select
-              id="group"
-              name="group"
-              :disabled="isSaving"
-              v-model="form.group"
-              :options="groupList"
-              :errors="form.errors.get('group')"
-              @errors="form.errors.set('group', null)"/>
+          <div class="col-lg-9" slot="body">
+            <m-group id="group" v-model="form.group_id" @choosen="chooseGroup" :label="form.group_name" class-reference="Customer"/>
           </div>
         </p-form-row>
 
@@ -375,7 +368,6 @@ import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPinPoint from '@/views/plugin/pin-point/Breadcrumb'
-import { loaded } from 'vue2-google-maps'
 import Form from '@/utils/Form'
 import { mapActions } from 'vuex'
 
@@ -394,13 +386,15 @@ export default {
       rows: 1,
       form: new Form({
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        customer: this.$route.query.name || '',
+        customer_id: null,
+        customer_name: this.$route.query.name || '',
         address: this.$route.query.address || '',
         district: this.$route.query.district || '',
         sub_district: this.$route.query.sub_district || '',
         latitude: this.$route.query.latitude || '',
         longitude: this.$route.query.longitude || '',
-        group: null,
+        group_id: null,
+        group_name: null,
         phone: '',
         notes: '',
         similar_product: '',
@@ -488,6 +482,15 @@ export default {
     // 
   },
   mounted () {
+    // Check for Geolocation API permissions
+    navigator.permissions.query({name:'geolocation'})
+      .then(function(permissionStatus) {
+        console.log('geolocation permission state is ', permissionStatus.state)
+
+        permissionStatus.onchange = function() {
+          console.log('geolocation permission state has changed to ', this.state)
+        }
+      })
     if (navigator.geolocation) {
       this.isLoading = true
       this.loadingMessage = 'Searching current location'
@@ -495,7 +498,7 @@ export default {
         let pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
-        };
+        }
         this.center.lat = pos.lat
         this.center.lng = pos.lng
         this.markers[0].position.lat = pos.lat
@@ -511,6 +514,12 @@ export default {
   },
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['create']),
+    chooseCustomer (value) {
+      this.form.customer_name = value
+    },
+    chooseGroup (value) {
+      this.form.group_name = value
+    },
     // [Start] Google Map
     setDescription (description) {
       this.description = description
@@ -584,7 +593,7 @@ export default {
         .then((response) => {
           this.isSaving = false
           this.$notification.success('Pengisian form sukses')
-          this.$router.push('/')
+          this.$router.push('/plugin/pin-point/sales-visitation-form')
         }, (error) => {
           this.isSaving = false
           this.$notification.error(error)
