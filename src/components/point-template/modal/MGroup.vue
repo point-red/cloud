@@ -1,7 +1,7 @@
 <template>
   <div>
     <span @click="show" class="link"><i class="fa fa-list mr-5"></i>{{ mutableLabel || 'SELECT'}}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select customer">
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select group">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
@@ -28,8 +28,8 @@
           }"></i> Add</span> {{ $t('to add new data') }}
         </div>
         <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you doesn\'t have any') | capitalize }} {{ $t('customer') | capitalize }}, <br/> {{ $t('you can create') }}
-          <router-link :to="'/master/customer/create'">
+          {{ $t('you doesn\'t have any') | capitalize }} {{ $t('group') | capitalize }}, <br/> {{ $t('you can create') }}
+          <router-link :to="'/master/group/create'">
             <span>{{ $t('new one') }}</span>
           </router-link>
         </div>
@@ -52,12 +52,13 @@ export default {
       options: [],
       mutableId: this.value,
       mutableLabel: this.label,
+      mutableClassReference: this.classReference,
       isSaving: false,
       isLoading: false
     }
   },
   computed: {
-    ...mapGetters('masterCustomer', ['customers', 'pagination'])
+    ...mapGetters('masterGroup', ['groups', 'pagination'])
   },
   props: {
     id: {
@@ -69,6 +70,9 @@ export default {
     },
     label: {
       type: String
+    },
+    classReference: {
+      type: String
     }
   },
   watch: {
@@ -77,26 +81,30 @@ export default {
     }, 300),
     label () {
       this.mutableLabel = this.label
+    },
+    classReference () {
+      this.mutableClassReference = this.classReference
     }
   },
   created () {
     this.search()
   },
   methods: {
-    ...mapActions('masterCustomer', ['get', 'create']),
+    ...mapActions('masterGroup', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
         params: {
+          class_reference: 'Customer',
           sort_by: 'name',
           limit: 50,
           filter_like: {
-            name: this.searchText
+            name: this.searchText            
           }
         }
       }).then(response => {
         this.options = []
-        // this.mutableLabel = ''
+        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
@@ -115,7 +123,8 @@ export default {
     add () {
       this.isSaving = true
       this.create({
-        name: this.searchText
+        name: this.searchText,
+        class_reference: this.mutableClassReference
       }).then(response => {
         this.search()
         this.isSaving = false
