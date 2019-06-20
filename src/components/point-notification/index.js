@@ -2,11 +2,13 @@ export default {
   install: (Vue) => {
     Vue.prototype.$notification = {
       custom (options) {
-        Vue.notify({
-          group: 'notification',
-          type: options.type,
-          title: options.title,
-          text: options.text
+        Vue.prototype.$nextTick(() => {
+          Vue.notify({
+            group: 'notification',
+            type: options.type,
+            title: options.title,
+            text: options.text
+          })
         })
       },
       info (title, text = '') {

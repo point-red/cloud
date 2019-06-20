@@ -3,19 +3,21 @@ export default {
     Vue.prototype.$alert = {
       custom (options) {
         return new Promise((resolve) => {
-          Vue.swal.fire({
-            type: options.type,
-            title: options.title,
-            text: options.text,
-            footer: options.footer,
-            showCloseButton: true,
-            backdrop: `
-              rgba(0,0,0,0.4)
-              center left
-              no-repeat
-            `
-          }).then(() => {
-            resolve()
+          Vue.prototype.$nextTick(() => {
+            Vue.swal.fire({
+              type: options.type,
+              title: options.title,
+              text: options.text,
+              footer: options.footer,
+              showCloseButton: true,
+              backdrop: `
+                rgba(0,0,0,0.4)
+                center left
+                no-repeat
+              `
+            }).then(() => {
+              resolve()
+            })
           })
         })
       },
@@ -64,9 +66,11 @@ export default {
     })
     Vue.prototype.$toast = {
       custom (options) {
-        toast.fire({
-          type: options.type,
-          title: options.text
+        Vue.prototype.$nextTick(() => {
+          toast.fire({
+            type: options.type,
+            title: options.text
+          })
         })
       },
       show (text) {
