@@ -12,44 +12,44 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('purchase request')" :header="true">
-        <p-form-row
-          id="date"
-          name="date"
-          :label="$t('date')">
-          <div slot="body" class="col-lg-9">
-            <p-date-picker
-              id="date"
-              name="date"
-              label="Date"
-              v-model="form.required_date"
-              :errors="form.errors.get('date')"
-              @errors="form.errors.set('date', null)"/>
-          </div>
-        </p-form-row>
-
-        <p-form-row
-          id="supplier"
-          name="supplier"
-          :label="$t('supplier')">
-          <div slot="body" class="col-lg-9 mt-5">
-            <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
-          </div>
-        </p-form-row>
-
-        <p-form-row
-          id="employee"
-          name="employee"
-          :label="$t('employee')">
-          <div slot="body" class="col-lg-9 mt-5">
-            <m-employee id="employee" v-model="form.employee_id" @choosen="chooseEmployee"/>
-          </div>
-        </p-form-row>
-
-        <p-separator></p-separator>
-
-        <h3 class="">Item</h3>
-
         <p-block-inner>
+          <p-form-row
+            id="date"
+            name="date"
+            :label="$t('date')">
+            <div slot="body" class="col-lg-9">
+              <p-date-picker
+                id="date"
+                name="date"
+                label="Date"
+                v-model="form.required_date"
+                :errors="form.errors.get('date')"
+                @errors="form.errors.set('date', null)"/>
+            </div>
+          </p-form-row>
+
+          <p-form-row
+            id="supplier"
+            name="supplier"
+            :label="$t('supplier')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
+            </div>
+          </p-form-row>
+
+          <p-form-row
+            id="employee"
+            name="employee"
+            :label="$t('employee')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-employee id="employee" v-model="form.employee_id" @choosen="chooseEmployee"/>
+            </div>
+          </p-form-row>
+
+          <p-separator></p-separator>
+
+          <h3 class="">Item</h3>
+          
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -94,44 +94,41 @@
               </td>
             </tr>
           </point-table>
+
           <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
             <i class="fa fa-plus"/> Add
           </button>
+
+          <p-separator></p-separator>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+            </div>
+            <div class="col-sm-6">
+              <h3 class="">Approver</h3>
+              <p-form-row
+                id="approver"
+                name="approver"
+                :label="$t('approver')">
+                <div slot="body" class="col-lg-9">
+                  <m-user
+                    :id="'user'"
+                    v-model="form.approver_id"
+                    :errors="form.errors.get('approver_id')"
+                    @errors="form.errors.set('approver_id', null)"/>
+                </div>
+              </p-form-row>
+            </div>
+
+            <div class="col-sm-12">
+              <hr>
+              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+              </button>
+            </div>
+          </div>
         </p-block-inner>
-
-        <p-separator></p-separator>
-
-        <div class="row">
-          <div class="col-sm-6">
-            <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
-          </div>
-          <div class="col-sm-6">
-            <h3 class="">Approver</h3>
-            <p-form-row
-              id="approver"
-              name="approver"
-              :label="$t('approver')">
-              <div slot="body" class="col-lg-9">
-                <m-user
-                  :id="'user'"
-                  v-model="form.approver_id"
-                  :errors="form.errors.get('approver_id')"
-                  @errors="form.errors.set('approver_id', null)"/>
-              </div>
-            </p-form-row>
-          </div>
-        </div>
-
-        <p-separator></p-separator>
-
-        <div class="form-group">
-          <div class="col-md-3"></div>
-          <div class="col-md-9">
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
-            </button>
-          </div>
-        </div>
       </p-block>
     </form>
   </div>

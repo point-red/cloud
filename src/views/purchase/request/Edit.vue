@@ -28,6 +28,7 @@
               </template>
             </div>
           </p-form-row>
+
           <p-form-row
             id="date"
             name="date"
@@ -65,55 +66,53 @@
 
           <h3 class="">Item</h3>
 
-          <p-block-inner>
-            <point-table>
-              <tr slot="p-head">
-                <th>#</th>
-                <th>Item</th>
-                <th>Allocation</th>
-                <th>Quantity</th>
-                <th>Estimated Price</th>
-                <th>Notes</th>
-              </tr>
-              <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
-                <th>{{ index + 1 }}</th>
-                <td>
-                  <m-item
-                    :id="'item-' + index"
-                    :data-index="index"
-                    v-model="row.item_id"
-                    @choosen="chooseItem($event, row)"/>
-                </td>
-                <td>
-                  <m-allocation
-                    :id="'allocation-' + index"
-                    v-model="row.allocation_id"/>
-                </td>
-                <td>
-                  <p-quantity
-                    :id="'quantity' + index"
-                    :name="'quantity' + index"
-                    v-model="row.quantity"
-                    :unit="row.unit"/>
-                </td>
-                <td>
-                  <p-form-number
-                    :id="'price' + index"
-                    :name="'price' + index"
-                    v-model="row.price"/>
-                </td>
-                <td>
-                  <p-form-input
-                    id="notes"
-                    name="notes"
-                    v-model="row.notes"/>
-                </td>
-              </tr>
-            </point-table>
-            <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
-              <i class="fa fa-plus"/> Add
-            </button>
-          </p-block-inner>
+          <point-table>
+            <tr slot="p-head">
+              <th>#</th>
+              <th>Item</th>
+              <th>Allocation</th>
+              <th>Quantity</th>
+              <th>Estimated Price</th>
+              <th>Notes</th>
+            </tr>
+            <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
+              <th>{{ index + 1 }}</th>
+              <td>
+                <m-item
+                  :id="'item-' + index"
+                  :data-index="index"
+                  v-model="row.item_id"
+                  @choosen="chooseItem($event, row)"/>
+              </td>
+              <td>
+                <m-allocation
+                  :id="'allocation-' + index"
+                  v-model="row.allocation_id"/>
+              </td>
+              <td>
+                <p-quantity
+                  :id="'quantity' + index"
+                  :name="'quantity' + index"
+                  v-model="row.quantity"
+                  :unit="row.unit"/>
+              </td>
+              <td>
+                <p-form-number
+                  :id="'price' + index"
+                  :name="'price' + index"
+                  v-model="row.price"/>
+              </td>
+              <td>
+                <p-form-input
+                  id="notes"
+                  name="notes"
+                  v-model="row.notes"/>
+              </td>
+            </tr>
+          </point-table>
+          <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
+            <i class="fa fa-plus"/> Add
+          </button>
 
           <p-separator></p-separator>
 
@@ -136,14 +135,11 @@
                 </div>
               </p-form-row>
             </div>
-          </div>
 
-          <p-separator></p-separator>
-
-          <div class="form-group row">
-            <div class="col-md-12">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
-                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+            <div class="col-sm-12">
+              <hr>
+              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
               </button>
             </div>
           </div>
@@ -173,8 +169,8 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      loading: true,
-      loadingSaveButton: false,
+      isLoading: true,
+      isSaving: false,
       form: new Form({
         id: this.$route.params.id,
         date: null,
@@ -266,12 +262,12 @@ export default {
     onSubmit () {
       this.update(this.form)
         .then(response => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.form.reset()
           this.$notification.success('Update success')
           this.$router.push('/purchase/request/' + response.data.id)
         }).catch(error => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
