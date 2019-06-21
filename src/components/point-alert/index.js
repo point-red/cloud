@@ -7,7 +7,7 @@ export default {
             Vue.swal.fire({
               type: options.type,
               title: options.title,
-              text: options.text,
+              html: options.text,
               footer: options.footer,
               showCloseButton: true,
               backdrop: `

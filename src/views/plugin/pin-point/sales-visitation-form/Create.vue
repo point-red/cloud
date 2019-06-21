@@ -478,42 +478,59 @@ export default {
       place: null
     }
   },
-  watch: {
-    // 
-  },
   mounted () {
+    this.isLoading = true
+    this.loadingMessage = 'Searching current location'
     // Check for Geolocation API permissions
-    navigator.permissions.query({name:'geolocation'})
-      .then(function(permissionStatus) {
-        console.log('geolocation permission state is ', permissionStatus.state)
+    navigator.permissions.query({
+      name:'geolocation'
+    }).then(permissionStatus => {
+      console.log('geolocation permission state is ', permissionStatus.state)
+      if (permissionStatus.state == 'granted') {
+        this.getLocation()
+      } else if (permissionStatus.state == 'prompt') {
+        this.loadingMessage = 'Please allow location permission request'
+        this.getLocation()
+      } else if (permissionStatus.state == 'denied') {
+        this.loadingMessage = 'Permission denied'
+        this.isLoading = false
+        this.$alert.error('Permissions Denied', 'Requesting location permissions denied, If you using google chrome you can refer this guide to allow permission request <a href="https://support.google.com/chrome/answer/142065?hl=en" target="_blank">https://support.google.com/chrome/answer/142065</a>')
+      }
 
-        permissionStatus.onchange = function() {
-          console.log('geolocation permission state has changed to ', this.state)
-        }
-      })
-    if (navigator.geolocation) {
-      this.isLoading = true
-      this.loadingMessage = 'Searching current location'
-      navigator.geolocation.getCurrentPosition(function (position) {
-        let pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }
-        this.center.lat = pos.lat
-        this.center.lng = pos.lng
-        this.markers[0].position.lat = pos.lat
-        this.markers[0].position.lng = pos.lng
-        this.$refs.map.$mapPromise.then(() => {
+      permissionStatus.onchange = () => {
+        console.log('geolocation permission state has changed to ', this.state)
+        if (permissionStatus.state == 'denied') {
           this.isLoading = false
-          this.geocodeLatLng(new google.maps.Geocoder, pos, google.maps.InfoWindow)
-        }).catch(error => {
-          this.isLoading = false
-        })
-      }.bind(this))
-    }
+          this.loadingMessage = 'Permission denied'
+          this.$alert.error('Permissions Denied', 'Requesting location permissions denied, If you using google chrome you can refer this guide to allow permission request <a href="https://support.google.com/chrome/answer/142065?hl=en" target="_blank">https://support.google.com/chrome/answer/142065</a>')
+        }
+      }
+    })
   },
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['create']),
+    getLocation () {
+      if (navigator.geolocation) {              
+        navigator.geolocation.getCurrentPosition(function (position) {
+          let pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          }
+          this.center.lat = pos.lat
+          this.center.lng = pos.lng
+          this.markers[0].position.lat = pos.lat
+          this.markers[0].position.lng = pos.lng
+          this.$refs.map.$mapPromise.then(() => {
+            this.isLoading = false
+            this.geocodeLatLng(new google.maps.Geocoder, pos, google.maps.InfoWindow)
+          }).catch(error => {
+            this.isLoading = false
+          })
+        }.bind(this))
+      } else {
+        this.loadingMessage = 'Geolocation not available, please update your browser or using another browser'
+      }
+    },
     chooseCustomer (value) {
       this.form.customer_name = value
     },
