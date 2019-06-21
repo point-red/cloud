@@ -31,9 +31,9 @@ export default new Router({
       name: 'signin',
       component: GuestLayout,
       children: [
-        { path: 'signin', name: 'SignIn', component: () => import('./views/auth/SignIn.vue') },
-        { path: 'forgot-password', name: 'ForgotPassword', component: () => import('./views/auth/ForgotPassword.vue') },
-        { path: 'reset-password', name: 'ResetPassword', component: () => import('./views/auth/ResetPassword.vue') }
+        { path: 'signin', name: 'sign-in', component: () => import('./views/auth/SignIn.vue') },
+        { path: 'forgot-password', name: 'forgot-password', component: () => import('./views/auth/ForgotPassword.vue') },
+        { path: 'reset-password', name: 'reset-password', component: () => import('./views/auth/ResetPassword.vue') }
       ]
     },
     {
@@ -41,6 +41,7 @@ export default new Router({
       component: AccountLayout,
       children: [
         { path: 'whoops', component: Whoops },
+        { path: 'storage', name: 'storage', component: () => import('./views/Storage.vue') },
         ...Account
       ],
       beforeEnter: (to, from, next) => {
@@ -66,9 +67,9 @@ export default new Router({
       path: '/',
       component: AuthLayout,
       children: [
-        { path: '/', name: 'Dashboard', component: Dashboard },
-        { path: '/menu', name: 'MainMenu', component: MainMenu },
-        { path: '/storage', name: 'storage', component: () => import('./views/Storage.vue') },
+        { path: '/', name: 'dashboard', component: Dashboard },
+        { path: '/menu', name: 'main-menu', component: MainMenu },
+        { path: '/storage', name: 'tenant-storage', component: () => import('./views/TenantStorage.vue') },
         { path: '/whoops', component: Whoops },
         ...Master,
         ...HumanResource,

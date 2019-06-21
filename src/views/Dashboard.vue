@@ -9,6 +9,6 @@
 
 <script>
 export default {
-  name: 'Dashboard'
+  name: 'dashboard'
 }
 </script>

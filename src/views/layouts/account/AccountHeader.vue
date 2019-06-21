@@ -41,7 +41,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-import HeaderDropdown from '../HeaderDropdown'
+import HeaderDropdown from './HeaderDropdown'
 import NotificationDropdown from '../NotificationDropdown'
 
 export default {

@@ -22,7 +22,6 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th>Project</th>
               <th>File Name</th>
               <th>File Expired at</th>
               <th>Download URL</th>
@@ -32,7 +31,6 @@
               :key="cloudStorage.id"
               slot="p-body">
               <th>{{ index + 1 }}</th>
-              <td>{{ cloudStorage.project.name }}</td>
               <td>{{ cloudStorage.file_name }}</td>
               <td>{{ cloudStorage.expired_at | dateFormat('DD MMM YYYY HH:mm') }}</td>
               <td><a :href="cloudStorage.download_url">{{ cloudStorage.download_url }}</a></td>

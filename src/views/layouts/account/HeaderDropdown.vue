@@ -27,7 +27,7 @@
         <i class="si si-flag mr-5"/> Language
       </a>
 
-      <router-link :to="'/storage'" class="dropdown-item">
+      <router-link :to="'/account/storage'" class="dropdown-item">
         <i class="si si-drawer mr-5"/> Storage
       </router-link>
 
@@ -50,7 +50,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import ChangeLanguageModal from './ChangeLanguageModal'
+import ChangeLanguageModal from '../ChangeLanguageModal'
 
 export default {
   components: {
