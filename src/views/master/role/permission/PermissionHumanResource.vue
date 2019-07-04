@@ -26,7 +26,12 @@
         <td><p-form-check-box ref="read employee salary" @click.native="togglePermission('read employee salary')" :checked="$rolePermission.has('read employee salary', permissions)" :description="'Read'"/></td>
         <td><p-form-check-box ref="update employee salary" @click.native="togglePermission('update employee salary')" :checked="$rolePermission.has('update employee salary', permissions)" :description="'Update'"/></td>
         <td><p-form-check-box ref="delete employee salary" @click.native="togglePermission('delete employee salary')" :checked="$rolePermission.has('delete employee salary', permissions)" :description="'Delete'"/></td>
-        <td><p-form-check-box ref="print employee salary" @click.native="togglePermission('print employee salary')" :checked="$rolePermission.has('print employee salary', permissions)" :description="'Delete'"/></td>
+        <td><p-form-check-box ref="print employee salary" @click.native="togglePermission('print employee salary')" :checked="$rolePermission.has('print employee salary', permissions)" :description="'Print'"/></td>
+      </tr>
+      <tr slot="p-body">
+        <td></td>
+        <td><i class="si si-users fa-fw"></i> Employee Contract</td>
+        <td><p-form-check-box ref="manage employee contract" @click.native="togglePermission('manage employee contract')" :checked="$rolePermission.has('manage employee contract', permissions)" :description="'Manage'"/></td>
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box @click.native="togglePermissionRow(['create employee kpi', 'read employee kpi', 'update employee kpi', 'delete employee kpi'], permissions)" :checked="checkPermissionRow(['create employee kpi', 'read employee kpi', 'update employee kpi', 'delete employee kpi'], permissions)" :description="''"/></td>

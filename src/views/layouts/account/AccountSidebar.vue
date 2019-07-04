@@ -118,6 +118,12 @@
                 active-class="active"
                 class="sidebar-mini-hide"><i class="si si-doc"/> {{ $t("billing") | titlecase }}</router-link>
             </li>
+            <!-- <li @click="toggleLeftSidebar('close-xs')">
+              <router-link
+                to="/account/notification"
+                active-class="active"
+                class="sidebar-mini-hide"><i class="si si-info"/> {{ $t("notification") | titlecase }}</router-link>
+            </li> -->
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/referral"

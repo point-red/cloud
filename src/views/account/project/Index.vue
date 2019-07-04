@@ -7,7 +7,7 @@
     <tab-menu></tab-menu>
 
     <div class="row">
-      <p-block :header="true" :is-loading="loading" title="Project">
+      <p-block :header="true" :is-loading="isLoading" title="Project">
         <p-table>
           <tr slot="p-head">
             <th>Company Id</th>
@@ -34,10 +34,10 @@
                 <button
                   type="button"
                   class="btn btn-sm btn-secondary"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @click="joinProject(index)">
-                  <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/>
-                  <i v-show="!loadingSaveButton" class="fa fa-check-circle-o"/> Join
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>
+                  <i v-show="!isSaving" class="fa fa-check-circle-o"/> Join
                 </button>
               </template>
               <template v-if="project.joined == false && project.request_join_at != null && project.owner_id == userId">
@@ -83,8 +83,8 @@ export default {
   data () {
     return {
       domain: process.env.VUE_APP_DOMAIN,
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
       userId: parseInt(localStorage.getItem('userId'))
     }
   },
@@ -104,35 +104,32 @@ export default {
       localStorage.setItem('tenantName', project.name)
     },
     joinProject (index) {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.updateProject({
         id: this.projects[index].user_invitation_id,
         project_id: this.projects[index].id,
         user_id: this.projects[index].user_id
+      }).then(response => {
+        this.isSaving = false
+        this.projects[index].joined = true
+        this.$notification.success('You joined into this project')
+      }).catch(error => {
+        this.isSaving = false
+        this.$notification.error(error.message)
       })
-        .then((response) => {
-          this.loadingSaveButton = false
-          this.projects[index].joined = true
-          this.$notification.success('You joined into this project')
-        }, (error) => {
-          this.loadingSaveButton = false
-          this.$notification.error(error.message)
-        })
     }
   },
   created () {
     if (this.projects.length == 0) {
-      this.loading = true
+      this.isLoading = true
     }
     this.getProject()
-      .then(
-        (response) => {
-          this.loading = false
-        },
-        (error) => {
-          this.loading = false
-          console.log(JSON.stringify(error))
-        })
+      .then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        console.log(JSON.stringify(error))
+      })
   }
 }
 </script>
