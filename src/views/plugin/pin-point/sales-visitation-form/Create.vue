@@ -479,7 +479,7 @@ export default {
     }
   },
   mounted () {
-    this.isLoading = true
+    this.isLoading = false
     this.loadingMessage = 'Searching current location'
     // Check for Geolocation API permissions
     navigator.permissions.query({
