@@ -27,6 +27,8 @@
         <div class="row">
           <div class="col text-center">
             <button class="btn btn-primary btn-sm" v-if="content == 'storage'" @click="content = 'backup'"><i class="fa fa-database"></i> BACKUP & RESTORE</button>
+            <hr v-if="content == 'storage'"/>
+            <button class="btn btn-danger btn-sm" v-if="content == 'storage'" @click="reset()"><i class="fa fa-database"></i> RESET</button>
             <button class="btn btn-primary btn-sm" v-if="content == 'backup'" @click="content = 'storage'"><i class="fa fa-database"></i> MY DATABASE</button>
           </div>
         </div>
@@ -110,8 +112,12 @@ export default {
       getTable: 'get',
       getRows: 'show'
     }),
+    ...mapActions('accountProjectDatabaseReset', {
+      resetDatabase: 'reset'
+    }),
     chooseTable(table) {
       this.isLoading = true
+      this.loadingMessage = 'Loading'
       this.tableName = table
       this.$router.push({
         query: {
@@ -128,6 +134,30 @@ export default {
         })
       }
       this.isLoading = false
+    },
+    reset () {
+      this.$swal.fire({
+        title: 'Reset Database',
+        text: 'The will delete your current database and create new one',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, reset it!'
+      }).then((result) => {
+        this.isLoading = true
+        this.loadingMessage = 'Loading.. (This may take some time)'
+        if (result.value) {
+          this.resetDatabase({
+            id: this.id,
+          }).then(response => {
+            this.isLoading = false
+            this.$swal.fire('Finish', 'Your database has been reset.', 'success')
+          }).catch(error => {
+            this.isLoading = false
+          })
+        }
+      })
     }
   }
 }
