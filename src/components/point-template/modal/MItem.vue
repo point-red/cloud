@@ -24,7 +24,7 @@
           {{ $t('searching not found', [searchText]) | capitalize }}
         </div>
         <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you doesn\'t have any') | capitalize }} {{ $t('item') | capitalize }}
+          {{ $t('you don\'t have any') | capitalize }} {{ $t('item') | capitalize }}
         </div>
       </template>
       <template slot="footer">
