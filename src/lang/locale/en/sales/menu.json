@@ -4,7 +4,7 @@
   "sales contract" : "contract",
   "sales order" : "order",
   "delivery order" : "delivery order",
-  "delivery notes" : "delivery notes",
+  "delivery note" : "delivery note",
   "sales invoice" : "invoice",
   "sales down payment" : "down payment",
   "sales return" : "return"
