@@ -12,6 +12,12 @@ export default {
       return moment(value).add(0, 'minute').format(format)
     })
 
+    Vue.filter('fromNow', function (value) {
+      // var offset = new Date().getTimezoneOffset()
+      // return moment(value).add(offset, 'minute').format(format)
+      return moment(value).fromNow()
+    })
+
     Vue.mixin({
       methods: {
         serverDate (string) {

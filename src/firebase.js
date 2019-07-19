@@ -1,5 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/messaging'
+import 'firebase/firestore'
 
 var firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
