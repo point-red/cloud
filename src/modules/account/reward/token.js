@@ -22,7 +22,7 @@ const getters = {
 }
 
 const mutations = {
-  SET_POINTS (state, tokens) {
+  SET_TOKENS (state, tokens) {
     state.tokens = tokens
   },
   SET_LINKS (state, links) {
@@ -37,7 +37,7 @@ const actions = {
   async get ({ commit }, payload) {
     let { data, links, meta } = await api.get(url, { params: payload })
 
-    commit('SET_POINTS', data)
+    commit('SET_TOKENS', data)
     commit('SET_LINKS', links)
     commit('SET_META', meta)
   }
