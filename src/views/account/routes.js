@@ -5,6 +5,7 @@ import Notification from '@/views/account/Notification'
 import Account from './account/routes'
 import Project from './project/routes'
 import Billing from './billing/routes'
+import Reward from './reward/routes'
 
 export default [
   { path: '/account', name: 'account.menu', component: AccountMenu },
@@ -13,5 +14,6 @@ export default [
   { path: '/account/notification', name: 'notification', component: Notification },
   ...Account,
   ...Project,
-  ...Billing
+  ...Billing,
+  ...Reward
 ]

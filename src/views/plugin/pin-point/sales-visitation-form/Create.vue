@@ -607,11 +607,12 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.create(this.form)
-        .then((response) => {
+        .then(response => {
           this.isSaving = false
-          this.$notification.success('Pengisian form sukses')
+          this.$notification.success('Create success')
+          this.$store.dispatch('accountRewardPoint/get')
           this.$router.push('/plugin/pin-point/sales-visitation-form')
-        }, (error) => {
+        }).catch(error => {
           this.isSaving = false
           this.$notification.error(error)
           if (error.errors) {

@@ -66,29 +66,18 @@
                 src="/assets/img/avatars/avatar0.jpg"
                 alt="">
             </router-link>
-            <ul class="list-inline mt-10">
+            <ul class="list-inline mt-3 mb-0">
               <li class="list-inline-item">
                 <a
-                  :href="accountPage"
+                  :href="accountPage + '/profile'"
                   class="link-effect text-dual-primary-dark font-size-xs font-w600 text-uppercase">
                   {{ userName }}
                 </a>
               </li>
               <li class="list-inline-item">
-                <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
-                <a
-                  class="link-effect text-dual-primary-dark"
-                  href="javascript:void(0)"
-                  @click="toggleSidebarInverse">
-                  <i class="si si-drop"/>
-                </a>
-              </li>
-              <li class="list-inline-item">
-                <a
-                  href="javascript:void(0)"
-                  class="link-effect text-dual-primary-dark"
-                  @click="logout">
-                  <i class="si si-logout"/>
+                |
+                <a href="/account/reward" class="link-effect text-dual-primary-dark">
+                  {{ balance || 0 }} <i class="si si-disc"></i>
                 </a>
               </li>
             </ul>
@@ -126,16 +115,22 @@
             </li> -->
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
+                to="/account/reward"
+                active-class="active"
+                class="sidebar-mini-hide"><i class="si si-diamond"/> {{ $t("reward") | titlecase }}</router-link>
+            </li>
+            <li @click="toggleLeftSidebar('close-xs')">
+              <router-link
                 to="/account/referral"
                 active-class="active"
                 class="sidebar-mini-hide"><i class="si si-share"/> {{ $t("referral") | titlecase }}</router-link>
             </li>
-            <li @click="toggleLeftSidebar('close-xs')">
+            <!-- <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/email-subscription"
                 active-class="active"
                 class="sidebar-mini-hide"><i class="si si-envelope"/> {{ $t("email subscription") | titlecase }}</router-link>
-            </li>
+            </li> -->
           </ul>
         </div>
         <!-- END Side Navigation -->
@@ -147,7 +142,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   props: {
@@ -169,8 +164,12 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('accountRewardToken', [
+      'balance'
+    ])
+  },
   methods: {
-    ...mapActions('auth', ['logout']),
     ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSidebarInverse']),
     handleResize (event) {
       this.options.height = window.innerHeight + 'px'
@@ -196,5 +195,6 @@ export default {
 }
 #page-container.sidebar-inverse #sidebar .content-side-user {
   background-color: #424242;
+  height: auto;
 }
 </style>

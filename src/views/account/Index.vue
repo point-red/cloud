@@ -14,6 +14,10 @@
         link="/account/billing"
         icon="si si-docs"/>
       <p-box
+        name="Reward"
+        link="/account/reward"
+        icon="si si-diamond"/>
+      <p-box
         name="Referral"
         link="/account/referral"
         icon="si si-share"/>

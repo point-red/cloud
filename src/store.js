@@ -9,7 +9,7 @@ Vue.use(VueCookie)
 
 const store = new Vuex.Store({
   actions: {
-    reloadVuex ({ dispatch, commit, state }) {
+    async reloadVuex ({ dispatch, commit, state }) {
       const accessToken = Vue.cookie.get('TAT')
       if (!accessToken) {
         return
@@ -23,7 +23,8 @@ const store = new Vuex.Store({
       axios.defaults.headers.common['Authorization'] = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
       commit('auth/storeUser', {})
 
-      dispatch('auth/tryAutoLogin', {}, { root: true })
+      await dispatch('auth/tryAutoLogin', {}, { root: true })
+      await dispatch('accountRewardToken/get')
       commit('lang/updateLang', localStorage.getItem('locale') || 'en')
       state.uiHandler['openLeftSidebar'] = localStorage.getItem('openLeftSidebar') || true
       state.uiHandler['openSideOverlay'] = localStorage.getItem('openSideOverlay') || false

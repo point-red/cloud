@@ -68,32 +68,21 @@
                 src="/assets/img/avatars/avatar0.jpg"
                 alt="">
             </a>
-            <ul class="list-inline mt-10">
+            <ul class="list-inline mt-3 mb-0">
               <li class="list-inline-item">
                 <a
-                  :href="accountPage"
+                  :href="accountPage + '/profile'"
                   class="link-effect text-dual-primary-dark font-size-xs font-w600 text-uppercase">
                   {{ userName }}
                 </a>
               </li>
               <li class="list-inline-item">
-                <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
-                <a
-                  class="link-effect text-dual-primary-dark"
-                  href="javascript:void(0)"
-                  @click="toggleSidebarInverse">
-                  <i class="si si-drop"/>
+                |
+                <a :href="accountPage + '/reward'" class="link-effect text-dual-primary-dark">
+                  {{ balance || 0 }} <i class="si si-disc"></i>
                 </a>
               </li>
-              <li class="list-inline-item">
-                <a
-                  href="javascript:void(0)"
-                  class="link-effect text-dual-primary-dark"
-                  @click="logout">
-                  <i class="si si-logout"/>
-                </a>
-              </li>
-            </ul>
+            </ul>            
           </div>
           <!-- END Visible only in normal mode -->
         </div>
@@ -379,7 +368,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   props: {
@@ -400,6 +389,11 @@ export default {
         height: window.innerHeight
       }
     }
+  },
+  computed: {
+    ...mapGetters('accountRewardToken', [
+      'balance'
+    ])
   },
   methods: {
     ...mapActions('auth', ['logout']),
@@ -422,5 +416,9 @@ export default {
 <style scoped>
 #sidebar-scroll {
   overflow-y: auto
+}
+#page-container.sidebar-inverse #sidebar .content-side-user {
+  background-color: #424242;
+  height: auto;
 }
 </style>
