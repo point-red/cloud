@@ -1,7 +1,8 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Ratio Report</span>
+      <breadcrumb-accounting/>
+      <span class="breadcrumb-item active">{{ $t('ratio report') | titlecase }}</span>
     </breadcrumb>
 
     <div class="row">
@@ -150,7 +151,8 @@
 </template>
 
 <script>
-import Breadcrumb from '@/views/accounting/Breadcrumb'
+import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import LineChart from '@/components/point-chart/LineChart'
 import { mapActions } from 'vuex'
 
@@ -169,6 +171,7 @@ export default {
   },
   components: {
     Breadcrumb,
+    BreadcrumbAccounting,
     LineChart
   },
   mounted () {

@@ -1,6 +1,7 @@
 <template>
   <div>
     <breadcrumb>
+      <breadcrumb-accounting/>
       <span class="breadcrumb-item active">{{ $t('balance sheet') | titlecase }}</span>
     </breadcrumb>
 
@@ -133,7 +134,8 @@
 </template>
 
 <script>
-import Breadcrumb from '@/views/accounting/Breadcrumb'
+import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -158,7 +160,8 @@ export default {
     }
   },
   components: {
-    Breadcrumb
+    Breadcrumb,
+    BreadcrumbAccounting
   },
   computed: {
     ...mapGetters('accountingBalanceSheet', ['chartOfAccounts'])

@@ -1,9 +1,10 @@
 <template>
   <div>
     <breadcrumb>
-      <router-link
-        to="/accounting/cut-off"
-        class="breadcrumb-item">Cut Off</router-link>
+      <breadcrumb-accounting/>
+      <span class="breadcrumb-item active">
+        <router-link to="/accounting/cut-off" class="breadcrumb-item">{{ $t('cut off') | titlecase }}</router-link>
+      </span>
       <span class="breadcrumb-item active">{{ cutOff.number }}</span>
     </breadcrumb>
 
@@ -67,7 +68,8 @@
 
 <script>
 import TabMenu from './TabMenu'
-import Breadcrumb from '@/views/accounting/Breadcrumb'
+import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -80,6 +82,7 @@ export default {
   },
   components: {
     Breadcrumb,
+    BreadcrumbAccounting,
     TabMenu
   },
   computed: {

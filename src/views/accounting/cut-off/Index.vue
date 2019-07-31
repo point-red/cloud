@@ -1,7 +1,8 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Cut Off</span>
+      <breadcrumb-accounting/>
+      <span class="breadcrumb-item active">{{ $t('cut off') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
@@ -38,7 +39,8 @@
 
 <script>
 import TabMenu from './TabMenu'
-import Breadcrumb from '@/views/accounting/Breadcrumb'
+import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -49,6 +51,7 @@ export default {
   },
   components: {
     Breadcrumb,
+    BreadcrumbAccounting,
     TabMenu
   },
   computed: {
