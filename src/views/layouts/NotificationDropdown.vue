@@ -2,7 +2,7 @@
   <div class="btn-group" role="group" v-click-outside="close">
     <button type="button" class="btn btn-rounded btn-dual-secondary" @click="toggle">
       <i class="fa fa-flag mr-5"></i>
-      <span class="badge badge-danger badge-pill">1</span>
+      <!-- <span class="badge badge-danger badge-pill">1</span> -->
     </button>
     <div class="dropdown-menu dropdown-menu-right min-width-300"
       :class="{'show': show}">
@@ -33,6 +33,7 @@
 <script>
 import firebase from 'firebase/app'
 import 'firebase/firestore'
+import { mapGetters } from 'vuex'
 
 export default {
   data () {
@@ -40,6 +41,9 @@ export default {
       show: false,
       notifications: []
     }
+  },
+  computed: {
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
     toggle () {
@@ -49,22 +53,30 @@ export default {
       this.show = false
     }
   },
+  watch: {
+    authUser () {
+      var self = this
+      if (this.authUser) {
+        firebase.firestore().collection('notifications')
+        .orderBy('createdAt', 'desc')
+        .where('userId', '==', this.authUser.id)
+        .limit(4)
+        .onSnapshot(function(querySnapshot) {
+          self.notifications = []
+          querySnapshot.forEach(function(doc) {
+            const data = {
+              'type': 'info',
+              'message': doc.data().message,
+              'createdAt': doc.data().createdAt
+            }
+            self.notifications.push(data)
+          })
+        }) 
+      }      
+    }
+  },
   created () {
-    var self = this
-    firebase.firestore().collection('notifications')
-      .orderBy('createdAt', 'desc')
-      .limit(4)
-      .onSnapshot(function(querySnapshot) {
-        self.notifications = []
-        querySnapshot.forEach(function(doc) {
-          const data = {
-            'type': 'info',
-            'message': doc.data().message,
-            'createdAt': doc.data().createdAt
-          }
-          self.notifications.push(data)
-        })
-      })
+    
   }
 }
 </script>
