@@ -42,9 +42,9 @@
       <div class="form-group text-center">
         <button
           type="submit"
-          :disabled="loadingSaveButton"
+          :disabled="isSaving"
           class="btn btn-sm btn-hero btn-primary">
-          <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Reset Password
+          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Reset Password
         </button>
         <div class="mt-30">
           Remember your password ?
@@ -67,7 +67,7 @@ import { mapActions } from 'vuex'
 export default {
   data () {
     return {
-      loadingSaveButton: false,
+      isSaving: false,
       form: new Form({
         token: this.$route.query.token,
         email: '',
@@ -79,21 +79,19 @@ export default {
   methods: {
     ...mapActions('auth', ['resetPassword']),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.resetPassword(this.form)
-        .then(
-          (response) => {
-            this.loadingSaveButton = false
-            this.$notification.success('Update password success')
-            this.form.reset()
-            this.$router.push('/auth/signin')
-          },
-          (error) => {
-            this.loadingSaveButton = false
-            this.$notification.error('Update password failed', error.message)
-            this.form.errors.record(error.errors)
-          }
-        )
+        .then(response => {
+          this.isSaving = false
+          this.$notification.success('Update password success')
+          this.form.reset()
+          this.$router.push('/auth/signin')
+        }).catch(error => {
+          this.isSaving = false
+          this.$notification.error('Update password failed', error.message)
+          this.form.errors.record(error.errors)
+        }
+      )
     }
   }
 }

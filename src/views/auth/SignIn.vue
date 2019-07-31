@@ -77,10 +77,10 @@ export default {
   created () {
     if (this.$cookie.get('TAT') !== null) {
       this.showLoadingBlock()
-      this.tryAutoLogin().then((response) => {
+      this.tryAutoLogin().then(response => {
         this.dismissLoadingBlock()
         this.$router.replace('/')
-      }, (error) => {
+      }).catch(error => {
         this.dismissLoadingBlock()
         console.log(error.message)
       })
@@ -98,7 +98,6 @@ export default {
         console.log('Unable to get permission to notify.', error)
       })
     }
-    
   },
   methods: {
     ...mapActions('auth', ['tryAutoLogin']),
