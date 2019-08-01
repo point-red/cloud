@@ -53,6 +53,7 @@ export default {
       mutableId: this.value,
       mutableLabel: this.label,
       mutableClassReference: this.classReference,
+      mutableType: this.type,
       isSaving: false,
       isLoading: false
     }
@@ -72,6 +73,10 @@ export default {
       type: String
     },
     classReference: {
+      type: String,
+      required: true
+    },
+    type: {
       type: String
     }
   },
@@ -84,6 +89,9 @@ export default {
     },
     classReference () {
       this.mutableClassReference = this.classReference
+    },
+    type () {
+      this.mutableType = this.type
     }
   },
   created () {
@@ -95,7 +103,8 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          class_reference: 'Customer',
+          class_reference: this.mutableClassReference,
+          type: this.mutableType,
           sort_by: 'name',
           limit: 50,
           filter_like: {
@@ -124,7 +133,8 @@ export default {
       this.isSaving = true
       this.create({
         name: this.searchText,
-        class_reference: this.mutableClassReference
+        class_reference: this.mutableClassReference,
+        type: this.type
       }).then(response => {
         this.search()
         this.isSaving = false

@@ -11,6 +11,12 @@
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('create') + ' ' + $t('customer')" :header="true">
         <p-block-inner>
+          <p-form-row id="group" name="group" :label="$t('group')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-group id="group" v-model="form.group_id" class-reference="Customer" type="customer"/>
+            </div>
+          </p-form-row>
+
           <p-form-row
             id="name"
             v-model="form.name"
@@ -46,24 +52,6 @@
             name="phone"
             :errors="form.errors.get('phone')"
             @errors="form.errors.set('phone', null)"/>
-
-          <p-form-row
-            id="phone"
-            v-model="form.phones[0].number"
-            :disabled="isSaving"
-            :label="''"
-            name="phone"
-            :errors="form.errors.get('phone')"
-            @errors="form.errors.set('phone', null)">
-            <div slot="body" class="col-lg-9">
-              <p-form-check-box
-                id="subscibe"
-                name="subscibe"
-                @click.native="togglePriority"
-                :checked="form.group.name == 'priority'"
-                :description="'Priority Customer'"/>
-            </div>
-          </p-form-row>
 
           <hr/>
 
