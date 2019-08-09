@@ -1203,8 +1203,8 @@ export default {
       this.getSalaryAchievement({
         employeeId: this.id,
         params: {
-          startDate: this.serverDateTime(this.$moment(this.form.date.start)),
-          endDate: this.serverDateTime(this.$moment(this.form.date.end))
+          startDate: this.$moment(this.form.date.start).format('YYYY-MM-DD 00:00:00'),
+          endDate: this.$moment(this.form.date.end).format('YYYY-MM-DD 23:59:59')
         }
       }).then(
         (response) => {
