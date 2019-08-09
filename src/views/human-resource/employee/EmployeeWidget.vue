@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-sm-6 col-xl-3">
+    <div class="col-sm-6 col-xl-3" v-if="($permission.has('create employee assessment') && isShow(employee.scorers)) || $permission.has('read employee assessment')">
       <div class="block block-themed text-center">
         <div class="block-content block-content-full block-content-sm bg-gray-lighter">
           <div class="font-w600">KPI</div>
@@ -8,7 +8,7 @@
         </div>
         <div class="block-content">
           <div class="row items-push">
-            <div class="col-6">
+            <div class="col-6" v-if="($permission.has('create employee assessment') && isShow(employee.scorers))">
               <router-link
                 :to="'/human-resource/employee/' + id + '/assessment/create'"
                 exact
@@ -17,7 +17,7 @@
                 <div class="font-size-sm text-muted">Assessment</div>
               </router-link>
             </div>
-            <div class="col-6">
+            <div class="col-6" v-if="$permission.has('read employee assessment')">
               <router-link
                 :to="'/human-resource/employee/' + id + '/assessment'"
                 exact
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div class="col-sm-6 col-xl-3">
+    <div class="col-sm-6 col-xl-3" v-if="$permission.has('create employee salary') || $permission.has('read employee salary')">
       <div class="block block-themed text-center">
         <div class="block-content block-content-full block-content-sm bg-gray-lighter">
           <div class="font-w600">SALARY</div>
@@ -39,7 +39,7 @@
         </div>
         <div class="block-content">
           <div class="row items-push">
-            <div class="col-6">
+            <div class="col-6" v-if="$permission.has('create employee salary')">
               <router-link
                 :to="'/human-resource/employee/' + id + '/salary/create'"
                 exact
@@ -48,7 +48,7 @@
                 <div class="font-size-sm text-muted">New</div>
               </router-link>
             </div>
-            <div class="col-6">
+            <div class="col-6" v-if="$permission.has('read employee salary')">
               <router-link
                 :to="'/human-resource/employee/' + id + '/salary'"
                 exact
@@ -65,11 +65,24 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   props: {
     id: {
       type: [Number, String],
       required: true
+    }
+  },
+  computed: {
+    ...mapGetters('auth', ['authUser']),
+    ...mapGetters('humanResourceEmployee', ['employee'])
+  },
+  methods: {
+    isShow (scorers) {
+      return scorers.some(element => {
+        return element.id == this.authUser.id
+      })
     }
   }
 }
