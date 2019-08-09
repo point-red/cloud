@@ -1358,45 +1358,45 @@ export default {
       this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4 || 0) - Number(this.total_amount_week_4 || 0)
       this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5 || 0) - Number(this.total_amount_week_5 || 0)
 
-      var day_average_divisor = 0
-      var total_minimum_component_score = 0
-      var total_additional_component_score = 0
-      var total_final_score = 0
+      var dayAverageDivisor = 0
+      var totalMinimumComponentScore = 0
+      var totalAdditionalComponentScore = 0
+      var totalFinalScore = 0
 
       if (this.form.active_days_week_1 !== 0) {
-        day_average_divisor++
-        total_minimum_component_score += this.form.salary_assessment.total.week1
-        total_additional_component_score += this.form.salary_achievement.total.week1
-        total_final_score += this.salary_final_score.week1
+        dayAverageDivisor++
+        totalMinimumComponentScore += this.form.salary_assessment.total.week1
+        totalAdditionalComponentScore += this.form.salary_achievement.total.week1
+        totalFinalScore += this.salary_final_score.week1
       }
       if (this.form.active_days_week_2 !== 0) {
-        day_average_divisor++
-        total_minimum_component_score += this.form.salary_assessment.total.week2
-        total_additional_component_score += this.form.salary_achievement.total.week2
-        total_final_score += this.salary_final_score.week2
+        dayAverageDivisor++
+        totalMinimumComponentScore += this.form.salary_assessment.total.week2
+        totalAdditionalComponentScore += this.form.salary_achievement.total.week2
+        totalFinalScore += this.salary_final_score.week2
       }
       if (this.form.active_days_week_3 !== 0) {
-        day_average_divisor++
-        total_minimum_component_score += this.form.salary_assessment.total.week3
-        total_additional_component_score += this.form.salary_achievement.total.week3
-        total_final_score += this.salary_final_score.week3
+        dayAverageDivisor++
+        totalMinimumComponentScore += this.form.salary_assessment.total.week3
+        totalAdditionalComponentScore += this.form.salary_achievement.total.week3
+        totalFinalScore += this.salary_final_score.week3
       }
       if (this.form.active_days_week_4 !== 0) {
-        day_average_divisor++
-        total_minimum_component_score += this.form.salary_assessment.total.week4
-        total_additional_component_score += this.form.salary_achievement.total.week4
-        total_final_score += this.salary_final_score.week4
+        dayAverageDivisor++
+        totalMinimumComponentScore += this.form.salary_assessment.total.week4
+        totalAdditionalComponentScore += this.form.salary_achievement.total.week4
+        totalFinalScore += this.salary_final_score.week4
       }
       if (this.form.active_days_week_5 !== 0) {
-        day_average_divisor++
-        total_minimum_component_score += this.form.salary_assessment.total.week5
-        total_additional_component_score += this.form.salary_achievement.total.week5
-        total_final_score += this.salary_final_score.week5
+        dayAverageDivisor++
+        totalMinimumComponentScore += this.form.salary_assessment.total.week5
+        totalAdditionalComponentScore += this.form.salary_achievement.total.week5
+        totalFinalScore += this.salary_final_score.week5
       }
 
-      this.average_minimum_component_score = day_average_divisor != 0 ? total_minimum_component_score / day_average_divisor : 0
-      this.average_additional_component_score = day_average_divisor != 0 ? total_additional_component_score / day_average_divisor : 0
-      this.average_final_score = day_average_divisor != 0 ? total_final_score / day_average_divisor : 0
+      this.average_minimum_component_score = dayAverageDivisor != 0 ? totalMinimumComponentScore / dayAverageDivisor : 0
+      this.average_additional_component_score = dayAverageDivisor != 0 ? totalAdditionalComponentScore / dayAverageDivisor : 0
+      this.average_final_score = dayAverageDivisor != 0 ? totalFinalScore / dayAverageDivisor : 0
 
       this.total_payment = Number(this.form.payment_from_marketing_week_1 || 0) + Number(this.form.payment_from_sales_week_1 || 0) + Number(this.form.payment_from_spg_week_1 || 0) + Number(this.form.cash_payment_week_1 || 0) + Number(this.form.payment_from_marketing_week_2 || 0) + Number(this.form.payment_from_sales_week_2 || 0) + Number(this.form.payment_from_spg_week_2 || 0) + Number(this.form.cash_payment_week_2 || 0) + Number(this.form.payment_from_marketing_week_3 || 0) + Number(this.form.payment_from_sales_week_3 || 0) + Number(this.form.payment_from_spg_week_3 || 0) + Number(this.form.cash_payment_week_3 || 0) + Number(this.form.payment_from_marketing_week_4 || 0) + Number(this.form.payment_from_sales_week_4 || 0) + Number(this.form.payment_from_spg_week_4 || 0) + Number(this.form.cash_payment_week_4 || 0) + Number(this.form.payment_from_marketing_week_5 || 0) + Number(this.form.payment_from_sales_week_5 || 0) + Number(this.form.payment_from_spg_week_5 || 0) + Number(this.form.cash_payment_week_5 || 0)
     }

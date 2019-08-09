@@ -10,7 +10,7 @@
         class="breadcrumb-item">{{ employee.name | titlecase }}</router-link>
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
-    
+
     <employee-widget :id="id"></employee-widget>
 
     <tab-menu></tab-menu>
@@ -769,7 +769,7 @@ export default {
     removeEmailCompany (index) {
       this.form.company_emails.splice(index, 1)
     },
-    onSubmit () { 
+    onSubmit () {
       this.isSaving = true
       this.updateEmployee(this.form)
         .then(response => {

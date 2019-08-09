@@ -82,7 +82,7 @@
                   {{ balance || 0 }} <i class="si si-disc"></i>
                 </a>
               </li>
-            </ul>            
+            </ul>
           </div>
           <!-- END Visible only in normal mode -->
         </div>
