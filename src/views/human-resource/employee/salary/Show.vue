@@ -331,7 +331,7 @@
               <td><span class="">Rp {{ salary.cash_payment_week3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ salary.cash_payment_week4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ salary.cash_payment_week5 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ total_payment | numberFormat }}</span></td>
+              <td><span class="font-w700">Rp {{ total_payment | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -342,7 +342,7 @@
               <td><span class="">Rp {{ settlement_difference_minus_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ settlement_difference_minus_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ settlement_difference_minus_amount_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="font-w700">Rp {{ total_settlement_difference_minus_amount | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -353,7 +353,7 @@
               <td><span class="">Rp {{ company_profit_difference_minus_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_difference_minus_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_difference_minus_amount_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="font-w700">Rp {{ total_company_profit_difference_minus_amount | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -364,7 +364,7 @@
               <td><span class="">Rp {{ salary.weekly_sales_week3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ salary.weekly_sales_week4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ salary.weekly_sales_week5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="font-w700">Rp {{ total_weekly_sales | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -478,7 +478,10 @@ export default {
       average_minimum_component_score: 0,
       average_additional_component_score: 0,
       average_final_score: 0,
-      total_payment: 0
+      total_payment: 0,
+      total_settlement_difference_minus_amount: 0,
+      total_company_profit_difference_minus_amount: 0,
+      total_weekly_sales: 0
     }
   },
   computed: {
@@ -636,6 +639,12 @@ export default {
       this.average_final_score = dayAverageDivisor != 0 ? totalFinalScore / dayAverageDivisor : 0
 
       this.total_payment = Number(this.salary.payment_from_marketing_week1 || 0) + Number(this.salary.payment_from_sales_week1 || 0) + Number(this.salary.payment_from_spg_week1 || 0) + Number(this.salary.cash_payment_week1 || 0) + Number(this.salary.payment_from_marketing_week2 || 0) + Number(this.salary.payment_from_sales_week2 || 0) + Number(this.salary.payment_from_spg_week2 || 0) + Number(this.salary.cash_payment_week2 || 0) + Number(this.salary.payment_from_marketing_week3 || 0) + Number(this.salary.payment_from_sales_week3 || 0) + Number(this.salary.payment_from_spg_week3 || 0) + Number(this.salary.cash_payment_week3 || 0) + Number(this.salary.payment_from_marketing_week4 || 0) + Number(this.salary.payment_from_sales_week4 || 0) + Number(this.salary.payment_from_spg_week4 || 0) + Number(this.salary.cash_payment_week4 || 0) + Number(this.salary.payment_from_marketing_week5 || 0) + Number(this.salary.payment_from_sales_week5 || 0) + Number(this.salary.payment_from_spg_week5 || 0) + Number(this.salary.cash_payment_week5 || 0)
+
+      this.total_settlement_difference_minus_amount = this.settlement_difference_minus_amount_week_1 + this.settlement_difference_minus_amount_week_2 + this.settlement_difference_minus_amount_week_3 + this.settlement_difference_minus_amount_week_4 + this.settlement_difference_minus_amount_week_5
+
+      this.total_company_profit_difference_minus_amount = this.company_profit_difference_minus_amount_week_1 + this.company_profit_difference_minus_amount_week_2 + this.company_profit_difference_minus_amount_week_3 + this.company_profit_difference_minus_amount_week_4 + this.company_profit_difference_minus_amount_week_5
+
+      this.total_weekly_sales = this.salary.weekly_sales_week1 + this.salary.weekly_sales_week2 + this.salary.weekly_sales_week3 + this.salary.weekly_sales_week4 + this.salary.weekly_sales_week5
     }
   }
 }

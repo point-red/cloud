@@ -813,7 +813,7 @@
               <td><span class="">Rp {{ settlement_difference_minus_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ settlement_difference_minus_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ settlement_difference_minus_amount_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="font-w700">Rp {{ total_settlement_difference_minus_amount | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -824,7 +824,7 @@
               <td><span class="">Rp {{ company_profit_difference_minus_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_difference_minus_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_difference_minus_amount_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="font-w700">Rp {{ total_company_profit_difference_minus_amount | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -835,6 +835,7 @@
               <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week5 | numberFormat }}</span></td>
+              <td><span class="font-w700">Rp {{ total_weekly_sales | numberFormat }}</span></td>              
             </tr>
 
             <tr slot="p-body">
@@ -1079,7 +1080,10 @@ export default {
       average_minimum_component_score: 0,
       average_additional_component_score: 0,
       average_final_score: 0,
-      total_payment: 0
+      total_payment: 0,
+      total_settlement_difference_minus_amount: 0,
+      total_company_profit_difference_minus_amount: 0,
+      total_weekly_sales: 0
     }
   },
   props: {
@@ -1399,6 +1403,12 @@ export default {
       this.average_final_score = dayAverageDivisor != 0 ? totalFinalScore / dayAverageDivisor : 0
 
       this.total_payment = Number(this.form.payment_from_marketing_week_1 || 0) + Number(this.form.payment_from_sales_week_1 || 0) + Number(this.form.payment_from_spg_week_1 || 0) + Number(this.form.cash_payment_week_1 || 0) + Number(this.form.payment_from_marketing_week_2 || 0) + Number(this.form.payment_from_sales_week_2 || 0) + Number(this.form.payment_from_spg_week_2 || 0) + Number(this.form.cash_payment_week_2 || 0) + Number(this.form.payment_from_marketing_week_3 || 0) + Number(this.form.payment_from_sales_week_3 || 0) + Number(this.form.payment_from_spg_week_3 || 0) + Number(this.form.cash_payment_week_3 || 0) + Number(this.form.payment_from_marketing_week_4 || 0) + Number(this.form.payment_from_sales_week_4 || 0) + Number(this.form.payment_from_spg_week_4 || 0) + Number(this.form.cash_payment_week_4 || 0) + Number(this.form.payment_from_marketing_week_5 || 0) + Number(this.form.payment_from_sales_week_5 || 0) + Number(this.form.payment_from_spg_week_5 || 0) + Number(this.form.cash_payment_week_5 || 0)
+
+      this.total_settlement_difference_minus_amount = this.settlement_difference_minus_amount_week_1 + this.settlement_difference_minus_amount_week_2 + this.settlement_difference_minus_amount_week_3 + this.settlement_difference_minus_amount_week_4 + this.settlement_difference_minus_amount_week_5
+
+      this.total_company_profit_difference_minus_amount = this.company_profit_difference_minus_amount_week_1 + this.company_profit_difference_minus_amount_week_2 + this.company_profit_difference_minus_amount_week_3 + this.company_profit_difference_minus_amount_week_4 + this.company_profit_difference_minus_amount_week_5
+
+      this.total_weekly_sales = this.form.salary_achievement.weekly_sales.week1 + this.form.salary_achievement.weekly_sales.week2 + this.form.salary_achievement.weekly_sales.week3 + this.form.salary_achievement.weekly_sales.week4 + this.form.salary_achievement.weekly_sales.week5
     }
   }
 }
