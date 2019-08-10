@@ -32,7 +32,7 @@
               </p-form-row>
               <p-form-row
                 id="job-location"
-                :label="$t('job location')">
+                :label="$t('location')">
                 <div slot="body" class="col-lg-9 col-form-label">
                   {{ form.salary.job_location }}
                 </div>
@@ -375,6 +375,27 @@
               <td class="font-size-h6 font-w700"></td>
               <td class="font-size-h6 font-w700"></td>
               <td class="font-w700"><span class="">Rp {{ total_amount_received | numberFormat }}</span></td>
+              <td class="font-w700"><span class=""></span></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td></td>
+              <td class="font-size-h6 font-w700">{{ $t('maximum amount receivable') | titlecase }}</td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td>
+                <span class="">
+                  <p-form-number
+                    v-model="form.salary.maximum_salary_amount"
+                    :disabled="loadingSaveButton"
+                    :is-text-right="false"
+                    @input="calculate"
+                    :errors="form.errors.get('maximum-salary-amount')"
+                    @errors="form.errors.set('maximum-salary-amount', null)"/>
+                </span>
+              </td>
               <td class="font-w700"><span class=""></span></td>
             </tr>
 

@@ -32,7 +32,7 @@
               </p-form-row>
               <p-form-row
                 id="job-location"
-                :label="$t('job location')">
+                :label="$t('location')">
                 <div slot="body" class="col-lg-9 col-form-label">
                   {{ form.job_location }}
                 </div>
@@ -491,6 +491,27 @@
 
             <tr slot="p-body">
               <td></td>
+              <td class="font-size-h6 font-w700">{{ $t('maximum amount receivable') | titlecase }}</td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td>
+                <span class="">
+                  <p-form-number
+                    v-model="form.maximum_salary_amount"
+                    :disabled="loadingSaveButton"
+                    :is-text-right="false"
+                    @input="calculate"
+                    :errors="form.errors.get('maximum-salary-amount')"
+                    @errors="form.errors.set('maximum-salary-amount', null)"/>
+                </span>
+              </td>
+              <td class="font-w700"><span class=""></span></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td></td>
               <td>{{ $t('company profit') | titlecase }}</td>
               <td><span class="">Rp {{ company_profit_week_1 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_week_2 | numberFormat }}</span></td>
@@ -835,7 +856,7 @@
               <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week5 | numberFormat }}</span></td>
-              <td><span class="font-w700">Rp {{ total_weekly_sales | numberFormat }}</span></td>              
+              <td><span class="font-w700">Rp {{ total_weekly_sales | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -1009,7 +1030,8 @@ export default {
         wa_daily_report_week_2: 0,
         wa_daily_report_week_3: 0,
         wa_daily_report_week_4: 0,
-        wa_daily_report_week_5: 0
+        wa_daily_report_week_5: 0,
+        maximum_salary_amount: 0
       }),
       title: 'Salary',
       base_salary_week_1: 0,
