@@ -253,5 +253,7 @@
 	"company profit difference minus amount": "selisih profit perushaaan minus pembayaran nilai",
 	"salary graph": "grafik gaji",
 	"weekly sales": "penjualan per minggu",
-	"wa daily report": "nilai pelaporan wa harian"
+	"wa daily report": "nilai pelaporan wa harian",
+	"amount received difference": "selisih nilai yang diterima",
+	"if kpi 100%": "jika kpi 100%"
 }

@@ -507,6 +507,17 @@
                     @errors="form.errors.set('maximum-salary-amount', null)"/>
                 </span>
               </td>
+              <td class="font-size-h6 font-w700">{{ $t('if kpi 100%') | titlecase }}</td>
+            </tr>
+
+            <tr slot="p-body">
+              <td></td>
+              <td class="font-size-h6 font-w700">{{ $t('amount received difference') | titlecase }}</td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700">Rp {{ amount_received_difference | numberFormat }}</td>
               <td class="font-w700"><span class=""></span></td>
             </tr>
 
@@ -1105,7 +1116,8 @@ export default {
       total_payment: 0,
       total_settlement_difference_minus_amount: 0,
       total_company_profit_difference_minus_amount: 0,
-      total_weekly_sales: 0
+      total_weekly_sales: 0,
+      amount_received_difference: 0
     }
   },
   props: {
@@ -1431,6 +1443,8 @@ export default {
       this.total_company_profit_difference_minus_amount = this.company_profit_difference_minus_amount_week_1 + this.company_profit_difference_minus_amount_week_2 + this.company_profit_difference_minus_amount_week_3 + this.company_profit_difference_minus_amount_week_4 + this.company_profit_difference_minus_amount_week_5
 
       this.total_weekly_sales = this.form.salary_achievement.weekly_sales.week1 + this.form.salary_achievement.weekly_sales.week2 + this.form.salary_achievement.weekly_sales.week3 + this.form.salary_achievement.weekly_sales.week4 + this.form.salary_achievement.weekly_sales.week5
+
+      this.amount_received_difference = this.form.maximum_salary_amount - this.total_amount_received
     }
   }
 }
