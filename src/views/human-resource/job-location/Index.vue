@@ -23,19 +23,20 @@
               <th width="33%">{{ $t('base salary') }}</th>
               <th width="33%">{{ $t('multiplier kpi') }}</th>
             </tr>
-            <tr
-              v-for="jobLocation in jobLocations"
-              :key="jobLocation.id"
-              v-if="$permission.has('read employee')"
-              slot="p-body">
-              <td>
-                <router-link :to="{ name: 'JobLocationShow', params: { id: jobLocation.id }}">
-                  {{ jobLocation.name }}
-                </router-link>
-              </td>
-              <td>{{ jobLocation.base_salary | numberFormat }}</td>
-              <td>{{ jobLocation.multiplier_kpi | numberFormat }}</td>
-            </tr>
+            <template v-if="$permission.has('read employee')">
+              <tr
+                v-for="jobLocation in jobLocations"
+                :key="jobLocation.id"
+                slot="p-body">
+                <td>
+                  <router-link :to="{ name: 'JobLocationShow', params: { id: jobLocation.id }}">
+                    {{ jobLocation.name }}
+                  </router-link>
+                </td>
+                <td>{{ jobLocation.base_salary | numberFormat }}</td>
+                <td>{{ jobLocation.multiplier_kpi | numberFormat }}</td>
+              </tr>
+            </template>
           </point-table>
         </p-block-inner>
         <p-pagination

@@ -18,7 +18,7 @@
         column="col-sm-12">
 
         <div class="row">
-          <div class="col-sm-6">            
+          <div class="col-sm-6">
             <p-form-row
               id="name"
               name="name"
@@ -144,7 +144,7 @@
                   </tr>
                 </p-table>
               </div>
-            </p-form-row>            
+            </p-form-row>
           </div>
           <div class="col-sm-6">
             <p-form-row
@@ -625,7 +625,7 @@ export default {
         console.log(response.data)
       }, (error) => {
         console.log(JSON.stringify(error))
-    })
+      })
   },
   methods: {
     ...mapActions('humanResourceEmployeeGroup', {

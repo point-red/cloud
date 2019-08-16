@@ -29,7 +29,7 @@
               </p-form-row>
               <p-form-row
                 id="job-location"
-                :label="$t('job location')">
+                :label="$t('location')">
                 <div slot="body" class="col-lg-9 col-form-label">
                   {{ salary.job_location }}
                 </div>
@@ -116,7 +116,7 @@
               <td class="font-w700"><span class="">{{ additionalData.total_assessments.week3 | numberFormat }}%</span></td>
               <td class="font-w700"><span class="">{{ additionalData.total_assessments.week4 | numberFormat }}%</span></td>
               <td class="font-w700"><span class="">{{ additionalData.total_assessments.week5 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ additionalData.total_assessments.weight | numberFormat }}%</span></td>
+              <td class="font-w700"><span class="">{{ average_minimum_component_score | numberFormat }}%</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -166,7 +166,7 @@
               <td class="font-w700"><span class="">{{ additionalData.total_achievements.week3 | numberFormat }}%</span></td>
               <td class="font-w700"><span class="">{{ additionalData.total_achievements.week4 | numberFormat }}%</span></td>
               <td class="font-w700"><span class="">{{ additionalData.total_achievements.week5 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ additionalData.total_achievements.weight | numberFormat }}%</span></td>
+              <td class="font-w700"><span class="">{{ average_additional_component_score | numberFormat }}%</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -177,7 +177,7 @@
               <td class="font-w700"><span class="">{{ salary_final_score.week3 | numberFormat }}%</span></td>
               <td class="font-w700"><span class="">{{ salary_final_score.week4 | numberFormat }}%</span></td>
               <td class="font-w700"><span class="">{{ salary_final_score.week5 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class=""></span></td>
+              <td class="font-w700"><span class="">{{ average_final_score | numberFormat }}%</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -238,11 +238,11 @@
             <tr slot="p-body">
               <td></td>
               <td>{{ $t('receivable cut > 60 days') | titlecase }}</td>
-              <td>Rp {{ salary.receiveable_cut_60_days_week1 | numberFormat }}</td>
-              <td>Rp {{ salary.receiveable_cut_60_days_week2 | numberFormat }}</td>
-              <td>Rp {{ salary.receiveable_cut_60_days_week3 | numberFormat }}</td>
-              <td>Rp {{ salary.receiveable_cut_60_days_week4 | numberFormat }}</td>
-              <td>Rp {{ salary.receiveable_cut_60_days_week5 | numberFormat }}</td>
+              <td>Rp {{ salary.receivable_cut_60_days_week1 | numberFormat }}</td>
+              <td>Rp {{ salary.receivable_cut_60_days_week2 | numberFormat }}</td>
+              <td>Rp {{ salary.receivable_cut_60_days_week3 | numberFormat }}</td>
+              <td>Rp {{ salary.receivable_cut_60_days_week4 | numberFormat }}</td>
+              <td>Rp {{ salary.receivable_cut_60_days_week5 | numberFormat }}</td>
               <td><span class=""></span></td>
             </tr>
 
@@ -265,6 +265,28 @@
               <td class="font-size-h6 font-w700"></td>
               <td class="font-size-h6 font-w700"></td>
               <td class="font-w700"><span class="">Rp {{ total_amount_received | numberFormat }}</span></td>
+              <td class="font-w700"><span class=""></span></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td></td>
+              <td class="font-size-h6 font-w700">{{ $t('maximum amount receivable') | titlecase }}</td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-w700"><span class="">Rp {{ salary.maximum_salary_amount | numberFormat }}</span></td>
+              <td class="font-size-h6 font-w700">{{ $t('if kpi 100%') | titlecase }}</td>
+            </tr>
+
+            <tr slot="p-body">
+              <td></td>
+              <td class="font-size-h6 font-w700">{{ $t('amount received difference') | titlecase }}</td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700">Rp {{ amount_received_difference | numberFormat }}</td>
               <td class="font-w700"><span class=""></span></td>
             </tr>
 
@@ -331,7 +353,7 @@
               <td><span class="">Rp {{ salary.cash_payment_week3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ salary.cash_payment_week4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ salary.cash_payment_week5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="font-w700">Rp {{ total_payment | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -342,7 +364,7 @@
               <td><span class="">Rp {{ settlement_difference_minus_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ settlement_difference_minus_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ settlement_difference_minus_amount_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="font-w700">Rp {{ total_settlement_difference_minus_amount | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -353,6 +375,28 @@
               <td><span class="">Rp {{ company_profit_difference_minus_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_difference_minus_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_difference_minus_amount_week_5 | numberFormat }}</span></td>
+              <td><span class="font-w700">Rp {{ total_company_profit_difference_minus_amount | numberFormat }}</span></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td></td>
+              <td>{{ $t('weekly sales') | titlecase }}</td>
+              <td><span class="">Rp {{ salary.weekly_sales_week1 | numberFormat }}</span></td>
+              <td><span class="">Rp {{ salary.weekly_sales_week2 | numberFormat }}</span></td>
+              <td><span class="">Rp {{ salary.weekly_sales_week3 | numberFormat }}</span></td>
+              <td><span class="">Rp {{ salary.weekly_sales_week4 | numberFormat }}</span></td>
+              <td><span class="">Rp {{ salary.weekly_sales_week5 | numberFormat }}</span></td>
+              <td><span class="font-w700">Rp {{ total_weekly_sales | numberFormat }}</span></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td></td>
+              <td>{{ $t('wa daily report') | titlecase }}</td>
+              <td><span class="">{{ salary.wa_daily_report_week1 | numberFormat }}%</span></td>
+              <td><span class="">{{ salary.wa_daily_report_week2 | numberFormat }}%</span></td>
+              <td><span class="">{{ salary.wa_daily_report_week3 | numberFormat }}%</span></td>
+              <td><span class="">{{ salary.wa_daily_report_week4 | numberFormat }}%</span></td>
+              <td><span class="">{{ salary.wa_daily_report_week5 | numberFormat }}%</span></td>
               <td><span class=""></span></td>
             </tr>
           </p-table>
@@ -452,7 +496,15 @@ export default {
       company_profit_difference_minus_amount_week_2: 0,
       company_profit_difference_minus_amount_week_3: 0,
       company_profit_difference_minus_amount_week_4: 0,
-      company_profit_difference_minus_amount_week_5: 0
+      company_profit_difference_minus_amount_week_5: 0,
+      average_minimum_component_score: 0,
+      average_additional_component_score: 0,
+      average_final_score: 0,
+      total_payment: 0,
+      total_settlement_difference_minus_amount: 0,
+      total_company_profit_difference_minus_amount: 0,
+      total_weekly_sales: 0,
+      amount_received_difference: 0
     }
   },
   computed: {
@@ -568,6 +620,56 @@ export default {
       this.company_profit_difference_minus_amount_week_3 = Number(this.company_profit_week_3 || 0) - Number(this.total_amount_week_3 || 0)
       this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4 || 0) - Number(this.total_amount_week_4 || 0)
       this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5 || 0) - Number(this.total_amount_week_5 || 0)
+
+      var dayAverageDivisor = 0
+      var totalMinimumComponentScore = 0
+      var totalAdditionalComponentScore = 0
+      var totalFinalScore = 0
+
+      if (this.salary.active_days_week1 !== 0) {
+        dayAverageDivisor++
+        totalMinimumComponentScore += this.additionalData.total_assessments.week1
+        totalAdditionalComponentScore += this.additionalData.total_achievements.week1
+        totalFinalScore += this.salary_final_score.week1
+      }
+      if (this.salary.active_days_week2 !== 0) {
+        dayAverageDivisor++
+        totalMinimumComponentScore += this.additionalData.total_assessments.week2
+        totalAdditionalComponentScore += this.additionalData.total_achievements.week2
+        totalFinalScore += this.salary_final_score.week2
+      }
+      if (this.salary.active_days_week3 !== 0) {
+        dayAverageDivisor++
+        totalMinimumComponentScore += this.additionalData.total_assessments.week3
+        totalAdditionalComponentScore += this.additionalData.total_achievements.week3
+        totalFinalScore += this.salary_final_score.week3
+      }
+      if (this.salary.active_days_week4 !== 0) {
+        dayAverageDivisor++
+        totalMinimumComponentScore += this.additionalData.total_assessments.week4
+        totalAdditionalComponentScore += this.additionalData.total_achievements.week4
+        totalFinalScore += this.salary_final_score.week4
+      }
+      if (this.salary.active_days_week5 !== 0) {
+        dayAverageDivisor++
+        totalMinimumComponentScore += this.additionalData.total_assessments.week5
+        totalAdditionalComponentScore += this.additionalData.total_achievements.week5
+        totalFinalScore += this.salary_final_score.week5
+      }
+
+      this.average_minimum_component_score = dayAverageDivisor != 0 ? totalMinimumComponentScore / dayAverageDivisor : 0
+      this.average_additional_component_score = dayAverageDivisor != 0 ? totalAdditionalComponentScore / dayAverageDivisor : 0
+      this.average_final_score = dayAverageDivisor != 0 ? totalFinalScore / dayAverageDivisor : 0
+
+      this.total_payment = Number(this.salary.payment_from_marketing_week1 || 0) + Number(this.salary.payment_from_sales_week1 || 0) + Number(this.salary.payment_from_spg_week1 || 0) + Number(this.salary.cash_payment_week1 || 0) + Number(this.salary.payment_from_marketing_week2 || 0) + Number(this.salary.payment_from_sales_week2 || 0) + Number(this.salary.payment_from_spg_week2 || 0) + Number(this.salary.cash_payment_week2 || 0) + Number(this.salary.payment_from_marketing_week3 || 0) + Number(this.salary.payment_from_sales_week3 || 0) + Number(this.salary.payment_from_spg_week3 || 0) + Number(this.salary.cash_payment_week3 || 0) + Number(this.salary.payment_from_marketing_week4 || 0) + Number(this.salary.payment_from_sales_week4 || 0) + Number(this.salary.payment_from_spg_week4 || 0) + Number(this.salary.cash_payment_week4 || 0) + Number(this.salary.payment_from_marketing_week5 || 0) + Number(this.salary.payment_from_sales_week5 || 0) + Number(this.salary.payment_from_spg_week5 || 0) + Number(this.salary.cash_payment_week5 || 0)
+
+      this.total_settlement_difference_minus_amount = this.settlement_difference_minus_amount_week_1 + this.settlement_difference_minus_amount_week_2 + this.settlement_difference_minus_amount_week_3 + this.settlement_difference_minus_amount_week_4 + this.settlement_difference_minus_amount_week_5
+
+      this.total_company_profit_difference_minus_amount = this.company_profit_difference_minus_amount_week_1 + this.company_profit_difference_minus_amount_week_2 + this.company_profit_difference_minus_amount_week_3 + this.company_profit_difference_minus_amount_week_4 + this.company_profit_difference_minus_amount_week_5
+
+      this.total_weekly_sales = this.salary.weekly_sales_week1 + this.salary.weekly_sales_week2 + this.salary.weekly_sales_week3 + this.salary.weekly_sales_week4 + this.salary.weekly_sales_week5
+
+      this.amount_received_difference = this.salary.maximum_salary_amount - this.total_amount_received
     }
   }
 }

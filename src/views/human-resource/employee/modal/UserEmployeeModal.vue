@@ -60,10 +60,10 @@ export default {
     close () {
       this.$refs.userEmployeeModal.close()
     },
-    onSubmitUserEmployee (user_employee) {
+    onSubmitUserEmployee (userEmployee) {
       this.$emit('add', {
-        id: user_employee.id,
-        name: user_employee.first_name + ' ' + user_employee.last_name
+        id: userEmployee.id,
+        name: userEmployee.first_name + ' ' + userEmployee.last_name
       })
       this.user_employee = ''
       this.$refs.userEmployeeModal.close()

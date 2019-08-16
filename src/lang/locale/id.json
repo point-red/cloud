@@ -197,6 +197,7 @@
 	"employee code": "kode karyawan",
 	"status": "status",
 	"job location": "penempatan",
+	"location": "penempatan",
 	"multiplier kpi": "pengali berdasarkan kpi",
 	"daily transport allowance": "transportasi harian",
 	"functional allowance": "tunjangan jabatan",
@@ -238,6 +239,7 @@
 	"total amount": "total nilai",
 	"total amount with allowance": "total nilai dengan tunjangan",
 	"total amount received": "nilai total yang diterima",
+	"maximum amount receivable": "maksimal nilai yang bisa diterima",
 	"active days / month": "hari aktif / bulan",
 	"active days": "hari aktif",
 	"receivable cut > 60 days": "potongan piutang > 60 hari",
@@ -249,5 +251,9 @@
 	"received cash payment": "penerimaan penjualan cash",
 	"settlement difference minus amount": "selisih pelunasan minus nilai",
 	"company profit difference minus amount": "selisih profit perushaaan minus pembayaran nilai",
-	"salary graph": "grafik gaji"
+	"salary graph": "grafik gaji",
+	"weekly sales": "penjualan per minggu",
+	"wa daily report": "nilai pelaporan wa harian",
+	"amount received difference": "selisih nilai yang diterima",
+	"if kpi 100%": "jika kpi 100%"
 }
