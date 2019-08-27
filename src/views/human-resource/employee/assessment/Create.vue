@@ -317,26 +317,26 @@ export default {
         return
       }
       this.isSaving = true
-      this.form.date.start =  this.serverDateTime(this.$moment(this.form.date.start))
-      this.form.date.end =  this.serverDateTime(this.$moment(this.form.date.end))
+      this.form.date.start = this.$moment(this.form.date.start).format('YYYY-MM-DD 00:00:00')
+      this.form.date.end = this.$moment(this.form.date.end).format('YYYY-MM-DD 23:59:59')
       this.createEmployeeAssessment({ employeeId: this.employee.id, form: this.form })
         .then(response => {
-            this.isSaving = false
-            this.$notification.success('Create success')
-            this.findKpiResult(this.form.template.score_percentage)
-              .then(response => {
-                this.$alert.success(response.data.criteria, response.data.notes)
-                  .then(() => {
-                    this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
-                  })
-              }).catch(error => {
-                console.log(JSON.stringify(error))
-                this.$router.replace('human-resource/employee/'+ this.id +'/assessment')
-              })
+          this.isSaving = false
+          this.$notification.success('Create success')
+          this.findKpiResult(this.form.template.score_percentage)
+            .then(response => {
+              this.$alert.success(response.data.criteria, response.data.notes)
+                .then(() => {
+                  this.$router.replace('human-resource/employee/' + this.id + '/assessment')
+                })
+            }).catch(error => {
+              console.log(JSON.stringify(error))
+              this.$router.replace('human-resource/employee/' + this.id + '/assessment')
+            })
         }).catch(error => {
           this.isSaving = false
           this.$notification.error('Create failed', error.message)
-        })            
+        })
     },
     getAutomatedScore () {
       var automatedIDs = []
@@ -352,65 +352,69 @@ export default {
       automatedIDs = [...new Set(automatedIDs)]
 
       if (automatedIDs.length > 0 && this.form.date.start && this.form.date.end) {
-        this.getAutomatedData({ startDate: this.serverDateTime(this.$moment(this.form.date.start)), endDate: this.serverDateTime(this.$moment(this.form.date.end)), automated_codes: automatedIDs, employeeId: this.id })
-          .then((response) => {
-            this.isLoading = false
+        this.getAutomatedData({
+          startDate: this.$moment(this.form.date.start).format('YYYY-MM-DD 00:00:00'),
+          endDate: this.$moment(this.form.date.end).format('YYYY-MM-DD 23:59:59'),
+          automated_codes: automatedIDs,
+          employeeId: this.id
+        }).then((response) => {
+          this.isLoading = false
 
-            var templateTarget = 0
-            var templateScore = 0
-            var templateScorePercentage = 0
+          var templateTarget = 0
+          var templateScore = 0
+          var templateScorePercentage = 0
 
-            this.form.template.groups.forEach((group, groupIndex) => {
-              var groupTarget = 0
-              var groupScore = 0
-              var groupScorePercentage = 0
+          this.form.template.groups.forEach((group, groupIndex) => {
+            var groupTarget = 0
+            var groupScore = 0
+            var groupScorePercentage = 0
 
-              group.indicators.forEach((indicator, indicatorIndex) => {
-                var target = this.form.template.groups[groupIndex].indicators[indicatorIndex]['target'] || 0
-                var score = 0
-                var scorePercentage = 0
+            group.indicators.forEach((indicator, indicatorIndex) => {
+              var target = this.form.template.groups[groupIndex].indicators[indicatorIndex]['target'] || 0
+              var score = 0
+              var scorePercentage = 0
 
-                if (response[indicator.automated_code]) {
-                  target = response[indicator.automated_code]['target'] || 0
-                  score = response[indicator.automated_code]['score'] || 0
+              if (response[indicator.automated_code]) {
+                target = response[indicator.automated_code]['target'] || 0
+                score = response[indicator.automated_code]['score'] || 0
 
-                  scorePercentage = score / target * indicator.weight || 0
+                scorePercentage = score / target * indicator.weight || 0
 
-                  if (scorePercentage > indicator.weight) {
-                    scorePercentage = parseFloat(indicator.weight) || 0
-                  }
-
-                  this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'automated_code', indicator.automated_code)
-                } else if (indicator.selected) {
-                  score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected['score'] || 0
-                  scorePercentage = score / target * indicator.weight || 0
+                if (scorePercentage > indicator.weight) {
+                  scorePercentage = parseFloat(indicator.weight) || 0
                 }
 
-                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'target', target)
-                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'score', score)
-                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'score_percentage', scorePercentage)
+                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'automated_code', indicator.automated_code)
+              } else if (indicator.selected) {
+                score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected['score'] || 0
+                scorePercentage = score / target * indicator.weight || 0
+              }
 
-                groupTarget += target
-                groupScore += score
-                groupScorePercentage += scorePercentage
+              this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'target', target)
+              this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'score', score)
+              this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'score_percentage', scorePercentage)
 
-                templateTarget += target
-                templateScore += score
-                templateScorePercentage += scorePercentage
-              })
+              groupTarget += target
+              groupScore += score
+              groupScorePercentage += scorePercentage
 
-              this.$set(this.form.template.groups[groupIndex], 'target', groupTarget)
-              this.$set(this.form.template.groups[groupIndex], 'score', groupScore)
-              this.$set(this.form.template.groups[groupIndex], 'score_percentage', groupScorePercentage)
+              templateTarget += target
+              templateScore += score
+              templateScorePercentage += scorePercentage
             })
 
-            this.$set(this.form.template, 'target', templateTarget)
-            this.$set(this.form.template, 'score', templateScore)
-            this.$set(this.form.template, 'score_percentage', templateScorePercentage)
-          }, (error) => {
-            this.isLoading = false
-            console.log(JSON.stringify(error))
+            this.$set(this.form.template.groups[groupIndex], 'target', groupTarget)
+            this.$set(this.form.template.groups[groupIndex], 'score', groupScore)
+            this.$set(this.form.template.groups[groupIndex], 'score_percentage', groupScorePercentage)
           })
+
+          this.$set(this.form.template, 'target', templateTarget)
+          this.$set(this.form.template, 'score', templateScore)
+          this.$set(this.form.template, 'score_percentage', templateScorePercentage)
+        }, (error) => {
+          this.isLoading = false
+          console.log(JSON.stringify(error))
+        })
       } else {
         this.isLoading = false
       }
