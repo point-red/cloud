@@ -40,8 +40,11 @@
                   class="btn btn-sm btn-secondary">
                   <i class="si si-note"></i> Edit
                 </router-link>
-                <button :disabled="isExporting.includes(salary.id)" type="submit" class="btn btn-sm btn-primary" @click="exportData(salary.id)" style="margin-left:12px">
-                  <i v-show="isExporting.includes(salary.id)" class="fa fa-asterisk fa-spin" /> Export
+                <button :disabled="isExporting.includes(salary.id)" type="submit" class="btn btn-sm btn-primary" @click="exportDataPDF(salary.id)" style="margin-left:12px" v-if="$permission.has('export employee salary pdf')">
+                  <i v-show="isExporting.includes(salary.id)" class="fa fa-asterisk fa-spin" /> PDF
+                </button>
+                <button :disabled="isExporting.includes(salary.id)" type="submit" class="btn btn-sm btn-primary" @click="exportDataExcel(salary.id)" style="margin-left:12px" v-if="$permission.has('export employee salary excel')">
+                  <i v-show="isExporting.includes(salary.id)" class="fa fa-asterisk fa-spin" /> Excel
                 </button>
                 &nbsp;
                 <i class="fa fa-close" v-show="$permission.has('delete employee salary')" @click="deleteSalary(salary.id)"/>
@@ -119,7 +122,8 @@ export default {
     ...mapActions('humanResourceEmployeeSalary', {
       getEmployeeSalary: 'get',
       deleteEmployeeSalary: 'delete',
-      export: 'export'
+      exportPDF: 'exportPDF',
+      exportExcel: 'exportExcel'
     }),
     deleteSalary (salaryId) {
       this.selectedSalaryId = salaryId
@@ -137,9 +141,23 @@ export default {
           console.log(JSON.stringify(error))
         })
     },
-    exportData (value) {
+    exportDataPDF (value) {
       this.isExporting.push(value)
-      this.export({
+      this.exportPDF({
+        id: value,
+        employeeId: this.id
+      }).then((response) => {
+        this.isExporting.splice(this.isExporting.indexOf(value), 1)
+        this.downloadLink = response.data.url
+        window.open(response.data.url, '_blank')
+      }, (error) => {
+        this.isExporting.splice(this.isExporting.indexOf(value), 1)
+        console.log(error)
+      })
+    },
+    exportDataExcel (value) {
+      this.isExporting.push(value)
+      this.exportExcel({
         id: value,
         employeeId: this.id
       }).then((response) => {

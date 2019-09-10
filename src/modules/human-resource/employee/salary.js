@@ -65,9 +65,19 @@ const mutations = {
 }
 
 const actions = {
-  export ({ commit }, payload) {
+  exportPDF ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.post(url(payload.employeeId) + '/export', payload)
+      api.post(url(payload.employeeId) + '/export/pdf', payload)
+        .then((response) => {
+          resolve(response)
+        }, (error) => {
+          reject(error)
+        })
+    })
+  },
+  exportExcel ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url(payload.employeeId) + '/export/excel', payload)
         .then((response) => {
           resolve(response)
         }, (error) => {

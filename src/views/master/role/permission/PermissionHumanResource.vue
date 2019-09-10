@@ -26,7 +26,8 @@
         <td><p-form-check-box ref="read employee salary" @click.native="togglePermission('read employee salary')" :checked="$rolePermission.has('read employee salary', permissions)" :description="'Read'"/></td>
         <td><p-form-check-box ref="update employee salary" @click.native="togglePermission('update employee salary')" :checked="$rolePermission.has('update employee salary', permissions)" :description="'Update'"/></td>
         <td><p-form-check-box ref="delete employee salary" @click.native="togglePermission('delete employee salary')" :checked="$rolePermission.has('delete employee salary', permissions)" :description="'Delete'"/></td>
-        <td><p-form-check-box ref="print employee salary" @click.native="togglePermission('print employee salary')" :checked="$rolePermission.has('print employee salary', permissions)" :description="'Print'"/></td>
+        <td><p-form-check-box ref="export employee salary pdf" @click.native="togglePermission('export employee salary pdf')" :checked="$rolePermission.has('export employee salary pdf', permissions)" :description="'Export to PDF'"/></td>
+        <td><p-form-check-box ref="export employee salary excel" @click.native="togglePermission('export employee salary excel')" :checked="$rolePermission.has('export employee salary excel', permissions)" :description="'Export to Excel'"/></td>
       </tr>
       <tr slot="p-body">
         <td></td>
