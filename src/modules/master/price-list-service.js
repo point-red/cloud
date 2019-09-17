@@ -1,40 +1,49 @@
 import api from '@/api'
 
-const url = '/master/groups'
+const url = '/master/price-list-services'
 
 const state = {
-  group: {
+  service: {
     code: '',
     name: ''
   },
+  services: [],
   groups: [],
   pagination: {}
 }
 
 const getters = {
-  group: state => {
-    return state.group
+  service: state => {
+    return state.service
+  },
+  services: state => {
+    return state.services
   },
   groups: state => {
     return state.groups
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.groups = payload.data
+    state.services = payload.data.price_lists
+    state.groups = payload.data.groups
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.group = payload.data
+    state.service = payload.data
   },
   'CREATE' (state, payload) {
-    state.group = payload
+    state.service = payload
   },
   'UPDATE' (state, payload) {
-    state.group = payload
+    state.service = payload
   },
   'DELETE' (state, payload) {
-    state.group = {}
+    state.service = {}
   }
 }
 

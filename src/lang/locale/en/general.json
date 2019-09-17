@@ -9,6 +9,7 @@
   "date": "date",
   "period": "period",
   "time": "time",
+  "label": "label",
   "percentage": "percentage",
   "item": "item",
   "quantity": "quantity",

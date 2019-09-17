@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="input-group" style="min-width: 180px">
-      <cleave        
+      <cleave
         :readonly="readonly"
         v-model="number"
         :options="options"
@@ -13,6 +13,8 @@
         <span class="input-group-text">
           {{ unit }}
         </span>
+        <button v-show="showAddReduceButtons" class="btn btn-outline-secondary" type="button" @click="add">+</button>
+        <button v-show="showAddReduceButtons" class="btn btn-outline-secondary" type="button" @click="reduce">-</button>
       </div>
     </div>
   </div>
@@ -58,9 +60,23 @@ export default {
     },
     unit: {
       type: String,
-      required: true
+      default: ''
     },
-    value: null
+    value: null,
+    showAddReduceButtons: {
+      type: Boolean,
+      default: false
+    }
+  },
+  methods: {
+    add () {
+      this.number++
+    },
+    reduce () {
+      if (this.number >= 1) {
+        this.number--
+      }
+    }
   }
 }
 </script>

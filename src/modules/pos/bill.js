@@ -1,40 +1,49 @@
 import api from '@/api'
 
-const url = '/master/groups'
+const url = '/pos/bill'
 
 const state = {
-  group: {
-    code: '',
-    name: ''
+  bill: {
+    date: null,
+    form: {
+      number: ''
+    },
+    customer: {
+      name: null
+    }
   },
-  groups: [],
+  bills: [],
   pagination: {}
 }
 
 const getters = {
-  group: state => {
-    return state.group
+  bill: state => {
+    return state.bill
   },
-  groups: state => {
-    return state.groups
+  bills: state => {
+    return state.bills
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.groups = payload.data
+    state.bills = payload.data
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.group = payload.data
+    state.bill = payload.data
   },
   'CREATE' (state, payload) {
-    state.group = payload
+    state.bill = payload
   },
   'UPDATE' (state, payload) {
-    state.group = payload
+    state.bill = payload
   },
   'DELETE' (state, payload) {
-    state.group = {}
+    state.bill = {}
   }
 }
 

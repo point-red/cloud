@@ -13,6 +13,7 @@ import MainMenu from '@/views/MainMenu'
 import Master from '@/views/master/routes'
 import HumanResource from '@/views/human-resource/routes'
 import Purchase from '@/views/purchase/routes'
+import POS from '@/views/pos/routes'
 import Finance from '@/views/finance/routes'
 import Accounting from '@/views/accounting/routes'
 import Account from '@/views/account/routes'
@@ -74,6 +75,7 @@ export default new Router({
         ...Master,
         ...HumanResource,
         ...Purchase,
+        ...POS,
         ...Finance,
         ...Accounting,
         ...Plugin

@@ -42,6 +42,18 @@
             readonly/>
 
           <p-form-row
+            id="group"
+            :label="$t('group')"
+            name="group"
+            readonly>
+            <div slot="body" class="col-lg-9">
+              <template v-for="(group, index) in item.groups">
+                <p-form-input readonly :key="index" :value="group.name"/>
+              </template>
+            </div>
+          </p-form-row>
+
+          <p-form-row
             id="stock"
             :label="$t('stock')"
             name="stock"

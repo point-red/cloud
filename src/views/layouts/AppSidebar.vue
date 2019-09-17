@@ -255,8 +255,28 @@
                   </router-link>
                 </li>
               </ul>
-            </li>
-            <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
+            </li> -->
+            <!-- <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
+              <router-link to="/pos" class="nav-submenu" active-class="active">
+                <i class="si si-basket-loaded"/>
+                <span class="sidebar-mini-hide">{{ $t("pos") | uppercase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read pos open bill')">
+                  <router-link
+                    to="/pos/open-bill"
+                    active-class="active">{{ $t('open bill') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read pos closed bill')">
+                  <router-link
+                    to="/pos/closed-bill"
+                    active-class="active">{{ $t('closed bill') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
+            </li> -->
+            <!-- <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
               <router-link to="/inventory" class="nav-submenu" active-class="active">
                 <i class="si si-tag"/>
                 <span class="sidebar-mini-hide">{{ $t("inventory") | titlecase }}</span>

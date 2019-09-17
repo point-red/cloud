@@ -43,6 +43,7 @@
             @click="toggleHidden">
             <i :class="{ 'si si-arrow-up' : !hidden, 'si si-arrow-down' : hidden }"/>
           </button>
+          <slot name="header"/>
         </div>
       </div>
       <div class="block-content">

@@ -22,7 +22,7 @@
           <point-table>
             <tr slot="p-head">
               <th>Item</th>
-              <th>Unit</th>
+              <th class="text-center">Unit</th>
               <th class="text-right" v-for="(group, index) in groups" :key="index">
                 {{ group.label }}
               </th>
@@ -40,7 +40,12 @@
                   {{item.name}}
                 </router-link>
               </th>
-              <td>{{ itemUnit.name }} (x{{ itemUnit.converter }})</td>
+              <td class="text-center">
+                {{ itemUnit.name }}
+                <template v-if="itemUnit.converter > 1">
+                (x{{ itemUnit.converter }})
+                </template>
+              </td>
               <td class="text-right" v-for="(group, index3) in itemUnit.prices" :key="index3">
                 <a href="javascript:void(0)" @click="editPrice(index + '-' + index2 + '-' + index3)" v-if="editPriceIndex != index + '-' + index2 + '-' + index3">
                   {{ itemUnit.prices[index3].price | numberFormat }}
@@ -49,7 +54,8 @@
                   v-else
                   id="price"
                   name="price"
-                  :value="itemUnit.prices[index3].price"/>
+                  v-model="itemUnit.prices[index3].price"
+                  @keyup.native.enter="savePrice(itemUnit.id, itemUnit.prices[index3].price)"/>
               </td>
               <td></td>
             </tr>
@@ -103,10 +109,10 @@ export default {
   },
   methods: {
     ...mapActions('masterPriceListItem', {
-      getItem: 'get'
+      getItem: 'get',
+      updatePrice: 'create'
     }),
     addPricingGroup () {
-      console.log('add pricing group')
       this.$refs.pricingGroupModal.show()
     },
     onSubmitPricingGroup () {
@@ -114,6 +120,19 @@ export default {
     },
     editPrice (index) {
       this.editPriceIndex = index
+    },
+    savePrice (itemUnitId, price) {
+      this.updatePrice({
+        pricing_group_id: 1,
+        item_unit_id: itemUnitId,
+        price: price,
+        discount_percent: 0,
+        discount_value: 0,
+        date: new Date()
+      }).then(response => {
+        this.getPriceList()
+        this.editPriceIndex = -1
+      })
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })

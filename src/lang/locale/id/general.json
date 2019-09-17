@@ -9,6 +9,7 @@
   "date": "tanggal",
   "period": "periode",
   "time": "jam",
+  "label": "label",
   "percentage": "persentase",
   "item": "item",
   "quantity": "jumlah",

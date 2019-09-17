@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span @click="show" class="link"><i class="fa fa-list mr-5"></i>{{ mutableLabel || 'SELECT'}}</span>
+    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span>
     <p-modal :ref="'select-' + id" :id="'select-' + id" title="select group">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
@@ -161,7 +161,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 input:readonly {
   background-color: white
 }
@@ -169,7 +169,8 @@ input {
   min-width: 200px;
 }
 .link {
-  border-bottom: dotted 1px blueviolet;
+  border-bottom: dotted 1px #2196f3;
+  color: #2196f3;
   cursor: pointer;
 }
 </style>

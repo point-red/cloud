@@ -1,0 +1,82 @@
+<template>
+  <div>
+    <form
+      class="row">
+      <p-modal
+        ref="discountModal"
+        :id="id"
+        :isLoading="loading"
+        :title="title | uppercase">
+        <template slot="content">
+          <p-form-row
+            id="discount"
+            name="discount"
+            :label="$t('discount')">
+            <div slot="body" class="col-lg-9">
+              <p-form-number
+                v-model="discount_percent"
+                :is-text-right="false"/>
+            </div>
+          </p-form-row>
+        </template>
+        <template slot="footer">
+          <button
+            :disabled="loadingSaveButton"
+            type="button"
+            class="btn btn-primary"
+            @click="update">
+            <i
+              v-show="loadingSaveButton"
+              class="fa fa-asterisk fa-spin"/> Update
+          </button>
+          <button :disabled="loadingSaveButton" type="button" class="btn btn-outline-danger" @click="close">
+            <i
+              v-show="loadingSaveButton"
+              class="fa fa-asterisk fa-spin"/> Close
+          </button>
+        </template>
+      </p-modal>
+    </form>
+  </div>
+</template>
+
+<script>
+
+export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    }
+  },
+  data () {
+    return {
+      loading: false,
+      title: 'Discount',
+      loadingSaveButton: false,
+      discount_percent: 0
+    }
+  },
+  methods: {
+    show (discountPercent) {
+      this.discount_percent = discountPercent
+      this.$refs.discountModal.show()
+    },
+    close () {
+      this.$refs.discountModal.close()
+    },
+    update () {
+      if (this.discount_percent > 100) {
+        this.discount_percent = 100
+      } else if (this.discount_percent < 0) {
+        this.discount_percent = 0
+      }
+      this.$emit('updateDiscount', {
+        discount_percent: this.discount_percent
+      })
+      this.discount_percent = 0
+      this.$refs.discountModal.close()
+    }
+  }
+}
+</script>
