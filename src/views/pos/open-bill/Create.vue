@@ -17,7 +17,7 @@
 
         <template v-slot:header>
           |<router-link
-            v-if="$permission.has('create pos open bill')"
+            v-if="$permission.has('create pos')"
             to="/pos/open-bill/create"
             exact>
             <button
@@ -27,7 +27,7 @@
             </button>
           </router-link>
           |<router-link
-            v-if="$permission.has('read pos open bill')"
+            v-if="$permission.has('read pos')"
             to="/pos/open-bill"
             exact>
             <button

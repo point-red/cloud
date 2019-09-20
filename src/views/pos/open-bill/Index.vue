@@ -41,7 +41,7 @@
                 slot="p-body">
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>
-                  <router-link v-if="$permission.has('read pos open bill')" :to="{ name: 'pos.open-bill.show', params: { id: bill.id }}">
+                  <router-link v-if="$permission.has('read pos')" :to="{ name: 'pos.open-bill.show', params: { id: bill.id }}">
                     {{ bill.form.number }}
                   </router-link>
                   <template v-else>

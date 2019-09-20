@@ -262,13 +262,13 @@
                 <span class="sidebar-mini-hide">{{ $t("pos") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read pos open bill')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read pos')">
                   <router-link
                     to="/pos/open-bill"
                     active-class="active">{{ $t('open bill') | titlecase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read pos closed bill')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read pos')">
                   <router-link
                     to="/pos/closed-bill"
                     active-class="active">{{ $t('closed bill') | titlecase }}
