@@ -6,5 +6,8 @@
   "money received" : "money received",
   "money change" : "change",
   "total items" : "total items",
-  "sub total" : "sub total"
+  "sub total" : "sub total",
+  "save without order" : "simpan (tanpa penjualan)",
+  "save with order - cash" : "simpan (penjualan - tunai)",
+  "save with order - credit" : "simpan (penjualan - tempo)"
 }

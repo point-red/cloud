@@ -252,14 +252,19 @@
           </tr>
           <tr slot="p-body" v-for="(row, index) in rows" :key="row">
             <td>
-              <p-select
+              <!-- <p-select
                 id="item"
                 :disabled="isSaving"
                 v-model="form.item[index]"
                 @input="updateItem(row)"
                 :options="itemList"
                 :errors="form.errors.get('item_id')"
-                @errors="form.errors.set('item_id', null)"/>
+                @errors="form.errors.set('item_id', null)"/> -->
+                <m-item
+                  :id="'item-' + index"
+                  :data-index="index"
+                  v-model="form.item[index]"
+                  @choosen="chooseItem($event, row)"/>
             </td>
             <td>
               <p-form-number
@@ -587,7 +592,8 @@ export default {
       })
     },
     // [End] Google Map
-    updateItem (row) {
+    chooseItem (event, row) {
+      this.form.item[row-1] = event.name
       if (this.rows === row) {
         this.rows++
       }
