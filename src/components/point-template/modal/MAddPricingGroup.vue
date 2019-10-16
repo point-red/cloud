@@ -36,10 +36,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      searchText: '',
-      options: [],
-      mutableId: this.value,
-      mutableLabel: this.label,
       isSaving: false,
       isLoading: false,
       form: new Form({
@@ -47,72 +43,20 @@ export default {
       })
     }
   },
-  computed: {
-    ...mapGetters('masterPricingGroup', ['pricingGroups', 'pagination'])
-  },
   props: {
     id: {
       type: String,
       required: true
     },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
-    }
-  },
-  watch: {
-    searchText: debounce(function () {
-      this.search()
-    }, 300),
-    value () {
-      this.search()
-    }
-  },
-  created () {
-    this.search()
   },
   methods: {
     ...mapActions('masterPricingGroup', ['get', 'create']),
     onSubmit () {
-      this.create(this.form)
-    },
-    search () {
-      this.isLoading = true
-      this.get({
-        params: {
-          sort_by: 'label',
-          limit: 50,
-          filter_like: {
-            label: this.searchText
-          }
-        }
-      }).then(response => {
-        this.options = []
-        response.data.map((key, value) => {
-          this.options.push({
-            'id': key['id'],
-            'label': key['label']
-          })
-
-          if (this.value == key['id']) {
-            this.mutableLabel = key['number'] + ' - ' + key['alias']
-          }
-        })
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notifications.error(error.message)
-      })
-    },
-    add () {
       this.isSaving = true
-      this.create({
-        label: this.searchText
-      }).then(response => {
-        this.search()
+      this.create(this.form).then(response => {
+        this.form.label = ''
         this.isSaving = false
+        this.$emit('added', true)
       }).catch(error => {
         this.$notification.error(error.message)
         this.isSaving = false

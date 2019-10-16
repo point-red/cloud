@@ -49,6 +49,28 @@
             :errors="form.errors.get('unit')"
             @errors="form.errors.set('unit', null)"/>
 
+          <p-form-row
+            id="item-group"
+            name="item-group"
+            :label="$t('group')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <template v-for="(group, index) in form.groups">
+                <m-item-group
+                  :key="'item-group-'+index"
+                  :id="'item-group-'+index"
+                  :label="form.groups[index].label"
+                  type="pos"
+                  v-model="form.groups[index].id"
+                  @choosen="chooseItemGroup($event, index)"
+                  @clear="removeItemGroupRow(index)"/>
+                <hr :key="'item-group-hr-'+index"/>
+              </template>
+              <button type="button" class="btn btn-sm btn-secondary" @click="addItemGroupRow">
+                <i class="fa fa-plus"/> Add More Group
+              </button>
+            </div>
+          </p-form-row>
+
           <hr/>
 
           <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
@@ -90,7 +112,8 @@ export default {
             name: '',
             converter: null
           }
-        ]
+        ],
+        groups: []
       })
     }
   },
@@ -129,21 +152,33 @@ export default {
   },
   methods: {
     ...mapActions('masterItem', ['find', 'update']),
+    addItemGroupRow () {
+      this.form.groups.push({
+        id: null,
+        label: null,
+        name: null,
+        type: 'pos',
+        class_reference: 'Item'
+      })
+    },
+    removeItemGroupRow (group) {
+      this.$delete(this.form.groups, group)
+    },
+    chooseItemGroup (event, index) {
+      this.$set(this.form.groups, index, event)
+    },
     onSubmit () {
       this.update(this.form)
-        .then(
-          (response) => {
-            this.loadingSaveButton = false
-            this.form.reset()
-            this.$notification.success('Update success')
-            this.$router.push('/master/item/' + this.id)
-          },
-          (error) => {
-            this.loadingSaveButton = false
-            this.$notification.error('Update failed')
-            this.form.errors.record(error.errors)
-          }
-        )
+        .then(response => {
+          this.loadingSaveButton = false
+          this.form.reset()
+          this.$notification.success('Update success')
+          this.$router.push('/master/item/' + this.id)
+        }).catch(error => {
+          this.loadingSaveButton = false
+          this.$notification.error('Update failed')
+          this.form.errors.record(error.errors)
+        })
     }
   }
 }

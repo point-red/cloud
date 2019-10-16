@@ -70,12 +70,12 @@
       </p-block>
     </div>
 
-    <m-pricing-group
+    <m-add-pricing-group
       id="pricing-gorup"
       name="pricing_gorup"
       ref="pricingGroupModal"
       title="Pricing Group"
-      @add="onSubmitPricingGroup"/>
+      @added="onSubmitPricingGroup"/>
   </div>
 </template>
 
@@ -116,7 +116,9 @@ export default {
       this.$refs.pricingGroupModal.show()
     },
     onSubmitPricingGroup () {
-
+      console.log('onsubmit')
+      this.getPriceList()
+      this.$refs.pricingGroupModal.close()
     },
     editPrice (index) {
       this.editPriceIndex = index

@@ -34,7 +34,7 @@ instance.interceptors.response.use((response) => {
 }, function (error) {
   if (!error.response) {
     // Network error
-    router.replace('/503')
+    // router.replace('/503')
     return Promise.reject(error)
   } else {
     // If reponse is unauthorized (401) then redirect user to login page
