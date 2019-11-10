@@ -12,6 +12,7 @@ if (process.env.NODE_ENV === 'production') {
     },
     registered () {
       console.log('Service worker has been registered.')
+      localStorage.setItem('version', process.env.VUE_APP_VERSION)
     },
     cached () {
       console.log('Content has been cached for offline use.')
