@@ -68,7 +68,9 @@ export default {
     }
   },
   created () {
+    console.log('this.version = ' + this.version)
     this.version = process.env.VUE_APP_VERSION
+    console.log(localStorage.getItem('version') + ' !== ' + process.env.VUE_APP_VERSION)
     if (localStorage.getItem('version') !== process.env.VUE_APP_VERSION) {
       this.isNewUpdateAvailable = true
     }
