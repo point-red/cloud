@@ -12,6 +12,7 @@ if (process.env.NODE_ENV === 'production') {
     },
     registered () {
       console.log('Service worker has been registered.')
+      console.log('registered v' + process.env.VUE_APP_VERSION)
       localStorage.setItem('version', process.env.VUE_APP_VERSION)
     },
     cached () {
@@ -22,6 +23,7 @@ if (process.env.NODE_ENV === 'production') {
     },
     updated () {
       console.log('New content is available; please refresh.')
+      console.log('updated v' + process.env.VUE_APP_VERSION)
       localStorage.setItem('version', process.env.VUE_APP_VERSION)
     },
     offline () {
