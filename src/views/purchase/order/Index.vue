@@ -163,7 +163,7 @@ export default {
     updatePage (value) {
       this.currentPage = value
       this.getPurchaseOrder()
-    }    
+    }
   },
   created () {
     this.getPurchaseOrder()

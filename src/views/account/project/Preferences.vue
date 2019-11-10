@@ -52,7 +52,7 @@
             name="mail_username"
             :errors="form.errors.get('mail_username')"
             @errors="form.errors.set('mail_username', null)"/>
-          
+
           <p-form-row
             id="mail-password"
             type="password"
@@ -98,7 +98,7 @@
             name="mail_encryption"
             :errors="form.errors.get('mail_encryption')"
             @errors="form.errors.set('mail_encryption', null)"/>
-          
+
           <p-form-row
             id="mail-domain"
             v-model="form.mail_domain"
@@ -184,15 +184,15 @@ export default {
       .then(response => {
         this.isLoading = false
         if (response.data) {
-          this.form.mail_driver = response.data.mail_driver,
-          this.form.mail_host = response.data.mail_host,
-          this.form.mail_username = response.data.mail_username,
-          this.form.mail_password = response.data.mail_password,
-          this.form.mail_from_name = response.data.mail_from_name,
-          this.form.mail_from_address = response.data.mail_from_address,
-          this.form.mail_port = response.data.mail_port,
-          this.form.mail_encryption = response.data.mail_encryption,
-          this.form.mail_domain = response.data.mail_domain,
+          this.form.mail_driver = response.data.mail_driver
+          this.form.mail_host = response.data.mail_host
+          this.form.mail_username = response.data.mail_username
+          this.form.mail_password = response.data.mail_password
+          this.form.mail_from_name = response.data.mail_from_name
+          this.form.mail_from_address = response.data.mail_from_address
+          this.form.mail_port = response.data.mail_port
+          this.form.mail_encryption = response.data.mail_encryption
+          this.form.mail_domain = response.data.mail_domain
           this.form.mail_secret = response.data.mail_secret
         }
       }).catch(error => {
@@ -206,7 +206,7 @@ export default {
     }),
     ...mapActions('accountProjectPreference', {
       findPreference: 'find',
-      updatePreference: 'update',
+      updatePreference: 'update'
     }),
     onSubmit () {
       this.isSaving = true

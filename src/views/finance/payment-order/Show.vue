@@ -24,7 +24,7 @@
             id="payment-type"
             name="payment-type"
             :label="$t('payment type')">
-            <div slot="body" class="col-lg-9">                
+            <div slot="body" class="col-lg-9">
               {{ paymentOrder.payment_type.toLowerCase() }}
             </div>
           </p-form-row>
@@ -98,7 +98,7 @@
                 {{ approver.requested_at | dateFormat('DD MMMM YYYY HH:mm') }}
               </td>
               <td>
-                {{ approver.requested_by.first_name }} {{ approver.requested_by.last_name }} 
+                {{ approver.requested_by.first_name }} {{ approver.requested_by.last_name }}
               </td>
               <td>
                 {{ approver.requested_to.first_name }} {{ approver.requested_to.last_name }}
@@ -134,7 +134,7 @@
               </a>
             </div>
           </div>
-        </p-block-inner>        
+        </p-block-inner>
       </p-block>
     </form>
   </div>
@@ -167,7 +167,7 @@ export default {
   },
   methods: {
     ...mapActions('financePaymentOrder', ['find', 'delete']),
-    calculate: debounce (function () {
+    calculate: debounce(function () {
       var totalAmount = 0
       this.paymentOrder.details.forEach(function (element) {
         totalAmount += parseFloat(element.amount)
@@ -179,14 +179,14 @@ export default {
       this.delete({
         id: this.id
       }).then(response => {
-          this.isDeleting = false
-          this.$notification.success('cancel success')
-          this.$router.push('/finance/payment-order')
-        }).catch(error => {
-          this.isDeleting = false
-          this.$notification.error(error.message)
-          this.form.errors.record(error.errors)
-        })
+        this.isDeleting = false
+        this.$notification.success('cancel success')
+        this.$router.push('/finance/payment-order')
+      }).catch(error => {
+        this.isDeleting = false
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
+      })
     }
   },
   created () {

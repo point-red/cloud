@@ -47,7 +47,7 @@ export default {
     id: {
       type: String,
       required: true
-    },
+    }
   },
   methods: {
     ...mapActions('masterPricingGroup', ['get', 'create']),

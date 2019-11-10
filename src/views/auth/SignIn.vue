@@ -93,7 +93,7 @@ export default {
         console.log('Notification permission granted.')
         return messaging.getToken()
       }).then(token => {
-        this.token = token      
+        this.token = token
       }).catch(error => {
         console.log('Unable to get permission to notify.', error)
       })

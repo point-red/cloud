@@ -146,7 +146,7 @@ export default {
     updatePage (value) {
       this.currentPage = value
       this.getPayments()
-    }    
+    }
   },
   created () {
     this.getPayments()

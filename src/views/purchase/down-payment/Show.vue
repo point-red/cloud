@@ -84,7 +84,7 @@
                 {{ approval.requested_at | dateFormat('DD MMMM YYYY HH:mm') }}
               </td>
               <td>
-                {{ approval.requested_by.first_name }} {{ approval.requested_by.last_name }} 
+                {{ approval.requested_by.first_name }} {{ approval.requested_by.last_name }}
               </td>
               <td>
                 {{ approval.requested_to.first_name }} {{ approval.requested_to.last_name }}

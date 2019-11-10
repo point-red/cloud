@@ -30,7 +30,7 @@
             id="payment-account"
             name="payment-account"
             :label="$t('payment account')">
-            <div slot="body" class="col-lg-9">                
+            <div slot="body" class="col-lg-9">
               <m-chart-of-account
                 :id="'payment-account'"
                 type="cash"
@@ -132,7 +132,7 @@
               </button>
             </div>
           </div>
-        </p-block-inner>        
+        </p-block-inner>
       </p-block>
     </form>
   </div>
@@ -213,7 +213,7 @@ export default {
       this.form.paymentable_name = choosen.label
       this.form.paymentable_type = choosen.type
     },
-    calculate: debounce (function () {
+    calculate: debounce(function () {
       var totalAmount = 0
       this.form.details.forEach(function (element) {
         totalAmount += parseFloat(element.amount)

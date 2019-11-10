@@ -30,7 +30,7 @@
             id="payment-type"
             name="payment-type"
             :label="$t('payment type')">
-            <div slot="body" class="col-lg-9">                
+            <div slot="body" class="col-lg-9">
               <p-form-check-box
                 class="mb-0"
                 style="float:left"
@@ -155,7 +155,7 @@
               </button>
             </div>
           </div>
-        </p-block-inner>        
+        </p-block-inner>
       </p-block>
     </form>
   </div>
@@ -243,7 +243,7 @@ export default {
       this.form.paymentable_name = choosen.label
       this.form.paymentable_type = choosen.type
     },
-    calculate: debounce (function () {
+    calculate: debounce(function () {
       var totalAmount = 0
       this.form.details.forEach(function (element) {
         totalAmount += parseFloat(element.amount)

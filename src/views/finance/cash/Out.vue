@@ -149,7 +149,7 @@ export default {
     updatePage (value) {
       this.currentPage = value
       this.getPaymentOrders()
-    }    
+    }
   },
   created () {
     this.getPaymentOrders()

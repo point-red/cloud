@@ -108,7 +108,7 @@ export default {
           sort_by: 'name',
           limit: 50,
           filter_like: {
-            name: this.searchText            
+            name: this.searchText
           }
         }
       }).then(response => {

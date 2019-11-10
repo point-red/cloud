@@ -119,7 +119,7 @@ export default {
             'supplier.name': this.searchText,
             'items.item.name': this.searchText,
             'items.notes': this.searchText,
-            'items.quantity': this.searchText,
+            'items.quantity': this.searchText
           },
           limit: this.limit,
           includes: 'form;supplier;warehouse;items.item;services.service',

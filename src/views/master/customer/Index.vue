@@ -74,7 +74,7 @@ export default {
     PointTable
   },
   data () {
-    return {      
+    return {
       loading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,

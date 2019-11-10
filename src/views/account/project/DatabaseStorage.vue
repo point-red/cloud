@@ -16,7 +16,7 @@
               slot="p-body">
               <th>{{ index + 1 }}</th>
               <td v-for="(col, index2) in row" :key="index + '-' + index2">{{ col }}</td>
-            </tr>            
+            </tr>
           </point-table>
         </template>
         <template v-else-if="!loading">

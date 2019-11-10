@@ -20,7 +20,7 @@
 
     <project-widget :project="project"></project-widget>
 
-    <hr>    
+    <hr>
 
     <div class="row">
       <p-block column="col-sm-3">
@@ -115,7 +115,7 @@ export default {
     ...mapActions('accountProjectDatabaseReset', {
       resetDatabase: 'reset'
     }),
-    chooseTable(table) {
+    chooseTable (table) {
       this.isLoading = true
       this.loadingMessage = 'Loading'
       this.tableName = table
@@ -128,7 +128,7 @@ export default {
       if (this.tableName) {
         this.getRows({
           id: this.id,
-          params: {            
+          params: {
             table_name: table
           }
         })
@@ -149,7 +149,7 @@ export default {
         this.loadingMessage = 'Loading.. (This may take some time)'
         if (result.value) {
           this.resetDatabase({
-            id: this.id,
+            id: this.id
           }).then(response => {
             this.isLoading = false
             this.$swal.fire('Finish', 'Your database has been reset.', 'success')

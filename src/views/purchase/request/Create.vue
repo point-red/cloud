@@ -49,7 +49,7 @@
           <p-separator></p-separator>
 
           <h3 class="">Item</h3>
-          
+
           <point-table>
             <tr slot="p-head">
               <th>#</th>

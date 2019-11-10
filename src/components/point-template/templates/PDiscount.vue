@@ -15,7 +15,7 @@
             %
           </template>
           <template v-else>
-            
+
           </template>
         </span>
       </div>

@@ -135,14 +135,14 @@ export default {
           filter_like: {
             'form.number': this.searchText,
             'supplier.name': this.searchText,
-            'amount': this.searchText,
+            'amount': this.searchText
           },
           filter_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
           },
           filter_max: {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
-          },   
+          },
           limit: this.limit,
           includes: 'form;supplier;downpaymentable.form',
           page: this.currentPage

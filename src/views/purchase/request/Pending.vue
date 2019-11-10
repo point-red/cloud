@@ -118,7 +118,7 @@ export default {
           join: 'form',
           fields: 'purchase_requests.*',
           sort_by: '-forms.number',
-          filter_like: {            
+          filter_like: {
             'form.number': this.searchText,
             'form.date': this.searchText,
             'supplier.name': this.searchText,

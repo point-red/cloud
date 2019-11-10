@@ -48,7 +48,7 @@
             name="phone"
             :errors="form.errors.get('phone')"
             @errors="form.errors.set('phone', null)"/>
-        
+
           <hr/>
 
           <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">

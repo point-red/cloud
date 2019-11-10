@@ -189,7 +189,7 @@
                 {{ approval.requested_at | dateFormat('DD MMMM YYYY HH:mm') }}
               </td>
               <td>
-                {{ approval.requested_by.first_name }} {{ approval.requested_by.last_name }} 
+                {{ approval.requested_by.first_name }} {{ approval.requested_by.last_name }}
               </td>
               <td>
                 {{ approval.requested_to.first_name }} {{ approval.requested_to.last_name }}
@@ -324,14 +324,14 @@ export default {
       this.delete({
         id: this.id
       }).then(response => {
-          this.isDeleting = false
-          this.$notification.success('cancel success')
-          this.$router.push('/purchase/order')
-        }).catch(error => {
-          this.isDeleting = false
-          this.$notification.error(error.message)
-          this.form.errors.record(error.errors)
-        })
+        this.isDeleting = false
+        this.$notification.success('cancel success')
+        this.$router.push('/purchase/order')
+      }).catch(error => {
+        this.isDeleting = false
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
+      })
     }
   },
   created () {

@@ -69,10 +69,22 @@ export default {
       type: Boolean,
       default: false
     },
-    isLoading: false,
-    isFullscreen: false,
-    isPinned: false,
-    isHidden: false,
+    isLoading: {
+      type: Boolean,
+      default: false
+    },
+    isFullscreen: {
+      type: Boolean,
+      default: false
+    },
+    isPinned: {
+      type: Boolean,
+      default: false
+    },
+    isHidden: {
+      type: Boolean,
+      default: false
+    },
     showOptions: {
       type: Boolean,
       default: true

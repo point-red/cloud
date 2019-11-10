@@ -90,8 +90,7 @@ export default {
           this.isSaving = false
           this.$notification.error('Update password failed', error.message)
           this.form.errors.record(error.errors)
-        }
-      )
+        })
     }
   }
 }

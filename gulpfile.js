@@ -20,7 +20,7 @@ gulp.task('js', function () {
     'resources/js/core/jquery.countTo.min.js',
     'resources/js/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js',
     'resources/js/plugins/jquery-auto-complete/jquery.auto-complete.min.js',
-    'resources/js/plugins/masked-inputs/jquery.maskedinput.min.js',
+    'resources/js/plugins/masked-inputs/jquery.maskedinput.min.js'
   ])
     .pipe(concat('core.min.js'))
     .pipe(uglify())

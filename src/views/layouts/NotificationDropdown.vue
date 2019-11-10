@@ -58,26 +58,26 @@ export default {
       var self = this
       if (this.authUser) {
         firebase.firestore().collection('notifications')
-        .orderBy('createdAt', 'desc')
-        .where('userId', '==', this.authUser.id)
-        .limit(4)
-        .onSnapshot(function(querySnapshot) {
-          self.notifications = []
-          querySnapshot.forEach(function(doc) {
-            const data = {
-              'type': 'info',
-              'message': doc.data().message,
-              'clickAction': doc.data().clickAction,
-              'createdAt': doc.data().createdAt
-            }
-            self.notifications.push(data)
+          .orderBy('createdAt', 'desc')
+          .where('userId', '==', this.authUser.id)
+          .limit(4)
+          .onSnapshot(function (querySnapshot) {
+            self.notifications = []
+            querySnapshot.forEach(function (doc) {
+              const data = {
+                'type': 'info',
+                'message': doc.data().message,
+                'clickAction': doc.data().clickAction,
+                'createdAt': doc.data().createdAt
+              }
+              self.notifications.push(data)
+            })
           })
-        }) 
-      }      
+      }
     }
   },
   created () {
-    
+
   }
 }
 </script>

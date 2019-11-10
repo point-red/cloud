@@ -205,10 +205,10 @@ export default {
         class_reference: 'Item'
       })
     },
-    removeItemGroupRow(group) {
+    removeItemGroupRow (group) {
       this.$delete(this.form.groups, group)
     },
-    chooseItemGroup(event, index) {
+    chooseItemGroup (event, index) {
       this.$set(this.form.groups, index, event)
     },
     onSubmit () {

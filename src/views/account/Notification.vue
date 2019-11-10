@@ -3,7 +3,7 @@
     <breadcrumb>
       <span class="breadcrumb-item active">Notification</span>
     </breadcrumb>
-    
+
     <div class="row">
       <p-block>
         <p-block-inner>

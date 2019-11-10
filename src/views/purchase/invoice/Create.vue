@@ -42,7 +42,7 @@
           <h3>Item</h3>
 
           <hr>
-          
+
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -91,7 +91,7 @@
                   :name="'discount' + index"
                   v-model="form.items[index].discount_percent"
                   @keyup.native="calculate()"/>
-              </td>              
+              </td>
               <td>
                 <p-form-number
                   :id="'total-' + index"
@@ -134,7 +134,7 @@
           <h3>{{ $t('down payment') | titlecase }}</h3>
 
           <hr>
-          
+
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -198,7 +198,7 @@
                 id="need-down-payment"
                 name="need-down-payment"
                 :label="$t('tax')">
-                <div slot="body" class="col-lg-9">                
+                <div slot="body" class="col-lg-9">
                   <p-form-check-box
                     class="mb-0"
                     style="float:left"
@@ -317,7 +317,7 @@ export default {
               label: '',
               name: '',
               converter: null
-            }],
+            }]
           },
           unit: null,
           converter: null,
@@ -362,7 +362,7 @@ export default {
       }
       this.calculate()
     },
-    calculate: debounce (function () {
+    calculate: debounce(function () {
       var subtotal = 0
       var totalQuantity = 0
       this.form.items.forEach(function (element) {
@@ -414,11 +414,11 @@ export default {
       this.find({
         id: this.$route.query.id,
         params: {
-          includes: 'form;'
-            + 'supplier;'
-            + 'items.item.units;'
-            + 'services.service;'
-            + 'purchaseOrder.remainingDownPayments'
+          includes: 'form;' +
+            'supplier;' +
+            'items.item.units;' +
+            'services.service;' +
+            'purchaseOrder.remainingDownPayments'
         }
       }).then(response => {
         this.isLoading = false

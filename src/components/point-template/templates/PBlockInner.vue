@@ -17,8 +17,14 @@
 <script>
 export default {
   props: {
-    isLoading: false,
-    isHidden: false
+    isLoading: {
+      type: Boolean,
+      default: false
+    },
+    isHidden: {
+      type: Boolean,
+      default: false
+    }
   },
   data () {
     return {

@@ -165,7 +165,7 @@
                 id="need-down-payment"
                 name="need-down-payment"
                 :label="$t('tax')">
-                <div slot="body" class="col-lg-9">                
+                <div slot="body" class="col-lg-9">
                   <p-form-check-box
                     class="mb-0"
                     style="float:left"
@@ -280,7 +280,7 @@ export default {
     }
   },
   created () {
-    this.isLoading = true    
+    this.isLoading = true
     this.find({
       id: this.id,
       params: {
@@ -351,7 +351,7 @@ export default {
         })
       })
     },
-    calculate: debounce (function () {
+    calculate: debounce(function () {
       var subtotal = 0
       var totalQuantity = 0
       this.form.items.forEach(function (element) {

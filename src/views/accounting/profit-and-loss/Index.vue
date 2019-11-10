@@ -1,5 +1,5 @@
 <template>
-  <div>    
+  <div>
     <breadcrumb>
       <breadcrumb-accounting/>
       <span class="breadcrumb-item active">{{ $t('profit & loss') | titlecase }}</span>

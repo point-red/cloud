@@ -46,7 +46,7 @@
             class="btn btn-outline-secondary"
             :value="form.invitation_code"
             @click="copyToClipboard">{{ form.invitation_code }}</p>
-        </div>        
+        </div>
       </p-block>
       <p-block column="col-sm-9">
         <p-block-inner :is-loading="isLoading" v-show="requestJoinProjects.length > 0">
@@ -97,7 +97,7 @@
               <td>{{ user.email | lowercase }}</td>
               <td>{{ user.phone }}</td>
               </template>
-            </tr>            
+            </tr>
           </point-table>
         </p-block-inner>
       </p-block>

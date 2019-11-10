@@ -24,7 +24,7 @@
             id="payment-account"
             name="payment-account"
             :label="$t('payment account')">
-            <div slot="body" class="col-lg-9">                
+            <div slot="body" class="col-lg-9">
               {{ payment.payment_account.number }} - {{ payment.payment_account.alias }}
             </div>
           </p-form-row>
@@ -88,7 +88,7 @@
             <div class="col-md-12">
             </div>
           </div>
-        </p-block-inner>        
+        </p-block-inner>
       </p-block>
     </form>
   </div>
@@ -120,7 +120,7 @@ export default {
     ...mapGetters('financePayment', ['payment'])
   },
   methods: {
-    ...mapActions('financePayment', ['find']),
+    ...mapActions('financePayment', ['find'])
   },
   created () {
     this.find({

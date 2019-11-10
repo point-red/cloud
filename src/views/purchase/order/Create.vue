@@ -90,7 +90,7 @@
                   :name="'discount' + index"
                   v-model="form.items[index].discount_percent"
                   @keyup.native="calculate()"/>
-              </td>              
+              </td>
               <td>
                 <p-form-number
                   :id="'total-' + index"
@@ -152,7 +152,7 @@
                 id="need-down-payment"
                 name="need-down-payment"
                 :label="$t('tax')">
-                <div slot="body" class="col-lg-9">                
+                <div slot="body" class="col-lg-9">
                   <p-form-check-box
                     class="mb-0"
                     style="float:left"
@@ -193,7 +193,7 @@
 
           <div class="row">
             <div class="col-sm-6">
-              <h3>Options</h3>        
+              <h3>Options</h3>
               <hr>
               <p-form-row
                 id="need-down-payment"
@@ -248,7 +248,7 @@
               </button>
             </div>
           </div>
-        </p-block-inner>        
+        </p-block-inner>
       </p-block>
     </form>
   </div>
@@ -300,7 +300,7 @@ export default {
               label: '',
               name: '',
               converter: null
-            }],
+            }]
           },
           unit: null,
           converter: null,
@@ -330,7 +330,7 @@ export default {
             label: '',
             name: '',
             converter: null
-          }],
+          }]
         },
         unit: null,
         converter: null,
@@ -368,7 +368,7 @@ export default {
       }
       this.calculate()
     },
-    calculate: debounce (function () {
+    calculate: debounce(function () {
       var subtotal = 0
       this.form.items.forEach(function (element) {
         element.allocation_name = ''

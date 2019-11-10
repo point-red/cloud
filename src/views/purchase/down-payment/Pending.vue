@@ -117,7 +117,7 @@ export default {
           filter_like: {
             'form.number': this.searchText,
             'supplier.name': this.searchText,
-            'amount': this.searchText,
+            'amount': this.searchText
           },
           limit: this.limit,
           includes: 'form;supplier;downpaymentable.form',

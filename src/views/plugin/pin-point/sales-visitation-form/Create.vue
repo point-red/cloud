@@ -472,9 +472,9 @@ export default {
         { id: 'Y007 NEW GEN BULK PACK 1KG', label: 'Y007 NEW GEN BULK PACK 1KG' }
       ],
       // Google Map
-      center: {lat: 23.8103, lng: 90.4125},
+      center: { lat: 23.8103, lng: 90.4125 },
       markers: [
-          {position: {lat: 10.0, lng: 10.0}}
+        { position: { lat: 10.0, lng: 10.0 } }
       ],
       addressComponent: {},
       getMap: this.$root.mapping,
@@ -488,7 +488,7 @@ export default {
     this.loadingMessage = 'Searching current location'
     // Check for Geolocation API permissions
     navigator.permissions.query({
-      name:'geolocation'
+      name: 'geolocation'
     }).then(permissionStatus => {
       console.log('geolocation permission state is ', permissionStatus.state)
       if (permissionStatus.state == 'granted') {
@@ -515,7 +515,7 @@ export default {
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['create']),
     getLocation () {
-      if (navigator.geolocation) {              
+      if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
           let pos = {
             lat: position.coords.latitude,
@@ -527,7 +527,7 @@ export default {
           this.markers[0].position.lng = pos.lng
           this.$refs.map.$mapPromise.then(() => {
             this.isLoading = false
-            this.geocodeLatLng(new google.maps.Geocoder, pos, google.maps.InfoWindow)
+            this.geocodeLatLng(new google.maps.Geocoder(), pos, google.maps.InfoWindow)
           }).catch(error => {
             this.isLoading = false
           })
@@ -569,9 +569,9 @@ export default {
         }
       })
     },
-    geocodeLatLng (geocoder, map, infowindow){
+    geocodeLatLng (geocoder, map, infowindow) {
       var self = this
-      geocoder.geocode({'location':this.center}, function (results, status) {
+      geocoder.geocode({ 'location': this.center }, function (results, status) {
         console.log(results)
         if (status == 'OK') {
           self.addressComponent = results[0]
@@ -593,7 +593,7 @@ export default {
     },
     // [End] Google Map
     chooseItem (event, row) {
-      this.form.item[row-1] = event.name
+      this.form.item[row - 1] = event.name
       if (this.rows === row) {
         this.rows++
       }

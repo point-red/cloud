@@ -136,7 +136,7 @@ export default {
             'supplier.name': this.searchText,
             'items.item.name': this.searchText,
             'items.notes': this.searchText,
-            'items.quantity': this.searchText,
+            'items.quantity': this.searchText
           },
           filter_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
