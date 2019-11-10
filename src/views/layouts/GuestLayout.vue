@@ -97,20 +97,6 @@
   <!-- END Page Container -->
 </template>
 
-<script>
-export default {
-  data () {
-    return {
-      ads: process.env.VUE_APP_FOO
-    }
-  },
-  created () {
-    console.log(process.env.FOO)
-    console.log('process.env.VUE_APP_FOO')
-  }
-}
-</script>
-
 <style scoped>
   .blog-date {
     margin-top: -20px;

@@ -1,4 +1,4 @@
-const webpack = require('webpack')
+process.env.VUE_APP_VERSION = require('./package.json').version
 
 module.exports = {
   devServer: {
@@ -8,17 +8,6 @@ module.exports = {
   pwa: {
     workboxOptions: {
       skipWaiting: true
-    }
-  },
-  configureWebpack: config => {
-    return {
-      plugins: [
-        new webpack.DefinePlugin({
-          'process.env': {
-            VERSION: JSON.stringify(require('./package.json').version)
-          }
-        })
-      ]
     }
   }
 }

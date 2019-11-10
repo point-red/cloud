@@ -27,13 +27,14 @@
 
     <!-- Header Loader -->
     <div
+      v-show="isNewUpdateAvailable"
       style="position:relative"
       id="page-header-loader"
       class="overlay-header bg-danger text-white"
-      :class="{ isNewUpdateAvailable: 'show' }">
+      :class="{ 'show': isNewUpdateAvailable === true }">
       <div class="content-header content-header-fullrow text-center">
         <div class="content-header-item">
-          <i class="fa fa-warning"></i> UPDATE {{ version }} IS AVAILABLE <a href="">UPDATE NOW</a> OR <a href="">LATER</a>
+          <i class="fa fa-warning"></i> UPDATE {{ version }} IS AVAILABLE <a href="">UPDATE NOW</a> OR <a href="javascript:void(0)" @click="updateLater()">LATER</a>
         </div>
       </div>
     </div>
@@ -58,11 +59,14 @@ export default {
     NotificationDropdown
   },
   methods: {
-    ...mapActions('uiHandler', ['toggleLeftSidebar'])
+    ...mapActions('uiHandler', ['toggleLeftSidebar']),
+    updateLater () {
+      this.isNewUpdateAvailable = false
+    }
   },
   created () {
-    this.version = process.env.VERSION
-    if (localStorage.getItem('version') !== process.env.VERSION) {
+    this.version = process.env.VUE_APP_VERSION
+    if (localStorage.getItem('version') !== process.env.VUE_APP_VERSION) {
       this.isNewUpdateAvailable = true
     }
   }
