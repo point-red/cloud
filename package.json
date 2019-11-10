@@ -1,13 +1,13 @@
 {
   "name": "point-cloud",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --no-clean",
-    "lint": "vue-cli-service lint",
+    "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
-    "test:unit": "vue-cli-service test:unit"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "axios": "^0.19.0",
@@ -15,7 +15,7 @@
     "bugsnag-js": "^4.7.3",
     "bugsnag-vue": "^1.0.1",
     "chart.js": "^2.7.2",
-    "firebase": "^6.3.1",
+    "firebase": "^7.3.0",
     "flag-icon-css": "^3.2.1",
     "lodash": "^4.17.11",
     "moment-timezone": "^0.5.26",
@@ -44,18 +44,18 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.1.1",
-    "@vue/cli-plugin-e2e-cypress": "^3.1.2",
-    "@vue/cli-plugin-eslint": "^3.1.5",
-    "@vue/cli-plugin-pwa": "^3.4.1",
-    "@vue/cli-plugin-unit-mocha": "^3.1.1",
-    "@vue/cli-service": "^3.1.4",
+    "@vue/cli-plugin-babel": "^4.0.5",
+    "@vue/cli-plugin-e2e-cypress": "^4.0.5",
+    "@vue/cli-plugin-eslint": "^4.0.5",
+    "@vue/cli-plugin-pwa": "^4.0.5",
+    "@vue/cli-plugin-unit-mocha": "^4.0.5",
+    "@vue/cli-service": "^4.0.5",
     "@vue/eslint-config-standard": "^4.0.0",
-    "@vue/test-utils": "^1.0.0-beta.20",
-    "babel-eslint": "^10.0.1",
-    "chai": "^4.1.2",
-    "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0-0",
+    "@vue/test-utils": "^1.0.0-beta.29",
+    "babel-eslint": "^10.0.3",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.0.0",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-concat": "^2.6.1",
@@ -63,9 +63,9 @@
     "gulp-minify-css": "^1.2.4",
     "gulp-sass": "^4.0.2",
     "gulp-uglify": "^3.0.2",
-    "lint-staged": "^7.2.2",
-    "node-sass": "^4.10.0",
-    "sass-loader": "^7.1.0",
+    "lint-staged": "^9.4.2",
+    "node-sass": "^4.13.0",
+    "sass-loader": "^8.0.0",
     "vue-template-compiler": "^2.6.10"
   },
   "gitHooks": {

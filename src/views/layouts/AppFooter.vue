@@ -19,16 +19,13 @@
 export default {
   data () {
     return {
-      version: 'X.Y.Z'
+      version: ''
     }
   },
   created () {
     console.log('check version ' + this.version)
-    fetch('/version.txt')
-      .then(response => response.text())
-      .then(text => {
-        this.version = text
-      })
+    this.version = process.env.VERSION
+    console.log('check updated version ' + this.version)
   }
 }
 </script>
