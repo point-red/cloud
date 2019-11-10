@@ -54,7 +54,7 @@
               class="p-30 invisible"
               data-toggle="appear">
               <p class="font-size-h3 font-w600 text-white">
-                Open Beta {{ ads }}
+                Open Beta
               </p>
               <p class="text-white blog-date">01 January 2019</p>
               <hr>

@@ -23,9 +23,7 @@ export default {
     }
   },
   created () {
-    console.log('check version ' + this.version)
     this.version = process.env.VUE_APP_VERSION
-    console.log('check updated version ' + this.version)
   }
 }
 </script>

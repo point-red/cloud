@@ -57,7 +57,6 @@ Vue.use(VueGoogleMaps, {
 })
 
 require('vue-tour/dist/vue-tour.css')
-require('flag-icon-css/css/flag-icon.min.css')
 
 if (process.env.VUA_APP_NODE_ENV == 'production') {
   const bugsnagClient = bugsnag(process.env.VUE_APP_BUGSNAG_API_KEY)

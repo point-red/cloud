@@ -1,5 +1,20 @@
 <template>
   <header id="page-header">
+    <!-- Header Loader -->
+    <div
+      v-show="isNewUpdateAvailable"
+      style="position:relative"
+      id="page-header-loader"
+      class="overlay-header bg-danger text-white"
+      :class="{ 'show': isNewUpdateAvailable === true }">
+      <div class="content-header content-header-fullrow text-center">
+        <div class="content-header-item">
+          <i class="fa fa-warning"></i> UPDATE {{ version }} IS AVAILABLE <a href="">UPDATE NOW</a> OR <a href="javascript:void(0)" @click="updateLater()">LATER</a>
+        </div>
+      </div>
+    </div>
+    <!-- END Header Loader -->
+
     <!-- Header Content -->
     <div class="content-header">
       <!-- Left Section -->
@@ -88,21 +103,6 @@
       </div>
     </div>
     <!-- END Header Search -->
-
-    <!-- Header Loader -->
-    <div
-      v-show="isNewUpdateAvailable"
-      style="position:relative"
-      id="page-header-loader"
-      class="overlay-header bg-danger text-white"
-      :class="{ 'show': isNewUpdateAvailable === true }">
-      <div class="content-header content-header-fullrow text-center">
-        <div class="content-header-item">
-          <i class="fa fa-warning"></i> UPDATE {{ version }} IS AVAILABLE <a href="">UPDATE NOW</a> OR <a href="javascript:void(0)" @click="updateLater()">LATER</a>
-        </div>
-      </div>
-    </div>
-    <!-- END Header Loader -->
   </header>
 </template>
 
