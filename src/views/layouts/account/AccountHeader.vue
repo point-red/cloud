@@ -9,7 +9,7 @@
       :class="{ 'show': isNewUpdateAvailable === true }">
       <div class="content-header content-header-fullrow text-center">
         <div class="content-header-item">
-          <i class="fa fa-warning"></i> UPDATE {{ version }} IS AVAILABLE <a href="">UPDATE NOW</a> OR <a href="javascript:void(0)" @click="updateLater()">LATER</a>
+          <i class="fa fa-warning"></i> UPDATE {{ version }} IS AVAILABLE <a href="javascript:void(0)" @click="updateNow()">UPDATE NOW</a> OR <a href="javascript:void(0)" @click="updateLater()">LATER</a>
         </div>
       </div>
     </div>
@@ -62,6 +62,9 @@ export default {
     ...mapActions('uiHandler', ['toggleLeftSidebar']),
     updateLater () {
       this.isNewUpdateAvailable = false
+    },
+    updateNow () {
+      window.location.reload(true)
     }
   },
   created () {
