@@ -9877,6 +9877,8 @@ textarea.form-control.form-control-lg, .input-group-lg > textarea.form-control,
   -ms-flex-align: center;
       align-items: center;
   margin: 0 auto;
+  padding: 17px 18px;
+  height: 68px;
 }
 
 .content-header.content-header-fullrow {
