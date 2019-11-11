@@ -9,21 +9,8 @@
           target="_blank">RED POINT</a>
       </div>
       <div class="float-left">
-        VERSION {{ version }} | &copy; 2019
+        VERSION {{ pointPackageVersion }} | &copy; 2019
       </div>
     </div>
   </footer>
 </template>
-
-<script>
-export default {
-  data () {
-    return {
-      version: ''
-    }
-  },
-  created () {
-    this.version = process.env.VUE_APP_VERSION
-  }
-}
-</script>

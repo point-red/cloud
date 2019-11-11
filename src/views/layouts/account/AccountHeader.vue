@@ -2,14 +2,14 @@
   <header id="page-header">
     <!-- Header Loader -->
     <div
-      v-show="isNewUpdateAvailable"
+      v-show="pointUpdateAvailable"
       style="position:relative"
       id="page-header-loader"
       class="overlay-header bg-danger text-white"
-      :class="{ 'show': isNewUpdateAvailable === true }">
+      :class="{ 'show': pointUpdateAvailable === true }">
       <div class="content-header content-header-fullrow text-center">
         <div class="content-header-item">
-          <i class="fa fa-warning"></i> UPDATE {{ version }} IS AVAILABLE <a href="javascript:void(0)" @click="updateNow()">UPDATE NOW</a> OR <a href="javascript:void(0)" @click="updateLater()">LATER</a>
+          <i class="fa fa-warning"></i> UPDATE {{ pointSwVersion }} IS AVAILABLE <a href="javascript:void(0)" @click="updateNow()">UPDATE NOW</a> OR <a href="javascript:void(0)" @click="updateLater()">LATER</a>
         </div>
       </div>
     </div>
@@ -48,12 +48,6 @@ import HeaderDropdown from './HeaderDropdown'
 import NotificationDropdown from '../NotificationDropdown'
 
 export default {
-  data () {
-    return {
-      isNewUpdateAvailable: false,
-      version: ''
-    }
-  },
   components: {
     HeaderDropdown,
     NotificationDropdown
@@ -61,18 +55,16 @@ export default {
   methods: {
     ...mapActions('uiHandler', ['toggleLeftSidebar']),
     updateLater () {
-      this.isNewUpdateAvailable = false
+      this.pointUpdateAvailable = false
     },
     updateNow () {
       window.location.reload(true)
     }
   },
   created () {
-    console.log('this.version = ' + this.version)
-    this.version = process.env.VUE_APP_VERSION
-    console.log(localStorage.getItem('version') + ' !== ' + process.env.VUE_APP_VERSION)
-    if (localStorage.getItem('version') !== process.env.VUE_APP_VERSION) {
-      this.isNewUpdateAvailable = true
+    console.log(this.pointSwVersion + ' !== ' + this.pointPackageVersion)
+    if (this.pointSwVersion !== this.pointPackageVersion) {
+      this.pointUpdateAvailable = true
     }
   }
 }

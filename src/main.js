@@ -29,6 +29,7 @@ import VueClipboard from 'vue-clipboard2'
 import VueSelectMenu from 'v-selectmenu'
 import ClickOutside from 'v-click-outside'
 import '@/firebase'
+import PackageVersion from '@/components/package-version'
 import * as VueGoogleMaps from 'vue2-google-maps'
 
 Vue.use(VueGoogleMaps, {
@@ -63,6 +64,7 @@ if (process.env.VUA_APP_NODE_ENV == 'production') {
   bugsnagClient.use(bugsnagVue(Vue))
 }
 
+Vue.use(PackageVersion)
 Vue.use(VueSelectMenu, { language: 'en' })
 Vue.use(VueClipboard)
 Vue.use(ClickOutside)

@@ -114,9 +114,7 @@ import NotificationDropdown from './NotificationDropdown'
 export default {
   data () {
     return {
-      tenantName: localStorage.getItem('tenantName'),
-      isNewUpdateAvailable: false,
-      version: ''
+      tenantName: localStorage.getItem('tenantName')
     }
   },
   components: {
@@ -126,18 +124,16 @@ export default {
   methods: {
     ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSideOverlay']),
     updateLater () {
-      this.isNewUpdateAvailable = false
+      this.pointUpdateAvailable = false
     },
     updateNow () {
       window.location.reload(true)
     }
   },
   created () {
-    console.log('this.version = ' + this.version)
-    this.version = process.env.VUE_APP_VERSION
-    console.log(localStorage.getItem('version') + ' !== ' + process.env.VUE_APP_VERSION)
-    if (localStorage.getItem('version') !== process.env.VUE_APP_VERSION) {
-      this.isNewUpdateAvailable = true
+    console.log(this.pointSwVersion + ' !== ' + this.pointPackageVersion)
+    if (this.pointSwVersion !== this.pointPackageVersion) {
+      this.pointUpdateAvailable = true
     }
   }
 }
