@@ -58,6 +58,7 @@ export default {
       this.pointUpdateAvailable = false
     },
     updateNow () {
+      localStorage.setItem('pointSwVersion', this.pointPackageVersion)
       window.location.reload(true)
     }
   },
