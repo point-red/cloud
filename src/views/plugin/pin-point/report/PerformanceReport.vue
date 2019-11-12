@@ -103,8 +103,8 @@ export default {
   data () {
     return {
       date: {
-        start: this.$moment(),
-        end: this.$moment()
+        start: this.$moment().format('YYYY-MM-DD 00:00:00'),
+        end: this.$moment().format('YYYY-MM-DD 23:59:59')
       },
       loading: false,
       isExporting: false,
@@ -156,10 +156,10 @@ export default {
       this.export({
         date_from: this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'),
         date_to: this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59')
-      }).then((response) => {
+      }).then(response => {
         this.isExporting = false
         this.downloadFiles = response.data.files
-      }, (error) => {
+      }).catch(error => {
         this.isExporting = false
         console.log(error)
       })
