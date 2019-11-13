@@ -3,6 +3,7 @@ import api from '@/api'
 import Vue from 'vue'
 import axios from '@/axios'
 import router from '@/router'
+import device from 'mobile-device-detect'
 
 const profileUrl = '/account/profiles'
 const passwordUrl = '/account/password'
@@ -44,7 +45,16 @@ const actions = {
     return new Promise((resolve, reject) => {
       axios.post('/auth/login', {
         username: payload.username,
-        password: payload.password
+        password: payload.password,
+        is_mobile: device.isMobile,
+        os_name: device.osName,
+        os_version: device.osVersion,
+        browser_name: device.browserName,
+        browser_version: device.browserVersion,
+        mobile_vendor: device.mobileVendor,
+        mobile_model: device.mobileModel,
+        engine_name: device.engineName,
+        engine_version: device.engineVersion
       }).then(response => {
         var axiosData = response.data // axios wrap response with data
         var apiData = axiosData.data
