@@ -9,7 +9,7 @@
       :class="{ 'show': pointUpdateAvailable === true }">
       <div class="content-header content-header-fullrow text-center">
         <div class="content-header-item">
-          <i class="fa fa-warning"></i> UPDATE {{ pointUpdateAvailable }} IS AVAILABLE <a href="javascript:void(0)" @click="updateNow()">UPDATE NOW</a> OR <a href="javascript:void(0)" @click="updateLater()">LATER</a>
+          <i class="fa fa-warning"></i> UPDATE {{ pointSwVersion }} IS AVAILABLE <a href="javascript:void(0)" @click="updateNow()">UPDATE NOW</a> OR <a href="javascript:void(0)" @click="updateLater()">LATER</a>
         </div>
       </div>
     </div>
