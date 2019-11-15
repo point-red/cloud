@@ -54,6 +54,16 @@ const mutations = {
 }
 
 const actions = {
+  duplicate ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/duplicate', payload)
+        .then((response) => {
+          resolve(response)
+        }, (error) => {
+          reject(error)
+        })
+    })
+  },
   export ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/export', payload)

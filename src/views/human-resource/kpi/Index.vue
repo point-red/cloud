@@ -59,6 +59,9 @@
                 <button :disabled="isExporting.includes(template.id)" type="submit" class="btn btn-sm btn-primary" @click="exportData(template.id)" style="margin-left:12px">
                   <i v-show="isExporting.includes(template.id)" class="fa fa-asterisk fa-spin" /> Export
                 </button>
+                <button :disabled="isDuplicating" type="submit" class="btn btn-sm btn-primary" @click="duplicate(template.id)" style="margin-left:12px">
+                  <i v-show="isDuplicating" class="fa fa-asterisk fa-spin" /> Duplicate
+                </button>
               </td>
             </tr>
           </p-table>
@@ -120,6 +123,7 @@ export default {
     return {
       title: 'kpi template',
       loading: false,
+      isDuplicating: false,
       isExporting: []
     }
   },
@@ -129,8 +133,24 @@ export default {
   methods: {
     ...mapActions('humanResourceKpiTemplate', {
       getKpiTemplates: 'get',
-      export: 'export'
+      export: 'export',
+      duplicateKpiTemplate: 'duplicate'
     }),
+    duplicate (id) {
+      console.log('duplicate kpi template')
+      this.isDuplicating = true
+      this.duplicateKpiTemplate({
+        kpi_template_id: id
+      }).then((response) => {
+        this.isDuplicating = false
+        this.loading = true
+        this.getKpiTemplates().then((response) => {
+          this.loading = false
+        })
+      }, (error) => {
+        console.log(error)
+      })
+    },
     exportData (value) {
       this.isExporting.push(value)
       this.export({
