@@ -620,7 +620,7 @@ export default {
           this.$router.push('/plugin/pin-point/sales-visitation-form')
         }).catch(error => {
           this.isSaving = false
-          this.$notification.error(error)
+          this.$notification.error(error.message)
           if (error.errors) {
             this.form.errors.record(error.errors)
           }
