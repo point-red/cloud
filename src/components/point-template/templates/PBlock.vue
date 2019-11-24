@@ -15,6 +15,7 @@
         <div
           v-show="showOptions"
           class="block-options">
+          <slot name="header"/>
           <button
             v-show="showFullscreenButton"
             type="button"
@@ -43,7 +44,6 @@
             @click="toggleHidden">
             <i :class="{ 'si si-arrow-up' : !hidden, 'si si-arrow-down' : hidden }"/>
           </button>
-          <slot name="header"/>
         </div>
       </div>
       <div class="block-content">

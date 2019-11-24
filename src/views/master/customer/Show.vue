@@ -12,6 +12,14 @@
 
     <div class="row">
       <p-block :title="$t('customer')" :header="true">
+        <router-link
+          to="/master/customer/create"
+          v-if="$permission.has('create customer')"
+          slot="header"
+          exact
+          class="btn-block-option">
+          <span><i class="si si-plus"></i> {{ $t('new customer') | titlecase }}</span>
+        </router-link>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
@@ -37,18 +45,6 @@
             name="phone"
             v-model="data.phone"
             readonly/>
-          <p-form-row
-            id="priority"
-            :label="''"
-            name="priority">
-            <div slot="body" class="col-lg-9">
-              <p-form-check-box
-                id="priority"
-                name="priority"
-                :checked="data.priority"
-                :description="'Priority Customer'"/>
-            </div>
-          </p-form-row>
 
           <hr/>
           <router-link
@@ -183,8 +179,7 @@ export default {
         name: null,
         email: null,
         address: null,
-        phone: null,
-        priority: false
+        phone: null
       },
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1
@@ -253,11 +248,6 @@ export default {
       }
       if (response.data.phones.length > 0) {
         this.data.phone = response.data.phones[0].number
-      }
-      if (response.data.groups.length > 0) {
-        if (response.data.groups[0].name == 'priority') {
-          this.data.priority = true
-        }
       }
     }).catch(error => {
       this.isLoading = false

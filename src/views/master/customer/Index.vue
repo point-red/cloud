@@ -9,6 +9,14 @@
 
     <div class="row">
       <p-block :title="$t('customer')" :header="true">
+        <router-link
+          to="/master/customer/create"
+          v-if="$permission.has('create customer')"
+          slot="header"
+          exact
+          class="btn-block-option">
+          <span><i class="si si-plus"></i> {{ $t('new customer') | titlecase }}</span>
+        </router-link>
         <p-form-input
           id="search-text"
           name="search-text"
