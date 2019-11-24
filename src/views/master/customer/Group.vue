@@ -80,6 +80,9 @@ export default {
         params: {
           sort_by: 'name',
           class_reference: 'Customer',
+          filter_like: {
+            'name': this.searchText
+          },
           limit: 10,
           page: this.currentPage
         }
