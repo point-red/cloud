@@ -2,13 +2,13 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">Customer</span>
+      <span class="breadcrumb-item active">Customer Group</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('customer')" :header="true">
+      <p-block :title="$t('group')" :header="true">
         <p-form-input
           id="search-text"
           name="search-text"
@@ -20,31 +20,13 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
               <th>Name</th>
-              <th>Address</th>
-              <th>Phone</th>
             </tr>
             <tr
-              v-for="(customer, index) in customers"
+              v-for="(group, index) in groups"
               :key="index"
               slot="p-body">
-              <th>{{ index + 1}}</th>
-              <td>
-                <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">
-                  <i class="fa fa-star" v-show="customer.groups.length > 0"></i> {{ customer.name | titlecase }}
-                </router-link>
-              </td>
-              <td>
-                <template v-for="customerAddress in customer.addresses">
-                  {{ customerAddress.address | lowercase }}
-                </template>
-              </td>
-              <td>
-                <template v-for="customerPhone in customer.phones">
-                  {{ customerPhone.number | lowercase }}
-                </template>
-              </td>
+              <td>{{ group.name | titlecase }}</td>
             </tr>
           </point-table>
         </p-block-inner>
@@ -82,46 +64,41 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterCustomer', ['customers', 'pagination'])
+    ...mapGetters('masterGroup', ['groups', 'pagination'])
   },
   methods: {
-    ...mapActions('masterCustomer', ['get']),
+    ...mapActions('masterGroup', {
+      getGroup: 'get'
+    }),
     updatePage (value) {
       this.currentPage = value
-      this.getCustomerRequest()
+      this.getGroupRequest()
     },
-    getCustomerRequest () {
+    getGroupRequest () {
       this.isLoading = true
-      this.get({
+      this.getGroup({
         params: {
-          fields: 'customers.*',
           sort_by: 'name',
-          filter_like: {
-            'name': this.searchText,
-            'addresses.address': this.searchText,
-            'emails.email': this.searchText,
-            'phones.number': this.searchText
-          },
-          join: 'addresses,phones,emails',
-          includes: 'addresses;phones;emails;groups',
+          class_reference: 'Customer',
           limit: 10,
           page: this.currentPage
         }
-      }).then(response => {
+      }).then((response) => {
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
+        this.$notifications.error(error.message)
       })
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getCustomerRequest()
+      this.getGroupRequest()
     }, 300)
   },
   created () {
-    this.getCustomerRequest()
+    this.getGroupRequest()
     this.$nextTick(() => {
       this.$refs.searchText.setFocus()
     })

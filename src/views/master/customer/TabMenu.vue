@@ -21,11 +21,11 @@
     </li>
     <li class="nav-item" v-if="$permission.has('read customer')">
       <router-link
-        to="/master/customer/priority"
+        to="/master/customer/group"
         exact
         class="nav-link"
         active-class="active">
-        <span><i class="si si-star"></i> Priority</span>
+        <span><i class="si si-tag"></i> Group</span>
       </router-link>
     </li>
     <slot name="right"></slot>
