@@ -4,7 +4,7 @@
       <div class="block block-themed text-center">
         <div class="block-content block-content-full block-content-sm bg-gray-lighter">
           <div class="font-w600">KPI</div>
-          <div class="font-size-sm">KEY PERFORMANCE INDEX</div>
+          <div class="font-size-sm">{{ $t('key performance indicator') | uppercase }}</div>
         </div>
         <div class="block-content">
           <div class="row items-push">
