@@ -40,7 +40,7 @@
               <th>{{ index + 1}}</th>
               <td>
                 <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">
-                  <i class="fa fa-star" v-show="customer.groups.length > 0"></i> {{ customer.name | titlecase }}
+                  {{ customer.name | titlecase }}
                 </router-link>
               </td>
               <td>
