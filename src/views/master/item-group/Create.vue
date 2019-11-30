@@ -2,25 +2,15 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link
-        to="/master/allocation"
-        class="breadcrumb-item">{{ $t('allocation') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('edit') }}</span>
+      <router-link to="/master/item-group" class="breadcrumb-item">Item Group</router-link>
+      <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('edit') + ' ' + $t('allocation')" :header="true">
-        <router-link
-          to="/master/allocation/create"
-          v-if="$permission.has('create allocation')"
-          slot="header"
-          exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new allocation') | titlecase }}</span>
-        </router-link>
-        <p-block-inner :is-loading="isLoading">
+      <p-block :title="$t('create') + ' ' + $t('item group')" :header="true">
+        <p-block-inner>
           <p-form-row
             id="name"
             v-model="form.name"
@@ -56,42 +46,29 @@ export default {
   },
   data () {
     return {
-      id: this.$route.params.id,
-      isLoading: true,
       isSaving: false,
       form: new Form({
-        id: this.$route.params.id,
         name: null
       })
     }
   },
   computed: {
-    ...mapGetters('masterAllocation', ['allocation'])
-  },
-  created () {
-    this.isLoading = true
-    this.find({ id: this.id })
-      .then(response => {
-        this.isLoading = false
-        this.form.name = this.allocation.name
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    ...mapGetters('masterItemGroup', ['group'])
   },
   methods: {
-    ...mapActions('masterAllocation', ['find', 'update']),
+    ...mapActions('masterItemGroup', ['create']),
     onSubmit () {
       this.isSaving = true
-      this.update(this.form)
+
+      this.create(this.form)
         .then(response => {
           this.isSaving = false
-          this.form.reset()
-          this.$notification.success('Update success')
-          this.$router.push('/master/allocation/' + this.id)
+          this.$notification.success('create success')
+          Object.assign(this.$data, this.$options.data.call(this))
+          this.$router.push('/master/item-group/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
-          this.$notification.error('Update failed')
+          this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
     }

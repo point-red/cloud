@@ -5,10 +5,13 @@ import Customer from './customer/routes'
 import CustomerGroup from './customer-group/routes'
 import Supplier from './supplier/routes'
 import SupplierGroup from './supplier-group/routes'
-import Warehouse from './warehouse/routes'
 import Allocation from './allocation/routes'
+import AllocationGroup from './allocation-group/routes'
 import Service from './service/routes'
+import ServiceGroup from './service-group/routes'
 import Item from './item/routes'
+import ItemGroup from './item-group/routes'
+import Warehouse from './warehouse/routes'
 
 export default [
   { path: '/master', name: 'Master', component: Master },
@@ -18,8 +21,11 @@ export default [
   ...CustomerGroup,
   ...Supplier,
   ...SupplierGroup,
-  ...Warehouse,
   ...Allocation,
+  ...AllocationGroup,
   ...Service,
-  ...Item
+  ...ServiceGroup,
+  ...Item,
+  ...ItemGroup,
+  ...Warehouse
 ]

@@ -9,6 +9,14 @@
 
     <div class="row">
       <p-block :title="$t('warehouse')" :header="true">
+        <router-link
+          to="/master/warehouse/create"
+          v-if="$permission.has('create warehouse')"
+          slot="header"
+          exact
+          class="btn-block-option">
+          <span><i class="si si-plus"></i> {{ $t('new warehouse') | titlecase }}</span>
+        </router-link>
         <p-form-input
           id="search-text"
           name="search-text"

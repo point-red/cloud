@@ -2,25 +2,23 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link
-        to="/master/allocation"
-        class="breadcrumb-item">{{ $t('allocation') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('edit') }}</span>
+      <router-link to="/master/allocation-group" class="breadcrumb-item">Allocation Group</router-link>
+      <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('edit') + ' ' + $t('allocation')" :header="true">
+      <p-block :title="$t('edit') + ' ' + $t('allocation group')" :header="true">
         <router-link
-          to="/master/allocation/create"
+          to="/master/allocation-group/create"
           v-if="$permission.has('create allocation')"
           slot="header"
           exact
           class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new allocation') | titlecase }}</span>
+          <span><i class="si si-plus"></i> {{ $t('new group') | titlecase }}</span>
         </router-link>
-        <p-block-inner :is-loading="isLoading">
+        <p-block-inner>
           <p-form-row
             id="name"
             v-model="form.name"
@@ -66,34 +64,34 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterAllocation', ['allocation'])
+    ...mapGetters('masterAllocationGroup', ['group'])
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then(response => {
-        this.isLoading = false
-        this.form.name = this.allocation.name
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.find({
+      id: this.id
+    }).then(response => {
+      this.isLoading = false
+      this.form.name = this.group.name
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   },
   methods: {
-    ...mapActions('masterAllocation', ['find', 'update']),
+    ...mapActions('masterAllocationGroup', ['find', 'update']),
     onSubmit () {
       this.isSaving = true
-      this.update(this.form)
-        .then(response => {
-          this.isSaving = false
-          this.form.reset()
-          this.$notification.success('Update success')
-          this.$router.push('/master/allocation/' + this.id)
-        }).catch(error => {
-          this.isSaving = false
-          this.$notification.error('Update failed')
-          this.form.errors.record(error.errors)
-        })
+      this.update(this.form).then(response => {
+        this.isSaving = false
+        this.form.reset()
+        this.$notification.success('Update success')
+        this.$router.push('/master/allocation-group/' + this.id)
+      }).catch(error => {
+        this.isSaving = false
+        this.$notification.error('Update failed')
+        this.form.errors.record(error.errors)
+      })
     }
   }
 }

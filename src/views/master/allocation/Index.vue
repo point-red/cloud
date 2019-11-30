@@ -9,6 +9,14 @@
 
     <div class="row">
       <p-block :title="$t('allocation')" :header="true">
+        <router-link
+          to="/master/allocation/create"
+          v-if="$permission.has('create allocation')"
+          slot="header"
+          exact
+          class="btn-block-option">
+          <span><i class="si si-plus"></i> {{ $t('new allocation') | titlecase }}</span>
+        </router-link>
         <p-form-input
           id="search-text"
           name="search-text"

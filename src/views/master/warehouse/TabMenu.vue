@@ -1,22 +1,13 @@
 <template>
   <ul class="nav nav-tabs nav-tabs-alt mb-10" data-toggle="tabs" role="tablist">
     <slot></slot>
-    <li class="nav-item ml-auto" v-if="$permission.has('create warehouse')">
-      <router-link
-        to="/master/warehouse/create"
-        exact
-        class="nav-link"
-        active-class="active">
-        <span><i class="si si-plus"></i> Add</span>
-      </router-link>
-    </li>
     <li class="nav-item" v-if="$permission.has('read warehouse')">
       <router-link
         to="/master/warehouse"
         exact
         class="nav-link"
         active-class="active">
-        <span><i class="si si-docs"></i> List</span>
+        <span><i class="si si-docs"></i> Warehouse</span>
       </router-link>
     </li>
     <slot name="right"></slot>

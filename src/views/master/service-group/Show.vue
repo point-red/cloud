@@ -2,23 +2,21 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link
-        to="/master/service"
-        class="breadcrumb-item">{{ $t('service') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ service.name | titlecase }}</span>
+      <router-link to="/master/service-group" class="breadcrumb-item">Service Group</router-link>
+      <span class="breadcrumb-item active">{{ group.name | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('service')" :header="true">
+      <p-block :title="$t('service Group')" :header="true">
         <router-link
-          to="/master/service/create"
+          to="/master/service-group/create"
           v-if="$permission.has('create service')"
           slot="header"
           exact
           class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new service') | titlecase }}</span>
+          <span><i class="si si-plus"></i> {{ $t('new group') | titlecase }}</span>
         </router-link>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
@@ -31,7 +29,7 @@
           <hr/>
 
           <router-link
-            :to="{ path: '/master/service/' + service.id + '/edit', params: { id: service.id }}"
+            :to="{ path: '/master/service-group/' + group.id + '/edit', params: { id: group.id }}"
             v-if="$permission.has('update service')"
             class="btn btn-sm btn-primary mr-5">
             Edit
@@ -54,13 +52,15 @@
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster
+    BreadcrumbMaster,
+    PointTable
   },
   data () {
     return {
@@ -68,41 +68,44 @@ export default {
       isLoading: false,
       isDeleting: false,
       data: {
-        name: null,
-        email: null,
-        address: null,
-        phone: null,
-        priority: false
-      }
+        name: null
+      },
+      currentPage: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {
-    ...mapGetters('masterService', ['service'])
+    ...mapGetters('masterServiceGroup', ['group'])
   },
   methods: {
-    ...mapActions('masterService', ['find', 'delete']),
+    ...mapActions('masterServiceGroup', ['find', 'delete']),
+    updatePage (value) {
+      this.currentPage = value
+    },
     onDelete () {
       this.isDeleting = true
-      this.delete({ id: this.id })
-        .then(response => {
-          this.isDeleting = false
-          this.$router.push('/master/service')
-        }).catch(response => {
-          this.isDeleting = false
-          this.$notification.error('cannot delete this service')
-        })
+      this.delete({
+        id: this.id
+      }).then(response => {
+        this.isDeleting = false
+        this.$router.push('/master/service-group')
+      }).catch(response => {
+        this.isDeleting = false
+        this.$notification.error('cannot delete this service')
+      })
     }
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then(response => {
-        this.isLoading = false
-        this.data.name = response.data.name
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.find({
+      id: this.id
+    }).then(response => {
+      this.isLoading = false
+      this.data.name = response.data.name
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   }
 }
 </script>

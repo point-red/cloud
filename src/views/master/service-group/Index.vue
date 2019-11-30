@@ -2,42 +2,41 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">{{ $t('service') | titlecase }}</span>
+      <span class="breadcrumb-item active">Service Group</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('service')" :header="true">
+      <p-block :title="$t('group')" :header="true">
         <router-link
-          to="/master/service/create"
+          to="/master/service-group/create"
           v-if="$permission.has('create service')"
           slot="header"
           exact
           class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new service') | titlecase }}</span>
+          <span><i class="si si-plus"></i> {{ $t('new group') | titlecase }}</span>
         </router-link>
         <p-form-input
           id="search-text"
           name="search-text"
           placeholder="Search"
+          ref="searchText"
           :value="searchText"
           @input="filterSearch"/>
-        <hr/>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
               <th>Name</th>
             </tr>
             <tr
-              v-for="(service, index) in services"
-              :key="service.id"
+              v-for="(group, index) in groups"
+              :key="index"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
               <td>
-                <router-link :to="{ name: 'service.show', params: { id: service.id }}">
-                  {{ service.name | titlecase }}
+                <router-link :to="{ name: 'service-group.show', params: { id: group.id }}">
+                  {{ group.name | titlecase }}
                 </router-link>
               </td>
             </tr>
@@ -63,10 +62,10 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
+    TabMenu,
     Breadcrumb,
     BreadcrumbMaster,
-    PointTable,
-    TabMenu
+    PointTable
   },
   data () {
     return {
@@ -77,21 +76,20 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterService', ['services'])
+    ...mapGetters('masterServiceGroup', ['groups', 'pagination'])
   },
   methods: {
-    ...mapActions('masterService', ['get']),
-    filterSearch: debounce(function (value) {
-      this.$router.push({ query: { search: value } })
-      this.searchText = value
-      this.currentPage = 1
-      this.getServiceRequest()
-    }, 300),
-    getServiceRequest () {
+    ...mapActions('masterServiceGroup', {
+      getGroup: 'get'
+    }),
+    updatePage (value) {
+      this.currentPage = value
+      this.getGroupRequest()
+    },
+    getGroupRequest () {
       this.isLoading = true
-      this.get({
+      this.getGroup({
         params: {
-          fields: 'services.*',
           sort_by: 'name',
           filter_like: {
             'name': this.searchText
@@ -99,19 +97,28 @@ export default {
           limit: 10,
           page: this.currentPage
         }
-      }).then(response => {
+      }).then((response) => {
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
+        this.$notifications.error(error.message)
       })
     },
-    updatePage (value) {
-      this.currentPage = value
-      this.getServiceRequest()
-    }
+    filterSearch: debounce(function (value) {
+      this.$router.push({ query: { search: value } })
+      this.searchText = value
+      this.currentPage = 1
+      this.getGroupRequest()
+    }, 300)
   },
   created () {
-    this.getServiceRequest()
+    this.getGroupRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   }
 }
 </script>

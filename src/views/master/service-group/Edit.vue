@@ -2,25 +2,23 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link
-        to="/master/service"
-        class="breadcrumb-item">{{ $t('service') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('edit') | titlecase }}</span>
+      <router-link to="/master/service-group" class="breadcrumb-item">Service Group</router-link>
+      <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('edit') + ' ' + $t('service')" :header="true">
+      <p-block :title="$t('edit') + ' ' + $t('service group')" :header="true">
         <router-link
-          to="/master/service/create"
+          to="/master/service-group/create"
           v-if="$permission.has('create service')"
           slot="header"
           exact
           class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new service') | titlecase }}</span>
+          <span><i class="si si-plus"></i> {{ $t('new group') | titlecase }}</span>
         </router-link>
-        <p-block-inner :is-loading="isLoading">
+        <p-block-inner>
           <p-form-row
             id="name"
             v-model="form.name"
@@ -56,54 +54,44 @@ export default {
   },
   data () {
     return {
-      title: 'Edit Service',
       id: this.$route.params.id,
-      loading: true,
+      isLoading: true,
       isSaving: false,
       form: new Form({
         id: this.$route.params.id,
-        code: null,
         name: null
       })
     }
   },
   computed: {
-    ...mapGetters('masterService', ['service'])
-  },
-  watch: {
-    'form.name' () {
-      this.form.code = this.form.name
-    }
+    ...mapGetters('masterServiceGroup', ['group'])
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-        this.form.code = this.service.code
-        this.form.name = this.service.name
-      }, (error) => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.find({
+      id: this.id
+    }).then(response => {
+      this.isLoading = false
+      this.form.name = this.group.name
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   },
   methods: {
-    ...mapActions('masterService', ['find', 'update']),
+    ...mapActions('masterServiceGroup', ['find', 'update']),
     onSubmit () {
-      this.update(this.form)
-        .then(
-          (response) => {
-            this.isSaving = false
-            this.form.reset()
-            this.$notification.success('Update success')
-            this.$router.push('/master/service/' + this.id)
-          },
-          (error) => {
-            this.isSaving = false
-            this.$notification.error('Update failed')
-            this.form.errors.record(error.errors)
-          }
-        )
+      this.isSaving = true
+      this.update(this.form).then(response => {
+        this.isSaving = false
+        this.form.reset()
+        this.$notification.success('Update success')
+        this.$router.push('/master/service-group/' + this.id)
+      }).catch(error => {
+        this.isSaving = false
+        this.$notification.error('Update failed')
+        this.form.errors.record(error.errors)
+      })
     }
   }
 }
