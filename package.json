@@ -1,6 +1,6 @@
 {
   "name": "point-cloud",
-  "version": "0.2.16",
+  "version": "0.3.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

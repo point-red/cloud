@@ -1,7 +1,7 @@
 <template>
   <div>
     <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span> &nbsp; <i v-show="mutableId" class="clickable fa fa-close" @click="clear"></i>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select customer">
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select item group">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
@@ -28,8 +28,8 @@
           }"></i> Add</span> {{ $t('to add new data') }}
         </div>
         <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('customer') | capitalize }}, <br/> {{ $t('you can create') }}
-          <router-link :to="'/master/customer/create'">
+          {{ $t('you don\'t have any') | capitalize }} {{ $t('group') | capitalize }}, <br/> {{ $t('you can create') }}
+          <router-link :to="'/master/item-group/create'">
             <span>{{ $t('new one') }}</span>
           </router-link>
         </div>
@@ -57,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterGroup', ['groups', 'pagination'])
+    ...mapGetters('masterItemGroup', ['groups', 'pagination'])
   },
   props: {
     id: {
@@ -89,7 +89,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('masterGroup', ['get', 'create']),
+    ...mapActions('masterItemGroup', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
