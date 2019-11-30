@@ -49,7 +49,7 @@
 
         <p-form-row :label="'group'">
           <div class="col-lg-9" slot="body">
-            <m-group id="group" v-model="form.group_id" @choosen="chooseGroup" :label="form.group_name" class-reference="Customer"/>
+            <m-customer-group id="group" v-model="form.group_id" @choosen="chooseGroup" :label="form.group_name" class-reference="Customer"/>
           </div>
         </p-form-row>
 

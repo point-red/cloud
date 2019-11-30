@@ -9,6 +9,14 @@
 
     <div class="row">
       <p-block :title="$t('group')" :header="true">
+        <router-link
+          to="/master/customer-group/create"
+          v-if="$permission.has('create customer')"
+          slot="header"
+          exact
+          class="btn-block-option">
+          <span><i class="si si-plus"></i> {{ $t('new group') | titlecase }}</span>
+        </router-link>
         <p-form-input
           id="search-text"
           name="search-text"
@@ -26,7 +34,11 @@
               v-for="(group, index) in groups"
               :key="index"
               slot="p-body">
-              <td>{{ group.name | titlecase }}</td>
+              <td>
+                <router-link :to="{ name: 'customer-group.show', params: { id: group.id }}">
+                  {{ group.name | titlecase }}
+                </router-link>
+              </td>
             </tr>
           </point-table>
         </p-block-inner>
@@ -64,10 +76,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterGroup', ['groups', 'pagination'])
+    ...mapGetters('masterCustomerGroup', ['groups', 'pagination'])
   },
   methods: {
-    ...mapActions('masterGroup', {
+    ...mapActions('masterCustomerGroup', {
       getGroup: 'get'
     }),
     updatePage (value) {
@@ -79,7 +91,6 @@ export default {
       this.getGroup({
         params: {
           sort_by: 'name',
-          class_reference: 'Customer',
           filter_like: {
             'name': this.searchText
           },
