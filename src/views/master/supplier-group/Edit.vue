@@ -2,17 +2,17 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link to="/master/customer-group" class="breadcrumb-item">Customer Group</router-link>
+      <router-link to="/master/supplier-group" class="breadcrumb-item">Supplier Group</router-link>
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('edit') + ' ' + $t('customer group')" :header="true">
+      <p-block :title="$t('edit') + ' ' + $t('supplier group')" :header="true">
         <router-link
-          to="/master/customer-group/create"
-          v-if="$permission.has('create customer')"
+          to="/master/supplier-group/create"
+          v-if="$permission.has('create supplier')"
           slot="header"
           exact
           class="btn-block-option">
@@ -64,7 +64,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterCustomerGroup', ['group'])
+    ...mapGetters('masterSupplierGroup', ['group'])
   },
   created () {
     this.isLoading = true
@@ -79,14 +79,14 @@ export default {
     })
   },
   methods: {
-    ...mapActions('masterCustomerGroup', ['find', 'update']),
+    ...mapActions('masterSupplierGroup', ['find', 'update']),
     onSubmit () {
       this.isSaving = true
       this.update(this.form).then(response => {
         this.isSaving = false
         this.form.reset()
         this.$notification.success('Update success')
-        this.$router.push('/master/customer-group/' + this.id)
+        this.$router.push('/master/supplier-group/' + this.id)
       }).catch(error => {
         this.isSaving = false
         this.$notification.error('Update failed')

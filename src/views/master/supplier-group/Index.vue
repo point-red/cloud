@@ -2,55 +2,42 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">{{ $t('supplier') | titlecase }}</span>
+      <span class="breadcrumb-item active">Supplier Group</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('supplier')" :header="true">
+      <p-block :title="$t('group')" :header="true">
         <router-link
-          to="/master/supplier/create"
+          to="/master/supplier-group/create"
           v-if="$permission.has('create supplier')"
           slot="header"
           exact
           class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new supplier') | titlecase }}</span>
+          <span><i class="si si-plus"></i> {{ $t('new group') | titlecase }}</span>
         </router-link>
         <p-form-input
           id="search-text"
           name="search-text"
           placeholder="Search"
+          ref="searchText"
           :value="searchText"
           @input="filterSearch"/>
-        <hr/>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
               <th>Name</th>
-              <th>Address</th>
-              <th>Phone</th>
             </tr>
             <tr
-              v-for="(supplier, index) in suppliers"
-              :key="supplier.id"
+              v-for="(group, index) in groups"
+              :key="index"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
               <td>
-                <router-link :to="{ name: 'supplier.show', params: { id: supplier.id }}">
-                  {{ supplier.name | titlecase }}
+                <router-link :to="{ name: 'supplier-group.show', params: { id: group.id }}">
+                  {{ group.name | titlecase }}
                 </router-link>
-              </td>
-              <td>
-                <template v-for="supplierAddress in supplier.addresses">
-                  {{ supplierAddress.address | lowercase }}
-                </template>
-              </td>
-              <td>
-                <template v-for="supplierPhone in supplier.phones">
-                  {{ supplierPhone.number | lowercase }}
-                </template>
               </td>
             </tr>
           </point-table>
@@ -89,46 +76,46 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterSupplier', ['suppliers', 'pagination'])
+    ...mapGetters('masterSupplierGroup', ['groups', 'pagination'])
   },
   methods: {
-    ...mapActions('masterSupplier', ['get']),
+    ...mapActions('masterSupplierGroup', {
+      getGroup: 'get'
+    }),
+    updatePage (value) {
+      this.currentPage = value
+      this.getGroupRequest()
+    },
+    getGroupRequest () {
+      this.isLoading = true
+      this.getGroup({
+        params: {
+          sort_by: 'name',
+          filter_like: {
+            'name': this.searchText
+          },
+          limit: 10,
+          page: this.currentPage
+        }
+      }).then((response) => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notifications.error(error.message)
+      })
+    },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getSupplierRequest()
-    }, 300),
-    getSupplierRequest () {
-      this.isLoading = true
-      this.get({
-        params: {
-          fields: 'suppliers.*',
-          sort_by: 'name',
-          filter_like: {
-            'name': this.searchText,
-            'addresses.address': this.searchText,
-            'phones.number': this.searchText,
-            'emails.email': this.searchText
-          },
-          join: 'addresses,phones,emails',
-          includes: 'addresses;phones;emails;groups',
-          limit: 10,
-          page: this.currentPage
-        }
-      }).then(response => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-      })
-    },
-    updatePage (value) {
-      this.currentPage = value
-      this.getSupplierRequest()
-    }
+      this.getGroupRequest()
+    }, 300)
   },
   created () {
-    this.getSupplierRequest()
+    this.getGroupRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
   },
   updated () {
     this.lastPage = this.pagination.last_page

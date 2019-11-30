@@ -4,6 +4,7 @@ import Role from './role/routes'
 import Customer from './customer/routes'
 import CustomerGroup from './customer-group/routes'
 import Supplier from './supplier/routes'
+import SupplierGroup from './supplier-group/routes'
 import Warehouse from './warehouse/routes'
 import Allocation from './allocation/routes'
 import Service from './service/routes'
@@ -16,6 +17,7 @@ export default [
   ...Customer,
   ...CustomerGroup,
   ...Supplier,
+  ...SupplierGroup,
   ...Warehouse,
   ...Allocation,
   ...Service,

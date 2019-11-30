@@ -2,17 +2,17 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link to="/master/customer-group" class="breadcrumb-item">Customer Group</router-link>
+      <router-link to="/master/supplier-group" class="breadcrumb-item">Supplier Group</router-link>
       <span class="breadcrumb-item active">{{ group.name | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('customer Group')" :header="true">
+      <p-block :title="$t('supplier Group')" :header="true">
         <router-link
-          to="/master/customer-group/create"
-          v-if="$permission.has('create customer')"
+          to="/master/supplier-group/create"
+          v-if="$permission.has('create supplier')"
           slot="header"
           exact
           class="btn-block-option">
@@ -29,15 +29,15 @@
           <hr/>
 
           <router-link
-            :to="{ path: '/master/customer-group/' + group.id + '/edit', params: { id: group.id }}"
-            v-if="$permission.has('update customer')"
+            :to="{ path: '/master/supplier-group/' + group.id + '/edit', params: { id: group.id }}"
+            v-if="$permission.has('update supplier')"
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>
           <button
             type="button"
             @click="onDelete()"
-            v-if="$permission.has('delete customer')"
+            v-if="$permission.has('delete supplier')"
             :disabled="isDeleting"
             class="btn btn-sm btn-danger">
             <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
@@ -75,10 +75,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterCustomerGroup', ['group'])
+    ...mapGetters('masterSupplierGroup', ['group'])
   },
   methods: {
-    ...mapActions('masterCustomerGroup', ['find', 'delete']),
+    ...mapActions('masterSupplierGroup', ['find', 'delete']),
     updatePage (value) {
       this.currentPage = value
     },
@@ -88,10 +88,10 @@ export default {
         id: this.id
       }).then(response => {
         this.isDeleting = false
-        this.$router.push('/master/customer-group')
+        this.$router.push('/master/supplier-group')
       }).catch(response => {
         this.isDeleting = false
-        this.$notification.error('cannot delete this customer')
+        this.$notification.error('cannot delete this supplier')
       })
     }
   },
