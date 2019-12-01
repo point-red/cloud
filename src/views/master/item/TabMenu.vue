@@ -4,28 +4,25 @@
     <li class="nav-item" v-if="$permission.has('read item')">
       <router-link
         to="/master/item"
-        exact
         class="nav-link"
         active-class="active">
-        <span><i class="si si-docs"></i> Item</span>
+        <span>ITEM</span>
       </router-link>
     </li>
     <li class="nav-item" v-if="$permission.has('read item')">
       <router-link
         to="/master/item-group"
-        exact
         class="nav-link"
         active-class="active">
-        <span><i class="si si-tag"></i> Group</span>
+        <span>GROUP</span>
       </router-link>
     </li>
     <li class="nav-item" v-if="$permission.has('read item')">
       <router-link
-        to="/master/item/price-list"
-        exact
+        to="/master/item-price-list"
         class="nav-link"
         active-class="active">
-        <span><i class="si si-docs"></i> Price List</span>
+        <span>PRICE LIST</span>
       </router-link>
     </li>
     <slot name="right"></slot>

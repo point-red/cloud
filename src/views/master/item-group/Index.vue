@@ -8,32 +8,37 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('item group')" :header="true">
-        <router-link
-          to="/master/item-group/create"
-          v-if="$permission.has('create item')"
-          slot="header"
-          exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new group') | titlecase }}</span>
-        </router-link>
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          ref="searchText"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block>
+        <div class="input-group block">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            ref="searchText"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
+          <router-link
+            to="/master/item-group/create"
+            v-if="$permission.has('create item')"
+            class="input-group-append">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
+        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
+              <th width="50px">#</th>
               <th>Name</th>
             </tr>
             <tr
               v-for="(group, index) in groups"
               :key="index"
               slot="p-body">
+              <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'item-group.show', params: { id: group.id }}">
                   {{ group.name | titlecase }}

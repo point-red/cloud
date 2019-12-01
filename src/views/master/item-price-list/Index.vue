@@ -2,44 +2,49 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">Item</span>
+      <span class="breadcrumb-item active">Item Price List</span>
     </breadcrumb>
 
     <tab-menu/>
 
-    <br>
-
     <div class="row">
-      <p-block :title="title" :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
-        <hr>
-        <p-block-inner :is-loading="loading">
+      <p-block :title="title" :header="false">
+        <div class="input-group block">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
+          <a href="javascript:void(0)" class="input-group-append" @click="addPricingGroup">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </a>
+        </div>
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
+              <th width="50px">#</th>
               <th>Item</th>
               <th class="text-center">Unit</th>
               <th class="text-right" v-for="(group, index) in groups" :key="index">
                 {{ group.label }}
               </th>
-              <th>
-                <button class="btn btn-secondary btn-sm" @click="addPricingGroup">Add Group</button>
-              </th>
+              <th></th>
             </tr>
             <template v-for="(item, index) in items">
             <tr
               v-for="(itemUnit, index2) in item.units"
               :key="itemUnit.id"
               slot="p-body">
-              <th>
+              <th>{{ index + 1 }}</th>
+              <td>
                 <router-link :to="{ name: 'item.show', params: { id: item.id }}">
                   {{item.name}}
                 </router-link>
-              </th>
+              </td>
               <td class="text-center">
                 {{ itemUnit.name }}
                 <template v-if="itemUnit.converter > 1">
@@ -97,7 +102,7 @@ export default {
   data () {
     return {
       title: 'Item',
-      loading: true,
+      isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
@@ -112,6 +117,9 @@ export default {
       getItem: 'get',
       updatePrice: 'create'
     }),
+    test () {
+      alert('asd')
+    },
     addPricingGroup () {
       this.$refs.pricingGroupModal.show()
     },
@@ -147,7 +155,7 @@ export default {
       this.getPriceList()
     },
     getPriceList () {
-      this.loading = true
+      this.isLoading = true
       this.getItem({
         params: {
           limit: 20,
@@ -157,9 +165,9 @@ export default {
           }
         }
       }).then(response => {
-        this.loading = false
+        this.isLoading = false
       }).catch(error => {
-        this.loading = false
+        this.isLoading = false
         this.$notifications.error(error.message)
       })
     }

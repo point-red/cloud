@@ -11,6 +11,7 @@ import Service from './service/routes'
 import ServiceGroup from './service-group/routes'
 import Item from './item/routes'
 import ItemGroup from './item-group/routes'
+import ItemPriceList from './item-price-list/routes'
 import Warehouse from './warehouse/routes'
 
 export default [
@@ -27,5 +28,6 @@ export default [
   ...ServiceGroup,
   ...Item,
   ...ItemGroup,
+  ...ItemPriceList,
   ...Warehouse
 ]

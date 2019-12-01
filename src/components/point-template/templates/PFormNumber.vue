@@ -1,6 +1,11 @@
 <template>
   <div>
-    <cleave :readonly="readonly" v-model="number" :options="options" :disabled="disabled" class="form-control form-number"
+    <cleave
+      :readonly="readonly"
+      v-model="number"
+      :options="options"
+      :disabled="disabled"
+      class="form-control form-number"
       :class="{
         'text-right' : isTextRight
       }"></cleave>

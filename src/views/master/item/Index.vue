@@ -8,19 +8,29 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          ref="searchText"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block>
+        <div class="input-group block">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
+          <router-link
+            to="/master/item/create"
+            v-if="$permission.has('create item')"
+            class="input-group-append">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
+        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">#</th>
               <th>Name</th>
               <th>Account</th>
               <th>Stock</th>

@@ -4,19 +4,17 @@
     <li class="nav-item" v-if="$permission.has('read customer')">
       <router-link
         to="/master/customer"
-        exact
         class="nav-link"
         active-class="active">
-        <span><i class="si si-docs"></i> Customer</span>
+        <span>{{ $t('customer') | uppercase }}</span>
       </router-link>
     </li>
     <li class="nav-item" v-if="$permission.has('read customer')">
       <router-link
         to="/master/customer-group"
-        exact
         class="nav-link"
         active-class="active">
-        <span><i class="si si-tag"></i> Group</span>
+        <span>{{ $t('group') | uppercase }}</span>
       </router-link>
     </li>
     <slot name="right"></slot>
