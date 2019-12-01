@@ -8,7 +8,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="title" :header="false">
+      <p-block>
         <div class="input-group block">
           <p-form-input
             id="search-text"
@@ -30,7 +30,11 @@
               <th>Item</th>
               <th class="text-center">Unit</th>
               <th class="text-right" v-for="(group, index) in groups" :key="index">
-                {{ group.label }}
+                <a
+                  href="javascript:void(0)"
+                  style="color:blue"
+                  @click="editPricingGroup(group)">{{ group.label }}
+                </a>
               </th>
               <th></th>
             </tr>
@@ -81,6 +85,12 @@
       ref="pricingGroupModal"
       title="Pricing Group"
       @added="onSubmitPricingGroup"/>
+    <m-edit-pricing-group
+      id="edit-pricing-gorup"
+      name="edit_pricing_gorup"
+      ref="editPricingGroupModal"
+      title="Edit Pricing Group"
+      @added="onSubmitPricingGroup"/>
   </div>
 </template>
 
@@ -101,7 +111,6 @@ export default {
   },
   data () {
     return {
-      title: 'Item',
       isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
@@ -122,6 +131,9 @@ export default {
     },
     addPricingGroup () {
       this.$refs.pricingGroupModal.show()
+    },
+    editPricingGroup (group) {
+      this.$refs.editPricingGroupModal.show(group)
     },
     onSubmitPricingGroup () {
       console.log('onsubmit')
