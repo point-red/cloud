@@ -11,7 +11,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="code"
@@ -85,11 +85,19 @@
             class="btn btn-sm btn-danger">
             <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
           </button>
+        </p-block-inner>
+      </p-block>
+    </div>
 
-          <p-separator></p-separator>
+    <ul class="nav nav-tabs nav-tabs-alt mb-10" data-toggle="tabs" role="tablist">
+      <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link" @click="choose('master')" :class="{'active': choosen == 'stock-history'}">{{ $t('stock history') | uppercase }}</a>
+      </li>
+    </ul>
 
-          <h3>Stock History</h3>
-
+    <div class="row">
+      <p-block>
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>#</th>
