@@ -8,7 +8,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('group')">
+      <p-block>
         <div class="input-group block">
           <p-form-input
             id="search-text"

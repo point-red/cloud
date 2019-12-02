@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2 class="content-heading"><i class="si si-emoticon-smile fa-fw"></i> Human Resource</h2>
     <p-table>
       <tr slot="p-head">
         <th width="5px"></th>

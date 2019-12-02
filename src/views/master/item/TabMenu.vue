@@ -6,7 +6,7 @@
         to="/master/item"
         class="nav-link"
         active-class="active">
-        <span>ITEM</span>
+        <span>{{ $t('item') | uppercase }}</span>
       </router-link>
     </li>
     <li class="nav-item" v-if="$permission.has('read item')">
@@ -14,7 +14,7 @@
         to="/master/item-group"
         class="nav-link"
         active-class="active">
-        <span>GROUP</span>
+        <span>{{ $t('group') | uppercase }}</span>
       </router-link>
     </li>
     <li class="nav-item" v-if="$permission.has('read item')">
@@ -22,7 +22,7 @@
         to="/master/item-price-list"
         class="nav-link"
         active-class="active">
-        <span>PRICE LIST</span>
+        <span>{{ $t('price list') | uppercase }}</span>
       </router-link>
     </li>
     <slot name="right"></slot>

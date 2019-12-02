@@ -10,8 +10,6 @@
 
     <tab-menu/>
 
-    <br>
-
     <form
       class="row"
       @submit.prevent="onSubmit">

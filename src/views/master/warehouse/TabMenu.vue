@@ -4,10 +4,9 @@
     <li class="nav-item" v-if="$permission.has('read warehouse')">
       <router-link
         to="/master/warehouse"
-        exact
         class="nav-link"
         active-class="active">
-        <span><i class="si si-docs"></i> Warehouse</span>
+        <span>{{ $t('warehouse') | uppercase }}</span>
       </router-link>
     </li>
     <slot name="right"></slot>

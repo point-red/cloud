@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2 class="content-heading"><i class="si si-layers fa-fw"></i> Master</h2>
     <p-table>
       <tr slot="p-head">
         <th width="5px"></th>
@@ -8,7 +7,7 @@
       </tr>
       <tr slot="p-body">
         <td></td>
-        <td><i class="si si-layers fa-fw"></i> Master</td>
+        <td>Master</td>
         <td><p-form-check-box ref="menu master" @click.native="togglePermission('menu master')" :checked="$rolePermission.has('menu master', permissions)" :description="'Menu'"/></td>
       </tr>
       <tr slot="p-body">

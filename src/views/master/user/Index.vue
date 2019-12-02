@@ -7,17 +7,25 @@
 
     <tab-menu/>
 
-    <br>
-
     <div class="row">
-      <p-block :title="$t('user')" :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          ref="searchText"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block>
+        <div class="input-group block">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
+          <router-link
+            to="/master/user/create"
+            v-if="$permission.has('create user')"
+            class="input-group-append">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
+        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>

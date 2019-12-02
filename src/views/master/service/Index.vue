@@ -8,21 +8,24 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('service')" :header="true">
-        <router-link
-          to="/master/service/create"
-          v-if="$permission.has('create service')"
-          slot="header"
-          exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new service') | titlecase }}</span>
-        </router-link>
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block>
+        <div class="input-group block">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
+          <router-link
+            to="/master/service/create"
+            v-if="$permission.has('create service')"
+            class="input-group-append">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
+        </div>
         <hr/>
         <p-block-inner :is-loading="isLoading">
           <point-table>

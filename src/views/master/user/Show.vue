@@ -10,10 +10,8 @@
 
     <tab-menu/>
 
-    <br>
-
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block>
         <p-block-inner :is-loading="loading">
           <p-form-row
             id="name"

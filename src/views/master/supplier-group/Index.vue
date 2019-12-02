@@ -8,22 +8,24 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('group')" :header="true">
-        <router-link
-          to="/master/supplier-group/create"
-          v-if="$permission.has('create supplier')"
-          slot="header"
-          exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new group') | titlecase }}</span>
-        </router-link>
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          ref="searchText"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block>
+        <div class="input-group block">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
+          <router-link
+            to="/master/supplier-group/create"
+            v-if="$permission.has('create supplier')"
+            class="input-group-append">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
+        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>

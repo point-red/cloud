@@ -4,19 +4,17 @@
     <li class="nav-item" v-if="$permission.has('read service')">
       <router-link
         to="/master/service"
-        exact
         class="nav-link"
         active-class="active">
-        <span><i class="si si-docs"></i> Service</span>
+        <span>{{ $t('service') | uppercase }}</span>
       </router-link>
     </li>
     <li class="nav-item" v-if="$permission.has('read service')">
       <router-link
         to="/master/service-group"
-        exact
         class="nav-link"
         active-class="active">
-        <span><i class="si si-tag"></i> Group</span>
+        <span>{{ $t('group') | uppercase }}</span>
       </router-link>
     </li>
     <slot name="right"></slot>

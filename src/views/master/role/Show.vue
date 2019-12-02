@@ -5,22 +5,35 @@
       <span class="breadcrumb-item active">Role & Permission</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('master')" :class="{'active': choosen == 'master'}">Master</a>
-      </li>
-      <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('human-resource')" :class="{'active': choosen == 'human-resource'}">Human Resource</a>
-      </li>
-      <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('plugin')" :class="{'active': choosen == 'plugin'}">Plugin</a>
-      </li>
-    </tab-menu>
-
-    <br>
+    <tab-menu></tab-menu>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <div class="col-6 col-md-4 col-xl-2">
+        <a class="block block-rounded block-bordered block-link-shadow text-center" href="javascript:void(0)">
+          <div class="block-content">
+            <p class="mt-5">
+              <i class="si si-badge fa-4x"></i>
+            </p>
+            <p class="font-w600">{{ role.name }}</p>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <ul class="nav nav-tabs nav-tabs-alt mb-10" data-toggle="tabs" role="tablist">
+      <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link" @click="choose('master')" :class="{'active': choosen == 'master'}">{{ $t('master') | uppercase }}</a>
+      </li>
+      <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link" @click="choose('human-resource')" :class="{'active': choosen == 'human-resource'}">{{ $t('human resource') | uppercase }}</a>
+      </li>
+      <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link" @click="choose('plugin')" :class="{'active': choosen == 'plugin'}">{{ $t('plugin') | uppercase }}</a>
+      </li>
+    </ul>
+
+    <div class="row">
+      <p-block>
         <p-block-inner :is-loading="loading">
           <permission-master :roleId="id" v-show="choosen === 'master'" />
           <permission-human-resource :roleId="id" v-show="choosen === 'human-resource'" />

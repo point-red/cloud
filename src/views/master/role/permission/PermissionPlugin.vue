@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2 class="content-heading"><i class="si si-puzzle fa-fw"></i> Plugin</h2>
     <p-table>
       <tr slot="p-head">
         <th width="5px"></th>
@@ -8,11 +7,11 @@
       </tr>
       <tr slot="p-body">
         <td></td>
-        <td><i class="si si-puzzle fa-fw"></i> Plugin</td>
+        <td>Plugin</td>
         <td><p-form-check-box ref="menu plugin" @click.native="togglePermission('menu plugin')" :checked="$rolePermission.has('menu plugin', permissions)" :description="'Menu'"/></td>
       </tr>
     </p-table>
-    <h2 class="content-heading"><i class="si si-puzzle fa-fw"></i> Plugin - Scale Weight</h2>
+    <h2 class="content-heading">{{ $t('scale weight') | uppercase }}</h2>
     <p-table>
       <tr slot="p-head">
         <th width="5px"></th>
@@ -40,7 +39,7 @@
         <td><p-form-check-box ref="delete scale weight item" @click.native="togglePermission('delete scale weight item')" :checked="$rolePermission.has('delete scale weight item', permissions)" :description="'Delete'"/></td>
       </tr>
     </p-table>
-    <h2 class="content-heading"><i class="si si-puzzle fa-fw"></i> Plugin - Pin Point</h2>
+    <h2 class="content-heading">{{ $t('pin point') | uppercase }}</h2>
     <p-table>
       <tr slot="p-head">
         <th width="5px"></th>
