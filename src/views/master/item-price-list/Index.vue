@@ -56,7 +56,7 @@
                 </template>
               </td>
               <td class="text-right" v-for="(group, index3) in itemUnit.prices" :key="index3">
-                <a href="javascript:void(0)" @click="editPrice(index + '-' + index2 + '-' + index3)" v-if="editPriceIndex != index + '-' + index2 + '-' + index3">
+                <a href="javascript:void(0)" @click="editPrice(index + '-' + index2 + '-' + index3, group.id)" v-if="editPriceIndex != index + '-' + index2 + '-' + index3">
                   {{ itemUnit.prices[index3].price | numberFormat }}
                 </a>
                 <p-form-number
@@ -115,7 +115,8 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
-      editPriceIndex: ''
+      editPriceIndex: '',
+      editPriceGroupId: 0
     }
   },
   computed: {
@@ -140,12 +141,13 @@ export default {
       this.getPriceList()
       this.$refs.pricingGroupModal.close()
     },
-    editPrice (index) {
+    editPrice (index, groupId) {
       this.editPriceIndex = index
+      this.editPriceGroupId = groupId
     },
     savePrice (itemUnitId, price) {
       this.updatePrice({
-        pricing_group_id: 1,
+        pricing_group_id: this.editPriceGroupId,
         item_unit_id: itemUnitId,
         price: price,
         discount_percent: 0,
