@@ -102,6 +102,7 @@
             <tr slot="p-head">
               <th>#</th>
               <th>Date</th>
+              <th>Form</th>
               <th>Warehouse</th>
               <th class="text-right">Quantity</th>
               <th class="text-right">Total Quantity</th>
@@ -109,6 +110,7 @@
             <tr slot="p-body" v-for="(row, index) in item.inventories" :key="index">
               <th>{{ index + 1 }}</th>
               <td>{{ row.form.date | dateFormat }}</td>
+              <td>{{ row.form.number }}</td>
               <td>{{ row.warehouse.name }}</td>
               <td class="text-right">{{ row.quantity | numberFormat }}</td>
               <td class="text-right">{{ row.total_quantity | numberFormat }}</td>
