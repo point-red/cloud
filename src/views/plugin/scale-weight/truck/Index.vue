@@ -71,7 +71,7 @@
               slot="p-body">
               <td>{{ scaleWeight.machine_code }}</td>
               <td>
-                <router-link :to="{ name: 'ScaleWeightTruck', params: { id: scaleWeight.id }}">
+                <router-link :to="{ name: 'plugin.scale-weight.truck.show', params: { id: scaleWeight.id }}">
                   {{ scaleWeight.form_number }}
                 </router-link>
               </td>
@@ -94,11 +94,13 @@
 
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    Breadcrumb
+    Breadcrumb,
+    BreadcrumbPlugin
   },
   data () {
     return {
