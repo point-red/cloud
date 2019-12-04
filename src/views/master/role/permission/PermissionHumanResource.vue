@@ -19,7 +19,7 @@
         <td><p-form-check-box ref="delete employee" @click.native="togglePermission('delete employee')" :checked="$rolePermission.has('delete employee', permissions)" :description="'Delete'"/></td>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box @click.native="togglePermissionRow(['create employee salary', 'read employee salary', 'update employee', 'delete employee'], permissions)" :checked="checkPermissionRow(['create employee', 'read employee', 'update employee salary', 'delete employee salary', 'print employee salary'], permissions)" :description="''"/></td>
+        <td><p-form-check-box @click.native="togglePermissionRow(['create employee salary', 'read employee salary', 'update employee salary', 'delete employee salary', 'print employee salary'], permissions)" :checked="checkPermissionRow(['create employee salary', 'read employee salary', 'update employee salary', 'delete employee salary', 'print employee salary'], permissions)" :description="''"/></td>
         <td><i class="si si-users fa-fw"></i> Employee Salary</td>
         <td><p-form-check-box ref="create employee salary" @click.native="togglePermission('create employee salary')" :checked="$rolePermission.has('create employee salary', permissions)" :description="'Create'"/></td>
         <td><p-form-check-box ref="read employee salary" @click.native="togglePermission('read employee salary')" :checked="$rolePermission.has('read employee salary', permissions)" :description="'Read'"/></td>
