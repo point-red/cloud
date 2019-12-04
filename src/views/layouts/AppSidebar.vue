@@ -123,11 +123,6 @@
                     {{ $t('user') | titlecase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read role')">
-                  <router-link to="/master/role" active-class="active">
-                    {{ $t('role & permission') | titlecase }}
-                  </router-link>
-                </li>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read customer')">
                   <router-link to="/master/customer" active-class="active">
                     {{ $t('customer') | titlecase }}

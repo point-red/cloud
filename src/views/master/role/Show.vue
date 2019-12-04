@@ -9,14 +9,23 @@
 
     <div class="row">
       <div class="col-6 col-md-4 col-xl-2">
-        <a class="block block-rounded block-bordered block-link-shadow text-center" href="javascript:void(0)">
+        <div class="block text-center" href="javascript:void(0)">
           <div class="block-content">
             <p class="mt-5">
               <i class="si si-badge fa-4x"></i>
             </p>
             <p class="font-w600">{{ role.name }}</p>
           </div>
-        </a>
+        </div>
+      </div>
+      <div class="col-6 col-md-4 col-xl-10">
+        <div class="block" href="javascript:void(0)" style="min-height:147px">
+          <div class="block-content">
+            <p class="mt-5">
+              <!-- <b>USER WHO HAVE THIS ROLE :</b><br> -->
+            </p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -34,7 +43,7 @@
 
     <div class="row">
       <p-block>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <permission-master :roleId="id" v-show="choosen === 'master'" />
           <permission-human-resource :roleId="id" v-show="choosen === 'human-resource'" />
           <permission-plugin :roleId="id" v-show="choosen === 'plugin'" />
@@ -66,7 +75,7 @@ export default {
     return {
       id: this.$route.params.id,
       title: 'Role & Permission',
-      loading: true,
+      isLoading: true,
       choosen: 'master'
     }
   },
@@ -75,19 +84,19 @@ export default {
     ...mapGetters('masterPermission', ['permissions'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.findRole({ id: this.id })
       .then((response) => {
-        this.loading = false
-      }, (error) => {
-        this.loading = false
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
         this.$notification.error(error.message)
       })
     this.getPermissions({ id: this.id })
       .then((response) => {
-        this.loading = false
-      }, (error) => {
-        this.loading = false
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
         this.$notification.error(error.message)
       })
   },
