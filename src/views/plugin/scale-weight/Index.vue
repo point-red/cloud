@@ -3,7 +3,7 @@
     <breadcrumb>
       <router-link
         to="/plugin"
-        class="breadcrumb-item">Other</router-link>
+        class="breadcrumb-item">Plugin</router-link>
       <span class="breadcrumb-item active">Scale Weight</span>
     </breadcrumb>
     <div class="row gutters-tiny">

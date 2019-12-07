@@ -114,7 +114,6 @@ export default {
     }
   },
   created () {
-    this.isLoading = true
     this.getWarehouseRequest()
   },
   updated () {

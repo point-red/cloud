@@ -2,10 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-plugin/>
-      <router-link
-        to="/plugin/scale-weight"
-        class="breadcrumb-item">Scale Weight</router-link>
-      <span class="breadcrumb-item active">Truck</span>
+      <router-link to="/plugin/scale-weight" class="breadcrumb-item">Scale Weight</router-link>
+      <router-link to="/plugin/scale-weight/truck" class="breadcrumb-item">Truck</router-link>
+      <span class="breadcrumb-item active">{{ data.form_number }}</span>
     </breadcrumb>
 
     <div class="row">
@@ -21,14 +20,14 @@
               <p-form-number :is-text-right="false" id="gross_weight" name="gross_weight" label="Gross Weight" v-model="data.gross_weight" readonly/>
             </div>
           </p-form-row>
-          <p-form-row id="tare_weight" name="tare_weight" label="Gross Weight">
+          <p-form-row id="tare_weight" name="tare_weight" label="Tare Weight">
             <div slot="body" class="col-lg-9">
-              <p-form-number :is-text-right="false" id="tare_weight" name="tare_weight" label="Gross Weight" v-model="data.tare_weight" readonly/>
+              <p-form-number :is-text-right="false" id="tare_weight" name="tare_weight" label="Tare Weight" v-model="data.tare_weight" readonly/>
             </div>
           </p-form-row>
-          <p-form-row id="net_weight" name="net_weight" label="Gross Weight">
+          <p-form-row id="net_weight" name="net_weight" label="Net Weight">
             <div slot="body" class="col-lg-9">
-              <p-form-number :is-text-right="false" id="net_weight" name="net_weight" label="Gross Weight" v-model="data.net_weight" readonly/>
+              <p-form-number :is-text-right="false" id="net_weight" name="net_weight" label="Net Weight" v-model="data.net_weight" readonly/>
             </div>
           </p-form-row>
           <p-form-row id="time_in" name="time_in" label="Time In" v-model="data.time_in" readonly/>
@@ -122,8 +121,8 @@ export default {
       this.data.gross_weight = response.data.gross_weight
       this.data.net_weight = response.data.net_weight
       this.data.tare_weight = response.data.tare_weight
-      this.data.time_in = response.data.time_in
-      this.data.time_out = response.data.time_out
+      this.data.time_in = this.formattedDateTime(response.data.time_in)
+      this.data.time_out = this.formattedDateTime(response.data.time_out)
       this.data.user = response.data.user
     }).catch(error => {
       this.isLoading = false

@@ -2,12 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-plugin/>
-      <router-link
-        to="/plugin/scale-weight"
-        class="breadcrumb-item">Scale Weight</router-link>
-      <router-link
-        to="/plugin/scale-weight/truck"
-        class="breadcrumb-item">Truck</router-link>
+      <router-link to="/plugin/scale-weight" class="breadcrumb-item">Scale Weight</router-link>
+      <router-link to="/plugin/scale-weight/truck" class="breadcrumb-item">Truck</router-link>
     </breadcrumb>
 
     <form class="row" @submit.prevent="onSubmit">
@@ -96,9 +92,10 @@ export default {
         gross_weight: null,
         net_weight: null,
         tare_weight: null,
-        time_in: null,
-        time_out: null,
-        user: null
+        time_in: new Date(),
+        time_out: new Date(),
+        user: null,
+        is_delivery: 0
       })
     }
   },
@@ -106,43 +103,20 @@ export default {
     ...mapGetters('pluginScaleWeightTruck', ['scaleWeight'])
   },
   methods: {
-    ...mapActions('pluginScaleWeightTruck', ['find', 'update']),
+    ...mapActions('pluginScaleWeightTruck', ['find', 'create']),
     onSubmit () {
       this.isSaving = true
-      this.update(this.form).then(response => {
+      this.create(this.form).then(response => {
         this.isSaving = false
         this.form.reset()
-        this.$notification.success('Update success')
-        this.$router.push('/plugin/scale-weight/truck/' + this.id)
+        this.$notification.success('Create success')
+        this.$router.push('/plugin/scale-weight/truck/' + response.data.id)
       }).catch(error => {
         this.isSaving = false
-        this.$notification.error('Update failed')
+        this.$notification.error('Create failed')
         this.form.errors.record(error.errors)
       })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.find({
-      id: this.id
-    }).then(response => {
-      this.isLoading = false
-      this.form.machine_code = response.data.machine_code
-      this.form.form_number = response.data.form_number
-      this.form.vendor = response.data.vendor
-      this.form.driver = response.data.driver
-      this.form.license_number = response.data.license_number
-      this.form.item = response.data.item
-      this.form.gross_weight = response.data.gross_weight
-      this.form.net_weight = response.data.net_weight
-      this.form.tare_weight = response.data.tare_weight
-      this.form.time_in = new Date(response.data.time_in)
-      this.form.time_out = new Date(response.data.time_out)
-      this.form.user = response.data.user
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
   }
 }
 </script>
