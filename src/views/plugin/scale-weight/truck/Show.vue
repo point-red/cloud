@@ -7,6 +7,8 @@
       <span class="breadcrumb-item active">{{ data.form_number }}</span>
     </breadcrumb>
 
+    <tab-menu></tab-menu>
+
     <div class="row">
       <p-block :title="$t('scale weight truck')" :header="true">
         <p-block-inner :is-loading="isLoading">
@@ -59,12 +61,14 @@
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/master/Breadcrumb'
+import TabMenu from '../TabMenu'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     Breadcrumb,
-    BreadcrumbPlugin
+    BreadcrumbPlugin,
+    TabMenu
   },
   data () {
     return {

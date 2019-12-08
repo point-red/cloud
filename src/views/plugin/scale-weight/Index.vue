@@ -6,6 +6,7 @@
         class="breadcrumb-item">Plugin</router-link>
       <span class="breadcrumb-item active">Scale Weight</span>
     </breadcrumb>
+
     <div class="row gutters-tiny">
       <p-box
         name="Scale Weight (Truck)"
@@ -28,10 +29,12 @@
 
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
+import TabMenu from './TabMenu'
 
 export default {
   components: {
-    Breadcrumb
+    Breadcrumb,
+    TabMenu
   }
 }
 </script>

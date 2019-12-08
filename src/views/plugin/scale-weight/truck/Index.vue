@@ -6,7 +6,7 @@
       <span class="breadcrumb-item active">Truck</span>
     </breadcrumb>
 
-    <hr>
+    <tab-menu></tab-menu>
 
     <div class="row">
       <p-block
@@ -120,13 +120,15 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
+import TabMenu from '../TabMenu'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     Breadcrumb,
     BreadcrumbPlugin,
-    PointTable
+    PointTable,
+    TabMenu
   },
   data () {
     return {

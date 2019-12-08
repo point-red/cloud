@@ -10,6 +10,8 @@
         class="breadcrumb-item">Truck</router-link>
     </breadcrumb>
 
+    <tab-menu></tab-menu>
+
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('scale weight truck')" :header="true">
         <p-block-inner :is-loading="isLoading">
@@ -73,12 +75,14 @@
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/master/Breadcrumb'
 import Form from '@/utils/Form'
+import TabMenu from '../TabMenu'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     Breadcrumb,
-    BreadcrumbPlugin
+    BreadcrumbPlugin,
+    TabMenu
   },
   data () {
     return {
