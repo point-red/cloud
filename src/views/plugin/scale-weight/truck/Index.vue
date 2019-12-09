@@ -168,8 +168,8 @@ export default {
     exportData () {
       this.isExporting = true
       this.export({
-        date_from: this.date_from,
-        date_to: this.$moment(this.date_to).format('YYYY-MM-DD 23:59:59')
+        date_from: this.serverDateTime(this.date_from, 'start'),
+        date_to: this.serverDateTime(this.date_to, 'end')
       }).then(response => {
         this.isExporting = false
         this.downloadLink = response.data.url

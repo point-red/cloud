@@ -10,7 +10,7 @@
       <span class="breadcrumb-item active">Item</span>
     </breadcrumb>
 
-    <hr>
+    <tab-menu></tab-menu>
 
     <div class="row">
       <p-block
@@ -48,7 +48,7 @@
             </ul>
           </div>
         </p-form-row>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <p-table>
             <tr slot="p-head">
               <th>Machine Code</th>
@@ -90,18 +90,20 @@
 
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
+import TabMenu from '../TabMenu'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    Breadcrumb
+    Breadcrumb,
+    TabMenu
   },
   data () {
     return {
-      loading: true,
+      isLoading: true,
       isExporting: false,
-      date_from: this.$moment().startOf('day').format('YYYY-MM-DD HH:mm:ss'),
-      date_to: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+      date_from: new Date(),
+      date_to: new Date(),
       downloadLink: ''
     }
   },
@@ -119,59 +121,58 @@ export default {
   methods: {
     ...mapActions('pluginScaleWeightItem', ['get', 'export']),
     updateDateFrom () {
-      this.loading = true
-      this.date_to = this.date_from
+      this.isLoading = true
       this.get({
         params: {
           date_from: this.date_from,
           date_to: this.date_to
         }
-      }).then((response) => {
-        this.loading = false
-      }, (error) => {
-        this.loading = false
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
         this.$notifications.error(error.message)
       })
     },
     updateDateTo () {
-      this.loading = true
+      this.isLoading = true
       this.get({
         params: {
           date_from: this.date_from,
           date_to: this.date_to
         }
-      }).then((response) => {
-        this.loading = false
-      }, (error) => {
-        this.loading = false
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
         this.$notifications.error(error.message)
       })
     },
     exportData () {
       this.isExporting = true
       this.export({
-        date_from: this.date_from,
-        date_to: this.date_to
-      }).then((response) => {
+        date_from: this.serverDateTime(this.date_from, 'start'),
+        date_to: this.serverDateTime(this.date_to, 'end')
+      }).then(response => {
         this.isExporting = false
         this.downloadLink = response.data.url
-      }, (error) => {
+      }).catch(error => {
         this.isExporting = false
         console.log(error)
       })
     }
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.get({
       params: {
-        date_from: this.date_from,
-        date_to: this.date_to
+        date_from: this.serverDateTime(this.date_from, 'start'),
+        date_to: this.serverDateTime(this.date_to, 'end')
       }
-    }).then((response) => {
-      this.loading = false
-    }, (error) => {
-      this.loading = false
+    }).then(response => {
+      this.isLoading = false
+    }).catch(error => {
+      this.isLoading = false
       this.$notifications.error(error.message)
     })
   }

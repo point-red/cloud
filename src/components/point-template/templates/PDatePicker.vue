@@ -50,7 +50,23 @@ export default {
           text: 'Today',
           onClick () {
             const date = new Date()
-            // return a Date
+            return date
+          }
+        },
+        {
+          text: 'First',
+          onClick () {
+            const date = new Date()
+            date.setDate(1)
+            return date
+          }
+        },
+        {
+          text: 'Last',
+          onClick () {
+            const date = new Date()
+            date.setMonth(date.getMonth() + 1)
+            date.setDate(0)
             return date
           }
         },
@@ -74,7 +90,7 @@ export default {
           text: 'Last Month',
           onClick () {
             const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7 * 4)
+            date.setMonth(date.getMonth() - 1)
             return date
           }
         },
@@ -82,7 +98,7 @@ export default {
           text: 'Last Year',
           onClick () {
             const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7 * 4 * 12)
+            date.setYear(date.getFullYear() - 1)
             return date
           }
         }

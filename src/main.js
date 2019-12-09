@@ -65,6 +65,7 @@ if (process.env.VUA_APP_NODE_ENV == 'production') {
 }
 
 Vue.use(PackageVersion)
+Vue.use(PointDate)
 Vue.use(VueSelectMenu, { language: 'en' })
 Vue.use(VueClipboard)
 Vue.use(ClickOutside)
@@ -77,7 +78,6 @@ Vue.use(Notifications)
 Vue.use(VueI18n)
 Vue.use(VueSlimScroll)
 Vue.use(PointAlert)
-Vue.use(PointDate)
 Vue.use(PointFocus)
 Vue.use(PointFilter)
 Vue.use(PointNotification)
