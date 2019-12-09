@@ -3620,6 +3620,16 @@ date-fns@^1.27.2:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
 
+date-fns@^2.0.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.8.1.tgz#2109362ccb6c87c3ca011e9e31f702bc09e4123b"
+  integrity sha512-EL/C8IHvYRwAHYgFRse4MGAPSqlJVlOrhVYZ75iQBKrnv+ZedmYsgwH3t+BCDuZDXpoo07+q9j4qgSSOa7irJg==
+
+date-format-parse@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/date-format-parse/-/date-format-parse-0.2.5.tgz#6acd7672058e59cb34c85e0d82c04bceeac9d652"
+  integrity sha512-PzvB3p9bTxrGQbz3ZlO/kxgXzKZhMo4l0OQfPqVYjuwixHRS9yHH6cUJI9JG2Hh6iUQgh17T7w95lzQ131dS/g==
+
 dateformat@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-2.2.0.tgz#4065e2013cf9fb916ddfd82efb506ad4c6769062"
@@ -4760,11 +4770,6 @@ fd-slicer@~1.1.0:
   integrity sha1-JcfInLH5B3+IkbvmHY85Dq4lbx4=
   dependencies:
     pend "~1.2.0"
-
-fecha@^2.3.3:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/fecha/-/fecha-2.3.3.tgz#948e74157df1a32fd1b12c3a3c3cdcb6ec9d96cd"
-  integrity sha512-lUGBnIamTAwk4znq5BcqsDaxSmZ9nDVJaij6NvRt/Tg4R69gERA+otPKbS86ROw9nxVMw2/mp1fnaiWqbs6Sdg==
 
 figgy-pudding@^3.5.1:
   version "3.5.1"
@@ -11606,14 +11611,15 @@ vue-tour@^1.1.0:
     popper.js "^1.14.4"
     vue "^2.5.17"
 
-vue2-datepicker@^2.10.3:
-  version "2.13.3"
-  resolved "https://registry.yarnpkg.com/vue2-datepicker/-/vue2-datepicker-2.13.3.tgz#8e40c014a4e92e02431e1e2f74cffceb60b14c45"
-  integrity sha512-kAiTpCLlDC88mMTW5OqhlME0ZSB1fJKlHbKSEryPIi3lRJWHn4BlRSvGUTnSmBUr/5Qidma7Pxei9vih9Luicw==
+vue2-datepicker@^3.2.2:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/vue2-datepicker/-/vue2-datepicker-3.2.2.tgz#be01b4b0bb46f3a5fba6cd223098d2c41fb60233"
+  integrity sha512-Q7o5S5/dvjYsX0bALaFIlE8dZlYGMsBhID7HsIHQj6mqECYDjjViONkyQIrklbME5555FHZ8lKwfo72WHjmDVw==
   dependencies:
-    fecha "^2.3.3"
+    date-fns "^2.0.1"
+    date-format-parse "^0.2.5"
 
-vue2-google-maps@^0.10.6:
+vue2-google-maps@^0.10.7:
   version "0.10.7"
   resolved "https://registry.yarnpkg.com/vue2-google-maps/-/vue2-google-maps-0.10.7.tgz#2e4c1239386001bd47777d8c6a0475e5320cc3a8"
   integrity sha512-y5aBJTAsfGvpsbfgPaeWU7o7QbOeINZKsP6SB9qrBe8U8EYBFO/bTWo3rcMq/NOtgT/XssV3Nwg/2u3no6jWbw==

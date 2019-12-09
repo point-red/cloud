@@ -2,12 +2,10 @@
   <div>
     <breadcrumb>
       <breadcrumb-plugin/>
-      <router-link
-        to="/plugin/scale-weight"
-        class="breadcrumb-item">Scale Weight</router-link>
-      <router-link
-        to="/plugin/scale-weight/truck"
-        class="breadcrumb-item">Truck</router-link>
+      <router-link to="/plugin/scale-weight" class="breadcrumb-item">Scale Weight</router-link>
+      <router-link to="/plugin/scale-weight/truck" class="breadcrumb-item">Truck</router-link>
+      <router-link :to="'/plugin/scale-weight/truck/' + form.id" class="breadcrumb-item">{{ form.id }}</router-link>
+      <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
     <tab-menu></tab-menu>
@@ -41,7 +39,7 @@
             name="time_in"
             :label="$t('time in')">
             <div slot="body" class="col-lg-9">
-              <p-date-picker
+              <p-date-time-picker
                 id="time-in"
                 name="time-in"
                 v-model="form.time_in"/>
@@ -52,7 +50,7 @@
             name="time_out"
             :label="$t('time out')">
             <div slot="body" class="col-lg-9">
-              <p-date-picker
+              <p-date-time-picker
                 id="time-out"
                 name="time-out"
                 v-model="form.time_out"/>

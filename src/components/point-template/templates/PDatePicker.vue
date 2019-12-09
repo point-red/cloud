@@ -4,6 +4,7 @@
       format="DD-MM-YYYY"
       type="date"
       v-model="date"
+      :shortcuts="shortcuts"
       v-mask="mask"/>
 
     <div
@@ -43,7 +44,49 @@ export default {
   data () {
     return {
       mask: '##-##-####',
-      date: this.value
+      date: this.value,
+      shortcuts: [
+        {
+          text: 'Today',
+          onClick () {
+            const date = new Date()
+            // return a Date
+            return date
+          }
+        },
+        {
+          text: 'Yesterday',
+          onClick () {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            return date
+          }
+        },
+        {
+          text: 'Last Week',
+          onClick () {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            return date
+          }
+        },
+        {
+          text: 'Last Month',
+          onClick () {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7 * 4)
+            return date
+          }
+        },
+        {
+          text: 'Last Year',
+          onClick () {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7 * 4 * 12)
+            return date
+          }
+        }
+      ]
     }
   },
   watch: {

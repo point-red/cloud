@@ -4,13 +4,21 @@
       <breadcrumb-plugin/>
       <router-link to="/plugin/scale-weight" class="breadcrumb-item">Scale Weight</router-link>
       <router-link to="/plugin/scale-weight/truck" class="breadcrumb-item">Truck</router-link>
-      <span class="breadcrumb-item active">{{ data.form_number }}</span>
+      <span class="breadcrumb-item active">{{ data.id }}</span>
     </breadcrumb>
 
     <tab-menu></tab-menu>
 
     <div class="row">
       <p-block :title="$t('scale weight truck')" :header="true">
+        <router-link
+          to="/plugin/scale-weight/truck/create"
+          v-if="$permission.has('create scale weight truck')"
+          slot="header"
+          exact
+          class="btn-block-option">
+          <span><i class="si si-plus"></i> {{ $t('new scale weight') | titlecase }}</span>
+        </router-link>
         <p-block-inner :is-loading="isLoading">
           <p-form-row id="machine_code" name="machine_code" label="Machine" v-model="data.machine_code" readonly/>
           <p-form-row id="form_number" name="form_number" label="Form" v-model="data.form_number" readonly/>
@@ -116,6 +124,7 @@ export default {
       id: this.id
     }).then(response => {
       this.isLoading = false
+      this.data.id = response.data.id
       this.data.machine_code = response.data.machine_code
       this.data.form_number = response.data.form_number
       this.data.vendor = response.data.vendor
