@@ -96,8 +96,8 @@ export default {
         gross_weight: null,
         net_weight: null,
         tare_weight: null,
-        time_in: new Date(),
-        time_out: new Date(),
+        time_in: this.serverDateTime(),
+        time_out: this.serverDateTime(),
         user: null,
         is_delivery: 0
       })

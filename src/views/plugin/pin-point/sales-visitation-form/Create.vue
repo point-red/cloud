@@ -5,9 +5,7 @@
     <breadcrumb>
       <breadcrumb-plugin/>
       <breadcrumb-pin-point/>
-      <router-link
-        to="/plugin/pin-point/sales-visitation-form"
-        class="breadcrumb-item">{{ $t('sales visitation') | titlecase }}</router-link>
+      <router-link to="/plugin/pin-point/sales-visitation-form" class="breadcrumb-item">{{ $t('sales visitation') | titlecase }}</router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
@@ -390,7 +388,7 @@ export default {
       isSaving: false,
       rows: 1,
       form: new Form({
-        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        date: this.serverDateTime(),
         customer_id: null,
         customer_name: this.$route.query.name || '',
         address: this.$route.query.address || '',
@@ -413,7 +411,7 @@ export default {
         total: [0],
         grandTotal: 0,
         payment_method: 'cash',
-        due_date: '',
+        due_date: null,
         received_payment: 0
       }),
       notInterestedList: [

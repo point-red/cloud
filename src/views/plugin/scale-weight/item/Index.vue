@@ -102,8 +102,8 @@ export default {
     return {
       isLoading: true,
       isExporting: false,
-      date_from: new Date(),
-      date_to: new Date(),
+      date_from: this.serverDateTime(),
+      date_to: this.serverDateTime(),
       downloadLink: ''
     }
   },
@@ -124,8 +124,8 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          date_from: this.date_from,
-          date_to: this.date_to
+          date_from: this.serverDateTime(this.date_from, 'start'),
+          date_to: this.serverDateTime(this.date_to, 'end')
         }
       }).then(response => {
         this.isLoading = false
@@ -138,8 +138,8 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          date_from: this.date_from,
-          date_to: this.date_to
+          date_from: this.serverDateTime(this.date_from, 'start'),
+          date_to: this.serverDateTime(this.date_to, 'end')
         }
       }).then(response => {
         this.isLoading = false

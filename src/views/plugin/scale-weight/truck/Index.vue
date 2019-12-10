@@ -137,8 +137,8 @@ export default {
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
       isExporting: false,
-      date_from: new Date(),
-      date_to: new Date(),
+      date_from: this.serverDate(),
+      date_to: this.serverDate(),
       downloadLink: ''
     }
   },

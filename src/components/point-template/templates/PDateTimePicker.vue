@@ -4,6 +4,7 @@
       format="DD-MM-YYYY HH:mm"
       type="datetime"
       v-model="datetime"
+      value-type="YYYY-MM-DD HH:mm:ss"
       v-mask="mask"/>
 
     <div
@@ -30,7 +31,7 @@ export default {
       required: false
     },
     value: {
-      type: Date,
+      type: [Date, String],
       default: new Date()
     },
     help: {
