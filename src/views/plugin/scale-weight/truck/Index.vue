@@ -69,6 +69,7 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
+              <th>#</th>
               <th>Machine Code</th>
               <th>Form Number</th>
               <th>Time In</th>
@@ -82,9 +83,10 @@
               <th class="text-right">Net</th>
             </tr>
             <tr
-              v-for="scaleWeight in scaleWeights"
+              v-for="(scaleWeight, index) in scaleWeights"
               :key="scaleWeight.id"
               slot="p-body">
+              <th>{{ ++index }}</th>
               <td>{{ scaleWeight.machine_code }}</td>
               <td>
                 <router-link :to="{ name: 'plugin.scale-weight.truck.show', params: { id: scaleWeight.id }}">
