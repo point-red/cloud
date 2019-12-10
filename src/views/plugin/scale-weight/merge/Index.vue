@@ -305,10 +305,10 @@ export default {
         date_to: this.serverDateTime(this.date_to, 'end'),
         header: this.checkedColumn,
         cat: this.checkedColumnCat
-      }).then((response) => {
+      }).then(response => {
         this.isExporting = false
         this.downloadLink = response.data.url
-      }, (error) => {
+      }).catch(error => {
         this.isExporting = false
         console.log(error)
       })

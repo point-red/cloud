@@ -9,66 +9,64 @@
     <tab-menu></tab-menu>
 
     <div class="row">
-      <p-block
-        :title="'Scale Weight - Truck'"
-        :header="true">
-          <div class="row">
-            <div class="col-sm-6">
-              <p-form-row
-                id="date"
-                name="date"
-                :label="$t('date from')">
-                <div slot="body" class="col-lg-9">
-                  <p-date-picker
-                    id="date-from"
-                    name="date_from"
-                    v-model="date_from"/>
-                </div>
-              </p-form-row>
-            </div>
-            <div class="col-sm-6">
-              <p-form-row
-                id="date"
-                name="date"
-                :label="$t('date to')">
-                <div slot="body" class="col-lg-9">
-                  <p-date-picker
-                    id="date-to"
-                    name="date_to"
-                    v-model="date_to"/>
-                </div>
-              </p-form-row>
-            </div>
+      <p-block :title="'Scale Weight - Truck'" :header="true">
+        <div class="row">
+          <div class="col-sm-6">
+            <p-form-row
+              id="date"
+              name="date"
+              :label="$t('date from')">
+              <div slot="body" class="col-lg-9">
+                <p-date-picker
+                  id="date-from"
+                  name="date_from"
+                  v-model="date_from"/>
+              </div>
+            </p-form-row>
           </div>
-          <div class="block input-group">
-            <p-form-input
-              id="search-text"
-              name="search-text"
-              placeholder="Search"
-              :value="searchText"
-              class="btn-block"
-              @input="filterSearch"/>
-            <router-link
-              to="/plugin/scale-weight/truck/create"
-              v-if="$permission.has('create scale weight truck')"
-              class="input-group-append">
-              <span class="input-group-text">
-                <i class="fa fa-plus"></i>
-              </span>
-            </router-link>
+          <div class="col-sm-6">
+            <p-form-row
+              id="date"
+              name="date"
+              :label="$t('date to')">
+              <div slot="body" class="col-lg-9">
+                <p-date-picker
+                  id="date-to"
+                  name="date_to"
+                  v-model="date_to"/>
+              </div>
+            </p-form-row>
           </div>
-          <p-form-row id="date" name="date">
-            <div slot="body" class="col-lg-12">
-              <button :disabled="isExporting" type="submit" class="btn btn-sm btn-primary" @click="exportData">
-                <i v-show="isExporting" class="fa fa-asterisk fa-spin"/> Export
-              </button>
-              <ul v-show="downloadLink">
-                <li><a :href="downloadLink" download>{{ downloadLink }}</a> (expired in 24 hour)</li>
-              </ul>
-            </div>
-          </p-form-row>
-          <hr/>
-          <p-block-inner :is-loading="isLoading">
+        </div>
+        <div class="block input-group">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
+          <router-link
+            to="/plugin/scale-weight/truck/create"
+            v-if="$permission.has('create scale weight truck')"
+            class="input-group-append">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
+        </div>
+        <p-form-row id="date" name="date">
+          <div slot="body" class="col-lg-12">
+            <button :disabled="isExporting" type="submit" class="btn btn-sm btn-primary" @click="exportData">
+              <i v-show="isExporting" class="fa fa-asterisk fa-spin"/> Export
+            </button>
+            <ul v-show="downloadLink">
+              <li><a :href="downloadLink" download>{{ downloadLink }}</a> (expired in 24 hour)</li>
+            </ul>
+          </div>
+        </p-form-row>
+        <hr/>
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>Machine Code</th>
@@ -212,7 +210,7 @@ export default {
       this.getScaleWeightRequest()
     }
   },
-  mounted () {
+  created () {
     this.getScaleWeightRequest()
   },
   updated () {

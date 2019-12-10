@@ -1,45 +1,62 @@
 <template>
   <div>
     <breadcrumb>
-      <router-link
-        to="/plugin"
-        class="breadcrumb-item">Plugin</router-link>
-      <router-link
-        to="/plugin/scale-weight"
-        class="breadcrumb-item">Scale Weight</router-link>
+      <router-link to="/plugin" class="breadcrumb-item">Plugin</router-link>
+      <router-link to="/plugin/scale-weight" class="breadcrumb-item">Scale Weight</router-link>
       <span class="breadcrumb-item active">Item</span>
     </breadcrumb>
 
     <tab-menu></tab-menu>
 
     <div class="row">
-      <p-block
-        :title="'Scale Weight - Item'"
-        :header="true">
-        <p-form-row
-          id="date"
-          name="date"
-          :label="$t('date from')">
-          <div slot="body" class="col-lg-9">
-            <p-date-picker
-              id="date-from"
-              name="date_from"
-              v-model="date_from"/>
+      <p-block :title="'Scale Weight - Item'" :header="true">
+        <div class="row">
+          <div class="col-sm-6">
+            <p-form-row
+              id="date"
+              name="date"
+              :label="$t('date from')">
+              <div slot="body" class="col-lg-9">
+                <p-date-picker
+                  id="date-from"
+                  name="date_from"
+                  v-model="date_from"/>
+              </div>
+            </p-form-row>
           </div>
-        </p-form-row>
-        <p-form-row
-          id="date"
-          name="date"
-          :label="$t('date to')">
-          <div slot="body" class="col-lg-9">
-            <p-date-picker
-              id="date-to"
-              name="date_to"
-              v-model="date_to"/>
+          <div class="col-sm-6">
+            <p-form-row
+              id="date"
+              name="date"
+              :label="$t('date to')">
+              <div slot="body" class="col-lg-9">
+                <p-date-picker
+                  id="date-to"
+                  name="date_to"
+                  v-model="date_to"/>
+              </div>
+            </p-form-row>
           </div>
-        </p-form-row>
+        </div>
+        <div class="block input-group">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
+          <router-link
+            to="/plugin/scale-weight/item/create"
+            v-if="$permission.has('create scale weight item')"
+            class="input-group-append">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
+        </div>
         <p-form-row id="export" name="export">
-          <div slot="body" class="col-lg-9">
+          <div slot="body" class="col-lg-12">
             <button :disabled="isExporting" type="submit" class="btn btn-sm btn-primary" @click="exportData">
               <i v-show="isExporting" class="fa fa-asterisk fa-spin"/> Export
             </button>
@@ -48,9 +65,11 @@
             </ul>
           </div>
         </p-form-row>
+        <hr/>
         <p-block-inner :is-loading="isLoading">
-          <p-table>
+          <point-table>
             <tr slot="p-head">
+              <th>#</th>
               <th>Machine Code</th>
               <th>Form Number</th>
               <th>Time</th>
@@ -63,12 +82,13 @@
               <th class="text-right">Net</th>
             </tr>
             <tr
-              v-for="scaleWeight in scaleWeights"
+              v-for="(scaleWeight, index) in scaleWeights"
               :key="scaleWeight.id"
               slot="p-body">
+              <th>{{ ++index }}</th>
               <td>{{ scaleWeight.machine_code }}</td>
               <td>
-                <router-link :to="{ name: 'ScaleWeightTruck', params: { id: scaleWeight.id }}">
+                <router-link :to="{ name: 'plugin.scale-weight.item.index', params: { id: scaleWeight.id }}">
                   {{ scaleWeight.form_number }}
                 </router-link>
               </td>
@@ -81,8 +101,13 @@
               <td class="text-right">{{ scaleWeight.tare_weight | numberFormat }}</td>
               <td class="text-right">{{ scaleWeight.net_weight | numberFormat }}</td>
             </tr>
-          </p-table>
+          </point-table>
         </p-block-inner>
+        <p-pagination
+          :current-page="currentPage"
+          :last-page="lastPage"
+          @updatePage="updatePage">
+        </p-pagination>
       </p-block>
     </div>
   </div>
@@ -91,63 +116,45 @@
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
 import TabMenu from '../TabMenu'
+import PointTable from 'point-table-vue'
+import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     Breadcrumb,
+    PointTable,
     TabMenu
   },
   data () {
     return {
       isLoading: true,
       isExporting: false,
-      date_from: this.serverDateTime(),
-      date_to: this.serverDateTime(),
+      date_from: this.serverDate(),
+      date_to: this.serverDate(),
+      searchText: this.$route.query.search,
+      currentPage: this.$route.query.page * 1 || 1,
+      lastPage: 1,
       downloadLink: ''
     }
   },
   computed: {
-    ...mapGetters('pluginScaleWeightItem', ['scaleWeights'])
+    ...mapGetters('pluginScaleWeightItem', ['scaleWeights', 'pagination'])
   },
   watch: {
     'date_from' () {
-      this.updateDateFrom()
+      this.$router.push({ query: { search: this.searchText, dateFrom: this.date_from, dateTo: this.date_to } })
+      this.currentPage = 1
+      this.getScaleWeightRequest()
     },
     'date_to' () {
-      this.updateDateTo()
+      this.$router.push({ query: { search: this.searchText, dateFrom: this.date_from, dateTo: this.date_to } })
+      this.currentPage = 1
+      this.getScaleWeightRequest()
     }
   },
   methods: {
     ...mapActions('pluginScaleWeightItem', ['get', 'export']),
-    updateDateFrom () {
-      this.isLoading = true
-      this.get({
-        params: {
-          date_from: this.serverDateTime(this.date_from, 'start'),
-          date_to: this.serverDateTime(this.date_to, 'end')
-        }
-      }).then(response => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notifications.error(error.message)
-      })
-    },
-    updateDateTo () {
-      this.isLoading = true
-      this.get({
-        params: {
-          date_from: this.serverDateTime(this.date_from, 'start'),
-          date_to: this.serverDateTime(this.date_to, 'end')
-        }
-      }).then(response => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notifications.error(error.message)
-      })
-    },
     exportData () {
       this.isExporting = true
       this.export({
@@ -160,21 +167,53 @@ export default {
         this.isExporting = false
         console.log(error)
       })
+    },
+    filterSearch: debounce(function (value) {
+      this.$router.push({ query: { search: value, dateFrom: this.date_from, dateTo: this.date_to } })
+      this.searchText = value
+      this.currentPage = 1
+      this.getScaleWeightRequest()
+    }, 300),
+    getScaleWeightRequest () {
+      this.isLoading = true
+      this.get({
+        params: {
+          fields: 'scale_weight_items.*',
+          sort_by: 'time',
+          filter_like: {
+            'form_number': this.searchText,
+            'machine_code': this.searchText,
+            'vendor': this.searchText,
+            'driver': this.searchText,
+            'license_number': this.searchText,
+            'item': this.searchText
+          },
+          filter_min: {
+            'time': this.serverDateTime(this.date_from, 'start')
+          },
+          filter_max: {
+            'time': this.serverDateTime(this.date_to, 'end')
+          },
+          limit: 10,
+          page: this.currentPage
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notifications.error(error.message)
+      })
+    },
+    updatePage (value) {
+      this.currentPage = value
+      this.getScaleWeightRequest()
     }
   },
   created () {
-    this.isLoading = true
-    this.get({
-      params: {
-        date_from: this.serverDateTime(this.date_from, 'start'),
-        date_to: this.serverDateTime(this.date_to, 'end')
-      }
-    }).then(response => {
-      this.isLoading = false
-    }).catch(error => {
-      this.isLoading = false
-      this.$notifications.error(error.message)
-    })
+    this.getScaleWeightRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   }
 }
 </script>
