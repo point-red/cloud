@@ -129,9 +129,9 @@
               :key="scaleWeight.id"
               slot="p-body">
               <td v-if="checkedColumn.indexOf('Date In') != -1">{{ scaleWeight.date_in }}</td>
-              <td v-if="checkedColumn.indexOf('Time In') != -1">{{ scaleWeight.time_in }}</td>
+              <td v-if="checkedColumn.indexOf('Time In') != -1">{{ scaleWeight.time_in | dateFormat('HH.mm') }}</td>
               <td v-if="checkedColumn.indexOf('Date Out') != -1">{{ scaleWeight.date_out }}</td>
-              <td v-if="checkedColumn.indexOf('Time Out') != -1">{{ scaleWeight.time_out }}</td>
+              <td v-if="checkedColumn.indexOf('Time Out') != -1">{{ scaleWeight.time_out | dateFormat('HH.mm') }}</td>
               <td v-if="checkedColumn.indexOf('Machine') != -1">{{ scaleWeight.machine_code }}</td>
               <td v-if="checkedColumn.indexOf('Form Number') != -1">{{ scaleWeight.form_number }}</td>
               <td v-if="checkedColumn.indexOf('Vendor') != -1">{{ scaleWeight.vendor }}</td>
