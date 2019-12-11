@@ -99,9 +99,9 @@ export default {
       })
       this.searchText = value
       this.currentPage = 1
-      this.getManufactureProcess()
+      this.getManufactureProcesses()
     }, 300),
-    getManufactureProcess () {
+    getManufactureProcesses () {
       this.isLoading = true
       this.get({
         params: {
@@ -121,11 +121,11 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getManufactureProcess()
+      this.getManufactureProcesses()
     }
   },
   created () {
-    this.getManufactureProcess()
+    this.getManufactureProcesses()
   },
   updated () {
     this.lastPage = this.pagination.last_page

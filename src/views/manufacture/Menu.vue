@@ -13,8 +13,16 @@
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/manufacture/process')}"
       active-class="btn-primary"
-      v-if="$permission.has('read manufacture process')">      
+      v-if="$permission.has('read manufacture process')">
       <span><i class="si si-folder-alt"></i> {{ $t('process') | titlecase }}</span>
+    </router-link>
+    <router-link
+      to="/manufacture/formula"
+      class="btn mr-5 mb-15"
+      :class="{'btn-secondary': !isMatch('/manufacture/formula')}"
+      active-class="btn-primary"
+      v-if="$permission.has('read manufacture formula')">
+      <span><i class="si si-folder-alt"></i> {{ $t('formula') | titlecase }}</span>
     </router-link>
   </div>
 </template>

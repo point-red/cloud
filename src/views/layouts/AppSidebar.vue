@@ -253,7 +253,7 @@
             </li> -->
             <!-- <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
               <router-link to="/manufacture" class="nav-submenu" active-class="active">
-                <i class="si si-basket-loaded"/>
+                <i class="si si-settings"/>
                 <span class="sidebar-mini-hide">{{ $t("manufacture") | titlecase }}</span>
               </router-link>
               <ul>
@@ -267,6 +267,12 @@
                   <router-link
                     to="/manufacture/process"
                     active-class="active">{{ $t('process') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture formula')">
+                  <router-link
+                    to="/manufacture/formula"
+                    active-class="active">{{ $t('formula') | titlecase }}
                   </router-link>
                 </li>
               </ul>
