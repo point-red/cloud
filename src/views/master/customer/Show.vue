@@ -23,7 +23,7 @@
             id="name"
             label="Name"
             name="name"
-            v-model="data.name"
+            v-model="customer.name"
             readonly/>
           <p-form-row
             id="email"
@@ -42,6 +42,12 @@
             label="Phone"
             name="phone"
             v-model="data.phone"
+            readonly/>
+          <p-form-row
+            id="pricing-group"
+            label="Pricing Group"
+            name="pricing-group"
+            v-model="data.pricing_group.label"
             readonly/>
 
           <p-form-row
@@ -194,10 +200,12 @@ export default {
       isDeleting: false,
       isLoadingSalesVisitation: false,
       data: {
-        name: null,
         email: null,
         address: null,
-        phone: null
+        phone: null,
+        pricing_group: {
+          label: null
+        }
       },
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1
@@ -227,7 +235,6 @@ export default {
           sort_by: '-forms.date'
         }
       }).then(response => {
-        console.log(response)
         this.isLoadingSalesVisitation = false
       }).catch(error => {
         this.isLoadingSalesVisitation = false
@@ -252,12 +259,14 @@ export default {
     this.find({
       id: this.id,
       params: {
-        includes: 'addresses;phones;groups;emails'
+        includes: 'addresses;phones;emails;groups;pricingGroup'
       }
     }).then(response => {
       this.isLoading = false
       this.data.name = response.data.name
-      console.log(response.data)
+      if (response.data.pricing_group) {
+        this.data.pricing_group.label = response.data.pricing_group.label
+      }
       if (response.data.emails.length > 0) {
         this.data.email = response.data.emails[0].email
       }

@@ -57,6 +57,15 @@
             :errors="form.errors.get('phone')"
             @errors="form.errors.set('phone', null)"/>
 
+          <p-form-row id="pricing-group" name="pricing-group" :label="$t('pricing group')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-pricing-group
+                :id="'pricing-group-id'"
+                :label="form.pricing_group.label"
+                v-model="form.pricing_group_id"/>
+            </div>
+          </p-form-row>
+
           <p-form-row id="group" name="group" :label="$t('group')">
             <div slot="body" class="col-lg-9 mt-5">
               <template v-for="(group, index) in form.groups">
@@ -116,6 +125,9 @@ export default {
         phones: [{
           number: null
         }],
+        pricing_group: {
+          label: ''
+        },
         groups: []
       })
     }
@@ -128,12 +140,17 @@ export default {
     this.find({
       id: this.id,
       params: {
-        includes: 'addresses;phones;emails;groups'
+        includes: 'addresses;phones;emails;groups;pricingGroup'
       }
     }).then(response => {
       this.isLoading = false
       this.form.name = this.customer.name
       this.form.groups = this.customer.groups
+      this.form.pricing_group_id = this.customer.pricing_group_id
+      if (this.customer.pricing_group) {
+        this.form.pricing_group.id = this.customer.pricing_group.id
+        this.form.pricing_group.label = this.customer.pricing_group.label
+      }
       if (this.customer.emails.length > 0) {
         this.form.emails[0].email = this.customer.emails[0].email
       }

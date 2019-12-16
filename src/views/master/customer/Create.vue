@@ -47,6 +47,14 @@
             :errors="form.errors.get('phone')"
             @errors="form.errors.set('phone', null)"/>
 
+          <p-form-row id="pricing-group" name="pricing-group" :label="$t('pricing group')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-pricing-group
+                :id="'pricing-group-id'"
+                v-model="form.pricing_group_id"/>
+            </div>
+          </p-form-row>
+
           <p-form-row id="group" name="group" :label="$t('group')">
             <div slot="body" class="col-lg-9 mt-5">
               <template v-for="(group, index) in form.groups">

@@ -35,6 +35,7 @@
               <th>Name</th>
               <th>Address</th>
               <th>Phone</th>
+              <th>Pricing Group</th>
             </tr>
             <tr
               v-for="(customer, index) in customers"
@@ -55,6 +56,9 @@
                 <template v-for="customerPhone in customer.phones">
                   {{ customerPhone.number | lowercase }}
                 </template>
+              </td>
+              <td>
+                <span v-if="customer.pricing_group">{{ customer.pricing_group.label }}</span>
               </td>
             </tr>
           </point-table>
@@ -114,7 +118,7 @@ export default {
             'phones.number': this.searchText
           },
           join: 'addresses,phones,emails',
-          includes: 'addresses;phones;emails;groups',
+          includes: 'addresses;phones;emails;groups;pricingGroup',
           limit: 10,
           page: this.currentPage
         }
