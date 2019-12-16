@@ -2,9 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link
-        to="/master/warehouse"
-        class="breadcrumb-item">{{ $t('warehouse') | titlecase }}</router-link>
+      <router-link to="/master/warehouse" class="breadcrumb-item">{{ $t('warehouse') | titlecase }}</router-link>
+      <router-link :to="'/master/warehouse/'+form.id" class="breadcrumb-item">{{ form.name | titlecase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | titlecase }}</span>
     </breadcrumb>
 
@@ -12,6 +11,14 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('edit') + ' ' + $t('warehouse')" :header="true">
+        <router-link
+          to="/master/warehouse/create"
+          v-if="$permission.has('create warehouse')"
+          slot="header"
+          exact
+          class="btn btn-outline-secondary btn-sm mr-5">
+          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
+        </router-link>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"

@@ -3,6 +3,7 @@
     <breadcrumb>
       <breadcrumb-master/>
       <router-link to="/master/customer" class="breadcrumb-item">Customer</router-link>
+      <router-link :to="'/master/customer/'+form.id" class="breadcrumb-item">{{ form.name | titlecase }}</router-link>
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 

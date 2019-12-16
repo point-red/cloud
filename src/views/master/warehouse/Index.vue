@@ -14,6 +14,7 @@
             id="search-text"
             name="search-text"
             placeholder="Search"
+            ref="searchText"
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>
@@ -30,14 +31,14 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">#</th>
               <th>Name</th>
             </tr>
             <tr
               v-for="(warehouse, index) in warehouses"
               :key="warehouse.id"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
+              <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'warehouse.show', params: { id: warehouse.id }}">
                   {{ warehouse.name | titlecase }}
@@ -115,6 +116,9 @@ export default {
   },
   created () {
     this.getWarehouseRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
   },
   updated () {
     this.lastPage = this.pagination.last_page

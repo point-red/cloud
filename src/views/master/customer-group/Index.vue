@@ -31,12 +31,14 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
+              <th width="50px">#</th>
               <th>Name</th>
             </tr>
             <tr
               v-for="(group, index) in groups"
               :key="index"
               slot="p-body">
+              <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'customer-group.show', params: { id: group.id }}">
                   {{ group.name | titlecase }}
