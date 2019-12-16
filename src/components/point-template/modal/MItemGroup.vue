@@ -97,7 +97,6 @@ export default {
           sort_by: 'name',
           limit: 50,
           filter_like: {
-            code: this.searchText,
             name: this.searchText
           }
         }
