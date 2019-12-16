@@ -35,6 +35,7 @@
               <th>Name</th>
               <th>Address</th>
               <th>Phone</th>
+              <th>Email</th>
               <th>Pricing Group</th>
             </tr>
             <tr
@@ -55,6 +56,11 @@
               <td>
                 <template v-for="customerPhone in customer.phones">
                   {{ customerPhone.number | lowercase }}
+                </template>
+              </td>
+              <td>
+                <template v-for="customerEmail in customer.emails">
+                  {{ customerEmail.email | lowercase }}
                 </template>
               </td>
               <td>
