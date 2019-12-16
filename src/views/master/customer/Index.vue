@@ -14,6 +14,7 @@
             id="search-text"
             name="search-text"
             placeholder="Search"
+            ref="searchText"
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>

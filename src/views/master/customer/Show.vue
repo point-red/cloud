@@ -15,8 +15,8 @@
           v-if="$permission.has('create customer')"
           slot="header"
           exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new customer') | titlecase }}</span>
+          class="btn btn-outline-secondary btn-sm mr-5">
+          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
         </router-link>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
@@ -44,7 +44,27 @@
             v-model="data.phone"
             readonly/>
 
+          <p-form-row
+            id="group"
+            :label="$t('group')"
+            name="group"
+            readonly>
+            <div slot="body" class="col-lg-9">
+              <table class="table">
+                <thead></thead>
+                <tbody>
+                  <template v-for="(group, index) in customer.groups">
+                    <tr :key="index">
+                      <td>{{ group.name }}</td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </p-form-row>
+
           <hr/>
+
           <router-link
             :to="{ path: '/master/customer/' + customer.id + '/edit', params: { id: customer.id }}"
             v-if="$permission.has('update customer')"

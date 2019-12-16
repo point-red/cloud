@@ -99,7 +99,7 @@ export default {
     },
     showHiddenButton: {
       type: Boolean,
-      default: true
+      default: false
     },
     showPrinterButton: {
       type: Boolean,

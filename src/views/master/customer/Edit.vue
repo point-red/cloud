@@ -2,9 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link
-        to="/master/customer"
-        class="breadcrumb-item">Customer</router-link>
+      <router-link to="/master/customer" class="breadcrumb-item">Customer</router-link>
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
@@ -12,14 +10,16 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('edit') + ' ' + $t('customer')" :header="true">
+
         <router-link
           to="/master/customer/create"
           v-if="$permission.has('create customer')"
           slot="header"
           exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new customer') | titlecase }}</span>
+          class="btn btn-outline-secondary btn-sm mr-5">
+          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
         </router-link>
+
         <p-block-inner>
           <p-form-row
             id="name"
@@ -56,6 +56,23 @@
             name="phone"
             :errors="form.errors.get('phone')"
             @errors="form.errors.set('phone', null)"/>
+
+          <p-form-row id="group" name="group" :label="$t('group')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <template v-for="(group, index) in form.groups">
+                <m-customer-group
+                  :key="index"
+                  :id="'group'+index"
+                  v-model="group.id"
+                  :label="group.name"
+                  @clear="removeGroupRow(index)"/>
+                <hr :key="'group-hr-'+index"/>
+              </template>
+              <button type="button" class="btn btn-sm btn-secondary" @click="addGroupRow">
+                <i class="fa fa-plus"/> Add More Group
+              </button>
+            </div>
+          </p-form-row>
 
           <hr/>
 
@@ -98,7 +115,8 @@ export default {
         }],
         phones: [{
           number: null
-        }]
+        }],
+        groups: []
       })
     }
   },
@@ -115,6 +133,7 @@ export default {
     }).then(response => {
       this.isLoading = false
       this.form.name = this.customer.name
+      this.form.groups = this.customer.groups
       if (this.customer.emails.length > 0) {
         this.form.emails[0].email = this.customer.emails[0].email
       }
@@ -131,6 +150,16 @@ export default {
   },
   methods: {
     ...mapActions('masterCustomer', ['find', 'update']),
+    addGroupRow () {
+      this.form.groups.push({
+        id: null,
+        label: null,
+        name: null
+      })
+    },
+    removeGroupRow (group) {
+      this.$delete(this.form.groups, group)
+    },
     onSubmit () {
       this.isSaving = true
       this.update(this.form).then(response => {
