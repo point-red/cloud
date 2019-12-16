@@ -95,15 +95,14 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          class_reference: 'Item',
           limit: 50,
           filter_like: {
+            code: this.searchText,
             name: this.searchText
           }
         }
       }).then(response => {
         this.options = []
-        // this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
@@ -138,15 +137,11 @@ export default {
       this.$emit('choosen', {
         id: option.id,
         label: option.label,
-        name: option.label,
-        type: this.type,
-        class_reference: 'Item'
+        name: option.label
       })
       this.close()
     },
     clear () {
-      // this.mutableId = null
-      // this.mutableLabel = null
       this.$emit('input', null)
       this.$emit('clear')
     },

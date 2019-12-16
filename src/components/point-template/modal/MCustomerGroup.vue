@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span>
+    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span> <i v-show="mutableId" class="clickable fa fa-close" @click="clear"></i>
     <p-modal :ref="'select-' + id" :id="'select-' + id" title="select customer group">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
@@ -93,6 +93,7 @@ export default {
           sort_by: 'name',
           limit: 50,
           filter_like: {
+            code: this.searchText,
             name: this.searchText
           }
         }
@@ -132,6 +133,10 @@ export default {
       this.$emit('input', option.id)
       this.$emit('choosen', option.label)
       this.close()
+    },
+    clear () {
+      this.$emit('input', null)
+      this.$emit('clear')
     },
     show () {
       this.$refs['select-' + this.id].show()

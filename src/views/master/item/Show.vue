@@ -47,9 +47,16 @@
             name="group"
             readonly>
             <div slot="body" class="col-lg-9">
-              <template v-for="(group, index) in item.groups">
-                <p-form-input readonly :key="index" :value="group.name"/>
-              </template>
+              <table class="table">
+                <thead></thead>
+                <tbody>
+                  <template v-for="(group, index) in item.groups">
+                    <tr :key="index">
+                      <td>{{ group.name }}</td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
             </div>
           </p-form-row>
 

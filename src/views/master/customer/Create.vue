@@ -13,7 +13,17 @@
         <p-block-inner>
           <p-form-row id="group" name="group" :label="$t('group')">
             <div slot="body" class="col-lg-9 mt-5">
-              <m-group id="group" v-model="form.group_id" class-reference="Customer" type="customer"/>
+              <template v-for="(group, index) in form.groups">
+                <m-customer-group
+                  :key="index"
+                  :id="'group'+index"
+                  v-model="group.id"
+                  @clear="removeGroupRow(index)"/>
+                <hr :key="'group-hr-'+index"/>
+              </template>
+              <button type="button" class="btn btn-sm btn-secondary" @click="addGroupRow">
+                <i class="fa fa-plus"/> Add More Group
+              </button>
             </div>
           </p-form-row>
 
@@ -91,9 +101,10 @@ export default {
         phones: [{
           number: null
         }],
-        group: {
-          name: ''
-        }
+        groups: [{
+          id: null,
+          name: null
+        }]
       })
     }
   },
@@ -102,16 +113,18 @@ export default {
   },
   methods: {
     ...mapActions('masterCustomer', ['create']),
-    togglePriority () {
-      if (this.form.group.name == 'priority') {
-        this.form.group.name = ''
-      } else {
-        this.form.group.name = 'priority'
-      }
+    addGroupRow () {
+      this.form.groups.push({
+        id: null,
+        label: null,
+        name: null
+      })
+    },
+    removeGroupRow (group) {
+      this.$delete(this.form.groups, group)
     },
     onSubmit () {
       this.isSaving = true
-
       this.create(this.form)
         .then(response => {
           this.isSaving = false
