@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     isMatch (value) {
-      return this.path.substring(0, value.length) == value
+      return this.path == value
     }
   }
 }

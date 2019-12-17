@@ -5,7 +5,7 @@
       <span class="breadcrumb-item active">{{ $t('process') | titlecase }}</span>
     </breadcrumb>
 
-    <process-menu/>
+    <manufacture-menu/>
 
     <tab-menu/>
 
@@ -61,7 +61,7 @@
 
 <script>
 import TabMenu from './TabMenu'
-import ProcessMenu from '../Menu'
+import ManufactureMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
 import debounce from 'lodash/debounce'
@@ -71,7 +71,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     TabMenu,
-    ProcessMenu,
+    ManufactureMenu,
     Breadcrumb,
     BreadcrumbManufacture,
     PointTable

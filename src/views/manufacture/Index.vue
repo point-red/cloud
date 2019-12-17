@@ -15,7 +15,7 @@
             :id="'process-' + index"
             :key="'process-' + index"
             :name="$t('process') + ' ' + process.name"
-            :link="'/manufacture/io-process/' + process.id"
+            :link="'/manufacture/process-io/' + process.id"
             icon="fa fa-cogs"/>
         </template>
       </div>
