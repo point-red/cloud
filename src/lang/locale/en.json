@@ -272,5 +272,10 @@
 	"process": "process",
 	"formula": "formula",
 	"finished goods": "finished goods",
-	"raw materials": "raw materials"
+	"raw materials": "raw materials",
+	"input": "input",
+	"output": "output",
+	"use": "use",
+	"quantity produced": "quantity produced",
+	"quantity used": "quantity used"
 }

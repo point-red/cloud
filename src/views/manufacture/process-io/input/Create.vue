@@ -2,7 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link to="/manufacture/formula" class="breadcrumb-item">{{ $t('formula') | titlecase }}</router-link>
+      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | titlecase }}</router-link>
+      <router-link :to="'/manufacture/process-io/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | titlecase }}</router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
@@ -11,8 +12,8 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('formula')" :header="true">
-        <p-block-inner>
+      <p-block :title="$t('input')" :header="true">
+        <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="date"
             name="date"
@@ -29,22 +30,13 @@
           </p-form-row>
 
           <p-form-row
-            id="process"
-            name="process"
-            :label="$t('process')">
+            id="machine"
+            name="machine"
+            :label="$t('machine')">
             <div slot="body" class="col-lg-9 mt-5">
-              <m-process id="process" v-model="form.manufacture_process_id" @choosen="chooseManufactureProcess" :label="form.manufacture_process_name"/>
+              <m-machine id="machine" v-model="form.manufacture_machine_id" @choosen="chooseManufactureMachine" :label="form.manufacture_machine_name"/>
             </div>
           </p-form-row>
-
-          <p-form-row
-            id="name"
-            name="name"
-            :label="$t('name')"
-            v-model="form.name"
-            :disabled="isSaving"
-            :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)"/>
 
           <p-form-row
             id="notes"
@@ -183,13 +175,13 @@
 
 <script>
 import debounce from 'lodash/debounce'
-import ManufactureMenu from '../Menu'
+import ManufactureMenu from '../../Menu'
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
@@ -201,13 +193,16 @@ export default {
   },
   data () {
     return {
+      id: this.$route.params.id,
+      isLoading: false,
       isSaving: false,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: new Date(),
+        manufacture_machine_id: null,
         manufacture_process_id: null,
+        manufacture_machine_name: null,
         manufacture_process_name: null,
-        name: null,
         notes: null,
         approver_id: null,
         raw_materials: [{
@@ -245,8 +240,25 @@ export default {
       })
     }
   },
+  computed: {
+    ...mapGetters('manufactureProcess', ['process'])
+  },
   methods: {
-    ...mapActions('manufactureFormula', ['create']),
+    ...mapActions('manufactureInput', ['create']),
+    ...mapActions('manufactureProcess', ['find']),
+    manufactureProcessRequest () {
+      this.isLoading = true
+      this.find({
+        id: this.id
+      }).then(response => {
+        this.form.manufacture_process_id = this.process.id
+        this.form.manufacture_process_name = this.process.name
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    },
     addRawMaterialRow () {
       this.form.raw_materials.push({
         item_id: null,
@@ -289,8 +301,8 @@ export default {
     deleteFinishGoodRow (index) {
       this.$delete(this.form.finish_goods, index)
     },
-    chooseManufactureProcess (value) {
-      this.form.manufacture_process_name = value
+    chooseManufactureMachine (value) {
+      this.form.manufacture_machine_name = value
     },
     chooseRawMaterial (item, row) {
       row.item_name = item.name
@@ -334,7 +346,7 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/manufacture/formula/' + response.data.id)
+          this.$router.push('/manufacture/process-io/' + this.id + '/input/' + response.data.id)
         }).catch(error => {
           console.log(error.errors)
           this.isSaving = false
@@ -342,6 +354,9 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
+  },
+  created () {
+    this.manufactureProcessRequest()
   }
 }
 </script>

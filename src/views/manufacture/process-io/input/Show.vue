@@ -2,13 +2,14 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link to="/manufacture/formula" class="breadcrumb-item">{{ $t('formula') | titlecase }}</router-link>
-      <template v-if="formula.form.number">
-        <span class="breadcrumb-item active">{{ formula.form.number | uppercase }}</span>
+      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | titlecase }}</router-link>
+      <router-link :to="'/manufacture/process-io/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | titlecase }}</router-link>
+      <template v-if="input.form.number">
+        <span class="breadcrumb-item active">{{ input.form.number | uppercase }}</span>
       </template>
       <template v-else>
-        <router-link v-if="formula.origin" :to="{ name: 'manufacture.formula.show', params: { id: formula.origin.id }}" class="breadcrumb-item">
-          {{ formula.form.edited_number | uppercase }}
+        <router-link v-if="input.origin" :to="{ name: 'manufacture.process.io.input.show', params: { id: id, inputId: input.origin.id }}" class="breadcrumb-item">
+          {{ input.form.edited_number | uppercase }}
         </router-link>
       </template>
     </breadcrumb>
@@ -18,19 +19,19 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('formula')" :header="true">
+      <p-block :title="$t('input')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="number"
             name="number"
             :label="$t('number')">
             <div slot="body" class="col-lg-9">
-              <template v-if="formula.form.number">
-                {{ formula.form.number }}
+              <template v-if="input.form.number">
+                {{ input.form.number }}
               </template>
               <template v-else>
                 <span class="badge badge-danger">{{ $t('archived') }}</span>
-                {{ formula.form.edited_number }}
+                {{ input.form.edited_number }}
               </template>
             </div>
           </p-form-row>
@@ -40,27 +41,18 @@
             name="date"
             :label="$t('date')">
             <div slot="body" class="col-lg-9">
-              {{ formula.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
+              {{ input.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
             </div>
           </p-form-row>
 
           <p-form-row
-            id="process"
-            name="process"
-            :label="$t('process')">
+            id="machine"
+            name="machine"
+            :label="$t('machine')">
             <div slot="body" class="col-lg-9">
-              <template v-if="formula.manufacture_process">
-                {{ formula.manufacture_process.name }}
+              <template v-if="input.manufacture_machine">
+                {{ input.manufacture_machine.name }}
               </template>
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="name"
-            name="name"
-            :label="$t('name')">
-            <div slot="body" class="col-lg-9">
-              {{ formula.name }}
             </div>
           </p-form-row>
 
@@ -69,7 +61,7 @@
             name="notes"
             :label="$t('notes')">
             <div slot="body" class="col-lg-9">
-              {{ formula.notes }}
+              {{ input.notes }}
             </div>
           </p-form-row>
 
@@ -86,7 +78,7 @@
                 <th style="min-width: 120px">Warehouse</th>
                 <th></th>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in formula.finish_goods" :key="index">
+              <tr slot="p-body" v-for="(row, index) in input.finish_goods" :key="index">
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -118,7 +110,7 @@
                 <th style="min-width: 120px">Warehouse</th>
                 <th></th>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in formula.raw_materials" :key="index">
+              <tr slot="p-body" v-for="(row, index) in input.raw_materials" :key="index">
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -149,7 +141,7 @@
               <th>Requested To</th>
               <th>Approval Status</th>
             </tr>
-            <tr slot="p-body" v-for="(approval, index) in formula.form.approvals" :key="index">
+            <tr slot="p-body" v-for="(approval, index) in input.form.approvals" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 {{ approval.requested_at | dateFormat('DD MMMM YYYY HH:mm') }}
@@ -175,18 +167,18 @@
 
           <p-separator></p-separator>
 
-          <h3 v-if="formula.archives != undefined && formula.archives.length > 0">Archives</h3>
+          <h3 v-if="input.archives != undefined && input.archives.length > 0">Archives</h3>
 
-          <point-table v-if="formula.archives != undefined && formula.archives.length > 0">
+          <point-table v-if="input.archives != undefined && input.archives.length > 0">
             <tr slot="p-head">
               <th>#</th>
               <th>Edited Date</th>
               <th>Edited Reason</th>
             </tr>
-            <tr slot="p-body" v-for="(archived, index) in formula.archives" :key="index">
+            <tr slot="p-body" v-for="(archived, index) in input.archives" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
-                <router-link :to="{ name: 'manufacture.formula.show', params: { id: archived.id }}">
+                <router-link :to="{ name: 'manufacture.process.io.input.show', params: { id: id, inputId: archived.id }}">
                   {{ archived.form.updated_at | dateFormat('DD MMMM YYYY HH:mm') }}
                 </router-link>
               </td>
@@ -197,8 +189,8 @@
           </point-table>
 
           <router-link
-            :to="{ path: '/manufacture/formula/' + formula.id + '/edit', params: { id: formula.id }}"
-            v-if="$permission.has('update manufacture formula') && $formRules.allowedToUpdate(formula.form)"
+            :to="{ path: '/manufacture/process-io/' + id + '/input/' + input.id + '/edit', params: { id: id, inputId: input.id }}"
+            v-if="$permission.has('update manufacture input') && $formRules.allowedToUpdate(input.form)"
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>
@@ -213,7 +205,7 @@
 
 <script>
 import TabMenu from './TabMenu'
-import ManufactureMenu from '../Menu'
+import ManufactureMenu from '../../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
 import PointTable from 'point-table-vue'
@@ -230,30 +222,31 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
+      inputId: this.$route.params.inputId,
       isLoading: false,
       isDeleting: false
     }
   },
   computed: {
-    ...mapGetters('manufactureFormula', ['formula'])
+    ...mapGetters('manufactureInput', ['input'])
   },
   watch: {
     '$route' (to, from) {
       if (to.params.id != from.params.id) {
         this.id = to.params.id
-        this.manufactureFormulaRequest()
+        this.manufactureInputRequest()
       }
     }
   },
   methods: {
-    ...mapActions('manufactureFormula', ['find', 'delete']),
-    manufactureFormulaRequest () {
+    ...mapActions('manufactureInput', ['find', 'delete']),
+    manufactureInputRequest () {
       this.isLoading = true
       this.find({
         id: this.id,
         params: {
           with_archives: true,
-          includes: 'manufactureProcess;rawMaterials.item.units;finishGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishGoods.warehouse'
+          includes: 'manufactureMachine;rawMaterials.item.units;finishGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishGoods.warehouse'
         }
       }).then(response => {
         this.isLoading = false
@@ -269,7 +262,7 @@ export default {
       }).then(response => {
         this.isDeleting = false
         this.$notification.success('cancel success')
-        this.$router.push('/manufacture/formula')
+        this.$router.push('/manufacture/process-io/' + this.id + '/input')
       }).catch(error => {
         this.isDeleting = false
         this.$notification.error(error.message)
@@ -278,7 +271,7 @@ export default {
     }
   },
   created () {
-    this.manufactureFormulaRequest()
+    this.manufactureInputRequest()
   }
 }
 </script>
