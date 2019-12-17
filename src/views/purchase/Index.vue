@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-purchase/>
+      <span class="breadcrumb-item active">Purchase</span>
     </breadcrumb>
 
     <purchase-menu></purchase-menu>
@@ -11,7 +11,6 @@
 
 <script>
 import PurchaseMenu from './Menu'
-import BreadcrumbPurchase from './Breadcrumb'
 import Breadcrumb from '@/views/Breadcrumb'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
@@ -20,7 +19,6 @@ export default {
   components: {
     PurchaseMenu,
     Breadcrumb,
-    BreadcrumbPurchase,
     PointTable
   },
   computed: {

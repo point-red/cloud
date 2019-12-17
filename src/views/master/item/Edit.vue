@@ -10,6 +10,14 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('edit') + ' ' + $t('item')" :header="true">
+        <router-link
+          to="/master/item/create"
+          v-if="$permission.has('create item')"
+          slot="header"
+          exact
+          class="btn btn-outline-secondary btn-sm mr-5">
+          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
+        </router-link>
         <p-block-inner>
           <p-form-row
             id="code"
