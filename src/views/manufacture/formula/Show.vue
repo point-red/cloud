@@ -40,7 +40,7 @@
             name="date"
             :label="$t('date')">
             <div slot="body" class="col-lg-9">
-              {{ formula.date | dateFormat('DD MMMM YYYY HH:mm') }}
+              {{ formula.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
             </div>
           </p-form-row>
 

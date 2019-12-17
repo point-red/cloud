@@ -4,7 +4,8 @@ const url = '/manufacture/formula'
 
 const state = {
   formula: {
-    name: ''
+    name: '',
+    form: {}
   },
   formulas: [],
   pagination: {}
