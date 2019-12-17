@@ -15,6 +15,7 @@
           id="search-text"
           name="search-text"
           placeholder="Search"
+          ref="searchText"
           :value="searchText"
           @input="filterSearch"/>
         <hr>
@@ -129,7 +130,6 @@ export default {
           fields: 'purchase_orders.*',
           filter_like: {
             'form.number': this.searchText,
-            'form.date': this.serverDate(this.searchText),
             'supplier.name': this.searchText,
             'items.name': this.searchText,
             'items.notes': this.searchText,

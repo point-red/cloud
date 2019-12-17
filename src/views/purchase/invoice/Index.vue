@@ -61,12 +61,12 @@
               <td class="text-right">{{ purchaseInvoiceItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseInvoiceItem.quantity * purchaseInvoiceItem.price) | numberFormat }}</td>
             </tr>
-            <template v-if="purchaseInvoice.down_payments.length > 0">
+            <!-- <template v-if="purchaseInvoice.down_payments.length > 0">
               <tr :key="'down-payment-'+index" slot="p-body">
                 <th></th>
                 <td class="bg-info-light" colspan="8"><b>{{ $t('down payment') }}</b></td>
               </tr>
-            </template>
+            </template> -->
             <template v-for="(downPayment, index2) in purchaseInvoice.down_payments">
               <tr :key="'down-payment-'+index+'-'+index2" slot="p-body">
                 <th></th>
@@ -131,7 +131,7 @@ export default {
           date_to: this.date.end
         }
       })
-      this.getPurchaseOrder()
+      this.getInvoices()
     }
   },
   computed: {
@@ -146,9 +146,9 @@ export default {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getPurchaseOrder()
+      this.getInvoices()
     }, 300),
-    getPurchaseOrder () {
+    getInvoices () {
       this.isLoading = true
       this.get({
         params: {
@@ -171,7 +171,7 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;supplier;items.item;services.service;downPayments.form',
+          includes: 'form;supplier;items.item;services.service',
           page: this.currentPage
         }
       }).then(response => {
@@ -183,21 +183,21 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getPurchaseOrder()
+      this.getInvoices()
     },
     deleteDownPaymentRequest (id) {
       this.deleteDownPayment({
         id: id
       }).then(response => {
         this.$notification.success('delete success')
-        this.getPurchaseOrder()
+        this.getInvoices()
       }).catch(error => {
         this.$notification.error(error.message)
       })
     }
   },
   created () {
-    this.getPurchaseOrder()
+    this.getInvoices()
   },
   updated () {
     this.lastPage = this.pagination.last_page

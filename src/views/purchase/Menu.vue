@@ -40,7 +40,7 @@
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/return')}"
       active-class="btn-primary">
-      <span><i class="si si-folder-alt"></i> {{ $t('purchase return') | titlecase }}</span>
+      <span><i class="si si-folder-alt"></i> {{ $t('return') | titlecase }}</span>
     </router-link>
     <router-link
       to="/purchase/payment-order"

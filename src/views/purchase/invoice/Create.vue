@@ -29,6 +29,21 @@
           </p-form-row>
 
           <p-form-row
+            id="due-date"
+            name="due-date"
+            :label="$t('due date')">
+            <div slot="body" class="col-lg-9">
+              <p-date-picker
+                id="due-date"
+                name="due-date"
+                label="Due Date"
+                v-model="form.due_date"
+                :errors="form.errors.get('due_date')"
+                @errors="form.errors.set('due_date', null)"/>
+            </div>
+          </p-form-row>
+
+          <p-form-row
             id="supplier"
             name="supplier"
             :label="$t('supplier')">
