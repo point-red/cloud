@@ -47,6 +47,28 @@
           @errors="form.errors.set('unit', null)"/>
 
         <p-form-row
+          id="options"
+          name="options"
+          :label="$t('options')">
+          <div slot="body" class="col-lg-9">
+            <p-form-check-box
+              class="mb-0"
+              style="float:left"
+              id="require-production-number"
+              name="require-production-number"
+              @click.native="chooseProductionNumber()"
+              :checked="form.require_production_number"
+              :description="$t('production number') | titlecase"/>
+            <p-form-check-box
+              id="require-expiry-date"
+              name="require-expiry-date"
+              @click.native="chooseExpiryDate()"
+              :checked="form.require_expiry_date"
+              :description="$t('expiry date') | titlecase"/>
+          </div>
+        </p-form-row>
+
+        <p-form-row
           id="item-group"
           name="item-group"
           :label="$t('group')">
@@ -149,6 +171,8 @@ export default {
           label: null,
           name: null
         }],
+        require_production_number: false,
+        require_expiry_date: false,
         groups: [{
           id: null,
           label: null,
@@ -210,6 +234,12 @@ export default {
     },
     chooseItemGroup (event, index) {
       this.$set(this.form.groups, index, event)
+    },
+    chooseProductionNumber () {
+      this.form.require_production_number = !this.form.require_production_number
+    },
+    chooseExpiryDate () {
+      this.form.require_expiry_date = !this.form.require_expiry_date
     },
     onSubmit () {
       this.isSaving = true

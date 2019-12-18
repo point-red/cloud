@@ -277,5 +277,8 @@
 	"output": "output",
 	"use": "pakai",
 	"quantity produced": "jumlah dihasilkan",
-	"quantity used": "jumlah dipakai"
+	"quantity used": "jumlah dipakai",
+	"options": "pilihan",
+	"production number": "nomor produksi",
+	"expiry date": "tanggal kadaluarsa"
 }

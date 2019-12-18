@@ -277,5 +277,8 @@
 	"output": "output",
 	"use": "use",
 	"quantity produced": "quantity produced",
-	"quantity used": "quantity used"
+	"quantity used": "quantity used",
+	"options": "options",
+	"production number": "production number",
+	"expiry date": "expiry date"
 }
