@@ -1,7 +1,7 @@
 <template>
   <div>
     <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select item">
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select machine">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
@@ -21,10 +21,17 @@
           </template>
         </div>
         <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
-          {{ $t('searching not found', [searchText]) | capitalize }}
+          {{ $t('searching not found', [searchText]) | capitalize }} <br>
+          {{ $t('click') }} <span class="link" @click="add"><i class="fa fa-xs" :class="{
+            'fa-refresh fa-spin': isSaving,
+            'fa-plus': !isSaving
+          }"></i> Add</span> {{ $t('to add new data') }}
         </div>
         <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('item') | capitalize }}
+          {{ $t('you don\'t have any') | capitalize }} {{ $t('machine') | capitalize }}, <br/> {{ $t('you can create') }}
+          <router-link :to="'/manufacture/machine/create'">
+            <span>{{ $t('new one') }}</span>
+          </router-link>
         </div>
       </template>
       <template slot="footer">
@@ -50,7 +57,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterItem', ['items', 'pagination'])
+    ...mapGetters('manufactureMachine', ['machines', 'pagination'])
   },
   props: {
     id: {
@@ -76,7 +83,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('masterItem', ['get', 'create']),
+    ...mapActions('manufactureMachine', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
@@ -85,8 +92,7 @@ export default {
           limit: 50,
           filter_like: {
             name: this.searchText
-          },
-          includes: 'units'
+          }
         }
       }).then(response => {
         this.options = []
@@ -94,10 +100,7 @@ export default {
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
-            'label': key['name'],
-            'require_production_number': key['require_production_number'],
-            'require_expiry_date': key['require_expiry_date'],
-            'units': key['units']
+            'label': key['name']
           })
 
           if (this.value == key['id']) {
@@ -112,14 +115,7 @@ export default {
     add () {
       this.isSaving = true
       this.create({
-        code: this.searchText,
-        name: this.searchText,
-        units: [
-          {
-            label: 'pcs',
-            name: 'pcs'
-          }
-        ]
+        name: this.searchText
       }).then(response => {
         this.search()
         this.isSaving = false
@@ -132,12 +128,7 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', {
-        name: option.label,
-        require_production_number: option.require_production_number,
-        require_expiry_date: option.require_expiry_date,
-        units: option.units
-      })
+      this.$emit('choosen', option.label)
       this.close()
     },
     show () {

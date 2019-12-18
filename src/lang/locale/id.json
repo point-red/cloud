@@ -276,8 +276,17 @@
 	"wa daily report": "nilai pelaporan wa harian",
 	"amount received difference": "selisih nilai yang diterima",
 	"if kpi 100%": "jika kpi 100%",
-	"expiry date": "tanggal kadaluarsa",
+	"machine": "mesin",
+	"process": "proses",
+	"formula": "formula",
+	"finished goods": "barang jadi",
+	"raw materials": "bahan baku",
+	"input": "input",
+	"output": "output",
+	"use": "pakai",
+	"quantity produced": "jumlah dihasilkan",
+	"quantity used": "jumlah dipakai",
+	"options": "pilihan",
 	"production number": "nomor produksi",
-	"beginning": "awal",
-	"back": "kembali"
+	"expiry date": "tanggal kadaluarsa"
 }
