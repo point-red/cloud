@@ -8,5 +8,6 @@
   "item" : "barang",
   "service" : "jasa",
   "warehouse" : "gudang",
+  "set warehouse" : "set gudang",
   "allocation" : "alokasi"
 }

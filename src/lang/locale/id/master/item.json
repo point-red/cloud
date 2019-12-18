@@ -1,5 +1,7 @@
 {
   "unit" : "unit",
   "stock" : "stock",
-  "opening stock" : "stok awal"
+  "opening stock" : "stok awal",
+  "price list" : "daftar harga jual",
+  "stock history" : "mutasi stok"
 }

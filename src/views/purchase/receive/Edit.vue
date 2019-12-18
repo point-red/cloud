@@ -92,6 +92,8 @@
                 <th>Notes</th>
                 <th>Quantity</th>
                 <th>Receive</th>
+                <th>Expiry Date</th>
+                <th>Production No.</th>
                 <th></th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
@@ -105,8 +107,22 @@
                   <p-quantity
                     :id="'quantity' + index"
                     :name="'quantity' + index"
+                    :disabled="isSaving"
                     v-model="row.quantity"
                     :unit="row.unit"/>
+                </td>
+                <td>
+                  <p-date-picker
+                    id="expiry-date"
+                    name="expiry-date"
+                    v-model="row.expiry_date"/>
+                </td>
+                <td>
+                  <p-form-input
+                    id="production-number"
+                    v-model="row.production_number"
+                    :disabled="isSaving"
+                    name="production-number"/>
                 </td>
               </tr>
             </point-table>
@@ -201,6 +217,8 @@ export default {
       this.form.items = response.data.order_items.map(item => {
         return {
           ...item,
+          expiry_date: this.$moment().format('YYYYMMDD'),
+          production_number: '',
           purchase_order_item_id: item.id
         }
       })
@@ -228,6 +246,7 @@ export default {
       })
     },
     onSubmit () {
+      this.isSaving = true
       this.update(this.form)
         .then(response => {
           this.isSaving = false

@@ -1,3 +1,7 @@
 {
-  "inventory usage" : "inventory usage"
+  "inventory usage" : "inventory usage",
+  "inventory audit" : "inventory audit",
+  "inventory report" : "inventory report",
+  "stock correction" : "stock correction",
+  "transfer item" : "transfer item"
 }

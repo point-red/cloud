@@ -36,6 +36,7 @@
               <th>Email</th>
               <th>Phone</th>
               <th>Roles</th>
+              <th>Warehouses</th>
             </tr>
             <tr
               v-for="(user, index) in users"
@@ -54,6 +55,13 @@
                 <template v-for="role in user.roles">
                   {{ role.name | titlecase }}
                 </template>
+              </td>
+              <td>
+                <ul>
+                  <template v-for="warehouse in user.warehouses">
+                    <li :key="warehouse.id">{{ warehouse.name | titlecase }}</li>
+                  </template>
+                </ul>
               </td>
             </tr>
             <tr
@@ -124,7 +132,7 @@ export default {
         params: {
           limit: 10,
           sort_by: 'name',
-          includes: 'roles',
+          includes: 'roles;warehouses',
           filter_like: {
             'name': this.searchText,
             'first_name': this.searchText,

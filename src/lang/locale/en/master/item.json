@@ -1,5 +1,7 @@
 {
   "unit" : "unit",
   "stock" : "stock",
-  "opening stock" : "opening stock"
+  "opening stock" : "opening stock",
+  "price list" : "price list",
+  "stock history" : "stock history"
 }

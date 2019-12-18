@@ -306,6 +306,8 @@ export default {
           converter: null,
           quantity: null,
           price: null,
+          discount_percent: 0,
+          discount_value: 0,
           total: null,
           allocation_id: null,
           allocation_name: null,
@@ -336,6 +338,9 @@ export default {
         converter: null,
         quantity: null,
         price: null,
+        discount_percent: 0,
+        discount_value: 0,
+        total: null,
         allocation_id: null,
         allocation_name: null,
         notes: null

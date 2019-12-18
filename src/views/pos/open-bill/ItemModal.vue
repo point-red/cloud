@@ -27,6 +27,20 @@
             </div>
           </p-form-row>
           <p-form-row
+            id="production-number"
+            name="production-number"
+            label="production number"
+            :disabled="true"
+            v-model="production_number">
+          </p-form-row>
+          <p-form-row
+            id="expiry-date"
+            name="expiry-date"
+            label="expiry date"
+            :disabled="true"
+            v-model="expiry_date">
+          </p-form-row>
+          <p-form-row
             id="quantity"
             name="quantity"
             :label="$t('quantity')">
@@ -112,7 +126,9 @@ export default {
       quantity: null,
       price: null,
       discount_percent: null,
-      notes: null
+      notes: null,
+      production_number: null,
+      expiry_date: null
     }
   },
   methods: {
@@ -124,6 +140,8 @@ export default {
       this.price = item.price
       this.discount_percent = item.discount_percent
       this.notes = item.notes
+      this.production_number = item.production_number
+      this.expiry_date = this.$options.filters.dateFormat(item.expiry_date, 'DD MMMM YYYY')
       this.$refs.itemModal.show()
     },
     close () {
@@ -150,6 +168,8 @@ export default {
       this.price = null
       this.discount_percent = null
       this.notes = null
+      this.production_number = null
+      this.expiry_date = null
       this.$refs.itemModal.close()
     },
     remove () {
@@ -165,6 +185,8 @@ export default {
       this.price = null
       this.discount_percent = null
       this.notes = null
+      this.production_number = null
+      this.expiry_date = null
       this.$refs.itemModal.close()
     }
   }
