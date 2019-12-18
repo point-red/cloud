@@ -172,7 +172,7 @@ export default {
           join: 'form',
           sort_by: '-forms.number',
           fields: 'manufacture_outputs.*',
-          filter_form: 'active',
+          filter_form: 'activePending',
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,

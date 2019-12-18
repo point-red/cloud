@@ -3,7 +3,8 @@
     <breadcrumb>
       <breadcrumb-manufacture/>
       <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('output') | titlecase }}</span>
+      <router-link :to="'/manufacture/process-io/' + id + '/output'" class="breadcrumb-item">{{ $t('output') | titlecase }}</router-link>
+      <span class="breadcrumb-item active">Create Step 1</span>
     </breadcrumb>
 
     <manufacture-menu/>
@@ -11,7 +12,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('output')" :header="true">
+      <p-block :title="$t('input')" :header="true">
         <div class="row mb-10">
           <p-date-range-picker
             id="date"
@@ -28,8 +29,8 @@
             class="btn-block"
             @input="filterSearch"/>
           <router-link
-            :to="'/manufacture/process-io/' + id + '/output/create-step-1'"
-            v-if="$permission.has('create manufacture output')"
+            to="/manufacture/input/create"
+            v-if="$permission.has('create manufacture input')"
             class="input-group-append">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
@@ -43,55 +44,48 @@
               <th>#</th>
               <th>{{ $t('date') | titlecase }}</th>
               <th>{{ $t('number') | titlecase }}</th>
-              <th>{{ $t('process') | titlecase }}</th>
-              <th>{{ $t('machine') | titlecase }}</th>
               <th>{{ $t('notes') | titlecase }}</th>
+              <th>{{ $t('finished goods') | titlecase }}</th>
+              <th>{{ $t('raw materials') | titlecase }}</th>
+              <th>&nbsp;</th>
             </tr>
-            <template v-for="(output, index) in outputs">
+            <template v-for="(input, index) in inputs">
               <tr
-                :key="'mi-' + index"
+                :key="'mm-' + index"
                 slot="p-body">
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
-                <td>{{ output.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ input.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>
-                  <router-link :to="{ name: 'manufacture.process.io.output.show', params: { id: id, outputId: output.id }}">
-                    {{ output.form.number }}
+                  <router-link :to="'/manufacture/process-io/' + id + '/input/' + input.id">
+                    {{ input.form.number }}
                   </router-link>
                 </td>
-                <td>{{ output.manufacture_process_name }}</td>
-                <td>{{ output.manufacture_machine_name }}</td>
-                <td>{{ output.notes }}</td>
-              </tr>
-              <tr :key="'moa-' + index" slot="p-body">
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td><b>{{ $t('finished goods') | titlecase }}</b></td>
-                <td><b>{{ $t('quantity produced') | titlecase }}</b></td>
-                <td><b>{{ $t('warehouse') | titlecase }}</b></td>
-              </tr>
-              <tr v-for="finishGood in output.finish_goods" :key="'fg-' + finishGood.id" slot="p-body">
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td>{{ input.notes }}</td>
                 <td>
-                  <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
-                    [{{ finishGood.item.code }}] {{ finishGood.item.name }}
+                  <ol>
+                    <li v-for="finishGood in input.finish_goods" :key="finishGood.id">
+                      <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
+                        [{{ finishGood.item.code }}] {{ finishGood.item.name }}
+                      </router-link>
+                       = {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
+                    </li>
+                  </ol>
+                </td>
+                <td>
+                  <ol>
+                    <li v-for="rawMaterial in input.raw_materials" :key="rawMaterial.id">
+                      <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
+                        [{{ rawMaterial.item.code }}] {{ rawMaterial.item.name }}
+                      </router-link>
+                       = {{ rawMaterial.quantity }} {{ rawMaterial.item.units[0].name }}
+                    </li>
+                  </ol>
+                </td>
+                <td>
+                  <router-link :to="{ name: 'manufacture.process.io.output.create.step.2', params: { id: id, inputId: input.id }}" class="btn btn-primary mr-5">
+                    <span><i class="si si-share-alt"></i> Create Process Output</span>
                   </router-link>
                 </td>
-                <td>
-                  {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
-                </td>
-                <td>
-                  <router-link :to="{ name: 'warehouse.show', params: { id: finishGood.warehouse.id }}">
-                    [{{ finishGood.warehouse.code }}] {{ finishGood.warehouse.name }}
-                  </router-link>
-                </td>
-              </tr>
-              <tr :key="'mob-' + index" slot="p-body">
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
               </tr>
             </template>
           </point-table>
@@ -146,14 +140,14 @@ export default {
           date_to: this.date.end
         }
       })
-      this.getManufactureOutputs()
+      this.getManufactureInputs()
     }
   },
   computed: {
-    ...mapGetters('manufactureOutput', ['outputs', 'pagination'])
+    ...mapGetters('manufactureInput', ['inputs', 'pagination'])
   },
   methods: {
-    ...mapActions('manufactureOutput', ['get']),
+    ...mapActions('manufactureInput', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({
         query: {
@@ -163,19 +157,21 @@ export default {
       })
       this.searchText = value
       this.currentPage = 1
-      this.getManufactureOutputs()
+      this.getManufactureInputs()
     }, 300),
-    getManufactureOutputs () {
+    getManufactureInputs () {
       this.isLoading = true
       this.get({
         params: {
           join: 'form',
           sort_by: '-forms.number',
-          fields: 'manufacture_outputs.*',
+          fields: 'manufacture_inputs.*',
           filter_form: 'active',
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,
+            'rawMaterials.item.name': this.searchText,
+            'rawMaterials.quantity': this.searchText,
             'finishGoods.item.name': this.searchText,
             'finishGoods.quantity': this.searchText
           },
@@ -186,7 +182,7 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;manufactureProcess;manufactureMachine;finishGoods.item.units;finishGoods.warehouse',
+          includes: 'form;rawMaterials.item.units;finishGoods.item.units',
           page: this.currentPage
         }
       }).then(response => {
@@ -198,11 +194,11 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getManufactureOutputs()
+      this.getManufactureInputs()
     }
   },
   created () {
-    this.getManufactureOutputs()
+    this.getManufactureInputs()
   },
   updated () {
     this.lastPage = this.pagination.last_page
