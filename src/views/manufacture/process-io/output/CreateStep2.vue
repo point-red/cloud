@@ -213,7 +213,9 @@ export default {
           includes: 'form;finishGoods.item.units;finishGoods.warehouse'
         }
       }).then(response => {
+        this.form.manufacture_process_id = this.input.manufacture_process_id
         this.form.manufacture_input_id = this.input.id
+        this.form.manufacture_process_name = this.input.manufacture_process_name
         this.form.finish_goods = this.input.finish_goods
         for (let index in this.form.finish_goods) {
           this.form.finish_goods[index].input_finish_good_id = this.input.finish_goods[index].id

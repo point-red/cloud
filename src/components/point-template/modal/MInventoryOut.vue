@@ -19,6 +19,7 @@
               <th>{{ $t('production number') | titlecase }}</th>
               <th>{{ $t('expiry date') | titlecase}}</th>
               <th>{{ $t('quantity') | titlecase }}</th>
+              <th>{{ $t('stock') | titlecase }}</th>
             </tr>
             <tr slot="p-body" v-for="(option, index) in options" :key="index">
               <td>{{ option.production_number }}</td>
@@ -31,6 +32,9 @@
                   v-model="option.quantity"
                   :unit="option.item.units[0].label"
                   @input="quantityChange"/>
+              </td>
+              <td>
+                &nbsp;
               </td>
             </tr>
           </p-table>

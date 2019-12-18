@@ -117,7 +117,7 @@
                   @choosen="chooseRawMaterial($event, row)"/>
               </td>
               <td>
-                <m-inventory :id="'inventory-' + index" :itemId="row.item_id" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
+                <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
               </td>
               <td>
                 <p-quantity
@@ -206,8 +206,10 @@ export default {
         date: new Date(),
         manufacture_machine_id: null,
         manufacture_process_id: null,
+        manufacture_formula_id: null,
         manufacture_machine_name: null,
         manufacture_process_name: null,
+        manufacture_formula_name: null,
         notes: null,
         approver_id: null,
         raw_materials: [{

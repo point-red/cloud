@@ -58,7 +58,7 @@
                     {{ output.form.number }}
                   </router-link>
                 </td>
-                <td>{{ output.manufacture_process_name }}</td>
+                <td></td>
                 <td>{{ output.manufacture_machine_name }}</td>
                 <td>{{ output.notes }}</td>
               </tr>
@@ -173,6 +173,9 @@ export default {
           sort_by: '-forms.number',
           fields: 'manufacture_outputs.*',
           filter_form: 'active',
+          filter_equal: {
+            'manufacture_process_id': this.id
+          },
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,
@@ -186,7 +189,7 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;manufactureProcess;manufactureMachine;finishGoods.item.units;finishGoods.warehouse',
+          includes: 'form;manufactureMachine;manufactureProcess;finishGoods.item.units;finishGoods.warehouse',
           page: this.currentPage
         }
       }).then(response => {

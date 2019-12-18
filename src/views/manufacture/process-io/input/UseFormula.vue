@@ -89,7 +89,7 @@
               <th>{{ index + 1 }}</th>
               <td>{{ row.item_name }}</td>
               <td>
-                <m-inventory :id="'inventory-' + index" :itemId="row.item_id" :value="form.raw_materials[index].quantity" :shouldChange="form.raw_materials[index].should_change" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
+                <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" :value="form.raw_materials[index].quantity" :shouldChange="form.raw_materials[index].should_change" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
               </td>
               <td>
                 <p-quantity
@@ -166,8 +166,10 @@ export default {
         date: new Date(),
         manufacture_machine_id: null,
         manufacture_process_id: null,
+        manufacture_formula_id: null,
         manufacture_machine_name: null,
         manufacture_process_name: null,
+        manufacture_formula_name: null,
         notes: null,
         approver_id: null,
         raw_materials: [],
@@ -192,6 +194,8 @@ export default {
       }).then(response => {
         this.form.manufacture_process_id = this.formula.manufacture_process_id
         this.form.manufacture_process_name = this.formula.manufacture_process_name
+        this.form.manufacture_formula_id = this.formula.id
+        this.form.manufacture_formula_name = this.formula.name
         for (let index in this.formula.raw_materials) {
           var rawMaterials = this.formula.raw_materials[index]
           rawMaterials.original_quantity = rawMaterials.quantity
