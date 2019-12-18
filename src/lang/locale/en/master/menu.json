@@ -8,5 +8,6 @@
   "item" : "item",
   "service" : "service",
   "warehouse" : "warehouse",
+  "set warehouse" : "set warehouse",
   "allocation" : "allocation"
 }

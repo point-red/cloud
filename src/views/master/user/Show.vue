@@ -2,9 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link
-        to="/master/user"
-        class="breadcrumb-item">User</router-link>
+      <router-link to="/master/user" class="breadcrumb-item">User</router-link>
       <span class="breadcrumb-item active">{{ user.name | titlecase }}</span>
     </breadcrumb>
 
@@ -12,7 +10,7 @@
 
     <div class="row">
       <p-block>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
             label="Name"
@@ -70,7 +68,7 @@ export default {
     return {
       id: this.$route.params.id,
       title: 'User',
-      loading: false
+      isLoading: false
     }
   },
   computed: {
@@ -81,16 +79,16 @@ export default {
     ...mapActions('masterUser', ['find'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.find({
       id: this.id,
       params: {
         includes: 'roles'
       }
     }).then((response) => {
-      this.loading = false
+      this.isLoading = false
     }, (error) => {
-      this.loading = false
+      this.isLoading = false
       this.$notification.error(error.message)
     })
   }
