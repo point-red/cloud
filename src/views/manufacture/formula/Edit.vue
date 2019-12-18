@@ -291,7 +291,7 @@ export default {
           }]
         },
         unit: null,
-        quantity: null,
+        quantity: 0,
         converter: null
       })
     },
@@ -309,7 +309,7 @@ export default {
           }]
         },
         unit: null,
-        quantity: null,
+        quantity: 0,
         converter: null
       })
     },

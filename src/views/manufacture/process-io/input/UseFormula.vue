@@ -81,6 +81,7 @@
             <tr slot="p-head">
               <th>#</th>
               <th style="min-width: 120px">Item</th>
+              <th>&nbsp;</th>
               <th>Quantity</th>
               <th style="min-width: 120px">Warehouse</th>
             </tr>
@@ -88,12 +89,15 @@
               <th>{{ index + 1 }}</th>
               <td>{{ row.item_name }}</td>
               <td>
+                <m-inventory :id="'inventory-' + index" :itemId="row.item_id" :value="form.raw_materials[index].quantity" :shouldChange="form.raw_materials[index].should_change" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
+              </td>
+              <td>
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
                   v-model="form.raw_materials[index].quantity"
                   :unit="form.raw_materials[index].unit"
-                  :readonly="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_production_number === 1)"/>
+                  :readonly="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
               </td>
               <td>{{ row.warehouse_name}}</td>
             </tr>
@@ -196,6 +200,8 @@ export default {
               rawMaterials.converter = unit.converter
             }
           })
+          rawMaterials.inventories = []
+          rawMaterials.should_change = true
           this.form.raw_materials.push(rawMaterials)
         }
         for (let index in this.formula.finish_goods) {
@@ -219,6 +225,14 @@ export default {
     quantityChange (quantity) {
       for (let index in this.formula.raw_materials) {
         this.form.raw_materials[index].quantity = this.form.raw_materials[index].original_quantity * quantity
+        this.form.raw_materials[index].should_change = true
+      }
+    },
+    addInventory (value, row) {
+      row.quantity = value.quantity
+      row.inventories = value.inventories
+      for (let index in this.formula.raw_materials) {
+        this.form.raw_materials[index].should_change = false
       }
     },
     onSubmit () {

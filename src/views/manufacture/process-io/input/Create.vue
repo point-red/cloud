@@ -117,7 +117,7 @@
                   @choosen="chooseRawMaterial($event, row)"/>
               </td>
               <td>
-                <m-inventory id="inventory" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_production_number === 1)"/>
+                <m-inventory :id="'inventory-' + index" :itemId="row.item_id" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
               </td>
               <td>
                 <p-quantity
@@ -125,7 +125,7 @@
                   :name="'quantity' + index"
                   v-model="form.raw_materials[index].quantity"
                   :unit="form.raw_materials[index].item.units[0].label"
-                  :readonly="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_production_number === 1)"/>
+                  :readonly="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
               </td>
               <td>
                 <m-warehouse
@@ -225,8 +225,9 @@ export default {
             }]
           },
           unit: null,
-          quantity: null,
-          converter: null
+          quantity: 0,
+          converter: null,
+          inventories: []
         }],
         finish_goods: [{
           item_id: null,
@@ -243,7 +244,7 @@ export default {
             }]
           },
           unit: null,
-          quantity: null,
+          quantity: 0,
           converter: null
         }]
       })
@@ -284,8 +285,9 @@ export default {
           }]
         },
         unit: null,
-        quantity: null,
-        converter: null
+        quantity: 0,
+        converter: null,
+        inventories: []
       })
     },
     addFinishGoodRow () {
@@ -304,7 +306,7 @@ export default {
           }]
         },
         unit: null,
-        quantity: null,
+        quantity: 0,
         converter: null
       })
     },
@@ -348,7 +350,8 @@ export default {
       row.warehouse_name = value
     },
     addInventory (value, row) {
-
+      row.quantity = value.quantity
+      row.inventories = value.inventories
     },
     onSubmit () {
       this.isSaving = true
