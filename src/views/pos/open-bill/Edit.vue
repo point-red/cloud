@@ -69,7 +69,7 @@
                       :name="item.item_name"
                       :price="item.price"
                       :unit="item.unit"
-                      :method="chooseItem"
+                      :clicked="chooseItem"
                       :item="item"/>
                   </template>
                   <template v-for="(service, index) in serviceList">
@@ -79,7 +79,7 @@
                       :key="'service-' + index"
                       :name="service.service_name"
                       :price="service.price"
-                      :method="chooseService"
+                      :clicked="chooseService"
                       :item="service"/>
                   </template>
                 </div>
@@ -118,6 +118,19 @@
                     </template>
                     <br/>
                     <b>{{ row.item_name }} ({{ row.unit }})</b>
+                    <br/>
+                    <template v-if="row.production_number && row.expiry_date">
+                      {{ row.production_number | uppercase }}. Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
+                    </template>
+                    <template v-else-if="row.production_number && !row.expiry_date">
+                      {{ row.production_number | uppercase }}
+                    </template>
+                    <template v-else-if="!row.production_number && row.expiry_date">
+                      <b style="color:red">Production No. Not Available.</b> Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
+                    </template>
+                    <template v-else>
+                      <b style="color:red">Production No. Not Available</b>
+                    </template>
                     <template v-if="row.discount_percent > 0">
                       <br/>
                       <label style="cursor:pointer;color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
@@ -237,7 +250,7 @@
                   <button v-if="form.items.length !== 0 || form.services.length !== 0" type="button" class="btn btn-block btn-primary" :disabled="isSaving || isDeleting || isLoading || isGroupLoading" @click="save">
                     <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
                   </button>
-                  <button type="button" class="btn btn-block btn-danger" :disabled="isSaving || isDeleting || isLoading || isGroupLoading" @click="onDelete" v-if="$permission.has('delete pos open bill')">
+                  <button type="button" class="btn btn-block btn-danger" :disabled="isSaving || isDeleting || isLoading || isGroupLoading" @click="onDelete" v-if="$permission.has('delete pos')">
                     <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
                   </button>
                 </div>
@@ -264,6 +277,11 @@
       ref="service"
       @updateService="updateService"
       @deleteService="deleteService"/>
+
+    <inventory-modal
+      id="inventory"
+      ref="inventory"
+      @updateInventory="updateInventory"/>
   </div>
 </template>
 
@@ -274,6 +292,7 @@ import Form from '@/utils/Form'
 import DiscountModal from './DiscountModal'
 import ItemModal from './ItemModal'
 import ServiceModal from './ServiceModal'
+import InventoryModal from './InventoryModal'
 import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -283,7 +302,8 @@ export default {
     BreadcrumbPos,
     DiscountModal,
     ItemModal,
-    ServiceModal
+    ServiceModal,
+    InventoryModal
   },
   data () {
     return {
@@ -323,7 +343,8 @@ export default {
         change: 0,
         items: [],
         services: [],
-        is_done: 0
+        is_done: 0,
+        warehouse_id: null
       })
     }
   },
@@ -489,17 +510,7 @@ export default {
       this.form.customer_name = value
     },
     chooseItem (item) {
-      let itemIndex = this.form.items.findIndex(o => o.item_id === item.item_id && o.unit === item.unit)
-      if (itemIndex >= 0) {
-        var existingItem = this.form.items[itemIndex]
-        existingItem.quantity += 1
-        this.$set(this.form.items, itemIndex, existingItem)
-      } else {
-        var newItem = item
-        newItem.quantity = 1
-        this.form.items.push(newItem)
-      }
-      this.calculate()
+      this.$refs.inventory.show(item)
     },
     chooseService (service) {
       let serviceIndex = this.form.services.findIndex(o => o.service_id === service.service_id)
@@ -562,6 +573,19 @@ export default {
         }
         this.calculate()
       }
+    },
+    updateInventory (data) {
+      let itemIndex = this.form.items.findIndex(o => o.item_id === data.item.item_id && o.unit === data.item.unit && o.production_number === data.item.production_number && o.expiry_date === data.item.expiry_date)
+      if (itemIndex >= 0) {
+        var existingItem = this.form.items[itemIndex]
+        existingItem.quantity += 1
+        this.$set(this.form.items, itemIndex, existingItem)
+      } else {
+        var newItem = JSON.parse(JSON.stringify(data.item))
+        newItem.quantity = 1
+        this.form.items.push(newItem)
+      }
+      this.calculate()
     },
     deleteItem (data) {
       let item = data.item
@@ -791,6 +815,7 @@ export default {
       this.form.discount_percent = parseFloat(this.bill.discount_percent)
       this.form.type_of_tax = this.bill.type_of_tax
       this.form.paid = parseFloat(this.bill.paid)
+      this.form.warehouse_id = this.bill.warehouse_id
       this.bill.items.forEach((item, keyItem) => {
         this.form.items.push({
           item_id: item.item_id,
@@ -803,7 +828,9 @@ export default {
           discount_percent: parseFloat(item.discount_percent),
           total: 0,
           pricing_group_id: this.form.pricing_group_id,
-          notes: item.notes
+          notes: item.notes,
+          production_number: item.production_number,
+          expiry_date: item.expiry_date
         })
       })
       this.bill.services.forEach((service, keyService) => {

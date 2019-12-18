@@ -311,6 +311,8 @@ export default {
           item_name: item.item_name,
           quantity: item.quantity,
           price: item.price,
+          discount_percent: item.discount_percent,
+          discount_value: item.discount_value,
           unit: item.unit,
           converter: item.converter,
           allocation_id: item.allocation_id,
@@ -337,6 +339,8 @@ export default {
         }],
         quantity: 0,
         price: 0,
+        discount_percent: 0,
+        discount_value: 0,
         allocation: null,
         notes: null
       })
@@ -380,6 +384,7 @@ export default {
       }
     }, 300),
     onSubmit () {
+      this.loadingSaveButton = true
       this.update(this.form)
         .then(response => {
           this.loadingSaveButton = false

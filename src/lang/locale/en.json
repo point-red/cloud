@@ -151,6 +151,7 @@
 	"pos": "pos",
 	"open bill": "open bill",
 	"closed bill": "closed bill",
+	"edit bill": "edit bill",
 	"bill": "bill",
 	"money received": "money received",
 	"money change": "change",
@@ -274,5 +275,9 @@
 	"weekly sales": "weekly sales",
 	"wa daily report": "wa daily report",
 	"amount received difference": "amount received difference",
-	"if kpi 100%": "if kpi 100%"
+	"if kpi 100%": "if kpi 100%",
+	"expiry date": "expiry date",
+	"production number": "production number",
+	"beginning": "beginning",
+	"back": "back"
 }

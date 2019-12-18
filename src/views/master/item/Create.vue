@@ -79,6 +79,8 @@
               <th>Quantity</th>
               <th>Price</th>
               <th>Value</th>
+              <th>Expiry Date</th>
+              <th>Production No.</th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.opening_stocks" :key="index">
               <th>{{ index + 1 }}</th>
@@ -103,6 +105,19 @@
                   :name="'value' + index"
                   :readonly="true"
                   v-model="form.opening_stocks[index].value"/>
+              </td>
+              <td>
+                <p-date-picker
+                  id="expiry-date"
+                  name="expiry-date"
+                  v-model="form.opening_stocks[index].expiry_date"/>
+              </td>
+              <td>
+                <p-form-input
+                  id="production-number"
+                  v-model="form.opening_stocks[index].production_number"
+                  :disabled="isSaving"
+                  name="production-number"/>
               </td>
             </tr>
           </point-table>
@@ -153,12 +168,16 @@ export default {
           label: null,
           name: null
         }],
-        opening_stocks: [{
-          warehouse_id: null,
-          quantity: null,
-          price: null,
-          value: null
-        }]
+        opening_stocks: [
+          {
+            warehouse_id: null,
+            quantity: null,
+            price: null,
+            value: null,
+            expiry_date: this.$moment().format('YYYYMMDD'),
+            production_number: null
+          }
+        ]
       })
     }
   },
@@ -188,7 +207,9 @@ export default {
         warehouse_id: null,
         quantity: null,
         price: null,
-        value: null
+        value: null,
+        expiry_date: this.$moment().format('YYYYMMDD'),
+        production_number: null
       })
     },
     addItemGroupRow () {

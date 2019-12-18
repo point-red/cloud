@@ -58,12 +58,12 @@
                 <td class="text-right">
                   <router-link
                     :to="{ name: 'pos.open-bill.edit', params: { id: bill.id }}"
-                    v-if="$permission.has('update pos open bill')"
+                    v-if="$permission.has('update pos')"
                     class="btn btn-sm btn-secondary mr-5">
                     <i class="si si-note"></i> Edit
                   </router-link>
                   &nbsp;
-                  <button class="btn btn-sm btn-danger" @click="deleteBill(bill.id)" v-if="$permission.has('delete pos open bill')" :disabled="isDeleting">
+                  <button class="btn btn-sm btn-danger" @click="deleteBill(bill.id)" v-if="$permission.has('delete pos')" :disabled="isDeleting">
                     <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
                   </button>
                 </td>

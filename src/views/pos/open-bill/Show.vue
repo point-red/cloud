@@ -68,6 +68,19 @@
                   </template>
                   <br/>
                   <b>{{ row.item_name }} ({{ row.unit }})</b>
+                  <br/>
+                  <template v-if="row.production_number && row.expiry_date">
+                    {{ row.production_number | uppercase }}. Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
+                  </template>
+                  <template v-else-if="row.production_number && !row.expiry_date">
+                    {{ row.production_number | uppercase }}
+                  </template>
+                  <template v-else-if="!row.production_number && row.expiry_date">
+                    <b style="color:red">Production No. Not Available.</b> Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
+                  </template>
+                  <template v-else>
+                    <b style="color:red">Production No. Not Available</b>
+                  </template>
                   <template v-if="row.discount_percent > 0">
                     <br/>
                     <label style="color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
@@ -182,13 +195,13 @@
             <router-link
               :disabled="isDeleting"
               :to="{ name: 'pos.open-bill.edit', params: { id: bill.id }}"
-              v-if="$permission.has('update pos open bill')"
+              v-if="$permission.has('update pos')"
               class="btn btn-block btn-secondary">
               Edit
             </router-link>
             <br/>
             <br/>
-            <button type="button" class="btn btn-block btn-danger" :disabled="isDeleting" @click="onDelete" v-if="$permission.has('delete pos open bill')" style="margin-bottom:30px;">
+            <button type="button" class="btn btn-block btn-danger" :disabled="isDeleting" @click="onDelete" v-if="$permission.has('delete pos')" style="margin-bottom:30px;">
               <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
             </button>
           </div>

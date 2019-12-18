@@ -68,6 +68,19 @@
                   </template>
                   <br/>
                   <b>{{ row.item_name }} ({{ row.unit }})</b>
+                  <br/>
+                  <template v-if="row.production_number && row.expiry_date">
+                    {{ row.production_number | uppercase }}. Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
+                  </template>
+                  <template v-else-if="row.production_number && !row.expiry_date">
+                    {{ row.production_number | uppercase }}
+                  </template>
+                  <template v-else-if="!row.production_number && row.expiry_date">
+                    <b style="color:red">Production No. Not Available.</b> Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
+                  </template>
+                  <template v-else>
+                    <b style="color:red">Production No. Not Available</b>
+                  </template>
                   <template v-if="row.discount_percent > 0">
                     <br/>
                     <label style="color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
@@ -179,7 +192,7 @@
                 </td>
               </tr>
             </p-table>
-            <button type="button" class="btn btn-block btn-danger" :disabled="isDeleting" @click="onDelete" v-if="$permission.has('delete pos closed bill')" style="margin-bottom:30px;">
+            <button type="button" class="btn btn-block btn-danger" :disabled="isDeleting" @click="onDelete" v-if="$permission.has('delete pos')" style="margin-bottom:30px;">
               <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
             </button>
           </div>

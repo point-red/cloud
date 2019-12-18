@@ -95,6 +95,8 @@
                 <th>Item</th>
                 <th>Notes</th>
                 <th class="text-right">Quantity</th>
+                <th class="text-right">Expiry Date</th>
+                <th class="text-right">Production No.</th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in purchaseReceive.items" :key="index">
                 <th>{{ index + 1 }}</th>
@@ -106,6 +108,15 @@
                 </td>
                 <td class="text-right">
                   {{ row.quantity | numberFormat }} {{ row.unit }}
+                </td>
+                <td class="text-right" v-if="row.expiry_date">
+                  {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
+                </td>
+                <td class="text-right" v-else>
+                  &nbsp;
+                </td>
+                <td class="text-right">
+                  {{ row.production_number }}
                 </td>
               </tr>
             </point-table>

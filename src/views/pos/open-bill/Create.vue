@@ -16,23 +16,14 @@
         column="col-sm-12">
 
         <template v-slot:header>
-          |<router-link
-            v-if="$permission.has('create pos')"
-            to="/pos/open-bill/create"
-            exact>
-            <button
-              type="button"
-              class="btn-block-option">
+          <router-link v-if="$permission.has('create pos')" to="/pos/open-bill/create" exact>
+            <button type="button" class="btn-block-option">
               Add
             </button>
           </router-link>
-          |<router-link
-            v-if="$permission.has('read pos')"
-            to="/pos/open-bill"
-            exact>
-            <button
-              type="button"
-              class="btn-block-option">
+          |
+          <router-link v-if="$permission.has('read pos')" to="/pos/open-bill" exact>
+            <button type="button" class="btn-block-option">
               List
             </button>
           </router-link>
@@ -115,6 +106,19 @@
                     </template>
                     <br/>
                     <b>{{ row.item_name }} ({{ row.unit }})</b>
+                    <br/>
+                    <template v-if="row.production_number && row.expiry_date">
+                      {{ row.production_number | uppercase }}. Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
+                    </template>
+                    <template v-else-if="row.production_number && !row.expiry_date">
+                      {{ row.production_number | uppercase }}
+                    </template>
+                    <template v-else-if="!row.production_number && row.expiry_date">
+                      <b style="color:red">Production No. Not Available.</b> Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
+                    </template>
+                    <template v-else>
+                      <b style="color:red">Production No. Not Available</b>
+                    </template>
                     <template v-if="row.discount_percent > 0">
                       <br/>
                       <label style="cursor:pointer;color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
@@ -258,6 +262,16 @@
       ref="service"
       @updateService="updateService"
       @deleteService="deleteService"/>
+
+    <warehouse-modal
+      id="warehouse"
+      ref="warehouse"
+      @updateWarehouse="updateWarehouse"/>
+
+    <inventory-modal
+      id="inventory"
+      ref="inventory"
+      @updateInventory="updateInventory"/>
   </div>
 </template>
 
@@ -268,6 +282,8 @@ import Form from '@/utils/Form'
 import DiscountModal from './DiscountModal'
 import ItemModal from './ItemModal'
 import ServiceModal from './ServiceModal'
+import WarehouseModal from './WarehouseModal'
+import InventoryModal from './InventoryModal'
 import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -277,7 +293,9 @@ export default {
     BreadcrumbPos,
     DiscountModal,
     ItemModal,
-    ServiceModal
+    ServiceModal,
+    WarehouseModal,
+    InventoryModal
   },
   data () {
     return {
@@ -314,7 +332,8 @@ export default {
         change: 0,
         items: [],
         services: [],
-        is_done: 0
+        is_done: 0,
+        warehouse_id: null
       })
     }
   },
@@ -328,9 +347,9 @@ export default {
           this.groupItemList.push(item.id)
         })
 
-        this.currentGroup.services.forEach(service => {
-          this.groupServiceList.push(service.id)
-        })
+        // this.currentGroup.services.forEach(service => {
+        //   this.groupServiceList.push(service.id)
+        // })
 
         this.updateDisplayedData()
       }
@@ -355,7 +374,7 @@ export default {
   },
   computed: {
     ...mapGetters('masterCustomer', ['customer']),
-    ...mapGetters('masterGroup', ['groups']),
+    ...mapGetters('masterItemGroup', ['groups']),
     ...mapGetters('masterPriceListItem', {
       items: 'items',
       paginationItem: 'pagination'
@@ -369,8 +388,8 @@ export default {
     ...mapActions('masterCustomer', {
       findCustomer: 'find'
     }),
-    ...mapActions('masterGroup', {
-      getGroups: 'get'
+    ...mapActions('masterItemGroup', {
+      getItemGroups: 'get'
     }),
     ...mapActions('masterPriceListItem', {
       getPriceListItem: 'get'
@@ -379,21 +398,10 @@ export default {
       getPriceListService: 'get'
     }),
     ...mapActions('posBill', ['create']),
-    getGroupRequest () {
-      return this.getGroups({
+    getItemGroupRequest () {
+      return this.getItemGroups({
         params: {
-          or_filter_equal: {
-            'groups.class_reference': [
-              'Item',
-              'Service'
-            ]
-          },
-          class_reference: [
-            'Item',
-            'Service'
-          ],
-          type: 'POS',
-          includes: 'items;services'
+          includes: 'items'
         }
       })
     },
@@ -428,7 +436,7 @@ export default {
     },
     requestAllData () {
       this.isGroupLoading = true
-      Promise.all([this.getGroupRequest(), this.getItemRequest(), this.getServiceRequest()]).then(results => {
+      Promise.all([this.getItemGroupRequest(), this.getItemRequest(), this.getServiceRequest()]).then(results => {
         if (!this.currentGroup) {
           this.groups.forEach(group => {
             if (!this.currentGroup) {
@@ -475,17 +483,7 @@ export default {
       this.form.customer_name = value
     },
     chooseItem (item) {
-      let itemIndex = this.form.items.findIndex(o => o.item_id === item.item_id && o.unit === item.unit)
-      if (itemIndex >= 0) {
-        var existingItem = this.form.items[itemIndex]
-        existingItem.quantity += 1
-        this.$set(this.form.items, itemIndex, existingItem)
-      } else {
-        var newItem = item
-        newItem.quantity = 1
-        this.form.items.push(newItem)
-      }
-      this.calculate()
+      this.$refs.inventory.show(item)
     },
     chooseService (service) {
       let serviceIndex = this.form.services.findIndex(o => o.service_id === service.service_id)
@@ -549,6 +547,24 @@ export default {
         this.calculate()
       }
     },
+    updateWarehouse (data) {
+      localStorage.setItem('defaultWarehouse', data.warehouse.id)
+      this.form.warehouse_id = data.warehouse.id
+      this.requestAllData()
+    },
+    updateInventory (data) {
+      let itemIndex = this.form.items.findIndex(o => o.item_id === data.item.item_id && o.unit === data.item.unit && o.production_number === data.item.production_number && o.expiry_date === data.item.expiry_date)
+      if (itemIndex >= 0) {
+        var existingItem = this.form.items[itemIndex]
+        existingItem.quantity += 1
+        this.$set(this.form.items, itemIndex, existingItem)
+      } else {
+        var newItem = JSON.parse(JSON.stringify(data.item))
+        newItem.quantity = 1
+        this.form.items.push(newItem)
+      }
+      this.calculate()
+    },
     deleteItem (data) {
       let item = data.item
       let existingItem = this.form.items[item.index]
@@ -580,6 +596,7 @@ export default {
                 let newItem = {
                   item_id: item.id,
                   item_name: item.name,
+                  item_unit_id: unit.id,
                   unit: unit.label,
                   converter: unit.converter,
                   quantity: 0,
@@ -589,7 +606,8 @@ export default {
                   total: 0,
                   pricing_group_id: price.pricing_group_id,
                   notes: null,
-                  error: null
+                  error: null,
+                  stock: item.stock
                 }
                 this.itemList.push(newItem)
               }
@@ -764,7 +782,11 @@ export default {
     }
   },
   created () {
-    this.requestAllData()
+    this.isGroupLoading = true
+  },
+  mounted () {
+    this.form.warehouse_id = localStorage.getItem('defaultWarehouse')
+    this.$refs.warehouse.show()
   },
   updated () {
     if (this.itemList.length !== 0) {

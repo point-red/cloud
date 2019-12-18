@@ -35,6 +35,8 @@
               <th>Item</th>
               <th>Notes</th>
               <th class="text-right">Quantity</th>
+              <th class="text-right">Expiry Date</th>
+              <th class="text-right">Production No.</th>
             </tr>
             <template v-for="(purchaseReceive, index) in purchaseReceives">
             <tr
@@ -56,6 +58,9 @@
               <td>{{ purchaseReceiveItem.item.name }}</td>
               <td>{{ purchaseReceiveItem.notes }}</td>
               <td class="text-right">{{ purchaseReceiveItem.quantity | numberFormat }}</td>
+              <td class="text-right" v-if="purchaseReceiveItem.expiry_date">{{ purchaseReceiveItem.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
+              <td class="text-right" v-else></td>
+              <td class="text-right">{{ purchaseReceiveItem.production_number }}</td>
             </tr>
             </template>
           </point-table>

@@ -56,7 +56,7 @@
                 </td>
                 <td class="text-right">{{ bill.amount | numberFormat }}</td>
                 <td class="text-right">
-                  <button class="btn btn-sm btn-danger" @click="deleteBill(bill.id)" v-if="$permission.has('delete pos closed bill')" :disabled="isDeleting">
+                  <button class="btn btn-sm btn-danger" @click="deleteBill(bill.id)" v-if="$permission.has('delete pos')" :disabled="isDeleting">
                     <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
                   </button>
                 </td>

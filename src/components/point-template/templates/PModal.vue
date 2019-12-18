@@ -24,6 +24,7 @@
                   <i :class="{ 'si si-size-fullscreen' : !isFullscreen, 'si si-size-actual' : isFullscreen }"/>
                 </button>
                 <button
+                  v-if="showClose"
                   type="button"
                   class="btn-block-option"
                   @click="close">
@@ -49,7 +50,8 @@ export default {
   data () {
     return {
       isFullscreen: false,
-      backdrop: false
+      backdrop: false,
+      showClose: this.canClose
     }
   },
   props: {
@@ -63,6 +65,10 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
+    },
+    canClose: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {

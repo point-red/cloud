@@ -107,6 +107,7 @@ const actions = {
     localStorage.removeItem('userEmail')
     localStorage.removeItem('userPhone')
     localStorage.removeItem('userAddress')
+    localStorage.removeItem('defaultWarehouse')
     router.replace('/auth/signin')
   },
   tryAutoLogin ({ commit }) {
