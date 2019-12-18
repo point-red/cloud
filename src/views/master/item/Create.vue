@@ -77,8 +77,7 @@
               <m-item-group
                 :key="'item-group-'+index"
                 :id="'item-group-'+index"
-                :label="form.groups[index].label"
-                type="pos"
+                :label="form.groups[index].name"
                 v-model="form.groups[index].id"
                 @choosen="chooseItemGroup($event, index)"
                 @clear="removeItemGroupRow(index)"/>
@@ -176,18 +175,14 @@ export default {
         groups: [{
           id: null,
           label: null,
-          name: null,
-          type: 'pos',
-          class_reference: 'Item'
+          name: null
         }],
-        opening_stocks: [
-          {
-            warehouse_id: null,
-            quantity: null,
-            price: null,
-            value: null
-          }
-        ]
+        opening_stocks: [{
+          warehouse_id: null,
+          quantity: null,
+          price: null,
+          value: null
+        }]
       })
     }
   },
@@ -224,9 +219,7 @@ export default {
       this.form.groups.push({
         id: null,
         label: null,
-        name: null,
-        type: 'pos',
-        class_reference: 'Item'
+        name: null
       })
     },
     removeItemGroupRow (group) {

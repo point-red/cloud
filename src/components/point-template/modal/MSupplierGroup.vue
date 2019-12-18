@@ -1,7 +1,7 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span> &nbsp; <i v-show="mutableId" class="clickable fa fa-close" @click="clear"></i>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select item group">
+    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span> <i v-show="mutableId" class="clickable fa fa-close" @click="clear"></i>
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select supplier group">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
@@ -29,7 +29,7 @@
         </div>
         <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
           {{ $t('you don\'t have any') | capitalize }} {{ $t('group') | capitalize }}, <br/> {{ $t('you can create') }}
-          <router-link :to="'/master/item-group/create'">
+          <router-link :to="'/master/group/create'">
             <span>{{ $t('new one') }}</span>
           </router-link>
         </div>
@@ -52,12 +52,14 @@ export default {
       options: [],
       mutableId: this.value,
       mutableLabel: this.label,
+      mutableClassReference: this.classReference,
+      mutableType: this.type,
       isSaving: false,
       isLoading: false
     }
   },
   computed: {
-    ...mapGetters('masterItemGroup', ['groups', 'pagination'])
+    ...mapGetters('masterSupplierGroup', ['groups', 'pagination'])
   },
   props: {
     id: {
@@ -69,18 +71,12 @@ export default {
     },
     label: {
       type: String
-    },
-    type: {
-      type: String
     }
   },
   watch: {
     searchText: debounce(function () {
       this.search()
     }, 300),
-    value () {
-      this.mutableId = this.value
-    },
     label () {
       this.mutableLabel = this.label
     }
@@ -89,7 +85,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('masterItemGroup', ['get', 'create']),
+    ...mapActions('masterSupplierGroup', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
@@ -102,6 +98,7 @@ export default {
         }
       }).then(response => {
         this.options = []
+        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
@@ -133,11 +130,7 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', {
-        id: option.id,
-        label: option.label,
-        name: option.label
-      })
+      this.$emit('choosen', option.label)
       this.close()
     },
     clear () {
@@ -165,9 +158,6 @@ input {
 .link {
   border-bottom: dotted 1px #2196f3;
   color: #2196f3;
-  cursor: pointer;
-}
-.clickable {
   cursor: pointer;
 }
 </style>

@@ -14,6 +14,7 @@
             id="search-text"
             name="search-text"
             placeholder="Search"
+            ref="searchText"
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>
@@ -30,10 +31,12 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">#</th>
               <th>Name</th>
               <th>Address</th>
               <th>Phone</th>
+              <th>Email</th>
+              <th>Pricing Group</th>
             </tr>
             <tr
               v-for="(customer, index) in customers"
@@ -54,6 +57,14 @@
                 <template v-for="customerPhone in customer.phones">
                   {{ customerPhone.number | lowercase }}
                 </template>
+              </td>
+              <td>
+                <template v-for="customerEmail in customer.emails">
+                  {{ customerEmail.email | lowercase }}
+                </template>
+              </td>
+              <td>
+                <span v-if="customer.pricing_group">{{ customer.pricing_group.label }}</span>
               </td>
             </tr>
           </point-table>
@@ -113,7 +124,7 @@ export default {
             'phones.number': this.searchText
           },
           join: 'addresses,phones,emails',
-          includes: 'addresses;phones;emails;groups',
+          includes: 'addresses;phones;emails;groups;pricingGroup',
           limit: 10,
           page: this.currentPage
         }

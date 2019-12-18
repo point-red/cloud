@@ -14,6 +14,7 @@
             id="search-text"
             name="search-text"
             placeholder="Search"
+            ref="searchText"
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>
@@ -30,14 +31,14 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">#</th>
               <th>Name</th>
             </tr>
             <tr
               v-for="(service, index) in services"
               :key="service.id"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
+              <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'service.show', params: { id: service.id }}">
                   {{ service.name | titlecase }}
@@ -115,6 +116,9 @@ export default {
   },
   created () {
     this.getServiceRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
   }
 }
 </script>

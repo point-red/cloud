@@ -2,9 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link
-        to="/master/item"
-        class="breadcrumb-item">Item</router-link>
+      <router-link to="/master/item" class="breadcrumb-item">Item</router-link>
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
@@ -12,11 +10,19 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('edit') + ' ' + $t('item')" :header="true">
+        <router-link
+          to="/master/item/create"
+          v-if="$permission.has('create item')"
+          slot="header"
+          exact
+          class="btn btn-outline-secondary btn-sm mr-5">
+          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
+        </router-link>
         <p-block-inner>
           <p-form-row
             id="code"
             v-model="form.code"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             :label="$t('code')"
             name="code"
             :errors="form.errors.get('code')"
@@ -25,7 +31,7 @@
           <p-form-row
             id="name"
             v-model="form.name"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             :label="$t('name')"
             name="name"
             :errors="form.errors.get('name')"
@@ -36,14 +42,18 @@
             name="chart-of-account"
             :label="$t('chart of account')">
             <div slot="body" class="col-lg-9 mt-5">
-              <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" type="inventory"/>
+              <m-chart-of-account
+                id="chart-of-account"
+                v-model="form.chart_of_account_id"
+                :label="form.chart_of_account_label"
+                type="inventory"/>
             </div>
           </p-form-row>
 
           <p-form-row
             id="unit"
             v-model="form.units[0].label"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             :label="$t('unit')"
             name="unit"
             :errors="form.errors.get('unit')"
@@ -58,8 +68,7 @@
                 <m-item-group
                   :key="'item-group-'+index"
                   :id="'item-group-'+index"
-                  :label="form.groups[index].label"
-                  type="pos"
+                  :label="form.groups[index].name"
                   v-model="form.groups[index].id"
                   @choosen="chooseItemGroup($event, index)"
                   @clear="removeItemGroupRow(index)"/>
@@ -73,8 +82,8 @@
 
           <hr/>
 
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
-            <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
           </button>
         </p-block-inner>
       </p-block>
@@ -99,20 +108,18 @@ export default {
     return {
       title: 'Edit Item',
       id: this.$route.params.id,
-      loading: true,
-      loadingSaveButton: false,
+      isLoading: true,
+      isSaving: false,
       form: new Form({
         id: this.$route.params.id,
         code: null,
         name: null,
         chart_of_account_id: null,
-        units: [
-          {
-            label: '',
-            name: '',
-            converter: null
-          }
-        ],
+        units: [{
+          label: '',
+          name: '',
+          converter: null
+        }],
         groups: []
       })
     }
@@ -135,13 +142,15 @@ export default {
     this.find({
       id: this.id,
       params: {
-        includes: 'units;account'
+        includes: 'units;account;groups'
       }
     }).then(response => {
       this.isLoading = false
       this.form.code = this.item.code
       this.form.name = this.item.name
+      this.form.groups = this.item.groups
       this.form.chart_of_account_id = this.item.chart_of_account_id
+      this.form.chart_of_account_label = this.item.account.label
       this.form.units[0].label = this.item.units[0].label
       this.form.units[0].name = this.item.units[0].name
       this.form.units[0].converter = this.item.units[0].converter
@@ -155,10 +164,7 @@ export default {
     addItemGroupRow () {
       this.form.groups.push({
         id: null,
-        label: null,
-        name: null,
-        type: 'pos',
-        class_reference: 'Item'
+        name: null
       })
     },
     removeItemGroupRow (group) {
@@ -170,12 +176,12 @@ export default {
     onSubmit () {
       this.update(this.form)
         .then(response => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.form.reset()
           this.$notification.success('Update success')
           this.$router.push('/master/item/' + this.id)
         }).catch(error => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.error('Update failed')
           this.form.errors.record(error.errors)
         })

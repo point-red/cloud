@@ -1,7 +1,7 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span> &nbsp; <i v-show="mutableId" class="clickable fa fa-close" @click="clear"></i>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select item group">
+    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span> <i v-show="mutableId" class="clickable fa fa-close" @click="clear"></i>
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select pricing group">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
@@ -20,16 +20,9 @@
           </a>
           </template>
         </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
-          {{ $t('searching not found', [searchText]) | capitalize }} <br>
-          {{ $t('click') }} <span class="link" @click="add"><i class="fa fa-xs" :class="{
-            'fa-refresh fa-spin': isSaving,
-            'fa-plus': !isSaving
-          }"></i> Add</span> {{ $t('to add new data') }}
-        </div>
         <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('group') | capitalize }}, <br/> {{ $t('you can create') }}
-          <router-link :to="'/master/item-group/create'">
+          {{ $t('you don\'t have any') | capitalize }} {{ $t('pricing group') | capitalize }}, <br/> {{ $t('you can create') }}
+          <router-link :to="'/master/item-price-list'">
             <span>{{ $t('new one') }}</span>
           </router-link>
         </div>
@@ -52,12 +45,14 @@ export default {
       options: [],
       mutableId: this.value,
       mutableLabel: this.label,
+      mutableClassReference: this.classReference,
+      mutableType: this.type,
       isSaving: false,
       isLoading: false
     }
   },
   computed: {
-    ...mapGetters('masterItemGroup', ['groups', 'pagination'])
+    ...mapGetters('masterPricingGroup', ['groups', 'pagination'])
   },
   props: {
     id: {
@@ -69,47 +64,45 @@ export default {
     },
     label: {
       type: String
-    },
-    type: {
-      type: String
     }
   },
   watch: {
-    searchText: debounce(function () {
-      this.search()
-    }, 300),
     value () {
       this.mutableId = this.value
     },
     label () {
       this.mutableLabel = this.label
-    }
+    },
+    searchText: debounce(function () {
+      this.search()
+    }, 300)
   },
   created () {
     this.search()
   },
   methods: {
-    ...mapActions('masterItemGroup', ['get', 'create']),
+    ...mapActions('masterPricingGroup', ['get']),
     search () {
       this.isLoading = true
       this.get({
         params: {
-          sort_by: 'name',
+          sort_by: 'label',
           limit: 50,
           filter_like: {
-            name: this.searchText
+            label: this.searchText
           }
         }
       }).then(response => {
         this.options = []
+        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
-            'label': key['name']
+            'label': key['label']
           })
 
           if (this.value == key['id']) {
-            this.mutableLabel = key['name']
+            this.mutableLabel = key['label']
           }
         })
         this.isLoading = false
@@ -117,32 +110,18 @@ export default {
         this.isLoading = false
       })
     },
-    add () {
-      this.isSaving = true
-      this.create({
-        name: this.searchText
-      }).then(response => {
-        this.search()
-        this.isSaving = false
-      }).catch(error => {
-        this.$notification.error(error.message)
-        this.isSaving = false
-      })
-    },
     choose (option) {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', {
-        id: option.id,
-        label: option.label,
-        name: option.label
-      })
+      this.$emit('choosen', option.label)
       this.close()
     },
     clear () {
+      this.mutableId = null
+      this.mutableLabel = null
       this.$emit('input', null)
-      this.$emit('clear')
+      this.$emit('choosen', '')
     },
     show () {
       this.$refs['select-' + this.id].show()
@@ -165,9 +144,6 @@ input {
 .link {
   border-bottom: dotted 1px #2196f3;
   color: #2196f3;
-  cursor: pointer;
-}
-.clickable {
   cursor: pointer;
 }
 </style>

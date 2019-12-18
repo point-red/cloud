@@ -51,7 +51,6 @@
           <point-table>
             <tr slot="p-head">
               <th width="250px">{{ $t('date') }}</th>
-              <th width="50px">{{ $t('time') }}</th>
               <th width="150px">{{ $t('sales') }}</th>
               <th width="150px">{{ $t('group') }}</th>
               <th width="150px">{{ $t('customer') }}</th>
@@ -68,8 +67,7 @@
             <template v-for="(form, index) in forms">
               <template v-if="form.details && form.details.length > 0">
                 <tr slot="p-body" v-for="(detail, index2) in form.details" :key="index + '-' + index2">
-                  <th>{{ form.form.date | dateFormat('DD MMM YYYY') }}</th>
-                  <td>{{ form.form.date | dateFormat('HH:mm') }}</td>
+                  <th>{{ formattedDateTime(form.form.date) }}</th>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>{{ form.group }}</td>
                   <td>{{ form.name }}</td>
@@ -106,8 +104,7 @@
               </template>
               <template v-else>
                 <tr slot="p-body" :key="index">
-                  <th>{{ form.form.date | dateFormat('DD MMM YYYY') }}</th>
-                  <td>{{ form.form.date | dateFormat('HH:mm') }}</td>
+                  <th>{{ formattedDateTime(form.form.date) }}</th>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>{{ form.group }}</td>
                   <td>{{ form.name }}</td>
@@ -166,8 +163,8 @@ export default {
   data () {
     return {
       date: {
-        start: this.$moment(this.$route.query.date_from).format('YYYY-MM-DD HH:mm:ss'),
-        end: this.$moment(this.$route.query.date_to).format('YYYY-MM-DD HH:mm:ss')
+        start: new Date(),
+        end: new Date()
       },
       isLoading: false,
       isExporting: false,

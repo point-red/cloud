@@ -2,9 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link
-        to="/master/customer"
-        class="breadcrumb-item">Customer</router-link>
+      <router-link to="/master/customer" class="breadcrumb-item">Customer</router-link>
       <span class="breadcrumb-item active">{{ customer.name | titlecase }}</span>
     </breadcrumb>
 
@@ -17,15 +15,15 @@
           v-if="$permission.has('create customer')"
           slot="header"
           exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new customer') | titlecase }}</span>
+          class="btn btn-outline-secondary btn-sm mr-5">
+          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
         </router-link>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
             label="Name"
             name="name"
-            v-model="data.name"
+            v-model="customer.name"
             readonly/>
           <p-form-row
             id="email"
@@ -45,8 +43,34 @@
             name="phone"
             v-model="data.phone"
             readonly/>
+          <p-form-row
+            id="pricing-group"
+            label="Pricing Group"
+            name="pricing-group"
+            v-model="data.pricing_group.label"
+            readonly/>
+
+          <p-form-row
+            id="group"
+            :label="$t('group')"
+            name="group"
+            readonly>
+            <div slot="body" class="col-lg-9">
+              <table class="table">
+                <thead></thead>
+                <tbody>
+                  <template v-for="(group, index) in customer.groups">
+                    <tr :key="index">
+                      <td>{{ group.name }}</td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </p-form-row>
 
           <hr/>
+
           <router-link
             :to="{ path: '/master/customer/' + customer.id + '/edit', params: { id: customer.id }}"
             v-if="$permission.has('update customer')"
@@ -176,10 +200,12 @@ export default {
       isDeleting: false,
       isLoadingSalesVisitation: false,
       data: {
-        name: null,
         email: null,
         address: null,
-        phone: null
+        phone: null,
+        pricing_group: {
+          label: null
+        }
       },
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1
@@ -209,7 +235,6 @@ export default {
           sort_by: '-forms.date'
         }
       }).then(response => {
-        console.log(response)
         this.isLoadingSalesVisitation = false
       }).catch(error => {
         this.isLoadingSalesVisitation = false
@@ -234,12 +259,14 @@ export default {
     this.find({
       id: this.id,
       params: {
-        includes: 'addresses;phones;groups;emails'
+        includes: 'addresses;phones;emails;groups;pricingGroup'
       }
     }).then(response => {
       this.isLoading = false
       this.data.name = response.data.name
-      console.log(response.data)
+      if (response.data.pricing_group) {
+        this.data.pricing_group.label = response.data.pricing_group.label
+      }
       if (response.data.emails.length > 0) {
         this.data.email = response.data.emails[0].email
       }

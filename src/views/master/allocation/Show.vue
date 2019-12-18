@@ -17,8 +17,8 @@
           v-if="$permission.has('create allocation')"
           slot="header"
           exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new allocation') | titlecase }}</span>
+          class="btn btn-outline-secondary btn-sm mr-5">
+          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
         </router-link>
         <p-block-inner :is-loading="isLoading">
           <p-form-row

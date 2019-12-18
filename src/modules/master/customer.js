@@ -7,7 +7,10 @@ const state = {
     name: '',
     email: '',
     address: '',
-    phone: ''
+    phone: '',
+    pricing_group: {
+      label: ''
+    }
   },
   customers: [],
   pagination: {}

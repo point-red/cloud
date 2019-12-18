@@ -129,9 +129,9 @@
               :key="scaleWeight.id"
               slot="p-body">
               <td v-if="checkedColumn.indexOf('Date In') != -1">{{ scaleWeight.date_in }}</td>
-              <td v-if="checkedColumn.indexOf('Time In') != -1">{{ scaleWeight.time_in }}</td>
+              <td v-if="checkedColumn.indexOf('Time In') != -1">{{ scaleWeight.time_in | dateFormat('HH.mm') }}</td>
               <td v-if="checkedColumn.indexOf('Date Out') != -1">{{ scaleWeight.date_out }}</td>
-              <td v-if="checkedColumn.indexOf('Time Out') != -1">{{ scaleWeight.time_out }}</td>
+              <td v-if="checkedColumn.indexOf('Time Out') != -1">{{ scaleWeight.time_out | dateFormat('HH.mm') }}</td>
               <td v-if="checkedColumn.indexOf('Machine') != -1">{{ scaleWeight.machine_code }}</td>
               <td v-if="checkedColumn.indexOf('Form Number') != -1">{{ scaleWeight.form_number }}</td>
               <td v-if="checkedColumn.indexOf('Vendor') != -1">{{ scaleWeight.vendor }}</td>
@@ -247,8 +247,8 @@ export default {
       isShowCat: false,
       isLoading: true,
       isExporting: false,
-      date_from: new Date(),
-      date_to: new Date(),
+      date_from: this.serverDateTime(),
+      date_to: this.serverDateTime(),
       downloadLink: ''
     }
   },
@@ -301,14 +301,14 @@ export default {
     exportData () {
       this.isExporting = true
       this.export({
-        date_from: this.date_from,
-        date_to: this.date_to,
+        date_from: this.serverDateTime(this.date_from, 'start'),
+        date_to: this.serverDateTime(this.date_to, 'end'),
         header: this.checkedColumn,
         cat: this.checkedColumnCat
-      }).then((response) => {
+      }).then(response => {
         this.isExporting = false
         this.downloadLink = response.data.url
-      }, (error) => {
+      }).catch(error => {
         this.isExporting = false
         console.log(error)
       })
@@ -318,8 +318,8 @@ export default {
     this.isLoading = true
     this.get({
       params: {
-        date_from: this.date_from,
-        date_to: this.date_to
+        date_from: this.serverDateTime(this.date_from, 'start'),
+        date_to: this.serverDateTime(this.date_to, 'end')
       }
     }).then((response) => {
       this.isLoading = false

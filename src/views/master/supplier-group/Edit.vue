@@ -3,6 +3,7 @@
     <breadcrumb>
       <breadcrumb-master/>
       <router-link to="/master/supplier-group" class="breadcrumb-item">Supplier Group</router-link>
+      <router-link :to="'/master/supplier-group/'+form.id" class="breadcrumb-item">{{ form.name | titlecase }}</router-link>
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
@@ -15,8 +16,8 @@
           v-if="$permission.has('create supplier')"
           slot="header"
           exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new group') | titlecase }}</span>
+          class="btn btn-outline-secondary btn-sm mr-5">
+          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
         </router-link>
         <p-block-inner>
           <p-form-row

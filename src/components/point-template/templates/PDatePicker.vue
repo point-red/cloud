@@ -5,6 +5,7 @@
       type="date"
       v-model="date"
       :shortcuts="shortcuts"
+      value-type="YYYY-MM-DD"
       v-mask="mask"/>
 
     <div
@@ -31,7 +32,7 @@ export default {
       required: false
     },
     value: {
-      type: Date,
+      type: [Date, String],
       default: new Date()
     },
     help: {

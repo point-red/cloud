@@ -1,5 +1,9 @@
 <template>
   <div>
+    <breadcrumb>
+      <span class="breadcrumb-item active">Accounting</span>
+    </breadcrumb>
+
     <div class="row gutters-tiny">
       <p-box
         :name="$t('chart of account')"

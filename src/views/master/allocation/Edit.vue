@@ -2,10 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link
-        to="/master/allocation"
-        class="breadcrumb-item">{{ $t('allocation') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('edit') }}</span>
+      <router-link to="/master/allocation" class="breadcrumb-item">{{ $t('allocation') | titlecase }}</router-link>
+      <router-link :to="'/master/allocation/'+form.id" class="breadcrumb-item">{{ form.name | titlecase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | titlecase }}</span>
     </breadcrumb>
 
     <tab-menu/>
@@ -17,8 +16,8 @@
           v-if="$permission.has('create allocation')"
           slot="header"
           exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new allocation') | titlecase }}</span>
+          class="btn btn-outline-secondary btn-sm mr-5">
+          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
         </router-link>
         <p-block-inner :is-loading="isLoading">
           <p-form-row

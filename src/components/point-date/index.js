@@ -30,12 +30,12 @@ export default {
             return this.$moment(string).format('DD-MM-YYYY HH:mm')
           }
         },
-        serverDate (string) {
+        serverDate (string = new Date()) {
           if (string) {
             return this.$moment(string).format('YYYY-MM-DD')
           }
         },
-        serverDateTime (string, time = 'now') {
+        serverDateTime (string = new Date(), time = 'now') {
           if (string && time == 'now') {
             return this.$moment(string).format('YYYY-MM-DD HH:mm:ss')
           } else if (string && time == 'start') {

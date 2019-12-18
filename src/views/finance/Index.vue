@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-finance/>
+      <span class="breadcrumb-item active">Finance</span>
     </breadcrumb>
 
     <div class="row gutters-tiny">
@@ -25,13 +25,11 @@
 </template>
 
 <script>
-import BreadcrumbFinance from './Breadcrumb'
 import Breadcrumb from '@/views/Breadcrumb'
 
 export default {
   components: {
-    Breadcrumb,
-    BreadcrumbFinance
+    Breadcrumb
   }
 }
 </script>

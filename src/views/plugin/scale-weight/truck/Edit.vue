@@ -138,8 +138,8 @@ export default {
       this.form.gross_weight = response.data.gross_weight
       this.form.net_weight = response.data.net_weight
       this.form.tare_weight = response.data.tare_weight
-      this.form.time_in = new Date(response.data.time_in)
-      this.form.time_out = new Date(response.data.time_out)
+      this.form.time_in = response.data.time_in
+      this.form.time_out = response.data.time_out
       this.form.user = response.data.user
     }).catch(error => {
       this.isLoading = false

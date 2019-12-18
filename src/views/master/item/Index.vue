@@ -14,6 +14,7 @@
             id="search-text"
             name="search-text"
             placeholder="Search"
+            ref="searchText"
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>
@@ -39,7 +40,7 @@
               v-for="(item, index) in items"
               :key="item.id"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
+              <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: item.id }}">
                   {{ item.name }}
@@ -127,8 +128,10 @@ export default {
     }, 300)
   },
   created () {
-    this.isLoading = true
     this.getItemRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
   },
   updated () {
     this.lastPage = this.pagination.last_page

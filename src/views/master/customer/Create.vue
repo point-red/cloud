@@ -11,12 +11,6 @@
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('create') + ' ' + $t('customer')" :header="true">
         <p-block-inner>
-          <p-form-row id="group" name="group" :label="$t('group')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <m-group id="group" v-model="form.group_id" class-reference="Customer" type="customer"/>
-            </div>
-          </p-form-row>
-
           <p-form-row
             id="name"
             v-model="form.name"
@@ -52,6 +46,30 @@
             name="phone"
             :errors="form.errors.get('phone')"
             @errors="form.errors.set('phone', null)"/>
+
+          <p-form-row id="pricing-group" name="pricing-group" :label="$t('pricing group')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-pricing-group
+                :id="'pricing-group-id'"
+                v-model="form.pricing_group_id"/>
+            </div>
+          </p-form-row>
+
+          <p-form-row id="group" name="group" :label="$t('group')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <template v-for="(group, index) in form.groups">
+                <m-customer-group
+                  :key="index"
+                  :id="'group'+index"
+                  v-model="group.id"
+                  @clear="removeGroupRow(index)"/>
+                <hr :key="'group-hr-'+index"/>
+              </template>
+              <button type="button" class="btn btn-sm btn-secondary" @click="addGroupRow">
+                <i class="fa fa-plus"/> Add More Group
+              </button>
+            </div>
+          </p-form-row>
 
           <hr/>
 
@@ -91,9 +109,10 @@ export default {
         phones: [{
           number: null
         }],
-        group: {
-          name: ''
-        }
+        groups: [{
+          id: null,
+          name: null
+        }]
       })
     }
   },
@@ -102,16 +121,18 @@ export default {
   },
   methods: {
     ...mapActions('masterCustomer', ['create']),
-    togglePriority () {
-      if (this.form.group.name == 'priority') {
-        this.form.group.name = ''
-      } else {
-        this.form.group.name = 'priority'
-      }
+    addGroupRow () {
+      this.form.groups.push({
+        id: null,
+        label: null,
+        name: null
+      })
+    },
+    removeGroupRow (group) {
+      this.$delete(this.form.groups, group)
     },
     onSubmit () {
       this.isSaving = true
-
       this.create(this.form)
         .then(response => {
           this.isSaving = false
