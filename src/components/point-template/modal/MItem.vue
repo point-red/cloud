@@ -95,6 +95,8 @@ export default {
           this.options.push({
             'id': key['id'],
             'label': key['name'],
+            'require_production_number': key['require_production_number'],
+            'require_expiry_date': key['require_expiry_date'],
             'units': key['units']
           })
 
@@ -132,6 +134,8 @@ export default {
       this.$emit('input', option.id)
       this.$emit('choosen', {
         name: option.label,
+        require_production_number: option.require_production_number,
+        require_expiry_date: option.require_expiry_date,
         units: option.units
       })
       this.close()

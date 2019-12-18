@@ -92,7 +92,8 @@
                   :id="'quantity' + index"
                   :name="'quantity' + index"
                   v-model="form.raw_materials[index].quantity"
-                  :unit="form.raw_materials[index].unit"/>
+                  :unit="form.raw_materials[index].unit"
+                  :readonly="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_production_number === 1)"/>
               </td>
               <td>{{ row.warehouse_name}}</td>
             </tr>
@@ -179,7 +180,7 @@ export default {
     manufactureFormulaRequest () {
       this.isLoading = true
       this.find({
-        id: this.id,
+        id: this.formulaId,
         params: {
           with_archives: true,
           includes: 'rawMaterials.item.units;finishGoods.item.units;rawMaterials.warehouse;finishGoods.warehouse'
