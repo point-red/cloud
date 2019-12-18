@@ -243,7 +243,7 @@ export default {
     manufactureInputRequest () {
       this.isLoading = true
       this.find({
-        id: this.id,
+        id: this.inputId,
         params: {
           with_archives: true,
           includes: 'manufactureMachine;rawMaterials.item.units;finishGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishGoods.warehouse'

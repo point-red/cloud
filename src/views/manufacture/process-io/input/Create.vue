@@ -225,7 +225,7 @@ export default {
             }]
           },
           unit: null,
-          quantity: 0,
+          quantity: null,
           converter: null,
           inventories: []
         }],
@@ -244,7 +244,7 @@ export default {
             }]
           },
           unit: null,
-          quantity: 0,
+          quantity: null,
           converter: null
         }]
       })
@@ -285,7 +285,7 @@ export default {
           }]
         },
         unit: null,
-        quantity: 0,
+        quantity: null,
         converter: null,
         inventories: []
       })
@@ -306,7 +306,7 @@ export default {
           }]
         },
         unit: null,
-        quantity: 0,
+        quantity: null,
         converter: null
       })
     },
