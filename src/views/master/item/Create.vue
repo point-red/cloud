@@ -101,8 +101,8 @@
               <th>Quantity</th>
               <th>Price</th>
               <th>Value</th>
-              <th>Expiry Date</th>
-              <th>Production No.</th>
+              <th v-if="form.require_expiry_date">Expiry Date</th>
+              <th v-if="form.require_production_number">Production No.</th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.opening_stocks" :key="index">
               <th>{{ index + 1 }}</th>
@@ -128,13 +128,13 @@
                   :readonly="true"
                   v-model="form.opening_stocks[index].value"/>
               </td>
-              <td>
+              <td v-if="form.require_expiry_date">
                 <p-date-picker
                   id="expiry-date"
                   name="expiry-date"
                   v-model="form.opening_stocks[index].expiry_date"/>
               </td>
-              <td>
+              <td v-if="form.require_production_number">
                 <p-form-input
                   id="production-number"
                   v-model="form.opening_stocks[index].production_number"

@@ -34,7 +34,7 @@
                   @input="quantityChange"/>
               </td>
               <td>
-                &nbsp;
+                {{ option.total_quantity | numberFormat }} {{ option.item.units[0].label }}
               </td>
             </tr>
           </p-table>
@@ -78,6 +78,10 @@ export default {
       type: Number,
       required: true
     },
+    warehouseId: {
+      type: Number,
+      required: true
+    },
     value: {
       type: [String, Number],
       default: null
@@ -107,10 +111,10 @@ export default {
       this.get({
         itemId: this.itemId,
         params: {
+          warehouse_id: this.warehouseId,
           includes: 'form;warehouse;item.units',
           sort_by: 'inventories.production_number,inventories.expiry_date',
-          group_by: 'inventories.production_number,inventories.expiry_date',
-          limit: 50,
+          group_by: 'inventories.production_number,inventories.expiry_date,inventories.warehouse_id',
           filter_like: {
             production_number: this.searchText,
             expiry_date: this.searchText
@@ -146,6 +150,7 @@ export default {
             'production_number': key['production_number'],
             'expiry_date': key['expiry_date'],
             'quantity': quantity,
+            'total_quantity': key['total_quantity'],
             'item': item
           })
         })
