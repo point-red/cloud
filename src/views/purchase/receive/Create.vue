@@ -215,7 +215,7 @@ export default {
           item: item.item,
           quantity_pending: item.quantity_pending,
           quantity: item.quantity_pending,
-          expiry_date: this.$moment().format('YYYYMMDD'),
+          expiry_date: this.$moment().format('YYYY-MM-DD'),
           production_number: '',
           price: item.price,
           discount_value: item.discount_value,

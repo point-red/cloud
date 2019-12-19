@@ -198,7 +198,7 @@ export default {
             quantity: null,
             price: null,
             value: null,
-            expiry_date: this.$moment().format('YYYYMMDD'),
+            expiry_date: this.$moment().format('YYYY-MM-DD'),
             production_number: null
           }
         ]
@@ -232,7 +232,7 @@ export default {
         quantity: null,
         price: null,
         value: null,
-        expiry_date: this.$moment().format('YYYYMMDD'),
+        expiry_date: this.$moment().format('YYYY-MM-DD'),
         production_number: null
       })
     },
