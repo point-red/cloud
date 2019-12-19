@@ -28,20 +28,6 @@
               </template>
             </div>
           </p-form-row>
-          <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="date"
-                v-model="form.date"
-                :errors="form.errors.get('date')"
-                @errors="form.errors.set('date', null)"/>
-            </div>
-          </p-form-row>
 
           <p-form-row
             id="process"
@@ -214,7 +200,7 @@ export default {
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         id: this.$route.params.id,
-        date: null,
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         manufacture_process_id: null,
         manufacture_process_name: null,
         name: null,

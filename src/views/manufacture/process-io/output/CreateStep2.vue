@@ -43,21 +43,6 @@
       <p-block :title="$t('output')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="Date"
-                v-model="form.date"
-                :errors="form.errors.get('date')"
-                @errors="form.errors.set('date', null)"/>
-            </div>
-          </p-form-row>
-
-          <p-form-row
             id="machine"
             name="machine"
             :label="$t('machine')">
@@ -188,7 +173,7 @@ export default {
       isSaving: false,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
-        date: new Date(),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         manufacture_machine_id: null,
         manufacture_input_id: null,
         manufacture_machine_name: null,

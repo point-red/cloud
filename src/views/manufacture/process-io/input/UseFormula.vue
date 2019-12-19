@@ -15,21 +15,6 @@
       <p-block :title="$t('input')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="Date"
-                v-model="form.date"
-                :errors="form.errors.get('date')"
-                @errors="form.errors.set('date', null)"/>
-            </div>
-          </p-form-row>
-
-          <p-form-row
             id="machine"
             name="machine"
             :label="$t('machine')">
@@ -89,7 +74,7 @@
               <th>{{ index + 1 }}</th>
               <td>{{ row.item_name }}</td>
               <td>
-                <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" :value="form.raw_materials[index].quantity" :shouldChange="form.raw_materials[index].should_change" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
+                <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" :warehouseId="row.warehouse_id" :value="form.raw_materials[index].quantity" :shouldChange="form.raw_materials[index].should_change" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1) && row.item_id && row.warehouse_id"/>
               </td>
               <td>
                 <p-quantity
@@ -163,7 +148,7 @@ export default {
       isSaving: false,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
-        date: new Date(),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         manufacture_machine_id: null,
         manufacture_process_id: null,
         manufacture_formula_id: null,

@@ -14,21 +14,6 @@
       <p-block :title="$t('formula')" :header="true">
         <p-block-inner>
           <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="Date"
-                v-model="form.date"
-                :errors="form.errors.get('date')"
-                @errors="form.errors.set('date', null)"/>
-            </div>
-          </p-form-row>
-
-          <p-form-row
             id="process"
             name="process"
             :label="$t('process')">
@@ -204,7 +189,7 @@ export default {
       isSaving: false,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
-        date: new Date(),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         manufacture_process_id: null,
         manufacture_process_name: null,
         name: null,
