@@ -45,7 +45,11 @@
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.finish_goods" :key="index">
               <th>{{ index + 1 }}</th>
-              <td>{{ row.item_name }}</td>
+              <td>
+                <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
+                  [{{ row.item.code }}] {{ row.item.name }}
+                </router-link>
+              </td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
@@ -54,7 +58,11 @@
                   :unit="form.finish_goods[index].item.units[0].label"
                   @input="quantityChange"/>
               </td>
-              <td>{{ row.warehouse_name}}</td>
+              <td>
+                <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
+                  [{{ row.warehouse.code }}] {{ row.warehouse.name }}
+                </router-link>
+              </td>
             </tr>
           </point-table>
 
@@ -72,7 +80,11 @@
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.raw_materials" :key="index">
               <th>{{ index + 1 }}</th>
-              <td>{{ row.item_name }}</td>
+              <td>
+                <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
+                  [{{ row.item.code }}] {{ row.item.name }}
+                </router-link>
+              </td>
               <td>
                 <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" :warehouseId="row.warehouse_id" :value="form.raw_materials[index].quantity" :shouldChange="form.raw_materials[index].should_change" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1) && row.item_id && row.warehouse_id"/>
               </td>
@@ -84,7 +96,11 @@
                   :unit="form.raw_materials[index].unit"
                   :readonly="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
               </td>
-              <td>{{ row.warehouse_name}}</td>
+              <td>
+                <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
+                  [{{ row.warehouse.code }}] {{ row.warehouse.name }}
+                </router-link>
+              </td>
             </tr>
           </point-table>
 
