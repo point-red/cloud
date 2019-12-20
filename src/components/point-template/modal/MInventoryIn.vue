@@ -82,6 +82,10 @@ export default {
       type: Number,
       required: true
     },
+    inventories: {
+      type: Array,
+      default: function () { return [] }
+    },
     requireExpiryDate: {
       type: [Boolean, Number],
       default: false
@@ -120,9 +124,13 @@ export default {
       })
     },
     show () {
+      if (this.inventories.length > 0) {
+        this.options = this.inventories
+      }
       this.$refs['select-' + this.id].show()
     },
     close () {
+      this.quantityChange()
       this.$emit('add', {
         inventories: this.options,
         quantity: this.totalQuantity

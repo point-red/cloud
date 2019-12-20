@@ -40,7 +40,7 @@ export default {
     },
     inventories: {
       type: Array,
-      required: true
+      default: function () { return [] }
     },
     requireExpiryDate: {
       type: [Boolean, Number],
