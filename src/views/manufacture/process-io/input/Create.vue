@@ -58,8 +58,8 @@
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.finish_goods[index].quantity"
-                  :unit="form.finish_goods[index].item.units[0].label"/>
+                  v-model="row.quantity"
+                  :unit="row.item.units[0].label"/>
               </td>
               <td>
                 <m-warehouse
@@ -102,15 +102,20 @@
                   @choosen="chooseRawMaterial($event, row)"/>
               </td>
               <td>
-                <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" :warehouseId="row.warehouse_id" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_expiry_date === 1 || form.raw_materials[index].item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
+                <m-inventory-out
+                  :id="'inventory-' + index"
+                  :itemId="row.item_id"
+                  :warehouseId="row.warehouse_id"
+                  @add="addInventory($event, row)"
+                  v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
               </td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.raw_materials[index].quantity"
-                  :unit="form.raw_materials[index].item.units[0].label"
-                  :readonly="(form.raw_materials[index].item.require_expiry_date === 1 || form.raw_materials[index].item.require_production_number === 1)"/>
+                  v-model="row.quantity"
+                  :unit="row.item.units[0].label"
+                  :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
               </td>
               <td>
                 <m-warehouse

@@ -82,8 +82,8 @@
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.finish_goods[index].quantity"
-                  :unit="form.finish_goods[index].item.units[0].label"/>
+                  v-model="row.quantity"
+                  :unit="row.item.units[0].label"/>
               </td>
               <td>
                 <m-warehouse
@@ -128,8 +128,8 @@
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.raw_materials[index].quantity"
-                  :unit="form.raw_materials[index].item.units[0].label"/>
+                  v-model="row.quantity"
+                  :unit="row.item.units[0].label"/>
               </td>
               <td>
                 <m-warehouse

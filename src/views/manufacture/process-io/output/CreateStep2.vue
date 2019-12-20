@@ -69,9 +69,8 @@
               <th>#</th>
               <th style="min-width: 120px">Item</th>
               <th>Estimation</th>
+              <th>&nbsp;</th>
               <th>Output</th>
-              <th>Production Number</th>
-              <th>Expiry Date</th>
               <th style="min-width: 120px">Warehouse</th>
               <th></th>
             </tr>
@@ -83,27 +82,26 @@
                   </router-link>
                 </td>
                 <td>
-                  {{ row.quantity | numberFormat }} {{ row.unit }}
+                  {{ row.estimation_quantity | numberFormat }} {{ row.unit }}
+                </td>
+                <td>
+                  <m-inventory-in
+                    :id="'inventory-' + index"
+                    :itemId="row.item_id"
+                    :requireExpiryDate="row.item.require_expiry_date"
+                    :requireProductionNumber="row.item.require_production_number"
+                    :unit="row.unit"
+                    :value="row.quantity"
+                    @add="addInventory($event, row)"
+                    v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
                 </td>
                 <td>
                   <p-quantity
                     :id="'quantity' + index"
                     :name="'quantity' + index"
-                    v-model="form.finish_goods[index].produced_quantity"
-                    :unit="row.unit"/>
-                </td>
-                <td>
-                  <p-form-input
-                    id="production-number"
-                    v-model="form.finish_goods[index].production_number"
-                    :disabled="isSaving"
-                    name="production-number"/>
-                </td>
-                <td>
-                  <p-date-picker
-                    id="expiry-date"
-                    name="expiry-date"
-                    v-model="form.finish_goods[index].expiry_date"/>
+                    v-model="row.quantity"
+                    :unit="row.item.units[0].label"
+                    :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
                 </td>
                 <td>
                   <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
@@ -204,9 +202,7 @@ export default {
         this.form.finish_goods = this.input.finish_goods
         for (let index in this.form.finish_goods) {
           this.form.finish_goods[index].input_finish_good_id = this.input.finish_goods[index].id
-          this.form.finish_goods[index].produced_quantity = 0
-          this.form.finish_goods[index].production_number = null
-          this.form.finish_goods[index].expiry_date = null
+          this.form.finish_goods[index].estimation_quantity = this.form.finish_goods[index].quantity
         }
         this.isLoading = false
       }).catch(error => {
@@ -216,6 +212,10 @@ export default {
     },
     chooseManufactureMachine (value) {
       this.form.manufacture_machine_name = value
+    },
+    addInventory (value, row) {
+      row.quantity = value.quantity
+      row.inventories = value.inventories
     },
     onSubmit () {
       this.isSaving = true
