@@ -93,7 +93,7 @@
                   :requireProductionNumber="row.item.require_production_number"
                   :warehouseId="row.warehouse_id"
                   :value="row.quantity"
-                  :shouldChange="row.should_change"
+                  :inventories="row.inventories"
                   @add="addInventory($event, row)"
                   v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
               </td>
@@ -216,7 +216,6 @@ export default {
             }
           })
           rawMaterials.inventories = []
-          rawMaterials.should_change = true
           this.form.raw_materials_temporary.push(rawMaterials)
         }
         for (let index in this.formula.finish_goods) {
@@ -240,15 +239,12 @@ export default {
     quantityChange (quantity) {
       for (let index in this.form.raw_materials_temporary) {
         this.form.raw_materials_temporary[index].quantity = this.form.raw_materials_temporary[index].original_quantity * quantity
-        this.form.raw_materials_temporary[index].should_change = true
+        this.form.raw_materials_temporary[index].inventories = []
       }
     },
     addInventory (value, row) {
       row.quantity = value.quantity
       row.inventories = value.inventories
-      for (let index in this.form.raw_materials_temporary) {
-        this.form.raw_materials_temporary[index].should_change = false
-      }
     },
     setRawMaterials () {
       this.form.raw_materials = []

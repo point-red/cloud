@@ -263,25 +263,24 @@ export default {
         for (let index in this.input.raw_materials) {
           let rawMaterial = this.input.raw_materials[index]
           let rawMaterialTemporaryIndex = this.raw_materials_temporary.findIndex(o => o.item_id === rawMaterial.item_id && o.warehouse_id === rawMaterial.warehouse_id)
-          var rawMaterialTemporary
           if (rawMaterialTemporaryIndex < 0) {
-            rawMaterialTemporary = Object.assign({}, rawMaterial)
-            rawMaterialTemporary.inventories = []
-            rawMaterialTemporary.inventories.push({
+            var newItem = Object.assign({}, rawMaterial)
+            newItem.inventories = []
+            newItem.inventories.push({
               'quantity': rawMaterial.quantity,
               'expiry_date': rawMaterial.expiry_date,
               'production_number': rawMaterial.production_number
             })
-            this.raw_materials_temporary.push(rawMaterialTemporary)
+            this.raw_materials_temporary.push(newItem)
           } else {
-            rawMaterialTemporary = this.raw_materials_temporary[rawMaterialTemporaryIndex]
-            rawMaterialTemporary.quantity += rawMaterial.quantity
-            rawMaterialTemporary.inventories.push({
+            var existing = this.raw_materials_temporary[rawMaterialTemporaryIndex]
+            existing.quantity += rawMaterial.quantity
+            existing.inventories.push({
               'quantity': rawMaterial.quantity,
               'expiry_date': rawMaterial.expiry_date,
               'production_number': rawMaterial.production_number
             })
-            this.raw_materials_temporary[rawMaterialTemporaryIndex] = rawMaterialTemporary
+            this.raw_materials_temporary[rawMaterialTemporaryIndex] = existing
           }
         }
         this.isLoading = false

@@ -125,7 +125,7 @@ export default {
     },
     show () {
       if (this.inventories.length > 0) {
-        this.options = this.inventories
+        this.options = Object.assign({}, this.inventories)
       }
       this.$refs['select-' + this.id].show()
     },

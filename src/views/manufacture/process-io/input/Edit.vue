@@ -4,7 +4,8 @@
       <breadcrumb-manufacture/>
       <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | titlecase }}</router-link>
       <router-link :to="'/manufacture/process-io/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Create</span>
+      <router-link :to="{ name: 'manufacture.process.io.input.show', params: { id: id, inputId: inputId }}" class="breadcrumb-item">{{ input.form.number | uppercase }}</router-link>
+      <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
     <manufacture-menu/>
@@ -14,6 +15,21 @@
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('input')" :header="true">
         <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="number"
+            name="number"
+            :label="$t('number')">
+            <div slot="body" class="col-lg-9">
+              <template v-if="input.form.number">
+                {{ input.form.number }}
+              </template>
+              <template v-else>
+                <span class="badge badge-danger">{{ $t('archived') }}</span>
+                {{ input.form.edited_number }}
+              </template>
+            </div>
+          </p-form-row>
+
           <p-form-row
             id="machine"
             name="machine"
@@ -139,24 +155,16 @@
 
           <p-separator></p-separator>
 
-          <div class="row">
-            <div class="col-sm-12">
-              <h3>Approver</h3>
-              <hr>
-              <p-form-row
-                id="approver"
-                name="approver"
-                :label="$t('approver')">
-                <div slot="body" class="col-lg-9 mt-5">
-                  <m-user
-                    :id="'user'"
-                    v-model="form.approver_id"
-                    :errors="form.errors.get('approver_id')"
-                    @errors="form.errors.set('approver_id', null)"/>
-                </div>
-              </p-form-row>
+          <h3 class="">Approver</h3>
+
+          <p-form-row
+            id="approver"
+            name="approver"
+            :label="$t('approver')">
+            <div slot="body" class="col-lg-9">
+              <m-user :id="'user'" v-model="form.approver_id"/>
             </div>
-          </div>
+          </p-form-row>
 
           <div class="form-group row">
             <div class="col-md-12">
@@ -192,10 +200,12 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
+      inputId: this.$route.params.inputId,
       isLoading: false,
       isSaving: false,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
+        id: this.$route.params.inputId,
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         manufacture_machine_id: null,
         manufacture_process_id: null,
@@ -205,60 +215,101 @@ export default {
         manufacture_formula_name: null,
         notes: null,
         approver_id: null,
-        raw_materials_temporary: [{
-          item_id: null,
-          warehouse_id: null,
-          item_name: null,
-          warehouse_name: null,
-          item: {
-            require_expiry_date: false,
-            require_production_number: false,
-            units: [{
-              label: '',
-              name: '',
-              converter: null
-            }]
-          },
-          unit: null,
-          quantity: null,
-          converter: null,
-          inventories: []
-        }],
+        raw_materials_temporary: [],
         raw_materials: [],
-        finish_goods: [{
-          item_id: null,
-          warehouse_id: null,
-          item_name: null,
-          warehouse_name: null,
-          item: {
-            require_expiry_date: false,
-            require_production_number: false,
-            units: [{
-              label: '',
-              name: '',
-              converter: null
-            }]
-          },
-          unit: null,
-          quantity: null,
-          converter: null
-        }]
+        finish_goods: []
       })
     }
   },
   computed: {
-    ...mapGetters('manufactureProcess', ['process'])
+    ...mapGetters('manufactureInput', ['input'])
+  },
+  created () {
+    this.isLoading = true
+    this.find({
+      id: this.inputId,
+      params: {
+        includes: 'manufactureMachine;rawMaterials.item.units;finishGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishGoods.warehouse'
+      }
+    }).then(response => {
+      if (!this.$formRules.allowedToUpdate(response.data.form)) {
+        this.$router.replace('/manufacture/process-io/' + this.id + '/input/' + response.data.id)
+      }
+      this.isLoading = false
+      this.form.date = new Date(response.data.form.date)
+      this.form.edited_form_number = response.data.form.edited_form_number
+      this.form.manufacture_machine_id = response.data.manufacture_machine_id
+      this.form.manufacture_process_id = response.data.manufacture_process_id
+      this.form.manufacture_formula_id = response.data.manufacture_formula_id
+      this.form.manufacture_machine_name = response.data.manufacture_machine_name
+      this.form.manufacture_process_name = response.data.manufacture_process_name
+      this.form.manufacture_formula_name = response.data.manufacture_formula_name
+      this.form.notes = response.data.form.notes
+      response.data.finish_goods.forEach((item, keyItem) => {
+        this.form.finish_goods.push({
+          item_id: item.item_id,
+          warehouse_id: item.warehouse_id,
+          item_name: item.item_name,
+          warehouse_name: item.warehouse_name,
+          quantity: item.quantity,
+          unit: item.unit,
+          item: item.item,
+          converter: item.converter
+        })
+      })
+      response.data.raw_materials.forEach((item, keyItem) => {
+        this.form.raw_materials.push({
+          item_id: item.item_id,
+          warehouse_id: item.warehouse_id,
+          item_name: item.item_name,
+          warehouse_name: item.warehouse_name,
+          quantity: item.quantity,
+          expiry_date: item.expiry_date,
+          production_number: item.production_number,
+          unit: item.unit,
+          item: item.item,
+          converter: item.converter
+        })
+      })
+      for (let index in this.form.raw_materials) {
+        let rawMaterial = this.form.raw_materials[index]
+        let rawMaterialTemporaryIndex = this.form.raw_materials_temporary.findIndex(o => o.item_id === rawMaterial.item_id && o.warehouse_id === rawMaterial.warehouse_id)
+        if (rawMaterialTemporaryIndex < 0) {
+          var newItem = Object.assign({}, rawMaterial)
+          newItem.inventories = []
+          newItem.inventories.push({
+            'quantity': rawMaterial.quantity,
+            'expiry_date': rawMaterial.expiry_date,
+            'production_number': rawMaterial.production_number
+          })
+          this.form.raw_materials_temporary.push(newItem)
+        } else {
+          var existing = this.form.raw_materials_temporary[rawMaterialTemporaryIndex]
+          existing.quantity += rawMaterial.quantity
+          existing.inventories.push({
+            'quantity': rawMaterial.quantity,
+            'expiry_date': rawMaterial.expiry_date,
+            'production_number': rawMaterial.production_number
+          })
+          this.form.raw_materials_temporary[rawMaterialTemporaryIndex] = existing
+        }
+      }
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   },
   methods: {
-    ...mapActions('manufactureInput', ['create']),
-    ...mapActions('manufactureProcess', ['find']),
-    manufactureProcessRequest () {
+    ...mapActions('manufactureInput', ['find', 'update']),
+    manufactureInputRequest () {
       this.isLoading = true
       this.find({
-        id: this.id
+        id: this.inputId,
+        params: {
+          with_archives: true,
+          includes: 'manufactureMachine;rawMaterials.item.units;finishGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishGoods.warehouse'
+        }
       }).then(response => {
-        this.form.manufacture_process_id = this.process.id
-        this.form.manufacture_process_name = this.process.name
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
@@ -380,20 +431,10 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.setRawMaterials()
-      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      if (this.form.approver_id == null) {
-        this.$notification.error('approval cannot be null')
-        this.isSaving = false
-        this.form.errors.record({
-          approver_id: ['Approver should not empty']
-        })
-        return
-      }
-      this.create(this.form)
+      this.update(this.form)
         .then(response => {
           this.isSaving = false
-          this.$notification.success('create success')
-          Object.assign(this.$data, this.$options.data.call(this))
+          this.$notification.success('Update success')
           this.$router.push('/manufacture/process-io/' + this.id + '/input/' + response.data.id)
         }).catch(error => {
           console.log(error.errors)
@@ -402,9 +443,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    this.manufactureProcessRequest()
   }
 }
 </script>
