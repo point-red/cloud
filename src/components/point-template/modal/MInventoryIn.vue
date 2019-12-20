@@ -10,23 +10,25 @@
       <template slot="content">
         <p-table>
           <tr slot="p-head">
-            <th>Expiry Date</th>
-            <th>Production No.</th>
+            <th v-if="requireExpiryDate">Expiry Date</th>
+            <th v-if="requireProductionNumber">Production No.</th>
             <th>Quantity</th>
+            <th>&nbsp;</th>
           </tr>
           <tr slot="p-body" v-for="(option, index) in options" :key="index">
             <td>
               <p-date-picker
                 id="expiry-date"
                 name="expiry-date"
-                v-model="option.expiry_date"/>
+                v-model="option.expiry_date"
+                v-if="requireExpiryDate"/>
             </td>
             <td>
               <p-form-input
                 id="production-number"
                 v-model="option.production_number"
-                :disabled="isSaving"
-                name="production-number"/>
+                name="production-number"
+                v-if="requireProductionNumber"/>
             </td>
             <td>
               <p-quantity
@@ -36,8 +38,14 @@
                 :unit="option.unit"
                 @input="quantityChange"/>
             </td>
+            <td>
+              <i class="btn btn-sm fa fa-times" @click="deleteInventory(index)"></i>
+            </td>
           </tr>
         </p-table>
+        <button type="button" class="btn btn-sm btn-secondary mb-10" @click="addInventory">
+          <i class="fa fa-plus"/> Add
+        </button>
       </template>
       <template slot="footer">
         <button type="button" @click="close()" class="btn btn-outline-danger">Close</button>
@@ -74,6 +82,14 @@ export default {
       type: Number,
       required: true
     },
+    requireExpiryDate: {
+      type: [Boolean, Number],
+      default: false
+    },
+    requireProductionNumber: {
+      type: [Boolean, Number],
+      default: false
+    },
     unit: {
       type: String,
       required: true
@@ -84,6 +100,19 @@ export default {
     }
   },
   methods: {
+    addInventory () {
+      this.options.push({
+        expiry_date: this.$moment().format('YYYY-MM-DD'),
+        production_number: null,
+        quantity: 0,
+        unit: this.unit
+      })
+    },
+    deleteInventory (index) {
+      if (this.options.length > 1) {
+        this.$delete(this.options, index)
+      }
+    },
     quantityChange () {
       this.totalQuantity = null
       this.options.map((key, value) => {

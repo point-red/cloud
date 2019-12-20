@@ -16,15 +16,15 @@
         <div v-else>
           <p-table>
             <tr slot="p-head">
-              <th>Expiry Date</th>
-              <th>Production No.</th>
+              <th v-if="inventory.item.require_expiry_date">Expiry Date</th>
+              <th v-if="inventory.item.require_production_number">Production No.</th>
               <th>Quantity</th>
               <th>Stock</th>
             </tr>
             <tr slot="p-body" v-for="(option, index) in options" :key="index">
-              <td v-if="option.expiry_date">{{ option.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
-              <td v-else>&nbsp;</td>
-              <td>{{ option.production_number }}</td>
+              <td v-if="option.expiry_date && inventory.item.require_expiry_date">{{ option.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
+              <td v-else-if="!option.expiry_date && inventory.item.require_expiry_date">&nbsp;</td>
+              <td v-if="inventory.item.require_production_number">{{ option.production_number }}</td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
