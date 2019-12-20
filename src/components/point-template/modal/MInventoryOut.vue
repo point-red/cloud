@@ -16,15 +16,15 @@
         <div v-else>
           <p-table>
             <tr slot="p-head">
-              <th>{{ $t('production number') | titlecase }}</th>
-              <th>{{ $t('expiry date') | titlecase}}</th>
-              <th>{{ $t('quantity') | titlecase }}</th>
-              <th>{{ $t('stock') | titlecase }}</th>
+              <th>Expiry Date</th>
+              <th>Production No.</th>
+              <th>Quantity</th>
+              <th>Stock</th>
             </tr>
             <tr slot="p-body" v-for="(option, index) in options" :key="index">
-              <td>{{ option.production_number }}</td>
               <td v-if="option.expiry_date">{{ option.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
               <td v-else>&nbsp;</td>
+              <td>{{ option.production_number }}</td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
@@ -113,11 +113,11 @@ export default {
         params: {
           warehouse_id: this.warehouseId,
           includes: 'form;warehouse;item.units',
-          sort_by: 'inventories.production_number,inventories.expiry_date',
-          group_by: 'inventories.production_number,inventories.expiry_date,inventories.warehouse_id',
+          sort_by: 'inventories.expiry_date,inventories.production_number',
+          group_by: 'inventories.expiry_date,inventories.production_number,inventories.warehouse_id',
           filter_like: {
-            production_number: this.searchText,
-            expiry_date: this.searchText
+            expiry_date: this.searchText,
+            production_number: this.searchText
           }
         }
       }).then(response => {
@@ -127,28 +127,28 @@ export default {
           let optionQuantityIndex = -1
           var quantity = null
 
-          if (item.require_production_number && item.require_expiry_date) {
-            optionQuantityIndex = this.optionsQuantity.findIndex(o => o.production_number === key['production_number'] && o.expiry_date === key['expiry_date'])
-          } else if (item.require_production_number) {
-            optionQuantityIndex = this.optionsQuantity.findIndex(o => o.production_number === key['production_number'])
+          if (item.require_expiry_date && item.require_production_number) {
+            optionQuantityIndex = this.optionsQuantity.findIndex(o => o.expiry_date === key['expiry_date'] && o.production_number === key['production_number'])
           } else if (item.require_expiry_date) {
             optionQuantityIndex = this.optionsQuantity.findIndex(o => o.expiry_date === key['expiry_date'])
+          } else if (item.require_production_number) {
+            optionQuantityIndex = this.optionsQuantity.findIndex(o => o.production_number === key['production_number'])
           }
 
           if (optionQuantityIndex >= 0) {
             quantity = this.optionsQuantity[optionQuantityIndex].quantity
           } else {
             this.optionsQuantity.push({
-              'production_number': key['production_number'],
               'expiry_date': key['expiry_date'],
+              'production_number': key['production_number'],
               'quantity': 0
             })
           }
 
           this.options.push({
             'id': key['id'],
-            'production_number': key['production_number'],
             'expiry_date': key['expiry_date'],
+            'production_number': key['production_number'],
             'quantity': quantity,
             'total_quantity': key['total_quantity'],
             'item': item
@@ -180,12 +180,12 @@ export default {
         let optionQuantityIndex = -1
         var quantity = null
 
-        if (item.require_production_number && item.require_expiry_date) {
-          optionQuantityIndex = this.optionsQuantity.findIndex(o => o.production_number === key['production_number'] && o.expiry_date === key['expiry_date'])
-        } else if (item.require_production_number) {
-          optionQuantityIndex = this.optionsQuantity.findIndex(o => o.production_number === key['production_number'])
+        if (item.require_expiry_date && item.require_production_number) {
+          optionQuantityIndex = this.optionsQuantity.findIndex(o => o.expiry_date === key['expiry_date'] && o.production_number === key['production_number'])
         } else if (item.require_expiry_date) {
           optionQuantityIndex = this.optionsQuantity.findIndex(o => o.expiry_date === key['expiry_date'])
+        } else if (item.require_production_number) {
+          optionQuantityIndex = this.optionsQuantity.findIndex(o => o.production_number === key['production_number'])
         }
 
         if (optionQuantityIndex >= 0) {
@@ -193,8 +193,8 @@ export default {
         } else {
           quantity = null
           this.optionsQuantity.push({
-            'production_number': key['production_number'],
             'expiry_date': key['expiry_date'],
+            'production_number': key['production_number'],
             'quantity': key['quantity']
           })
         }

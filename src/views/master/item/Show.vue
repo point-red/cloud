@@ -55,17 +55,17 @@
           :label="$t('options')">
           <div slot="body" class="col-lg-9">
             <p-form-check-box
+              id="require-expiry-date"
+              name="require-expiry-date"
+              :checked="item.require_expiry_date"
+              :description="'Expiry Date'"/>
+            <p-form-check-box
               class="mb-0"
               style="float:left"
               id="require-production-number"
               name="require-production-number"
               :checked="item.require_production_number"
-              :description="$t('production number') | titlecase"/>
-            <p-form-check-box
-              id="require-expiry-date"
-              name="require-expiry-date"
-              :checked="item.require_expiry_date"
-              :description="$t('expiry date') | titlecase"/>
+              :description="'Production No.'"/>
           </div>
         </p-form-row>
 

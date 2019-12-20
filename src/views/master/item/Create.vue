@@ -52,19 +52,19 @@
           :label="$t('options')">
           <div slot="body" class="col-lg-9">
             <p-form-check-box
+              id="require-expiry-date"
+              name="require-expiry-date"
+              @click.native="chooseExpiryDate()"
+              :checked="form.require_expiry_date"
+              :description="'Expiry Date'"/>
+            <p-form-check-box
               class="mb-0"
               style="float:left"
               id="require-production-number"
               name="require-production-number"
               @click.native="chooseProductionNumber()"
               :checked="form.require_production_number"
-              :description="$t('production number') | titlecase"/>
-            <p-form-check-box
-              id="require-expiry-date"
-              name="require-expiry-date"
-              @click.native="chooseExpiryDate()"
-              :checked="form.require_expiry_date"
-              :description="$t('expiry date') | titlecase"/>
+              :description="'Production No.'"/>
           </div>
         </p-form-row>
 
@@ -185,8 +185,8 @@ export default {
           label: null,
           name: null
         }],
-        require_production_number: false,
         require_expiry_date: false,
+        require_production_number: false,
         groups: [{
           id: null,
           label: null,

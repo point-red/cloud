@@ -53,7 +53,7 @@
               <td>{{ purchaseReceiveItem.notes }}</td>
               <td class="text-right">{{ purchaseReceiveItem.quantity | numberFormat }}</td>
               <td class="text-right" v-if="purchaseReceiveItem.expiry_date">{{ purchaseReceiveItem.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
-              <td class="text-right" v-else></td>
+              <td class="text-right" v-else>&nbsp;</td>
               <td class="text-right">{{ purchaseReceiveItem.production_number }}</td>
               <td>
                 <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'purchase.invoice.create', query: { id: purchaseReceive.id }}">

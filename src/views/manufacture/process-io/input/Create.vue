@@ -102,7 +102,7 @@
                   @choosen="chooseRawMaterial($event, row)"/>
               </td>
               <td>
-                <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" :warehouseId="row.warehouse_id" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1) && row.item_id && row.warehouse_id"/>
+                <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" :warehouseId="row.warehouse_id" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_expiry_date === 1 || form.raw_materials[index].item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
               </td>
               <td>
                 <p-quantity
@@ -110,7 +110,7 @@
                   :name="'quantity' + index"
                   v-model="form.raw_materials[index].quantity"
                   :unit="form.raw_materials[index].item.units[0].label"
-                  :readonly="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
+                  :readonly="(form.raw_materials[index].item.require_expiry_date === 1 || form.raw_materials[index].item.require_production_number === 1)"/>
               </td>
               <td>
                 <m-warehouse
@@ -203,8 +203,8 @@ export default {
           item_name: null,
           warehouse_name: null,
           item: {
-            require_production_number: false,
             require_expiry_date: false,
+            require_production_number: false,
             units: [{
               label: '',
               name: '',
@@ -222,8 +222,8 @@ export default {
           item_name: null,
           warehouse_name: null,
           item: {
-            require_production_number: false,
             require_expiry_date: false,
+            require_production_number: false,
             units: [{
               label: '',
               name: '',
@@ -263,8 +263,8 @@ export default {
         item_name: null,
         warehouse_name: null,
         item: {
-          require_production_number: false,
           require_expiry_date: false,
+          require_production_number: false,
           units: [{
             label: '',
             name: '',
@@ -284,8 +284,8 @@ export default {
         item_name: null,
         warehouse_name: null,
         item: {
-          require_production_number: false,
           require_expiry_date: false,
+          require_production_number: false,
           units: [{
             label: '',
             name: '',
@@ -308,8 +308,8 @@ export default {
     },
     chooseRawMaterial (item, row) {
       row.item_name = item.name
-      row.item.require_production_number = item.require_production_number
       row.item.require_expiry_date = item.require_expiry_date
+      row.item.require_production_number = item.require_production_number
       row.item.units = item.units
       row.item.units.forEach((unit, keyUnit) => {
         if (unit.converter == 1) {
@@ -320,8 +320,8 @@ export default {
     },
     chooseFinishGood (item, row) {
       row.item_name = item.name
-      row.item.require_production_number = item.require_production_number
       row.item.require_expiry_date = item.require_expiry_date
+      row.item.require_production_number = item.require_production_number
       row.item.units = item.units
       row.item.units.forEach((unit, keyUnit) => {
         if (unit.converter == 1) {

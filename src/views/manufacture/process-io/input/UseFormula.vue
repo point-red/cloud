@@ -86,7 +86,7 @@
                 </router-link>
               </td>
               <td>
-                <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" :warehouseId="row.warehouse_id" :value="form.raw_materials[index].quantity" :shouldChange="form.raw_materials[index].should_change" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1) && row.item_id && row.warehouse_id"/>
+                <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" :warehouseId="row.warehouse_id" :value="form.raw_materials[index].quantity" :shouldChange="form.raw_materials[index].should_change" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_expiry_date === 1 || form.raw_materials[index].item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
               </td>
               <td>
                 <p-quantity
@@ -94,7 +94,7 @@
                   :name="'quantity' + index"
                   v-model="form.raw_materials[index].quantity"
                   :unit="form.raw_materials[index].unit"
-                  :readonly="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
+                  :readonly="(form.raw_materials[index].item.require_expiry_date === 1 || form.raw_materials[index].item.require_production_number === 1)"/>
               </td>
               <td>
                 <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">

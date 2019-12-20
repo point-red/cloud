@@ -218,7 +218,7 @@ export default {
         return {
           ...item,
           expiry_date: this.$moment().format('YYYY-MM-DD'),
-          production_number: '',
+          production_number: null,
           purchase_order_item_id: item.id
         }
       })

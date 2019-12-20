@@ -76,8 +76,8 @@
                 <th style="min-width: 120px">Item</th>
                 <th>Estimation</th>
                 <th>Output</th>
-                <th>Production Number</th>
                 <th>Expiry Date</th>
+                <th>Production No.</th>
                 <th style="min-width: 120px">Warehouse</th>
                 <th></th>
               </tr>
@@ -94,11 +94,11 @@
                 <td>
                   {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
+                <td v-if="row.expiry_date">{{ row.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
+                <td v-else>&nbsp;</td>
                 <td>
                   {{ row.production_number }}
                 </td>
-                <td v-if="row.expiry_date">{{ row.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
-                <td v-else>&nbsp;</td>
                 <td>
                   <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
                     [{{ row.warehouse.code }}] {{ row.warehouse.name }}
