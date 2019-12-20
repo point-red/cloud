@@ -78,7 +78,6 @@
                 <th>&nbsp;</th>
                 <th>Output</th>
                 <th style="min-width: 120px">Warehouse</th>
-                <th></th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in finish_goods_temporary" :key="index">
                 <th>{{ index + 1 }}</th>

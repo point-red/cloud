@@ -76,7 +76,6 @@
                 <th style="min-width: 120px">Item</th>
                 <th>Quantity</th>
                 <th style="min-width: 120px">Warehouse</th>
-                <th></th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in input.finish_goods" :key="index">
                 <th>{{ index + 1 }}</th>
@@ -109,7 +108,6 @@
                 <th>&nbsp;</th>
                 <th>Quantity</th>
                 <th style="min-width: 120px">Warehouse</th>
-                <th></th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in raw_materials_temporary" :key="index">
                 <th>{{ index + 1 }}</th>

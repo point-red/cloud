@@ -1,0 +1,301 @@
+<template>
+  <div>
+    <breadcrumb>
+      <breadcrumb-manufacture/>
+      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | titlecase }}</router-link>
+      <router-link :to="'/manufacture/process-io/' + id + '/output'" class="breadcrumb-item">{{ $t('output') | titlecase }}</router-link>
+      <router-link :to="{ name: 'manufacture.process.io.output.show', params: { id: id, outputId: outputId }}" class="breadcrumb-item">{{ output.form.number | uppercase }}</router-link>
+      <span class="breadcrumb-item active">Edit</span>
+    </breadcrumb>
+
+    <manufacture-menu/>
+
+    <tab-menu/>
+
+    <form class="row" @submit.prevent="onSubmit">
+      <p-block :title="$t('input')" :header="true">
+        <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="date"
+            name="date"
+            :label="$t('date')">
+            <div slot="body" class="col-lg-9">
+              {{ output.manufacture_input.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
+            </div>
+          </p-form-row>
+
+          <p-form-row
+            id="number"
+            name="number"
+            :label="$t('number')">
+            <div slot="body" class="col-lg-9">
+              <template v-if="output.manufacture_input.form.number">
+                {{ output.manufacture_input.form.number }}
+              </template>
+              <template v-else>
+                <span class="badge badge-danger">{{ $t('archived') }}</span>
+                {{ output.manufacture_input.form.edited_number }}
+              </template>
+            </div>
+          </p-form-row>
+        </p-block-inner>
+      </p-block>
+
+      <p-block :title="$t('output')" :header="true">
+        <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="machine"
+            name="machine"
+            :label="$t('machine')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-machine id="machine" v-model="form.manufacture_machine_id" @choosen="chooseManufactureMachine" :label="form.manufacture_machine_name"/>
+            </div>
+          </p-form-row>
+
+          <p-form-row
+            id="notes"
+            name="notes"
+            :label="$t('notes')"
+            v-model="form.notes"
+            :disabled="isSaving"
+            :errors="form.errors.get('notes')"
+            @errors="form.errors.set('notes', null)"/>
+
+          <p-separator></p-separator>
+
+          <h3>{{ $t('finished goods') | titlecase }}</h3>
+          <hr>
+          <point-table>
+            <tr slot="p-head">
+              <th>#</th>
+              <th style="min-width: 120px">Item</th>
+              <th>Estimation</th>
+              <th>&nbsp;</th>
+              <th>Output</th>
+              <th style="min-width: 120px">Warehouse</th>
+            </tr>
+            <tr slot="p-body" v-for="(row, index) in form.finish_goods_temporary" :key="index">
+              <th>{{ index + 1 }}</th>
+              <td>
+                <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
+                    [{{ row.item.code }}] {{ row.item.name }}
+                  </router-link>
+              </td>
+              <td>
+                {{ row.estimation_quantity | numberFormat }} {{ row.unit }}
+              </td>
+              <td>
+                <m-inventory-in
+                  :id="'inventory-' + index"
+                  :itemId="row.item_id"
+                  :requireExpiryDate="row.item.require_expiry_date"
+                  :requireProductionNumber="row.item.require_production_number"
+                  :unit="row.unit"
+                  :inventories="row.inventories"
+                  :value="row.quantity"
+                  @add="addInventory($event, row)"
+                  v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
+              </td>
+              <td>
+                <p-quantity
+                  :id="'quantity' + index"
+                  :name="'quantity' + index"
+                  v-model="row.quantity"
+                  :unit="row.item.units[0].label"
+                  :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
+              </td>
+              <td>
+                <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
+                  [{{ row.warehouse.code }}] {{ row.warehouse.name }}
+                </router-link>
+              </td>
+            </tr>
+          </point-table>
+
+          <p-separator></p-separator>
+
+          <h3 class="">Approver</h3>
+
+          <p-form-row
+            id="approver"
+            name="approver"
+            :label="$t('approver')">
+            <div slot="body" class="col-lg-9">
+              <m-user :id="'user'" v-model="form.approver_id"/>
+            </div>
+          </p-form-row>
+
+          <div class="form-group row">
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+              </button>
+            </div>
+          </div>
+        </p-block-inner>
+      </p-block>
+    </form>
+  </div>
+</template>
+
+<script>
+import debounce from 'lodash/debounce'
+import ManufactureMenu from '../../Menu'
+import TabMenu from './TabMenu'
+import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
+import Form from '@/utils/Form'
+import PointTable from 'point-table-vue'
+import { mapGetters, mapActions } from 'vuex'
+
+export default {
+  components: {
+    ManufactureMenu,
+    TabMenu,
+    PointTable,
+    Breadcrumb,
+    BreadcrumbManufacture
+  },
+  data () {
+    return {
+      id: this.$route.params.id,
+      outputId: this.$route.params.outputId,
+      isLoading: false,
+      isSaving: false,
+      form: new Form({
+        increment_group: this.$moment().format('YYYYMM'),
+        id: this.$route.params.outputId,
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        manufacture_machine_id: null,
+        manufacture_process_id: null,
+        manufacture_input_id: null,
+        manufacture_machine_name: null,
+        manufacture_process_name: null,
+        notes: null,
+        approver_id: null,
+        finish_goods_temporary: [],
+        finish_goods: []
+      })
+    }
+  },
+  computed: {
+    ...mapGetters('manufactureOutput', ['output'])
+  },
+  created () {
+    this.isLoading = true
+    this.find({
+      id: this.outputId,
+      params: {
+        includes: 'form;manufactureMachine;manufactureInput.form;manufactureInput.finishGoods;finishGoods.item.units;finishGoods.warehouse;form.approvals.requestedBy;form.approvals.requestedTo'
+      }
+    }).then(response => {
+      if (!this.$formRules.allowedToUpdate(response.data.form)) {
+        this.$router.replace('/manufacture/process-io/' + this.id + '/output/' + response.data.id)
+      }
+      this.isLoading = false
+      this.form.date = new Date(response.data.form.date)
+      this.form.edited_form_number = response.data.form.edited_form_number
+      this.form.manufacture_machine_id = response.data.manufacture_machine_id
+      this.form.manufacture_process_id = response.data.manufacture_process_id
+      this.form.manufacture_input_id = response.data.manufacture_input_id
+      this.form.manufacture_machine_name = response.data.manufacture_machine_name
+      this.form.manufacture_process_name = response.data.manufacture_process_name
+      this.form.notes = response.data.form.notes
+      response.data.finish_goods.forEach((item, keyItem) => {
+        this.form.finish_goods.push({
+          item_id: item.item_id,
+          warehouse_id: item.warehouse_id,
+          item_name: item.item_name,
+          warehouse_name: item.warehouse_name,
+          quantity: item.quantity,
+          expiry_date: item.expiry_date,
+          production_number: item.production_number,
+          unit: item.unit,
+          item: item.item,
+          warehouse: item.warehouse,
+          converter: item.converter
+        })
+      })
+      for (let index in this.output.manufacture_input.finish_goods) {
+        let inputFinishGood = this.output.manufacture_input.finish_goods[index]
+        let finishGoodIndex = this.form.finish_goods.findIndex(o => o.item_id === inputFinishGood.item_id && o.warehouse_id === inputFinishGood.warehouse_id)
+        if (finishGoodIndex >= 0) {
+          this.form.finish_goods[finishGoodIndex].estimation_quantity = inputFinishGood.quantity
+          this.form.finish_goods[finishGoodIndex].input_finish_good_id = inputFinishGood.id
+        }
+      }
+      for (let index in this.form.finish_goods) {
+        let finishGood = this.form.finish_goods[index]
+        let finishGoodTemporaryIndex = this.form.finish_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
+        if (finishGoodTemporaryIndex < 0) {
+          var newItem = Object.assign({}, finishGood)
+          newItem.inventories = []
+          newItem.inventories.push({
+            'quantity': finishGood.quantity,
+            'expiry_date': finishGood.expiry_date,
+            'production_number': finishGood.production_number
+          })
+          this.form.finish_goods_temporary.push(newItem)
+        } else {
+          var existing = this.form.finish_goods_temporary[finishGoodTemporaryIndex]
+          existing.quantity += finishGood.quantity
+          existing.inventories.push({
+            'quantity': finishGood.quantity,
+            'expiry_date': finishGood.expiry_date,
+            'production_number': finishGood.production_number
+          })
+          this.form.finish_goods_temporary[finishGoodTemporaryIndex] = existing
+        }
+      }
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
+  },
+  methods: {
+    ...mapActions('manufactureOutput', ['find', 'update']),
+    chooseManufactureMachine (value) {
+      this.form.manufacture_machine_name = value
+    },
+    addInventory (value, row) {
+      row.quantity = value.quantity
+      row.inventories = value.inventories
+    },
+    setFinishGoods () {
+      this.form.finish_goods = []
+      for (let index in this.form.finish_goods_temporary) {
+        let finishGood = this.form.finish_goods_temporary[index]
+        if (finishGood['inventories'].length > 0) {
+          for (let indexInventory in finishGood['inventories']) {
+            let inventory = finishGood['inventories'][indexInventory]
+            if (inventory['quantity']) {
+              var outputFinishGood = Object.assign({}, finishGood)
+              outputFinishGood.quantity = inventory['quantity']
+              outputFinishGood.expiry_date = inventory['expiry_date']
+              outputFinishGood.production_number = inventory['production_number']
+              this.form.finish_goods.push(outputFinishGood)
+            }
+          }
+        } else {
+          this.form.finish_goods.push(finishGood)
+        }
+      }
+    },
+    onSubmit () {
+      this.isSaving = true
+      this.setFinishGoods()
+      this.update(this.form)
+        .then(response => {
+          this.isSaving = false
+          this.$notification.success('Update success')
+          this.$router.push('/manufacture/process-io/' + this.id + '/output/' + response.data.id)
+        }).catch(error => {
+          console.log(error.errors)
+          this.isSaving = false
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        })
+    }
+  }
+}
+</script>

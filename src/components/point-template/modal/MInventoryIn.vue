@@ -108,7 +108,7 @@ export default {
       this.options.push({
         expiry_date: this.$moment().format('YYYY-MM-DD'),
         production_number: null,
-        quantity: 0,
+        quantity: null,
         unit: this.unit
       })
     },
@@ -125,7 +125,15 @@ export default {
     },
     show () {
       if (this.inventories.length > 0) {
-        this.options = Object.assign({}, this.inventories)
+        this.options = []
+        this.inventories.map((key, value) => {
+          this.options.push({
+            expiry_date: key['expiry_date'],
+            production_number: key['production_number'],
+            quantity: key['quantity'],
+            unit: this.unit
+          })
+        })
       }
       this.$refs['select-' + this.id].show()
     },

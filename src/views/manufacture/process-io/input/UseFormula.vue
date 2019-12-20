@@ -56,7 +56,7 @@
                   :name="'quantity' + index"
                   v-model="row.quantity"
                   :unit="row.item.units[0].label"
-                  @input="quantityChange"/>
+                  @input="quantityChange($event, row)"/>
               </td>
               <td>
                 <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
@@ -220,6 +220,7 @@ export default {
         }
         for (let index in this.formula.finish_goods) {
           var finishGoods = this.formula.finish_goods[index]
+          finishGoods.original_quantity = finishGoods.quantity
           finishGoods.item.units.forEach((unit, keyUnit) => {
             if (unit.converter == 1) {
               finishGoods.converter = unit.converter
@@ -236,9 +237,9 @@ export default {
     chooseManufactureMachine (value) {
       this.form.manufacture_machine_name = value
     },
-    quantityChange (quantity) {
+    quantityChange (quantity, row) {
       for (let index in this.form.raw_materials_temporary) {
-        this.form.raw_materials_temporary[index].quantity = this.form.raw_materials_temporary[index].original_quantity * quantity
+        this.form.raw_materials_temporary[index].quantity = this.form.raw_materials_temporary[index].original_quantity * (row.quantity / row.original_quantity)
         this.form.raw_materials_temporary[index].inventories = []
       }
     },

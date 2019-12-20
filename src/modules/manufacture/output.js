@@ -5,6 +5,9 @@ const url = '/manufacture/output-product'
 const state = {
   output: {
     name: '',
+    manufacture_input: {
+      form: {}
+    },
     form: {}
   },
   outputs: [],

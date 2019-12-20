@@ -301,21 +301,6 @@ export default {
   },
   methods: {
     ...mapActions('manufactureInput', ['find', 'update']),
-    manufactureInputRequest () {
-      this.isLoading = true
-      this.find({
-        id: this.inputId,
-        params: {
-          with_archives: true,
-          includes: 'manufactureMachine;rawMaterials.item.units;finishGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishGoods.warehouse'
-        }
-      }).then(response => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
-    },
     addRawMaterialRow () {
       this.form.raw_materials_temporary.push({
         item_id: null,
