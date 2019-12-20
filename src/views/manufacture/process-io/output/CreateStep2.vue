@@ -74,7 +74,7 @@
               <th style="min-width: 120px">Warehouse</th>
               <th></th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finish_goods" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.finish_goods_temporary" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -177,6 +177,7 @@ export default {
         manufacture_machine_name: null,
         notes: null,
         approver_id: null,
+        finish_goods_temporary: [],
         finish_goods: []
       })
     }
@@ -199,10 +200,11 @@ export default {
         this.form.manufacture_process_id = this.input.manufacture_process_id
         this.form.manufacture_input_id = this.input.id
         this.form.manufacture_process_name = this.input.manufacture_process_name
-        this.form.finish_goods = this.input.finish_goods
-        for (let index in this.form.finish_goods) {
-          this.form.finish_goods[index].input_finish_good_id = this.input.finish_goods[index].id
-          this.form.finish_goods[index].estimation_quantity = this.form.finish_goods[index].quantity
+        this.form.finish_goods_temporary = this.input.finish_goods
+        for (let index in this.form.finish_goods_temporary) {
+          this.form.finish_goods_temporary[index].input_finish_good_id = this.input.finish_goods[index].id
+          this.form.finish_goods_temporary[index].estimation_quantity = this.form.finish_goods_temporary[index].quantity
+          this.form.finish_goods_temporary[index].inventories = []
         }
         this.isLoading = false
       }).catch(error => {
@@ -217,8 +219,29 @@ export default {
       row.quantity = value.quantity
       row.inventories = value.inventories
     },
+    setFinishGoods () {
+      this.form.finish_goods = []
+      for (let index in this.form.finish_goods_temporary) {
+        let finishGood = this.form.finish_goods_temporary[index]
+        if (finishGood['inventories'].length > 0) {
+          for (let indexInventory in finishGood['inventories']) {
+            let inventory = finishGood['inventories'][indexInventory]
+            if (inventory['quantity']) {
+              var inputFinishGood = Object.assign({}, finishGood)
+              inputFinishGood.quantity = inventory['quantity']
+              inputFinishGood.expiry_date = inventory['expiry_date']
+              inputFinishGood.production_number = inventory['production_number']
+              this.form.finish_goods.push(inputFinishGood)
+            }
+          }
+        } else {
+          this.form.finish_goods.push(finishGood)
+        }
+      }
+    },
     onSubmit () {
       this.isSaving = true
+      this.setFinishGoods()
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.approver_id == null) {
         this.$notification.error('approval cannot be null')

@@ -106,16 +106,25 @@
               <tr slot="p-head">
                 <th>#</th>
                 <th style="min-width: 120px">Item</th>
+                <th>&nbsp;</th>
                 <th>Quantity</th>
                 <th style="min-width: 120px">Warehouse</th>
                 <th></th>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in input.raw_materials" :key="index">
+              <tr slot="p-body" v-for="(row, index) in raw_materials_temporary" :key="index">
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
                     [{{ row.item.code }}] {{ row.item.name }}
                   </router-link>
+                </td>
+                <td>
+                  <m-inventory
+                    :id="'inventory-' + index"
+                    :inventories="row.inventories"
+                    :requireExpiryDate="row.item.require_expiry_date"
+                    :requireProductionNumber="row.item.require_production_number"
+                    v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
                 </td>
                 <td>
                   {{ row.quantity | numberFormat }} {{ row.unit }}
@@ -224,7 +233,8 @@ export default {
       id: this.$route.params.id,
       inputId: this.$route.params.inputId,
       isLoading: false,
-      isDeleting: false
+      isDeleting: false,
+      raw_materials_temporary: []
     }
   },
   computed: {
@@ -249,6 +259,31 @@ export default {
           includes: 'manufactureMachine;rawMaterials.item.units;finishGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishGoods.warehouse'
         }
       }).then(response => {
+        this.raw_materials_temporary = []
+        for (let index in this.input.raw_materials) {
+          let rawMaterial = this.input.raw_materials[index]
+          let rawMaterialTemporaryIndex = this.raw_materials_temporary.findIndex(o => o.item_id === rawMaterial.item_id && o.warehouse_id === rawMaterial.warehouse_id)
+          var rawMaterialTemporary
+          if (rawMaterialTemporaryIndex < 0) {
+            rawMaterialTemporary = Object.assign({}, rawMaterial)
+            rawMaterialTemporary.inventories = []
+            rawMaterialTemporary.inventories.push({
+              'quantity': rawMaterial.quantity,
+              'expiry_date': rawMaterial.expiry_date,
+              'production_number': rawMaterial.production_number
+            })
+            this.raw_materials_temporary.push(rawMaterialTemporary)
+          } else {
+            rawMaterialTemporary = this.raw_materials_temporary[rawMaterialTemporaryIndex]
+            rawMaterialTemporary.quantity += rawMaterial.quantity
+            rawMaterialTemporary.inventories.push({
+              'quantity': rawMaterial.quantity,
+              'expiry_date': rawMaterial.expiry_date,
+              'production_number': rawMaterial.production_number
+            })
+            this.raw_materials_temporary[rawMaterialTemporaryIndex] = rawMaterialTemporary
+          }
+        }
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false

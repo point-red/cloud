@@ -78,7 +78,7 @@
               <th>Quantity</th>
               <th style="min-width: 120px">Warehouse</th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.raw_materials" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.raw_materials_temporary" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -89,6 +89,8 @@
                 <m-inventory-out
                   :id="'inventory-' + index"
                   :itemId="row.item_id"
+                  :requireExpiryDate="row.item.require_expiry_date"
+                  :requireProductionNumber="row.item.require_production_number"
                   :warehouseId="row.warehouse_id"
                   :value="row.quantity"
                   :shouldChange="row.should_change"
@@ -180,6 +182,7 @@ export default {
         manufacture_formula_name: null,
         notes: null,
         approver_id: null,
+        raw_materials_temporary: [],
         raw_materials: [],
         finish_goods: []
       })
@@ -214,7 +217,7 @@ export default {
           })
           rawMaterials.inventories = []
           rawMaterials.should_change = true
-          this.form.raw_materials.push(rawMaterials)
+          this.form.raw_materials_temporary.push(rawMaterials)
         }
         for (let index in this.formula.finish_goods) {
           var finishGoods = this.formula.finish_goods[index]
@@ -235,20 +238,41 @@ export default {
       this.form.manufacture_machine_name = value
     },
     quantityChange (quantity) {
-      for (let index in this.formula.raw_materials) {
-        this.form.raw_materials[index].quantity = this.form.raw_materials[index].original_quantity * quantity
-        this.form.raw_materials[index].should_change = true
+      for (let index in this.form.raw_materials_temporary) {
+        this.form.raw_materials_temporary[index].quantity = this.form.raw_materials_temporary[index].original_quantity * quantity
+        this.form.raw_materials_temporary[index].should_change = true
       }
     },
     addInventory (value, row) {
       row.quantity = value.quantity
       row.inventories = value.inventories
-      for (let index in this.formula.raw_materials) {
-        this.form.raw_materials[index].should_change = false
+      for (let index in this.form.raw_materials_temporary) {
+        this.form.raw_materials_temporary[index].should_change = false
+      }
+    },
+    setRawMaterials () {
+      this.form.raw_materials = []
+      for (let index in this.form.raw_materials_temporary) {
+        let rawMaterial = this.form.raw_materials_temporary[index]
+        if (rawMaterial['inventories'].length > 0) {
+          for (let indexInventory in rawMaterial['inventories']) {
+            let inventory = rawMaterial['inventories'][indexInventory]
+            if (inventory['quantity']) {
+              var inputRawMaterial = Object.assign({}, rawMaterial)
+              inputRawMaterial.quantity = inventory['quantity']
+              inputRawMaterial.expiry_date = inventory['expiry_date']
+              inputRawMaterial.production_number = inventory['production_number']
+              this.form.raw_materials.push(inputRawMaterial)
+            }
+          }
+        } else {
+          this.form.raw_materials.push(rawMaterial)
+        }
       }
     },
     onSubmit () {
       this.isSaving = true
+      this.setRawMaterials()
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.approver_id == null) {
         this.$notification.error('approval cannot be null')

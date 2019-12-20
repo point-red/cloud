@@ -58,7 +58,7 @@
                     {{ output.form.number }}
                   </router-link>
                 </td>
-                <td></td>
+                <td>{{ output.manufacture_process_name }}</td>
                 <td>{{ output.manufacture_machine_name }}</td>
                 <td>{{ output.notes }}</td>
               </tr>

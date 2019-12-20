@@ -197,6 +197,9 @@ export default {
           sort_by: '-forms.number',
           fields: 'manufacture_inputs.*',
           filter_form: 'activePending',
+          filter_equal: {
+            'manufacture_process_id': this.id
+          },
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,
