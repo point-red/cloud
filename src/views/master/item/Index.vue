@@ -43,7 +43,7 @@
               <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: item.id }}">
-                  {{ item.name }}
+                  {{ item.label }}
                 </router-link>
               </td>
               <td>

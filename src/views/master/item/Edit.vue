@@ -3,6 +3,7 @@
     <breadcrumb>
       <breadcrumb-master/>
       <router-link to="/master/item" class="breadcrumb-item">Item</router-link>
+      <router-link :to="'/master/item/' + id" class="breadcrumb-item">{{ form.name | titlecase }}</router-link>
       <span class="breadcrumb-item active">Edit</span>
     </breadcrumb>
 
@@ -37,27 +38,51 @@
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"/>
 
-          <p-form-row
-            id="chart-of-account"
-            name="chart-of-account"
-            :label="$t('chart of account')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <m-chart-of-account
-                id="chart-of-account"
-                v-model="form.chart_of_account_id"
-                :label="form.chart_of_account_label"
-                type="inventory"/>
-            </div>
-          </p-form-row>
+          <p-separator></p-separator>
 
-          <p-form-row
-            id="unit"
-            v-model="form.units[0].label"
-            :disabled="isSaving"
-            :label="$t('unit')"
-            name="unit"
-            :errors="form.errors.get('unit')"
-            @errors="form.errors.set('unit', null)"/>
+          <h5>{{ $t('chart of account') | uppercase }}</h5>
+
+          {{ $t('create item helper - chart of account') }}
+
+          <hr>
+
+          <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" :label="form.chart_of_account_label" type="inventory"/>
+
+          <p-separator></p-separator>
+
+          <h5>{{ $t('unit') | uppercase }}</h5>
+
+          {{ $t('create item helper - unit') }}
+
+          <hr>
+
+          <point-table>
+            <tr slot="p-head">
+              <th width="50px">#</th>
+              <th>Unit Converter</th>
+            </tr>
+            <tr slot="p-body" v-for="(row, index) in form.units" :key="index">
+              <th>{{ ++index }}</th>
+              <td>
+                <template v-if="index == 1">
+                  {{ row.converter }} {{ row.name }}
+                </template>
+                <template v-else>
+                  1 {{ row.name | uppercase }} = {{ row.converter }} {{ form.units[0].name | uppercase }}
+                  <span style="font-size: 10px" v-if="row.default_purchase">(DEFAULT UNIT FOR PURCHASE)</span>
+                  <span style="font-size: 10px" v-if="row.default_sales">(DEFAULT UNIT FOR SALES)</span>
+                </template>
+              </td>
+            </tr>
+          </point-table>
+
+          <p-separator></p-separator>
+
+          <h5>{{ $t('group') | uppercase }}</h5>
+
+          {{ $t('create item helper - group') }}
+
+          <hr>
 
           <p-form-row
             id="item-group"
@@ -80,10 +105,45 @@
             </div>
           </p-form-row>
 
+          <p-separator></p-separator>
+
+          <h5>{{ $t('stock dna') | uppercase }}</h5>
+
+          {{ $t('create item helper - stock dna') }}
+
+          <hr>
+
+          <p-form-row
+            id="require-production-number"
+            name="require-production-number"
+            :label="$t('production number')">
+            <div slot="body" class="col-lg-9">
+              <p-form-check-box
+                class="mb-0"
+                style="float:left"
+                id="require-production-number"
+                name="require-production-number"
+                :checked="form.require_production_number"/>
+            </div>
+          </p-form-row>
+
+          <p-form-row
+            id="require-expiry-date"
+            name="require-expiry-date"
+            :label="$t('expiry date')">
+            <div slot="body" class="col-lg-9">
+              <p-form-check-box
+                id="require-expiry-date"
+                name="require-expiry-date"
+                @click.native="chooseExpiryDate()"
+                :checked="form.require_expiry_date"/>
+            </div>
+          </p-form-row>
+
           <hr/>
 
           <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Update
           </button>
         </p-block-inner>
       </p-block>
@@ -96,11 +156,13 @@ import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
 import Form from '@/utils/Form'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
+    PointTable,
     Breadcrumb,
     BreadcrumbMaster
   },
@@ -115,6 +177,7 @@ export default {
         code: null,
         name: null,
         chart_of_account_id: null,
+        chart_of_account_label: null,
         units: [{
           label: '',
           name: '',
@@ -151,9 +214,7 @@ export default {
       this.form.groups = this.item.groups
       this.form.chart_of_account_id = this.item.chart_of_account_id
       this.form.chart_of_account_label = this.item.account.label
-      this.form.units[0].label = this.item.units[0].label
-      this.form.units[0].name = this.item.units[0].name
-      this.form.units[0].converter = this.item.units[0].converter
+      this.form.units = this.item.units
     }).catch(error => {
       this.isLoading = false
       this.$notification.error(error.message)

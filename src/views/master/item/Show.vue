@@ -88,6 +88,19 @@
 
           <hr>
 
+          <point-table>
+            <tr slot="p-head">
+              <th width="50px">#</th>
+              <th>Group</th>
+            </tr>
+            <tr slot="p-body" v-for="(row, index) in item.groups" :key="index">
+              <th>{{ ++index }}</th>
+              <td>
+                {{ row.name }}
+              </td>
+            </tr>
+          </point-table>
+
           <p-separator></p-separator>
 
           <h5>{{ $t('stock dna') | uppercase }}</h5>
