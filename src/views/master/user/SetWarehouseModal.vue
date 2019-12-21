@@ -3,6 +3,7 @@
     <div class="row">
       <p-modal ref="modal" id="modal" :title="$t('set warehouse')">
         <template slot="content">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorem provident quas praesentium error rem minus earum, dignissimos animi a nihil culpa. Aperiam sequi asperiores esse porro numquam debitis qui suscipit!
           <point-table>
             <tr slot="p-head">
               <th>#</th>

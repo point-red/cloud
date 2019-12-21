@@ -3,5 +3,11 @@
   "stock" : "stock",
   "opening stock" : "opening stock",
   "price list" : "price list",
-  "stock history" : "stock history"
+  "stock history" : "stock history",
+  "stock dna" : "stock dna",
+  "convert to" : "convert to",
+  "production number" : "production number",
+  "expiry date" : "expiry date",
+  "require production number" : "require production number",
+  "require expiry date" : "require expiry date"
 }
