@@ -9,7 +9,7 @@
       v-show="help"
       class="form-text text-muted">{{ help }}</div>
     <p-modal :ref="'select-' + id" :id="'select-' + id" title="select user">
-      <template slot="content">      
+      <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
         <div v-if="isLoading">

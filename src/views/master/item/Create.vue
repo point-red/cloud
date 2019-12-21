@@ -32,7 +32,7 @@
 
         <h5>{{ $t('chart of account') | uppercase }}</h5>
 
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+        {{ $t('create item helper - chart of account') }}
 
         <hr>
 
@@ -42,7 +42,7 @@
 
         <h5>{{ $t('unit') | uppercase }}</h5>
 
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+        {{ $t('create item helper - unit') }}
 
         <hr>
 
@@ -72,7 +72,7 @@
 
         <h5>{{ $t('group') | uppercase }}</h5>
 
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+        {{ $t('create item helper - group') }}
 
         <hr>
 
@@ -101,7 +101,7 @@
 
         <h5>{{ $t('stock dna') | uppercase }}</h5>
 
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+        {{ $t('create item helper - stock dna') }}
 
         <hr>
 
@@ -136,6 +136,10 @@
         <p-separator></p-separator>
 
         <h5>{{ $t('opening stock') | uppercase }}</h5>
+
+        {{ $t('create item helper - stock dna') }}
+
+        <hr>
 
         <p-block-inner>
           <point-table>
@@ -172,19 +176,17 @@
                   :readonly="true"
                   v-model="form.opening_stocks[index].value"/>
               </td>
-              <td>
+              <td v-if="form.require_expiry_date">
                 <p-date-picker
                   id="expiry-date"
                   name="expiry-date"
-                  v-if="form.require_expiry_date"
                   v-model="form.opening_stocks[index].expiry_date"/>
               </td>
-              <td>
+              <td v-if="form.require_production_number">
                 <p-form-input
                   id="production-number"
-                  v-model="form.opening_stocks[index].production_number"
                   :disabled="isSaving"
-                  v-if="form.require_production_number"
+                  v-model="form.opening_stocks[index].production_number"
                   name="production-number"/>
               </td>
             </tr>
