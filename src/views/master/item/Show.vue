@@ -35,72 +35,90 @@
             v-model="item.name"
             readonly/>
 
+          <p-separator></p-separator>
+
+          <h5>{{ $t('chart of account') | uppercase }}</h5>
+
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+
+          <hr>
+
           <p-form-row
             id="chart-of-account"
             :label="$t('chart of account')"
             name="chart-of-account"
-            v-model="item.account.alias"
+            v-model="item.account.label"
             readonly/>
 
-          <p-form-row
-            id="unit"
-            :label="$t('unit')"
-            name="unit"
-            v-model="item.units[0].label"
-            readonly/>
+          <p-separator></p-separator>
+
+          <h5>{{ $t('unit') | uppercase }}</h5>
+
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+
+          <hr>
+
+          <point-table>
+            <tr slot="p-head">
+              <th width="50px">#</th>
+              <th>Unit Converter</th>
+            </tr>
+            <tr slot="p-body" v-for="(row, index) in item.units" :key="index">
+              <th>{{ ++index }}</th>
+              <td>
+                <template v-if="index == 1">
+                  {{ row.converter }} {{ row.name }}
+                  <span style="font-size: 10px" v-if="row.id == item.unit_default_purchase">(DEFAULT UNIT FOR PURCHASE)</span>
+                  <span style="font-size: 10px" v-if="row.id == item.unit_default_sales">(DEFAULT UNIT FOR SALES)</span>
+                </template>
+                <template v-else>
+                  1 {{ row.name | uppercase }} = {{ row.converter }} {{ item.units[0].name | uppercase }}
+                  <span style="font-size: 10px" v-if="row.id == item.unit_default_purchase">(DEFAULT UNIT FOR PURCHASE)</span>
+                  <span style="font-size: 10px" v-if="row.id == item.unit_default_sales">(DEFAULT UNIT FOR SALES)</span>
+                </template>
+              </td>
+            </tr>
+          </point-table>
+
+          <p-separator></p-separator>
+
+          <h5>{{ $t('group') | uppercase }}</h5>
+
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+
+          <hr>
+
+          <p-separator></p-separator>
+
+          <h5>{{ $t('stock dna') | uppercase }}</h5>
+
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+
+          <hr>
 
           <p-form-row
-          id="options"
-          name="options"
-          :label="$t('options')">
-          <div slot="body" class="col-lg-9">
-            <p-form-check-box
-              class="mb-0"
-              style="float:left"
-              id="require-production-number"
-              name="require-production-number"
-              :checked="item.require_production_number"
-              :description="$t('production number') | titlecase"/>
-            <p-form-check-box
-              id="require-expiry-date"
-              name="require-expiry-date"
-              :checked="item.require_expiry_date"
-              :description="$t('expiry date') | titlecase"/>
-          </div>
-        </p-form-row>
-
-          <p-form-row
-            id="group"
-            :label="$t('group')"
-            name="group"
-            readonly>
+            id="require-production-number"
+            name="require-production-number"
+            :label="$t('production number')">
             <div slot="body" class="col-lg-9">
-              <table class="table">
-                <thead></thead>
-                <tbody>
-                  <template v-for="(group, index) in item.groups">
-                    <tr :key="index">
-                      <td>{{ group.name }}</td>
-                    </tr>
-                  </template>
-                </tbody>
-              </table>
+              <p-form-check-box
+                class="mb-0"
+                style="float:left"
+                id="require-production-number"
+                name="require-production-number"
+                :checked="item.require_production_number"/>
             </div>
           </p-form-row>
 
           <p-form-row
-            id="stock"
-            :label="$t('stock')"
-            name="stock"
-            readonly>
+            id="require-expiry-date"
+            name="require-expiry-date"
+            :label="$t('expiry date')">
             <div slot="body" class="col-lg-9">
-              <p-form-number
-                id="stock"
-                label="Stock"
-                name="stock"
-                v-model="item.stock"
-                :is-text-right="false"
-                readonly/>
+              <p-form-check-box
+                id="require-expiry-date"
+                name="require-expiry-date"
+                :checked="item.require_expiry_date"/>
             </div>
           </p-form-row>
 

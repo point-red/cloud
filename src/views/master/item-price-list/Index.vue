@@ -47,14 +47,14 @@
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: item.id }}">
-                  {{item.name}}
+                  {{ item.label }}
                 </router-link>
               </td>
               <td class="text-center">
-                {{ itemUnit.name }}
-                <template v-if="itemUnit.converter > 1">
-                (x{{ itemUnit.converter }})
-                </template>
+                {{ itemUnit.name | uppercase }}
+                <span v-if="itemUnit.converter > 1" style="font-size: 10px;">
+                ({{ itemUnit.converter }} {{ item.units[0].label }})
+                </span>
               </td>
               <td class="text-right" v-for="(group, index3) in itemUnit.prices" :key="index3">
                 <a href="javascript:void(0)" @click="editPrice(index + '-' + index2 + '-' + index3, group.id)" v-if="editPriceIndex != index + '-' + index2 + '-' + index3">
@@ -176,6 +176,7 @@ export default {
           limit: 20,
           page: this.currentPage,
           filter_like: {
+            'code': this.searchText,
             'name': this.searchText
           }
         }

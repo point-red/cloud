@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span>
+    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
     <p-modal :ref="'select-' + id" :id="'select-' + id" title="select account">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">

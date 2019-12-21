@@ -187,7 +187,7 @@
                 </li>
               </ul>
             </li>
-            <!-- <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
+            <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
               <router-link to="/purchase" class="nav-submenu" active-class="active">
                 <i class="si si-basket"/>
                 <span class="sidebar-mini-hide">{{ $t("purchase") | titlecase }}</span>
@@ -250,8 +250,8 @@
                   </router-link>
                 </li>
               </ul>
-            </li> -->
-            <!-- <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
+            </li>
+            <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
               <router-link to="/manufacture" class="nav-submenu" active-class="active">
                 <i class="si si-settings"/>
                 <span class="sidebar-mini-hide">{{ $t("manufacture") | titlecase }}</span>
@@ -276,8 +276,8 @@
                   </router-link>
                 </li>
               </ul>
-            </li> -->
-            <!-- <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
+            </li>
+            <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
               <router-link to="/pos" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>
                 <span class="sidebar-mini-hide">{{ $t("pos") | uppercase }}</span>
@@ -296,8 +296,8 @@
                   </router-link>
                 </li>
               </ul>
-            </li> -->
-            <!-- <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
+            </li>
+            <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
               <router-link to="/inventory" class="nav-submenu" active-class="active">
                 <i class="si si-tag"/>
                 <span class="sidebar-mini-hide">{{ $t("inventory") | titlecase }}</span>
@@ -374,7 +374,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li> -->
+            </li>
             <li :class="{ 'open' : firstUri === 'plugin' }" v-if="$permission.has('menu plugin')">
               <router-link
                 to="/plugin"

@@ -9,7 +9,7 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="'Create Item'" :header="true">
+      <p-block id="item-unit" :title="'Create Item'" :header="true">
         <p-form-row
           id="code"
           name="code"
@@ -28,45 +28,53 @@
           :errors="form.errors.get('name')"
           @errors="form.errors.set('name', null)"/>
 
-        <p-form-row
-          id="chart-of-account"
-          name="chart-of-account"
-          :label="$t('chart of account')">
-          <div slot="body" class="col-lg-9 mt-5">
-            <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" type="inventory"/>
-          </div>
-        </p-form-row>
+        <p-separator></p-separator>
 
-        <p-form-row
-          id="unit"
-          name="unit"
-          :label="$t('unit')"
-          v-model="form.units[0].label"
-          :disabled="isSaving"
-          :errors="form.errors.get('unit')"
-          @errors="form.errors.set('unit', null)"/>
+        <h5>{{ $t('chart of account') | uppercase }}</h5>
 
-        <p-form-row
-          id="options"
-          name="options"
-          :label="$t('options')">
-          <div slot="body" class="col-lg-9">
-            <p-form-check-box
-              class="mb-0"
-              style="float:left"
-              id="require-production-number"
-              name="require-production-number"
-              @click.native="chooseProductionNumber()"
-              :checked="form.require_production_number"
-              :description="$t('production number') | titlecase"/>
-            <p-form-check-box
-              id="require-expiry-date"
-              name="require-expiry-date"
-              @click.native="chooseExpiryDate()"
-              :checked="form.require_expiry_date"
-              :description="$t('expiry date') | titlecase"/>
-          </div>
-        </p-form-row>
+        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+
+        <hr>
+
+        <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" type="inventory"/>
+
+        <p-separator></p-separator>
+
+        <h5>{{ $t('unit') | uppercase }}</h5>
+
+        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+
+        <hr>
+
+        <point-table>
+          <tr slot="p-head">
+            <th width="50px">#</th>
+            <th>Unit Converter</th>
+          </tr>
+          <tr slot="p-body" v-for="(row, index) in form.units" :key="index">
+            <th>{{ ++index }}</th>
+            <td>
+              <template v-if="index == 1">
+                {{ row.converter }} {{ row.name }}
+              </template>
+              <template v-else>
+                1 {{ row.name | uppercase }} = {{ row.converter }} {{ form.units[0].name | uppercase }}
+                <span style="font-size: 10px" v-if="row.default_purchase">(DEFAULT UNIT FOR PURCHASE)</span>
+                <span style="font-size: 10px" v-if="row.default_sales">(DEFAULT UNIT FOR SALES)</span>
+              </template>
+            </td>
+          </tr>
+        </point-table>
+
+        <m-item-unit ref="mItemUnit" @updated="updateItemUnit"></m-item-unit>
+
+        <p-separator></p-separator>
+
+        <h5>{{ $t('group') | uppercase }}</h5>
+
+        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+
+        <hr>
 
         <p-form-row
           id="item-group"
@@ -91,7 +99,43 @@
 
         <p-separator></p-separator>
 
-        <h3 class="">{{ $t('opening stock') | uppercase }}</h3>
+        <h5>{{ $t('stock dna') | uppercase }}</h5>
+
+        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Repellat earum rerum aut nisi cupiditate dignissimos? Nulla placeat ad id laborum dignissimos asperiores, sed doloribus? Repudiandae facere commodi esse ipsa omnis.
+
+        <hr>
+
+        <p-form-row
+          id="require-production-number"
+          name="require-production-number"
+          :label="$t('production number')">
+          <div slot="body" class="col-lg-9">
+            <p-form-check-box
+              class="mb-0"
+              style="float:left"
+              id="require-production-number"
+              name="require-production-number"
+              @click.native="chooseProductionNumber()"
+              :checked="form.require_production_number"/>
+          </div>
+        </p-form-row>
+
+        <p-form-row
+          id="require-expiry-date"
+          name="require-expiry-date"
+          :label="$t('expiry date')">
+          <div slot="body" class="col-lg-9">
+            <p-form-check-box
+              id="require-expiry-date"
+              name="require-expiry-date"
+              @click.native="chooseExpiryDate()"
+              :checked="form.require_expiry_date"/>
+          </div>
+        </p-form-row>
+
+        <p-separator></p-separator>
+
+        <h5>{{ $t('opening stock') | uppercase }}</h5>
 
         <p-block-inner>
           <point-table>
@@ -101,8 +145,8 @@
               <th>Quantity</th>
               <th>Price</th>
               <th>Value</th>
-              <th>Expiry Date</th>
-              <th>Production No.</th>
+              <th v-if="form.require_expiry_date">Expiry Date</th>
+              <th v-if="form.require_production_number">Production No.</th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.opening_stocks" :key="index">
               <th>{{ index + 1 }}</th>
@@ -132,6 +176,7 @@
                 <p-date-picker
                   id="expiry-date"
                   name="expiry-date"
+                  v-if="form.require_expiry_date"
                   v-model="form.opening_stocks[index].expiry_date"/>
               </td>
               <td>
@@ -139,6 +184,7 @@
                   id="production-number"
                   v-model="form.opening_stocks[index].production_number"
                   :disabled="isSaving"
+                  v-if="form.require_production_number"
                   name="production-number"/>
               </td>
             </tr>
@@ -181,10 +227,7 @@ export default {
         code: null,
         name: null,
         chart_of_account_id: null,
-        units: [{
-          label: null,
-          name: null
-        }],
+        units: [],
         require_production_number: false,
         require_expiry_date: false,
         groups: [{
@@ -206,12 +249,6 @@ export default {
     }
   },
   watch: {
-    'form.units': {
-      handler: function (newValue) {
-        this.form.units[0].name = this.form.units[0].label
-      },
-      deep: true
-    },
     'form.opening_stocks': {
       handler: function (newValue) {
         this.form.opening_stocks.forEach(function (element) {
@@ -226,6 +263,9 @@ export default {
   },
   methods: {
     ...mapActions('masterItem', ['create']),
+    updateItemUnit (units) {
+      this.form.units = units
+    },
     addOpeningStockRow () {
       this.form.opening_stocks.push({
         warehouse_id: null,
