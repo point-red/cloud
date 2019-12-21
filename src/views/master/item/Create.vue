@@ -137,7 +137,7 @@
 
         <h5>{{ $t('opening stock') | uppercase }}</h5>
 
-        {{ $t('create item helper - stock dna') }}
+        {{ $t('create item helper - opening stock') }}
 
         <hr>
 
