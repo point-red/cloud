@@ -5,7 +5,7 @@
     </button>
     <p-modal :ref="'select-' + id" :id="'select-' + id" :title="'unit converter' | uppercase">
       <template slot="content">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque voluptate omnis magni repellendus architecto. Error repellat saepe alias reprehenderit voluptatum asperiores necessitatibus, quisquam voluptate autem doloribus ex dolorem facere sit.
+        {{ $t('create item helper - unit') }}
         <hr>
         <div v-if="isLoading">
           <h3 class="text-center">Loading ...</h3>
@@ -85,15 +85,8 @@ export default {
           name: 'PCS',
           label: 'PCS',
           converter: 1,
-          default_purchase: false,
-          default_sales: false
-        },
-        {
-          name: '',
-          label: '',
-          converter: 0,
-          default_purchase: false,
-          default_sales: false
+          default_purchase: true,
+          default_sales: true
         }
       ],
       isLoading: false
@@ -118,6 +111,7 @@ export default {
   methods: {
     addRow () {
       this.units.push({
+        label: '',
         name: '',
         converter: 0,
         default_purchase: false,

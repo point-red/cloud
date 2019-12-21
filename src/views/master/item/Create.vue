@@ -229,7 +229,13 @@ export default {
         code: null,
         name: null,
         chart_of_account_id: null,
-        units: [],
+        units: [{
+          label: 'PCS',
+          name: 'PCS',
+          converter: 1,
+          default_purchase: true,
+          default_sales: true
+        }],
         require_production_number: false,
         require_expiry_date: false,
         groups: [{
