@@ -25,7 +25,7 @@
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('preferences')" :header="true">
         <p-block-inner :is-loading="isLoading">
-          <h3 class="content-heading">Mail</h3>
+          <h5 class="content-heading">Mail</h5>
           <p-form-row
             id="mail-driver"
             v-model="form.mail_driver"

@@ -10,7 +10,7 @@
         :title="title | uppercase">
         <template slot="content">
           <div v-if="isLoading">
-            <h3 class="text-center">Loading ...</h3>
+            <h5 class="text-center">Loading ...</h5>
           </div>
           <div v-else class="list-group push">
             <div class="list-group">

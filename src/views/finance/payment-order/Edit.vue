@@ -61,7 +61,7 @@
 
           <p-separator></p-separator>
 
-          <h3>Detail</h3>
+          <h5>Detail</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
@@ -131,7 +131,7 @@
               <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
             </div>
             <div class="col-sm-6">
-              <h3>Approver</h3>
+              <h5>Approver</h5>
               <hr>
               <p-form-row
                 id="approver"

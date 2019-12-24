@@ -33,7 +33,7 @@
           </div>
         </div>
         <hr>
-        <h3 v-show="content == 'storage'">Tables</h3>
+        <h5 v-show="content == 'storage'">Tables</h5>
         <point-table v-show="content == 'storage'">
           <tr slot="p-body" v-for="(table, index) in tables" :key="index">
             <td>

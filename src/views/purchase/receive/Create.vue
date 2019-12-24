@@ -82,7 +82,7 @@
 
           <p-separator></p-separator>
 
-          <h3 class="">Item</h3>
+          <h5 class="">Item</h5>
 
           <p-block-inner>
             <point-table>

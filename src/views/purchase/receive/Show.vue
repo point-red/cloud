@@ -86,7 +86,7 @@
 
           <p-separator></p-separator>
 
-          <h3 class="">Item</h3>
+          <h5 class="">Item</h5>
 
           <p-block-inner>
             <point-table>
@@ -124,7 +124,7 @@
 
           <p-separator></p-separator>
 
-          <h3 v-if="purchaseReceive.archives != undefined && purchaseReceive.archives.length > 0">Archives</h3>
+          <h5 v-if="purchaseReceive.archives != undefined && purchaseReceive.archives.length > 0">Archives</h5>
 
           <point-table v-if="purchaseReceive.archives != undefined && purchaseReceive.archives.length > 0">
             <tr slot="p-head">

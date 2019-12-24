@@ -49,7 +49,7 @@
 
           <p-separator></p-separator>
 
-          <h3>Detail</h3>
+          <h5>Detail</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
@@ -82,7 +82,7 @@
 
           <p-separator></p-separator>
 
-          <h3 class="">Approver</h3>
+          <h5 class="">Approver</h5>
 
           <point-table>
             <tr slot="p-head">

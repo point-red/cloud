@@ -50,7 +50,7 @@
       </p-block>
       <p-block column="col-sm-9">
         <p-block-inner :is-loading="isLoading" v-show="requestJoinProjects.length > 0">
-          <h3>Pending Request</h3>
+          <h5>Pending Request</h5>
           <point-table>
             <tr slot="p-head">
               <th>#</th>

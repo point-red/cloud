@@ -68,7 +68,7 @@
 
           <p-separator></p-separator>
 
-          <h3 class="">Approver</h3>
+          <h5 class="">Approver</h5>
 
           <point-table>
             <tr slot="p-head">
@@ -104,7 +104,7 @@
 
           <p-separator></p-separator>
 
-          <h3 v-if="downPayment.archives != undefined && downPayment.archives.length > 0">Archives</h3>
+          <h5 v-if="downPayment.archives != undefined && downPayment.archives.length > 0">Archives</h5>
 
           <point-table v-if="downPayment.archives != undefined && downPayment.archives.length > 0">
             <tr slot="p-head">

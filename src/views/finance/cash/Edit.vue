@@ -52,7 +52,7 @@
 
           <p-separator></p-separator>
 
-          <h3 class="">Item</h3>
+          <h5 class="">Item</h5>
 
           <p-block-inner>
             <point-table>
@@ -204,7 +204,7 @@
 
           <p-separator></p-separator>
 
-          <h3 class="">Approver</h3>
+          <h5 class="">Approver</h5>
 
           <p-form-row
             id="approver"

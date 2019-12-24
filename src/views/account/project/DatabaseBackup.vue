@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Database Backup</h3>
+    <h5>Database Backup</h5>
       <p-block-inner>
         <template v-if="backups && backups.length > 0">
           <point-table>

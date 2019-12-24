@@ -57,7 +57,7 @@
 
           <p-separator></p-separator>
 
-          <h3 class="">Item</h3>
+          <h5 class="">Item</h5>
 
           <p-block-inner>
             <point-table>
@@ -114,7 +114,7 @@
 
           <div class="row">
             <div class="col-sm-6">
-              <h3>Notes</h3>
+              <h5>Notes</h5>
               <hr>
               {{ purchaseOrder.form.notes }}
             </div>
@@ -173,7 +173,7 @@
 
           <p-separator></p-separator>
 
-          <h3 class="">Approver</h3>
+          <h5 class="">Approver</h5>
 
           <point-table>
             <tr slot="p-head">
@@ -209,7 +209,7 @@
 
           <p-separator></p-separator>
 
-          <h3 v-if="purchaseOrder.archives != undefined && purchaseOrder.archives.length > 0">Archives</h3>
+          <h5 v-if="purchaseOrder.archives != undefined && purchaseOrder.archives.length > 0">Archives</h5>
 
           <point-table v-if="purchaseOrder.archives != undefined && purchaseOrder.archives.length > 0">
             <tr slot="p-head">

@@ -9,7 +9,7 @@
       <div class="col-xl-3">
         <div class="block block-rounded block-themed">
           <div class="block-header bg-gray-darker">
-            <h3 class="block-title"></h3>
+            <h5 class="block-title"></h5>
           </div>
           <div class="block-content block-content-full block-content-sm">
             <ul class="nav nav-pills flex-column push">

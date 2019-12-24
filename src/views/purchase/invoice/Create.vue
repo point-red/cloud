@@ -54,7 +54,7 @@
 
           <p-separator></p-separator>
 
-          <h3>Item</h3>
+          <h5>Item</h5>
 
           <hr>
 
@@ -146,7 +146,7 @@
 
           <p-separator></p-separator>
 
-          <h3>{{ $t('down payment') | titlecase }}</h3>
+          <h5>{{ $t('down payment') | titlecase }}</h5>
 
           <hr>
 
@@ -254,7 +254,7 @@
 
           <div class="row">
             <div class="col-sm-12">
-              <h3>Approver</h3>
+              <h5>Approver</h5>
               <hr>
               <p-form-row
                 id="approver"

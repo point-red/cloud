@@ -39,7 +39,7 @@
 
           <p-separator></p-separator>
 
-          <h3>Item</h3>
+          <h5>Item</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
@@ -193,7 +193,7 @@
 
           <div class="row">
             <div class="col-sm-6">
-              <h3>Options</h3>
+              <h5>Options</h5>
               <hr>
               <p-form-row
                 id="need-down-payment"
@@ -224,7 +224,7 @@
               </p-form-row>
             </div>
             <div class="col-sm-6">
-              <h3>Approver</h3>
+              <h5>Approver</h5>
               <hr>
               <p-form-row
                 id="approver"

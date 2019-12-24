@@ -23,7 +23,7 @@
               </a>
             </template>
             <template v-if="templates.length === 0">
-              <h3 class="text-center">KPI Template not found</h3>
+              <h5 class="text-center">KPI Template not found</h5>
               <router-link
                 to="/human-resource/kpi"
                 class="btn btn-primary">Create new KPI Template
