@@ -30,19 +30,19 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">#</th>
               <th>Username</th>
               <th>Full Name</th>
               <th>Email</th>
               <th>Phone</th>
               <th>Roles</th>
-              <th>Warehouses</th>
+              <th>Warehouse Permission</th>
             </tr>
             <tr
               v-for="(user, index) in users"
               :key="user.id"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
+              <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'UserShow', params: { id: user.id }}">
                   {{ user.name | titlecase }}
@@ -57,26 +57,44 @@
                 </template>
               </td>
               <td>
-                <ul>
-                  <template v-for="warehouse in user.warehouses">
-                    <li :key="warehouse.id">{{ warehouse.name | titlecase }}</li>
-                  </template>
-                </ul>
+                <span v-if="user.warehouses.length > 0">
+                  <span v-for="(warehouse, index) in user.warehouses" :key="'warehouse-'+warehouse.id">
+                    {{ ++index }}.
+                    <a href="javascript:void(0)" @click="$refs.setWarehouseModal.show()">
+                      {{ warehouse.name | titlecase }}
+                    </a>
+                    <br/>
+                  </span>
+                </span>
+                <span v-else>
+                  <a href="javascript:void(0)"  @click="$refs.setWarehouseModal.show()">
+                    <i class="fa fa-check-square-o"></i> {{ $t('set permission') | titlecase }}
+                  </a>
+                </span>
               </td>
-            </tr>
-            <tr
-              v-for="userInvitation in userInvitations"
-              :key="userInvitation.id"
-              slot="p-body">
-              <td>
-                {{ userInvitation.user_name }}
-                <br>
-                <label for="pending" class="badge badge-danger"><i class="fa fa-warning"></i> PENDING INVITATION</label>
-              </td>
-              <td>{{ userInvitation.user_email }}</td>
-              <td></td>
             </tr>
           </point-table>
+          <template v-if="userInvitations.length > 0">
+            <p-separator></p-separator>
+            <h5>{{ $t('pending invitation') | uppercase }}</h5>
+            <point-table>
+              <tr slot="p-head">
+                <th width="50px">#</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Status</th>
+              </tr>
+              <tr
+                v-for="(userInvitation, indexInvitation) in userInvitations"
+                :key="'user-invitation-'+userInvitation.id"
+                slot="p-body">
+                <th>{{ ++indexInvitation }}</th>
+                <td>{{ userInvitation.user_name }}</td>
+                <td>{{ userInvitation.user_email }}</td>
+                <td><label for="pending" class="badge badge-danger"><i class="fa fa-warning"></i> PENDING</label></td>
+              </tr>
+            </point-table>
+          </template>
         </p-block-inner>
         <p-pagination
           :current-page="currentPage"
@@ -85,6 +103,7 @@
         </p-pagination>
       </p-block>
     </div>
+    <set-warehouse-modal id="setWarehouse" ref="setWarehouseModal" :title="'Set Warehouse'"/>
   </div>
 </template>
 
@@ -94,6 +113,7 @@ import debounce from 'lodash/debounce'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
 import PointTable from 'point-table-vue'
+import SetWarehouseModal from './SetWarehouseModal'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -101,7 +121,8 @@ export default {
     TabMenu,
     Breadcrumb,
     BreadcrumbMaster,
-    PointTable
+    PointTable,
+    SetWarehouseModal
   },
   data () {
     return {

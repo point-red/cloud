@@ -13,7 +13,7 @@
         <p-form-row
           id="name"
           v-model="form.user_name"
-          :disabled="loadingSaveButton"
+          :disabled="isSaving"
           :label="$t('name')"
           name="user_name"
           :errors="form.errors.get('user_name')"
@@ -22,7 +22,7 @@
         <p-form-row
           id="email"
           v-model="form.user_email"
-          :disabled="loadingSaveButton"
+          :disabled="isSaving"
           :label="$t('email')"
           name="user_email"
           :errors="form.errors.get('user_email')"
@@ -31,8 +31,8 @@
         <div class="form-group row">
           <div class="col-md-3"></div>
           <div class="col-md-9">
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Invite
+            <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Invite
             </button>
           </div>
         </div>
@@ -56,7 +56,7 @@ export default {
   },
   data () {
     return {
-      loadingSaveButton: false,
+      isSaving: false,
       form: new Form({
         user_name: '',
         user_email: ''
@@ -69,14 +69,14 @@ export default {
   methods: {
     ...mapActions('masterUserInvitation', ['create']),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.create(this.form)
         .then((response) => {
-          this.loadingSaveButton = false
-          this.$notification.success('Invitation success')
+          this.isSaving = false
           this.form.reset()
+          this.$swal.fire('Invitation Success', 'Anda telah berhasil mengirimkan undangan melalui email kepada ' + response.data.user_name + ' (' + response.data.user_email + ')' + ' untuk bergabung ke dalam project.', 'success')
         }, (error) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
