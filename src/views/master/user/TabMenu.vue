@@ -17,7 +17,7 @@
         <span>{{ $t('role & permission') | uppercase }}</span>
       </router-link>
     </li>
-    <li class="nav-item" v-if="$permission.has('read role')">
+    <li class="nav-item" v-if="$permission.has('read user')">
       <a
         @click="$refs.setWarehouseModal.show()"
         class="nav-link"

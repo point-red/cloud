@@ -7,17 +7,9 @@
       </router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
-    <tab-menu>
-      <li class="nav-item" slot="right">
-        <router-link
-          :to="'/account/project/join'"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="fa fa-building"></i> Join</span>
-        </router-link>
-      </li>
-    </tab-menu>
+
+    <tab-menu></tab-menu>
+
     <div class="row">
       <p-block
         :header="true"

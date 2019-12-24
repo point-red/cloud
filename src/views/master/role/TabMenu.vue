@@ -17,6 +17,15 @@
         <span>{{ $t('role & permission') | uppercase }}</span>
       </router-link>
     </li>
+    <li class="nav-item" v-if="$permission.has('read user')">
+      <a
+        @click="$refs.setWarehouseModal.show()"
+        class="nav-link"
+        active-class="active">
+        <span>{{ $t('set warehouse') | uppercase }}</span>
+      </a>
+      <set-warehouse-modal id="setWarehouse" ref="setWarehouseModal" :title="'Set Warehouse'"/>
+    </li>
     <slot name="right"></slot>
   </ul>
 </template>
