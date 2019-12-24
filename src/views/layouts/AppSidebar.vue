@@ -187,7 +187,7 @@
                 </li>
               </ul>
             </li>
-            <!-- <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
+            <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
               <router-link to="/purchase" class="nav-submenu" active-class="active">
                 <i class="si si-basket"/>
                 <span class="sidebar-mini-hide">{{ $t("purchase") | titlecase }}</span>
@@ -237,7 +237,7 @@
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">
+            <!-- <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">
               <router-link to="/sales" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>
                 <span class="sidebar-mini-hide">{{ $t("sales") | titlecase }}</span>
@@ -270,7 +270,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li>
+            </li> -->
             <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
               <router-link to="/inventory" class="nav-submenu" active-class="active">
                 <i class="si si-tag"/>
@@ -283,8 +283,32 @@
                     active-class="active">{{ $t('inventory usage') | titlecase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory audit')">
+                  <router-link
+                    to="/inventory/audit"
+                    active-class="active">{{ $t('inventory audit') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read stock correction')">
+                  <router-link
+                    to="/inventory/correction"
+                    active-class="active">{{ $t('stock correction') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read transfer item')">
+                  <router-link
+                    to="/inventory/transfer"
+                    active-class="active">{{ $t('transfer item') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory report')">
+                  <router-link
+                    to="/inventory/report"
+                    active-class="active">{{ $t('inventory report') | titlecase }}
+                  </router-link>
+                </li>
               </ul>
-            </li> -->
+            </li>
             <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
               <router-link to="/manufacture" class="nav-submenu" active-class="active">
                 <i class="si si-settings"/>
