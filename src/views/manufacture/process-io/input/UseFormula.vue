@@ -38,10 +38,11 @@
           <hr>
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">#</th>
               <th style="min-width: 120px">Item</th>
-              <th>Quantity</th>
               <th style="min-width: 120px">Warehouse</th>
+              <th width="50px"></th>
+              <th>Quantity</th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.finish_goods" :key="index">
               <th>{{ index + 1 }}</th>
@@ -51,17 +52,18 @@
                 </router-link>
               </td>
               <td>
+                <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
+                  {{ row.warehouse.name }}
+                </router-link>
+              </td>
+              <td width="50px"></td>
+              <td>
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
                   v-model="row.quantity"
                   :unit="row.item.units[0].label"
                   @input="quantityChange($event, row)"/>
-              </td>
-              <td>
-                <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
-                  {{ row.warehouse.name }}
-                </router-link>
               </td>
             </tr>
           </point-table>
@@ -72,17 +74,22 @@
           <hr>
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">#</th>
               <th style="min-width: 120px">Item</th>
-              <th>&nbsp;</th>
-              <th>Quantity</th>
               <th style="min-width: 120px">Warehouse</th>
+              <th width="50px">&nbsp;</th>
+              <th>Quantity</th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.raw_materials_temporary" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
                   {{ row.item.label }}
+                </router-link>
+              </td>
+              <td>
+                <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
+                  {{ row.warehouse.name }}
                 </router-link>
               </td>
               <td>
@@ -104,11 +111,6 @@
                   v-model="row.quantity"
                   :unit="row.unit"
                   :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
-              </td>
-              <td>
-                <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
-                  {{ row.warehouse.name }}
-                </router-link>
               </td>
             </tr>
           </point-table>

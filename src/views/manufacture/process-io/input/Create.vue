@@ -40,8 +40,8 @@
             <tr slot="p-head">
               <th>#</th>
               <th style="min-width: 120px">Item</th>
-              <th>Quantity</th>
               <th style="min-width: 120px">Warehouse</th>
+              <th>Quantity</th>
               <th></th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.finish_goods" :key="index">
@@ -55,19 +55,19 @@
                   @choosen="chooseFinishGood($event, row)"/>
               </td>
               <td>
-                <p-quantity
-                  :id="'quantity' + index"
-                  :name="'quantity' + index"
-                  v-model="row.quantity"
-                  :unit="row.item.units[0].label"/>
-              </td>
-              <td>
                 <m-warehouse
                   :id="'warehouse-finish-' + index"
                   :data-index="index"
                   v-model="row.warehouse_id"
                   :label="row.warehouse_name"
                   @choosen="chooseWarehouseFinishGood($event, row)"/>
+              </td>
+              <td>
+                <p-quantity
+                  :id="'quantity' + index"
+                  :name="'quantity' + index"
+                  v-model="row.quantity"
+                  :unit="row.item.units[0].label"/>
               </td>
               <td>
                 <i class="btn btn-sm fa fa-times" @click="deleteFinishGoodRow(index)"></i>
@@ -86,9 +86,9 @@
             <tr slot="p-head">
               <th>#</th>
               <th style="min-width: 120px">Item</th>
+              <th style="min-width: 120px">Warehouse</th>
               <th>&nbsp;</th>
               <th>Quantity</th>
-              <th style="min-width: 120px">Warehouse</th>
               <th></th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.raw_materials_temporary" :key="index">
@@ -100,6 +100,14 @@
                   v-model="row.item_id"
                   :label="row.item_name"
                   @choosen="chooseRawMaterial($event, row)"/>
+              </td>
+              <td>
+                <m-warehouse
+                  :id="'warehouse-raw-' + index"
+                  :data-index="index"
+                  v-model="row.warehouse_id"
+                  :label="row.warehouse_name"
+                  @choosen="chooseWarehouseRawMaterial($event, row)"/>
               </td>
               <td>
                 <m-inventory-out
@@ -119,14 +127,6 @@
                   v-model="row.quantity"
                   :unit="row.item.units[0].label"
                   :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
-              </td>
-              <td>
-                <m-warehouse
-                  :id="'warehouse-raw-' + index"
-                  :data-index="index"
-                  v-model="row.warehouse_id"
-                  :label="row.warehouse_name"
-                  @choosen="chooseWarehouseRawMaterial($event, row)"/>
               </td>
               <td>
                 <i class="btn btn-sm fa fa-times" @click="deleteRawMaterialRow(index)"></i>

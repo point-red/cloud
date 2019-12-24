@@ -68,10 +68,10 @@
             <tr slot="p-head">
               <th>#</th>
               <th style="min-width: 120px">Item</th>
+              <th style="min-width: 120px">Warehouse</th>
               <th>Estimation</th>
               <th>&nbsp;</th>
               <th>Output</th>
-              <th style="min-width: 120px">Warehouse</th>
               <th></th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.finish_goods_temporary" :key="index">
@@ -79,6 +79,11 @@
               <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
                     {{ row.item.label }}
+                  </router-link>
+                </td>
+                <td>
+                  <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
+                    {{ row.warehouse.name }}
                   </router-link>
                 </td>
                 <td>
@@ -102,11 +107,6 @@
                     v-model="row.quantity"
                     :unit="row.item.units[0].label"
                     :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
-                </td>
-                <td>
-                  <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
-                    {{ row.warehouse.name }}
-                  </router-link>
                 </td>
             </tr>
           </point-table>
