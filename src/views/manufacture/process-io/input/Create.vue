@@ -15,21 +15,6 @@
       <p-block :title="$t('input')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="Date"
-                v-model="form.date"
-                :errors="form.errors.get('date')"
-                @errors="form.errors.set('date', null)"/>
-            </div>
-          </p-form-row>
-
-          <p-form-row
             id="machine"
             name="machine"
             :label="$t('machine')">
@@ -49,7 +34,7 @@
 
           <p-separator></p-separator>
 
-          <h3>{{ $t('finished goods') | titlecase }}</h3>
+          <h5>{{ $t('finished goods') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
@@ -73,8 +58,8 @@
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.finish_goods[index].quantity"
-                  :unit="form.finish_goods[index].item.units[0].label"/>
+                  v-model="row.quantity"
+                  :unit="row.item.units[0].label"/>
               </td>
               <td>
                 <m-warehouse
@@ -95,7 +80,7 @@
 
           <p-separator></p-separator>
 
-          <h3>{{ $t('raw materials') | titlecase }}</h3>
+          <h5>{{ $t('raw materials') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
@@ -106,7 +91,7 @@
               <th style="min-width: 120px">Warehouse</th>
               <th></th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.raw_materials" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.raw_materials_temporary" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item
@@ -117,15 +102,23 @@
                   @choosen="chooseRawMaterial($event, row)"/>
               </td>
               <td>
-                <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
+                <m-inventory-out
+                  :id="'inventory-' + index"
+                  :itemId="row.item_id"
+                  :requireExpiryDate="row.item.require_expiry_date"
+                  :requireProductionNumber="row.item.require_production_number"
+                  :warehouseId="row.warehouse_id"
+                  :inventories="row.inventories"
+                  @add="addInventory($event, row)"
+                  v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
               </td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.raw_materials[index].quantity"
-                  :unit="form.raw_materials[index].item.units[0].label"
-                  :readonly="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
+                  v-model="row.quantity"
+                  :unit="row.item.units[0].label"
+                  :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
               </td>
               <td>
                 <m-warehouse
@@ -148,7 +141,7 @@
 
           <div class="row">
             <div class="col-sm-12">
-              <h3>Approver</h3>
+              <h5>Approver</h5>
               <hr>
               <p-form-row
                 id="approver"
@@ -203,7 +196,7 @@ export default {
       isSaving: false,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
-        date: new Date(),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         manufacture_machine_id: null,
         manufacture_process_id: null,
         manufacture_formula_id: null,
@@ -212,14 +205,14 @@ export default {
         manufacture_formula_name: null,
         notes: null,
         approver_id: null,
-        raw_materials: [{
+        raw_materials_temporary: [{
           item_id: null,
           warehouse_id: null,
           item_name: null,
           warehouse_name: null,
           item: {
-            require_production_number: false,
             require_expiry_date: false,
+            require_production_number: false,
             units: [{
               label: '',
               name: '',
@@ -231,14 +224,15 @@ export default {
           converter: null,
           inventories: []
         }],
+        raw_materials: [],
         finish_goods: [{
           item_id: null,
           warehouse_id: null,
           item_name: null,
           warehouse_name: null,
           item: {
-            require_production_number: false,
             require_expiry_date: false,
+            require_production_number: false,
             units: [{
               label: '',
               name: '',
@@ -272,14 +266,14 @@ export default {
       })
     },
     addRawMaterialRow () {
-      this.form.raw_materials.push({
+      this.form.raw_materials_temporary.push({
         item_id: null,
         warehouse_id: null,
         item_name: null,
         warehouse_name: null,
         item: {
-          require_production_number: false,
           require_expiry_date: false,
+          require_production_number: false,
           units: [{
             label: '',
             name: '',
@@ -299,8 +293,8 @@ export default {
         item_name: null,
         warehouse_name: null,
         item: {
-          require_production_number: false,
           require_expiry_date: false,
+          require_production_number: false,
           units: [{
             label: '',
             name: '',
@@ -313,7 +307,7 @@ export default {
       })
     },
     deleteRawMaterialRow (index) {
-      this.$delete(this.form.raw_materials, index)
+      this.$delete(this.form.raw_materials_temporary, index)
     },
     deleteFinishGoodRow (index) {
       this.$delete(this.form.finish_goods, index)
@@ -323,9 +317,11 @@ export default {
     },
     chooseRawMaterial (item, row) {
       row.item_name = item.name
-      row.item.require_production_number = item.require_production_number
+      row.quantity = 0
       row.item.require_expiry_date = item.require_expiry_date
+      row.item.require_production_number = item.require_production_number
       row.item.units = item.units
+      row.inventories = []
       row.item.units.forEach((unit, keyUnit) => {
         if (unit.converter == 1) {
           row.unit = unit.label
@@ -335,9 +331,11 @@ export default {
     },
     chooseFinishGood (item, row) {
       row.item_name = item.name
-      row.item.require_production_number = item.require_production_number
+      row.quantity = 0
       row.item.require_expiry_date = item.require_expiry_date
+      row.item.require_production_number = item.require_production_number
       row.item.units = item.units
+      row.inventories = []
       row.item.units.forEach((unit, keyUnit) => {
         if (unit.converter == 1) {
           row.unit = unit.label
@@ -347,16 +345,41 @@ export default {
     },
     chooseWarehouseRawMaterial (value, row) {
       row.warehouse_name = value
+      row.quantity = 0
+      row.inventories = []
     },
     chooseWarehouseFinishGood (value, row) {
       row.warehouse_name = value
+      row.quantity = 0
+      row.inventories = []
     },
     addInventory (value, row) {
       row.quantity = value.quantity
       row.inventories = value.inventories
     },
+    setRawMaterials () {
+      this.form.raw_materials = []
+      for (let index in this.form.raw_materials_temporary) {
+        let rawMaterial = this.form.raw_materials_temporary[index]
+        if (rawMaterial['inventories'].length > 0) {
+          for (let indexInventory in rawMaterial['inventories']) {
+            let inventory = rawMaterial['inventories'][indexInventory]
+            if (inventory['quantity']) {
+              var inputRawMaterial = Object.assign({}, rawMaterial)
+              inputRawMaterial.quantity = inventory['quantity']
+              inputRawMaterial.expiry_date = inventory['expiry_date']
+              inputRawMaterial.production_number = inventory['production_number']
+              this.form.raw_materials.push(inputRawMaterial)
+            }
+          }
+        } else {
+          this.form.raw_materials.push(rawMaterial)
+        }
+      }
+    },
     onSubmit () {
       this.isSaving = true
+      this.setRawMaterials()
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.approver_id == null) {
         this.$notification.error('approval cannot be null')

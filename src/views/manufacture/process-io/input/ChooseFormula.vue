@@ -61,7 +61,7 @@
                   <ol>
                     <li v-for="finishGood in formula.finish_goods" :key="finishGood.id">
                       <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
-                        [{{ finishGood.item.code }}] {{ finishGood.item.name }}
+                        {{ finishGood.item.label }}
                       </router-link>
                        = {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
                     </li>
@@ -71,7 +71,7 @@
                   <ol>
                     <li v-for="rawMaterial in formula.raw_materials" :key="rawMaterial.id">
                       <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
-                        [{{ rawMaterial.item.code }}] {{ rawMaterial.item.name }}
+                        {{ rawMaterial.item.label }}
                       </router-link>
                        = {{ rawMaterial.quantity }} {{ rawMaterial.item.units[0].name }}
                     </li>

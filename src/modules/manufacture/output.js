@@ -1,10 +1,13 @@
 import api from '@/api'
 
-const url = '/manufacture/output-product'
+const url = '/manufacture/output-products'
 
 const state = {
   output: {
     name: '',
+    manufacture_input: {
+      form: {}
+    },
     form: {}
   },
   outputs: [],

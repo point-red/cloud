@@ -15,21 +15,6 @@
       <p-block :title="$t('input')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="Date"
-                v-model="form.date"
-                :errors="form.errors.get('date')"
-                @errors="form.errors.set('date', null)"/>
-            </div>
-          </p-form-row>
-
-          <p-form-row
             id="machine"
             name="machine"
             :label="$t('machine')">
@@ -49,7 +34,7 @@
 
           <p-separator></p-separator>
 
-          <h3>{{ $t('finished goods') | titlecase }}</h3>
+          <h5>{{ $t('finished goods') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
@@ -60,22 +45,30 @@
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.finish_goods" :key="index">
               <th>{{ index + 1 }}</th>
-              <td>{{ row.item_name }}</td>
+              <td>
+                <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
+                  {{ row.item.label }}
+                </router-link>
+              </td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.finish_goods[index].quantity"
-                  :unit="form.finish_goods[index].item.units[0].label"
-                  @input="quantityChange"/>
+                  v-model="row.quantity"
+                  :unit="row.item.units[0].label"
+                  @input="quantityChange($event, row)"/>
               </td>
-              <td>{{ row.warehouse_name}}</td>
+              <td>
+                <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
+                  {{ row.warehouse.name }}
+                </router-link>
+              </td>
             </tr>
           </point-table>
 
           <p-separator></p-separator>
 
-          <h3>{{ $t('raw materials') | titlecase }}</h3>
+          <h5>{{ $t('raw materials') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
@@ -85,21 +78,38 @@
               <th>Quantity</th>
               <th style="min-width: 120px">Warehouse</th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.raw_materials" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.raw_materials_temporary" :key="index">
               <th>{{ index + 1 }}</th>
-              <td>{{ row.item_name }}</td>
               <td>
-                <m-inventory-out :id="'inventory-' + index" :itemId="row.item_id" :value="form.raw_materials[index].quantity" :shouldChange="form.raw_materials[index].should_change" @add="addInventory($event, row)" v-if="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
+                <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
+                  {{ row.item.label }}
+                </router-link>
+              </td>
+              <td>
+                <m-inventory-out
+                  :id="'inventory-' + index"
+                  :itemId="row.item_id"
+                  :requireExpiryDate="row.item.require_expiry_date"
+                  :requireProductionNumber="row.item.require_production_number"
+                  :warehouseId="row.warehouse_id"
+                  :value="row.quantity"
+                  :inventories="row.inventories"
+                  @add="addInventory($event, row)"
+                  v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
               </td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.raw_materials[index].quantity"
-                  :unit="form.raw_materials[index].unit"
-                  :readonly="(form.raw_materials[index].item.require_production_number === 1 || form.raw_materials[index].item.require_expiry_date === 1)"/>
+                  v-model="row.quantity"
+                  :unit="row.unit"
+                  :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
               </td>
-              <td>{{ row.warehouse_name}}</td>
+              <td>
+                <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
+                  {{ row.warehouse.name }}
+                </router-link>
+              </td>
             </tr>
           </point-table>
 
@@ -107,7 +117,7 @@
 
           <div class="row">
             <div class="col-sm-12">
-              <h3>Approver</h3>
+              <h5>Approver</h5>
               <hr>
               <p-form-row
                 id="approver"
@@ -163,7 +173,7 @@ export default {
       isSaving: false,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
-        date: new Date(),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         manufacture_machine_id: null,
         manufacture_process_id: null,
         manufacture_formula_id: null,
@@ -172,6 +182,7 @@ export default {
         manufacture_formula_name: null,
         notes: null,
         approver_id: null,
+        raw_materials_temporary: [],
         raw_materials: [],
         finish_goods: []
       })
@@ -205,11 +216,11 @@ export default {
             }
           })
           rawMaterials.inventories = []
-          rawMaterials.should_change = true
-          this.form.raw_materials.push(rawMaterials)
+          this.form.raw_materials_temporary.push(rawMaterials)
         }
         for (let index in this.formula.finish_goods) {
           var finishGoods = this.formula.finish_goods[index]
+          finishGoods.original_quantity = finishGoods.quantity
           finishGoods.item.units.forEach((unit, keyUnit) => {
             if (unit.converter == 1) {
               finishGoods.converter = unit.converter
@@ -226,21 +237,39 @@ export default {
     chooseManufactureMachine (value) {
       this.form.manufacture_machine_name = value
     },
-    quantityChange (quantity) {
-      for (let index in this.formula.raw_materials) {
-        this.form.raw_materials[index].quantity = this.form.raw_materials[index].original_quantity * quantity
-        this.form.raw_materials[index].should_change = true
+    quantityChange (quantity, row) {
+      for (let index in this.form.raw_materials_temporary) {
+        this.form.raw_materials_temporary[index].quantity = this.form.raw_materials_temporary[index].original_quantity * (row.quantity / row.original_quantity)
+        this.form.raw_materials_temporary[index].inventories = []
       }
     },
     addInventory (value, row) {
       row.quantity = value.quantity
       row.inventories = value.inventories
-      for (let index in this.formula.raw_materials) {
-        this.form.raw_materials[index].should_change = false
+    },
+    setRawMaterials () {
+      this.form.raw_materials = []
+      for (let index in this.form.raw_materials_temporary) {
+        let rawMaterial = this.form.raw_materials_temporary[index]
+        if (rawMaterial['inventories'].length > 0) {
+          for (let indexInventory in rawMaterial['inventories']) {
+            let inventory = rawMaterial['inventories'][indexInventory]
+            if (inventory['quantity']) {
+              var inputRawMaterial = Object.assign({}, rawMaterial)
+              inputRawMaterial.quantity = inventory['quantity']
+              inputRawMaterial.expiry_date = inventory['expiry_date']
+              inputRawMaterial.production_number = inventory['production_number']
+              this.form.raw_materials.push(inputRawMaterial)
+            }
+          }
+        } else {
+          this.form.raw_materials.push(rawMaterial)
+        }
       }
     },
     onSubmit () {
       this.isSaving = true
+      this.setRawMaterials()
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.approver_id == null) {
         this.$notification.error('approval cannot be null')

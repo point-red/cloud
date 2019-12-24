@@ -69,12 +69,12 @@
                 <td><b>{{ $t('quantity produced') | titlecase }}</b></td>
                 <td><b>{{ $t('warehouse') | titlecase }}</b></td>
               </tr>
-              <tr v-for="finishGood in output.finish_goods" :key="'fg-' + finishGood.id" slot="p-body">
+              <tr v-for="finishGood in output.finish_goods_temporary" :key="'fg-' + finishGood.id" slot="p-body">
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
-                    [{{ finishGood.item.code }}] {{ finishGood.item.name }}
+                    {{ finishGood.item.label }}
                   </router-link>
                 </td>
                 <td>
@@ -82,7 +82,7 @@
                 </td>
                 <td>
                   <router-link :to="{ name: 'warehouse.show', params: { id: finishGood.warehouse.id }}">
-                    [{{ finishGood.warehouse.code }}] {{ finishGood.warehouse.name }}
+                    {{ finishGood.warehouse.name }}
                   </router-link>
                 </td>
               </tr>
@@ -173,6 +173,9 @@ export default {
           sort_by: '-forms.number',
           fields: 'manufacture_outputs.*',
           filter_form: 'activePending',
+          filter_equal: {
+            'manufacture_process_id': this.id
+          },
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,
@@ -186,10 +189,29 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;manufactureProcess;manufactureMachine;finishGoods.item.units;finishGoods.warehouse',
+          includes: 'form;manufactureMachine;manufactureProcess;finishGoods.item.units;finishGoods.warehouse',
           page: this.currentPage
         }
       }).then(response => {
+        for (let index in this.outputs) {
+          this.outputs[index].finish_goods_temporary = []
+        }
+        for (let index in this.outputs) {
+          let output = this.outputs[index]
+          for (let finishGoodIndex in output.finish_goods) {
+            let finishGood = output.finish_goods[finishGoodIndex]
+            let finishGoodTemporaryIndex = this.outputs[index].finish_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
+            var finishGoodTemporary
+            if (finishGoodTemporaryIndex < 0) {
+              finishGoodTemporary = Object.assign({}, finishGood)
+              this.outputs[index].finish_goods_temporary.push(finishGoodTemporary)
+            } else {
+              finishGoodTemporary = this.outputs[index].finish_goods_temporary[finishGoodTemporaryIndex]
+              finishGoodTemporary.quantity += finishGood.quantity
+              this.outputs[index].finish_goods_temporary[finishGoodTemporaryIndex] = finishGoodTemporary
+            }
+          }
+        }
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false

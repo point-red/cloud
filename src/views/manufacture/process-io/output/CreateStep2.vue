@@ -43,21 +43,6 @@
       <p-block :title="$t('output')" :header="true">
         <p-block-inner :is-loading="isLoading">
           <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="Date"
-                v-model="form.date"
-                :errors="form.errors.get('date')"
-                @errors="form.errors.set('date', null)"/>
-            </div>
-          </p-form-row>
-
-          <p-form-row
             id="machine"
             name="machine"
             :label="$t('machine')">
@@ -77,52 +62,50 @@
 
           <p-separator></p-separator>
 
-          <h3>{{ $t('finished goods') | titlecase }}</h3>
+          <h5>{{ $t('finished goods') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
               <th>#</th>
               <th style="min-width: 120px">Item</th>
               <th>Estimation</th>
+              <th>&nbsp;</th>
               <th>Output</th>
-              <th>Production Number</th>
-              <th>Expiry Date</th>
               <th style="min-width: 120px">Warehouse</th>
               <th></th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finish_goods" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.finish_goods_temporary" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
-                    [{{ row.item.code }}] {{ row.item.name }}
+                    {{ row.item.label }}
                   </router-link>
                 </td>
                 <td>
-                  {{ row.quantity | numberFormat }} {{ row.unit }}
+                  {{ row.estimation_quantity | numberFormat }} {{ row.unit }}
+                </td>
+                <td>
+                  <m-inventory-in
+                    :id="'inventory-' + index"
+                    :itemId="row.item_id"
+                    :requireExpiryDate="row.item.require_expiry_date"
+                    :requireProductionNumber="row.item.require_production_number"
+                    :unit="row.unit"
+                    :value="row.quantity"
+                    @add="addInventory($event, row)"
+                    v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
                 </td>
                 <td>
                   <p-quantity
                     :id="'quantity' + index"
                     :name="'quantity' + index"
-                    v-model="form.finish_goods[index].produced_quantity"
-                    :unit="row.unit"/>
-                </td>
-                <td>
-                  <p-form-input
-                    id="production-number"
-                    v-model="form.finish_goods[index].production_number"
-                    :disabled="isSaving"
-                    name="production-number"/>
-                </td>
-                <td>
-                  <p-date-picker
-                    id="expiry-date"
-                    name="expiry-date"
-                    v-model="form.finish_goods[index].expiry_date"/>
+                    v-model="row.quantity"
+                    :unit="row.item.units[0].label"
+                    :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
                 </td>
                 <td>
                   <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
-                    [{{ row.warehouse.code }}] {{ row.warehouse.name }}
+                    {{ row.warehouse.name }}
                   </router-link>
                 </td>
             </tr>
@@ -132,7 +115,7 @@
 
           <div class="row">
             <div class="col-sm-12">
-              <h3>Approver</h3>
+              <h5>Approver</h5>
               <hr>
               <p-form-row
                 id="approver"
@@ -188,12 +171,15 @@ export default {
       isSaving: false,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
-        date: new Date(),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         manufacture_machine_id: null,
+        manufacture_process_id: null,
         manufacture_input_id: null,
         manufacture_machine_name: null,
+        manufacture_process_name: null,
         notes: null,
         approver_id: null,
+        finish_goods_temporary: [],
         finish_goods: []
       })
     }
@@ -216,12 +202,11 @@ export default {
         this.form.manufacture_process_id = this.input.manufacture_process_id
         this.form.manufacture_input_id = this.input.id
         this.form.manufacture_process_name = this.input.manufacture_process_name
-        this.form.finish_goods = this.input.finish_goods
-        for (let index in this.form.finish_goods) {
-          this.form.finish_goods[index].input_finish_good_id = this.input.finish_goods[index].id
-          this.form.finish_goods[index].produced_quantity = 0
-          this.form.finish_goods[index].production_number = null
-          this.form.finish_goods[index].expiry_date = null
+        this.form.finish_goods_temporary = this.input.finish_goods
+        for (let index in this.form.finish_goods_temporary) {
+          this.form.finish_goods_temporary[index].input_finish_good_id = this.input.finish_goods[index].id
+          this.form.finish_goods_temporary[index].estimation_quantity = this.form.finish_goods_temporary[index].quantity
+          this.form.finish_goods_temporary[index].inventories = []
         }
         this.isLoading = false
       }).catch(error => {
@@ -232,8 +217,33 @@ export default {
     chooseManufactureMachine (value) {
       this.form.manufacture_machine_name = value
     },
+    addInventory (value, row) {
+      row.quantity = value.quantity
+      row.inventories = value.inventories
+    },
+    setFinishGoods () {
+      this.form.finish_goods = []
+      for (let index in this.form.finish_goods_temporary) {
+        let finishGood = this.form.finish_goods_temporary[index]
+        if (finishGood['inventories'].length > 0) {
+          for (let indexInventory in finishGood['inventories']) {
+            let inventory = finishGood['inventories'][indexInventory]
+            if (inventory['quantity']) {
+              var inputFinishGood = Object.assign({}, finishGood)
+              inputFinishGood.quantity = inventory['quantity']
+              inputFinishGood.expiry_date = inventory['expiry_date']
+              inputFinishGood.production_number = inventory['production_number']
+              this.form.finish_goods.push(inputFinishGood)
+            }
+          }
+        } else {
+          this.form.finish_goods.push(finishGood)
+        }
+      }
+    },
     onSubmit () {
       this.isSaving = true
+      this.setFinishGoods()
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.approver_id == null) {
         this.$notification.error('approval cannot be null')

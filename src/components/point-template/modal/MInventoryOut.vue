@@ -16,15 +16,15 @@
         <div v-else>
           <p-table>
             <tr slot="p-head">
-              <th>{{ $t('production number') | titlecase }}</th>
-              <th>{{ $t('expiry date') | titlecase}}</th>
-              <th>{{ $t('quantity') | titlecase }}</th>
-              <th>{{ $t('stock') | titlecase }}</th>
+              <th v-if="requireExpiryDate">Expiry Date</th>
+              <th v-if="requireProductionNumber">Production No.</th>
+              <th>Quantity</th>
+              <th>Stock</th>
             </tr>
             <tr slot="p-body" v-for="(option, index) in options" :key="index">
-              <td>{{ option.production_number }}</td>
-              <td v-if="option.expiry_date">{{ option.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
-              <td v-else>&nbsp;</td>
+              <td v-if="option.expiry_date && requireExpiryDate">{{ option.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
+              <td v-else-if="!option.expiry_date && requireExpiryDate">&nbsp;</td>
+              <td v-if="requireProductionNumber">{{ option.production_number }}</td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
@@ -34,7 +34,7 @@
                   @input="quantityChange"/>
               </td>
               <td>
-                &nbsp;
+                {{ option.total_quantity | numberFormat }} {{ option.item.units[0].label }}
               </td>
             </tr>
           </p-table>
@@ -62,8 +62,7 @@ export default {
       optionsQuantity: [],
       totalQuantity: 0,
       isSaving: false,
-      isLoading: false,
-      mutableShouldChange: true
+      isLoading: false
     }
   },
   computed: {
@@ -78,23 +77,31 @@ export default {
       type: Number,
       required: true
     },
+    inventories: {
+      type: Array,
+      default: function () { return [] }
+    },
+    requireExpiryDate: {
+      type: [Boolean, Number],
+      default: false
+    },
+    requireProductionNumber: {
+      type: [Boolean, Number],
+      default: false
+    },
+    warehouseId: {
+      type: Number,
+      required: true
+    },
     value: {
       type: [String, Number],
       default: null
-    },
-    shouldChange: {
-      type: Boolean,
-      default: false
     }
   },
   watch: {
     searchText: debounce(function () {
       this.search()
-    }, 300),
-    shouldChange: function () {
-      this.mutableShouldChange = true
-      this.search()
-    }
+    }, 300)
   },
   created () {
     this.search()
@@ -103,95 +110,48 @@ export default {
     ...mapActions('inventoryInventory', ['get', 'pagination']),
     search () {
       this.isLoading = true
-      this.recordQuantity()
       this.get({
         itemId: this.itemId,
         params: {
+          warehouse_id: this.warehouseId,
           includes: 'form;warehouse;item.units',
-          sort_by: 'inventories.production_number,inventories.expiry_date',
-          group_by: 'inventories.production_number,inventories.expiry_date',
-          limit: 50,
+          sort_by: 'inventories.expiry_date,inventories.production_number',
+          group_by: 'inventories.expiry_date,inventories.production_number,inventories.warehouse_id',
           filter_like: {
-            production_number: this.searchText,
-            expiry_date: this.searchText
+            expiry_date: this.searchText,
+            production_number: this.searchText
           }
         }
       }).then(response => {
         this.options = []
         response.data.map((key, value) => {
           let item = key['item']
-          let optionQuantityIndex = -1
           var quantity = null
 
-          if (item.require_production_number && item.require_expiry_date) {
-            optionQuantityIndex = this.optionsQuantity.findIndex(o => o.production_number === key['production_number'] && o.expiry_date === key['expiry_date'])
-          } else if (item.require_production_number) {
-            optionQuantityIndex = this.optionsQuantity.findIndex(o => o.production_number === key['production_number'])
-          } else if (item.require_expiry_date) {
-            optionQuantityIndex = this.optionsQuantity.findIndex(o => o.expiry_date === key['expiry_date'])
-          }
-
-          if (optionQuantityIndex >= 0) {
-            quantity = this.optionsQuantity[optionQuantityIndex].quantity
-          } else {
-            this.optionsQuantity.push({
-              'production_number': key['production_number'],
-              'expiry_date': key['expiry_date'],
-              'quantity': 0
-            })
+          if (this.inventories.length === 0 && this.options.length === 0) {
+            quantity = parseFloat(this.value)
           }
 
           this.options.push({
             'id': key['id'],
-            'production_number': key['production_number'],
             'expiry_date': key['expiry_date'],
+            'production_number': key['production_number'],
             'quantity': quantity,
+            'total_quantity': key['total_quantity'],
             'item': item
           })
         })
-        if (this.mutableShouldChange) {
-          for (let index in this.options) {
-            this.options[index].quantity = null
-            if (index == 0) {
-              this.options[index].quantity = this.value
-            }
-          }
-          this.recordQuantity()
-          this.quantityChange()
-          this.mutableShouldChange = false
-        }
-        this.$emit('add', {
-          inventories: this.options,
-          quantity: this.totalQuantity
-        })
+        this.recordQuantity()
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
       })
     },
     recordQuantity () {
-      this.options.map((key, value) => {
-        let item = key['item']
-        let optionQuantityIndex = -1
-        var quantity = null
-
-        if (item.require_production_number && item.require_expiry_date) {
-          optionQuantityIndex = this.optionsQuantity.findIndex(o => o.production_number === key['production_number'] && o.expiry_date === key['expiry_date'])
-        } else if (item.require_production_number) {
-          optionQuantityIndex = this.optionsQuantity.findIndex(o => o.production_number === key['production_number'])
-        } else if (item.require_expiry_date) {
-          optionQuantityIndex = this.optionsQuantity.findIndex(o => o.expiry_date === key['expiry_date'])
-        }
-
-        if (optionQuantityIndex >= 0) {
-          this.optionsQuantity[optionQuantityIndex].quantity = key['quantity']
-        } else {
-          quantity = null
-          this.optionsQuantity.push({
-            'production_number': key['production_number'],
-            'expiry_date': key['expiry_date'],
-            'quantity': key['quantity']
-          })
+      this.inventories.map((key, value) => {
+        let optionIndex = this.options.findIndex(o => o.expiry_date === key['expiry_date'] && o.production_number === key['production_number'])
+        if (optionIndex >= 0) {
+          this.options[optionIndex].quantity = key['quantity']
         }
       })
     },
@@ -202,11 +162,11 @@ export default {
       })
     },
     show () {
-      this.mutableShouldChange = this.shouldChange
       this.search()
       this.$refs['select-' + this.id].show()
     },
     close () {
+      this.quantityChange()
       this.$emit('add', {
         inventories: this.options,
         quantity: this.totalQuantity

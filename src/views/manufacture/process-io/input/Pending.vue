@@ -74,7 +74,7 @@
                 <td>&nbsp;</td>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
-                    [{{ finishGood.item.code }}] {{ finishGood.item.name }}
+                    {{ finishGood.item.label }}
                   </router-link>
                 </td>
                 <td>
@@ -82,7 +82,7 @@
                 </td>
                 <td>
                   <router-link :to="{ name: 'warehouse.show', params: { id: finishGood.warehouse.id }}">
-                    [{{ finishGood.warehouse.code }}] {{ finishGood.warehouse.name }}
+                    {{ finishGood.warehouse.name }}
                   </router-link>
                 </td>
               </tr>
@@ -93,12 +93,12 @@
                 <td><b>{{ $t('quantity used') | titlecase }}</b></td>
                 <td><b>{{ $t('warehouse') | titlecase }}</b></td>
               </tr>
-              <tr v-for="rawMaterial in input.raw_materials" :key="'rm-' + rawMaterial.id" slot="p-body">
+              <tr v-for="rawMaterial in input.raw_materials_temporary" :key="'rm-' + rawMaterial.id" slot="p-body">
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
-                    [{{ rawMaterial.item.code }}] {{ rawMaterial.item.name }}
+                    {{ rawMaterial.item.label }}
                   </router-link>
                 </td>
                 <td>
@@ -106,7 +106,7 @@
                 </td>
                 <td>
                   <router-link :to="{ name: 'warehouse.show', params: { id: rawMaterial.warehouse.id }}">
-                    [{{ rawMaterial.warehouse.code }}] {{ rawMaterial.warehouse.name }}
+                    {{ rawMaterial.warehouse.name }}
                   </router-link>
                 </td>
               </tr>
@@ -197,6 +197,9 @@ export default {
           sort_by: '-forms.number',
           fields: 'manufacture_inputs.*',
           filter_form: 'activePending',
+          filter_equal: {
+            'manufacture_process_id': this.id
+          },
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,
@@ -216,6 +219,24 @@ export default {
           page: this.currentPage
         }
       }).then(response => {
+        for (let index in this.inputs) {
+          this.inputs[index].raw_materials_temporary = []
+        }
+        for (let index in this.inputs) {
+          let input = this.inputs[index]
+          for (let rawMaterialIndex in input.raw_materials) {
+            let rawMaterial = input.raw_materials[rawMaterialIndex]
+            let rawMaterialTemporaryIndex = this.inputs[index].raw_materials_temporary.findIndex(o => o.item_id === rawMaterial.item_id && o.warehouse_id === rawMaterial.warehouse_id)
+            if (rawMaterialTemporaryIndex < 0) {
+              let newItem = Object.assign({}, rawMaterial)
+              this.inputs[index].raw_materials_temporary.push(newItem)
+            } else {
+              var exisiting = this.inputs[index].raw_materials_temporary[rawMaterialTemporaryIndex]
+              exisiting.quantity += rawMaterial.quantity
+              this.inputs[index].raw_materials_temporary[rawMaterialTemporaryIndex] = exisiting
+            }
+          }
+        }
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false

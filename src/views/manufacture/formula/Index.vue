@@ -7,8 +7,6 @@
 
     <manufacture-menu/>
 
-    <tab-menu/>
-
     <div class="row">
       <p-block :title="$t('formula')" :header="true">
         <div class="row mb-10">
@@ -39,44 +37,46 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
-              <th>{{ $t('date') | titlecase }}</th>
-              <th>{{ $t('number') | titlecase }}</th>
+              <th width="50px">#</th>
               <th>{{ $t('formula') | titlecase }}</th>
               <th>{{ $t('finished goods') | titlecase }}</th>
               <th>{{ $t('raw materials') | titlecase }}</th>
+              <th></th>
             </tr>
             <template v-for="(formula, index) in formulas">
               <tr
                 :key="'mm-' + index"
                 slot="p-body">
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
-                <td>{{ formula.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>
-                <router-link :to="{ name: 'manufacture.formula.show', params: { id: formula.id }}">
-                  {{ formula.form.number }}
-                </router-link>
-              </td>
-              <td>{{ formula.name }}</td>
-              <td>
-                  <ol>
-                    <li v-for="finishGood in formula.finish_goods" :key="finishGood.id">
-                      <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
-                        [{{ finishGood.item.code }}] {{ finishGood.item.name }}
-                      </router-link>
-                       = {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
-                    </li>
-                  </ol>
+                  <router-link :to="{ name: 'manufacture.formula.show', params: { id: formula.id }}">
+                    {{ formula.name }}
+                  </router-link>
                 </td>
                 <td>
-                  <ol>
-                    <li v-for="rawMaterial in formula.raw_materials" :key="rawMaterial.id">
-                      <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
-                        [{{ rawMaterial.item.code }}] {{ rawMaterial.item.name }}
-                      </router-link>
-                       = {{ rawMaterial.quantity }} {{ rawMaterial.item.units[0].name }}
-                    </li>
-                  </ol>
+                  <span v-for="(finishGood, index2) in formula.finish_goods" :key="finishGood.id">
+                    {{ ++index2 }}.
+                    <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
+                        {{ finishGood.item.label }}
+                    </router-link>
+                    = {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
+                    <br>
+                  </span>
+                </td>
+                <td>
+                  <span v-for="(rawMaterial, index2) in formula.raw_materials" :key="rawMaterial.id">
+                    {{ ++index2 }}.
+                    <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
+                      {{ rawMaterial.item.label }}
+                    </router-link>
+                    = {{ rawMaterial.quantity | numberFormat }} {{ rawMaterial.item.units[0].name }}
+                    <br>
+                  </span>
+                </td>
+                <td class="text-right">
+                  <router-link class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.input.use.formula', params: { id: formula.manufacture_process_id, formulaId: formula.id }}">
+                    <i class="fa fa-share-square-o"></i> {{ $t('start production') }}
+                  </router-link>
                 </td>
               </tr>
             </template>
@@ -93,7 +93,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import ManufactureMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
@@ -103,7 +102,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     ManufactureMenu,
     Breadcrumb,
     BreadcrumbManufacture,

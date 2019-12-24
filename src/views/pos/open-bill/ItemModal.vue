@@ -128,7 +128,7 @@ export default {
       discount_percent: null,
       notes: null,
       production_number: null,
-      expiry_date: null
+      expiry_date: this.$moment().format('YYYY-MM-DD')
     }
   },
   methods: {

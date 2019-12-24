@@ -1,6 +1,6 @@
 import api from '@/api'
 
-const url = '/manufacture/machine'
+const url = '/manufacture/machines'
 
 const state = {
   machine: {

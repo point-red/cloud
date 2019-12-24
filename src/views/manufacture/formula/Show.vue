@@ -15,8 +15,6 @@
 
     <manufacture-menu/>
 
-    <tab-menu/>
-
     <div class="row">
       <p-block :title="$t('formula')" :header="true">
         <p-block-inner :is-loading="isLoading">
@@ -75,7 +73,7 @@
 
           <p-separator></p-separator>
 
-          <h3>{{ $t('finished goods') | titlecase }}</h3>
+          <h5>{{ $t('finished goods') | titlecase }}</h5>
 
           <p-block-inner>
             <point-table>
@@ -90,7 +88,7 @@
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
-                    [{{ row.item.code }}] {{ row.item.name }}
+                    {{ row.item.label }}
                   </router-link>
                 </td>
                 <td>
@@ -98,7 +96,7 @@
                 </td>
                 <td>
                   <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
-                    [{{ row.warehouse.code }}] {{ row.warehouse.name }}
+                    {{ row.warehouse.name }}
                   </router-link>
                 </td>
               </tr>
@@ -107,7 +105,7 @@
 
           <p-separator></p-separator>
 
-          <h3>{{ $t('raw materials') | titlecase }}</h3>
+          <h5>{{ $t('raw materials') | titlecase }}</h5>
 
           <p-block-inner>
             <point-table>
@@ -122,7 +120,7 @@
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
-                    [{{ row.item.code }}] {{ row.item.name }}
+                    {{ row.item.label }}
                   </router-link>
                 </td>
                 <td>
@@ -130,7 +128,7 @@
                 </td>
                 <td>
                   <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
-                    [{{ row.warehouse.code }}] {{ row.warehouse.name }}
+                    {{ row.warehouse.name }}
                   </router-link>
                 </td>
               </tr>
@@ -139,7 +137,7 @@
 
           <p-separator></p-separator>
 
-          <h3 class="">Approver</h3>
+          <h5 class="">Approver</h5>
 
           <point-table>
             <tr slot="p-head">
@@ -175,7 +173,7 @@
 
           <p-separator></p-separator>
 
-          <h3 v-if="formula.archives != undefined && formula.archives.length > 0">Archives</h3>
+          <h5 v-if="formula.archives != undefined && formula.archives.length > 0">Archives</h5>
 
           <point-table v-if="formula.archives != undefined && formula.archives.length > 0">
             <tr slot="p-head">
@@ -212,7 +210,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import ManufactureMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
@@ -221,7 +218,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     ManufactureMenu,
     Breadcrumb,
     BreadcrumbManufacture,

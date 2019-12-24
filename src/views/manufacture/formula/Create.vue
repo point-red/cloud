@@ -8,26 +8,9 @@
 
     <manufacture-menu/>
 
-    <tab-menu/>
-
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('formula')" :header="true">
         <p-block-inner>
-          <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="Date"
-                v-model="form.date"
-                :errors="form.errors.get('date')"
-                @errors="form.errors.set('date', null)"/>
-            </div>
-          </p-form-row>
-
           <p-form-row
             id="process"
             name="process"
@@ -57,7 +40,7 @@
 
           <p-separator></p-separator>
 
-          <h3>{{ $t('finished goods') | titlecase }}</h3>
+          <h5>{{ $t('finished goods') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
@@ -81,8 +64,8 @@
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.finish_goods[index].quantity"
-                  :unit="form.finish_goods[index].item.units[0].label"/>
+                  v-model="row.quantity"
+                  :unit="row.item.units[0].label"/>
               </td>
               <td>
                 <m-warehouse
@@ -103,7 +86,7 @@
 
           <p-separator></p-separator>
 
-          <h3>{{ $t('raw materials') | titlecase }}</h3>
+          <h5>{{ $t('raw materials') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
@@ -127,8 +110,8 @@
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
-                  v-model="form.raw_materials[index].quantity"
-                  :unit="form.raw_materials[index].item.units[0].label"/>
+                  v-model="row.quantity"
+                  :unit="row.item.units[0].label"/>
               </td>
               <td>
                 <m-warehouse
@@ -151,7 +134,7 @@
 
           <div class="row">
             <div class="col-sm-12">
-              <h3>Approver</h3>
+              <h5>Approver</h5>
               <hr>
               <p-form-row
                 id="approver"
@@ -184,7 +167,6 @@
 <script>
 import debounce from 'lodash/debounce'
 import ManufactureMenu from '../Menu'
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
 import Form from '@/utils/Form'
@@ -194,7 +176,6 @@ import { mapActions } from 'vuex'
 export default {
   components: {
     ManufactureMenu,
-    TabMenu,
     PointTable,
     Breadcrumb,
     BreadcrumbManufacture
@@ -204,7 +185,7 @@ export default {
       isSaving: false,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
-        date: new Date(),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         manufacture_process_id: null,
         manufacture_process_name: null,
         name: null,

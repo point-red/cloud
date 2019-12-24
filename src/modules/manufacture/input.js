@@ -1,6 +1,6 @@
 import api from '@/api'
 
-const url = '/manufacture/input-material'
+const url = '/manufacture/input-materials'
 
 const state = {
   input: {

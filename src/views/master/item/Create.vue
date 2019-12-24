@@ -236,8 +236,8 @@ export default {
           default_purchase: true,
           default_sales: true
         }],
-        require_production_number: false,
         require_expiry_date: false,
+        require_production_number: false,
         groups: [{
           id: null,
           label: null,
@@ -249,7 +249,7 @@ export default {
             quantity: null,
             price: null,
             value: null,
-            expiry_date: this.$moment().format('YYYYMMDD'),
+            expiry_date: this.$moment().format('YYYY-MM-DD'),
             production_number: null
           }
         ]
@@ -280,7 +280,7 @@ export default {
         quantity: null,
         price: null,
         value: null,
-        expiry_date: this.$moment().format('YYYYMMDD'),
+        expiry_date: this.$moment().format('YYYY-MM-DD'),
         production_number: null
       })
     },

@@ -217,8 +217,8 @@ export default {
       this.form.items = response.data.order_items.map(item => {
         return {
           ...item,
-          expiry_date: this.$moment().format('YYYYMMDD'),
-          production_number: '',
+          expiry_date: this.$moment().format('YYYY-MM-DD'),
+          production_number: null,
           purchase_order_item_id: item.id
         }
       })

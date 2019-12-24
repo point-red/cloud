@@ -7,8 +7,6 @@
 
     <manufacture-menu/>
 
-    <tab-menu/>
-
     <div class="row">
       <p-block :title="$t('process')" :header="true">
         <div class="input-group block">
@@ -32,17 +30,21 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">#</th>
               <th>{{ $t('name') }}</th>
+              <th></th>
             </tr>
             <template v-for="(process, index) in processes">
-              <tr
-                :key="'mp-' + index"
-                slot="p-body">
+              <tr :key="'mp-' + index" slot="p-body">
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>
                   <router-link :to="{ name: 'manufacture.process.show', params: { id: process.id }}" v-if="$permission.has('read manufacture process')">
                      {{ process.name }}
+                  </router-link>
+                </td>
+                <td class="text-right">
+                  <router-link class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.input.index', params: { id: process.id }}">
+                    <i class="fa fa-share-square-o"></i> {{ $t('start production') }}
                   </router-link>
                 </td>
               </tr>
@@ -60,7 +62,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import ManufactureMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
@@ -70,7 +71,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     ManufactureMenu,
     Breadcrumb,
     BreadcrumbManufacture,

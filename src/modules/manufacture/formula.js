@@ -1,6 +1,6 @@
 import api from '@/api'
 
-const url = '/manufacture/formula'
+const url = '/manufacture/formulas'
 
 const state = {
   formula: {

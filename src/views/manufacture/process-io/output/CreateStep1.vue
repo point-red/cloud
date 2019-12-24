@@ -50,10 +50,8 @@
               <th>&nbsp;</th>
             </tr>
             <template v-for="(input, index) in inputs">
-              <tr
-                :key="'mm-' + index"
-                slot="p-body">
-                <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
+              <tr :key="'mm-' + index" slot="p-body">
+                <th>{{ ++index }}</th>
                 <td>{{ input.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>
                   <router-link :to="'/manufacture/process-io/' + id + '/input/' + input.id">
@@ -62,27 +60,27 @@
                 </td>
                 <td>{{ input.notes }}</td>
                 <td>
-                  <ol>
-                    <li v-for="finishGood in input.finish_goods" :key="finishGood.id">
-                      <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
-                        [{{ finishGood.item.code }}] {{ finishGood.item.name }}
-                      </router-link>
-                       = {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
-                    </li>
-                  </ol>
+                  <span v-for="(finishGood, index2) in input.finish_goods" :key="finishGood.id">
+                    {{ ++index2 }}.
+                    <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
+                      {{ finishGood.item.label }}
+                    </router-link>
+                      = {{ finishGood.quantity | numberFormat }} {{ finishGood.item.units[0].name }}
+                      <br>
+                  </span>
                 </td>
                 <td>
-                  <ol>
-                    <li v-for="rawMaterial in input.raw_materials" :key="rawMaterial.id">
-                      <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
-                        [{{ rawMaterial.item.code }}] {{ rawMaterial.item.name }}
-                      </router-link>
-                       = {{ rawMaterial.quantity }} {{ rawMaterial.item.units[0].name }}
-                    </li>
-                  </ol>
+                  <span v-for="(rawMaterial, index3) in input.raw_materials" :key="rawMaterial.id">
+                    {{ ++index3 }}.
+                    <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
+                      {{ rawMaterial.item.label }}
+                    </router-link>
+                      = {{ rawMaterial.quantity }} {{ rawMaterial.item.units[0].name }}
+                      <br>
+                  </span>
                 </td>
                 <td>
-                  <router-link :to="{ name: 'manufacture.process.io.output.create.step.2', params: { id: id, inputId: input.id }}" class="btn btn-primary mr-5">
+                  <router-link class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.output.create.step.2', params: { id: id, inputId: input.id }}">
                     <span><i class="si si-share-alt"></i> Create Process Output</span>
                   </router-link>
                 </td>

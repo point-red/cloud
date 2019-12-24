@@ -67,7 +67,7 @@
 
           <p-separator></p-separator>
 
-          <h3>{{ $t('finished goods') | titlecase }}</h3>
+          <h5>{{ $t('finished goods') | titlecase }}</h5>
 
           <p-block-inner>
             <point-table>
@@ -75,33 +75,34 @@
                 <th>#</th>
                 <th style="min-width: 120px">Item</th>
                 <th>Estimation</th>
+                <th>&nbsp;</th>
                 <th>Output</th>
-                <th>Production Number</th>
-                <th>Expiry Date</th>
                 <th style="min-width: 120px">Warehouse</th>
-                <th></th>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in output.finish_goods" :key="index">
+              <tr slot="p-body" v-for="(row, index) in finish_goods_temporary" :key="index">
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
-                    [{{ row.item.code }}] {{ row.item.name }}
+                    {{ row.item.label }}
                   </router-link>
                 </td>
                 <td>
-                  0 {{ row.unit }}
+                  {{ row.estimation_quantity | numberFormat }} {{ row.unit }}
+                </td>
+                <td>
+                  <m-inventory
+                    :id="'inventory-' + index"
+                    :inventories="row.inventories"
+                    :requireExpiryDate="row.item.require_expiry_date"
+                    :requireProductionNumber="row.item.require_production_number"
+                    v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
                 </td>
                 <td>
                   {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
                 <td>
-                  {{ row.production_number }}
-                </td>
-                <td v-if="row.expiry_date">{{ row.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
-                <td v-else>&nbsp;</td>
-                <td>
                   <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
-                    [{{ row.warehouse.code }}] {{ row.warehouse.name }}
+                    {{ row.warehouse.name }}
                   </router-link>
                 </td>
               </tr>
@@ -110,7 +111,7 @@
 
           <p-separator></p-separator>
 
-          <h3 class="">Approver</h3>
+          <h5 class="">Approver</h5>
 
           <point-table>
             <tr slot="p-head">
@@ -146,7 +147,7 @@
 
           <p-separator></p-separator>
 
-          <h3 v-if="output.archives != undefined && output.archives.length > 0">Archives</h3>
+          <h5 v-if="output.archives != undefined && output.archives.length > 0">Archives</h5>
 
           <point-table v-if="output.archives != undefined && output.archives.length > 0">
             <tr slot="p-head">
@@ -203,7 +204,8 @@ export default {
       id: this.$route.params.id,
       outputId: this.$route.params.outputId,
       isLoading: false,
-      isDeleting: false
+      isDeleting: false,
+      finish_goods_temporary: []
     }
   },
   computed: {
@@ -225,9 +227,43 @@ export default {
         id: this.outputId,
         params: {
           with_archives: true,
-          includes: 'manufactureMachine;manufactureInput;finishGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;finishGoods.warehouse'
+          includes: 'manufactureMachine;manufactureInput.finishGoods;finishGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;finishGoods.warehouse'
         }
       }).then(response => {
+        this.finish_goods_temporary = []
+        for (let index in this.output.finish_goods) {
+          let finishGood = this.output.finish_goods[index]
+          let finishGoodTemporaryIndex = this.finish_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
+          var finishGoodTemporary
+          if (finishGoodTemporaryIndex < 0) {
+            finishGoodTemporary = Object.assign({}, finishGood)
+            finishGoodTemporary.inventories = []
+            finishGoodTemporary.inventories.push({
+              'quantity': finishGood.quantity,
+              'expiry_date': finishGood.expiry_date,
+              'production_number': finishGood.production_number
+            })
+            this.finish_goods_temporary.push(finishGoodTemporary)
+          } else {
+            finishGoodTemporary = this.finish_goods_temporary[finishGoodTemporaryIndex]
+            finishGoodTemporary.quantity += finishGood.quantity
+            finishGoodTemporary.inventories.push({
+              'quantity': finishGood.quantity,
+              'expiry_date': finishGood.expiry_date,
+              'production_number': finishGood.production_number
+            })
+            this.finish_goods_temporary[finishGoodTemporaryIndex] = finishGoodTemporary
+          }
+        }
+        for (let index in this.finish_goods_temporary) {
+          let finishGood = this.finish_goods_temporary[index]
+          let inputFinishGoodIndex = this.output.manufacture_input.finish_goods.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
+          if (inputFinishGoodIndex >= 0) {
+            this.finish_goods_temporary[index].estimation_quantity = this.output.manufacture_input.finish_goods[inputFinishGoodIndex].quantity
+          } else {
+            this.finish_goods_temporary[index].estimation_quantity = 0
+          }
+        }
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false

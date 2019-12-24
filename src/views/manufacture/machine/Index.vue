@@ -7,8 +7,6 @@
 
     <manufacture-menu/>
 
-    <tab-menu/>
-
     <div class="row">
       <p-block :title="$t('machine')" :header="true">
         <div class="input-group block">
@@ -32,21 +30,15 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
-              <th>{{ $t('code') | titlecase }}</th>
+              <th width="50px">#</th>
               <th>{{ $t('name') | titlecase }}</th>
             </tr>
             <template v-for="(machine, index) in machines">
-              <tr
-                :key="'mm-' + index"
-                slot="p-body">
+              <tr :key="'mm-' + index" slot="p-body">
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>
-                  {{ machine.code }}
-                </td>
-                <td>
                   <router-link :to="{ name: 'manufacture.machine.show', params: { id: machine.id }}" v-if="$permission.has('read manufacture machine')">
-                    {{ machine.name }}
+                    {{ machine.label }}
                   </router-link>
                 </td>
               </tr>
@@ -64,7 +56,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import ManufactureMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
@@ -74,7 +65,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     ManufactureMenu,
     Breadcrumb,
     BreadcrumbManufacture,

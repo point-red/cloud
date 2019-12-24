@@ -10,8 +10,6 @@
 
     <manufacture-menu/>
 
-    <tab-menu/>
-
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('create') + ' ' + $t('machine')" :header="true">
         <p-block-inner :is-loading="isLoading">
@@ -54,7 +52,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import ManufactureMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
@@ -63,7 +60,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     ManufactureMenu,
     Breadcrumb,
     BreadcrumbManufacture

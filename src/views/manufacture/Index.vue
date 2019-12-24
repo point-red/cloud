@@ -8,18 +8,16 @@
 
     <hr>
 
-    <p-block-inner :is-loading="isLoading" :background-color="'transparent'">
-      <div class="row gutters-tiny">
-        <template v-for="(process, index) in processes">
-          <p-box-process
-            :id="'process-' + index"
-            :key="'process-' + index"
-            :name="$t('process') + ' ' + process.name"
-            :link="'/manufacture/process-io/' + process.id"
-            icon="fa fa-cogs"/>
-        </template>
-      </div>
-    </p-block-inner>
+    <div class="row gutters-tiny">
+      <template v-for="(process, index) in processes">
+        <p-box-process
+          :id="'process-' + index"
+          :key="'process-' + index"
+          :name="$t('process') + ' ' + process.name"
+          :link="'/manufacture/process-io/' + process.id + '/input'"
+          icon="fa fa-cogs"/>
+      </template>
+    </div>
   </div>
 </template>
 
