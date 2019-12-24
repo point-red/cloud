@@ -47,7 +47,7 @@
             name="machine"
             :label="$t('machine')">
             <div slot="body" class="col-lg-9 mt-5">
-              <m-machine id="machine" v-model="form.manufacture_machine_id" @choosen="chooseManufactureMachine" :label="form.manufacture_machine_name"/>
+              {{ form.manufacture_machine_name }}
             </div>
           </p-form-row>
 
@@ -202,6 +202,8 @@ export default {
         this.form.manufacture_process_id = this.input.manufacture_process_id
         this.form.manufacture_input_id = this.input.id
         this.form.manufacture_process_name = this.input.manufacture_process_name
+        this.form.manufacture_machine_id = this.input.manufacture_machine_id
+        this.form.manufacture_machine_name = this.input.manufacture_machine_name
         this.form.finish_goods_temporary = this.input.finish_goods
         for (let index in this.form.finish_goods_temporary) {
           this.form.finish_goods_temporary[index].input_finish_good_id = this.input.finish_goods[index].id
