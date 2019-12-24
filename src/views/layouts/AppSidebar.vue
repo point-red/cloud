@@ -251,32 +251,6 @@
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
-              <router-link to="/manufacture" class="nav-submenu" active-class="active">
-                <i class="si si-settings"/>
-                <span class="sidebar-mini-hide">{{ $t("manufacture") | titlecase }}</span>
-              </router-link>
-              <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture machine')">
-                  <router-link
-                    to="/manufacture/machine"
-                    active-class="active">{{ $t('machine') | titlecase }}
-                  </router-link>
-                </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture process')">
-                  <router-link
-                    to="/manufacture/process"
-                    active-class="active">{{ $t('process') | titlecase }}
-                  </router-link>
-                </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture formula')">
-                  <router-link
-                    to="/manufacture/formula"
-                    active-class="active">{{ $t('formula') | titlecase }}
-                  </router-link>
-                </li>
-              </ul>
-            </li>
             <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
               <router-link to="/pos" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>
@@ -310,8 +284,34 @@
                   </router-link>
                 </li>
               </ul>
+            </li> -->
+            <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
+              <router-link to="/manufacture" class="nav-submenu" active-class="active">
+                <i class="si si-settings"/>
+                <span class="sidebar-mini-hide">{{ $t("manufacture") | titlecase }}</span>
+              </router-link>
+              <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture machine')">
+                  <router-link
+                    to="/manufacture/machine"
+                    active-class="active">{{ $t('machine') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture process')">
+                  <router-link
+                    to="/manufacture/process"
+                    active-class="active">{{ $t('process') | titlecase }}
+                  </router-link>
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture formula')">
+                  <router-link
+                    to="/manufacture/formula"
+                    active-class="active">{{ $t('formula') | titlecase }}
+                  </router-link>
+                </li>
+              </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance')">
+            <!-- <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance')">
               <router-link to="/finance" class="nav-submenu" active-class="active">
                 <i class="si si-wallet"/>
                 <span class="sidebar-mini-hide">{{ $t("finance") | titlecase }}</span>

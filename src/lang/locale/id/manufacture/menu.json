@@ -8,6 +8,7 @@
   "raw materials" : "raw materials",
   "material" : "material",
   "quantity produced" : "quantity produced",
+  "quantity used" : "quantity used",
   "finished good" : "finished good",
   "finished goods" : "finished goods"
 }
