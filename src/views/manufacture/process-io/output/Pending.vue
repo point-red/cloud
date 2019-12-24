@@ -29,7 +29,7 @@
             @input="filterSearch"/>
           <router-link
             :to="'/manufacture/process-io/' + id + '/output/create-step-1'"
-            v-if="$permission.has('create manufacture output')"
+            v-if="$permission.has('create manufacture')"
             class="input-group-append">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>

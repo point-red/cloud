@@ -170,7 +170,7 @@
 
           <router-link
             :to="{ path: '/manufacture/process-io/' + id + '/output/' + output.id + '/edit', params: { id: id, outputId: output.id }}"
-            v-if="$permission.has('update manufacture output') && $formRules.allowedToUpdate(output.form)"
+            v-if="$permission.has('update manufacture') && $formRules.allowedToUpdate(output.form)"
             class="btn btn-sm btn-primary mr-5">
             Edit
           </router-link>
