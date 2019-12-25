@@ -9,7 +9,7 @@
 
     <div class="row">
       <p-block>
-        <div class="input-group block">
+        <div class="input-group block mb-5">
           <p-form-input
             id="search-text"
             name="search-text"
@@ -27,11 +27,49 @@
             </span>
           </router-link>
         </div>
+        <div class="text-center font-size-sm mb-10">
+          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">{{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          </a>
+        </div>
+        <div class="card animated" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+          <div class="row">
+            <div class="col-sm-3 text-center">
+              <p-form-row id="pricing-group" name="pricing-group" :label="$t('pricing group')" :is-horizontal="false">
+                <div slot="body">
+                  <m-pricing-group :id="'pricing-group-id'"/>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-3 text-center">
+              <p-form-row id="group" name="group" :label="$t('group')" :is-horizontal="false">
+                <div slot="body">
+                  <m-customer-group :id="'group'"/>
+                </div>
+              </p-form-row>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="btn-group btn-group-sm mr-15">
+          <button type="button" class="btn btn-secondary mr-5">
+            {{ $t('archive') | uppercase }}
+          </button>
+          <button type="button" class="btn btn-secondary">
+            {{ $t('delete') | uppercase }}
+          </button>
+        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th width="50px">#</th>
+              <th width="50px">
+                <p-form-check-box
+                  id="subscibe"
+                  name="subscibe"
+                  :is-form="false"
+                  class="text-center"/>
+              </th>
               <th>Name</th>
               <th>Address</th>
               <th>Phone</th>
@@ -43,6 +81,13 @@
               :key="index"
               slot="p-body">
               <th>{{ index + 1}}</th>
+              <td>
+                <p-form-check-box
+                  :is-form="false"
+                  id="subscibe"
+                  name="subscibe"
+                  class="text-center"/>
+              </td>
               <td>
                 <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">
                   {{ customer.name | titlecase }}
@@ -99,7 +144,8 @@ export default {
       isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      lastPage: 1,
+      isAdvanceFilter: false
     }
   },
   computed: {
@@ -107,6 +153,9 @@ export default {
   },
   methods: {
     ...mapActions('masterCustomer', ['get']),
+    toggleAdvanceFeature () {
+      //
+    },
     updatePage (value) {
       this.currentPage = value
       this.getCustomerRequest()
@@ -152,3 +201,16 @@ export default {
   }
 }
 </script>
+
+<style>
+.card {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+</style>

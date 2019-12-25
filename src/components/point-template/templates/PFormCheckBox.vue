@@ -1,6 +1,6 @@
 <template>
-  <div class="form-group row">
-    <div class="col-12">
+  <div :class="{ 'form-group row': isForm }">
+    <div :class="{ 'col-12': isForm }">
       <label class="css-control css-control-primary css-checkbox" @click.prevent>
         <input
           :id="id"
@@ -33,6 +33,10 @@ export default {
     },
     checked: {
       type: [Boolean, Number]
+    },
+    isForm: {
+      type: Boolean,
+      default: true
     }
   },
   methods: {

@@ -1,7 +1,7 @@
 <template>
   <div class="form-group" :class="{ 'row' : isHorizontal }">
     <slot name="label">
-      <label class="col-form-label" :class="{'col-lg-3' : isHorizontal}" :for="id">{{ label | titlecase(transformTitle) }}</label>
+      <label class="col-form-label" :class="{'col-lg-3' : isHorizontal}" :for="id">{{ label | uppercase }}</label>
     </slot>
     <slot name="body">
       <div :class="{'col-lg-9' : isHorizontal}">
