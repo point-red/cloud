@@ -28,10 +28,11 @@
           </router-link>
         </div>
         <div class="text-center font-size-sm mb-10">
-          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">{{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
           </a>
         </div>
-        <div class="card animated" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
           <div class="row">
             <div class="col-sm-3 text-center">
               <p-form-row id="pricing-group" name="pricing-group" :label="$t('pricing group')" :is-horizontal="false">
@@ -50,8 +51,8 @@
           </div>
         </div>
         <hr>
-        <div class="btn-group btn-group-sm mr-15 animated" :class="{ 'fadeIn': checkedRow.length > 0 }" v-if="checkedRow.length > 0">
-          <button type="button" class="btn btn-secondary animated mr-5">
+        <div class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
+          <button type="button" class="btn btn-secondary mr-5">
             {{ $t('archive') | uppercase }}
           </button>
           <button type="button" class="btn btn-secondary">
