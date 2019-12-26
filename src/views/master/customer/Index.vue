@@ -50,15 +50,15 @@
           </div>
         </div>
         <hr>
-        <div class="btn-group btn-group-sm mr-15">
-          <button type="button" class="btn btn-secondary mr-5">
+        <div class="btn-group btn-group-sm mr-15 animated" :class="{ 'fadeIn': checkedRow.length > 0 }" v-if="checkedRow.length > 0">
+          <button type="button" class="btn btn-secondary animated mr-5">
             {{ $t('archive') | uppercase }}
           </button>
           <button type="button" class="btn btn-secondary">
             {{ $t('delete') | uppercase }}
           </button>
         </div>
-        <hr>
+        <hr v-if="checkedRow.length > 0">
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
@@ -68,6 +68,8 @@
                   id="subscibe"
                   name="subscibe"
                   :is-form="false"
+                  @click.native="toggleCheckRows()"
+                  :checked="isRowsChecked(customers, checkedRow)"
                   class="text-center"/>
               </th>
               <th>Name</th>
@@ -79,13 +81,16 @@
             <tr
               v-for="(customer, index) in customers"
               :key="index"
+              :class="{ 'bg-primary-lighter': isRowChecked(customer.id) }"
               slot="p-body">
-              <th>{{ index + 1}}</th>
+              <th :class="{ 'bg-primary-lighter': isRowChecked(customer.id) }">{{ index + 1}}</th>
               <td>
                 <p-form-check-box
                   :is-form="false"
                   id="subscibe"
                   name="subscibe"
+                  @click.native="toggleCheckRow(customer.id)"
+                  :checked="isRowChecked(customer.id)"
                   class="text-center"/>
               </td>
               <td>
@@ -145,7 +150,8 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
-      isAdvanceFilter: false
+      isAdvanceFilter: false,
+      checkedRow: []
     }
   },
   computed: {
@@ -153,8 +159,47 @@ export default {
   },
   methods: {
     ...mapActions('masterCustomer', ['get']),
-    toggleAdvanceFeature () {
-      //
+    toggleCheckRow (id) {
+      if (!this.isRowChecked(id)) {
+        this.checkedRow.push({ id })
+      } else {
+        this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(id), 1)
+      }
+    },
+    toggleCheckRows () {
+      let is = this.isRowsChecked(this.customers, this.checkedRow)
+      if (!is) {
+        this.customers.forEach(element => {
+          if (!this.isRowChecked(element.id)) {
+            let id = element.id
+            this.checkedRow.push({ id })
+          }
+        })
+      } else {
+        this.customers.forEach(element => {
+          this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(element.id), 1)
+        })
+      }
+    },
+    isRowChecked (id) {
+      return this.checkedRow.some(element => {
+        return element.id == id
+      })
+    },
+    isRowsChecked (haystack, needles) {
+      if (needles.length == 0) {
+        return false
+      }
+      for (let i = 0; i < haystack.length; i++) {
+        let found = needles.some(element => {
+          return element.id == haystack[i].id
+        })
+        if (!found) {
+          return false
+        }
+      }
+      console.log('b')
+      return true
     },
     updatePage (value) {
       this.currentPage = value

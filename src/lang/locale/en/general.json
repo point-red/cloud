@@ -22,5 +22,7 @@
   "approver": "approver",
   "code": "code",
   "notification": "notification",
-  "storage": "storage"
+  "storage": "storage",
+  "advance filter": "advance filter",
+  "archive": "archive"
 }
