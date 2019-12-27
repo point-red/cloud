@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">Role & Permission</span>
+      <span class="breadcrumb-item active">{{ $t('role & permission') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu></tab-menu>

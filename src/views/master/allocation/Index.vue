@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">{{ $t('allocation') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('allocation') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

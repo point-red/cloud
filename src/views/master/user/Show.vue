@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link to="/master/user" class="breadcrumb-item">User</router-link>
-      <span class="breadcrumb-item active">{{ user.name | titlecase }}</span>
+      <router-link to="/master/user" class="breadcrumb-item">{{ $t('user') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ user.name | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
@@ -39,7 +39,7 @@
             <label class="col-form-label col-lg-3">{{ 'Role' }}</label>
             <div class="col-lg-9">
               <template v-for="role in user.roles">
-                <a v-if="$permission.has('update user')" href="javascript:void(0)" :key="role.id" @click="$refs.role.show(user)">{{ role.name | titlecase }}</a>
+                <a v-if="$permission.has('update user')" href="javascript:void(0)" :key="role.id" @click="$refs.role.show(user)">{{ role.name | uppercase }}</a>
               </template>
             </div>
           </div>

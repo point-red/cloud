@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">Service Group</span>
+      <span class="breadcrumb-item active">{{ $t('service group') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

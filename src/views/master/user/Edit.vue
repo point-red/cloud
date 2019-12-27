@@ -2,10 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link
-        to="/master/user"
-        class="breadcrumb-item">User</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+      <router-link to="/master/user" class="breadcrumb-item">{{ $t('user') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

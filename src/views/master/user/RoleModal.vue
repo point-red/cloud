@@ -1,8 +1,6 @@
 <template>
   <div>
-    <form
-      class="row"
-      @submit.prevent="onSubmitRole">
+    <form class="row" @submit.prevent="onSubmitRole">
       <p-modal
         ref="assignRole"
         id="assignRole"
@@ -15,7 +13,7 @@
                 @click="onSubmitRole(role, index)"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 href="javascript:void(0)">
-                  <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ role.name | titlecase }}</span>
+                  <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ role.name | uppercase }}</span>
               </a>
             </template>
           </div>

@@ -2,9 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link to="/master/allocation" class="breadcrumb-item">{{ $t('allocation') | titlecase }}</router-link>
-      <router-link :to="'/master/allocation/'+form.id" class="breadcrumb-item">{{ form.name | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('edit') | titlecase }}</span>
+      <router-link to="/master/allocation" class="breadcrumb-item">{{ $t('allocation') | uppercase }}</router-link>
+      <router-link :to="'/master/allocation/'+form.id" class="breadcrumb-item">{{ form.name | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

@@ -24,5 +24,8 @@
   "notification": "notification",
   "storage": "storage",
   "advance filter": "advance filter",
-  "archive": "archive"
+  "archive": "archive",
+  "activate": "activate",
+  "menu": "menu",
+  "set permission": "set permission"
 }

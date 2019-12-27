@@ -2,9 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link to="/master/customer-group" class="breadcrumb-item">Customer Group</router-link>
-      <router-link :to="'/master/customer-group/'+form.id" class="breadcrumb-item">{{ form.name | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+      <router-link to="/master/customer-group" class="breadcrumb-item">{{ $t('customer group') | uppercase }}</router-link>
+      <router-link :to="'/master/customer-group/'+form.id" class="breadcrumb-item">{{ form.name | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

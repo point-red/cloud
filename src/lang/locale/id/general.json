@@ -24,5 +24,8 @@
   "notification": "notifikasi",
   "storage": "storage",
   "advance filter": "advance filter",
-  "archive": "archive"
+  "archive": "archive",
+  "active": "active",
+  "menu": "menu",
+  "set permission": "set permission"
 }

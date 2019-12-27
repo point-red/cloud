@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link to="/master/warehouse" class="breadcrumb-item">{{ $t('warehouse') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('create') | titlecase }}</span>
+      <router-link to="/master/warehouse" class="breadcrumb-item">{{ $t('warehouse') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
