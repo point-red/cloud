@@ -105,9 +105,17 @@
             <tr
               v-for="(customer, index) in customers"
               :key="index"
-              :class="{ 'bg-primary-lighter': isRowChecked(customer.id) }"
+              :class="{
+                'bg-gray': customer.archived_at != null,
+                'bg-primary-lighter': isRowChecked(customer.id)
+              }"
               slot="p-body">
-              <th :class="{ 'bg-primary-lighter': isRowChecked(customer.id) }">{{ index + 1}}</th>
+              <th :class="{
+                'bg-gray': customer.archived_at != null,
+                'bg-primary-lighter': isRowChecked(customer.id)
+              }">
+                {{ index + 1}}
+              </th>
               <td>
                 <p-form-check-box
                   :is-form="false"

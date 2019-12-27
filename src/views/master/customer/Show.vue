@@ -85,6 +85,14 @@
             class="btn btn-sm btn-danger">
             <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
           </button>
+          <button
+            type="button"
+            @click="onArchive()"
+            v-if="$permission.has('delete customer') && customer.archived_at == null"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-outline-danger ml-5">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Archive
+          </button>
         </p-block-inner>
       </p-block>
       <p-block v-if="forms.length > 0 && isLoadingSalesVisitation == false">
@@ -216,7 +224,7 @@ export default {
     ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
   },
   methods: {
-    ...mapActions('masterCustomer', ['find', 'delete']),
+    ...mapActions('masterCustomer', ['find', 'delete', 'archive']),
     ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),
     updatePage (value) {
       this.currentPage = value
@@ -251,6 +259,17 @@ export default {
       }).catch(response => {
         this.isDeleting = false
         this.$notification.error('cannot delete this customer')
+      })
+    },
+    onArchive () {
+      this.isDeleting = true
+      this.archive({
+        id: this.id
+      }).then(response => {
+        this.isDeleting = false
+      }).catch(response => {
+        this.isDeleting = false
+        this.$notification.error('cannot archive this customer')
       })
     }
   },
