@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Referral</span>
+      <span class="breadcrumb-item active">{{ $t('referral') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">

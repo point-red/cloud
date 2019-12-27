@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Profile</span>
+      <span class="breadcrumb-item active">{{ $t('profile') | uppercase }}</span>
     </breadcrumb>
     <div class="row">
       <div class="col-xl-3">
@@ -12,9 +12,7 @@
         :is-loading="loading"
         title="Profile"
         column="col-xl-9">
-        <form
-          class="px-30"
-          @submit.prevent="onSubmit">
+        <form class="px-30" @submit.prevent="onSubmit">
           <p-form-row
             id="name"
             name="name"

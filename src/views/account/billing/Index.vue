@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Billing</span>
+      <span class="breadcrumb-item active">{{ $t('billing') | uppercase }}</span>
     </breadcrumb>
 
     <p class="p-10 bg-danger text-white"><i class="fa fa-warning"></i> Under Construction (Demo Page)</p>

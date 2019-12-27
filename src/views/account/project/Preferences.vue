@@ -2,7 +2,7 @@
   <div>
     <p-loading-block v-show="isLoading"/>
     <breadcrumb>
-      <router-link to="/account/project" class="breadcrumb-item">Project</router-link>
+      <router-link to="/account/project" class="breadcrumb-item">{{ $t('project') | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ project.code | uppercase }}</span>
     </breadcrumb>
 

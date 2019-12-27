@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Email Subscription</span>
+      <span class="breadcrumb-item active">{{ $t('email subscription') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">

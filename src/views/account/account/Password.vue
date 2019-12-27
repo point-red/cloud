@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Password</span>
+      <span class="breadcrumb-item active">{{ $t('password') | uppercase }}</span>
     </breadcrumb>
     <div class="row">
       <div class="col-xl-3">

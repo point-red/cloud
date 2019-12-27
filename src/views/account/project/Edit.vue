@@ -1,16 +1,14 @@
 <template>
   <div>
     <breadcrumb>
-      <router-link
-        to="/account/project"
-        class="breadcrumb-item">Project
+      <router-link to="/account/project" class="breadcrumb-item">{{ $t('project') | uppercase }}
       </router-link>
       <router-link
         :to="{ path: '/account/project/' + project.id, params: { id: project.id }}"
         class="breadcrumb-item">
-        {{ project.code | titlecase }}
+        {{ project.code | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">Edit</span>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">

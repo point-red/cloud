@@ -93,43 +93,43 @@
               <router-link
                 to="/account/profile"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-user"/> {{ $t("profile") | titlecase }}</router-link>
+                class="sidebar-mini-hide"><i class="si si-user"/> {{ $t("profile") | uppercase }}</router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/project"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-notebook"/> {{ $t("project") | titlecase }}</router-link>
+                class="sidebar-mini-hide"><i class="si si-notebook"/> {{ $t("project") | uppercase }}</router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/billing"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-doc"/> {{ $t("billing") | titlecase }}</router-link>
+                class="sidebar-mini-hide"><i class="si si-doc"/> {{ $t("billing") | uppercase }}</router-link>
             </li>
             <!-- <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/notification"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-info"/> {{ $t("notification") | titlecase }}</router-link>
+                class="sidebar-mini-hide"><i class="si si-info"/> {{ $t("notification") | uppercase }}</router-link>
             </li> -->
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/reward"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-diamond"/> {{ $t("reward") | titlecase }}</router-link>
+                class="sidebar-mini-hide"><i class="si si-diamond"/> {{ $t("reward") | uppercase }}</router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/referral"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-share"/> {{ $t("referral") | titlecase }}</router-link>
+                class="sidebar-mini-hide"><i class="si si-share"/> {{ $t("referral") | uppercase }}</router-link>
             </li>
             <!-- <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/email-subscription"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-envelope"/> {{ $t("email subscription") | titlecase }}</router-link>
+                class="sidebar-mini-hide"><i class="si si-envelope"/> {{ $t("email subscription") | uppercase }}</router-link>
             </li> -->
           </ul>
         </div>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Reward</span>
+      <span class="breadcrumb-item active">{{ $t('reward') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row gutters-tiny">

@@ -1,11 +1,9 @@
 <template>
   <div>
     <breadcrumb>
-      <router-link
-        to="/account/project"
-        class="breadcrumb-item">Project
+      <router-link to="/account/project" class="breadcrumb-item">{{ $t('project') | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">Join</span>
+      <span class="breadcrumb-item active">{{ $t('join') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu></tab-menu>

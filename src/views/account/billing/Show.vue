@@ -1,9 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <router-link
-        to="/billing"
-        class="breadcrumb-item">Billing</router-link>
+      <router-link to="/billing" class="breadcrumb-item">{{ $t('billing') | uppercase }}</router-link>
       <span class="breadcrumb-item active">1903010001</span>
     </breadcrumb>
 
