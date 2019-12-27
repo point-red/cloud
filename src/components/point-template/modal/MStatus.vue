@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
+    <span @click="show" class="link">{{ mutableLabel || 'ACTIVE' | uppercase }}</span>
     <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != null">
       <i class="clickable fa fa-close"></i>
     </a>
