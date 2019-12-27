@@ -100,7 +100,7 @@ const actions = {
         })
     })
   },
-  archive (context, payload) {
+  archive ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url + '/' + payload.id + '/archive', payload)
         .then(response => {

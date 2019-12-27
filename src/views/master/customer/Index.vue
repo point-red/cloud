@@ -198,7 +198,7 @@ export default {
         label: null
       },
       status: {
-        id: null,
+        id: 0,
         label: null
       }
     }
