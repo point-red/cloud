@@ -110,6 +110,17 @@ const actions = {
           reject(error)
         })
     })
+  },
+  activate ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/' + payload.id + '/activate', payload)
+        .then(response => {
+          commit('FETCH_OBJECT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 
