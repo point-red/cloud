@@ -74,10 +74,13 @@
         </div>
         <hr>
         <div class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-          <button type="button" class="btn btn-secondary mr-5">
+          <button type="button" class="btn btn-secondary mr-5" @click="bulkArchiveCustomer()">
             {{ $t('archive') | uppercase }}
           </button>
-          <button type="button" class="btn btn-secondary">
+          <button type="button" class="btn btn-secondary mr-5" @click="bulkActivateCustomer()">
+            {{ $t('activate') | uppercase }}
+          </button>
+          <button type="button" class="btn btn-secondary" @click="bulkDeleteCustomer()">
             {{ $t('delete') | uppercase }}
           </button>
         </div>
@@ -207,7 +210,7 @@ export default {
     ...mapGetters('masterCustomer', ['customers', 'pagination'])
   },
   methods: {
-    ...mapActions('masterCustomer', ['get']),
+    ...mapActions('masterCustomer', ['get', 'bulkArchive', 'bulkActivate', 'bulkDelete']),
     toggleCheckRow (id) {
       if (!this.isRowChecked(id)) {
         this.checkedRow.push({ id })
@@ -247,6 +250,30 @@ export default {
         }
       }
       return true
+    },
+    bulkArchiveCustomer () {
+      this.bulkArchive({
+        customers: this.checkedRow
+      }).then(response => {
+        this.checkedRow = []
+        this.getCustomerRequest()
+      })
+    },
+    bulkActivateCustomer () {
+      this.bulkActivate({
+        customers: this.checkedRow
+      }).then(response => {
+        this.checkedRow = []
+        this.getCustomerRequest()
+      })
+    },
+    bulkDeleteCustomer () {
+      this.bulkDelete({
+        customers: this.checkedRow
+      }).then(response => {
+        this.checkedRow = []
+        this.getCustomerRequest()
+      })
     },
     chooseGroup (option) {
       this.group.label = option
