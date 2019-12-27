@@ -301,6 +301,7 @@ export default {
             'pricing_group_id': this.pricingGroup.id,
             'groups.id': this.group.id
           },
+          is_archived: this.status.id,
           join: 'addresses,phones,emails',
           includes: 'addresses;phones;emails;groups;pricingGroup',
           limit: 10,
