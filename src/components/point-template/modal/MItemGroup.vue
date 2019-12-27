@@ -1,6 +1,9 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span> &nbsp; <i v-show="mutableId" class="clickable fa fa-close" @click="clear"></i>
+    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span>
+    <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != null">
+      <i class="clickable fa fa-close"></i>
+    </a>
     <p-modal :ref="'select-' + id" :id="'select-' + id" title="select item group">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
@@ -141,6 +144,8 @@ export default {
       this.close()
     },
     clear () {
+      this.mutableId = null
+      this.mutableLabel = null
       this.$emit('input', null)
       this.$emit('clear')
     },

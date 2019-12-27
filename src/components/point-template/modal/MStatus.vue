@@ -1,13 +1,11 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span>
+    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
     <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != null">
       <i class="clickable fa fa-close"></i>
     </a>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select pricing group">
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select status">
       <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
-        <hr>
         <div v-if="isLoading">
           <h3 class="text-center">Loading ...</h3>
         </div>
@@ -19,15 +17,9 @@
             :class="{'active': option.id == mutableId }"
             @click="choose(option)"
             href="javascript:void(0)">
-            {{ option.label }}
+            {{ option.label | uppercase }}
           </a>
           </template>
-        </div>
-        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('pricing group') | capitalize }}, <br/> {{ $t('you can create') }}
-          <router-link :to="'/master/item-price-list'">
-            <span>{{ $t('new one') }}</span>
-          </router-link>
         </div>
       </template>
       <template slot="footer">
@@ -45,17 +37,15 @@ export default {
   data () {
     return {
       searchText: '',
-      options: [],
+      options: [
+        { id: 0, label: 'active' },
+        { id: 1, label: 'archived' }
+      ],
       mutableId: this.value,
       mutableLabel: this.label,
-      mutableClassReference: this.classReference,
-      mutableType: this.type,
       isSaving: false,
       isLoading: false
     }
-  },
-  computed: {
-    ...mapGetters('masterPricingGroup', ['groups', 'pagination'])
   },
   props: {
     id: {
@@ -70,49 +60,14 @@ export default {
     }
   },
   watch: {
-    value () {
-      this.mutableId = this.value
-    },
-    label () {
-      this.mutableLabel = this.label
-    },
     searchText: debounce(function () {
       this.search()
-    }, 300)
-  },
-  created () {
-    this.search()
+    }, 300),
+    label () {
+      this.mutableLabel = this.label
+    }
   },
   methods: {
-    ...mapActions('masterPricingGroup', ['get']),
-    search () {
-      this.isLoading = true
-      this.get({
-        params: {
-          sort_by: 'label',
-          limit: 50,
-          filter_like: {
-            label: this.searchText
-          }
-        }
-      }).then(response => {
-        this.options = []
-        this.mutableLabel = ''
-        response.data.map((key, value) => {
-          this.options.push({
-            'id': key['id'],
-            'label': key['label']
-          })
-
-          if (this.value == key['id']) {
-            this.mutableLabel = key['label']
-          }
-        })
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-      })
-    },
     choose (option) {
       this.mutableId = option.id
       this.mutableLabel = option.label

@@ -35,16 +35,38 @@
         <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
           <div class="row">
             <div class="col-sm-3 text-center">
+              <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
+                <div slot="body">
+                  <m-status
+                    :id="'status-id'"
+                    v-model="status.id"
+                    :label="status.label"
+                    @choosen="chooseStatus($event)"
+                    @clear="clearStatus()"/>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-3 text-center">
               <p-form-row id="pricing-group" name="pricing-group" :label="$t('pricing group')" :is-horizontal="false">
                 <div slot="body">
-                  <m-pricing-group :id="'pricing-group-id'"/>
+                  <m-pricing-group
+                    :id="'pricing-group-id'"
+                    v-model="pricingGroup.id"
+                    :label="pricingGroup.label"
+                    @choosen="choosePricingGroup($event)"
+                    @clear="clearPricingGroup()"/>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
               <p-form-row id="group" name="group" :label="$t('group')" :is-horizontal="false">
                 <div slot="body">
-                  <m-customer-group :id="'group'"/>
+                  <m-customer-group
+                    :id="'group'"
+                    v-model="group.id"
+                    :label="group.label"
+                    @choosen="chooseGroup($event)"
+                    @clear="clearGroup()"/>
                 </div>
               </p-form-row>
             </div>
@@ -77,6 +99,7 @@
               <th>Address</th>
               <th>Phone</th>
               <th>Email</th>
+              <th>Group</th>
               <th>Pricing Group</th>
             </tr>
             <tr
@@ -112,6 +135,11 @@
               <td>
                 <template v-for="customerEmail in customer.emails">
                   {{ customerEmail.email | lowercase }}
+                </template>
+              </td>
+              <td>
+                <template v-for="group in customer.groups">
+                  {{ group.name | lowercase }}
                 </template>
               </td>
               <td>
@@ -152,7 +180,19 @@ export default {
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
       isAdvanceFilter: false,
-      checkedRow: []
+      checkedRow: [],
+      group: {
+        id: null,
+        label: null
+      },
+      pricingGroup: {
+        id: null,
+        label: null
+      },
+      status: {
+        id: null,
+        label: null
+      }
     }
   },
   computed: {
@@ -168,8 +208,7 @@ export default {
       }
     },
     toggleCheckRows () {
-      let is = this.isRowsChecked(this.customers, this.checkedRow)
-      if (!is) {
+      if (!this.isRowsChecked(this.customers, this.checkedRow)) {
         this.customers.forEach(element => {
           if (!this.isRowChecked(element.id)) {
             let id = element.id
@@ -199,8 +238,40 @@ export default {
           return false
         }
       }
-      console.log('b')
       return true
+    },
+    chooseGroup (option) {
+      this.group.label = option
+      this.getCustomerRequest()
+    },
+    clearGroup () {
+      this.group = {
+        id: null,
+        label: null
+      }
+      this.getCustomerRequest()
+    },
+    choosePricingGroup (option) {
+      this.pricingGroup.label = option
+      this.getCustomerRequest()
+    },
+    clearPricingGroup () {
+      this.pricingGroup = {
+        id: null,
+        label: null
+      }
+      this.getCustomerRequest()
+    },
+    chooseStatus (option) {
+      this.status.label = option
+      this.getCustomerRequest()
+    },
+    clearStatus () {
+      this.status = {
+        id: null,
+        label: null
+      }
+      this.getCustomerRequest()
     },
     updatePage (value) {
       this.currentPage = value
@@ -217,6 +288,10 @@ export default {
             'addresses.address': this.searchText,
             'emails.email': this.searchText,
             'phones.number': this.searchText
+          },
+          filter_equal: {
+            'pricing_group_id': this.pricingGroup.id,
+            'groups.id': this.group.id
           },
           join: 'addresses,phones,emails',
           includes: 'addresses;phones;emails;groups;pricingGroup',
