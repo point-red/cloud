@@ -3,7 +3,7 @@
     <breadcrumb>
       <breadcrumb-plugin/>
       <breadcrumb-pin-point></breadcrumb-pin-point>
-      <span class="breadcrumb-item active">{{ $t('report') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('report') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu></tab-menu>

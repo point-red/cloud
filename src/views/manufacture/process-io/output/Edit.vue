@@ -2,10 +2,10 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | titlecase }}</router-link>
-      <router-link :to="'/manufacture/process-io/' + id + '/output'" class="breadcrumb-item">{{ $t('output') | titlecase }}</router-link>
+      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/process-io/' + id + '/output'" class="breadcrumb-item">{{ $t('output') | uppercase }}</router-link>
       <router-link :to="{ name: 'manufacture.process.io.output.show', params: { id: id, outputId: outputId }}" class="breadcrumb-item">{{ output.form.number | uppercase }}</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <manufacture-menu/>

@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <span class="breadcrumb-item active">Process IO</span>
-      <span class="breadcrumb-item active">{{ $t('process') | titlecase }} {{ process.name }}</span>
+      <span class="breadcrumb-item active">{{ $t('proccess') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ process.name | uppercase }}</span>
     </breadcrumb>
 
     <manufacture-menu></manufacture-menu>

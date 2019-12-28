@@ -1,9 +1,9 @@
 <template>
   <div>
     <breadcrumb>
-      <router-link to="/plugin" class="breadcrumb-item">Plugin</router-link>
-      <router-link to="/plugin/scale-weight" class="breadcrumb-item">Scale Weight</router-link>
-      <span class="breadcrumb-item active">Truck</span>
+      <router-link to="/plugin" class="breadcrumb-item">{{ $t('plugin') | uppercase }}</router-link>
+      <router-link to="/plugin/scale-weight" class="breadcrumb-item">{{ $t('scale weight') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('truck') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu></tab-menu>

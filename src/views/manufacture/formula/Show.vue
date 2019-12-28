@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link to="/manufacture/formula" class="breadcrumb-item">{{ $t('formula') | titlecase }}</router-link>
+      <router-link to="/manufacture/formula" class="breadcrumb-item">{{ $t('formula') | uppercase }}</router-link>
       <template v-if="formula.form.number">
         <span class="breadcrumb-item active">{{ formula.form.number | uppercase }}</span>
       </template>

@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <span class="breadcrumb-item active">{{ $t('formula') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('formula') | uppercase }}</span>
     </breadcrumb>
 
     <manufacture-menu/>

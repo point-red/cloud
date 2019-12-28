@@ -5,8 +5,8 @@
     <breadcrumb>
       <breadcrumb-plugin/>
       <breadcrumb-pin-point/>
-      <router-link to="/plugin/pin-point/sales-visitation-form" class="breadcrumb-item">{{ $t('sales visitation') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Create</span>
+      <router-link to="/plugin/pin-point/sales-visitation-form" class="breadcrumb-item">{{ $t('sales visitation') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

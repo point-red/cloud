@@ -2,9 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link :to="{ name: 'manufacture.formula.index' }" class="breadcrumb-item">{{ $t('formula') | titlecase }}</router-link>
+      <router-link :to="{ name: 'manufacture.formula.index' }" class="breadcrumb-item">{{ $t('formula') | uppercase }}</router-link>
       <router-link :to="{ name: 'manufacture.formula.show', params: { id: id }}" class="breadcrumb-item">{{ formula.form.number | uppercase }}</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <manufacture-menu/>

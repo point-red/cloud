@@ -3,11 +3,18 @@
   "role & permission" : "role & permission",
   "role and permission" : "role and permission",
   "customer" : "customer",
+  "customer group" : "customer group",
   "supplier" : "supplier",
+  "supplier group" : "supplier group",
   "expedition" : "expedition",
   "item" : "item",
+  "item group" : "item group",
+  "item price list" : "item price list",
   "service" : "service",
+  "service group" : "service group",
+  "service price list" : "service price list",
   "warehouse" : "warehouse",
   "set warehouse" : "set warehouse",
-  "allocation" : "allocation"
+  "allocation" : "allocation",
+  "allocation group" : "allocation group"
 }

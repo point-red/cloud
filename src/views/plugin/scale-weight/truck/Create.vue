@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-plugin/>
-      <router-link to="/plugin/scale-weight" class="breadcrumb-item">Scale Weight</router-link>
-      <router-link to="/plugin/scale-weight/truck" class="breadcrumb-item">Truck</router-link>
+      <router-link to="/plugin/scale-weight" class="breadcrumb-item">{{ $t('scale weight') | uppercase }}</router-link>
+      <router-link to="/plugin/scale-weight/truck" class="breadcrumb-item">{{ $t('truck') | uppercase }}</router-link>
     </breadcrumb>
 
     <tab-menu></tab-menu>

@@ -3,11 +3,18 @@
   "role & permission" : "hak akses",
   "role and permission" : "hak akses",
   "customer" : "pelanggan",
+  "customer group" : "grup pelanggan",
   "supplier" : "supplier",
-  "expedition" : "angkutan",
+  "supplier group" : "grup supplier",
+  "expedition" : "ekspedisi",
   "item" : "barang",
+  "item group" : "grup barang",
+  "item price list" : "daftar harga barang",
   "service" : "jasa",
+  "service group" : "grup jasa",
+  "service price list" : "daftar harga jasa",
   "warehouse" : "gudang",
-  "set warehouse" : "set gudang",
-  "allocation" : "alokasi"
+  "set warehouse" : "set hak akses gudang",
+  "allocation" : "alokasi",
+  "allocation group" : "grup alokasi"
 }

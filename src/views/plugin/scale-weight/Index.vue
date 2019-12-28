@@ -1,10 +1,8 @@
 <template>
   <div>
     <breadcrumb>
-      <router-link
-        to="/plugin"
-        class="breadcrumb-item">Plugin</router-link>
-      <span class="breadcrumb-item active">Scale Weight</span>
+      <router-link to="/plugin" class="breadcrumb-item">{{ $t('plugin') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('scale weight') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row gutters-tiny">

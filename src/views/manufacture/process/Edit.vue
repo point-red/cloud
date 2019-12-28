@@ -2,10 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link
-        to="/manufacture/process"
-        class="breadcrumb-item">{{ $t('process') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('edit') | titlecase }}</span>
+      <router-link to="/manufacture/process" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <manufacture-menu/>

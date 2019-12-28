@@ -6,7 +6,7 @@
       :class="{'btn-secondary': !isMatch('/manufacture/machine')}"
       active-class="btn-primary"
       v-if="$permission.has('read manufacture machine')">
-      <span>{{ $t('machine') | titlecase }}</span>
+      <span>{{ $t('machine') | uppercase }}</span>
     </router-link>
     <router-link
       to="/manufacture/process"
@@ -14,7 +14,7 @@
       :class="{'btn-secondary': !isMatch('/manufacture/process')}"
       active-class="btn-primary"
       v-if="$permission.has('read manufacture process')">
-      <span>{{ $t('process') | titlecase }}</span>
+      <span>{{ $t('process') | uppercase }}</span>
     </router-link>
     <router-link
       to="/manufacture/formula"
@@ -22,7 +22,7 @@
       :class="{'btn-secondary': !isMatch('/manufacture/formula')}"
       active-class="btn-primary"
       v-if="$permission.has('read manufacture formula')">
-      <span>{{ $t('formula') | titlecase }}</span>
+      <span>{{ $t('formula') | uppercase }}</span>
     </router-link>
   </div>
 </template>

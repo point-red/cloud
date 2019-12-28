@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-plugin></breadcrumb-plugin>
-      <span class="breadcrumb-item active">Pin Point</span>
+      <span class="breadcrumb-item active">{{ $t('pin point') | uppercase }}</span>
     </breadcrumb>
     <div class="row gutters-tiny">
       <p-box
