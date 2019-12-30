@@ -173,18 +173,6 @@
                     active-class="active">{{ $t('kpi template') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read employee')">
-                  <router-link
-                    to="/human-resource/job-location"
-                    active-class="active">{{ $t('job location') | uppercase }}
-                  </router-link>
-                </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read employee')">
-                  <router-link
-                    to="/human-resource/employee-status"
-                    active-class="active">{{ $t('employee status') | uppercase }}
-                  </router-link>
-                </li>
               </ul>
             </li>
             <!-- <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">

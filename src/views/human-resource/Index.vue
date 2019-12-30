@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Human Resource</span>
+      <span class="breadcrumb-item active">{{ $t('human resource') | uppercase }}</span>
     </breadcrumb>
     <div class="row gutters-tiny">
       <p-box
@@ -13,16 +13,6 @@
         name="Kpi Template"
         v-if="$permission.has('read employee kpi')"
         link="/human-resource/kpi"
-        icon="si si-badge"/>
-      <p-box
-        name="Job Locations"
-        v-if="$permission.has('read employee')"
-        link="/human-resource/job-location"
-        icon="si si-badge"/>
-      <p-box
-        name="Employee Status"
-        v-if="$permission.has('read employee')"
-        link="/human-resource/employee-status"
         icon="si si-badge"/>
     </div>
   </div>

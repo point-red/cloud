@@ -27,5 +27,8 @@
   "archive": "archive",
   "active": "active",
   "menu": "menu",
-  "set permission": "set permission"
+  "set permission": "set permission",
+  "attachment": "attachment",
+  "upload": "upload",
+  "file": "file"
 }

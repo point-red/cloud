@@ -4,11 +4,11 @@
       <breadcrumb-human-resource/>
       <router-link
         to="/human-resource/job-location"
-        class="breadcrumb-item">{{ $t('job location') | titlecase }}</router-link>
+        class="breadcrumb-item">{{ $t('job location') | uppercase }}</router-link>
       <router-link
         :to="'/human-resource/job-location/' + jobLocation.id"
-        class="breadcrumb-item">{{ jobLocation.name | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+        class="breadcrumb-item">{{ jobLocation.name | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

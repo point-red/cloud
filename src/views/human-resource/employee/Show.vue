@@ -2,10 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-human-resource/>
-      <router-link
-        to="/human-resource/employee"
-        class="breadcrumb-item">{{ $t('employee') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ employee.name | titlecase }}</span>
+      <router-link to="/human-resource/employee" class="breadcrumb-item">{{ $t('employee') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ employee.name | uppercase }}</span>
     </breadcrumb>
 
     <employee-widget :id="id"></employee-widget>
@@ -234,6 +232,32 @@
           </div>
         </p-block-inner>
       </p-block>
+      <p-block
+        :header="true"
+        :title="$t('attachment')"
+        column="col-sm-12">
+        <p-block-inner :is-loading="isLoading">
+          <div class="row">
+            <div
+              class="col-md-6 col-xl-3 mb-15"
+              v-for="cloudStorage in cloudStorages"
+              :key="cloudStorage.id">
+              <div class="card block-rounded block-link-shadow text-center">
+                <div v-if="cloudStorage.preview" class="block-content block-content-full bg-image" :style="'background-image: url(' + cloudStorage.preview + '); height: 130px'">
+                </div>
+                <div v-else class="block-content block-content-full bg-image" :style="'height: 130px'">
+                </div>
+                <div class="block-content block-content-full block-content-sm" style="height:50px;overflow: auto">
+                  <div class="font-size-sm">{{ cloudStorage.notes }}</div>
+                </div>
+                <div class="p-5">
+                  <a :href="cloudStorage.download_url"><i class="fa fa-download"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-block-inner>
+      </p-block>
     </div>
   </div>
 </template>
@@ -262,7 +286,8 @@ export default {
   },
   computed: {
     ...mapGetters('humanResourceEmployee', ['employee', 'employees']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    ...mapGetters('cloudStorage', ['cloudStorages'])
   },
   created () {
     this.isLoading = true
@@ -278,9 +303,11 @@ export default {
     }).catch(error => {
       console.log(JSON.stringify(error))
     })
+    this.getAttachmentRequest()
   },
   methods: {
     ...mapActions('humanResourceEmployee', { findEmployee: 'find', deleteEmployee: 'delete' }),
+    ...mapActions('cloudStorage', { getAttachment: 'get' }),
     onDelete () {
       this.isDeleting = true
       this.deleteEmployee({ id: this.id })
@@ -291,6 +318,23 @@ export default {
           this.isDeleting = false
           console.log(JSON.stringify(error))
         })
+    },
+    getAttachmentRequest () {
+      this.isLoading = true
+      this.getAttachment({
+        params: {
+          filter_equal: {
+            'is_user_protected': false,
+            'feature': 'employee',
+            'feature_id': this.id
+          },
+          sort_by: '-id'
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+      })
     }
   }
 }

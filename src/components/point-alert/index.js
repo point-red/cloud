@@ -55,6 +55,23 @@ export default {
             resolve()
           })
         })
+      },
+      confirm (title = 'Are you sure?', text = 'You won\'t be able to revert this!') {
+        return new Promise((resolve, reject) => {
+          Vue.swal.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirm'
+          }).then((result) => {
+            if (result.value) {
+              resolve()
+            }
+          })
+        })
       }
     }
     const toast = Vue.swal.mixin({

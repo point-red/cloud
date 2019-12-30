@@ -2,10 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-human-resource/>
-      <router-link
-        to="/human-resource/job-location"
-        class="breadcrumb-item">{{ $t('job location') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ jobLocation.name | titlecase }}</span>
+      <router-link to="/human-resource/job-location" class="breadcrumb-item">{{ $t('job location') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ jobLocation.name | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

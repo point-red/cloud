@@ -90,32 +90,43 @@ export default {
 </script>
 
 <style>
-  .no-wrap {
-    white-space: nowrap;
-  }
-  .vue-notification.info {
-    background: #0c80df;
-    border-left-color: #0073d1;
-  }
-  .full-width {
-    width: 100%;
-  }
-  .block.block-mode-loading::after {
-    top: 50px;
-  }
+.no-wrap {
+  white-space: nowrap;
+}
+.vue-notification.info {
+  background: #0c80df;
+  border-left-color: #0073d1;
+}
+.full-width {
+  width: 100%;
+}
+.block.block-mode-loading::after {
+  top: 50px;
+}
 
-  .block-content-inner {
-    padding: 0px !important;
-  }
-  /* .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.5s;
-  }
+.block-content-inner {
+  padding: 0px !important;
+}
+/* .fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
 
-  .fade-enter,
-  .fade-leave-to
-  {
-    opacity: 0;
-    transition: opacity;
-  } */
+.fade-enter,
+.fade-leave-to
+{
+  opacity: 0;
+  transition: opacity;
+} */
+
+.card {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
 </style>

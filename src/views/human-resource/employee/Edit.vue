@@ -4,11 +4,11 @@
       <breadcrumb-human-resource/>
       <router-link
         to="/human-resource/employee"
-        class="breadcrumb-item">{{ $t('employee') | titlecase }}</router-link>
+        class="breadcrumb-item">{{ $t('employee') | uppercase }}</router-link>
       <router-link
         :to="'/human-resource/employee/' + employee.id"
-        class="breadcrumb-item">{{ employee.name | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+        class="breadcrumb-item">{{ employee.name | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <employee-widget :id="id"></employee-widget>
@@ -17,7 +17,7 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block
-        :is-loading="loading"
+        :is-loading="isLoading"
         :header="true"
         :title="$t('employee')"
         column="col-sm-12">
@@ -518,7 +518,58 @@
           </div>
         </div>
       </p-block>
+
+      <p-block
+        :is-loading="isLoading"
+        :header="true"
+        :title="$t('attachment')"
+        column="col-sm-12">
+        <div class="form-group row">
+          <div class="col-md-12">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary"
+              :disabled="isSaving"
+              @click="$refs.uploadModal.show()">
+                <i class="fa fa-plus"></i> {{ $t('upload') | uppercase }}
+            </button>
+          </div>
+        </div>
+        <hr>
+        <p-block-inner :is-loading="isLoading">
+          <div class="row">
+            <div
+              class="col-md-6 col-xl-3 mb-15"
+              v-for="cloudStorage in cloudStorages"
+              :key="cloudStorage.id">
+              <div class="card block-rounded block-link-shadow text-center">
+                <div v-if="cloudStorage.preview" class="block-content block-content-full bg-image" :style="'background-image: url(' + cloudStorage.preview + '); height: 130px'">
+                </div>
+                <div v-else class="block-content block-content-full bg-image" :style="'height: 130px'">
+                </div>
+                <div class="block-content block-content-full block-content-sm" style="height:50px;overflow: auto">
+                  <div class="font-size-sm">{{ cloudStorage.notes }}</div>
+                </div>
+                <div class="p-5">
+                  <a href="javascript:void(0)" class="mr-15"><i class="fa fa-pencil"></i></a>
+                  <a :href="cloudStorage.download_url" class="mr-15"><i class="fa fa-download"></i></a>
+                  <a href="javascript:void(0)" @click="deleteAttachment(cloudStorage.id, cloudStorage.key)"><i class="fa fa-trash"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-block-inner>
+      </p-block>
     </form>
+
+    <upload-modal
+      id="file"
+      ref="uploadModal"
+      title="Upload"
+      formRef="uploadForm"
+      feature="employee"
+      :is-user-protected="true"
+      @uploaded="attachmentUploaded"/>
 
     <address-modal
       id="address"
@@ -567,7 +618,6 @@
       ref="scorerModal"
       title="Scorer"
       @add="onSubmitScorer"/>
-
   </div>
 </template>
 
@@ -584,6 +634,7 @@ import SocialMediaModal from './modal/SocialMediaModal'
 import ContractModal from './modal/ContractModal'
 import SalaryModal from './modal/SalaryModal'
 import ScorerModal from './modal/ScorerModal'
+import UploadModal from './modal/UploadModal'
 import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -600,12 +651,13 @@ export default {
     SocialMediaModal,
     ContractModal,
     SalaryModal,
-    ScorerModal
+    ScorerModal,
+    UploadModal
   },
   data () {
     return {
       id: this.$route.params.id,
-      loading: false,
+      isLoading: false,
       isSaving: false,
       form: new Form({
         name: '',
@@ -650,16 +702,17 @@ export default {
     ...mapGetters('humanResourceEmployeeGender', ['genderList']),
     ...mapGetters('humanResourceEmployeeMaritalStatus', ['maritalStatusList']),
     ...mapGetters('humanResourceEmployeeStatus', ['statusList']),
-    ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocationList'])
+    ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocationList']),
+    ...mapGetters('cloudStorage', ['cloudStorages'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.getGroups()
       .then((response) => {
-        this.loading = false
+        this.isLoading = false
         console.log(response.data)
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         console.log(JSON.stringify(error))
       })
     this.getMaritalStatuses()
@@ -694,16 +747,17 @@ export default {
     this.findEmployee({
       id: this.id
     }).then((response) => {
-      this.loading = false
+      this.isLoading = false
       for (let field in this.form) {
         if (response.data[field]) this.form[field] = response.data[field]
       }
       this.form.id = response.data.id
       this.form.company_emails = response.data.company_emails
     }, (error) => {
-      this.loading = false
+      this.isLoading = false
       console.log(JSON.stringify(error))
     })
+    this.getAttachmentRequest()
   },
   methods: {
     ...mapActions('humanResourceEmployeeGroup', { getGroups: 'get' }),
@@ -713,6 +767,7 @@ export default {
     ...mapActions('humanResourceEmployeeStatus', { getStatuses: 'get' }),
     ...mapActions('humanResourceEmployeeJobLocation', { getJobLocations: 'get' }),
     ...mapActions('humanResourceEmployee', { findEmployee: 'find', updateEmployee: 'update' }),
+    ...mapActions('cloudStorage', { getAttachment: 'get' }),
     onSubmitContract (data) {
       this.form.contracts.push(data)
       this.$refs.contractModal.close()
@@ -781,6 +836,46 @@ export default {
           this.$notification.error('Update failed', error.message)
           this.form.errors.record(error.errors)
         })
+    },
+    getAttachmentRequest () {
+      this.isLoading = true
+      this.getAttachment({
+        params: {
+          filter_equal: {
+            'is_user_protected': false,
+            'feature': 'employee',
+            'feature_id': this.id
+          },
+          sort_by: '-id'
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+      })
+    },
+    attachmentUploaded (payload) {
+      this.getAttachmentRequest()
+    },
+    deleteAttachment (id, key) {
+      this.$alert.confirm('DELETE ATTACHMENT').then(response => {
+        this.isSaving = true
+        this.deleteCloudStorage({
+          id: id,
+          params: {
+            key: key
+          }
+        }).then(response => {
+          this.isSaving = false
+          this.$alert.success('FILE DELETED')
+          this.getAttachmentRequest()
+        }).catch(error => {
+          this.isSaving = false
+          this.$alert.error(error.message)
+        })
+      }).catch(error => {
+        this.$alert.error(error.message)
+      })
     }
   }
 }

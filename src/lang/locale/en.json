@@ -44,6 +44,9 @@
 	"activate": "activate",
 	"menu": "menu",
 	"set permission": "set permission",
+	"attachment": "attachment",
+	"upload": "upload",
+	"file": "file",
 	"dashboard": "dashboard",
 	"main menu": "main menu",
 	"master": "master",
@@ -313,5 +316,6 @@
 	"weekly sales": "weekly sales",
 	"wa daily report": "wa daily report",
 	"amount received difference": "amount received difference",
-	"if kpi 100%": "if kpi 100%"
+	"if kpi 100%": "if kpi 100%",
+	"allowance": "allowance"
 }

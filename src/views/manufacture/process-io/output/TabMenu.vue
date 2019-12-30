@@ -7,7 +7,7 @@
         exact
         class="nav-link"
         active-class="active">
-        <span>{{ $t('input') | titlecase }}</span>
+        <span>{{ $t('input') | uppercase }}</span>
       </router-link>
     </li>
     <li class="nav-item" v-if="$permission.has('read manufacture')">
@@ -16,7 +16,7 @@
         exact
         class="nav-link"
         active-class="active">
-        <span>{{ $t('output') | titlecase }}</span>
+        <span>{{ $t('output') | uppercase }}</span>
       </router-link>
     </li>
     <slot name="right"></slot>

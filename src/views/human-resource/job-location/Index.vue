@@ -2,19 +2,31 @@
   <div>
     <breadcrumb>
       <breadcrumb-human-resource/>
-      <span class="breadcrumb-item active">{{ 'job location' | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ 'job location' | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('job location')" :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block :title="$t('job location')">
+        <div class="input-group block mb-5">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            class="btn-block"
+            ref="searchText"
+            :value="searchText"
+            @input="filterSearch"/>
+          <router-link
+            to="/human-resource/job-location/create"
+            v-if="$permission.has('create employee')"
+            class="input-group-append">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
+        </div>
         <hr>
         <p-block-inner :is-loading="loading">
           <point-table>
