@@ -518,49 +518,47 @@
           </div>
         </div>
       </p-block>
+    </form>
 
-      <p-block
-        :is-loading="isLoading"
-        :header="true"
-        :title="$t('attachment')"
-        column="col-sm-12">
-        <div class="form-group row">
-          <div class="col-md-12">
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-primary"
-              :disabled="isSaving"
-              @click="$refs.uploadModal.show()">
-                <i class="fa fa-plus"></i> {{ $t('upload') | uppercase }}
-            </button>
-          </div>
-        </div>
+    <div class="row">
+      <p-block>
+        <h5>{{ $t('attachment') | uppercase }}</h5>
+        <hr>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          :disabled="isSaving"
+          @click="$refs.uploadModal.show()">
+            <i class="fa fa-plus"></i> {{ $t('upload') | uppercase }}
+        </button>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div
-              class="col-md-6 col-xl-3 mb-15"
-              v-for="cloudStorage in cloudStorages"
-              :key="cloudStorage.id">
+            class="col-md-6 col-xl-3 mb-15"
+            v-for="(cloudStorage, index) in cloudStorages"
+            :key="cloudStorage.id">
               <div class="card block-rounded block-link-shadow text-center">
                 <div v-if="cloudStorage.preview" class="block-content block-content-full bg-image" :style="'background-image: url(' + cloudStorage.preview + '); height: 130px'">
                 </div>
                 <div v-else class="block-content block-content-full bg-image" :style="'height: 130px'">
                 </div>
                 <div class="block-content block-content-full block-content-sm" style="height:50px;overflow: auto">
-                  <div class="font-size-sm">{{ cloudStorage.notes }}</div>
+                  <div v-if="editIndex != index" class="font-size-sm">{{ cloudStorage.notes }}</div>
+                  <input type="text" :ref="'notes-'+index" v-if="editIndex == index" v-model="cloudStorage.notes" class="form-control">
                 </div>
-                <div class="p-5">
-                  <a href="javascript:void(0)" class="mr-15"><i class="fa fa-pencil"></i></a>
-                  <a :href="cloudStorage.download_url" class="mr-15"><i class="fa fa-download"></i></a>
-                  <a href="javascript:void(0)" @click="deleteAttachment(cloudStorage.id, cloudStorage.key)"><i class="fa fa-trash"></i></a>
+                <div class="p-10">
+                  <a href="javascript:void(0)" v-if="editIndex != index" @click="editIndex = index" class="mr-15 btn btn-sm btn-outline-primary"><i class="fa fa-pencil"></i></a>
+                  <a href="javascript:void(0)" v-if="editIndex == index" @click="updateNotes(cloudStorage)" class="mr-15 btn btn-sm btn-outline-primary">{{ $t('update') | uppercase }}</a>
+                  <a :href="cloudStorage.download_url" class="mr-15 btn btn-sm btn-outline-primary"><i class="fa fa-download"></i></a>
+                  <a href="javascript:void(0)" class="btn btn-sm btn-outline-danger" @click="deleteAttachment(cloudStorage.id, cloudStorage.key)"><i class="fa fa-trash"></i></a>
                 </div>
               </div>
             </div>
           </div>
         </p-block-inner>
       </p-block>
-    </form>
+    </div>
 
     <upload-modal
       id="file"
@@ -568,7 +566,8 @@
       title="Upload"
       formRef="uploadForm"
       feature="employee"
-      :is-user-protected="true"
+      :featureId="id"
+      :is-user-protected="false"
       @uploaded="attachmentUploaded"/>
 
     <address-modal
@@ -659,6 +658,7 @@ export default {
       id: this.$route.params.id,
       isLoading: false,
       isSaving: false,
+      editIndex: -1,
       form: new Form({
         name: '',
         birth_date: '',
@@ -767,7 +767,18 @@ export default {
     ...mapActions('humanResourceEmployeeStatus', { getStatuses: 'get' }),
     ...mapActions('humanResourceEmployeeJobLocation', { getJobLocations: 'get' }),
     ...mapActions('humanResourceEmployee', { findEmployee: 'find', updateEmployee: 'update' }),
-    ...mapActions('cloudStorage', { getAttachment: 'get' }),
+    ...mapActions('cloudStorage', { getAttachment: 'get', updateAttachment: 'update', deleteCloudStorage: 'delete' }),
+    updateNotes (cloudStorage) {
+      this.updateAttachment({
+        id: cloudStorage.id,
+        key: cloudStorage.key,
+        notes: cloudStorage.notes
+      }).then(response => {
+        this.editIndex = -1
+      }).catch(error => {
+        this.editIndex = -1
+      })
+    },
     onSubmitContract (data) {
       this.form.contracts.push(data)
       this.$refs.contractModal.close()
@@ -858,7 +869,7 @@ export default {
       this.getAttachmentRequest()
     },
     deleteAttachment (id, key) {
-      this.$alert.confirm('DELETE ATTACHMENT').then(response => {
+      this.$alert.confirm('DELETE').then(response => {
         this.isSaving = true
         this.deleteCloudStorage({
           id: id,
