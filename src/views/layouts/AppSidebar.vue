@@ -238,7 +238,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li>
+            </li> -->
             <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
               <router-link to="/pos" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>
@@ -258,7 +258,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li> -->
+            </li>
             <!-- <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
               <router-link to="/inventory" class="nav-submenu" active-class="active">
                 <i class="si si-tag"/>

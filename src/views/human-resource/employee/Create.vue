@@ -551,6 +551,7 @@
       formRef="uploadForm"
       feature="employee"
       :is-user-protected="true"
+      :expiration-day="1"
       @uploaded="attachmentUploaded"/>
   </div>
 </template>

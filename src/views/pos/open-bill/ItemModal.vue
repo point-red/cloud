@@ -9,8 +9,8 @@
         :title="title | uppercase">
         <template slot="content">
           <p-form-row
-            id="name"
-            name="name"
+            id="item-name"
+            name="item-name"
             label="name"
             :disabled="true"
             v-model="item_name">
@@ -27,20 +27,6 @@
             </div>
           </p-form-row>
           <p-form-row
-            id="production-number"
-            name="production-number"
-            label="production number"
-            :disabled="true"
-            v-model="production_number">
-          </p-form-row>
-          <p-form-row
-            id="expiry-date"
-            name="expiry-date"
-            label="expiry date"
-            :disabled="true"
-            v-model="expiry_date">
-          </p-form-row>
-          <p-form-row
             id="quantity"
             name="quantity"
             :label="$t('quantity')">
@@ -50,7 +36,7 @@
                 :readonly="loadingSaveButton"
                 :is-text-right="false"
                 :unsigned="true"
-                :unit="unit"
+                :unit="unit.label"
                 :showAddReduceButtons="true"/>
             </div>
           </p-form-row>
@@ -77,24 +63,6 @@
           </p-form-row>
         </template>
         <template slot="footer">
-          <button
-            :disabled="loadingSaveButton"
-            type="button"
-            class="btn btn-primary"
-            @click="update">
-            <i
-              v-show="loadingSaveButton"
-              class="fa fa-asterisk fa-spin"/> Update
-          </button>
-          <button
-            :disabled="loadingSaveButton"
-            type="button"
-            class="btn btn-danger"
-            @click="remove">
-            <i
-              v-show="loadingSaveButton"
-              class="fa fa-asterisk fa-spin"/> Delete
-          </button>
           <button :disabled="loadingSaveButton" type="button" class="btn btn-outline-danger" @click="close">
             <i
               v-show="loadingSaveButton"
@@ -135,7 +103,7 @@ export default {
     show (index, item) {
       this.index = index
       this.item_name = item.item_name
-      this.unit = item.unit
+      this.unit = item.item_unit
       this.quantity = item.quantity
       this.price = item.price
       this.discount_percent = item.discount_percent
@@ -145,9 +113,6 @@ export default {
       this.$refs.itemModal.show()
     },
     close () {
-      this.$refs.itemModal.close()
-    },
-    update () {
       if (this.discount_percent > 100) {
         this.discount_percent = 100
       } else if (this.discount_percent < 0) {
@@ -159,23 +124,6 @@ export default {
           quantity: parseFloat(this.quantity),
           discount_percent: parseFloat(this.discount_percent),
           notes: this.notes
-        }
-      })
-      this.index = null
-      this.item_name = null
-      this.unit = ''
-      this.quantity = null
-      this.price = null
-      this.discount_percent = null
-      this.notes = null
-      this.production_number = null
-      this.expiry_date = null
-      this.$refs.itemModal.close()
-    },
-    remove () {
-      this.$emit('deleteItem', {
-        item: {
-          index: this.index
         }
       })
       this.index = null

@@ -96,6 +96,7 @@
                 <m-inventory-out
                   :id="'inventory-' + index"
                   :itemId="row.item_id"
+                  :itemUnit="row.item.units[0]"
                   :requireExpiryDate="row.item.require_expiry_date"
                   :requireProductionNumber="row.item.require_production_number"
                   :warehouseId="row.warehouse_id"

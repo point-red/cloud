@@ -7,8 +7,6 @@
 
     <pos-menu/>
 
-    <tab-menu/>
-
     <div class="row">
       <p-block :title="$t('closed bill')" :header="true">
         <div class="row mb-10">
@@ -18,45 +16,53 @@
             class="col-sm-4"
             v-model="date"/>
         </div>
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
+        <div class="input-group block">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
+          <router-link
+            to="/pos/open-bill/create"
+            v-if="$permission.has('create pos')"
+            class="input-group-append">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
+        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th>Number</th>
-              <th>Date</th>
-              <th>Customer</th>
-              <th class="text-right">Amount</th>
-              <th></th>
+              <th>{{ $t('date') | titlecase }}</th>
+              <th>{{ $t('number') | titlecase }}</th>
+              <th>{{ $t('customer') | titlecase }}</th>
+              <th>{{ $t('amount') | titlecase }}</th>
+              <th>&nbsp;</th>
             </tr>
             <template v-for="(bill, index) in bills">
               <tr
                 :key="'pb-' + index"
                 slot="p-body">
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
+                <td>{{ bill.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>
-                  <router-link v-if="$permission.has('read pos')" :to="{ name: 'pos.closed-bill.show', params: { id: bill.id }}">
+                  <router-link :to="{ name: 'pos.closed-bill.show', params: { id: bill.id }}">
                     {{ bill.form.number }}
                   </router-link>
-                  <template v-else>
-                    {{ bill.form.number }}
-                  </template>
                 </td>
-                <td>{{ bill.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>
                   <template v-if="bill.customer">
                     {{ bill.customer.name }}
                   </template>
                 </td>
-                <td class="text-right">{{ bill.amount | numberFormat }}</td>
+                <td>{{ bill.amount | numberFormat }}</td>
                 <td class="text-right">
-                  <button class="btn btn-sm btn-danger" @click="deleteBill(bill.id)" v-if="$permission.has('delete pos')" :disabled="isDeleting">
+                  <button class="btn btn-sm btn-danger" @click="deleteBill(bill.id)" :disabled="isDeleting">
                     <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
                   </button>
                 </td>
@@ -75,7 +81,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import PosMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPos from '@/views/pos/Breadcrumb'
@@ -85,7 +90,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     PosMenu,
     Breadcrumb,
     BreadcrumbPos,
@@ -93,34 +97,32 @@ export default {
   },
   data () {
     return {
-      date: {
-        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
-        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
-      },
       isLoading: true,
       isDeleting: false,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
-      limit: 10
+      limit: 10,
+      date: {
+        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
+        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
+      }
+    }
+  },
+  watch: {
+    date: function () {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          date_from: this.date.start,
+          date_to: this.date.end
+        }
+      })
+      this.getBills()
     }
   },
   computed: {
     ...mapGetters('posBill', ['bills', 'pagination'])
-  },
-  watch: {
-    date: function () {
-      if (this.date.start && this.date.end) {
-        this.$router.push({
-          query: {
-            ...this.$route.query,
-            date_from: this.date.start,
-            date_to: this.date.end
-          }
-        })
-        this.getBills()
-      }
-    }
   },
   methods: {
     ...mapActions('posBill', ['get', 'delete']),
@@ -140,13 +142,15 @@ export default {
       this.get({
         params: {
           join: 'form,customer',
-          fields: 'pos_bills.*',
           sort_by: '-forms.number',
+          fields: 'pos_bills.*',
           filter_form: 'activeDone',
+          filter_equal: {
+            'form.done': 1
+          },
           filter_like: {
             'form.number': this.searchText,
-            'customer.name': this.searchText,
-            'form.done': 1
+            'customer.name': this.searchText
           },
           filter_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))

@@ -7,7 +7,8 @@ const state = {
     name: '',
     email: '',
     address: '',
-    phone: ''
+    phone: '',
+    warehouses: []
   },
   users: [],
   userList: [],

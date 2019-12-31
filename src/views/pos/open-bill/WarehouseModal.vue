@@ -25,12 +25,13 @@
               </template>
             </div>
           </div>
-          <!-- <div class="alert alert-info text-center" v-if="user.warehouses.length == 0 && !isLoading">
-            {{ $t('you don\'t have any') | capitalize }} {{ $t('warehouse') | capitalize }}, <br/> {{ $t('you can create') }}
-            <router-link :to="'/master/user/' + userId">
-              <span>{{ $t('new one') }}</span>
+          <div class="alert alert-info text-center" v-if="user.warehouses.length == 0 && !isLoading">
+            {{ $t('you don\'t have access to any') | capitalize }} {{ $t('warehouse') | capitalize }}
+            <br/>
+            <router-link :to="'/master/user/'">
+              <span>{{ $t('add access to') | capitalize }} {{ $t('warehouse') | capitalize }}</span>
             </router-link>
-          </div> -->
+          </div>
         </template>
       </p-modal>
     </form>
@@ -50,7 +51,6 @@ export default {
   data () {
     return {
       title: 'Warehouse',
-      warehouseId: null,
       isLoading: false,
       userId: localStorage.getItem('userId')
     }
@@ -61,7 +61,7 @@ export default {
   methods: {
     ...mapActions('masterUser', ['find']),
     show () {
-      this.warehouseId = localStorage.getItem('defaultWarehouse')
+      let defaultWarehouse = localStorage.getItem('defaultWarehouse')
       this.isLoading = true
       this.$refs.warehouseModal.show()
       this.find({
@@ -70,12 +70,9 @@ export default {
           includes: 'warehouses'
         }
       }).then((response) => {
-        if (this.warehouseId) {
-          this.user.warehouses.forEach(warehouse => {
-            if (warehouse.id === parseInt(this.warehouseId)) {
-              this.onSubmitWarehouse(warehouse)
-            }
-          })
+        let warehouseIndex = this.user.warehouses.findIndex(o => o.id === parseInt(localStorage.getItem('defaultWarehouse')))
+        if (warehouseIndex >= 0) {
+          this.onSubmitWarehouse(this.user.warehouses[warehouseIndex])
         }
         this.isLoading = false
       }, (error) => {
@@ -84,8 +81,9 @@ export default {
       })
     },
     onSubmitWarehouse (warehouse) {
+      localStorage.setItem('defaultWarehouse', warehouse.id)
       this.$emit('updateWarehouse', {
-        warehouse: warehouse
+        warehouseId: warehouse.id
       })
       this.$refs.warehouseModal.close()
     }

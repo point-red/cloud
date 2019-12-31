@@ -1,6 +1,7 @@
 <template>
   <div>
     <button
+      v-if="!isPos"
       type="button"
       @click="show"
       class="btn btn-primary btn-sm">
@@ -10,15 +11,15 @@
       <template slot="content">
         <p-table>
           <tr slot="p-head">
-            <th v-if="requireExpiryDate">Expiry Date</th>
-            <th v-if="requireProductionNumber">Production No.</th>
+            <th v-if="mutableRequireExpiryDate">Expiry Date</th>
+            <th v-if="mutableRequireProductionNumber">Production No.</th>
             <th>Quantity</th>
           </tr>
-          <tr slot="p-body" v-for="(inventory, index) in inventories" :key="index">
-            <td v-if="inventory.expiry_date && requireExpiryDate">{{ inventory.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
-            <td v-else-if="!inventory.expiry_date && requireExpiryDate">&nbsp;</td>
-            <td v-if="requireProductionNumber">{{ inventory.production_number }}</td>
-            <td>{{ inventory.quantity }}</td>
+          <tr slot="p-body" v-for="(inventory, index) in mutableInventories" :key="index">
+            <td v-if="inventory.expiry_date && mutableRequireExpiryDate">{{ inventory.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
+            <td v-else-if="!inventory.expiry_date && mutableRequireExpiryDate">&nbsp;</td>
+            <td v-if="mutableRequireProductionNumber">{{ inventory.production_number }}</td>
+            <td>{{ inventory.quantity }} {{ mutableItemUnit }}</td>
           </tr>
         </p-table>
       </template>
@@ -33,10 +34,26 @@
 import debounce from 'lodash/debounce'
 
 export default {
+  data () {
+    return {
+      mutableItemUnit: null,
+      mutableInventories: [],
+      mutableRequireExpiryDate: false,
+      mutableRequireProductionNumber: false
+    }
+  },
   props: {
     id: {
       type: String,
       required: true
+    },
+    isPos: {
+      type: Boolean,
+      default: false
+    },
+    itemUnit: {
+      type: String,
+      default: null
     },
     inventories: {
       type: Array,
@@ -52,7 +69,18 @@ export default {
     }
   },
   methods: {
-    show () {
+    show (item) {
+      if (item.item_id) {
+        this.mutableItemUnit = item.unit
+        this.mutableInventories = item.inventories
+        this.mutableRequireExpiryDate = item.require_expiry_date
+        this.mutableRequireProductionNumber = item.require_production_number
+      } else {
+        this.mutableItemUnit = this.itemUnit
+        this.mutableInventories = this.inventories
+        this.mutableRequireExpiryDate = this.requireExpiryDate
+        this.mutableRequireProductionNumber = this.requireProductionNumber
+      }
       this.$refs['select-' + this.id].show()
     },
     close () {

@@ -92,6 +92,7 @@
                 <td>
                   <m-inventory
                     :id="'inventory-' + index"
+                    :itemUnit="row.unit"
                     :inventories="row.inventories"
                     :requireExpiryDate="row.item.require_expiry_date"
                     :requireProductionNumber="row.item.require_production_number"

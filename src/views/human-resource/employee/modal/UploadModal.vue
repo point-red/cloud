@@ -35,6 +35,10 @@ export default {
       type: Number,
       default: null
     },
+    expirationDay: {
+      type: Number,
+      default: null
+    },
     isUserProtected: {
       type: Boolean,
       default: false
@@ -69,6 +73,7 @@ export default {
       formData.append('feature_id', this.featureId)
       formData.append('notes', this.notes)
       formData.append('is_user_protected', this.isUserProtected)
+      formData.append('expiration_day', this.expirationDay)
       this.upload(formData)
         .then(response => {
           this.$notification.success('Upload success')

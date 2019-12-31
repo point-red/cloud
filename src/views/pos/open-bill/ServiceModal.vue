@@ -9,8 +9,8 @@
         :title="title | uppercase">
         <template slot="content">
           <p-form-row
-            id="name"
-            name="name"
+            id="service-name"
+            name="service-name"
             label="name"
             :disabled="true"
             v-model="service_name">
@@ -62,24 +62,6 @@
           </p-form-row>
         </template>
         <template slot="footer">
-          <button
-            :disabled="loadingSaveButton"
-            type="button"
-            class="btn btn-primary"
-            @click="update">
-            <i
-              v-show="loadingSaveButton"
-              class="fa fa-asterisk fa-spin"/> Update
-          </button>
-          <button
-            :disabled="loadingSaveButton"
-            type="button"
-            class="btn btn-danger"
-            @click="remove">
-            <i
-              v-show="loadingSaveButton"
-              class="fa fa-asterisk fa-spin"/> Delete
-          </button>
           <button :disabled="loadingSaveButton" type="button" class="btn btn-outline-danger" @click="close">
             <i
               v-show="loadingSaveButton"
@@ -124,9 +106,6 @@ export default {
       this.$refs.serviceModal.show()
     },
     close () {
-      this.$refs.serviceModal.close()
-    },
-    update () {
       if (this.discount_percent > 100) {
         this.discount_percent = 100
       } else if (this.discount_percent < 0) {
@@ -138,20 +117,6 @@ export default {
           quantity: parseFloat(this.quantity),
           discount_percent: parseFloat(this.discount_percent),
           notes: this.notes
-        }
-      })
-      this.index = null
-      this.service_name = null
-      this.quantity = null
-      this.price = null
-      this.discount_percent = null
-      this.notes = null
-      this.$refs.serviceModal.close()
-    },
-    remove () {
-      this.$emit('deleteService', {
-        service: {
-          index: this.index
         }
       })
       this.index = null

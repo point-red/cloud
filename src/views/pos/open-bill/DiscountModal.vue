@@ -20,15 +20,6 @@
           </p-form-row>
         </template>
         <template slot="footer">
-          <button
-            :disabled="loadingSaveButton"
-            type="button"
-            class="btn btn-primary"
-            @click="update">
-            <i
-              v-show="loadingSaveButton"
-              class="fa fa-asterisk fa-spin"/> Update
-          </button>
           <button :disabled="loadingSaveButton" type="button" class="btn btn-outline-danger" @click="close">
             <i
               v-show="loadingSaveButton"
@@ -63,9 +54,6 @@ export default {
       this.$refs.discountModal.show()
     },
     close () {
-      this.$refs.discountModal.close()
-    },
-    update () {
       if (this.discount_percent > 100) {
         this.discount_percent = 100
       } else if (this.discount_percent < 0) {

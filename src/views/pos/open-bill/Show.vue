@@ -24,8 +24,8 @@
             class="btn-block-option">
             Add
           </button>
-        </router-link>
-        |<router-link
+        </router-link>|
+        <router-link
           v-if="$permission.has('read pos')"
           to="/pos/open-bill"
           exact>
@@ -34,7 +34,7 @@
             class="btn-block-option">
             List
           </button>
-        </router-link>
+        </router-link>|
       </template>
 
       <p-block-inner :is-loading="isLoading">
@@ -60,45 +60,60 @@
                   <br/>
                 </td>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in bill.items" :key="'item-' + index">
-                <td style="border:0px;text-align:left;" width="75%">
-                  <template>
-                    <label style="color:blue;">{{ row.quantity | numberFormat }}x</label>
-                    {{ row.price | numberFormat }}
-                  </template>
-                  <br/>
-                  <b>{{ row.item_name }} ({{ row.unit }})</b>
-                  <br/>
-                  <template v-if="row.production_number && row.expiry_date">
-                    {{ row.production_number | uppercase }}. Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
-                  </template>
-                  <template v-else-if="row.production_number && !row.expiry_date">
-                    {{ row.production_number | uppercase }}
-                  </template>
-                  <template v-else-if="!row.production_number && row.expiry_date">
-                    <b style="color:red">Production No. Not Available.</b> Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
-                  </template>
-                  <template v-else>
-                    <b style="color:red">Production No. Not Available</b>
-                  </template>
-                  <template v-if="row.discount_percent > 0">
+              <template v-for="(row, index) in items_temporary">
+                <tr slot="p-body" v-if="row.require_expiry_date === 1 || row.require_production_number === 1" :key="'item-' + index" @click="showItem(index, row)" style="cursor:pointer;">
+                  <td style="border:0px;text-align:left;" width="75%">
+                    <template>
+                      <label style="color:blue;">{{ row.quantity | numberFormat }}x</label>
+                      {{ row.price | numberFormat }}
+                    </template>
                     <br/>
-                    <label style="color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
-                  </template>
-                  <template v-if="row.error">
+                    <b>{{ row.item_name }} ({{ row.unit }})</b>
+                    <template v-if="row.discount_percent > 0">
+                      <br/>
+                      <label style="color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
+                    </template>
+                    <template v-if="row.error">
+                      <br/>
+                      <label style="color:red;">{{ row.error }}</label>
+                    </template>
+                    <template v-if="row.notes">
+                      <br/>
+                      <br/>
+                      <label>Note: {{ row.notes }}</label>
+                    </template>
+                  </td>
+                  <td style="border:0px;text-align:right;" width="25%">
+                    <b>{{ row.total | numberFormat }}</b>
+                  </td>
+                </tr>
+                <tr slot="p-body" v-else :key="'item-' + index">
+                  <td style="border:0px;text-align:left;" width="75%">
+                    <template>
+                      <label style="color:blue;">{{ row.quantity | numberFormat }}x</label>
+                      {{ row.price | numberFormat }}
+                    </template>
                     <br/>
-                    <label style="color:red;">{{ row.error }}</label>
-                  </template>
-                  <template v-if="row.notes">
-                    <br/>
-                    <br/>
-                    <label>Note: {{ row.notes }}</label>
-                  </template>
-                </td>
-                <td style="border:0px;text-align:right;" width="25%">
-                  <b>{{ row.total | numberFormat }}</b>
-                </td>
-              </tr>
+                    <b>{{ row.item_name }} ({{ row.unit }})</b>
+                    <template v-if="row.discount_percent > 0">
+                      <br/>
+                      <label style="color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
+                    </template>
+                    <template v-if="row.error">
+                      <br/>
+                      <label style="color:red;">{{ row.error }}</label>
+                    </template>
+                    <template v-if="row.notes">
+                      <br/>
+                      <br/>
+                      <label>Note: {{ row.notes }}</label>
+                    </template>
+                  </td>
+                  <td style="border:0px;text-align:right;" width="25%">
+                    <b>{{ row.total | numberFormat }}</b>
+                  </td>
+                </tr>
+              </template>
               <tr slot="p-body" v-for="(row, index) in bill.services" :key="'service-' + index">
                 <td style="border:0px;text-align:left;" width="75%">
                   <template>
@@ -208,6 +223,17 @@
         </div>
       </p-block-inner>
     </p-block>
+
+    <m-inventory
+      ref="inventory"
+      :id="'inventory'"
+      :key="'inventory'"
+      :isPos="true"
+      :itemUnit="selectedItem.unit"
+      :inventories="selectedItem.inventories"
+      :requireExpiryDate="selectedItem.require_expiry_date"
+      :requireProductionNumber="selectedItem.require_production_number">
+    </m-inventory>
   </div>
 </template>
 
@@ -225,7 +251,14 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: false,
-      isDeleting: false
+      isDeleting: false,
+      items_temporary: [],
+      selectedItem: {
+        unit: null,
+        inventories: [],
+        require_expiry_date: 0,
+        require_production_number: 0
+      }
     }
   },
   computed: {
@@ -253,6 +286,32 @@ export default {
           includes: 'form;customer;items.item;services.service;form.createdBy'
         }
       }).then(response => {
+        this.items_temporary = []
+        for (let index in this.bill.items) {
+          let item = this.bill.items[index]
+          let itemTemporaryIndex = this.items_temporary.findIndex(o => o.item_id === item.item_id && o.unit === item.unit)
+          if (itemTemporaryIndex < 0) {
+            var newItem = Object.assign({}, item)
+            newItem.inventories = []
+            newItem.require_expiry_date = item.item.require_expiry_date
+            newItem.require_production_number = item.item.require_production_number
+            newItem.inventories.push({
+              'quantity': item.quantity,
+              'expiry_date': item.expiry_date,
+              'production_number': item.production_number
+            })
+            this.items_temporary.push(newItem)
+          } else {
+            var existing = this.items_temporary[itemTemporaryIndex]
+            existing.quantity += item.quantity
+            existing.inventories.push({
+              'quantity': item.quantity,
+              'expiry_date': item.expiry_date,
+              'production_number': item.production_number
+            })
+            this.items_temporary[itemTemporaryIndex] = existing
+          }
+        }
         this.isLoading = false
         this.calculate()
       }).catch(error => {
@@ -263,9 +322,9 @@ export default {
     calculate () {
       this.bill.subtotal = 0
       this.bill.total_quantity = 0
-      this.bill.items.forEach(item => {
+      this.items_temporary.forEach(item => {
         item.discount_value = parseFloat(item.price) * parseFloat(item.discount_percent) / 100
-        item.total = parseFloat(item.quantity) * parseFloat(item.converter) * (parseFloat(item.price) - parseFloat(item.discount_value))
+        item.total = parseFloat(item.quantity) * (parseFloat(item.price) - parseFloat(item.discount_value))
         this.bill.subtotal += parseFloat(item.total)
         this.bill.total_quantity += parseFloat(item.quantity)
       })
@@ -276,6 +335,14 @@ export default {
         this.bill.total_quantity += parseFloat(service.quantity)
       })
       this.bill.change = parseFloat(this.bill.paid) - parseFloat(this.bill.amount)
+    },
+    showItem (index, item) {
+      if (!this.isLoading && !this.isDeleting) {
+        this.selectedItem = Object.assign({}, item)
+        if (item.require_expiry_date || item.require_production_number) {
+          this.$refs.inventory.show(this.selectedItem)
+        }
+      }
     },
     onDelete () {
       this.isDeleting = true

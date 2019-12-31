@@ -20,22 +20,25 @@
             <button type="button" class="btn-block-option">
               Add
             </button>
-          </router-link>
-          |
+          </router-link>|
           <router-link v-if="$permission.has('read pos')" to="/pos/open-bill" exact>
             <button type="button" class="btn-block-option">
               List
             </button>
-          </router-link>
+          </router-link>|
         </template>
 
         <p-block-inner :is-loading="isGroupLoading">
           <div class="row">
             <div class="col-sm-8">
               <ul class="nav nav-tabs nav-tabs-alt mb-15" data-toggle="tabs" role="tablist">
-                <li class="nav-item" v-for="(group, index) in groups" :key="index">
-                  <a class="nav-link active" v-if="currentGroup && group.id === currentGroup.id">{{ group.name }}</a>
-                  <a class="nav-link" style="cursor:pointer;" v-else @click="selectGroup(group)">{{ group.name }}</a>
+                <li class="nav-item" v-for="(group, index) in itemGroups" :key="'item-group-' + index">
+                  <a class="nav-link active" v-if="currentGroup && currentGroupType === 'item' && group.id === currentGroup.id">{{ group.name }}</a>
+                  <a class="nav-link" style="cursor:pointer;" v-else @click="selectGroup(group, 'item')">{{ group.name }}</a>
+                </li>
+                <li class="nav-item" v-for="(group, index) in serviceGroups" :key="'service-group-' + index">
+                  <a class="nav-link active" v-if="currentGroup && currentGroupType === 'service' && group.id === currentGroup.id">{{ group.name }}</a>
+                  <a class="nav-link" style="cursor:pointer;" v-else @click="selectGroup(group, 'service')">{{ group.name }}</a>
                 </li>
               </ul>
 
@@ -49,36 +52,36 @@
 
               <p-block-inner :is-loading="isLoading">
                 <div class="row gutters-tiny">
-                  <template v-for="(item, index) in itemList">
+                  <template v-if="currentGroupType === 'item'" v-for="(item, index) in itemList">
                     <p-box-item
                       v-if="groupItemList.includes(item.item_id)"
                       :id="'item-' + index"
                       :key="'item-' + index"
-                      :name="item.item_name"
-                      :price="item.price"
-                      :unit="item.unit"
-                      :clicked="chooseItem"
-                      :item="item"/>
+                      :item="item"
+                      :itemName="item.item_name"
+                      :itemPrice="item.price"
+                      :itemUnit="item.item_unit"
+                      :clicked="chooseItem"/>
                   </template>
-                  <template v-for="(service, index) in serviceList">
+                  <template v-if="currentGroupType === 'service'" v-for="(service, index) in serviceList">
                     <p-box-item
                       v-if="groupServiceList.includes(service.service_id)"
                       :id="'service-' + index"
                       :key="'service-' + index"
-                      :name="service.service_name"
-                      :price="service.price"
-                      :clicked="chooseService"
-                      :item="service"/>
+                      :item="service"
+                      :itemName="service.service_name"
+                      :itemPrice="service.price"
+                      :clicked="chooseService"/>
                   </template>
                 </div>
                 <p-pagination
-                  v-if="itemList.length !== 0"
+                  v-if="currentGroupType === 'item' && itemList.length !== 0"
                   :current-page="currentPageItem"
                   :last-page="lastPageItem"
                   @updatePageItem="updatePageItem">
                 </p-pagination>
                 <p-pagination
-                  v-if="serviceList.length !== 0"
+                  v-if="currentGroupType === 'service' && serviceList.length !== 0"
                   :current-page="currentPageService"
                   :last-page="lastPageService"
                   @updatePageService="updatePageService">
@@ -98,45 +101,34 @@
                     </div>
                   </td>
                 </tr>
-                <tr slot="p-body" v-for="(row, index) in form.items" :key="'item-select-' + index" @click="showItem(index, row)" style="cursor:pointer;">
-                  <td style="text-align:left;" width="75%">
-                    <template>
-                      <label style="cursor:pointer;color:blue;">{{ row.quantity | numberFormat }}x</label>
-                      {{ row.price | numberFormat }}
-                    </template>
-                    <br/>
-                    <b>{{ row.item_name }} ({{ row.unit }})</b>
-                    <br/>
-                    <template v-if="row.production_number && row.expiry_date">
-                      {{ row.production_number | uppercase }}. Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
-                    </template>
-                    <template v-else-if="row.production_number && !row.expiry_date">
-                      {{ row.production_number | uppercase }}
-                    </template>
-                    <template v-else-if="!row.production_number && row.expiry_date">
-                      <b style="color:red">Production No. Not Available.</b> Expires on {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
-                    </template>
-                    <template v-else>
-                      <b style="color:red">Production No. Not Available</b>
-                    </template>
-                    <template v-if="row.discount_percent > 0">
+                <template v-for="(row, index) in form.items_temporary">
+                  <tr slot="p-body" :key="'item-select-' + index" @click="showItem(index, row)" style="cursor:pointer;">
+                    <td style="text-align:left;" width="75%">
+                      <template>
+                        <label style="cursor:pointer;color:blue;">{{ row.quantity | numberFormat }}x</label>
+                        {{ row.price | numberFormat }}
+                      </template>
                       <br/>
-                      <label style="cursor:pointer;color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
-                    </template>
-                    <template v-if="row.error">
-                      <br/>
-                      <label style="cursor:pointer;color:red;">{{ row.error }}</label>
-                    </template>
-                    <template v-if="row.notes">
-                      <br/>
-                      <br/>
-                      <label style="cursor:pinter;">Note: {{ row.notes }}</label>
-                    </template>
-                  </td>
-                  <td style="text-align:right;" width="25%">
-                    <b>{{ row.total | numberFormat }}</b>
-                  </td>
-                </tr>
+                      <b>{{ row.item_name }} ({{ row.item_unit.label }})</b>
+                      <template v-if="row.discount_percent > 0">
+                        <br/>
+                        <label style="cursor:pointer;color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
+                      </template>
+                      <template v-if="row.error">
+                        <br/>
+                        <label style="cursor:pointer;color:red;">{{ row.error }}</label>
+                      </template>
+                      <template v-if="row.notes">
+                        <br/>
+                        <br/>
+                        <label style="cursor:pinter;">Note: {{ row.notes }}</label>
+                      </template>
+                    </td>
+                    <td style="text-align:right;" width="25%">
+                      <b>{{ row.total | numberFormat }}</b>
+                    </td>
+                  </tr>
+                </template>
                 <tr slot="p-body" v-for="(row, index) in form.services" :key="'service-select-' + index" @click="showService(index, row)" style="cursor:pointer;">
                   <td style="text-align:left;" width="75%">
                     <template>
@@ -232,10 +224,10 @@
               </p-form-row>
               <div class="form-group row">
                 <div class="col-md-12">
-                  <button v-if="form.items.length !== 0 || form.services.length !== 0" type="button" class="btn btn-block btn-success" :disabled="isSaving || isLoading || isGroupLoading" @click="charge">
+                  <button v-if="form.items_temporary.length !== 0 || form.services.length !== 0" type="button" class="btn btn-block btn-success" :disabled="isSaving || isLoading || isGroupLoading" @click="charge">
                     <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Charge {{ form.amount | numberFormat }}
                   </button>
-                  <button v-if="form.items.length !== 0 || form.services.length !== 0" type="button" class="btn btn-block btn-primary" :disabled="isSaving || isLoading || isGroupLoading" @click="save">
+                  <button v-if="form.items_temporary.length !== 0 || form.services.length !== 0" type="button" class="btn btn-block btn-primary" :disabled="isSaving || isLoading || isGroupLoading" @click="save">
                     <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
                   </button>
                 </div>
@@ -268,10 +260,21 @@
       ref="warehouse"
       @updateWarehouse="updateWarehouse"/>
 
-    <inventory-modal
-      id="inventory"
+    <m-inventory-out
       ref="inventory"
-      @updateInventory="updateInventory"/>
+      :id="'inventory'"
+      :key="'inventory'"
+      :itemId="selectedItem.item_id"
+      :requireExpiryDate="selectedItem.require_expiry_date"
+      :requireProductionNumber="selectedItem.require_production_number"
+      :warehouseId="form.warehouse_id"
+      :inventories="selectedItem.inventories"
+      @add="addInventory($event, selectedItem)"
+      :isPos="true"
+      :itemName="selectedItem.item_name"
+      :itemPrice="selectedItem.price"
+      :itemUnit="selectedItem.item_unit">
+    </m-inventory-out>
   </div>
 </template>
 
@@ -283,7 +286,6 @@ import DiscountModal from './DiscountModal'
 import ItemModal from './ItemModal'
 import ServiceModal from './ServiceModal'
 import WarehouseModal from './WarehouseModal'
-import InventoryModal from './InventoryModal'
 import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -294,8 +296,7 @@ export default {
     DiscountModal,
     ItemModal,
     ServiceModal,
-    WarehouseModal,
-    InventoryModal
+    WarehouseModal
   },
   data () {
     return {
@@ -304,13 +305,14 @@ export default {
       isGroupLoading: false,
       searchText: '',
       currentGroup: null,
+      currentGroupType: null,
       itemList: [],
       serviceList: [],
       groupItemList: [],
       groupServiceList: [],
       currentPageItem: this.$route.query.pageItem * 1 || 1,
-      lastPageItem: 1,
       currentPageService: this.$route.query.pageService * 1 || 1,
+      lastPageItem: 1,
       lastPageService: 1,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
@@ -330,27 +332,48 @@ export default {
         amount: 0,
         paid: 0,
         change: 0,
+        items_temporary: [],
         items: [],
         services: [],
         is_done: 0,
-        warehouse_id: null
-      })
+        warehouse_id: 0
+      }),
+      selectedItem: {
+        item_id: 0,
+        item_name: null,
+        item_unit: null,
+        item_unit_id: 0,
+        unit: null,
+        converter: 0,
+        quantity: 0,
+        price: 0,
+        discount_value: 0,
+        discount_percent: 0,
+        total: 0,
+        pricing_group_id: -1,
+        notes: null,
+        error: null,
+        stock: 0,
+        require_expiry_date: 0,
+        require_production_number: 0,
+        inventories: []
+      }
     }
   },
   watch: {
     'currentGroup' () {
       if (this.currentGroup) {
-        this.groupItemList = []
-        this.groupServiceList = []
-
-        this.currentGroup.items.forEach(item => {
-          this.groupItemList.push(item.id)
-        })
-
-        // this.currentGroup.services.forEach(service => {
-        //   this.groupServiceList.push(service.id)
-        // })
-
+        if (this.currentGroupType === 'item') {
+          this.groupItemList = []
+          this.currentGroup.items.forEach(item => {
+            this.groupItemList.push(item.id)
+          })
+        } else if (this.currentGroupType === 'service') {
+          this.groupServiceList = []
+          this.currentGroup.services.forEach(service => {
+            this.groupServiceList.push(service.id)
+          })
+        }
         this.updateDisplayedData()
       }
     },
@@ -360,11 +383,7 @@ export default {
         this.findCustomer({
           id: this.form.customer_id
         }).then(response => {
-          if (this.customer.pricing_group_id) {
-            this.form.pricing_group_id = this.customer.pricing_group_id
-          } else {
-            this.form.pricing_group_id = -1
-          }
+          this.form.pricing_group_id = this.customer.pricing_group_id || -1
           this.requestPriceListData()
         }).catch(error => {
           this.$notification.error(error.message)
@@ -374,7 +393,12 @@ export default {
   },
   computed: {
     ...mapGetters('masterCustomer', ['customer']),
-    ...mapGetters('masterItemGroup', ['groups']),
+    ...mapGetters('masterItemGroup', {
+      itemGroups: 'groups'
+    }),
+    ...mapGetters('masterServiceGroup', {
+      serviceGroups: 'groups'
+    }),
     ...mapGetters('masterPriceListItem', {
       items: 'items',
       paginationItem: 'pagination'
@@ -391,6 +415,9 @@ export default {
     ...mapActions('masterItemGroup', {
       getItemGroups: 'get'
     }),
+    ...mapActions('masterServiceGroup', {
+      getServiceGroups: 'get'
+    }),
     ...mapActions('masterPriceListItem', {
       getPriceListItem: 'get'
     }),
@@ -402,6 +429,13 @@ export default {
       return this.getItemGroups({
         params: {
           includes: 'items'
+        }
+      })
+    },
+    getServiceGroupRequest () {
+      return this.getServiceGroups({
+        params: {
+          includes: 'services'
         }
       })
     },
@@ -436,15 +470,19 @@ export default {
     },
     requestAllData () {
       this.isGroupLoading = true
-      Promise.all([this.getItemGroupRequest(), this.getItemRequest(), this.getServiceRequest()]).then(results => {
-        if (!this.currentGroup) {
-          this.groups.forEach(group => {
-            if (!this.currentGroup) {
-              this.currentGroup = group
-            }
-          })
-        }
-        this.updateDisplayedData()
+      Promise.all([this.getItemGroupRequest(), this.getServiceGroupRequest(), this.getItemRequest(), this.getServiceRequest()]).then(results => {
+        this.itemGroups.forEach(group => {
+          if (!this.currentGroup) {
+            this.currentGroup = group
+            this.currentGroupType = 'item'
+          }
+        })
+        this.serviceGroups.forEach(group => {
+          if (!this.currentGroup) {
+            this.currentGroup = group
+            this.currentGroupType = 'service'
+          }
+        })
         this.isGroupLoading = false
       }).catch(error => {
         this.isGroupLoading = false
@@ -474,16 +512,38 @@ export default {
       this.currentPageService = value
       this.requestPriceListData()
     },
-    selectGroup (group) {
+    selectGroup (group, type) {
       if (!this.isSaving && !this.isLoading && !this.isGroupLoading) {
         this.currentGroup = group
+        this.currentGroupType = type
       }
     },
     chooseCustomer (value) {
       this.form.customer_name = value
     },
     chooseItem (item) {
-      this.$refs.inventory.show(item)
+      let itemIndex = this.form.items_temporary.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label)
+      if (itemIndex >= 0) {
+        var existingItem = this.form.items_temporary[itemIndex]
+        this.selectedItem = Object.assign({}, existingItem)
+        if (item.require_expiry_date || item.require_production_number) {
+          this.$refs.inventory.show(this.selectedItem)
+        } else {
+          existingItem.quantity += 1
+          this.$set(this.form.items_temporary, itemIndex, existingItem)
+        }
+      } else {
+        var newItem = Object.assign({}, item)
+        this.selectedItem = Object.assign({}, newItem)
+        if (item.require_expiry_date || item.require_production_number) {
+          this.$refs.inventory.show(this.selectedItem)
+        } else {
+          newItem.quantity = 1
+          newItem.inventories = []
+          this.form.items_temporary.push(newItem)
+        }
+      }
+      this.calculate()
     },
     chooseService (service) {
       let serviceIndex = this.form.services.findIndex(o => o.service_id === service.service_id)
@@ -498,6 +558,27 @@ export default {
       }
       this.calculate()
     },
+    addInventory (value, item) {
+      if (value.quantity > 0) {
+        let itemIndex = this.form.items_temporary.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label)
+        if (itemIndex >= 0) {
+          var existingItem = this.form.items_temporary[itemIndex]
+          existingItem.quantity = value.quantity
+          existingItem.inventories = value.inventories
+          existingItem.notes = value.notes
+          existingItem.discount_percent = value.discountPercent
+          this.$set(this.form.items_temporary, itemIndex, existingItem)
+        } else {
+          var newItem = Object.assign({}, item)
+          newItem.quantity = value.quantity
+          newItem.inventories = value.inventories
+          newItem.notes = value.notes
+          newItem.discount_percent = value.discountPercent
+          this.form.items_temporary.push(newItem)
+        }
+        this.updateDisplayedData()
+      }
+    },
     showDiscount () {
       if (!this.isSaving && !this.isLoading && !this.isGroupLoading) {
         this.$refs.discount.show(this.form.discount_percent)
@@ -505,7 +586,12 @@ export default {
     },
     showItem (index, item) {
       if (!this.isSaving && !this.isLoading && !this.isGroupLoading) {
-        this.$refs.item.show(index, item)
+        this.selectedItem = Object.assign({}, item)
+        if (item.require_expiry_date || item.require_production_number) {
+          this.$refs.inventory.show(this.selectedItem)
+        } else {
+          this.$refs.item.show(index, item)
+        }
       }
     },
     showService (index, service) {
@@ -519,15 +605,15 @@ export default {
     },
     updateItem (data) {
       let item = data.item
-      var existingItem = this.form.items[item.index]
+      var existingItem = this.form.items_temporary[item.index]
       if (existingItem) {
         if (item.quantity > 0) {
           existingItem.quantity = item.quantity
           existingItem.discount_percent = item.discount_percent || 0
           existingItem.notes = item.notes
-          this.$set(this.form.items, item.index, existingItem)
+          this.$set(this.form.items_temporary, item.index, existingItem)
         } else {
-          this.form.items.splice(item.index, 1)
+          this.form.items_temporary.splice(item.index, 1)
         }
         this.calculate()
       }
@@ -548,28 +634,14 @@ export default {
       }
     },
     updateWarehouse (data) {
-      localStorage.setItem('defaultWarehouse', data.warehouse.id)
-      this.form.warehouse_id = data.warehouse.id
+      this.form.warehouse_id = data.warehouseId
       this.requestAllData()
-    },
-    updateInventory (data) {
-      let itemIndex = this.form.items.findIndex(o => o.item_id === data.item.item_id && o.unit === data.item.unit && o.production_number === data.item.production_number && o.expiry_date === data.item.expiry_date)
-      if (itemIndex >= 0) {
-        var existingItem = this.form.items[itemIndex]
-        existingItem.quantity += 1
-        this.$set(this.form.items, itemIndex, existingItem)
-      } else {
-        var newItem = JSON.parse(JSON.stringify(data.item))
-        newItem.quantity = 1
-        this.form.items.push(newItem)
-      }
-      this.calculate()
     },
     deleteItem (data) {
       let item = data.item
-      let existingItem = this.form.items[item.index]
+      let existingItem = this.form.items_temporary[item.index]
       if (existingItem) {
-        this.form.items.splice(item.index, 1)
+        this.form.items_temporary.splice(item.index, 1)
         this.calculate()
       }
     },
@@ -596,6 +668,7 @@ export default {
                 let newItem = {
                   item_id: item.id,
                   item_name: item.name,
+                  item_unit: unit,
                   item_unit_id: unit.id,
                   unit: unit.label,
                   converter: unit.converter,
@@ -607,7 +680,9 @@ export default {
                   pricing_group_id: price.pricing_group_id,
                   notes: null,
                   error: null,
-                  stock: item.stock
+                  stock: item.stock,
+                  require_expiry_date: item.require_expiry_date,
+                  require_production_number: item.require_production_number
                 }
                 this.itemList.push(newItem)
               }
@@ -641,7 +716,7 @@ export default {
         })
       })
 
-      this.form.items.forEach(item => {
+      this.form.items_temporary.forEach(item => {
         item.pricing_group_id = this.form.pricing_group_id
       })
 
@@ -649,10 +724,11 @@ export default {
         service.pricing_group_id = this.form.pricing_group_id
       })
 
-      this.form.items.forEach(item => {
-        let itemIndex = this.itemList.findIndex(o => o.item_id === item.item_id && o.unit === item.unit && o.pricing_group_id == item.pricing_group_id)
+      this.form.items_temporary.forEach(item => {
+        let itemIndex = this.itemList.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label && o.pricing_group_id == item.pricing_group_id)
         if (itemIndex >= 0) {
           item.price = this.itemList[itemIndex].price
+          this.itemList[itemIndex].inventories = item.inventories
           item.error = null
         } else {
           item.error = 'Item not Available'
@@ -674,9 +750,9 @@ export default {
     calculate: debounce(function (value) {
       this.form.subtotal = 0
       this.form.total_quantity = 0
-      this.form.items.forEach(item => {
+      this.form.items_temporary.forEach(item => {
         item.discount_value = parseFloat(item.price) * parseFloat(item.discount_percent) / 100
-        item.total = parseFloat(item.quantity) * parseFloat(item.converter) * (parseFloat(item.price) - parseFloat(item.discount_value))
+        item.total = parseFloat(item.quantity) * (parseFloat(item.price) - parseFloat(item.discount_value))
         this.form.subtotal += parseFloat(item.total)
         this.form.total_quantity += parseFloat(item.quantity)
       })
@@ -693,15 +769,15 @@ export default {
       this.form.change = parseFloat(this.form.paid) - parseFloat(this.form.amount)
     }, 100),
     validate () {
-      if (this.form.items.length === 0 && this.form.services.length === 0) {
+      if (this.form.items_temporary.length === 0 && this.form.services.length === 0) {
         this.$notification.error('Please Add at least one Item or Service')
         return false
       }
       // check
       var itemValid = true
 
-      this.form.items.forEach(item => {
-        let itemIndex = this.itemList.findIndex(o => o.item_id === item.item_id && o.unit === item.unit && o.pricing_group_id == item.pricing_group_id)
+      this.form.items_temporary.forEach(item => {
+        let itemIndex = this.itemList.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label && o.pricing_group_id == item.pricing_group_id)
         if (itemIndex < 0) {
           itemValid = false
         }
@@ -721,10 +797,31 @@ export default {
 
       return true
     },
+    setItems () {
+      this.form.items = []
+      for (let index in this.form.items_temporary) {
+        let item = this.form.items_temporary[index]
+        if (item['inventories'].length > 0) {
+          for (let indexInventory in item['inventories']) {
+            let inventory = item['inventories'][indexInventory]
+            if (inventory['quantity']) {
+              var posItem = Object.assign({}, item)
+              posItem.quantity = inventory['quantity']
+              posItem.expiry_date = inventory['expiry_date']
+              posItem.production_number = inventory['production_number']
+              this.form.items.push(posItem)
+            }
+          }
+        } else {
+          this.form.items.push(item)
+        }
+      }
+    },
     save () {
       if (this.validate()) {
         this.isSaving = true
         this.form.is_done = 0
+        this.setItems()
         this.create(this.form)
           .then(response => {
             this.isSaving = false
@@ -746,6 +843,7 @@ export default {
         }
         this.isSaving = true
         this.form.is_done = 1
+        this.setItems()
         this.create(this.form)
           .then(response => {
             this.isSaving = false
@@ -776,6 +874,7 @@ export default {
       this.form.amount = 0
       this.form.paid = 0
       this.form.change = 0
+      this.form.items_temporary = []
       this.form.items = []
       this.form.services = []
       this.form.is_done = 0

@@ -79,7 +79,7 @@ export default {
       required: true
     },
     itemId: {
-      type: Number,
+      type: [String, Number],
       required: true
     },
     inventories: {
