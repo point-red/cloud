@@ -228,6 +228,17 @@ export default {
         this.getEmployeesRequest()
       })
     },
+    chooseStatus (option) {
+      this.status.label = option
+      this.getEmployeesRequest()
+    },
+    clearStatus () {
+      this.status = {
+        id: null,
+        label: null
+      }
+      this.getEmployeesRequest()
+    },
     isShow (scorers) {
       return scorers.some(element => {
         return element.id == this.authUser.id
@@ -253,6 +264,7 @@ export default {
           },
           limit: 10,
           page: this.currentPage,
+          is_archived: this.status.id,
           sort_by: 'name',
           includes: 'scorers',
           additional: 'groups'
