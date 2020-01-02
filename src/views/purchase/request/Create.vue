@@ -2,134 +2,137 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link to="/purchase/request" class="breadcrumb-item">{{ $t('purchase request') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Create</span>
+      <router-link to="/purchase/request" class="breadcrumb-item">{{ $t('purchase request') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
     <purchase-menu/>
 
     <tab-menu/>
 
-    <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('purchase request')" :header="true">
-        <p-block-inner>
-          <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="Date"
-                v-model="form.required_date"
-                :errors="form.errors.get('date')"
-                @errors="form.errors.set('date', null)"/>
+    <form @submit.prevent="onSubmit">
+      <div class="row">
+        <p-block :title="$t('purchase request')" :header="true">
+          <p-block-inner>
+            <p-form-row
+              id="date"
+              name="date"
+              :label="$t('date')">
+              <div slot="body" class="col-lg-9">
+                <p-date-picker
+                  id="date"
+                  name="date"
+                  label="Date"
+                  v-model="form.required_date"
+                  :errors="form.errors.get('date')"
+                  @errors="form.errors.set('date', null)"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="supplier"
+              name="supplier"
+              :label="$t('supplier')">
+              <div slot="body" class="col-lg-9 mt-5">
+                <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="employee"
+              name="employee"
+              :label="$t('employee')">
+              <div slot="body" class="col-lg-9 mt-5">
+                <m-employee id="employee" v-model="form.employee_id" @choosen="chooseEmployee"/>
+              </div>
+            </p-form-row>
+
+            <p-separator></p-separator>
+
+            <h5>{{ $t('item') | uppercase }}</h5>
+
+            <point-table>
+              <tr slot="p-head">
+                <th>#</th>
+                <th>Item</th>
+                <th>Allocation</th>
+                <th>Quantity</th>
+                <th>Estimated Price</th>
+                <th>Notes</th>
+              </tr>
+              <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
+                <th>{{ index + 1 }}</th>
+                <td>
+                  <m-item
+                    :id="'item-' + index"
+                    :data-index="index"
+                    v-model="row.item_id"
+                    @choosen="chooseItem($event, row)"/>
+                </td>
+                <td>
+                  <m-allocation
+                    :id="'allocation-' + index"
+                    v-model="row.allocation_id"/>
+                </td>
+                <td>
+                  <p-quantity
+                    :id="'quantity' + index"
+                    :name="'quantity' + index"
+                    v-model="row.quantity"
+                    :unit="row.units[0].label"/>
+                </td>
+                <td>
+                  <p-form-number
+                    :id="'price' + index"
+                    :name="'price' + index"
+                    v-model="row.price"/>
+                </td>
+                <td>
+                  <p-form-input
+                    id="notes"
+                    name="notes"
+                    v-model="row.notes"/>
+                </td>
+              </tr>
+            </point-table>
+
+            <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
+              <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
+            </button>
+
+            <p-separator></p-separator>
+
+            <div class="row">
+              <div class="col-sm-6">
+                <h5>{{ $t('notes') | uppercase }}</h5>
+                <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+              </div>
+              <div class="col-sm-6">
+                <h5>{{ $t('approver') | uppercase }}</h5>
+                <p-form-row
+                  id="approver"
+                  name="approver"
+                  :label="$t('approver')">
+                  <div slot="body" class="col-lg-9 mt-5">
+                    <m-user
+                      :id="'user'"
+                      v-model="form.approver_id"
+                      :errors="form.errors.get('approver_id')"
+                      @errors="form.errors.set('approver_id', null)"/>
+                  </div>
+                </p-form-row>
+              </div>
+
+              <div class="col-sm-12">
+                <hr>
+                <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                </button>
+              </div>
             </div>
-          </p-form-row>
-
-          <p-form-row
-            id="supplier"
-            name="supplier"
-            :label="$t('supplier')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="employee"
-            name="employee"
-            :label="$t('employee')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <m-employee id="employee" v-model="form.employee_id" @choosen="chooseEmployee"/>
-            </div>
-          </p-form-row>
-
-          <p-separator></p-separator>
-
-          <h5 class="">Item</h5>
-
-          <point-table>
-            <tr slot="p-head">
-              <th>#</th>
-              <th>Item</th>
-              <th>Allocation</th>
-              <th>Quantity</th>
-              <th>Estimated Price</th>
-              <th>Notes</th>
-            </tr>
-            <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
-              <th>{{ index + 1 }}</th>
-              <td>
-                <m-item
-                  :id="'item-' + index"
-                  :data-index="index"
-                  v-model="row.item_id"
-                  @choosen="chooseItem($event, row)"/>
-              </td>
-              <td>
-                <m-allocation
-                  :id="'allocation-' + index"
-                  v-model="row.allocation_id"/>
-              </td>
-              <td>
-                <p-quantity
-                  :id="'quantity' + index"
-                  :name="'quantity' + index"
-                  v-model="row.quantity"
-                  :unit="row.units[0].label"/>
-              </td>
-              <td>
-                <p-form-number
-                  :id="'price' + index"
-                  :name="'price' + index"
-                  v-model="row.price"/>
-              </td>
-              <td>
-                <p-form-input
-                  id="notes"
-                  name="notes"
-                  v-model="row.notes"/>
-              </td>
-            </tr>
-          </point-table>
-
-          <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
-            <i class="fa fa-plus"/> Add
-          </button>
-
-          <p-separator></p-separator>
-
-          <div class="row">
-            <div class="col-sm-6">
-              <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
-            </div>
-            <div class="col-sm-6">
-              <h5 class="">Approver</h5>
-              <p-form-row
-                id="approver"
-                name="approver"
-                :label="$t('approver')">
-                <div slot="body" class="col-lg-9">
-                  <m-user
-                    :id="'user'"
-                    v-model="form.approver_id"
-                    :errors="form.errors.get('approver_id')"
-                    @errors="form.errors.set('approver_id', null)"/>
-                </div>
-              </p-form-row>
-            </div>
-
-            <div class="col-sm-12">
-              <hr>
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
-              </button>
-            </div>
-          </div>
-        </p-block-inner>
-      </p-block>
+          </p-block-inner>
+        </p-block>
+      </div>
     </form>
   </div>
 </template>

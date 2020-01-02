@@ -2,9 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link :to="{ name: 'purchase.request.index' }" class="breadcrumb-item">{{ $t('purchase request') | titlecase }}</router-link>
+      <router-link :to="{ name: 'purchase.request.index' }" class="breadcrumb-item">{{ $t('purchase request') | uppercase }}</router-link>
       <router-link :to="{ name: 'purchase.request.show', params: { id: id }}" class="breadcrumb-item">{{ purchaseRequest.form.number | uppercase }}</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <purchase-menu/>

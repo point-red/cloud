@@ -175,7 +175,7 @@
                 </li>
               </ul>
             </li>
-            <!-- <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
+            <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
               <router-link to="/purchase" class="nav-submenu" active-class="active">
                 <i class="si si-basket"/>
                 <span class="sidebar-mini-hide">{{ $t("purchase") | uppercase }}</span>
@@ -196,7 +196,7 @@
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
                   <router-link
                     to="/purchase/down-payment"
-                    active-class="active">{{ $t('purchase down payment') | uppercase }}
+                    active-class="active">{{ $t('down payment') | uppercase }}
                   </router-link>
                 </li>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase receive')">
@@ -208,13 +208,13 @@
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase invoice')">
                   <router-link
                     to="/purchase/invoice"
-                    active-class="active">{{ $t('purchase invoice') | uppercase }}
+                    active-class="active">{{ $t('invoice') | uppercase }}
                   </router-link>
                 </li>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase return')">
                   <router-link
                     to="/purchase/return"
-                    active-class="active">{{ $t('purchase return') | uppercase }}
+                    active-class="active">{{ $t('return') | uppercase }}
                   </router-link>
                 </li>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase invoice')">
@@ -224,7 +224,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li> -->
+            </li>
             <!-- <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">
               <router-link to="/sales" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>

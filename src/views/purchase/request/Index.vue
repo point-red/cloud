@@ -2,28 +2,122 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <span class="breadcrumb-item active">{{ $t('purchase request') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('purchase request') | uppercase }}</span>
     </breadcrumb>
 
     <purchase-menu/>
 
-    <tab-menu/>
-
     <div class="row">
       <p-block :title="$t('purchase request')" :header="true">
-        <div class="row mb-10">
-          <p-date-range-picker
-            id="date"
-            name="date"
-            class="col-sm-4"
-            v-model="date"/>
+        <div class="input-group block">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            ref="searchText"
+            class="btn-block"
+            :value="searchText"
+            @input="filterSearch"/>
+          <router-link
+            to="/purchase/request/create"
+            v-if="$permission.has('create purchase request')"
+            class="input-group-append">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
         </div>
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
+        <div class="text-center font-size-sm mb-10">
+          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          </a>
+        </div>
+        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+          <div class="row">
+            <div class="col-sm-6 text-center">
+              <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+                <div slot="body">
+                  <p-date-picker
+                  id="date"
+                  name="date"
+                  label="Date"
+                  v-model="date.start"/>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-6 text-center">
+              <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+                <div slot="body">
+                  <p-date-picker
+                  id="date"
+                  name="date"
+                  label="Date"
+                  v-model="date.end"/>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-3 text-center">
+              <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
+                <div slot="body">
+                  <m-status
+                    :id="'status-id'"
+                    v-model="status.id"
+                    :label="status.label"
+                    @choosen="chooseStatus($event)"
+                    @clear="clearStatus()"/>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-3 text-center">
+              <p-form-row id="form-status" name="form-status" :label="$t('form status')" :is-horizontal="false">
+                <div slot="body">
+                  <m-form-status
+                    :id="'status-id'"
+                    v-model="formStatus.id"
+                    :label="formStatus.label"
+                    @choosen="chooseFormStatus($event)"
+                    @clear="clearFormStatus()"/>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-3 text-center">
+              <p-form-row id="form-cancellation-status" name="form-cancellation-status" :label="$t('form cancellation status')" :is-horizontal="false">
+                <div slot="body">
+                  <m-form-status
+                    :id="'status-id'"
+                    v-model="formCancellationStatus.id"
+                    :label="formCancellationStatus.label"
+                    @choosen="chooseFormCancellationStatus($event)"
+                    @clear="clearFormCancellationStatus()"/>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-3 text-center">
+              <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('form approval status')" :is-horizontal="false">
+                <div slot="body">
+                  <m-form-status
+                    :id="'status-id'"
+                    v-model="formApprovalStatus.id"
+                    :label="formApprovalStatus.label"
+                    @choosen="chooseFormApprovalStatus($event)"
+                    @clear="clearFormApprovalStatus()"/>
+                </div>
+              </p-form-row>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
+          <button type="button" class="btn btn-secondary mr-5" @click="bulkArchiveCustomer()">
+            {{ $t('archive') | uppercase }}
+          </button>
+          <button type="button" class="btn btn-secondary mr-5" @click="bulkActivateCustomer()">
+            {{ $t('activate') | uppercase }}
+          </button>
+          <button type="button" class="btn btn-secondary" @click="bulkDeleteCustomer()">
+            {{ $t('delete') | uppercase }}
+          </button>
+        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
@@ -99,6 +193,24 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
+      isAdvanceFilter: false,
+      checkedRow: [],
+      status: {
+        id: 0,
+        label: null
+      },
+      formStatus: {
+        id: 0,
+        label: null
+      },
+      formApprovalStatus: {
+        id: 0,
+        label: null
+      },
+      formCancellationStatus: {
+        id: 0,
+        label: null
+      },
       date: {
         start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
         end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
@@ -122,6 +234,50 @@ export default {
   },
   methods: {
     ...mapActions('purchaseRequest', ['get']),
+    chooseStatus (option) {
+      this.status.label = option
+      this.getPurchaseRequest()
+    },
+    clearStatus () {
+      this.status = {
+        id: null,
+        label: null
+      }
+      this.getPurchaseRequest()
+    },
+    chooseFormStatus (option) {
+      this.formStatus.label = option
+      this.getPurchaseRequest()
+    },
+    clearFormStatus () {
+      this.formStatus = {
+        id: null,
+        label: null
+      }
+      this.getPurchaseRequest()
+    },
+    chooseFormApprovalStatus (option) {
+      this.formApprovalStatus.label = option
+      this.getPurchaseRequest()
+    },
+    clearFormApprovalStatus () {
+      this.formApprovalStatus = {
+        id: null,
+        label: null
+      }
+      this.getPurchaseRequest()
+    },
+    chooseFormCancellationStatus (option) {
+      this.formCancellationStatus.label = option
+      this.getPurchaseRequest()
+    },
+    clearFormCancellationStatus () {
+      this.formCancellationStatus = {
+        id: null,
+        label: null
+      }
+      this.getPurchaseRequest()
+    },
     filterSearch: debounce(function (value) {
       this.$router.push({
         query: {
@@ -140,7 +296,7 @@ export default {
           join: 'form',
           fields: 'purchase_requests.*',
           sort_by: '-forms.number',
-          filter_form: 'active',
+          filter_form: this.formStatus.label,
           filter_like: {
             'form.number': this.searchText,
             'supplier.name': this.searchText,

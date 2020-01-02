@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <span class="breadcrumb-item active">{{ $t('purchase request') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('purchase request') | uppercase }}</span>
     </breadcrumb>
 
     <purchase-menu/>

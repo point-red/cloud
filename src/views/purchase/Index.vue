@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Purchase</span>
+      <span class="breadcrumb-item active">{{ $t('purchase') | uppercase }}</span>
     </breadcrumb>
 
     <purchase-menu></purchase-menu>
