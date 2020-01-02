@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-pos/>
-      <router-link to="/pos/open-bill" class="breadcrumb-item">{{ $t('open bill') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Create</span>
+      <router-link to="/pos/open-bill" class="breadcrumb-item">{{ $t('open bill') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
     <form class="row">
@@ -18,12 +18,12 @@
         <template v-slot:header>
           <router-link v-if="$permission.has('create pos')" to="/pos/open-bill/create" exact>
             <button type="button" class="btn-block-option">
-              Add
+              {{ $t('add') | uppercase }}
             </button>
           </router-link>|
           <router-link v-if="$permission.has('read pos')" to="/pos/open-bill" exact>
             <button type="button" class="btn-block-option">
-              List
+              {{ $t('list') | uppercase }}
             </button>
           </router-link>|
         </template>

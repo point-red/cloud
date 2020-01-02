@@ -5,14 +5,14 @@
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/pos/open-bill')}"
       active-class="btn-primary">
-      <span><i class="si si-folder-alt"></i> {{ $t('open bill') | titlecase }}</span>
+      <span><i class="si si-folder-alt"></i> {{ $t('open bill') | uppercase }}</span>
     </router-link>
     <router-link
       to="/pos/closed-bill"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/pos/closed-bill')}"
       active-class="btn-primary">
-      <span><i class="si si-folder-alt"></i> {{ $t('closed bill') | titlecase }}</span>
+      <span><i class="si si-folder-alt"></i> {{ $t('closed bill') | uppercase }}</span>
     </router-link>
   </div>
 </template>

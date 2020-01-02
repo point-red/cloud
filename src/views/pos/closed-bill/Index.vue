@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-pos/>
-      <span class="breadcrumb-item active">{{ $t('closed bill') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('closed bill') | uppercase }}</span>
     </breadcrumb>
 
     <pos-menu/>

@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-pos/>
-      <router-link to="/pos/open-bill" class="breadcrumb-item">{{ $t('open bill') | titlecase }}</router-link>
+      <router-link to="/pos/open-bill" class="breadcrumb-item">{{ $t('open bill') | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ id }}</span>
     </breadcrumb>
 

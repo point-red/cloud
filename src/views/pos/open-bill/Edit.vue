@@ -2,11 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-pos/>
-      <router-link to="/pos/open-bill" class="breadcrumb-item">{{ $t('open bill') | titlecase }}</router-link>
-      <router-link
-        :to="{ name: 'pos.open-bill.show', params: { id: id }}"
-        class="breadcrumb-item">{{ id }}</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+      <router-link to="/pos/open-bill" class="breadcrumb-item">{{ $t('open bill') | uppercase }}</router-link>
+      <router-link :to="{ name: 'pos.open-bill.show', params: { id: id }}" class="breadcrumb-item">{{ id }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <form class="row">

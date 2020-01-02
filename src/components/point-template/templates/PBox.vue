@@ -50,7 +50,7 @@
               :class="icon"
               class="fa-3x"/>
           </p>
-          <p class="font-w600">{{ name | titlecase }}</p>
+          <p class="font-w600">{{ name | uppercase }}</p>
         </div>
       </a>
     </div>

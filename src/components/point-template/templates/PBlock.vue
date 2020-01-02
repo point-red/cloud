@@ -28,7 +28,7 @@
             type="button"
             class="btn-block-option"
             @click="printBlock">
-            <i class="si si-printer"/> Print
+            <i class="si si-printer"/> {{ $t('print') | uppercase }}
           </button>
           <button
             v-show="showPinnedButton"
