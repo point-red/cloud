@@ -118,6 +118,58 @@ const actions = {
           reject(error)
         })
     })
+  },
+  bulkDelete ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/bulk-delete', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  archive ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/' + payload.id + '/archive', payload)
+        .then(response => {
+          commit('FETCH_OBJECT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  bulkArchive ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/bulk-archive', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  activate ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/' + payload.id + '/activate', payload)
+        .then(response => {
+          commit('FETCH_OBJECT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  bulkActivate ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/bulk-activate', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 

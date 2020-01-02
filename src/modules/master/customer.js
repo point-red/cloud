@@ -100,6 +100,16 @@ const actions = {
         })
     })
   },
+  bulkDelete ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/bulk-delete', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
   archive ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url + '/' + payload.id + '/archive', payload)
@@ -135,16 +145,6 @@ const actions = {
   bulkActivate ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url + '/bulk-activate', payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  bulkDelete ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      api.patch(url + '/bulk-delete', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {
