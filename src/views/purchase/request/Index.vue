@@ -81,10 +81,10 @@
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
-              <p-form-row id="form-cancellation-status" name="form-cancellation-status" :label="$t('form cancellation status')" :is-horizontal="false">
+              <p-form-row id="form-cancellation-status" name="form-cancellation-status" :label="$t('cancellation status')" :is-horizontal="false">
                 <div slot="body">
-                  <m-form-status
-                    :id="'status-id'"
+                  <m-form-cancellation-status
+                    :id="'form-cancellation-status-id'"
                     v-model="formCancellationStatus.id"
                     :label="formCancellationStatus.label"
                     @choosen="chooseFormCancellationStatus($event)"
@@ -93,10 +93,10 @@
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
-              <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('form approval status')" :is-horizontal="false">
+              <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('approval status')" :is-horizontal="false">
                 <div slot="body">
-                  <m-form-status
-                    :id="'status-id'"
+                  <m-form-approval-status
+                    :id="'form-approval-status-id'"
                     v-model="formApprovalStatus.id"
                     :label="formApprovalStatus.label"
                     @choosen="chooseFormApprovalStatus($event)"

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'ALL' | uppercase }}</span>
+    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
     <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != 0">
       <i class="clickable fa fa-close"></i>
     </a>
@@ -39,8 +39,7 @@ export default {
       searchText: '',
       options: [
         { id: 0, label: 'pending' },
-        { id: -1, label: 'archived' },
-        { id: 1, label: 'done' }
+        { id: 1, label: 'canceled' }
       ],
       mutableId: this.value,
       mutableLabel: this.label,
