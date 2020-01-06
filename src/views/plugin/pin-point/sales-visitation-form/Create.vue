@@ -20,6 +20,12 @@
 
         <p-form-row :label="$t('date')">
           <div slot="body" class="col-lg-9">
+            <p-camera :image="form.image" @onCaptured="onCaptured($event)"></p-camera>
+          </div>
+        </p-form-row>
+
+        <p-form-row :label="$t('date')">
+          <div slot="body" class="col-lg-9">
             <p-date-picker
               id="date"
               name="date"
@@ -389,6 +395,7 @@ export default {
       rows: 1,
       form: new Form({
         date: this.serverDateTime(),
+        image: null,
         customer_id: null,
         customer_name: this.$route.query.name || '',
         address: this.$route.query.address || '',
@@ -512,6 +519,9 @@ export default {
   },
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['create']),
+    onCaptured (value) {
+      this.form.image = value
+    },
     getLocation () {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {

@@ -50,11 +50,12 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
+              <th width="50px">#</th>
               <th width="250px">{{ $t('date') }}</th>
               <th width="150px">{{ $t('sales') }}</th>
               <th width="150px">{{ $t('group') }}</th>
               <th width="150px">{{ $t('customer') }}</th>
-              <th width="200px">{{ $t('address') }}</th>
+              <th width="350px">{{ $t('address') }}</th>
               <th width="100px">{{ $t('phone') }}</th>
               <th width="250px">{{ $t('interest reason') }}</th>
               <th width="250px">{{ $t('no interest reason') }}</th>
@@ -67,7 +68,8 @@
             <template v-for="(form, index) in forms">
               <template v-if="form.details && form.details.length > 0">
                 <tr slot="p-body" v-for="(detail, index2) in form.details" :key="index + '-' + index2">
-                  <th>{{ formattedDateTime(form.form.date) }}</th>
+                  <th>{{ index + 1 }}</th>
+                  <td>{{ formattedDateTime(form.form.date) }}</td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>{{ form.group }}</td>
                   <td>{{ form.name }}</td>
@@ -104,7 +106,13 @@
               </template>
               <template v-else>
                 <tr slot="p-body" :key="index">
-                  <th>{{ formattedDateTime(form.form.date) }}</th>
+                  <th>{{ index + 1 }}</th>
+                  <td>
+                    {{ formattedDateTime(form.form.date) }}
+                    <template v-if(form.photo)>
+                      <img :src="form.photo" alt="" width="200px">
+                    </template>
+                  </td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>{{ form.group }}</td>
                   <td>{{ form.name }}</td>

@@ -11611,6 +11611,13 @@ vue-tour@^1.1.0:
     popper.js "^1.14.4"
     vue "^2.5.17"
 
+vue-web-cam@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/vue-web-cam/-/vue-web-cam-1.9.0.tgz#5a27ed21ca3c7272fbbf170e07b26951a515a93f"
+  integrity sha512-AyEo8WWHpQGvMgWrxV6NFB6L6ojf85iTt8SeBokobYsr+Ev3qHKzR/L9C1aeW+lQ3+PSuRVUK9dVKHWkIiK+vA==
+  dependencies:
+    vue "^2.6.10"
+
 vue2-datepicker@^3.2.2:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/vue2-datepicker/-/vue2-datepicker-3.2.2.tgz#be01b4b0bb46f3a5fba6cd223098d2c41fb60233"
