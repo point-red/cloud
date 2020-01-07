@@ -34,7 +34,7 @@
         </div>
         <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
           <div class="row">
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-4 text-center">
               <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
@@ -45,7 +45,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-4 text-center">
               <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
@@ -56,19 +56,9 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-3 text-center">
-              <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
-                <div slot="body">
-                  <m-status
-                    :id="'status-id'"
-                    v-model="status.id"
-                    :label="status.label"
-                    @choosen="chooseStatus($event)"
-                    @clear="clearStatus()"/>
-                </div>
-              </p-form-row>
+            <div class="col-sm-4 text-center">
             </div>
-            <div class="col-sm-3 text-center">
+            <div class="col-sm-4 text-center">
               <p-form-row id="form-status" name="form-status" :label="$t('form status')" :is-horizontal="false">
                 <div slot="body">
                   <m-form-status
@@ -80,7 +70,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-3 text-center">
+            <div class="col-sm-4 text-center">
               <p-form-row id="form-cancellation-status" name="form-cancellation-status" :label="$t('cancellation status')" :is-horizontal="false">
                 <div slot="body">
                   <m-form-cancellation-status
@@ -92,7 +82,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-3 text-center">
+            <div class="col-sm-4 text-center">
               <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('approval status')" :is-horizontal="false">
                 <div slot="body">
                   <m-form-approval-status
@@ -132,6 +122,8 @@
               <th class="text-right">Quantity</th>
               <th class="text-right">Price</th>
               <th class="text-right">Value</th>
+              <th class="text-center">Approval Status</th>
+              <th class="text-center">Form Status</th>
             </tr>
             <template v-for="(purchaseRequest, index) in purchaseRequests">
             <tr
@@ -156,6 +148,16 @@
               <td class="text-right">{{ purchaseRequestItem.quantity | numberFormat }}</td>
               <td class="text-right">{{ purchaseRequestItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseRequestItem.quantity * purchaseRequestItem.price) | numberFormat }}</td>
+              <td class="text-center">
+                <div v-if="purchaseRequest.form.approved == null" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                <div v-if="purchaseRequest.form.approved == 0" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
+                <div v-if="purchaseRequest.form.approved == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
+              </td>
+              <td class="text-center">
+                <div v-if="purchaseRequest.form.canceled == null && purchaseRequest.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                <div v-if="purchaseRequest.form.canceled == null && purchaseRequest.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
+                <div v-if="purchaseRequest.form.canceled == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
+              </td>
             </tr>
             </template>
           </point-table>
@@ -195,20 +197,16 @@ export default {
       lastPage: 1,
       isAdvanceFilter: false,
       checkedRow: [],
-      status: {
-        id: 0,
-        label: null
-      },
       formStatus: {
-        id: 0,
+        id: null,
         label: null
       },
       formApprovalStatus: {
-        id: 0,
+        id: null,
         label: null
       },
       formCancellationStatus: {
-        id: 0,
+        id: null,
         label: null
       },
       date: {
@@ -306,6 +304,11 @@ export default {
             'items.quantity': this.searchText,
             'items.price': this.searchText
           },
+          filter_equal: {
+            'form.canceled': this.formCancellationStatus.id,
+            'form.approved': this.formApprovalStatus.id
+          },
+          is_archived: this.formStatus.id == -1,
           filter_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
           },

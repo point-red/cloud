@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span>
+    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
     <div
       v-for="(error, index) in errors"
       :key="index"
@@ -23,7 +23,7 @@
             :class="{'active': option.id == mutableId }"
             @click="choose(option)"
             href="javascript:void(0)">
-            {{ option.label }}
+            {{ option.label | uppercase }}
           </a>
           </template>
         </div>

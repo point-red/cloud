@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT'}}</span>
+    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
     <p-modal :ref="'select-' + id" :id="'select-' + id" title="select">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
@@ -17,7 +17,7 @@
                 :class="{'active': optionSupplier.id == mutableId && type == 'supplier' }"
                 @click="choose(optionSupplier)"
                 href="javascript:void(0)">
-                [Supplier] {{ optionSupplier.label }}
+                [SUPPLIER] {{ optionSupplier.label | uppercase }}
               </a>
             </template>
             <template v-for="(optionCustomer, index) in optionCustomers">
@@ -27,7 +27,7 @@
                 :class="{'active': optionCustomer.id == mutableId && type == 'customer' }"
                 @click="choose(optionCustomer)"
                 href="javascript:void(0)">
-                [Customer] {{ optionCustomer.label }}
+                [Customer] {{ optionCustomer.label | uppercase }}
               </a>
             </template>
             <template v-for="(optionEmployee, index) in optionEmployees">
@@ -37,7 +37,7 @@
                 :class="{'active': optionEmployee.id == mutableId && type == 'employee' }"
                 @click="choose(optionEmployee)"
                 href="javascript:void(0)">
-                [Employee] {{ optionEmployee.label }}
+                [EMPLOYEE] {{ optionEmployee.label | uppercase }}
               </a>
             </template>
           </div>

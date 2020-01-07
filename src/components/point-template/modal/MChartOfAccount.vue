@@ -16,7 +16,7 @@
             :class="{'active': option.id == mutableId }"
             @click="choose(option)"
             href="javascript:void(0)">
-            {{ option.label | titlecase }}
+            {{ option.label | uppercase }}
           </a>
           </template>
         </div>

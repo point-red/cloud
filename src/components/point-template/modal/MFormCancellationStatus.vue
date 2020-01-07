@@ -1,7 +1,7 @@
 <template>
   <div>
     <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
-    <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != 0">
+    <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != null">
       <i class="clickable fa fa-close"></i>
     </a>
     <p-modal :ref="'select-form-cancellation-' + id" :id="'select-form-cancellation-' + id" title="select form cancellation status">
@@ -50,10 +50,11 @@ export default {
   props: {
     id: {
       type: String,
-      required: true
+      default: null
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: null
     },
     label: {
       type: String

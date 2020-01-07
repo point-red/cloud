@@ -1,7 +1,7 @@
 <template>
   <div>
     <span @click="show" class="link">{{ mutableLabel || 'ALL' | uppercase }}</span>
-    <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != 0">
+    <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != null">
       <i class="clickable fa fa-close"></i>
     </a>
     <p-modal :ref="'select-form-' + id" :id="'select-form-' + id" title="select form status">
