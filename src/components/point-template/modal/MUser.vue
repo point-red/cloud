@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
+    <span @click="show" class="link">{{ mutableLabel || $t('select') | uppercase }}</span>
     <div
       v-for="(error, index) in errors"
       :key="index"
@@ -19,11 +19,12 @@
           <template v-for="(option, index) in options">
           <a
             :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-left"
             :class="{'active': option.id == mutableId }"
             @click="choose(option)"
             href="javascript:void(0)">
-            {{ option.label | uppercase }}
+            {{ option.label | uppercase }} <br>
+            {{ option.email | uppercase }}
           </a>
           </template>
         </div>
@@ -35,6 +36,7 @@
         </div>
       </template>
       <template slot="footer">
+        <button type="button" @click="clear()" class="btn btn-outline-danger">Clear</button>
         <button type="button" @click="close()" class="btn btn-outline-danger">Close</button>
       </template>
     </p-modal>
@@ -103,15 +105,18 @@ export default {
         }
       }).then(response => {
         this.options = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
-            'label': key['name']
+            'label': key['name'],
+            'email': key['email'],
+            'firstName': key['first_name'],
+            'lastName': key['last_name'],
+            'fullName': key['first_name'] + ' ' + key['last_name']
           })
 
           if (this.value == key['id']) {
-            this.mutableLabel = key['name']
+            this.mutableLabel = key['first_name'] + ' ' + key['last_name']
           }
         })
         this.isLoading = false
@@ -135,7 +140,14 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', option.label)
+      this.$emit('choosen', option)
+      this.close()
+    },
+    clear () {
+      this.mutableId = null
+      this.mutableLabel = null
+      this.$emit('input', null)
+      this.$emit('choosen', '')
       this.close()
     },
     show () {

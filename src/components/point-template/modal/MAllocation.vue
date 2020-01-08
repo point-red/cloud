@@ -1,9 +1,6 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
-    <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != null">
-      <i class="clickable fa fa-close"></i>
-    </a>
+    <span @click="show" class="link">{{ mutableLabel || $t('select') | uppercase }}</span>
     <p-modal :ref="'select-' + id" :id="'select-' + id" title="select allocation">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
@@ -38,6 +35,7 @@
         </div>
       </template>
       <template slot="footer">
+        <button type="button" @click="clear()" class="btn btn-outline-danger">Clear</button>
         <button type="button" @click="close()" class="btn btn-outline-danger">Close</button>
       </template>
     </p-modal>
@@ -99,7 +97,6 @@ export default {
         }
       }).then(response => {
         this.options = []
-        // this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
@@ -139,6 +136,7 @@ export default {
       this.mutableLabel = null
       this.$emit('input', null)
       this.$emit('choosen', '')
+      this.close()
     },
     show () {
       this.$refs['select-' + this.id].show()

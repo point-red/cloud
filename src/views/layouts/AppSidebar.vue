@@ -175,7 +175,7 @@
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
+            <!-- <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
               <router-link to="/purchase" class="nav-submenu" active-class="active">
                 <i class="si si-basket"/>
                 <span class="sidebar-mini-hide">{{ $t("purchase") | uppercase }}</span>
@@ -224,7 +224,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li>
+            </li> -->
             <!-- <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">
               <router-link to="/sales" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>

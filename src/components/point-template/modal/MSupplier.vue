@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
+    <span @click="show" class="link">{{ mutableLabel || $t('select') | uppercase }}</span>
     <p-modal :ref="'select-' + id" :id="'select-' + id" title="select supplier">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
@@ -16,7 +16,10 @@
             :class="{'active': option.id == mutableId }"
             @click="choose(option)"
             href="javascript:void(0)">
-            {{ option.label | uppercase }}
+            {{ option.label | uppercase }}<br v-if="option.address">
+            {{ option.address | uppercase }}<br v-if="option.email">
+            {{ option.email | uppercase }}<br v-if="option.phone">
+            {{ option.phone | uppercase }}
           </a>
           </template>
         </div>
@@ -90,17 +93,29 @@ export default {
         params: {
           sort_by: 'name',
           limit: 50,
+          includes: 'addresses;phones;emails',
           filter_like: {
-            name: this.searchText
+            'name': this.searchText
           }
         }
       }).then(response => {
         this.options = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
-          this.options.push({
+          let obj = {
             'id': key['id'],
             'label': key['name']
+          }
+          if (key['addresses'].length > 0) {
+            obj.address = key['addresses'][0]['address']
+          }
+          if (key['emails'].length > 0) {
+            obj.email = key['emails'][0]['email']
+          }
+          if (key['phones'].length > 0) {
+            obj.phone = key['phones'][0]['number']
+          }
+          this.options.push({
+            ...obj
           })
 
           if (this.value == key['id']) {
@@ -128,7 +143,7 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', option.label)
+      this.$emit('choosen', option)
       this.close()
     },
     show () {
