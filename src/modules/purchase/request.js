@@ -7,13 +7,13 @@ const state = {
     date: null,
     required_date: null,
     supplier_id: null,
-    employee_id: null,
     allocation_id: null,
     form: {
-      number: null
-    },
-    employee: {
-      name: null
+      number: null,
+      notes: null,
+      created_by: {
+        name: null
+      }
     },
     supplier: {
       name: null

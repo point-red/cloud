@@ -38,7 +38,7 @@ export default {
     return {
       searchText: '',
       options: [
-        { id: 0, label: 'pending' },
+        { id: null, label: 'pending' },
         { id: 1, label: 'canceled' }
       ],
       mutableId: this.value,

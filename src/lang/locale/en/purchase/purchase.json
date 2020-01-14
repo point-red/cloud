@@ -18,5 +18,6 @@
   "include tax" : "include tax",
   "exclude tax" : "exclude tax",
   "tax" : "tax",
-  "discount" : "discount"
+  "discount" : "discount",
+  "required date" : "required date"
 }

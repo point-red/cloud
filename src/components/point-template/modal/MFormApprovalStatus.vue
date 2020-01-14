@@ -38,9 +38,9 @@ export default {
     return {
       searchText: '',
       options: [
-        { id: 0, label: 'pending' },
+        { id: null, label: 'pending' },
         { id: 1, label: 'approved' },
-        { id: -1, label: 'rejected' }
+        { id: 0, label: 'rejected' }
       ],
       mutableId: this.value,
       mutableLabel: this.label,

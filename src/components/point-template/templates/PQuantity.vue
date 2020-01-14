@@ -6,17 +6,19 @@
         v-model="number"
         :options="options"
         class="form-control form-number"
-        :class="{
-          'text-right' : isTextRight
-        }"></cleave>
-      <div class="input-group-append">
+        :class="{ 'text-right' : isTextRight }"/>
+      <div class="input-group-append" @click="() => $refs.quantityUnit.show(units)">
         <span class="input-group-text">
-          {{ unit }}
+          {{ mutableUnit.label }}
         </span>
         <button v-show="showAddReduceButtons" class="btn btn-outline-secondary" type="button" @click="add">+</button>
         <button v-show="showAddReduceButtons" class="btn btn-outline-secondary" type="button" @click="reduce">-</button>
       </div>
     </div>
+    <m-quantity-unit
+      :id="'quantity-unit-'+itemId+'-'+Math.random()"
+      ref="quantityUnit"
+      @choosen="chooseUnit($event)"/>
   </div>
 </template>
 
@@ -29,7 +31,14 @@ export default {
   },
   data () {
     return {
-      number: this.value,
+      id: this.itemId,
+      number: null,
+      mutableUnit: {
+        id: this.unit.id,
+        name: this.unit.name,
+        converter: this.unit.converter,
+        label: this.unit.label
+      },
       options: {
         numeral: true,
         numeralDecimalScale: 15,
@@ -38,8 +47,9 @@ export default {
     }
   },
   watch: {
-    value () {
-      this.number = this.value
+    unit () {
+      this.mutableUnit.name = this.unit.label
+      this.mutableUnit.label = this.unit.label
     },
     number () {
       this.$emit('input', this.number)
@@ -59,10 +69,14 @@ export default {
       default: true
     },
     unit: {
-      type: String,
-      default: ''
+      type: Object
     },
-    value: null,
+    itemId: {
+      type: Number
+    },
+    units: {
+      type: Array
+    },
     showAddReduceButtons: {
       type: Boolean,
       default: false
@@ -76,6 +90,13 @@ export default {
       if (this.number >= 1) {
         this.number--
       }
+    },
+    chooseUnit (unit) {
+      this.mutableUnit.label = unit.label
+      this.mutableUnit.name = unit.name
+      this.mutableUnit.id = unit.id
+      this.mutableUnit.converter = unit.converter
+      this.$emit('choosen', this.mutableUnit)
     }
   }
 }

@@ -18,5 +18,6 @@
   "include tax" : "sudah termasuk ppn",
   "exclude tax" : "belum termasuk ppn",
   "tax" : "ppn",
-  "discount" : "diskon"
+  "discount" : "diskon",
+  "required date" : "tanggal dibutuhkan"
 }

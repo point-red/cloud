@@ -31,5 +31,16 @@
   "attachment": "attachment",
   "upload": "upload",
   "print": "print",
-  "file": "file"
+  "file": "file",
+  "approve": "approve",
+  "reject": "reject",
+  "date start": "date start",
+  "date end": "date end",
+  "form status": "form status",
+  "approval status": "approval status",
+  "approved by": "approved by",
+  "select": "select",
+  "save": "save",
+  "cancellation status": "cancellation status",
+  "pending approval warning": "this {form} in pending state, need approval from {approvedBy}"
 }

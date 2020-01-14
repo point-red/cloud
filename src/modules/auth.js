@@ -75,12 +75,13 @@ const actions = {
           Vue.cookie.set('TAT', apiData.access_token, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
           Vue.cookie.set('TED', apiData.token_expires_at, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
         }
-
         localStorage.setItem('userId', apiData.id)
         localStorage.setItem('userName', apiData.name)
         localStorage.setItem('userEmail', apiData.email)
         localStorage.setItem('tenantCode', apiData.tenant_code)
         localStorage.setItem('tenantName', apiData.tenant_name)
+        localStorage.setItem('tenantAddress', apiData.tenant_address)
+        localStorage.setItem('tenantPhone', apiData.tenant_phone)
         commit('storeUser', apiData)
         axios.defaults.headers.common['Authorization'] = apiData.token_type + ' ' + apiData.access_token
         resolve(response)

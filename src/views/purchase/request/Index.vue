@@ -71,18 +71,6 @@
               </p-form-row>
             </div>
             <div class="col-sm-4 text-center">
-              <p-form-row id="form-cancellation-status" name="form-cancellation-status" :label="$t('cancellation status')" :is-horizontal="false">
-                <div slot="body">
-                  <m-form-cancellation-status
-                    :id="'form-cancellation-status-id'"
-                    v-model="formCancellationStatus.id"
-                    :label="formCancellationStatus.label"
-                    @choosen="chooseFormCancellationStatus($event)"
-                    @clear="clearFormCancellationStatus()"/>
-                </div>
-              </p-form-row>
-            </div>
-            <div class="col-sm-4 text-center">
               <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('approval status')" :is-horizontal="false">
                 <div slot="body">
                   <m-form-approval-status
@@ -94,28 +82,47 @@
                 </div>
               </p-form-row>
             </div>
+            <div class="col-sm-4 text-center">
+              <p-form-row id="form-cancellation-status" name="form-cancellation-status" :label="$t('cancellation status')" :is-horizontal="false">
+                <div slot="body">
+                  <m-form-cancellation-status
+                    :id="'form-cancellation-status-id'"
+                    v-model="formCancellationStatus.id"
+                    :label="formCancellationStatus.label"
+                    @choosen="chooseFormCancellationStatus($event)"
+                    @clear="clearFormCancellationStatus()"/>
+                </div>
+              </p-form-row>
+            </div>
           </div>
         </div>
-        <hr>
         <div class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-          <button type="button" class="btn btn-secondary mr-5" @click="bulkArchiveCustomer()">
-            {{ $t('archive') | uppercase }}
+          <!-- <button type="button" class="btn btn-secondary mr-5" @click="bulkApprove()">
+            {{ $t('approve') | uppercase }}
           </button>
-          <button type="button" class="btn btn-secondary mr-5" @click="bulkActivateCustomer()">
-            {{ $t('activate') | uppercase }}
+          <button type="button" class="btn btn-secondary mr-5" @click="bulkReject()">
+            {{ $t('reject') | uppercase }}
           </button>
-          <button type="button" class="btn btn-secondary" @click="bulkDeleteCustomer()">
-            {{ $t('delete') | uppercase }}
-          </button>
+          <button type="button" class="btn btn-secondary" @click="bulkCancel()">
+            {{ $t('cancel') | uppercase }}
+          </button> -->
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">#</th>
+              <th width="50px">
+                <p-form-check-box
+                  id="check-box"
+                  name="check-box"
+                  :is-form="false"
+                  @click.native="toggleCheckRows()"
+                  :checked="isRowsChecked(purchaseRequests, checkedRow)"
+                  class="text-center"/>
+              </th>
               <th>Number</th>
               <th>Date</th>
-              <th>Employee</th>
               <th>Supplier</th>
               <th>Item</th>
               <th>Notes</th>
@@ -130,14 +137,22 @@
               v-for="(purchaseRequestItem, index2) in purchaseRequest.items"
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
+              <th>{{ ((currentPage - 1) * limit) + index + 1 }}</th>
+              <td>
+                <p-form-check-box
+                  :is-form="false"
+                  id="check-box"
+                  name="check-box"
+                  @click.native="toggleCheckRow(purchaseRequest.id)"
+                  :checked="isRowChecked(purchaseRequest.id)"
+                  class="text-center"/>
+              </td>
               <td>
                 <router-link :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.id }}">
                   {{ purchaseRequest.form.number }}
                 </router-link>
               </td>
               <td>{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-              <td>{{ purchaseRequest.employee.name }}</td>
               <td>
                 <template v-if="purchaseRequest.supplier">
                   {{ purchaseRequest.supplier.name }}
@@ -195,6 +210,7 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
+      limit: 10,
       isAdvanceFilter: false,
       checkedRow: [],
       formStatus: {
@@ -232,6 +248,54 @@ export default {
   },
   methods: {
     ...mapActions('purchaseRequest', ['get']),
+    toggleCheckRow (id) {
+      if (!this.isRowChecked(id)) {
+        this.checkedRow.push({ id })
+      } else {
+        this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(id), 1)
+      }
+    },
+    toggleCheckRows () {
+      if (!this.isRowsChecked(this.purchaseRequests, this.checkedRow)) {
+        this.purchaseRequests.forEach(element => {
+          if (!this.isRowChecked(element.id)) {
+            let id = element.id
+            this.checkedRow.push({ id })
+          }
+        })
+      } else {
+        this.purchaseRequests.forEach(element => {
+          this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(element.id), 1)
+        })
+      }
+    },
+    isRowChecked (id) {
+      return this.checkedRow.some(element => {
+        return element.id == id
+      })
+    },
+    isRowsChecked (haystack, needles) {
+      if (needles.length == 0) {
+        return false
+      }
+      for (let i = 0; i < haystack.length; i++) {
+        let found = needles.some(element => {
+          return element.id == haystack[i].id
+        })
+        if (!found) {
+          return false
+        }
+      }
+      return true
+    },
+    bulkApprove () {
+      this.bulkApprove({
+        purchaseRequests: this.checkedRow
+      }).then(response => {
+        this.checkedRow = []
+        this.getPurchaseRequest()
+      })
+    },
     chooseStatus (option) {
       this.status.label = option
       this.getPurchaseRequest()
@@ -298,7 +362,6 @@ export default {
           filter_like: {
             'form.number': this.searchText,
             'supplier.name': this.searchText,
-            'employee.name': this.searchText,
             'items.item.name': this.searchText,
             'items.notes': this.searchText,
             'items.quantity': this.searchText,
@@ -316,7 +379,7 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: 10,
-          includes: 'form;employee;supplier;items.item;services.service',
+          includes: 'form;supplier;items.item;services.service',
           page: this.currentPage
         }
       }).then(response => {

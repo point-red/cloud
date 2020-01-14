@@ -1,6 +1,6 @@
 <template>
   <div>
-    <breadcrumb>
+    <breadcrumb v-if="purchaseRequest">
       <breadcrumb-purchase/>
       <router-link to="/purchase/request" class="breadcrumb-item">{{ $t('purchase request') | uppercase }}</router-link>
       <template v-if="purchaseRequest.form.number">
@@ -8,184 +8,129 @@
       </template>
       <template v-else>
         <router-link v-if="purchaseRequest.origin" :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.origin.id }}" class="breadcrumb-item">
-          {{ purchaseRequest.form.edited_number | uppercase }}
+          {{ purchaseRequest.edited_number | uppercase }}
         </router-link>
       </template>
     </breadcrumb>
 
     <purchase-menu/>
 
-    <tab-menu/>
+    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert">
+      <div class="flex-fill mr-10">
+        <p class="mb-0">
+          <i class="fa fa-fw fa-exclamation-triangle"></i>
+          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: purchaseRequest.approvers[0].requested_to.first_name + ' ' + purchaseRequest.approvers[0].requested_to.last_name }) | uppercase }}
+        </p>
+        <div v-if="$permission.has('approve purchase request')">
+          <hr>
+          <button class="btn btn-sm btn-outline-primary mr-5">{{ $t('approve') | uppercase }}</button>
+          <button class="btn btn-sm btn-outline-danger">{{ $t('reject') | uppercase }}</button>
+        </div>
+      </div>
+    </div>
 
-    <div class="row">
-      <p-block :title="$t('purchase request')" :header="true">
-        <p-block-inner :is-loading="isLoading">
-          <p-form-row
-            id="number"
-            name="number"
-            :label="$t('number')">
-            <div slot="body" class="col-lg-9">
-              <template v-if="purchaseRequest.form.number">
-                {{ purchaseRequest.form.number }}
-              </template>
-              <template v-else>
-                <span class="badge badge-danger">{{ $t('archived') }}</span>
-                {{ purchaseRequest.form.edited_number }}
-              </template>
+    <div class="row" v-if="purchaseRequest">
+      <p-block :header="false">
+        <p-block-inner>
+          <div class="row">
+            <div class="col-sm-12">
+              <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
+              <hr>
+              <div class="float-sm-right text-right">
+                <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                {{ authUser.tenant_address | uppercase }} <br v-if="authUser.tenant_address">
+                {{ authUser.tenant_phone | uppercase }} <br v-if="authUser.tenant_phone">
+              </div>
+              <div class="float-sm-left">
+                <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
+                {{ purchaseRequest.supplier_name | uppercase }}
+                <div style="font-size:12px">
+                  {{ purchaseRequest.supplier_address | uppercase }}
+                  <br v-if="purchaseRequest.supplier_phone">{{ purchaseRequest.supplier_phone }}
+                  <br v-if="purchaseRequest.supplier_email">{{ purchaseRequest.supplier_email | uppercase }}
+                </div>
+              </div>
             </div>
-          </p-form-row>
-
-          <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              {{ purchaseRequest.required_date | dateFormat('DD MMMM YYYY HH:mm') }}
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="supplier"
-            name="supplier"
-            :label="$t('supplier')">
-            <div slot="body" class="col-lg-9">
-              <template v-if="purchaseRequest.supplier">
-                {{ purchaseRequest.supplier.name }}
-              </template>
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="employee"
-            name="employee"
-            :label="$t('employee')">
-            <div slot="body" class="col-lg-9">
-              {{ purchaseRequest.employee.name }}
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="notes"
-            name="notes"
-            :label="$t('notes')">
-            <div slot="body" class="col-lg-9">
-              {{ purchaseRequest.form.notes }}
-            </div>
-          </p-form-row>
-
-          <p-separator></p-separator>
-
-          <h5 class="">Item</h5>
-
-          <p-block-inner>
-            <point-table>
-              <tr slot="p-head">
-                <th>#</th>
-                <th>Item</th>
-                <th class="text-right">Quantity</th>
-                <th class="text-right">Estimated Price</th>
-                <th>Allocation</th>
-                <th>Notes</th>
-              </tr>
-              <tr slot="p-body" v-for="(row, index) in purchaseRequest.items" :key="index">
-                <th>{{ index + 1 }}</th>
-                <td>
-                  [{{ row.item.code }}] {{ row.item.name }}
-                </td>
-                <td class="text-right">
-                  {{ row.quantity | numberFormat }} {{ row.unit }}
-                </td>
-                <td class="text-right">
-                  {{ row.price | numberFormat }}
-                </td>
-                <td>
-                  <template v-if="row.allocation">
-                    {{ row.allocation.name }}
-                  </template>
-                </td>
-                <td>
-                  {{ row.notes }}
-                </td>
-              </tr>
-            </point-table>
-          </p-block-inner>
-
-          <p-separator></p-separator>
-
-          <h5 class="">Approver</h5>
-
-          <point-table>
+          </div>
+          <hr>
+          <div><b>{{ $t('form number') | uppercase }} : </b>{{ purchaseRequest.form.number }}</div>
+          <div><b>{{ $t('required date') | uppercase }} : </b>{{ purchaseRequest.required_date | dateFormat('DD MMMM YYYY') }}</div>
+          <hr>
+          <point-table class="mt-20">
             <tr slot="p-head">
-              <th>#</th>
-              <th>Requested At</th>
-              <th>Requested By</th>
-              <th>Requested To</th>
-              <th>Approval Status</th>
+              <th class="text-center">#</th>
+              <th>Item</th>
+              <th>Notes</th>
+              <th class="text-right">Quantity</th>
+              <th class="text-right">Estimated Price</th>
+              <th width="50px"></th>
             </tr>
-            <tr slot="p-body" v-for="(approver, index) in purchaseRequest.approvers" :key="index">
-              <th>{{ index + 1 }}</th>
-              <td>
-                {{ approver.requested_at | dateFormat('DD MMMM YYYY HH:mm') }}
-              </td>
-              <td>
-                {{ approver.requested_by.first_name }} {{ approver.requested_by.last_name }}
-              </td>
-              <td>
-                {{ approver.requested_to.first_name }} {{ approver.requested_to.last_name }}
-              </td>
-              <td>
-                <template v-if="approver.approval_at">
-                  <span v-if="approver.approved == true" class="badge badge-primary">{{ $t('approved') }}</span>
-                  <span v-if="approver.approved == false" class="badge badge-danger">{{ $t('rejected') }}</span>
-                  {{ approver.approval_at | dateFormat('DD MMMM YYYY HH:mm') }}
-                </template>
-                <template v-else>
-                  <span class="badge badge-secondary">{{ $t('pending') }}</span>
-                </template>
-              </td>
-            </tr>
-          </point-table>
-
-          <p-separator></p-separator>
-
-          <h5 v-if="purchaseRequest.archives != undefined && purchaseRequest.archives.length > 0">Archives</h5>
-
-          <point-table v-if="purchaseRequest.archives != undefined && purchaseRequest.archives.length > 0">
-            <tr slot="p-head">
-              <th>#</th>
-              <th>Edited Date</th>
-              <th>Edited Reason</th>
-            </tr>
-            <tr slot="p-body" v-for="(archived, index) in purchaseRequest.archives" :key="index">
-              <th>{{ index + 1 }}</th>
-              <td>
-                <template v-if="archived.id != id">
-                  <router-link :to="{ name: 'purchase.request.show', params: { id: archived.id }}">
-                    {{ archived.form.updated_at | dateFormat('DD MMMM YYYY HH:mm') }}
+            <template v-for="(row, index) in purchaseRequest.items">
+              <tr slot="p-body" :key="index">
+                <th class="text-center">{{ index + 1 }}</th>
+                <td>
+                  <router-link
+                    :to="'/master/item/' + row.item_id"
+                    v-if="$permission.has('read item')">
+                    {{ row.item.name }}
                   </router-link>
-                </template>
-                <template v-else>
-                  {{ archived.form.updated_at | dateFormat('DD MMMM YYYY HH:mm') }}
-                </template>
-              </td>
-              <td>
-                {{ archived.edited_notes }}
-              </td>
+                </td>
+                <td>{{ row.notes }}</td>
+                <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
+                <td class="text-right">{{ row.price | numberFormat }}</td>
+                <td>
+                  <button type="button" class="btn btn-outline-secondary btn-sm" @click="row.more = !row.more">
+                    <i class="fa fa-ellipsis-h"/>
+                  </button>
+                </td>
+              </tr>
+              <template v-if="row.more">
+              <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
+                <th class="bg-gray-light"></th>
+                <td colspan="4">
+                  <p-form-row
+                    id="allocation"
+                    name="allocation"
+                    :label="$t('allocation')">
+                    <div slot="body">
+                      <template v-if="row.allocation">{{ row.allocation.name }}</template>
+                    </div>
+                  </p-form-row>
+                </td>
+              </tr>
+              </template>
+            </template>
+            <tr slot="p-body">
+              <th></th>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="text-right"><b>{{ totalPrice | numberFormat }}</b></td>
+              <td></td>
             </tr>
           </point-table>
+          <div class="row mt-50">
+            <div class="col-sm-6">
+              <h6 class="mb-0">{{ $t('notes') | uppercase }}</h6>
+              {{ purchaseRequest.form.notes }}
+              <div class="d-sm-block d-md-none mt-10"></div>
+            </div>
+            <div class="col-sm-3 text-center">
+              <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
+              <div class="mb-50" style="font-size:11px">{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY') }}</div>
+              {{ purchaseRequest.form.created_by.first_name | uppercase }} {{ purchaseRequest.form.created_by.last_name | uppercase }}
+              <div class="d-sm-block d-md-none mt-10"></div>
+            </div>
+            <div class="col-sm-3 text-center">
+              <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
+              <div class="mb-50" style="font-size:11px">_______________</div>
+              {{ purchaseRequest.approvers[0].requested_to.first_name | uppercase }} {{ purchaseRequest.approvers[0].requested_to.last_name | uppercase }}
+              <div style="font-size:11px">{{ purchaseRequest.approvers[0].requested_to.email | lowercase }}</div>
+            </div>
 
-          <router-link
-            :to="{ path: '/purchase/request/' + purchaseRequest.id + '/edit', params: { id: purchaseRequest.id }}"
-            v-if="$permission.has('update purchase request') && $formRules.allowedToUpdate(purchaseRequest.form)"
-            class="btn btn-sm btn-primary mr-5">
-            Edit
-          </router-link>
-          <a
-            href="javascript:void(0)"
-            @click="onDelete"
-            class="btn btn-sm btn-danger mr-5">
-            Cancel
-          </a>
+            <div class="col-sm-12">
+            </div>
+          </div>
         </p-block-inner>
       </p-block>
     </div>
@@ -193,7 +138,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '../Breadcrumb'
@@ -202,7 +146,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     PurchaseMenu,
     Breadcrumb,
     BreadcrumbPurchase,
@@ -211,33 +154,39 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      isLoading: false
+      isLoading: false,
+      totalPrice: null
     }
   },
   computed: {
-    ...mapGetters('purchaseRequest', ['purchaseRequest'])
+    ...mapGetters('purchaseRequest', ['purchaseRequest']),
+    ...mapGetters('auth', ['authUser'])
   },
   watch: {
     '$route' (to, from) {
       if (to.params.id != from.params.id) {
         this.id = to.params.id
-        this.purchaseRequestRequest()
+        this.findPurchaseRequisition()
       }
     }
   },
   methods: {
     ...mapActions('purchaseRequest', ['find', 'delete']),
-    purchaseRequestRequest () {
+    findPurchaseRequisition () {
       this.isLoading = true
       this.find({
         id: this.id,
         params: {
           with_archives: true,
           with_origin: true,
-          includes: 'employee;supplier;items.item;items.allocation;services.service;services.allocation;approvers.requestedBy;approvers.requestedTo'
+          includes: 'supplier;items.item;items.allocation;services.service;services.allocation;approvers.requestedBy;approvers.requestedTo'
         }
       }).then(response => {
         this.isLoading = false
+        this.purchaseRequest.items.forEach((element, index) => {
+          this.$set(this.purchaseRequest.items[index], 'more', false)
+          this.totalPrice += element.price
+        })
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
@@ -254,12 +203,12 @@ export default {
       }).catch(error => {
         this.isDeleting = false
         this.$notification.error(error.message)
-        this.form.errors.record(error.errors)
+        this.purchaseRequest.errors.record(error.errors)
       })
     }
   },
   created () {
-    this.purchaseRequestRequest()
+    this.findPurchaseRequisition()
   }
 }
 </script>

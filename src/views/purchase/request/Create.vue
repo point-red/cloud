@@ -8,119 +8,148 @@
 
     <purchase-menu/>
 
-    <tab-menu/>
-
     <form @submit.prevent="onSubmit">
       <div class="row">
-        <p-block :title="$t('purchase request')" :header="true">
+        <p-block :header="false">
           <p-block-inner>
+            <div class="row">
+              <div class="col-sm-12">
+                <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
+                <hr>
+                <div class="float-sm-right text-right">
+                  <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                  {{ authUser.tenant_address | uppercase }} <br v-if="authUser.tenant_address">
+                  {{ authUser.tenant_phone | uppercase }} <br v-if="authUser.tenant_phone">
+                </div>
+                <div class="float-sm-left">
+                  <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
+                  <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
+                  <div style="font-size:12px" v-if="form.supplier_phone">
+                    {{ form.supplier_address | uppercase }} <br v-if="form.supplier_email">
+                    {{ form.supplier_phone }} <br v-if="form.supplier_phone">
+                    {{ form.supplier_email | uppercase }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr>
             <p-form-row
-              id="date"
-              name="date"
-              :label="$t('date')">
+              id="required-date"
+              name="required-date"
+              :label="$t('required date')">
               <div slot="body" class="col-lg-9">
                 <p-date-picker
-                  id="date"
-                  name="date"
-                  label="Date"
+                  id="required-date"
+                  name="required-date"
+                  :label="$t('required date')"
                   v-model="form.required_date"
-                  :errors="form.errors.get('date')"
-                  @errors="form.errors.set('date', null)"/>
+                  :errors="form.errors.get('required_date')"
+                  @errors="form.errors.set('required_date', null)"/>
               </div>
             </p-form-row>
-
-            <p-form-row
-              id="supplier"
-              name="supplier"
-              :label="$t('supplier')">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
-              </div>
-            </p-form-row>
-
-            <p-form-row
-              id="employee"
-              name="employee"
-              :label="$t('employee')">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-employee id="employee" v-model="form.employee_id" @choosen="chooseEmployee"/>
-              </div>
-            </p-form-row>
-
-            <p-separator></p-separator>
-
-            <h5>{{ $t('item') | uppercase }}</h5>
-
-            <point-table>
+            <hr>
+            <point-table class="mt-20">
               <tr slot="p-head">
-                <th>#</th>
+                <th class="text-center">#</th>
                 <th>Item</th>
-                <th>Allocation</th>
+                <th>Notes</th>
                 <th>Quantity</th>
                 <th>Estimated Price</th>
-                <th>Notes</th>
+                <th></th>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
-                <th>{{ index + 1 }}</th>
-                <td>
-                  <m-item
-                    :id="'item-' + index"
-                    :data-index="index"
-                    v-model="row.item_id"
-                    @choosen="chooseItem($event, row)"/>
-                </td>
-                <td>
-                  <m-allocation
-                    :id="'allocation-' + index"
-                    v-model="row.allocation_id"/>
-                </td>
-                <td>
-                  <p-quantity
-                    :id="'quantity' + index"
-                    :name="'quantity' + index"
-                    v-model="row.quantity"
-                    :unit="row.units[0].label"/>
-                </td>
+              <template v-for="(row, index) in form.items">
+                <tr slot="p-body" :key="index">
+                  <th class="text-center">{{ index + 1 }}</th>
+                  <td>
+                    <m-item
+                      :id="'item-' + index"
+                      v-model="row.item_id"
+                      @choosen="chooseItem($event, row)"/>
+                  </td>
+                  <td>
+                    <p-form-input
+                      id="notes"
+                      name="notes"
+                      v-model="row.notes"/>
+                  </td>
+                  <td>
+                    <p-quantity
+                      :id="'quantity' + index"
+                      :name="'quantity' + index"
+                      v-model="row.quantity"
+                      :item-id="row.item_id"
+                      :units="row.units"
+                      :unit="row.units[0]"
+                      @choosen="chooseUnit($event, row)"/>
+                  </td>
+                  <td>
+                    <p-form-number
+                      :id="'price' + index"
+                      :name="'price' + index"
+                      v-model="row.price"/>
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" @click="row.more = !row.more">
+                      <i class="fa fa-ellipsis-h"/>
+                    </button>
+                  </td>
+                </tr>
+                <template v-if="row.more">
+                <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
+                  <th class="bg-gray-light"></th>
+                  <td colspan="4">
+                    <p-form-row
+                      id="allocation"
+                      name="allocation"
+                      :label="$t('allocation')">
+                      <m-allocation
+                        slot="body"
+                        class="mt-5"
+                        :id="'allocation-' + index"
+                        v-model="row.allocation_id"/>
+                    </p-form-row>
+                  </td>
+                  <td></td>
+                </tr>
+                </template>
+              </template>
+              <tr slot="p-body">
+                <th class="text-center">
+                  <button type="button" class="btn btn-primary btn-sm" @click="addItemRow"><i class=" fa fa-plus"/></button>
+                </th>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td>
                   <p-form-number
-                    :id="'price' + index"
-                    :name="'price' + index"
-                    v-model="row.price"/>
-                </td>
-                <td>
-                  <p-form-input
-                    id="notes"
-                    name="notes"
-                    v-model="row.notes"/>
+                    :id="'total-price'"
+                    :name="'total-price'"
+                    :readonly="true"
+                    v-model="totalPrice"/>
                 </td>
               </tr>
             </point-table>
-
-            <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
-              <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-            </button>
-
-            <p-separator></p-separator>
-
-            <div class="row">
+            <div class="row mt-50">
               <div class="col-sm-6">
-                <h5>{{ $t('notes') | uppercase }}</h5>
-                <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+                <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+                <div class="d-sm-block d-md-none mt-10"></div>
               </div>
-              <div class="col-sm-6">
-                <h5>{{ $t('approver') | uppercase }}</h5>
-                <p-form-row
-                  id="approver"
-                  name="approver"
-                  :label="$t('approver')">
-                  <div slot="body" class="col-lg-9 mt-5">
-                    <m-user
-                      :id="'user'"
-                      v-model="form.approver_id"
-                      :errors="form.errors.get('approver_id')"
-                      @errors="form.errors.set('approver_id', null)"/>
-                  </div>
-                </p-form-row>
+              <div class="col-sm-3 text-center">
+                <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
+                <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+                {{ requestedBy | uppercase }}
+                <div class="d-sm-block d-md-none mt-10"></div>
+              </div>
+              <div class="col-sm-3 text-center">
+                <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
+                <div class="mb-50" style="font-size:11px">_______________</div>
+                <m-user
+                  :id="'user'"
+                  v-model="form.approver_id"
+                  :errors="form.errors.get('approver_id')"
+                  @errors="form.errors.set('approver_id', null)"
+                  @choosen="chooseApprover"/>
+                  {{ form.approver_email }} <br v-if="form.approver_email">
               </div>
 
               <div class="col-sm-12">
@@ -139,7 +168,6 @@
 
 <script>
 import PurchaseMenu from '../Menu'
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import Form from '@/utils/Form'
@@ -149,7 +177,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     PurchaseMenu,
-    TabMenu,
     PointTable,
     Breadcrumb,
     BreadcrumbPurchase
@@ -157,14 +184,17 @@ export default {
   data () {
     return {
       isSaving: false,
+      requestedBy: localStorage.getItem('userName'),
+      totalPrice: null,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         required_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         supplier_id: null,
         supplier_name: null,
-        employee_id: null,
-        employee_name: null,
+        supplier_address: null,
+        supplier_phone: null,
+        supplier_email: null,
         approver_id: null,
         notes: null,
         items: [
@@ -181,14 +211,80 @@ export default {
             quantity: null,
             price: null,
             allocation_id: null,
-            notes: null
+            notes: null,
+            more: false
+          },
+          {
+            item_id: null,
+            item_name: null,
+            unit: null,
+            converter: null,
+            units: [{
+              label: '',
+              name: '',
+              converter: null
+            }],
+            quantity: null,
+            price: null,
+            allocation_id: null,
+            notes: null,
+            more: false
+          },
+          {
+            item_id: null,
+            item_name: null,
+            unit: null,
+            converter: null,
+            units: [{
+              label: '',
+              name: '',
+              converter: null
+            }],
+            quantity: null,
+            price: null,
+            allocation_id: null,
+            notes: null,
+            more: false
+          },
+          {
+            item_id: null,
+            item_name: null,
+            unit: null,
+            converter: null,
+            units: [{
+              label: '',
+              name: '',
+              converter: null
+            }],
+            quantity: null,
+            price: null,
+            allocation_id: null,
+            notes: null,
+            more: false
+          },
+          {
+            item_id: null,
+            item_name: null,
+            unit: null,
+            converter: null,
+            units: [{
+              label: '',
+              name: '',
+              converter: null
+            }],
+            quantity: null,
+            price: null,
+            allocation_id: null,
+            notes: null,
+            more: false
           }
         ]
       })
     }
   },
   computed: {
-    ...mapGetters('purchaseRequest', ['purchaseRequest'])
+    ...mapGetters('purchaseRequest', ['purchaseRequest']),
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
     ...mapActions('purchaseRequest', ['create']),
@@ -198,24 +294,25 @@ export default {
         item_name: null,
         unit: null,
         converter: null,
-        units: [
-          {
-            label: '',
-            name: '',
-            converter: null
-          }
-        ],
+        units: [{
+          label: '',
+          name: '',
+          converter: null
+        }],
         quantity: null,
         price: null,
         allocation: null,
         notes: null
       })
     },
-    chooseEmployee (value) {
-      this.form.employee_name = value
+    chooseApprover (value) {
+      this.form.approver_email = value.email
     },
     chooseSupplier (value) {
-      this.form.supplier_name = value
+      this.form.supplier_name = value.label
+      this.form.supplier_address = value.address
+      this.form.supplier_phone = value.phone
+      this.form.supplier_email = value.email
     },
     chooseItem (item, row) {
       row.item_name = item.name
@@ -227,9 +324,12 @@ export default {
         }
       })
     },
+    chooseUnit (unit, row) {
+      row.unit = unit.label
+      row.converter = unit.converter
+    },
     onSubmit () {
       this.isSaving = true
-      this.form.date = this.form.required_date
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.approver_id == null) {
         this.$notification.error('approval cannot be null')
@@ -239,6 +339,7 @@ export default {
         })
         return
       }
+      this.form.items = this.form.items.filter(item => item.item_id !== null)
       this.create(this.form)
         .then(response => {
           this.isSaving = false
@@ -252,8 +353,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
   }
 }
 </script>
