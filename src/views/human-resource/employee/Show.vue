@@ -234,6 +234,7 @@
       </p-block>
       <p-block
         :header="true"
+        v-if="$permission.has('read employee')"
         :title="$t('attachment')"
         column="col-sm-12">
         <p-block-inner :is-loading="isLoading">
