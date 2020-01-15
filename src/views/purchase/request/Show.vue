@@ -40,7 +40,7 @@
 
     <div class="row" v-if="purchaseRequest">
       <p-block :header="false">
-        <p-block-inner>
+        <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
               <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
@@ -121,7 +121,7 @@
           <div class="row mt-50">
             <div class="col-sm-6">
               <h6 class="mb-0">{{ $t('notes') | uppercase }}</h6>
-              {{ purchaseRequest.form.notes }}
+              <div style="white-space: pre-wrap;">{{ purchaseRequest.form.notes }}</div>
               <div class="d-sm-block d-md-none mt-10"></div>
             </div>
             <div class="col-sm-3 text-center">

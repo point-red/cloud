@@ -2,7 +2,7 @@
   <div>
     <span @click="show" class="link">{{ mutableLabel || $t('select') | uppercase }}</span>
     <div
-      v-for="(error, index) in errors"
+      v-for="(error, index) in mutableErrors"
       :key="index"
       class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
     <div
@@ -54,6 +54,7 @@ export default {
       options: [],
       mutableId: this.value,
       mutableLabel: this.label,
+      mutableErrors: this.errors,
       isSaving: false,
       isLoading: false
     }
@@ -89,6 +90,9 @@ export default {
     },
     value () {
       this.mutableId = this.value
+    },
+    errors () {
+      this.mutableErrors = this.errors
     }
   },
   created () {
@@ -140,6 +144,7 @@ export default {
       })
     },
     choose (option) {
+      this.mutableErrors = []
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)

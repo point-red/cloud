@@ -90,7 +90,7 @@
                       v-model="row.price"/>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-outline-secondary btn-sm" @click="row.more = !row.more">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" @click="row.more = !row.more" v-if="!isSaving">
                       <i class="fa fa-ellipsis-h"/>
                     </button>
                   </td>

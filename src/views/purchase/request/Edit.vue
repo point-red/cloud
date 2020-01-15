@@ -12,7 +12,7 @@
     <form @submit.prevent="onSubmit">
       <div class="row">
         <p-block :header="false">
-          <p-block-inner>
+          <p-block-inner :is-loading="isLoading">
             <div class="row">
               <div class="col-sm-12">
                 <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
@@ -103,7 +103,7 @@
                       v-model="row.price"/>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-outline-secondary btn-sm" @click="row.more = !row.more">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" @click="row.more = !row.more" v-if="isSaving">
                       <i class="fa fa-ellipsis-h"/>
                     </button>
                   </td>
@@ -169,7 +169,7 @@
 
               <div class="col-sm-12">
                 <hr>
-                <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" v-if="!isLoading">
                   <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
                 </button>
               </div>
