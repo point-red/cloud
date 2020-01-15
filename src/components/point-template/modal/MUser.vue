@@ -86,6 +86,9 @@ export default {
     }, 300),
     label () {
       this.mutableLabel = this.label
+    },
+    value () {
+      this.mutableId = this.value
     }
   },
   created () {
@@ -108,7 +111,7 @@ export default {
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
-            'label': key['name'],
+            'label': key['first_name'] + ' ' + key['last_name'],
             'email': key['email'],
             'firstName': key['first_name'],
             'lastName': key['last_name'],

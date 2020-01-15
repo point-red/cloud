@@ -86,6 +86,7 @@
                     <p-form-number
                       :id="'price' + index"
                       :name="'price' + index"
+                      @keyup.native="calculate"
                       v-model="row.price"/>
                   </td>
                   <td>
@@ -185,7 +186,7 @@ export default {
     return {
       isSaving: false,
       requestedBy: localStorage.getItem('userName'),
-      totalPrice: null,
+      totalPrice: 0,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -196,6 +197,8 @@ export default {
         supplier_phone: null,
         supplier_email: null,
         approver_id: null,
+        approver_name: null,
+        approver_email: null,
         notes: null,
         items: [
           {
@@ -302,10 +305,20 @@ export default {
         quantity: null,
         price: null,
         allocation: null,
-        notes: null
+        notes: null,
+        more: false
+      })
+    },
+    calculate () {
+      this.totalPrice = 0
+      this.form.items.forEach((item) => {
+        if (item.price) {
+          this.totalPrice += parseFloat(item.price)
+        }
       })
     },
     chooseApprover (value) {
+      this.form.approver_name = value.label
       this.form.approver_email = value.email
     },
     chooseSupplier (value) {

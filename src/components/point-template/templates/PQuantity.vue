@@ -32,7 +32,7 @@ export default {
   data () {
     return {
       id: this.itemId,
-      number: null,
+      number: this.value,
       mutableUnit: {
         id: this.unit.id,
         name: this.unit.name,
@@ -48,8 +48,9 @@ export default {
   },
   watch: {
     unit () {
-      this.mutableUnit.name = this.unit.label
+      this.mutableUnit.name = this.unit.name
       this.mutableUnit.label = this.unit.label
+      this.mutableUnit.converter = this.unit.converter
     },
     number () {
       this.$emit('input', this.number)
@@ -70,6 +71,9 @@ export default {
     },
     unit: {
       type: Object
+    },
+    value: {
+      type: [Number, String]
     },
     itemId: {
       type: Number

@@ -34,7 +34,7 @@
         </div>
         <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
           <div class="row">
-            <div class="col-sm-4 text-center">
+            <div class="col-sm-6 text-center">
               <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
@@ -45,7 +45,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-4 text-center">
+            <div class="col-sm-6 text-center">
               <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
@@ -56,21 +56,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-4 text-center">
-            </div>
-            <div class="col-sm-4 text-center">
-              <p-form-row id="form-status" name="form-status" :label="$t('form status')" :is-horizontal="false">
-                <div slot="body">
-                  <m-form-status
-                    :id="'status-id'"
-                    v-model="formStatus.id"
-                    :label="formStatus.label"
-                    @choosen="chooseFormStatus($event)"
-                    @clear="clearFormStatus()"/>
-                </div>
-              </p-form-row>
-            </div>
-            <div class="col-sm-4 text-center">
+            <div class="col-sm-6 text-center">
               <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('approval status')" :is-horizontal="false">
                 <div slot="body">
                   <m-form-approval-status
@@ -78,19 +64,18 @@
                     v-model="formApprovalStatus.id"
                     :label="formApprovalStatus.label"
                     @choosen="chooseFormApprovalStatus($event)"
-                    @clear="clearFormApprovalStatus()"/>
+                    @clear="chooseFormApprovalStatus($event)"/>
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-4 text-center">
-              <p-form-row id="form-cancellation-status" name="form-cancellation-status" :label="$t('cancellation status')" :is-horizontal="false">
+            <div class="col-sm-6 text-center">
+              <p-form-row id="form-status" name="form-status" :label="$t('form status')" :is-horizontal="false">
                 <div slot="body">
-                  <m-form-cancellation-status
-                    :id="'form-cancellation-status-id'"
-                    v-model="formCancellationStatus.id"
-                    :label="formCancellationStatus.label"
-                    @choosen="chooseFormCancellationStatus($event)"
-                    @clear="clearFormCancellationStatus()"/>
+                  <m-form-status
+                    :id="'status-id'"
+                    :label="formStatus.label"
+                    @choosen="chooseFormStatus($event)"
+                    @clear="chooseFormStatus($event)"/>
                 </div>
               </p-form-row>
             </div>
@@ -215,15 +200,13 @@ export default {
       checkedRow: [],
       formStatus: {
         id: null,
-        label: null
+        label: null,
+        value: 'notArchived'
       },
       formApprovalStatus: {
         id: null,
-        label: null
-      },
-      formCancellationStatus: {
-        id: null,
-        label: null
+        label: null,
+        value: null
       },
       date: {
         start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
@@ -235,15 +218,18 @@ export default {
     ...mapGetters('purchaseRequest', ['purchaseRequests', 'pagination'])
   },
   watch: {
-    date: function () {
-      this.$router.push({
-        query: {
-          ...this.$route.query,
-          date_from: this.date.start,
-          date_to: this.date.end
-        }
-      })
-      this.getPurchaseRequest()
+    'date': {
+      handler: function () {
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            date_from: this.date.start,
+            date_to: this.date.end
+          }
+        })
+        this.getPurchaseRequest()
+      },
+      deep: true
     }
   },
   methods: {
@@ -296,48 +282,14 @@ export default {
         this.getPurchaseRequest()
       })
     },
-    chooseStatus (option) {
-      this.status.label = option
-      this.getPurchaseRequest()
-    },
-    clearStatus () {
-      this.status = {
-        id: null,
-        label: null
-      }
-      this.getPurchaseRequest()
-    },
     chooseFormStatus (option) {
-      this.formStatus.label = option
-      this.getPurchaseRequest()
-    },
-    clearFormStatus () {
-      this.formStatus = {
-        id: null,
-        label: null
-      }
+      this.formStatus.label = option.label
+      this.formStatus.value = option.value
       this.getPurchaseRequest()
     },
     chooseFormApprovalStatus (option) {
-      this.formApprovalStatus.label = option
-      this.getPurchaseRequest()
-    },
-    clearFormApprovalStatus () {
-      this.formApprovalStatus = {
-        id: null,
-        label: null
-      }
-      this.getPurchaseRequest()
-    },
-    chooseFormCancellationStatus (option) {
-      this.formCancellationStatus.label = option
-      this.getPurchaseRequest()
-    },
-    clearFormCancellationStatus () {
-      this.formCancellationStatus = {
-        id: null,
-        label: null
-      }
+      this.formApprovalStatus.label = option.label
+      this.formApprovalStatus.value = option.value
       this.getPurchaseRequest()
     },
     filterSearch: debounce(function (value) {
@@ -358,7 +310,7 @@ export default {
           join: 'form',
           fields: 'purchase_requests.*',
           sort_by: '-forms.number',
-          filter_form: this.formStatus.label,
+          filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
           filter_like: {
             'form.number': this.searchText,
             'supplier.name': this.searchText,
@@ -367,11 +319,6 @@ export default {
             'items.quantity': this.searchText,
             'items.price': this.searchText
           },
-          filter_equal: {
-            'form.canceled': this.formCancellationStatus.id,
-            'form.approved': this.formApprovalStatus.id
-          },
-          is_archived: this.formStatus.id == -1,
           filter_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
           },
@@ -395,6 +342,13 @@ export default {
     }
   },
   created () {
+    this.$router.push({
+      query: {
+        ...this.$route.query,
+        date_from: this.date.start,
+        date_to: this.date.end
+      }
+    })
     this.getPurchaseRequest()
   },
   updated () {

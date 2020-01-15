@@ -38,9 +38,9 @@ export default {
     return {
       searchText: '',
       options: [
-        { id: null, label: 'pending' },
-        { id: 1, label: 'approved' },
-        { id: 0, label: 'rejected' }
+        { id: null, label: 'pending', value: 'approvalPending' },
+        { id: 1, label: 'approved', value: 'approvalApproved' },
+        { id: 0, label: 'rejected', value: 'approvalRejected' }
       ],
       mutableId: this.value,
       mutableLabel: this.label,
@@ -54,8 +54,7 @@ export default {
       default: null
     },
     value: {
-      type: [String, Number],
-      default: null
+      type: Object
     },
     label: {
       type: String
@@ -74,14 +73,16 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', option.label)
+      this.$emit('choosen', option)
       this.close()
     },
     clear () {
       this.mutableId = null
       this.mutableLabel = null
       this.$emit('input', null)
-      this.$emit('choosen', '')
+      this.$emit('choosen', {
+        value: null
+      })
     },
     show () {
       this.$refs['select-form-approval-' + this.id].show()

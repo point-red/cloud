@@ -80,6 +80,9 @@ export default {
     }, 300),
     label () {
       this.mutableLabel = this.label
+    },
+    value () {
+      this.mutableId = this.value
     }
   },
   created () {

@@ -38,9 +38,9 @@ export default {
     return {
       searchText: '',
       options: [
-        { id: 0, label: 'pending' },
-        { id: -1, label: 'archived' },
-        { id: 1, label: 'done' }
+        { id: 1, label: 'done', value: 'notArchived;done' },
+        { id: 0, label: 'pending', value: 'notArchived;pending' },
+        { id: -1, label: 'canceled', value: 'notArchived;cancellationApproved' }
       ],
       mutableId: this.value,
       mutableLabel: this.label,
@@ -54,7 +54,7 @@ export default {
       required: true
     },
     value: {
-      type: [String, Number]
+      type: Object
     },
     label: {
       type: String
@@ -73,14 +73,16 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', option.label)
+      this.$emit('choosen', option)
       this.close()
     },
     clear () {
       this.mutableId = null
       this.mutableLabel = null
       this.$emit('input', null)
-      this.$emit('choosen', '')
+      this.$emit('choosen', {
+        value: 'notArchived'
+      })
     },
     show () {
       this.$refs['select-form-' + this.id].show()

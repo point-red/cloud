@@ -15,7 +15,7 @@
 
     <purchase-menu/>
 
-    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert" v-if="purchaseRequest.form.approved == null">
+    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert" v-if="purchaseRequest.form.approved == null && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
@@ -23,9 +23,18 @@
         </p>
         <div v-if="$permission.has('approve purchase request')">
           <hr>
-          <button class="btn btn-sm btn-outline-primary mr-5">{{ $t('approve') | uppercase }}</button>
-          <button class="btn btn-sm btn-outline-danger">{{ $t('reject') | uppercase }}</button>
+          <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
+          <button type="button" @click="onReject" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
         </div>
+      </div>
+    </div>
+
+    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15" role="alert" v-if="purchaseRequest.form.approved == 0 && isLoading == false">
+      <div class="flex-fill mr-10">
+        <p class="mb-0">
+          <i class="fa fa-fw fa-exclamation-triangle"></i>
+          REJECTED
+        </p>
       </div>
     </div>
 
@@ -123,12 +132,22 @@
             </div>
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">_______________</div>
+              <div class="mb-50" style="font-size:11px">
+                <template v-if="purchaseRequest.approvers[0].approval_at">
+                  {{ purchaseRequest.approvers[0].approval_at | dateFormat('DD MMMM YYYY') }}
+                </template>
+                <template v-else>
+                  _______________
+                </template>
+              </div>
               {{ purchaseRequest.approvers[0].requested_to.first_name | uppercase }} {{ purchaseRequest.approvers[0].requested_to.last_name | uppercase }}
               <div style="font-size:11px">{{ purchaseRequest.approvers[0].requested_to.email | lowercase }}</div>
             </div>
-
             <div class="col-sm-12">
+              <hr>
+              <router-link :to="{ name: 'purchase.request.edit', params: { id: purchaseRequest.id }}" class="btn btn-sm btn-primary mr-5">
+                {{ $t('edit') | uppercase }}
+              </router-link>
             </div>
           </div>
         </p-block-inner>
@@ -171,7 +190,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('purchaseRequest', ['find', 'delete']),
+    ...mapActions('purchaseRequest', ['find', 'delete', 'approve', 'reject']),
     findPurchaseRequisition () {
       this.isLoading = true
       this.find({
@@ -204,6 +223,22 @@ export default {
         this.isDeleting = false
         this.$notification.error(error.message)
         this.purchaseRequest.errors.record(error.errors)
+      })
+    },
+    onApprove () {
+      this.approve({
+        id: this.id
+      }).then(response => {
+        this.$notification.success('approve success')
+        this.purchaseRequest.form.approved = true
+      })
+    },
+    onReject () {
+      this.reject({
+        id: this.id
+      }).then(response => {
+        this.$notification.success('reject success')
+        this.purchaseRequest.form.approved = false
       })
     }
   },
