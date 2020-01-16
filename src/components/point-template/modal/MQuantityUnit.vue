@@ -19,19 +19,6 @@
           </a>
           </template>
         </div>
-        <div class="alert alert-info text-center" v-if="searchText && units.length == 0 && !isLoading">
-          {{ $t('searching not found', [searchText]) | capitalize }} <br>
-          {{ $t('click') }} <span class="link" @click="add"><i class="fa fa-xs" :class="{
-            'fa-refresh fa-spin': isSaving,
-            'fa-plus': !isSaving
-          }"></i> Add</span> {{ $t('to add new data') }}
-        </div>
-        <div class="alert alert-info text-center" v-if="!searchText && units.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('allocation') | capitalize }}, <br/> {{ $t('you can create') }}
-          <router-link :to="'/master/allocation/create'">
-            <span>{{ $t('new one') }}</span>
-          </router-link>
-        </div>
       </template>
       <template slot="footer">
         <button type="button" @click="close()" class="btn btn-outline-danger">Close</button>
@@ -81,7 +68,6 @@ export default {
   methods: {
     search () {
       // this.isLoading = true
-      //
     },
     add () {
       this.isSaving = true
