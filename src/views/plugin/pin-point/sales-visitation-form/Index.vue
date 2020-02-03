@@ -109,7 +109,7 @@
                   <th>{{ index + 1 }}</th>
                   <td>
                     {{ formattedDateTime(form.form.date) }}
-                    <template v-if(form.photo)>
+                    <template v-if="form.photo">
                       <img :src="form.photo" alt="" width="200px">
                     </template>
                   </td>

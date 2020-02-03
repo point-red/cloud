@@ -131,12 +131,16 @@ export default {
     choose (option) {
       this.mutableId = option.id
       this.mutableLabel = option.label
+      // make default unit non reactive
+      let unit = JSON.parse(JSON.stringify(option.units[0]))
       this.$emit('input', option.id)
       this.$emit('choosen', {
+        id: option.id,
         name: option.label,
         require_expiry_date: option.require_expiry_date,
         require_production_number: option.require_production_number,
-        units: option.units
+        units: option.units,
+        unit: unit
       })
       this.close()
     },

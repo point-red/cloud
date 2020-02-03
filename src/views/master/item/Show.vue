@@ -215,6 +215,8 @@
               <th>Date</th>
               <th>Form</th>
               <th>Warehouse</th>
+              <th v-if="item.require_production_number">Production Number</th>
+              <th v-if="item.require_expiry_date">Expiry Date</th>
               <th class="text-right">Quantity</th>
               <th class="text-right">Total Quantity</th>
             </tr>
@@ -228,6 +230,8 @@
               <td>{{ row.form.date | dateFormat('DD MMMM YYYY HH:mm:ss') }}</td>
               <td>{{ row.form.number }}</td>
               <td>{{ row.warehouse.name }}</td>
+              <td v-if="item.require_production_number">{{ row.production_number | uppercase }}</td>
+              <td v-if="item.require_expiry_date">{{ row.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
               <td class="text-right">{{ row.quantity | numberFormat }}</td>
               <td class="text-right">{{ row.total_quantity | numberFormat }}</td>
             </tr>
@@ -296,7 +300,9 @@ export default {
   },
   methods: {
     ...mapActions('masterItem', ['find', 'delete']),
-    ...mapActions('inventoryInventory', ['get']),
+    ...mapActions('inventoryInventory', {
+      findInventory: 'find'
+    }),
     onDelete () {
       this.isDeleting = true
       this.delete({ id: this.id })
@@ -332,7 +338,7 @@ export default {
     }, 300),
     getInventoryRequest () {
       this.isLoading = true
-      this.get({
+      this.findInventory({
         itemId: this.id,
         params: {
           includes: 'form;warehouse',

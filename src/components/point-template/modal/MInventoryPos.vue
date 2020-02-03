@@ -19,36 +19,36 @@
               <td v-if="mutableRequireExpiryDate">{{ option.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
               <td v-if="mutableRequireProductionNumber">{{ option.production_number }}</td>
               <td class="text-right">
-                <p-quantity
-                  :id="'inventory-out-' + index"
-                  :name="'inventory-out-' + index"
-                  @input="calculate"
-                  @choosen="updateUnit"
+                <p-form-number
+                  :id="'quantity' + index"
+                  :name="'quantity' + index"
                   v-model="option.quantity"
-                  :units="mutableItemUnits"
-                  :unit="mutableItemUnit"/>
+                  @input="calculate"/>
               </td>
-              <td class="text-right">
-                {{ option.remainingInUnit | numberFormat }}
-                {{ mutableItemUnit.label | uppercase }}
-              </td>
+              <td class="text-right">{{ option.remaining | numberFormat }}</td>
             </tr>
             <tr slot="p-body">
               <td></td>
               <td></td>
               <td class="text-right">
-                <p-quantity
+                <p-form-number
                   id="total-quantity"
                   name="total-quantity"
                   v-model="mutableTotalQuantity"
-                  :units="mutableItemUnits"
-                  :disable-unit-selection="true"
-                  :readonly="true"
-                  :unit="mutableItemUnit"/>
+                  :readonly="true"/>
               </td>
               <td class="text-right"></td>
             </tr>
           </p-table>
+          <hr/>
+          <p-form-row
+            id="notes"
+            name="notes"
+            :label="$t('notes')">
+            <div slot="body" class="col-lg-12 mt-5">
+              <textarea rows="5" class="form-control" placeholder="Notes" v-model="mutableNotes"></textarea>
+            </div>
+          </p-form-row>
         </div>
         <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
           {{ $t('searching not found', [searchText]) | capitalize }}
@@ -77,12 +77,10 @@ export default {
       mutableItemName: null,
       mutableItemPrice: null,
       mutableItemUnit: {
-        id: 0,
-        label: '',
-        name: '',
+        label: null,
+        name: null,
         converter: 0
       },
-      mutableRowId: null,
       mutableItemUnits: [],
       mutableInventories: [],
       mutableRequireExpiryDate: false,
@@ -122,15 +120,7 @@ export default {
       }).then(response => {
         this.inventories.forEach(inventory => {
           inventory.quantity = 0
-          this.mutableInventories.forEach(el => {
-            if (inventory.item_id == el.item_id &&
-              inventory.expiry_date == el.expiry_date &&
-              inventory.production_number == el.production_number) {
-              inventory.quantity = el.quantity
-            }
-          })
         })
-        this.calculate()
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
@@ -140,48 +130,39 @@ export default {
       //
     },
     calculate () {
-      this.inventories.forEach(element => {
-        element.remainingInUnit = element.remaining / this.mutableItemUnit.converter
-      })
       this.mutableTotalQuantity = 0
       this.inventories.forEach(inventory => {
         this.mutableTotalQuantity += parseFloat(inventory.quantity)
       })
     },
-    updateUnit (mutableItemUnit) {
-      this.mutableItemUnit.converter = mutableItemUnit.converter
-      this.mutableItemUnit.name = mutableItemUnit.name
-      this.mutableItemUnit.label = mutableItemUnit.label
-      this.calculate()
-    },
-    show (row) {
-      if (!row.warehouse_id) {
+    show (item, warehouseId) {
+      if (!warehouseId) {
         this.$alert.info('INPUT REQURED', this.$t('please select warehouse'))
-      } else if (!row.item) {
+      } else if (!item) {
         this.$alert.info('ITEM REQUIRED', this.$t('please select item'))
       } else {
-        this.mutableRowId = row.row_id
-        this.mutableItemId = row.item.id
-        this.mutableItemName = row.item.name
-        this.mutableItemUnit = row.item.unit
-        this.mutableItemUnits = row.item.units
-        this.mutableWarehouseId = row.warehouse_id
-        this.mutableRequireExpiryDate = row.require_expiry_date
-        this.mutableRequireProductionNumber = row.require_production_number
-        if (row.dna) {
-          this.mutableInventories = row.dna
-        }
+        this.mutableWarehouseId = warehouseId
+        this.mutableItemId = item.id
+        this.mutableItemName = item.name
+        this.mutableItemPrice = item.price
+        this.mutableItemUnit = item.unit
+        this.mutableItemUnits = item.units
+        this.mutableRequireExpiryDate = item.require_expiry_date
+        this.mutableRequireProductionNumber = item.require_production_number
+        this.mutableNotes = item.notes
+        this.mutableInventories = item.inventories
+        this.mutableDiscountPercent = item.discount_percent
         this.init()
         this.$refs['select-' + this.id].show()
       }
     },
     update () {
       this.calculate()
-      this.$emit('updated', {
-        rowId: this.mutableRowId,
-        unit: this.mutableItemUnit,
-        dna: this.inventories,
-        totalQuantity: this.mutableTotalQuantity
+      this.$emit('add', {
+        inventories: this.inventories,
+        quantity: this.mutableTotalQuantity,
+        notes: this.mutableNotes,
+        discountPercent: this.mutableDiscountPercent
       })
       this.close()
     },

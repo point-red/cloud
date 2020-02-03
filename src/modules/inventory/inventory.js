@@ -1,20 +1,18 @@
 import api from '@/api'
 
-const url = function (itemId) {
-  return '/inventory/inventories/' + itemId
-}
+const url = '/inventory/inventories'
 
 const state = {
   inventory: {},
+  inventories: [],
+  pagination: {},
   openingBalance: 0,
   openingBalanceCurrentPage: 0,
   stockIn: 0,
   stockInCurrentPage: 0,
   stockOut: 0,
   stockOutCurrentPage: 0,
-  endingBalance: 0,
-  inventories: [],
-  pagination: {}
+  endingBalance: 0
 }
 
 const getters = {
@@ -63,14 +61,22 @@ const mutations = {
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.inventory = payload.data
+    state.inventories = payload.data
+    state.openingBalance = payload.opening_balance
+    state.openingBalanceCurrentPage = payload.opening_balance_current_page
+    state.stockIn = payload.stock_in
+    state.stockInCurrentPage = payload.stock_in_current_page
+    state.stockOut = payload.stock_out
+    state.stockOutCurrentPage = payload.stock_out_current_page
+    state.endingBalance = payload.ending_balance
+    state.pagination = payload.meta
   }
 }
 
 const actions = {
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url(payload.itemId), payload)
+      api.get(url, payload)
         .then(response => {
           commit('FETCH_ARRAY', response)
           resolve(response)
@@ -81,7 +87,7 @@ const actions = {
   },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.id, payload)
+      api.get(url + '/' + payload.itemId, payload)
         .then(response => {
           commit('FETCH_OBJECT', response)
           resolve(response)

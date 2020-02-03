@@ -5,11 +5,12 @@
         :readonly="readonly"
         v-model="number"
         :options="options"
+        style="background:white"
         class="form-control form-number"
         :class="{ 'text-right' : isTextRight }"/>
-      <div class="input-group-append" @click="() => $refs.quantityUnit.show(units)">
+      <div class="input-group-append" @click="onClickUnit">
         <span class="input-group-text">
-          {{ mutableUnit.label }}
+          {{ mutableUnit.label | uppercase }}
         </span>
         <button v-show="showAddReduceButtons" class="btn btn-outline-secondary" type="button" @click="add">+</button>
         <button v-show="showAddReduceButtons" class="btn btn-outline-secondary" type="button" @click="reduce">-</button>
@@ -47,10 +48,16 @@ export default {
     }
   },
   watch: {
-    unit () {
-      this.mutableUnit.name = this.unit.name
-      this.mutableUnit.label = this.unit.label
-      this.mutableUnit.converter = this.unit.converter
+    'unit': {
+      handler: function (newValue) {
+        this.mutableUnit.name = this.unit.name
+        this.mutableUnit.label = this.unit.label
+        this.mutableUnit.converter = this.unit.converter
+      },
+      deep: true
+    },
+    value () {
+      this.number = this.value
     },
     number () {
       this.$emit('input', this.number)
@@ -62,6 +69,10 @@ export default {
       default: false
     },
     unsigned: {
+      type: Boolean,
+      default: false
+    },
+    disableUnitSelection: {
       type: Boolean,
       default: false
     },
@@ -93,6 +104,11 @@ export default {
     reduce () {
       if (this.number >= 1) {
         this.number--
+      }
+    },
+    onClickUnit () {
+      if (this.disableUnitSelection == false) {
+        this.$refs.quantityUnit.show(this.units)
       }
     },
     chooseUnit (unit) {

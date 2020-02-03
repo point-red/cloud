@@ -66,7 +66,7 @@
           </tr>
         </point-table>
 
-        <m-item-unit ref="mItemUnit" @updated="updateItemUnit"></m-item-unit>
+        <m-item-unit id="unit" ref="mItemUnit" @updated="updateItemUnit"></m-item-unit>
 
         <p-separator></p-separator>
 
