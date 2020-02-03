@@ -50,7 +50,7 @@
               <th>Quantity</th>
               <th></th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finish_goods" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item
@@ -207,7 +207,7 @@ export default {
           quantity: 0,
           converter: null
         }],
-        finish_goods: [{
+        finished_goods: [{
           item_id: null,
           warehouse_id: null,
           item_name: null,
@@ -247,7 +247,7 @@ export default {
       })
     },
     addFinishGoodRow () {
-      this.form.finish_goods.push({
+      this.form.finished_goods.push({
         item_id: null,
         warehouse_id: null,
         item_name: null,
@@ -268,7 +268,7 @@ export default {
       this.$delete(this.form.raw_materials, index)
     },
     deleteFinishGoodRow (index) {
-      this.$delete(this.form.finish_goods, index)
+      this.$delete(this.form.finished_goods, index)
     },
     chooseManufactureProcess (value) {
       this.form.manufacture_process_name = value

@@ -44,7 +44,7 @@
               <th width="50px"></th>
               <th>Quantity</th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finish_goods" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -187,7 +187,7 @@ export default {
         approver_id: null,
         raw_materials_temporary: [],
         raw_materials: [],
-        finish_goods: []
+        finished_goods: []
       })
     }
   },
@@ -203,7 +203,7 @@ export default {
         id: this.formulaId,
         params: {
           with_archives: true,
-          includes: 'rawMaterials.item.units;finishGoods.item.units;rawMaterials.warehouse;finishGoods.warehouse'
+          includes: 'rawMaterials.item.units;finishedGoods.item.units;rawMaterials.warehouse;finishedGoods.warehouse'
         }
       }).then(response => {
         this.form.manufacture_process_id = this.formula.manufacture_process_id
@@ -221,15 +221,15 @@ export default {
           rawMaterials.inventories = []
           this.form.raw_materials_temporary.push(rawMaterials)
         }
-        for (let index in this.formula.finish_goods) {
-          var finishGoods = this.formula.finish_goods[index]
-          finishGoods.original_quantity = finishGoods.quantity
-          finishGoods.item.units.forEach((unit, keyUnit) => {
+        for (let index in this.formula.finished_goods) {
+          var finishedGoods = this.formula.finished_goods[index]
+          finishedGoods.original_quantity = finishedGoods.quantity
+          finishedGoods.item.units.forEach((unit, keyUnit) => {
             if (unit.converter == 1) {
-              finishGoods.converter = unit.converter
+              finishedGoods.converter = unit.converter
             }
           })
-          this.form.finish_goods.push(finishGoods)
+          this.form.finished_goods.push(finishedGoods)
         }
         this.isLoading = false
       }).catch(error => {

@@ -34,7 +34,7 @@
 
           <p-separator></p-separator>
 
-          <h5>{{ $t('finish goods') | titlecase }}</h5>
+          <h5>{{ $t('finished goods') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
@@ -44,7 +44,7 @@
               <th>Quantity</th>
               <th></th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finish_goods" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item
@@ -250,7 +250,7 @@ export default {
         notes: null,
         approver_id: null,
         raw_materials: [],
-        finish_goods: [{
+        finished_goods: [{
           item_id: null,
           warehouse_id: null,
           item_name: null,
@@ -330,7 +330,7 @@ export default {
       return false
     },
     addFinishGoodRow () {
-      this.form.finish_goods.push({
+      this.form.finished_goods.push({
         item_id: null,
         warehouse_id: null,
         item_name: null,
@@ -353,7 +353,7 @@ export default {
       this.$delete(this.materials, index)
     },
     deleteFinishGoodRow (index) {
-      this.$delete(this.form.finish_goods, index)
+      this.$delete(this.form.finished_goods, index)
     },
     chooseManufactureMachine (value) {
       this.form.manufacture_machine_name = value

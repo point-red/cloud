@@ -54,7 +54,7 @@
                   </router-link>
                 </td>
                 <td>
-                  <span v-for="(finishGood, index2) in formula.finish_goods" :key="finishGood.id">
+                  <span v-for="(finishGood, index2) in formula.finished_goods" :key="finishGood.id">
                     {{ ++index2 }}.
                     <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
                         {{ finishGood.item.label }}
@@ -161,8 +161,8 @@ export default {
             'name': this.searchText,
             'rawMaterials.item.name': this.searchText,
             'rawMaterials.quantity': this.searchText,
-            'finishGoods.item.name': this.searchText,
-            'finishGoods.quantity': this.searchText
+            'finishedGoods.item.name': this.searchText,
+            'finishedGoods.quantity': this.searchText
           },
           filter_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
@@ -171,7 +171,7 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;rawMaterials.item.units;finishGoods.item.units',
+          includes: 'form;rawMaterials.item.units;finishedGoods.item.units',
           page: this.currentPage
         }
       }).then(response => {

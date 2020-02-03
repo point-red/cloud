@@ -74,7 +74,7 @@
               <th>Output</th>
               <th></th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finish_goods_temporary" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.finished_goods_temporary" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -179,8 +179,8 @@ export default {
         manufacture_process_name: null,
         notes: null,
         approver_id: null,
-        finish_goods_temporary: [],
-        finish_goods: []
+        finished_goods_temporary: [],
+        finished_goods: []
       })
     }
   },
@@ -196,7 +196,7 @@ export default {
         id: this.inputId,
         params: {
           with_archives: true,
-          includes: 'form;finishGoods.item.units;finishGoods.warehouse'
+          includes: 'form;finishedGoods.item.units;finishedGoods.warehouse'
         }
       }).then(response => {
         this.form.manufacture_process_id = this.input.manufacture_process_id
@@ -204,11 +204,11 @@ export default {
         this.form.manufacture_process_name = this.input.manufacture_process_name
         this.form.manufacture_machine_id = this.input.manufacture_machine_id
         this.form.manufacture_machine_name = this.input.manufacture_machine_name
-        this.form.finish_goods_temporary = this.input.finish_goods
-        for (let index in this.form.finish_goods_temporary) {
-          this.form.finish_goods_temporary[index].input_finish_good_id = this.input.finish_goods[index].id
-          this.form.finish_goods_temporary[index].estimation_quantity = this.form.finish_goods_temporary[index].quantity
-          this.form.finish_goods_temporary[index].inventories = []
+        this.form.finished_goods_temporary = this.input.finished_goods
+        for (let index in this.form.finished_goods_temporary) {
+          this.form.finished_goods_temporary[index].input_finish_good_id = this.input.finished_goods[index].id
+          this.form.finished_goods_temporary[index].estimation_quantity = this.form.finished_goods_temporary[index].quantity
+          this.form.finished_goods_temporary[index].inventories = []
         }
         this.isLoading = false
       }).catch(error => {
@@ -223,10 +223,10 @@ export default {
       row.quantity = value.quantity
       row.inventories = value.inventories
     },
-    setFinishGoods () {
-      this.form.finish_goods = []
-      for (let index in this.form.finish_goods_temporary) {
-        let finishGood = this.form.finish_goods_temporary[index]
+    setFinishedGoods () {
+      this.form.finished_goods = []
+      for (let index in this.form.finished_goods_temporary) {
+        let finishGood = this.form.finished_goods_temporary[index]
         if (finishGood['inventories'].length > 0) {
           for (let indexInventory in finishGood['inventories']) {
             let inventory = finishGood['inventories'][indexInventory]
@@ -235,17 +235,17 @@ export default {
               inputFinishGood.quantity = inventory['quantity']
               inputFinishGood.expiry_date = inventory['expiry_date']
               inputFinishGood.production_number = inventory['production_number']
-              this.form.finish_goods.push(inputFinishGood)
+              this.form.finished_goods.push(inputFinishGood)
             }
           }
         } else {
-          this.form.finish_goods.push(finishGood)
+          this.form.finished_goods.push(finishGood)
         }
       }
     },
     onSubmit () {
       this.isSaving = true
-      this.setFinishGoods()
+      this.setFinishedGoods()
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.approver_id == null) {
         this.$notification.error('approval cannot be null')

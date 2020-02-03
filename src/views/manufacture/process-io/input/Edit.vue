@@ -60,7 +60,7 @@
               <th style="min-width: 120px">Warehouse</th>
               <th></th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finish_goods" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item
@@ -218,7 +218,7 @@ export default {
         approver_id: null,
         raw_materials_temporary: [],
         raw_materials: [],
-        finish_goods: []
+        finished_goods: []
       })
     }
   },
@@ -230,7 +230,7 @@ export default {
     this.find({
       id: this.inputId,
       params: {
-        includes: 'manufactureMachine;rawMaterials.item.units;finishGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishGoods.warehouse'
+        includes: 'manufactureMachine;rawMaterials.item.units;finishedGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishedGoods.warehouse'
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
@@ -246,8 +246,8 @@ export default {
       this.form.manufacture_process_name = response.data.manufacture_process_name
       this.form.manufacture_formula_name = response.data.manufacture_formula_name
       this.form.notes = response.data.form.notes
-      response.data.finish_goods.forEach((item, keyItem) => {
-        this.form.finish_goods.push({
+      response.data.finished_goods.forEach((item, keyItem) => {
+        this.form.finished_goods.push({
           item_id: item.item_id,
           warehouse_id: item.warehouse_id,
           item_name: item.item_name,
@@ -324,7 +324,7 @@ export default {
       })
     },
     addFinishGoodRow () {
-      this.form.finish_goods.push({
+      this.form.finished_goods.push({
         item_id: null,
         warehouse_id: null,
         item_name: null,
@@ -347,7 +347,7 @@ export default {
       this.$delete(this.form.raw_materials_temporary, index)
     },
     deleteFinishGoodRow (index) {
-      this.$delete(this.form.finish_goods, index)
+      this.$delete(this.form.finished_goods, index)
     },
     chooseManufactureMachine (value) {
       this.form.manufacture_machine_name = value

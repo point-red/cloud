@@ -69,7 +69,7 @@
                 <td><b>{{ $t('quantity produced') | titlecase }}</b></td>
                 <td><b>{{ $t('warehouse') | titlecase }}</b></td>
               </tr>
-              <tr v-for="finishGood in input.finish_goods" :key="'fg-' + finishGood.id" slot="p-body">
+              <tr v-for="finishGood in input.finished_goods" :key="'fg-' + finishGood.id" slot="p-body">
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
@@ -205,8 +205,8 @@ export default {
             'name': this.searchText,
             'rawMaterials.item.name': this.searchText,
             'rawMaterials.quantity': this.searchText,
-            'finishGoods.item.name': this.searchText,
-            'finishGoods.quantity': this.searchText
+            'finishedGoods.item.name': this.searchText,
+            'finishedGoods.quantity': this.searchText
           },
           filter_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
@@ -215,7 +215,7 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;manufactureMachine;rawMaterials.item.units;finishGoods.item.units;rawMaterials.warehouse;finishGoods.warehouse',
+          includes: 'form;manufactureMachine;rawMaterials.item.units;finishedGoods.item.units;rawMaterials.warehouse;finishedGoods.warehouse',
           page: this.currentPage
         }
       }).then(response => {

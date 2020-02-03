@@ -84,7 +84,7 @@
                 <th style="min-width: 120px">Warehouse</th>
                 <th></th>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in formula.finish_goods" :key="index">
+              <tr slot="p-body" v-for="(row, index) in formula.finished_goods" :key="index">
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -249,7 +249,7 @@ export default {
         id: this.id,
         params: {
           with_archives: true,
-          includes: 'manufactureProcess;rawMaterials.item.units;finishGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishGoods.warehouse'
+          includes: 'manufactureProcess;rawMaterials.item.units;finishedGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishedGoods.warehouse'
         }
       }).then(response => {
         this.isLoading = false

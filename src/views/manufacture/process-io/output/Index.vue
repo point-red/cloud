@@ -69,7 +69,7 @@
                 <td><b>{{ $t('quantity produced') | titlecase }}</b></td>
                 <td><b>{{ $t('warehouse') | titlecase }}</b></td>
               </tr>
-              <tr v-for="finishGood in output.finish_goods_temporary" :key="'fg-' + finishGood.id" slot="p-body">
+              <tr v-for="finishGood in output.finished_goods_temporary" :key="'fg-' + finishGood.id" slot="p-body">
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
@@ -179,8 +179,8 @@ export default {
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,
-            'finishGoods.item.name': this.searchText,
-            'finishGoods.quantity': this.searchText
+            'finishedGoods.item.name': this.searchText,
+            'finishedGoods.quantity': this.searchText
           },
           filter_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
@@ -189,26 +189,26 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;manufactureMachine;manufactureProcess;finishGoods.item.units;finishGoods.warehouse',
+          includes: 'form;manufactureMachine;manufactureProcess;finishedGoods.item.units;finishedGoods.warehouse',
           page: this.currentPage
         }
       }).then(response => {
         for (let index in this.outputs) {
-          this.outputs[index].finish_goods_temporary = []
+          this.outputs[index].finished_goods_temporary = []
         }
         for (let index in this.outputs) {
           let output = this.outputs[index]
-          for (let finishGoodIndex in output.finish_goods) {
-            let finishGood = output.finish_goods[finishGoodIndex]
-            let finishGoodTemporaryIndex = this.outputs[index].finish_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
+          for (let finishGoodIndex in output.finished_goods) {
+            let finishGood = output.finished_goods[finishGoodIndex]
+            let finishGoodTemporaryIndex = this.outputs[index].finished_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
             var finishGoodTemporary
             if (finishGoodTemporaryIndex < 0) {
               finishGoodTemporary = Object.assign({}, finishGood)
-              this.outputs[index].finish_goods_temporary.push(finishGoodTemporary)
+              this.outputs[index].finished_goods_temporary.push(finishGoodTemporary)
             } else {
-              finishGoodTemporary = this.outputs[index].finish_goods_temporary[finishGoodTemporaryIndex]
+              finishGoodTemporary = this.outputs[index].finished_goods_temporary[finishGoodTemporaryIndex]
               finishGoodTemporary.quantity += finishGood.quantity
-              this.outputs[index].finish_goods_temporary[finishGoodTemporaryIndex] = finishGoodTemporary
+              this.outputs[index].finished_goods_temporary[finishGoodTemporaryIndex] = finishGoodTemporary
             }
           }
         }

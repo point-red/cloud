@@ -74,7 +74,7 @@
               <th>Output</th>
               <th style="min-width: 120px">Warehouse</th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finish_goods_temporary" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.finished_goods_temporary" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -173,8 +173,8 @@ export default {
         manufacture_process_name: null,
         notes: null,
         approver_id: null,
-        finish_goods_temporary: [],
-        finish_goods: []
+        finished_goods_temporary: [],
+        finished_goods: []
       })
     }
   },
@@ -186,7 +186,7 @@ export default {
     this.find({
       id: this.outputId,
       params: {
-        includes: 'form;manufactureMachine;manufactureInput.form;manufactureInput.finishGoods;finishGoods.item.units;finishGoods.warehouse;form.approvals.requestedBy;form.approvals.requestedTo'
+        includes: 'form;manufactureMachine;manufactureInput.form;manufactureInput.finishedGoods;finishedGoods.item.units;finishedGoods.warehouse;form.approvals.requestedBy;form.approvals.requestedTo'
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
@@ -201,8 +201,8 @@ export default {
       this.form.manufacture_machine_name = response.data.manufacture_machine_name
       this.form.manufacture_process_name = response.data.manufacture_process_name
       this.form.notes = response.data.form.notes
-      response.data.finish_goods.forEach((item, keyItem) => {
-        this.form.finish_goods.push({
+      response.data.finished_goods.forEach((item, keyItem) => {
+        this.form.finished_goods.push({
           item_id: item.item_id,
           warehouse_id: item.warehouse_id,
           item_name: item.item_name,
@@ -216,17 +216,17 @@ export default {
           converter: item.converter
         })
       })
-      for (let index in this.output.manufacture_input.finish_goods) {
-        let inputFinishGood = this.output.manufacture_input.finish_goods[index]
-        let finishGoodIndex = this.form.finish_goods.findIndex(o => o.item_id === inputFinishGood.item_id && o.warehouse_id === inputFinishGood.warehouse_id)
+      for (let index in this.output.manufacture_input.finished_goods) {
+        let inputFinishGood = this.output.manufacture_input.finished_goods[index]
+        let finishGoodIndex = this.form.finished_goods.findIndex(o => o.item_id === inputFinishGood.item_id && o.warehouse_id === inputFinishGood.warehouse_id)
         if (finishGoodIndex >= 0) {
-          this.form.finish_goods[finishGoodIndex].estimation_quantity = inputFinishGood.quantity
-          this.form.finish_goods[finishGoodIndex].input_finish_good_id = inputFinishGood.id
+          this.form.finished_goods[finishGoodIndex].estimation_quantity = inputFinishGood.quantity
+          this.form.finished_goods[finishGoodIndex].input_finish_good_id = inputFinishGood.id
         }
       }
-      for (let index in this.form.finish_goods) {
-        let finishGood = this.form.finish_goods[index]
-        let finishGoodTemporaryIndex = this.form.finish_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
+      for (let index in this.form.finished_goods) {
+        let finishGood = this.form.finished_goods[index]
+        let finishGoodTemporaryIndex = this.form.finished_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
         if (finishGoodTemporaryIndex < 0) {
           var newItem = Object.assign({}, finishGood)
           newItem.inventories = []
@@ -235,16 +235,16 @@ export default {
             'expiry_date': finishGood.expiry_date,
             'production_number': finishGood.production_number
           })
-          this.form.finish_goods_temporary.push(newItem)
+          this.form.finished_goods_temporary.push(newItem)
         } else {
-          var existing = this.form.finish_goods_temporary[finishGoodTemporaryIndex]
+          var existing = this.form.finished_goods_temporary[finishGoodTemporaryIndex]
           existing.quantity += finishGood.quantity
           existing.inventories.push({
             'quantity': finishGood.quantity,
             'expiry_date': finishGood.expiry_date,
             'production_number': finishGood.production_number
           })
-          this.form.finish_goods_temporary[finishGoodTemporaryIndex] = existing
+          this.form.finished_goods_temporary[finishGoodTemporaryIndex] = existing
         }
       }
     }).catch(error => {
@@ -261,10 +261,10 @@ export default {
       row.quantity = value.quantity
       row.inventories = value.inventories
     },
-    setFinishGoods () {
-      this.form.finish_goods = []
-      for (let index in this.form.finish_goods_temporary) {
-        let finishGood = this.form.finish_goods_temporary[index]
+    setFinishedGoods () {
+      this.form.finished_goods = []
+      for (let index in this.form.finished_goods_temporary) {
+        let finishGood = this.form.finished_goods_temporary[index]
         if (finishGood['inventories'].length > 0) {
           for (let indexInventory in finishGood['inventories']) {
             let inventory = finishGood['inventories'][indexInventory]
@@ -273,17 +273,17 @@ export default {
               outputFinishGood.quantity = inventory['quantity']
               outputFinishGood.expiry_date = inventory['expiry_date']
               outputFinishGood.production_number = inventory['production_number']
-              this.form.finish_goods.push(outputFinishGood)
+              this.form.finished_goods.push(outputFinishGood)
             }
           }
         } else {
-          this.form.finish_goods.push(finishGood)
+          this.form.finished_goods.push(finishGood)
         }
       }
     },
     onSubmit () {
       this.isSaving = true
-      this.setFinishGoods()
+      this.setFinishedGoods()
       this.update(this.form)
         .then(response => {
           this.isSaving = false
