@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-accounting/>
-      <span class="breadcrumb-item active">Chart of Account</span>
+      <span class="breadcrumb-item active">{{ $t('chart of account') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

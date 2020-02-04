@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-accounting/>
-      <span class="breadcrumb-item active">{{ $t('cut off') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('cut off') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

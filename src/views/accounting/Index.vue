@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Accounting</span>
+      <span class="breadcrumb-item active">{{ $t('accounting') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row gutters-tiny">
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import Breadcrumb from '@/views/account/Breadcrumb'
+import Breadcrumb from '@/views/Breadcrumb'
 
 export default {
   components: {

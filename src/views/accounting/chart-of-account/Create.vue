@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-accounting/>
-      <router-link to="/accounting/chart-of-account" class="breadcrumb-item">Chart of Account</router-link>
-      <span class="breadcrumb-item active">Create</span>
+      <router-link to="/accounting/chart-of-account" class="breadcrumb-item">{{ $t('chart of account') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

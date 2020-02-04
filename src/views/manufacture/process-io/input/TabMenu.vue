@@ -4,7 +4,6 @@
     <li class="nav-item" v-if="$permission.has('read manufacture')">
       <router-link
         :to="'/manufacture/process-io/' + id + '/input'"
-        exact
         class="nav-link"
         active-class="active">
         <span>{{ $t('input') | uppercase }}</span>
@@ -13,7 +12,6 @@
     <li class="nav-item" v-if="$permission.has('read manufacture')">
       <router-link
         :to="'/manufacture/process-io/' + id + '/output'"
-        exact
         class="nav-link"
         active-class="active">
         <span>{{ $t('output') | uppercase }}</span>

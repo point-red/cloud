@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-accounting/>
-      <span class="breadcrumb-item active">{{ $t('profit & loss') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('profit & loss') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
@@ -32,7 +32,7 @@
               <p-table>
                 <tr slot="p-head">
                   <th></th>
-                  <th class="text-right">July 2018</th>
+                  <th class="text-right">FEB 2020</th>
                 </tr>
                 <tr slot="p-body">
                   <td colspan="2" class="font-w600">PENDAPATAN OPERATIONAL</td>

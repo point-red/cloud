@@ -3,7 +3,7 @@
     <breadcrumb>
       <breadcrumb-accounting/>
       <span class="breadcrumb-item active">
-        <router-link to="/accounting/cut-off" class="breadcrumb-item">{{ $t('cut off') | titlecase }}</router-link>
+        <router-link to="/accounting/cut-off" class="breadcrumb-item">{{ $t('cut off') | uppercase }}</router-link>
       </span>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>

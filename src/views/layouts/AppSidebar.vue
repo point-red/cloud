@@ -175,7 +175,7 @@
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
+            <!-- <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
               <router-link to="/purchase" class="nav-submenu" active-class="active">
                 <i class="si si-basket"/>
                 <span class="sidebar-mini-hide">{{ $t("purchase") | uppercase }}</span>
@@ -187,7 +187,7 @@
                     active-class="active">{{ $t('purchase request') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
                   <router-link
                     to="/purchase/order"
                     active-class="active">{{ $t('purchase order') | uppercase }}
@@ -222,9 +222,9 @@
                     to="/purchase/payment-order"
                     active-class="active">{{ $t('payment order') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
               </ul>
-            </li>
+            </li> -->
             <!-- <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">
               <router-link to="/sales" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>
@@ -239,7 +239,7 @@
                 </li>
               </ul>
             </li> -->
-            <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
+            <!-- <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
               <router-link to="/pos" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>
                 <span class="sidebar-mini-hide">{{ $t("pos") | uppercase }}</span>
@@ -258,7 +258,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li>
+            </li> -->
             <!-- <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
               <router-link to="/inventory" class="nav-submenu" active-class="active">
                 <i class="si si-tag"/>
@@ -297,7 +297,7 @@
                 </li>
               </ul>
             </li> -->
-            <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
+            <!-- <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
               <router-link to="/manufacture" class="nav-submenu" active-class="active">
                 <i class="si si-settings"/>
                 <span class="sidebar-mini-hide">{{ $t("manufacture") | uppercase }}</span>
@@ -322,7 +322,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li>
+            </li> -->
             <!-- <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance')">
               <router-link to="/finance" class="nav-submenu" active-class="active">
                 <i class="si si-wallet"/>
@@ -348,8 +348,8 @@
                   </router-link>
                 </li>
               </ul>
-            </li>
-            <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting')">
+            </li> -->
+            <!-- <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting')">
               <router-link to="/accounting" class="nav-submenu" active-class="active">
                 <i class="si si-folder-alt"/>
                 <span class="sidebar-mini-hide">{{ $t("accounting") | uppercase }}</span>

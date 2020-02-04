@@ -2,76 +2,83 @@
   <div>
     <breadcrumb>
       <breadcrumb-accounting/>
-      <router-link to="/accounting/chart-of-account" class="breadcrumb-item">Chart of Account</router-link>
-      <span class="breadcrumb-item active">{{ chartOfAccount.number }} - {{ chartOfAccount.name | titlecase }}</span>
+      <router-link to="/accounting/chart-of-account" class="breadcrumb-item">{{ $t('chart of account') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ chartOfAccount.number }} - {{ chartOfAccount.name | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
       <div class="col-lg-4">
-        <p-block :title="'chart of account'" :header="true">
-          <p-block-inner :is-loading="isLoading">
-            <p-form-row
-              id="account-type"
-              name="account-type"
-              :label="$t('account type')">
-              <div slot="body" class="col-lg-9 mt-5">
-                {{ chartOfAccount.type.alias }}
-              </div>
-            </p-form-row>
+        <div class="row">
+          <p-block :title="'chart of account'" :header="false">
+            <p-block-inner :is-loading="isLoading">
+              <p-form-row
+                id="account-type"
+                name="account-type"
+                :is-horizontal="false"
+                :label="$t('account type')">
+                <div slot="body" class="col-lg-9 mt-5">
+                  {{ chartOfAccount.type.alias }}
+                </div>
+              </p-form-row>
 
-            <p-form-row
-              id="name"
-              :label="$t('name')"
-              name="name">
-              <div slot="body" class="col-lg-9 mt-5">
-                {{ chartOfAccount.alias }}
-              </div>
-            </p-form-row>
+              <p-form-row
+                id="name"
+                :label="$t('name')"
+                :is-horizontal="false"
+                name="name">
+                <div slot="body" class="col-lg-9 mt-5">
+                  {{ chartOfAccount.alias }}
+                </div>
+              </p-form-row>
 
-            <p-form-row
-              id="number"
-              :label="$t('number')"
-              name="number">
-              <div slot="body" class="col-lg-9 mt-5">
-                {{ chartOfAccount.number }}
-              </div>
-            </p-form-row>
+              <p-form-row
+                id="number"
+                :label="$t('number')"
+                :is-horizontal="false"
+                name="number">
+                <div slot="body" class="col-lg-9 mt-5">
+                  {{ chartOfAccount.number }}
+                </div>
+              </p-form-row>
 
-            <hr>
+              <hr>
 
-            <router-link
-              :to="{ path: '/accounting/chart-of-account/' + chartOfAccount.id + '/edit', params: { id: chartOfAccount.id }}"
-              v-if="$permission.has('update chart of account')"
-              class="btn btn-sm btn-primary mr-5">
-              Edit
-            </router-link>
-          </p-block-inner>
-        </p-block>
+              <router-link
+                :to="{ path: '/accounting/chart-of-account/' + chartOfAccount.id + '/edit', params: { id: chartOfAccount.id }}"
+                v-if="$permission.has('update chart of account')"
+                class="btn btn-sm btn-primary mr-5">
+                {{ $t('edit') | uppercase }}
+              </router-link>
+            </p-block-inner>
+          </p-block>
+        </div>
       </div>
       <div class="col-lg-8">
-        <p-block :title="'chart of account'" :header="true">
-          <p-block-inner :is-loading="isLoading">
-            <point-table>
-              <tr slot="p-head">
-                <th></th>
-                <th>Notes</th>
-                <th>Debit</th>
-                <th>Credit</th>
-              </tr>
-              <tr
-                slot="p-body"
-                v-for="(journal, index) in journals"
-                :key="index">
-                <th></th>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </point-table>
-          </p-block-inner>
-        </p-block>
+        <div class="row">
+          <p-block :title="'chart of account'" :header="false">
+            <p-block-inner :is-loading="isLoading">
+              <point-table>
+                <tr slot="p-head">
+                  <th></th>
+                  <th>Notes</th>
+                  <th class="text-right">Debit</th>
+                  <th class="text-right">Credit</th>
+                </tr>
+                <tr
+                  slot="p-body"
+                  v-for="(journal, index) in journals"
+                  :key="index">
+                  <th>{{ $index + 1 }}</th>
+                  <td>{{ journal.notes }}</td>
+                  <td class="text-right">{{ journal.debit }}</td>
+                  <td class="text-right">{{ journal.credit }}</td>
+                </tr>
+              </point-table>
+            </p-block-inner>
+          </p-block>
+        </div>
       </div>
     </div>
   </div>

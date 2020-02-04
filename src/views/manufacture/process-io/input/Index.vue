@@ -196,10 +196,10 @@ export default {
           join: 'form',
           sort_by: '-forms.number',
           fields: 'manufacture_inputs.*',
-          filter_form: 'active',
-          filter_equal: {
-            'manufacture_process_id': this.id
-          },
+          // filter_form: 'active',
+          // filter_equal: {
+          //   'manufacture_process_id': this.id
+          // },
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,

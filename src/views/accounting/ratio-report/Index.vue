@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-accounting/>
-      <span class="breadcrumb-item active">{{ $t('ratio report') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('ratio report') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">

@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-accounting/>
-      <span class="breadcrumb-item active">{{ $t('balance sheet') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('balance sheet') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
@@ -141,7 +141,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      date: this.$moment(),
+      date: this.$moment().format('YYYY-MM-DD'),
       loading: false,
       totalAsset: 0,
       totalCurrentAsset: 0,

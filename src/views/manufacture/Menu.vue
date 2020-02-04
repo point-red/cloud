@@ -1,6 +1,14 @@
 <template>
   <div class="d-flex flex-nowrap" style="overflow-x:auto">
     <router-link
+      to="/manufacture"
+      class="btn mr-5 mb-15"
+      :class="{'btn-secondary': !isMatch('/manufacture')}"
+      active-class="btn-primary"
+      v-if="$permission.has('read manufacture')">
+      <span>{{ $t('manufacture') | uppercase }}</span>
+    </router-link>
+    <router-link
       to="/manufacture/machine"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/manufacture/machine')}"
