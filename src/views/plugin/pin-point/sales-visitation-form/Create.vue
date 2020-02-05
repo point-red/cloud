@@ -11,7 +11,18 @@
 
     <tab-menu/>
 
-    <form class="row" @submit.prevent="onSubmit">
+    <div v-if="isPermissionCameraGranted == false || isPermissionGeolocationGranted == false">
+      <h2><i class="fa fa-warning"></i> {{ $t('permission required') | uppercase }}</h2>
+      <p>{{ $t('browser permission warning - sales visitation form') }}</p>
+      <hr>
+      <b>REFERENCE:</b>
+      <br>
+      <a href="https://support.google.com/chrome/answer/114662?hl=en">https://support.google.com/chrome/answer/114662</a>
+      <br>
+      <a href="https://support.google.com/chrome/answer/2693767?hl=en">https://support.google.com/chrome/answer/2693767</a>
+    </div>
+
+    <form class="row" @submit.prevent="onSubmit" v-else>
       <p-block
         :is-loading="isLoading"
         :header="true"
@@ -392,6 +403,8 @@ export default {
       isLoading: false,
       loadingMessage: 'Loading...',
       isSaving: false,
+      isPermissionCameraGranted: false,
+      isPermissionGeolocationGranted: false,
       rows: 1,
       form: new Form({
         date: this.serverDateTime(),
@@ -523,7 +536,9 @@ export default {
       this.form.image = value
     },
     getLocation () {
-      if (navigator.geolocation) {
+      if (this.isPermissionGeolocationGranted &&
+        this.isPermissionCameraGranted &&
+        navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
           let pos = {
             lat: position.coords.latitude,
@@ -634,6 +649,26 @@ export default {
           }
         })
     }
+  },
+  created () {
+    let self = this
+    navigator.permissions.query({ name: 'camera' })
+      .then(function (result) {
+        if (result.state == 'granted') {
+          self.isPermissionCameraGranted = true
+        } else {
+          self.isPermissionCameraGranted = false
+        }
+      })
+
+    navigator.permissions.query({ name: 'geolocation' })
+      .then(function (result) {
+        if (result.state == 'granted') {
+          self.isPermissionGeolocationGranted = true
+        } else {
+          self.isPermissionGeolocationGranted = false
+        }
+      })
   }
 }
 </script>

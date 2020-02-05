@@ -10,11 +10,10 @@
   "repeat order" : "repeat order",
   "payment method" : "payment method",
   "payment received" : "payment received",
-  "district" : "district",
-  "sub district" : "sub district",
   "cash" : "cash",
   "credit" : "credit",
   "item sold" : "item sold",
   "performance report": "performance report",
-  "accumulation report": "accumulation report"
+  "accumulation report": "accumulation report",
+  "browser permission warning - sales visitation form" : "this feature need to access your device camera and location, you can enable the permission from browser setting or refer to article below"
 }
