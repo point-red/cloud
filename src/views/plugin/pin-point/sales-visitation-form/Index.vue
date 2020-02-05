@@ -108,7 +108,9 @@
                 <tr slot="p-body" :key="index">
                   <th>{{ index + 1 }}</th>
                   <td>
-                    {{ formattedDateTime(form.form.date) }}
+                    <div @click="check(form)">
+                      {{ formattedDateTime(form.form.date) }}
+                    </div>
                     <template v-if="form.photo">
                       <img :src="form.photo" alt="" width="200px">
                     </template>
@@ -213,6 +215,9 @@ export default {
     }, 300),
     onClickSearchButton () {
       this.getSalesVisitationRequest()
+    },
+    check (form) {
+      this.$alert.error('', form.photo)
     },
     getSalesVisitationRequest () {
       this.isLoading = true
