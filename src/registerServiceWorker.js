@@ -18,10 +18,12 @@ if (process.env.NODE_ENV === 'production') {
     },
     updatefound () {
       console.log('New content is downloading.')
+      document.getElementById('loading-overlay').style.display = ''
     },
     updated () {
       console.log('New content is available; please refresh.')
       console.log('updated v' + process.env.VUE_APP_VERSION)
+      document.getElementById('loading-overlay').style.display = 'none'
       localStorage.setItem('pointSwVersion', process.env.VUE_APP_VERSION)
     },
     offline () {
