@@ -43,6 +43,7 @@
   "requested by": "requested by",
   "select": "select",
   "save": "save",
+  "photo": "photo",
   "cancellation status": "cancellation status",
   "pending approval warning": "this {form} in pending state, need approval from {approvedBy}"
 }

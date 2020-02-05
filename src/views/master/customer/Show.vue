@@ -134,8 +134,8 @@
                       </template>
                     </template>
                     <template v-else>
-                      <template v-for="(notInterestReason, index) in form.not_interest_reasons">
-                        <p :key="index" class="mb-0">- {{ notInterestReason.name }}</p>
+                      <template v-for="(noInterestReason, index) in form.no_interest_reasons">
+                        <p :key="index" class="mb-0">- {{ noInterestReason.name }}</p>
                       </template>
                     </template>
                   </td>
@@ -167,8 +167,8 @@
                       </template>
                     </template>
                     <template v-else>
-                      <template v-for="(notInterestReason, index) in form.not_interest_reasons">
-                        <p :key="index" class="mb-0">- {{ notInterestReason.name }}</p>
+                      <template v-for="(noInterestReason, index) in form.no_interest_reasons">
+                        <p :key="index" class="mb-0">- {{ noInterestReason.name }}</p>
                       </template>
                     </template>
                   </td>

@@ -25,27 +25,17 @@
     <form class="row" @submit.prevent="onSubmit" v-else>
       <p-block
         :is-loading="isLoading"
-        :header="true"
+        :header="false"
         :title="$t('sales visitation')"
         column="col-sm-12">
 
-        <p-form-row :label="$t('date')">
+        <h5>{{ $t('sales visitation') | uppercase }}</h5>
+
+        <hr>
+
+        <p-form-row :label="$t('photo')">
           <div slot="body" class="col-lg-9">
             <p-camera :image="form.image" @onCaptured="onCaptured($event)"></p-camera>
-          </div>
-        </p-form-row>
-
-        <p-form-row :label="$t('date')">
-          <div slot="body" class="col-lg-9">
-            <p-date-picker
-              id="date"
-              name="date"
-              label="date"
-              v-model="form.date"
-              type="datetime"
-              format="YYYY-MM-DD HH:mm:ss"
-              :errors="form.errors.get('date')"
-              @errors="form.errors.set('date', null)"/>
           </div>
         </p-form-row>
 
@@ -165,28 +155,18 @@
           name="similar_product"
           :label="$t('similar product') | titlecase">
           <div slot="body" class="col-lg-9">
-            <p-select
-              id="similar-product"
-              name="similar_product"
-              :multiple="true"
-              :key-field="'label'"
-              :disabled="isSaving"
-              v-model="form.similar_product"
-              :options="similarProductList"
-              :errors="form.errors.get('similar_product')"
-              @errors="form.errors.set('similar_product', null)"/>
+            <template v-for="({}, index) in form.similar_products">
+              <m-similar-product
+                :key="'similar-product-' + index"
+                :id="'similar-product-' + index"
+                style="float:left"
+                class="mr-10"
+                :input="form.similar_products[index]"
+                @choosen="chooseSimilarProduct($event, index)"
+                @clear="clearSimilarProduct($event, index)"/>
+            </template>
+            <a href="javascript:void(0)" @click="addMoreSimilarProduct"><i class="fa fa-plus"></i></a>
           </div>
-        </p-form-row>
-
-        <p-form-row
-          id="other-similar-product"
-          name="other_similar_product"
-          :label="$t('')"
-          placeholder="..."
-          :disabled="isSaving"
-          v-model="form.other_similar_product"
-          :errors="form.errors.get('other_similar_product')"
-          @errors="form.errors.set('other_similar_product', null)">
         </p-form-row>
 
         <p-form-row
@@ -194,56 +174,37 @@
           name="interest"
           :label="$t('interest reason') | titlecase">
           <div slot="body" class="col-lg-9">
-            <p-select
-              id="interest"
-              name="interest"
-              :multiple="true"
-              :key-field="'label'"
-              :disabled="isSaving"
-              v-model="form.interest_reason"
-              :options="interestedList"
-              :errors="form.errors.get('interest')"
-              @errors="form.errors.set('interest', null)"/>
+            <template v-for="({}, index) in form.interest_reasons">
+              <m-interest-reason
+                :key="'interest-reason-' + index"
+                :id="'interest-reason-' + index"
+                style="float:left"
+                class="mr-10"
+                :input="form.interest_reasons[index]"
+                @choosen="chooseInterestReason($event, index)"
+                @clear="clearInterestReason($event, index)"/>
+            </template>
+            <a href="javascript:void(0)" @click="addMoreInterestReason"><i class="fa fa-plus"></i></a>
           </div>
         </p-form-row>
 
         <p-form-row
-          id="other-interest-reason"
-          name="other_interest_reason"
-          :label="$t('')"
-          placeholder="..."
-          :disabled="isSaving"
-          v-model="form.other_interest_reason"
-          :errors="form.errors.get('other_interest_reason')"
-          @errors="form.errors.set('other_interest_reason', null)">
-        </p-form-row>
-
-        <p-form-row
-          id="not-interest"
-          name="not_interest"
+          id="no-interest"
+          name="no_interest"
           :label="$t('no interest reason')">
           <div slot="body" class="col-lg-9">
-            <p-select
-              id="not-interest"
-              name="not_interest"
-              :multiple="true"
-              :disabled="isSaving"
-              v-model="form.not_interest_reason"
-              :options="notInterestedList"
-              :errors="form.errors.get('not_interest')"
-              @errors="form.errors.set('not_interest', null)"/>
+            <template v-for="({}, index) in form.no_interest_reasons">
+              <m-no-interest-reason
+                :key="'no-interest-reason-' + index"
+                :id="'no-interest-reason-' + index"
+                style="float:left"
+                class="mr-10"
+                :input="form.no_interest_reasons[index]"
+                @choosen="chooseNoInterestReason($event, index)"
+                @clear="clearNoInterestReason($event, index)"/>
+            </template>
+            <a href="javascript:void(0)" @click="addMoreNoInterestReason"><i class="fa fa-plus"></i></a>
           </div>
-        </p-form-row>
-
-        <p-form-row
-          id="other-not-interest-reason"
-          name="other_not_interest_reason"
-          :label="$t('')"
-          placeholder="..."
-          :disabled="isSaving"
-          v-model="form.other_not_interest_reason"
-          :errors="form.errors.get('other_not_interest_reason')"
-          @errors="form.errors.set('other_not_interest_reason', null)">
         </p-form-row>
 
         <p-form-row
@@ -256,7 +217,25 @@
           @errors="form.errors.set('notes', null)">
         </p-form-row>
 
-        <hr/>
+        <p-separator></p-separator>
+
+        <h5>{{ $t('form sales') | uppercase }}</h5>
+
+        <hr>
+
+        <p-form-row :label="$t('date')">
+          <div slot="body" class="col-lg-9">
+            <p-date-picker
+              id="date"
+              name="date"
+              label="date"
+              v-model="form.date"
+              type="datetime"
+              format="YYYY-MM-DD HH:mm:ss"
+              :errors="form.errors.get('date')"
+              @errors="form.errors.set('date', null)"/>
+          </div>
+        </p-form-row>
 
         <p-table>
           <tr slot="p-head">
@@ -267,19 +246,11 @@
           </tr>
           <tr slot="p-body" v-for="(row, index) in rows" :key="row">
             <td>
-              <!-- <p-select
-                id="item"
-                :disabled="isSaving"
+              <m-item
+                :id="'item-' + index"
+                :data-index="index"
                 v-model="form.item[index]"
-                @input="updateItem(row)"
-                :options="itemList"
-                :errors="form.errors.get('item_id')"
-                @errors="form.errors.set('item_id', null)"/> -->
-                <m-item
-                  :id="'item-' + index"
-                  :data-index="index"
-                  v-model="form.item[index]"
-                  @choosen="chooseItem($event, row)"/>
+                @choosen="chooseItem($event, row)"/>
             </td>
             <td>
               <p-form-number
@@ -389,6 +360,9 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPinPoint from '@/views/plugin/pin-point/Breadcrumb'
 import Form from '@/utils/Form'
+import MInterestReason from './MInterestReason'
+import MNoInterestReason from './MNoInterestReason'
+import MSimilarProduct from './MSimilarProduct'
 import { mapActions } from 'vuex'
 
 export default {
@@ -396,7 +370,10 @@ export default {
     TabMenu,
     Breadcrumb,
     BreadcrumbPlugin,
-    BreadcrumbPinPoint
+    BreadcrumbPinPoint,
+    MInterestReason,
+    MNoInterestReason,
+    MSimilarProduct
   },
   data () {
     return {
@@ -420,11 +397,18 @@ export default {
         group_name: null,
         phone: '',
         notes: '',
-        similar_product: '',
-        interest_reason: '',
-        other_interest_reason: '',
-        not_interest_reason: '',
-        other_not_interest_reason: '',
+        interest_reasons: [{
+          id: null,
+          name: null
+        }],
+        no_interest_reasons: [{
+          id: null,
+          name: null
+        }],
+        similar_products: [{
+          id: null,
+          name: null
+        }],
         item: [''],
         quantity: [0],
         price: [0],
@@ -434,39 +418,6 @@ export default {
         due_date: null,
         received_payment: 0
       }),
-      notInterestedList: [
-        { id: 'Harga terlalu mahal', label: 'Harga terlalu mahal' },
-        { id: 'Belum Bertemu dengan Pemilik Toko / Istri (Suami)', label: 'Belum Bertemu dengan Pemilik Toko / Istri (Suami)' },
-        { id: 'Masih ada stok kopi lain', label: 'Masih ada stok kopi lain' },
-        { id: 'Masih ada stok kopi bara', label: 'Masih ada stok kopi bara' },
-        { id: 'Belum berminat (lain kali)', label: 'Belum berminat (lain kali)' },
-        { id: 'Memiliki racikan kopi sendiri', label: 'Memiliki racikan kopi sendiri' },
-        { id: 'Memakai biji kopi', label: 'Memakai biji kopi' },
-        { id: 'Minta mix dengan gula', label: 'Minta mix dengan gula' },
-        { id: 'Masih baru / belum dikenal', label: 'Masih baru / belum dikenal' },
-        { id: 'Lain Lain', label: 'Lain Lain' }
-      ],
-      interestedList: [
-        { id: 'Kemasan bagus', label: 'Kemasan bagus' },
-        { id: 'Cocok dengan rasanya', label: 'Cocok dengan rasanya' },
-        { id: 'Dicari oleh pembeli', label: 'Dicari oleh pembeli' },
-        { id: 'Tertarik dengan promosi', label: 'Tertarik dengan promosi' },
-        { id: 'Mudah dipakai untuk resep', label: 'Mudah dipakai untuk resep' },
-        { id: 'Lain Lain', label: 'Lain Lain' }
-      ],
-      similarProductList: [
-        { id: 'Kapal Api', label: 'Kapal Api' },
-        { id: 'Torabika', label: 'Torabika' },
-        { id: 'Top Coffee', label: 'Top Coffee' },
-        { id: 'Luwak White Coffee', label: 'Luwak White Coffee' },
-        { id: 'Good Day', label: 'Good Day' },
-        { id: 'Kopi ABC', label: 'Kopi ABC' },
-        { id: 'Kopi Ya', label: 'Kopi Ya' },
-        { id: 'Nescafe', label: 'Nescafe' },
-        { id: 'Kopi Bara', label: 'Kopi Bara' },
-        { id: 'Kopi Racikan Sendiri', label: 'Kopi Racikan Sendiri' },
-        { id: 'Lain Lain', label: 'Lain Lain' }
-      ],
       groupList: [
         { id: 'Hotel', label: 'Hotel' },
         { id: 'Resto', label: 'Resto' },
@@ -559,6 +510,24 @@ export default {
         this.loadingMessage = 'Geolocation not available, please update your browser or using another browser'
       }
     },
+    addMoreInterestReason () {
+      this.form.interest_reasons.push({
+        id: null,
+        name: null
+      })
+    },
+    addMoreNoInterestReason () {
+      this.form.no_interest_reasons.push({
+        id: null,
+        name: null
+      })
+    },
+    addMoreSimilarProduct () {
+      this.form.similar_products.push({
+        id: null,
+        name: null
+      })
+    },
     chooseCustomer (value) {
       this.form.customer_name = value
     },
@@ -621,6 +590,30 @@ export default {
         this.rows++
       }
       this.calculate()
+    },
+    chooseInterestReason (event, index) {
+      this.form.interest_reasons[index].id = event.id
+      this.form.interest_reasons[index].name = event.name
+    },
+    clearInterestReason (event, index) {
+      this.form.interest_reasons[index].id = null
+      this.form.interest_reasons[index].name = null
+    },
+    chooseNoInterestReason (event, index) {
+      this.form.no_interest_reasons[index].id = event.id
+      this.form.no_interest_reasons[index].name = event.name
+    },
+    clearNoInterestReason (event, index) {
+      this.form.no_interest_reasons[index].id = null
+      this.form.no_interest_reasons[index].name = null
+    },
+    chooseSimilarProduct (event, index) {
+      this.form.similar_products[index].id = event.id
+      this.form.similar_products[index].name = event.name
+    },
+    clearSimilarProduct (event, index) {
+      this.form.similar_products[index].id = null
+      this.form.similar_products[index].name = null
     },
     calculate: debounce(function () {
       this.form.grandTotal = 0

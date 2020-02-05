@@ -31,7 +31,7 @@
               <div :class="{'dropdown-menu': true, 'show': !isExporting && isDropdown}">
                 <a class="dropdown-item" @click="exportData('SalesVisitationReport')">Export Report</a>
                 <a class="dropdown-item" @click="exportData('ChartInterestReason')">Export Chart Interest Reason</a>
-                <a class="dropdown-item" @click="exportData('ChartNotInterestReason')">Export Chart Not Interest Reason</a>
+                <a class="dropdown-item" @click="exportData('ChartNoInterestReason')">Export Chart Not Interest Reason</a>
                 <a class="dropdown-item" @click="exportData('ChartSimilarProduct')">Export Chart Similar Product</a>
               </div>
             </div>
@@ -86,8 +86,8 @@
                     </template>
                   </td>
                   <td>
-                    <template v-for="(notInterestReason, index) in form.not_interest_reasons">
-                      <p :key="index" class="mb-0">- {{ notInterestReason.name }}</p>
+                    <template v-for="(noInterestReason, index) in form.no_interest_reasons">
+                      <p :key="index" class="mb-0">- {{ noInterestReason.name }}</p>
                     </template>
                   </td>
                   <td>
@@ -129,8 +129,8 @@
                     </template>
                   </td>
                   <td>
-                    <template v-for="(notInterestReason, index) in form.not_interest_reasons">
-                      <p :key="index" class="mb-0">- {{ notInterestReason.name }}</p>
+                    <template v-for="(noInterestReason, index) in form.no_interest_reasons">
+                      <p :key="index" class="mb-0">- {{ noInterestReason.name }}</p>
                     </template>
                   </td>
                   <td>
@@ -176,8 +176,8 @@ export default {
   data () {
     return {
       date: {
-        start: new Date(),
-        end: new Date()
+        start: this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00'),
+        end: this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 23:59:59')
       },
       isLoading: false,
       isExporting: false,

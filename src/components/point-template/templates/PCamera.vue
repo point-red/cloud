@@ -13,7 +13,6 @@
     <img :src="mutableImage" width="100%" class="img-responsive" v-show="mutableImage"/>
     <hr>
     <select v-model="camera">
-      <option>-- Select Device --</option>
       <option
         v-for="device in devices"
         :key="device.deviceId"
