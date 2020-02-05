@@ -69,7 +69,12 @@
               <template v-if="form.details && form.details.length > 0">
                 <tr slot="p-body" v-for="(detail, index2) in form.details" :key="index + '-' + index2">
                   <th>{{ index + 1 }}</th>
-                  <td>{{ formattedDateTime(form.form.date) }}</td>
+                  <td>
+                    {{ formattedDateTime(form.form.date) }}
+                    <template v-if="form.photo">
+                      <img :src="form.photo" alt="" width="150px">
+                    </template>
+                  </td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>{{ form.group }}</td>
                   <td>{{ form.name }}</td>
@@ -108,11 +113,9 @@
                 <tr slot="p-body" :key="index">
                   <th>{{ index + 1 }}</th>
                   <td>
-                    <div @click="check(form)">
-                      {{ formattedDateTime(form.form.date) }}
-                    </div>
+                    {{ formattedDateTime(form.form.date) }}
                     <template v-if="form.photo">
-                      <img :src="form.photo" alt="" width="200px">
+                      <img :src="form.photo" alt="" width="150px">
                     </template>
                   </td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
