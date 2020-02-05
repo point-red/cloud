@@ -1,7 +1,7 @@
 <template>
   <header id="page-header">
     <!-- Header Loader -->
-    <div
+    <!-- <div
       v-show="pointUpdateAvailable"
       style="position:relative"
       id="page-header-loader"
@@ -12,7 +12,7 @@
           <i class="fa fa-warning"></i> UPDATE {{ pointSwVersion }} IS AVAILABLE <a href="javascript:void(0)" @click="updateNow()">UPDATE NOW</a> OR <a href="javascript:void(0)" @click="updateLater()">LATER</a>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- END Header Loader -->
 
     <!-- Header Content -->
