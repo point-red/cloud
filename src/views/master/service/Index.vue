@@ -10,14 +10,6 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <p-form-input
-            id="search-text"
-            name="search-text"
-            placeholder="Search"
-            ref="searchText"
-            :value="searchText"
-            class="btn-block"
-            @input="filterSearch"/>
           <router-link
             to="/master/service/create"
             v-if="$permission.has('create service')"
@@ -26,6 +18,14 @@
               <i class="fa fa-plus"></i>
             </span>
           </router-link>
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            ref="searchText"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
         </div>
         <hr/>
         <p-block-inner :is-loading="isLoading">

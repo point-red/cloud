@@ -10,6 +10,11 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
+          <a href="javascript:void(0)" class="input-group-prepend" @click="addPricingGroup">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -18,11 +23,6 @@
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>
-          <a href="javascript:void(0)" class="input-group-append" @click="addPricingGroup">
-            <span class="input-group-text">
-              <i class="fa fa-plus"></i>
-            </span>
-          </a>
         </div>
         <p-block-inner :is-loading="isLoading">
           <point-table>

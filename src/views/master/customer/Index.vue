@@ -10,6 +10,14 @@
     <div class="row">
       <p-block>
         <div class="input-group block mb-5">
+          <router-link
+            to="/master/customer/create"
+            v-if="$permission.has('create customer')"
+            class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -18,14 +26,6 @@
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>
-          <router-link
-            to="/master/customer/create"
-            v-if="$permission.has('create customer')"
-            class="input-group-append">
-            <span class="input-group-text">
-              <i class="fa fa-plus"></i>
-            </span>
-          </router-link>
         </div>
         <div class="text-center font-size-sm mb-10">
           <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
