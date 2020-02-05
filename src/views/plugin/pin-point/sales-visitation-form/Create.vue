@@ -380,8 +380,8 @@ export default {
       isLoading: false,
       loadingMessage: 'Loading...',
       isSaving: false,
-      isPermissionCameraGranted: false,
-      isPermissionGeolocationGranted: false,
+      isPermissionCameraGranted: true,
+      isPermissionGeolocationGranted: true,
       rows: 1,
       form: new Form({
         date: this.serverDateTime(),
@@ -649,6 +649,8 @@ export default {
       .then(function (result) {
         if (result.state == 'granted') {
           self.isPermissionCameraGranted = true
+        } else if (result.state == 'prompt') {
+          self.isPermissionCameraGranted = false
         } else {
           self.isPermissionCameraGranted = false
         }
@@ -658,6 +660,8 @@ export default {
       .then(function (result) {
         if (result.state == 'granted') {
           self.isPermissionGeolocationGranted = true
+        } else if (result.state == 'prompt') {
+          self.isPermissionCameraGranted = false
         } else {
           self.isPermissionGeolocationGranted = false
         }
