@@ -6,10 +6,7 @@
     </breadcrumb>
 
     <div class="row">
-      <p-block
-        :title="$t('balance sheet')"
-        :header="true"
-        column="col-sm-12">
+      <p-block :title="$t('balance sheet')" :header="false">
         <p-form-row
           id="date"
           :label="$t('date')">

@@ -16,7 +16,7 @@
           class="row"
           @submit.prevent="onSubmit">
           <p-block :title="$t('cut off')" :header="true">
-            <p-block-inner :is-loading="loading">
+            <p-block-inner :is-loading="isLoading">
               <p-form-row
                 id="date"
                 :label="$t('date')">
@@ -45,7 +45,7 @@
                       :id="'debit-' + index"
                       value="0"
                       @input.native="debit($event, index)"
-                      :disabled="loadingSaveButton"
+                      :disabled="isSaving"
                       :is-text-right="true"
                       name="debit[]"/>
                   </td>
@@ -54,7 +54,7 @@
                       :id="'credit-' + index"
                       value="0"
                       @input.native="credit($event, index)"
-                      :disabled="loadingSaveButton"
+                      :disabled="isSaving"
                       :is-text-right="true"
                       name="credit[]"/>
                   </td>
@@ -84,9 +84,36 @@
                   </td>
                 </tr>
               </p-table>
-              <button class="btn btn-sm btn-primary mb-10" :disabled="loadingSaveButton">
-                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
-              </button>
+              <div class="row mt-50">
+                <div class="col-sm-6">
+                  <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+                  <div class="d-sm-block d-md-none mt-10"></div>
+                </div>
+                <div class="col-sm-3 text-center">
+                  <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
+                  <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+                  {{ requestedBy | uppercase }}
+                  <div class="d-sm-block d-md-none mt-10"></div>
+                </div>
+                <div class="col-sm-3 text-center">
+                  <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
+                  <div class="mb-50" style="font-size:11px">_______________</div>
+                  <m-user
+                    :id="'user'"
+                    v-model="form.approver_id"
+                    :errors="form.errors.get('approver_id')"
+                    @errors="form.errors.set('approver_id', null)"
+                    @choosen="chooseApprover"/>
+                    {{ form.approver_email }} <br v-if="form.approver_email">
+                </div>
+
+                <div class="col-sm-12">
+                  <hr>
+                  <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                    <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                  </button>
+                </div>
+              </div>
             </p-block-inner>
           </p-block>
         </form>
@@ -105,12 +132,16 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
+      requestedBy: localStorage.getItem('userName'),
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD'),
-        details: []
+        details: [],
+        approver_id: null,
+        approver_name: null,
+        approver_email: null
       }),
       totalDebit: 0,
       totalCredit: 0
@@ -122,7 +153,8 @@ export default {
     TabMenu
   },
   computed: {
-    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts'])
+    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts']),
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
     ...mapActions('accountingChartOfAccount', {
@@ -141,12 +173,12 @@ export default {
       this.calculate()
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       if (this.totalDebit === this.totalCredit) {
         // Balance
         this.storeCutOff(this.form)
           .then((response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.getChartOfAccounts()
               .then((response) => {
                 this.$set(this.form, 'details', response.data)
@@ -157,14 +189,18 @@ export default {
             this.$notification.success('Create success')
             this.$router.replace('/accounting/cut-off/' + response.data.id)
           }, (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.error(error.message)
           })
       } else {
         // Unbalance
-        this.loadingSaveButton = false
+        this.isSaving = false
         this.$notification.error('Journal unbalance')
       }
+    },
+    chooseApprover (value) {
+      this.form.approver_name = value.label
+      this.form.approver_email = value.email
     },
     calculate () {
       this.totalDebit = 0
@@ -176,13 +212,13 @@ export default {
     }
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.getChartOfAccounts()
       .then((response) => {
-        this.loading = false
+        this.isLoading = false
         this.$set(this.form, 'details', response.data)
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
   }

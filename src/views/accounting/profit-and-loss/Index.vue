@@ -6,7 +6,7 @@
     </breadcrumb>
 
     <div class="row">
-      <p-block title="Profit & Loss" :header="true" column="col-sm-12">
+      <p-block title="Profit & Loss" :header="false">
         <p-block-inner :is-loading="loading">
           <div class="row">
             <div class="col-sm-12">

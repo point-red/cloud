@@ -6,8 +6,6 @@
       <span class="breadcrumb-item active">{{ chartOfAccount.number }} - {{ chartOfAccount.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
-
     <div class="row">
       <div class="col-lg-4">
         <div class="row">
@@ -24,22 +22,22 @@
               </p-form-row>
 
               <p-form-row
-                id="name"
-                :label="$t('name')"
-                :is-horizontal="false"
-                name="name">
-                <div slot="body" class="col-lg-9 mt-5">
-                  {{ chartOfAccount.alias }}
-                </div>
-              </p-form-row>
-
-              <p-form-row
                 id="number"
                 :label="$t('number')"
                 :is-horizontal="false"
                 name="number">
                 <div slot="body" class="col-lg-9 mt-5">
                   {{ chartOfAccount.number }}
+                </div>
+              </p-form-row>
+
+              <p-form-row
+                id="name"
+                :label="$t('name')"
+                :is-horizontal="false"
+                name="name">
+                <div slot="body" class="col-lg-9 mt-5">
+                  {{ chartOfAccount.alias }}
                 </div>
               </p-form-row>
 
@@ -85,7 +83,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import PointTable from 'point-table-vue'
@@ -93,7 +90,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     Breadcrumb,
     BreadcrumbAccounting,
     PointTable

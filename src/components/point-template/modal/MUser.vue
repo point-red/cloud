@@ -24,7 +24,7 @@
             @click="choose(option)"
             href="javascript:void(0)">
             {{ option.label | uppercase }} <br>
-            {{ option.email | uppercase }}
+            <span style="font-size:10px">{{ option.email | uppercase }}</span>
           </a>
           </template>
         </div>

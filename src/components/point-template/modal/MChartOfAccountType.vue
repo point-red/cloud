@@ -83,13 +83,11 @@ export default {
         }
       }).then(response => {
         this.options = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
             'label': key['alias']
           })
-
           if (this.value == key['id']) {
             this.mutableLabel = key['alias']
           }

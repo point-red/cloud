@@ -222,6 +222,8 @@
             </tr>
             <tr slot="p-body">
               <th></th>
+              <td v-if="item.require_production_number"></td>
+              <td v-if="item.require_expiry_date"></td>
               <td colspan="4" class="text-right"><b>Opening Balance</b></td>
               <td class="text-right">{{ openingBalanceCurrentPage | numberFormat }}</td>
             </tr>
@@ -237,6 +239,8 @@
             </tr>
             <tr slot="p-body">
               <th></th>
+              <td v-if="item.require_production_number"></td>
+              <td v-if="item.require_expiry_date"></td>
               <td colspan="4" class="text-right"><b>Ending Balance</b></td>
               <td class="text-right">{{ endingBalance | numberFormat }}</td>
             </tr>

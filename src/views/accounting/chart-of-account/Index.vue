@@ -5,18 +5,28 @@
       <span class="breadcrumb-item active">{{ $t('chart of account') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
-
     <div class="row">
-      <p-block :header="true" title="Chart Of Account">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block :header="false" title="Chart Of Account">
+        <div class="input-group block mb-5">
+          <router-link
+            to="/accounting/chart-of-account/create"
+            v-if="$permission.has('create chart of account')"
+            class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            class="btn-block"
+            ref="searchText"
+            :value="searchText"
+            @input="filterSearch"/>
+        </div>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>Number</th>
@@ -46,7 +56,6 @@
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
-import TabMenu from './TabMenu'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
@@ -55,7 +64,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      loading: false,
+      isLoading: false,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1
     }
@@ -63,7 +72,6 @@ export default {
   components: {
     Breadcrumb,
     BreadcrumbAccounting,
-    TabMenu,
     PointTable
   },
   computed: {
@@ -80,20 +88,22 @@ export default {
       this.getChartOfAccountsRequest()
     }, 300),
     getChartOfAccountsRequest () {
-      this.loading = true
+      this.isLoading = true
       this.getChartOfAccounts({
         params: {
+          fields: 'chart_of_accounts.*',
           limit: 1000,
           filter_like: {
-            'name': this.searchText,
+            'type.alias': this.searchText,
+            'alias': this.searchText,
             'number': this.searchText
           },
-          sort_by: 'number,name'
+          sort_by: 'number,alias'
         }
       }).then(response => {
-        this.loading = false
+        this.isLoading = false
       }).catch(error => {
-        this.loading = false
+        this.isLoading = false
       })
     }
   },
