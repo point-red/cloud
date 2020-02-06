@@ -8,13 +8,9 @@
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
-    <tab-menu/>
-
     <div class="row">
       <div class="col-sm-12">
-        <form
-          class="row"
-          @submit.prevent="onSubmit">
+        <form class="row" @submit.prevent="onSubmit">
           <p-block :title="$t('cut off')" :header="true">
             <p-block-inner :is-loading="isLoading">
               <p-form-row
@@ -123,7 +119,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import Form from '@/utils/Form'
@@ -149,8 +144,7 @@ export default {
   },
   components: {
     Breadcrumb,
-    BreadcrumbAccounting,
-    TabMenu
+    BreadcrumbAccounting
   },
   computed: {
     ...mapGetters('accountingChartOfAccount', ['chartOfAccounts']),
@@ -174,29 +168,38 @@ export default {
     },
     onSubmit () {
       this.isSaving = true
-      if (this.totalDebit === this.totalCredit) {
-        // Balance
-        this.storeCutOff(this.form)
-          .then((response) => {
-            this.isSaving = false
-            this.getChartOfAccounts()
-              .then((response) => {
-                this.$set(this.form, 'details', response.data)
-              })
-            this.form.reset()
-            this.totalDebit = 0
-            this.totalCredit = 0
-            this.$notification.success('Create success')
-            this.$router.replace('/accounting/cut-off/' + response.data.id)
-          }, (error) => {
-            this.isSaving = false
-            this.$notification.error(error.message)
-          })
-      } else {
+      if (this.form.approver_id == null) {
+        this.$notification.error('approval cannot be null')
+        this.isSaving = false
+        this.form.errors.record({
+          approver_id: ['Approver should not empty']
+        })
+        return
+      }
+
+      if (this.totalDebit !== this.totalCredit) {
         // Unbalance
         this.isSaving = false
         this.$notification.error('Journal unbalance')
+        return
       }
+
+      this.storeCutOff(this.form)
+        .then((response) => {
+          this.isSaving = false
+          this.getChartOfAccounts()
+            .then((response) => {
+              this.$set(this.form, 'details', response.data)
+            })
+          this.form.reset()
+          this.totalDebit = 0
+          this.totalCredit = 0
+          this.$notification.success('Create success')
+          this.$router.replace('/accounting/cut-off/' + response.data.id)
+        }, (error) => {
+          this.isSaving = false
+          this.$notification.error(error.message)
+        })
     },
     chooseApprover (value) {
       this.form.approver_name = value.label

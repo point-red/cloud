@@ -10,12 +10,11 @@
 
     <div class="row">
       <div class="col-sm-12">
-        <form
-          class="row"
-          @submit.prevent="onSubmit">
+        <form class="row" @submit.prevent="onSubmit">
           <p-block :title="$t('cut off')" :header="false">
             <p-block-inner :is-loading="isLoading">
-              <h5>{{ $t('cut off') | uppercase }} </h5>
+              <h5 class="text-center">{{ $t('cut off') | uppercase }} </h5>
+              <hr>
               <p-form-row
                 id="date"
                 :label="$t('date')">
@@ -50,8 +49,8 @@
                 <tr slot="p-body">
                   <td></td>
                   <td></td>
-                  <td class="text-right font-w600">{{ cutOff.totalDebit | numberFormat }}</td>
-                  <td class="text-right font-w600">{{ cutOff.totalCredit | numberFormat }}</td>
+                  <td class="text-right font-w600">{{ totalDebit | numberFormat }}</td>
+                  <td class="text-right font-w600">{{ totalCredit | numberFormat }}</td>
                 </tr>
               </p-table>
               <div class="row mt-50">
@@ -98,7 +97,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
@@ -107,13 +105,14 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
+      totalCredit: 0,
+      totalDebit: 0,
       isLoading: false
     }
   },
   components: {
     Breadcrumb,
-    BreadcrumbAccounting,
-    TabMenu
+    BreadcrumbAccounting
   },
   computed: {
     ...mapGetters('accountingCutOff', ['cutOff'])
@@ -143,6 +142,12 @@ export default {
         includes: 'form;details.chartOfAccount;approvers.requestedBy;approvers.requestedTo'
       }
     }).then((response) => {
+      this.totalCredit = 0
+      this.totalDebit = 0
+      this.cutOff.details.forEach(element => {
+        this.totalCredit += parseFloat(element.credit)
+        this.totalDebit += parseFloat(element.debit)
+      })
       this.isLoading = false
     }, (error) => {
       this.isLoading = false

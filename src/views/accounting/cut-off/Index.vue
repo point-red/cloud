@@ -40,7 +40,7 @@
               <td>{{ cutOff.date | dateFormat('DD MMM YYYY') }}</td>
               <td>
                 <router-link :to="{ name: 'AccountingCutOffShow', params: { id: cutOff.id }}">
-                  {{ cutOff.number }}
+                  {{ cutOff.form.number }}
                 </router-link>
               </td>
               <td>
@@ -99,6 +99,9 @@ export default {
   },
   methods: {
     ...mapActions('accountingCutOff', ['get']),
+    filterSearch () {
+
+    },
     getCutOffs () {
       this.isLoading = true
       console.log('getting data')
