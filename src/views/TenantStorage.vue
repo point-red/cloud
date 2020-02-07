@@ -32,7 +32,11 @@
               slot="p-body">
               <th>{{ index + 1 }}</th>
               <td>{{ cloudStorage.file_name }}</td>
-              <td>{{ cloudStorage.expired_at | dateFormat('DD MMM YYYY HH:mm') }}</td>
+              <td>
+                <template v-if="cloudStorage.expired_at">
+                  {{ cloudStorage.expired_at | dateFormat('DD MMM YYYY HH:mm') }}
+                </template>
+              </td>
               <td><a :href="cloudStorage.download_url">{{ cloudStorage.download_url }}</a></td>
             </tr>
           </point-table>
@@ -79,6 +83,8 @@ export default {
         params: {
           sort_by: 'file_name',
           limit: 20,
+          is_user_protected: true,
+          is_project_protected: true,
           page: this.currentPage,
           file_name: this.searchText
         }

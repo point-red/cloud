@@ -719,6 +719,7 @@ export default {
             'is_user_protected': true,
             'feature': 'employee'
           },
+          is_project_protected: true,
           sort_by: '-id',
           filter_null: 'feature_id'
         }

@@ -9,10 +9,10 @@
         :name="$t('chart of account')"
         link="/accounting/chart-of-account"
         icon="si si-docs"/>
-      <p-box
+      <!-- <p-box
         :name="$t('cut off')"
         link="/accounting/cut-off"
-        icon="si si-docs"/>
+        icon="si si-docs"/> -->
       <p-box
         :name="$t('balance sheet')"
         link="/accounting/balance-sheet"
@@ -22,7 +22,7 @@
         link="/accounting/profit-and-loss"
         icon="si si-notebook"/>
       <p-box
-        :name="$t('financial ratio report')"
+        :name="$t('ratio report')"
         link="/accounting/ratio-report"
         icon="si si-notebook"/>
     </div>

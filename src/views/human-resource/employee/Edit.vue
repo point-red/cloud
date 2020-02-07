@@ -857,6 +857,7 @@ export default {
             'feature': 'employee',
             'feature_id': this.id
           },
+          is_project_protected: true,
           sort_by: '-id'
         }
       }).then(response => {
