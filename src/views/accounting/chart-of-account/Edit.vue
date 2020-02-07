@@ -22,6 +22,18 @@
         </p-form-row>
 
         <p-form-row
+          id="account-sub-ledger"
+          name="account-sub-ledger"
+          :label="$t('account sub ledger')">
+          <div slot="body" class="col-lg-9 mt-5">
+            <m-chart-of-account-sub-ledger
+              :id="'account-sub-ledger'"
+              v-model="form.sub_ledger_id"
+              :label="form.sub_ledger_name"/>
+          </div>
+        </p-form-row>
+
+        <p-form-row
           id="number"
           v-model="form.number"
           :disabled="isLoading"
@@ -43,7 +55,7 @@
           <div class="col-md-3"></div>
           <div class="col-md-9">
             <button type="submit" class="btn btn-sm btn-primary" :disabled="isLoading">
-              <i v-show="isLoading" class="fa fa-asterisk fa-spin"/> Save
+              <i v-show="isLoading" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
             </button>
           </div>
         </div>
@@ -69,6 +81,7 @@ export default {
       isLoading: false,
       form: new Form({
         type_id: null,
+        sub_ledger_id: null,
         name: null,
         number: null
       })
@@ -78,11 +91,6 @@ export default {
     ...mapGetters('accountingChartOfAccount', ['chartOfAccount']),
     ...mapGetters('accountingChartOfAccountType', ['types'])
   },
-  watch: {
-    'form.name' () {
-      this.form.code = this.form.name
-    }
-  },
   created () {
     this.find({ id: this.id })
       .then((response) => {
@@ -90,19 +98,27 @@ export default {
         this.find({
           id: this.id
         }).then(response => {
+          console.log('response.data')
+          console.log(response.data)
           this.form.id = response.data.id
           this.form.type_id = response.data.type_id
           this.form.type_name = response.data.type.name
+          this.form.sub_ledger_id = response.data.sub_ledger_id
+          if (response.data.sub_ledger) {
+            this.form.sub_ledger_name = response.data.sub_ledger.name
+          }
           this.form.number = response.data.number
           this.form.name = response.data.name
           this.form.alias = response.data.alias
           this.isLoading = false
         }).catch(error => {
           this.isLoading = false
+          this.$notification.error('helo')
           this.$notification.error(error.message)
         })
       }, (error) => {
         this.isLoading = false
+        this.$notification.error('ahao')
         this.$notification.error(error.message)
       })
   },

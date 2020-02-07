@@ -18,6 +18,15 @@
         </p-form-row>
 
         <p-form-row
+          id="account-sub-ledger"
+          name="account-sub-ledger"
+          :label="$t('account sub ledger')">
+          <div slot="body" class="col-lg-9 mt-5">
+            <m-chart-of-account-sub-ledger :id="'account-sub-ledger'" v-model="form.sub_ledger_id"/>
+          </div>
+        </p-form-row>
+
+        <p-form-row
           id="number"
           v-model="form.number"
           :disabled="isLoading"
@@ -64,13 +73,11 @@ export default {
       isLoading: false,
       form: new Form({
         type_id: null,
+        sub_ledger_id: null,
         name: null,
         number: null
       })
     }
-  },
-  computed: {
-    ...mapGetters('accountingChartOfAccountType', ['types'])
   },
   watch: {
     'form.name' () {

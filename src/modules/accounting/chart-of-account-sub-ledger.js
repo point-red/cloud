@@ -1,39 +1,50 @@
 import api from '@/api'
 
-const url = '/accounting/chart-of-accounts'
+const url = '/accounting/chart-of-account-sub-ledgers'
 
 const state = {
-  chartOfAccount: {
-    number: '',
-    name: ''
-  },
-  chartOfAccounts: []
+  chartOfAccountSubLedger: {},
+  chartOfAccountSubLedgers: [],
+  chartOfAccountSubLedgerList: []
 }
 
 const getters = {
-  chartOfAccount: state => {
-    return state.chartOfAccount
+  chartOfAccountSubLedger: state => {
+    return state.chartOfAccountSubLedger
   },
-  chartOfAccounts: state => {
-    return state.chartOfAccounts
+  chartOfAccountSubLedgerList: state => {
+    return state.chartOfAccountSubLedgerList
+  },
+  chartOfAccountSubLedgers: state => {
+    return state.chartOfAccountSubLedgers
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.chartOfAccounts = payload.data
+    state.chartOfAccountSubLedgers = payload.data
+  },
+  'FETCH_SELECT_LIST' (state, payload) {
+    let array = []
+    payload.data.forEach(element => {
+      array.push({
+        id: element.id,
+        label: element.alias
+      })
+    })
+    state.chartOfAccountSubLedgerList = array
   },
   'FETCH_OBJECT' (state, payload) {
-    state.chartOfAccount = payload.data
+    state.chartOfAccountSubLedger = payload.data
   },
   'CREATE' (state, payload) {
-    state.chartOfAccount = payload
+    state.chartOfAccountSubLedger = payload
   },
   'UPDATE' (state, payload) {
-    state.chartOfAccount = payload
+    state.chartOfAccountSubLedger = payload
   },
   'DELETE' (state, payload) {
-    state.chartOfAccount = {}
+    state.chartOfAccountSubLedger = {}
   }
 }
 
@@ -41,14 +52,13 @@ const actions = {
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url, payload)
-        .then(
-          (response) => {
-            commit('FETCH_ARRAY', response)
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          commit('FETCH_ARRAY', response)
+          commit('FETCH_SELECT_LIST', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   find ({ commit }, payload) {

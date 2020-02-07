@@ -1,7 +1,7 @@
 <template>
   <div>
     <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select account type">
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select account sub ledger">
       <template slot="content">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
@@ -44,7 +44,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('accountingChartOfAccountType', ['chartOfAccountTypes'])
+    ...mapGetters('accountingChartOfAccountSubLedger', ['chartOfAccountSubLedgers'])
   },
   props: {
     id: {
@@ -70,7 +70,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('accountingChartOfAccountType', ['get', 'create']),
+    ...mapActions('accountingChartOfAccountSubLedger', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
