@@ -34,6 +34,9 @@
         <a href="javascript:void(0)" class="nav-link" @click="choose('master')" :class="{'active': choosen == 'master'}">{{ $t('master') | uppercase }}</a>
       </li>
       <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link" @click="choose('accounting')" :class="{'active': choosen == 'accounting'}">{{ $t('accounting') | uppercase }}</a>
+      </li>
+      <li class="nav-item">
         <a href="javascript:void(0)" class="nav-link" @click="choose('human-resource')" :class="{'active': choosen == 'human-resource'}">{{ $t('human resource') | uppercase }}</a>
       </li>
       <li class="nav-item">
@@ -45,6 +48,7 @@
       <p-block>
         <p-block-inner :is-loading="isLoading">
           <permission-master :roleId="id" v-show="choosen === 'master'" />
+          <permission-accounting :roleId="id" v-show="choosen === 'accounting'" />
           <permission-human-resource :roleId="id" v-show="choosen === 'human-resource'" />
           <permission-plugin :roleId="id" v-show="choosen === 'plugin'" />
         </p-block-inner>
@@ -56,6 +60,7 @@
 <script>
 import TabMenu from './TabMenu'
 import PermissionMaster from './permission/PermissionMaster'
+import PermissionAccounting from './permission/PermissionAccounting'
 import PermissionHumanResource from './permission/PermissionHumanResource'
 import PermissionPlugin from './permission/PermissionPlugin'
 import Breadcrumb from '@/views/Breadcrumb'
@@ -66,6 +71,7 @@ export default {
   components: {
     TabMenu,
     PermissionMaster,
+    PermissionAccounting,
     PermissionHumanResource,
     PermissionPlugin,
     Breadcrumb,

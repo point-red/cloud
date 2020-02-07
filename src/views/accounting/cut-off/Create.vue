@@ -11,22 +11,21 @@
     <div class="row">
       <div class="col-sm-12">
         <form class="row" @submit.prevent="onSubmit">
-          <p-block :title="$t('cut off')" :header="true">
+          <p-block :title="$t('cut off')" :header="false">
             <p-block-inner :is-loading="isLoading">
               <p-form-row
                 id="date"
+                :is-horizontal="false"
                 :label="$t('date')">
-                <div slot="body" class="col-lg-9">
-                  <p-date-picker
-                    name="date"
-                    v-model="form.date"/>
+                <div slot="body">
+                  <p-date-picker name="date" v-model="form.date"/>
                 </div>
               </p-form-row>
               <hr>
               <p-table>
                 <tr slot="p-head">
-                  <th>Number</th>
-                  <th>Name</th>
+                  <th>#</th>
+                  <th>Account</th>
                   <th>Debit</th>
                   <th>Credit</th>
                 </tr>
@@ -34,8 +33,8 @@
                   v-for="(chartOfAccount, index) in chartOfAccounts"
                   :key="index"
                   slot="p-body">
-                  <td>{{ chartOfAccount.number }}</td>
-                  <td>{{ chartOfAccount.name }}</td>
+                  <td>{{ index + 1 }}</td>
+                  <td>{{ chartOfAccount.number }} - {{ chartOfAccount.alias }}</td>
                   <td>
                     <p-form-number
                       :id="'debit-' + index"
@@ -187,10 +186,7 @@ export default {
       this.storeCutOff(this.form)
         .then((response) => {
           this.isSaving = false
-          this.getChartOfAccounts()
-            .then((response) => {
-              this.$set(this.form, 'details', response.data)
-            })
+          this.getRequest()
           this.form.reset()
           this.totalDebit = 0
           this.totalCredit = 0
@@ -212,18 +208,25 @@ export default {
         this.totalCredit += parseFloat(element.credit)
         this.totalDebit += parseFloat(element.debit)
       })
-    }
-  },
-  created () {
-    this.isLoading = true
-    this.getChartOfAccounts()
-      .then((response) => {
+    },
+    getRequest () {
+      this.isLoading = true
+      this.getChartOfAccounts({
+        params: {
+          limit: 99999,
+          sort_by: 'number'
+        }
+      }).then((response) => {
         this.isLoading = false
         this.$set(this.form, 'details', response.data)
       }, (error) => {
         this.isLoading = false
         this.$notification.error(error.message)
       })
+    }
+  },
+  created () {
+    this.getRequest()
   }
 }
 </script>

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h5 class="content-heading">{{ $t('plugin') | uppercase }}</h5>
     <p-table>
       <tr slot="p-head">
         <th width="5px"></th>
@@ -11,7 +12,8 @@
         <td><p-form-check-box ref="menu plugin" @click.native="togglePermission('menu plugin')" :checked="$rolePermission.has('menu plugin', permissions)" :description="'Menu'"/></td>
       </tr>
     </p-table>
-    <h2 class="content-heading">{{ $t('scale weight') | uppercase }}</h2>
+    <p-separator></p-separator>
+    <h5 class="content-heading">{{ $t('scale weight') | uppercase }}</h5>
     <p-table>
       <tr slot="p-head">
         <th width="5px"></th>
@@ -39,6 +41,7 @@
         <td><p-form-check-box ref="delete scale weight item" @click.native="togglePermission('delete scale weight item')" :checked="$rolePermission.has('delete scale weight item', permissions)" :description="'Delete'"/></td>
       </tr>
     </p-table>
+    <p-separator></p-separator>
     <h2 class="content-heading">{{ $t('pin point') | uppercase }}</h2>
     <p-table>
       <tr slot="p-head">
@@ -60,28 +63,16 @@
       </tr>
       <tr slot="p-body">
         <td></td>
-        <td><b>Sales Visitation Form Report</b></td>
-        <td><p-form-check-box ref="read pin point sales visitation form report" @click.native="togglePermission('read pin point sales visitation form report')" :checked="$rolePermission.has('read pin point sales visitation form report', permissions)" :description="'Read'"/></td>
+        <td><b>Report</b></td>
+        <td><p-form-check-box ref="read pin point sales visitation form report" @click.native="togglePermission('read pin point sales visitation form report')" :checked="$rolePermission.has('read pin point sales visitation form report', permissions)" :description="'Sales Visitation Form'"/></td>
+        <td><p-form-check-box ref="read pin point attendance report" @click.native="togglePermission('read pin point attendance report')" :checked="$rolePermission.has('read pin point attendance report', permissions)" :description="'Attendance'"/></td>
+        <td><p-form-check-box ref="read pin point sales visitation report" @click.native="togglePermission('read pin point sales visitation report')" :checked="$rolePermission.has('read pin point sales visitation report', permissions)" :description="'Sales Visitation'"/></td>
       </tr>
       <tr slot="p-body">
         <td></td>
-        <td><b>Attendance Report</b></td>
-        <td><p-form-check-box ref="read pin point attendance report" @click.native="togglePermission('read pin point attendance report')" :checked="$rolePermission.has('read pin point attendance report', permissions)" :description="'Read'"/></td>
-      </tr>
-      <tr slot="p-body">
-        <td></td>
-        <td><b>Sales Visitation Report</b></td>
-        <td><p-form-check-box ref="read pin point sales visitation report" @click.native="togglePermission('read pin point sales visitation report')" :checked="$rolePermission.has('read pin point sales visitation report', permissions)" :description="'Read'"/></td>
-      </tr>
-      <tr slot="p-body">
-        <td></td>
-        <td><b>Notification Sales</b></td>
-        <td><p-form-check-box ref="notification pin point sales" @click.native="togglePermission('notification pin point sales')" :checked="$rolePermission.has('notification pin point sales', permissions)" :description="'Read'"/></td>
-      </tr>
-      <tr slot="p-body">
-        <td></td>
-        <td><b>Notification Supervisor</b></td>
-        <td><p-form-check-box ref="notification pin point supervisor" @click.native="togglePermission('notification pin point supervisor')" :checked="$rolePermission.has('notification pin point supervisor', permissions)" :description="'Read'"/></td>
+        <td><b>Notification</b></td>
+        <td><p-form-check-box ref="notification pin point sales" @click.native="togglePermission('notification pin point sales')" :checked="$rolePermission.has('notification pin point sales', permissions)" :description="'Sales'"/></td>
+        <td><p-form-check-box ref="notification pin point supervisor" @click.native="togglePermission('notification pin point supervisor')" :checked="$rolePermission.has('notification pin point supervisor', permissions)" :description="'Supervisor'"/></td>
       </tr>
     </p-table>
   </div>
