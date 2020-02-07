@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'production') {
     },
     updatefound () {
       console.log('New content is downloading.')
-      document.getElementById('loading-overlay').style.display = ''
+      document.getElementById('loading-overlay').style.display = 'block'
     },
     updated () {
       console.log('New content is available; please refresh.')
