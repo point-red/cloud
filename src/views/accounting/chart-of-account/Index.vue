@@ -6,7 +6,7 @@
     </breadcrumb>
 
     <div class="row">
-      <p-block :header="false" title="Chart Of Account">
+      <p-block>
         <div class="input-group block mb-5">
           <router-link
             to="/accounting/chart-of-account/create"
