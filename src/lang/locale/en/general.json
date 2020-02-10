@@ -1,5 +1,8 @@
 {
   "new" : "new",
+  "start" : "start",
+  "prev" : "prev",
+  "next" : "next",
   "join" : "join",
   "action" : "action",
   "group" : "group",

@@ -1,3 +1,10 @@
 {
-  "account type" : "account type"
+  "account type" : "account type",
+  "account sub ledger" : "account sub ledger",
+  "account payable" : "account payable",
+  "account receivable" : "account receivable",
+  "purchase down payment" : "purchase down payment",
+  "sales down payment" : "sales down payment",
+  "generate account" : "generate account",
+  "balance" : "balance"
 }

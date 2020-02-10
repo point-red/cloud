@@ -131,7 +131,12 @@ export default {
           this.form.errors.record(error.errors)
         })
     },
-    show () {
+    show (cutOffAccount) {
+      this.form.type_id = cutOffAccount.chart_of_account.type_id
+      this.form.sub_ledger_id = cutOffAccount.chart_of_account.sub_ledger_id
+      this.form.name = cutOffAccount.chart_of_account.name
+      this.form.number = cutOffAccount.chart_of_account.alias
+      this.form.balance = cutOffAccount.balance
       this.$refs['select-' + this.id].show()
     },
     close () {

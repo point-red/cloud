@@ -24,13 +24,15 @@
             </nav>
             <hr>
             <h5 class="text-center">CHART OF ACCOUNT</h5>
-            <div class="text-center" v-if="chartOfAccounts.length == 0">
-              <p>
-                Anda tidak memiliki akun saat ini, klik tombol di bawah ini untuk generate default akun
-              </p>
-              <button type="submit" class="btn btn-sm btn-primary mb-15" :disabled="isSaving" @click="generate()">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('generate account') | uppercase }}
-              </button>
+            <div class="text-center" v-if="accounts.length == 0">
+              <p-block-inner :is-loading="isLoading">
+                <p>
+                  Anda tidak memiliki akun saat ini, klik tombol di bawah ini untuk generate default akun
+                </p>
+                <button type="submit" class="btn btn-sm btn-primary mb-15" :disabled="isSaving" @click="generate()">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('generate account') | uppercase }}
+                </button>
+              </p-block-inner>
             </div>
             <template v-else>
               <div class="input-group block mb-5">
@@ -64,19 +66,19 @@
                     <th class="text-right">Credit</th>
                   </tr>
                   <tr
-                    v-for="chartOfAccount in chartOfAccounts"
-                    :key="chartOfAccount.id"
+                    v-for="account in accounts"
+                    :key="account.id"
                     slot="p-body">
-                    <td>{{ chartOfAccount.number }}</td>
+                    <td>{{ account.chart_of_account.number }}</td>
                     <td>
-                      <router-link :to="{ name: 'accounting.chart-of-account.show', params: { id: chartOfAccount.id }}">
-                        {{ chartOfAccount.name }}
-                      </router-link>
+                      <a href="javascript:void(0)" @click="$refs.account.show()">
+                        {{ account.chart_of_account.name }}
+                      </a>
                     </td>
-                    <td>{{ chartOfAccount.type.name }}</td>
+                    <td>{{ account.chart_of_account.type.name }}</td>
                     <td>
-                      <template v-if="chartOfAccount.sub_ledger">
-                        {{ chartOfAccount.sub_ledger.name }}
+                      <template v-if="account.sub_ledger">
+                        {{ account.chart_of_account.sub_ledger.name }}
                       </template>
                     </td>
                     <td class="text-right">0</td>
@@ -109,6 +111,7 @@
       </div>
     </div>
     <m-create-account id="account" ref="account" />
+    <m-create-account id="editAccount" ref="editAccount" />
   </div>
 </template>
 
@@ -136,12 +139,10 @@ export default {
     PointTable
   },
   computed: {
-    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts'])
+    ...mapGetters('accountingCutOffAccount', ['accounts'])
   },
   methods: {
-    ...mapActions('accountingChartOfAccount', {
-      getChartOfAccounts: 'get'
-    }),
+    ...mapActions('accountingCutOffAccount', ['get']),
     ...mapActions('accountingChartOfAccountGenerator', ['create']),
     generate () {
       this.isSaving = true
@@ -160,17 +161,18 @@ export default {
     }, 300),
     getChartOfAccountsRequest () {
       this.isLoading = true
-      this.getChartOfAccounts({
+      this.get({
         params: {
-          fields: 'chart_of_accounts.*',
+          fields: 'cut_off_accounts.*',
           limit: 1000,
+          join: 'chartOfAccount',
           filter_like: {
-            'type.alias': this.searchText,
-            'name': this.searchText,
-            'number': this.searchText
+            'chartOfAccount.alias': this.searchText,
+            'chartOfAccount.name': this.searchText,
+            'chartOfAccount.number': this.searchText
           },
-          includes: 'type;subLedger',
-          sort_by: 'number,alias'
+          includes: 'chartOfAccount.type;chartOfAccount.subLedger',
+          sort_by: 'chart_of_accounts.number,chart_of_accounts.alias'
         }
       }).then(response => {
         this.isLoading = false

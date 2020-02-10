@@ -1,5 +1,8 @@
 {
   "new" : "tambah",
+  "start" : "start",
+  "prev" : "prev",
+  "next" : "next",
   "join" : "bergabung",
   "action" : "action",
   "group" : "grup",
