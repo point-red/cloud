@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="create account">
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="edit account">
       <template slot="content">
         <form class="row" @submit.prevent="onSubmit">
           <p-block>
@@ -9,8 +9,11 @@
               name="account-type"
               :label="$t('account type')">
               <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account-type :id="'account-type'" v-model="form.type_id"/>
-              </div>
+                <m-chart-of-account-type
+                :id="'edit-account-type'"
+                v-model="form.type_id"
+                :label="form.type.alias"/>
+             </div>
             </p-form-row>
 
             <p-form-row
@@ -18,14 +21,18 @@
               name="account-sub-ledger"
               :label="$t('account sub ledger')">
               <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account-sub-ledger :id="'account-sub-ledger'" v-model="form.sub_ledger_id"/>
+                <m-chart-of-account-sub-ledger
+                :id="'edit-account-sub-ledger'"
+                v-model="form.sub_ledger_id"
+                :label="form.sub_ledger.alias"
+                @clear="clearSubLedger()"/>
               </div>
             </p-form-row>
 
             <p-form-row
               id="number"
               v-model="form.number"
-              :disabled="isLoading"
+              :disabled="isSaving"
               :label="$t('number')"
               name="number"
               :errors="form.errors.get('number')"
@@ -34,7 +41,7 @@
             <p-form-row
               id="name"
               v-model="form.name"
-              :disabled="isLoading"
+              :disabled="isSaving"
               :label="$t('name')"
               name="name"
               :errors="form.errors.get('name')"
@@ -42,7 +49,7 @@
 
             <p-form-row
               id="balance"
-              :disabled="isLoading"
+              :disabled="isSaving"
               :label="$t('balance')"
               name="balance"
               :errors="form.errors.get('balance')"
@@ -51,6 +58,7 @@
                 <p-form-number
                   id="balance"
                   name="balance"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   v-model="form.balance"/>
               </div>
@@ -59,8 +67,11 @@
             <div class="form-group row">
               <div class="col-md-3"></div>
               <div class="col-md-9">
-                <button type="submit" class="btn btn-sm btn-primary" :disabled="isLoading">
-                  <i v-show="isLoading" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                <button type="submit" class="btn btn-sm btn-primary mr-5" :disabled="isSaving">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                </button>
+                <button type="button" class="btn btn-sm btn-danger" :disabled="isSaving" @click="deleteAccount()">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
                 </button>
               </div>
             </div>
@@ -68,7 +79,7 @@
         </form>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-outline-danger">Close</button>
+        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
       </template>
     </p-modal>
   </div>
@@ -82,10 +93,17 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      isLoading: false,
+      isSaving: false,
       form: new Form({
+        id: null,
         type_id: null,
+        type: {
+          alias: null
+        },
         sub_ledger_id: null,
+        sub_ledger: {
+          alias: null
+        },
         name: null,
         number: null,
         balance: 0
@@ -115,28 +133,46 @@ export default {
   created () {
   },
   methods: {
-    ...mapActions('accountingCutOffAccount', ['create']),
+    ...mapActions('accountingCutOffAccount', ['update', 'delete']),
     onSubmit () {
-      this.isLoading = true
+      this.isSaving = true
 
-      this.create(this.form)
+      this.update(this.form)
         .then(response => {
-          this.isLoading = false
-          this.$notification.success('create success')
+          this.isSaving = false
+          this.$notification.success('update success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/accounting/cut-off/create-account')
+          this.$router.push('/accounting/cut-off/create/account')
+          this.$emit('updated', true)
+          this.close()
         }).catch(error => {
-          this.isLoading = false
+          this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
     },
-    show (cutOffAccount) {
-      this.form.type_id = cutOffAccount.chart_of_account.type_id
-      this.form.sub_ledger_id = cutOffAccount.chart_of_account.sub_ledger_id
-      this.form.name = cutOffAccount.chart_of_account.name
-      this.form.number = cutOffAccount.chart_of_account.alias
-      this.form.balance = cutOffAccount.balance
+    clearSubLedger () {
+      this.form.sub_ledger_id = null
+      this.form.sub_ledger = null
+    },
+    deleteAccount () {
+      this.delete(this.form)
+        .then(response => {
+          this.$notification.success('delete success')
+          this.$emit('deleted', true)
+          this.close()
+        })
+    },
+    show (account) {
+      this.form.id = account.id
+      this.form.type_id = account.chart_of_account.type_id
+      this.form.type = account.chart_of_account.type
+      this.form.sub_ledger_id = account.chart_of_account.sub_ledger_id
+      this.form.sub_ledger = account.chart_of_account.sub_ledger || { name: null }
+      this.form.number = account.chart_of_account.number
+      this.form.name = account.chart_of_account.name
+      this.form.alias = account.chart_of_account.alias
+      this.form.balance = account.debit || account.credit
       this.$refs['select-' + this.id].show()
     },
     close () {

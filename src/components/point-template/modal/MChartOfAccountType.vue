@@ -100,7 +100,7 @@ export default {
     add () {
       this.isSaving = true
       this.create({
-        name: this.searchText
+        alias: this.searchText
       }).then(response => {
         this.search()
         this.isSaving = false

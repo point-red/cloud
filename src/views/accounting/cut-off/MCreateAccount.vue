@@ -25,7 +25,7 @@
             <p-form-row
               id="number"
               v-model="form.number"
-              :disabled="isLoading"
+              :disabled="isSaving"
               :label="$t('number')"
               name="number"
               :errors="form.errors.get('number')"
@@ -34,7 +34,7 @@
             <p-form-row
               id="name"
               v-model="form.name"
-              :disabled="isLoading"
+              :disabled="isSaving"
               :label="$t('name')"
               name="name"
               :errors="form.errors.get('name')"
@@ -42,7 +42,7 @@
 
             <p-form-row
               id="balance"
-              :disabled="isLoading"
+              :disabled="isSaving"
               :label="$t('balance')"
               name="balance"
               :errors="form.errors.get('balance')"
@@ -51,6 +51,7 @@
                 <p-form-number
                   id="balance"
                   name="balance"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   v-model="form.balance"/>
               </div>
@@ -59,8 +60,8 @@
             <div class="form-group row">
               <div class="col-md-3"></div>
               <div class="col-md-9">
-                <button type="submit" class="btn btn-sm btn-primary" :disabled="isLoading">
-                  <i v-show="isLoading" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
                 </button>
               </div>
             </div>
@@ -82,7 +83,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      isLoading: false,
+      isSaving: false,
       form: new Form({
         type_id: null,
         sub_ledger_id: null,
@@ -117,16 +118,16 @@ export default {
   methods: {
     ...mapActions('accountingCutOffAccount', ['create']),
     onSubmit () {
-      this.isLoading = true
+      this.isSaving = true
 
       this.create(this.form)
         .then(response => {
-          this.isLoading = false
+          this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/accounting/cut-off/create-account')
+          this.$emit('updated', true)
         }).catch(error => {
-          this.isLoading = false
+          this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })

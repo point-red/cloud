@@ -22,7 +22,8 @@
         </div>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-outline-danger">Close</button>
+        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger mr-5">{{ $t('clear') | uppercase }}</button>
+        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
       </template>
     </p-modal>
   </div>
@@ -118,6 +119,16 @@ export default {
     },
     show () {
       this.$refs['select-' + this.id].show()
+    },
+    clear () {
+      this.mutableId = null
+      this.mutableLabel = null
+      this.$emit('clear', {
+        id: null,
+        name: null
+      })
+      this.$refs['select-' + this.id].close()
+      this.$emit('close', true)
     },
     close () {
       this.$refs['select-' + this.id].close()

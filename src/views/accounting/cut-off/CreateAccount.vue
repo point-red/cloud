@@ -71,24 +71,24 @@
                     slot="p-body">
                     <td>{{ account.chart_of_account.number }}</td>
                     <td>
-                      <a href="javascript:void(0)" @click="$refs.account.show()">
+                      <a href="javascript:void(0)" @click="$refs.editAccount.show(account)">
                         {{ account.chart_of_account.name }}
                       </a>
                     </td>
-                    <td>{{ account.chart_of_account.type.name }}</td>
+                    <td>{{ account.chart_of_account.type.alias }}</td>
                     <td>
-                      <template v-if="account.sub_ledger">
-                        {{ account.chart_of_account.sub_ledger.name }}
+                      <template v-if="account.chart_of_account.sub_ledger">
+                        {{ account.chart_of_account.sub_ledger.alias }}
                       </template>
                     </td>
-                    <td class="text-right">0</td>
-                    <td class="text-right">0</td>
+                    <td class="text-right">{{ account.debit | numberFormat }}</td>
+                    <td class="text-right">{{ account.credit | numberFormat }}</td>
                   </tr>
                   <tr slot="p-body">
                     <th></th>
                     <td colspan="3" class="text-right"><b>TOTAL</b></td>
-                    <td class="text-right">0</td>
-                    <td class="text-right">0</td>
+                    <td class="text-right">{{ totalDebit | numberFormat }}</td>
+                    <td class="text-right">{{ totalCredit | numberFormat }}</td>
                   </tr>
                 </point-table>
               </p-block-inner>
@@ -110,8 +110,12 @@
         </div>
       </div>
     </div>
-    <m-create-account id="account" ref="account" />
-    <m-create-account id="editAccount" ref="editAccount" />
+    <m-edit-account
+      id="edit-account"
+      ref="editAccount"
+      @updated="getChartOfAccountsRequest()"
+      @deleted="getChartOfAccountsRequest()"/>
+    <m-create-account id="account" ref="account" @updated="getChartOfAccountsRequest()"/>
   </div>
 </template>
 
@@ -121,6 +125,7 @@ import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
 import MCreateAccount from './MCreateAccount'
+import MEditAccount from './MEditAccount'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -128,6 +133,8 @@ export default {
     return {
       isSaving: false,
       isLoading: false,
+      totalCredit: 0,
+      totalDebit: 0,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1
     }
@@ -136,6 +143,7 @@ export default {
     Breadcrumb,
     BreadcrumbAccounting,
     MCreateAccount,
+    MEditAccount,
     PointTable
   },
   computed: {
@@ -175,6 +183,10 @@ export default {
           sort_by: 'chart_of_accounts.number,chart_of_accounts.alias'
         }
       }).then(response => {
+        this.accounts.forEach(element => {
+          this.totalCredit += parseFloat(element.credit)
+          this.totalDebit += parseFloat(element.debit)
+        })
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
