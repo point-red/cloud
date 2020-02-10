@@ -183,6 +183,8 @@ export default {
           sort_by: 'chart_of_accounts.number,chart_of_accounts.alias'
         }
       }).then(response => {
+        this.totalCredit = 0
+        this.totalDebit = 0
         this.accounts.forEach(element => {
           this.totalCredit += parseFloat(element.credit)
           this.totalDebit += parseFloat(element.debit)
