@@ -14,8 +14,8 @@
           <p-block>
             <nav class="breadcrumb bg-white text-center" style="display:block !important">
               <router-link to="/accounting/cut-off/create" class="breadcrumb-item">{{ $t('start') | uppercase }}</router-link>
-              <router-link to="/accounting/cut-off/create/account" class="breadcrumb-item">{{ $t('account') | uppercase }}</router-link>
-              <span class="breadcrumb-item">{{ $t('inventory') | uppercase }}</span>
+              <router-link to="/accounting/cut-off/create" class="breadcrumb-item">{{ $t('account') | uppercase }}</router-link>
+              <span class="breadcrumb-item active">{{ $t('inventory') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('account payable') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('purchase down payment') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('account receivable') | uppercase }}</span>
@@ -23,155 +23,168 @@
               <span class="breadcrumb-item">{{ $t('cut off') | uppercase }}</span>
             </nav>
             <hr>
-            <h5 class="text-center">INVENTORY</h5>
-            <div class="input-group block">
-              <router-link
-                to="/master/item/create"
-                v-if="$permission.has('create item')"
-                class="input-group-prepend">
-                <span class="input-group-text">
-                  <i class="fa fa-plus"></i>
-                </span>
-              </router-link>
-              <p-form-input
-                id="search-text"
-                name="search-text"
-                placeholder="Search"
-                ref="searchText"
-                :value="searchText"
-                class="btn-block"
-                @input="filterSearch"/>
+            <h5 class="text-center">ITEM</h5>
+            <div class="text-center mb-15" v-if="inventories.length == 0">
+              Anda tidak memiliki item saat ini, klik tombol "+" untuk menambahkan item
             </div>
-            <hr>
-            <p-block-inner :is-loading="isLoading">
-              <point-table>
-                <tr slot="p-head">
-                  <th width="50px">#</th>
-                  <th>Name</th>
-                  <th>Account</th>
-                  <th class="text-right">Stock</th>
-                  <th class="text-right">Price</th>
-                  <th class="text-right">Balance</th>
-                </tr>
-                <tr
-                  v-for="(item, index) in items"
-                  :key="item.id"
-                  slot="p-body">
-                  <th>{{ ++index }}</th>
-                  <td>
-                    <router-link :to="{ name: 'item.show', params: { id: item.id }}">
-                      {{ item.label }}
-                    </router-link>
-                  </td>
-                  <td>
-                    <template v-if="item.account">
-                      {{ item.account.number }} - {{ item.account.name | titlecase }}
-                    </template>
-                  </td>
-                  <td class="text-right">
-                    <template v-if="item.units.length">
-                      {{ item.stock | numberFormat }} {{ item.units[0].label }}
-                    </template>
-                  </td>
-                  <td class="text-right">0</td>
-                  <td class="text-right">0</td>
-                </tr>
-                <tr slot="p-body">
-                  <th></th>
-                  <td colspan="4" class="text-right"><b>TOTAL</b></td>
-                  <td class="text-right">0</td>
-                </tr>
-              </point-table>
-            </p-block-inner>
-            <p-pagination
-              :current-page="currentPage"
-              :last-page="lastPage"
-              @updatePage="updatePage">
-            </p-pagination>
-            <router-link
-              tag="button"
-              to="/accounting/cut-off/create/account-payable"
-              class="btn btn-sm btn-primary min-width-100 float-right">
-              {{ $t('next') | uppercase }}
-            </router-link>
-            <router-link
-              tag="button"
-              to="/accounting/cut-off/create/account"
-              class="btn btn-sm btn-primary min-width-100 float-left">
-              {{ $t('prev') | uppercase }}
-            </router-link>
-            <br><br><br>
+            <template>
+              <div class="input-group block mb-5">
+                <a
+                  href="javascript:void(0)"
+                  @click="() => $refs.inventory.show()"
+                  v-if="$permission.has('create cut off')"
+                  class="input-group-prepend">
+                  <span class="input-group-text">
+                    <i class="fa fa-plus"></i>
+                  </span>
+                </a>
+                <p-form-input
+                  id="search-text"
+                  name="search-text"
+                  placeholder="Search"
+                  class="btn-block"
+                  ref="searchText"
+                  :value="searchText"
+                  @input="filterSearch"/>
+              </div>
+              <hr>
+              <p-block-inner :is-loading="isLoading">
+                <point-table>
+                  <tr slot="p-head">
+                    <th>Code</th>
+                    <th>Name</th>
+                    <th>Account</th>
+                    <th class="text-right">Quantity</th>
+                    <th class="text-right">Price</th>
+                    <th class="text-right">Total</th>
+                    <th>Production Number</th>
+                    <th>Expiry Date</th>
+                  </tr>
+                  <tr
+                    v-for="inventory in inventories"
+                    :key="inventory.id"
+                    slot="p-body">
+                    <td>{{ inventory.item.code }}</td>
+                    <td>
+                      <a href="javascript:void(0)" @click="$refs.editInventory.show(inventory)">
+                        {{ inventory.item.name }}
+                      </a>
+                    </td>
+                    <td>
+                      <template v-if="inventory.item.account">
+                        {{ inventory.item.account.label }}
+                      </template>
+                    </td>
+                    <td class="text-right">{{ inventory.quantity | numberFormat }} {{ inventory.unit | lowercase }}</td>
+                    <td class="text-right">{{ inventory.price | numberFormat }}</td>
+                    <td class="text-right">{{ inventory.total | numberFormat }}</td>
+                    <td>
+                      <template v-if="inventory.production_number">
+                        {{ inventory.production_number }}
+                      </template>
+                    </td>
+                    <td>
+                      <template v-if="inventory.expiry_date">
+                        {{ inventory.expiry_date | dateFormat('DD MMMM YYYY') }}
+                      </template>
+                    </td>
+                  </tr>
+                  <tr slot="p-body">
+                    <th></th>
+                    <td colspan="4" class="text-right"><b>TOTAL</b></td>
+                    <td class="text-right">{{ total | numberFormat }}</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </point-table>
+              </p-block-inner>
+              <router-link
+                tag="button"
+                to="/accounting/cut-off/create/account-payable"
+                class="btn btn-sm btn-primary min-width-100 float-right">
+                {{ $t('next') | uppercase }}
+              </router-link>
+              <router-link
+                tag="button"
+                to="/accounting/cut-off/create/account"
+                class="btn btn-sm btn-primary min-width-100 float-left">
+                {{ $t('prev') | uppercase }}
+              </router-link>
+              <br><br><br>
+            </template>
           </p-block>
         </div>
       </div>
     </div>
+    <m-create-inventory id="inventory" ref="inventory" @updated="getInventoryRequest()"/>
+    <m-edit-inventory id="edit-inventory" ref="editInventory" @updated="getInventoryRequest()"/>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbMaster from '@/views/master/Breadcrumb'
+import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
+import MCreateInventory from './MCreateInventory'
+import MEditInventory from './MEditInventory'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  components: {
-    Breadcrumb,
-    BreadcrumbMaster,
-    PointTable
-  },
   data () {
     return {
-      isLoading: true,
+      isSaving: false,
+      isLoading: false,
+      total: 0,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      currentPage: this.$route.query.page * 1 || 1
     }
   },
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting,
+    PointTable,
+    MCreateInventory,
+    MEditInventory
+  },
   computed: {
-    ...mapGetters('masterItem', ['items', 'pagination'])
+    ...mapGetters('accountingCutOffInventory', ['inventories'])
   },
   methods: {
-    ...mapActions('masterItem', ['get']),
-    updatePage (value) {
-      this.currentPage = value
-      this.getItemRequest()
-    },
-    getItemRequest () {
-      this.isLoading = true
-      this.get({
-        params: {
-          page: this.currentPage,
-          limit: 20,
-          sort_by: 'name',
-          filter_like: {
-            'code': this.searchText,
-            'name': this.searchText
-          },
-          includes: 'account;units'
-        }
-      }).then(response => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-      })
-    },
+    ...mapActions('accountingCutOffInventory', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getItemRequest()
-    }, 300)
+      this.getInventoryRequest()
+    }, 300),
+    getInventoryRequest () {
+      this.isLoading = true
+      this.get({
+        params: {
+          fields: 'cut_off_inventories.*',
+          limit: 1000,
+          join: 'item',
+          filter_like: {
+            'item.code': this.searchText,
+            'item.name': this.searchText
+          },
+          includes: 'item.account;warehouse',
+          sort_by: 'items.code,items.name'
+        }
+      }).then(response => {
+        this.total = 0
+        this.inventories.forEach(element => {
+          this.total += parseFloat(element.quantity * element.price)
+        })
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+      })
+    }
   },
   created () {
-    this.getItemRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
+    this.getInventoryRequest()
   }
 }
 </script>
