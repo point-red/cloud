@@ -27,31 +27,6 @@
         </div>
         <p-block-inner :is-loading="isLoading">
           <p-table>
-            <tr slot="p-head">
-              <th>Date</th>
-              <th>Cut Off</th>
-              <th>Created By</th>
-              <th>Approval Status</th>
-            </tr>
-            <tr
-              v-for="(cutOff, index) in cutOffs"
-              :key="index"
-              slot="p-body">
-              <td>{{ cutOff.date | dateFormat('DD MMM YYYY') }}</td>
-              <td>
-                <router-link :to="{ name: 'AccountingCutOffShow', params: { id: cutOff.id }}">
-                  {{ cutOff.form.number }}
-                </router-link>
-              </td>
-              <td>
-                {{ cutOff.form.created_by.full_name }}
-              </td>
-              <td>
-                <div v-if="cutOff.form.approved == null" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-if="cutOff.form.approved == 0" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
-                <div v-if="cutOff.form.approved == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
-              </td>
-            </tr>
           </p-table>
         </p-block-inner>
       </p-block>

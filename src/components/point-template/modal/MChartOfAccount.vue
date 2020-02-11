@@ -72,6 +72,9 @@ export default {
     },
     type: {
       type: String
+    },
+    subLedger: {
+      type: String
     }
   },
   watch: {
@@ -97,11 +100,12 @@ export default {
             name: this.searchText,
             number: this.searchText
           },
-          filter_type: this.type
+          filter_type: this.type,
+          filter_sub_ledger: this.subLedger
         }
       }).then(response => {
         this.options = []
-        this.mutableLabel = ''
+        this.mutableLabel = null
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],

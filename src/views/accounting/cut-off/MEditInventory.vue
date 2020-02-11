@@ -34,7 +34,7 @@
                   id="edit-chart-of-account"
                   :label="form.chart_of_account_name"
                   v-model="form.chart_of_account_id"
-                  type="inventory"/>
+                  sub-ledger="inventory"/>
                 <p>{{ $t('create item helper - chart of account') }}</p>
               </div>
             </p-form-row>

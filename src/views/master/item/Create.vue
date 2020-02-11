@@ -36,7 +36,7 @@
 
         <hr>
 
-        <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" type="inventory"/>
+        <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" sub-ledger="account payable"/>
 
         <p-separator></p-separator>
 

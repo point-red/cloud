@@ -15,23 +15,20 @@
             <nav class="breadcrumb bg-white text-center" style="display:block !important">
               <router-link to="/accounting/cut-off/create" class="breadcrumb-item">{{ $t('start') | uppercase }}</router-link>
               <router-link to="/accounting/cut-off/create/account" class="breadcrumb-item">{{ $t('account') | uppercase }}</router-link>
-              <span class="breadcrumb-item active">{{ $t('inventory') | uppercase }}</span>
-              <span class="breadcrumb-item">{{ $t('account payable') | uppercase }}</span>
+              <router-link to="/accounting/cut-off/create/inventory" class="breadcrumb-item">{{ $t('inventory') | uppercase }}</router-link>
+              <span class="breadcrumb-item active">{{ $t('account payable') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('purchase down payment') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('account receivable') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('sales down payment') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('cut off') | uppercase }}</span>
             </nav>
             <hr>
-            <h5 class="text-center">ITEM</h5>
-            <div class="text-center mb-15" v-if="inventories.length == 0">
-              Anda tidak memiliki item saat ini, klik tombol "+" untuk menambahkan item
-            </div>
+            <h5 class="text-center">{{ $t('account payable') | uppercase }}</h5>
             <template>
               <div class="input-group block mb-5">
                 <a
                   href="javascript:void(0)"
-                  @click="() => $refs.inventory.show()"
+                  @click="() => $refs.accountPayable.show()"
                   v-if="$permission.has('create cut off')"
                   class="input-group-prepend">
                   <span class="input-group-text">
@@ -51,50 +48,28 @@
               <p-block-inner :is-loading="isLoading">
                 <point-table>
                   <tr slot="p-head">
-                    <th>Code</th>
-                    <th>Name</th>
-                    <th>Account</th>
-                    <th class="text-right">Quantity</th>
-                    <th class="text-right">Price</th>
-                    <th class="text-right">Total</th>
-                    <th>Production Number</th>
-                    <th>Expiry Date</th>
+                    <th>Supplier</th>
+                    <th>Notes</th>
+                    <th class="text-right">Amount</th>
                   </tr>
                   <tr
-                    v-for="inventory in inventories"
-                    :key="inventory.id"
+                    v-for="accountPayable in accountPayables"
+                    :key="accountPayable.id"
                     slot="p-body">
-                    <td>{{ inventory.item.code }}</td>
                     <td>
-                      <a href="javascript:void(0)" @click="$refs.editInventory.show(inventory)">
-                        {{ inventory.item.name }}
+                      <a href="javascript:void(0)" @click="$refs.editAccountPayable.show(accountPayable)">
+                        {{ accountPayable.supplier.name }}
                       </a>
                     </td>
                     <td>
-                      <template v-if="inventory.item.account">
-                        {{ inventory.item.account.label }}
-                      </template>
+                      {{ accountPayable.notes }}
                     </td>
-                    <td class="text-right">{{ inventory.quantity | numberFormat }} {{ inventory.unit | lowercase }}</td>
-                    <td class="text-right">{{ inventory.price | numberFormat }}</td>
-                    <td class="text-right">{{ inventory.total | numberFormat }}</td>
-                    <td>
-                      <template v-if="inventory.production_number">
-                        {{ inventory.production_number }}
-                      </template>
-                    </td>
-                    <td>
-                      <template v-if="inventory.item.require_expiry_date">
-                        {{ inventory.expiry_date | dateFormat('DD MMMM YYYY') }}
-                      </template>
-                    </td>
+                    <td class="text-right">{{ accountPayable.amount | numberFormat }} {{ accountPayable.unit | lowercase }}</td>
                   </tr>
                   <tr slot="p-body">
                     <th></th>
-                    <td colspan="4" class="text-right"><b>TOTAL</b></td>
+                    <td class="text-right"><b>TOTAL</b></td>
                     <td class="text-right">{{ total | numberFormat }}</td>
-                    <td></td>
-                    <td></td>
                   </tr>
                 </point-table>
               </p-block-inner>
@@ -106,7 +81,7 @@
               </router-link>
               <router-link
                 tag="button"
-                to="/accounting/cut-off/create/account"
+                to="/accounting/cut-off/create/inventory"
                 class="btn btn-sm btn-primary min-width-100 float-left">
                 {{ $t('prev') | uppercase }}
               </router-link>
@@ -116,8 +91,8 @@
         </div>
       </div>
     </div>
-    <m-create-inventory id="inventory" ref="inventory" @updated="getInventoryRequest()"/>
-    <m-edit-inventory id="edit-inventory" ref="editInventory" @updated="getInventoryRequest()"/>
+    <m-create-account-payable id="account-payable" ref="accountPayable" @updated="getAccountPayableRequest()"/>
+    <m-edit-account-payable id="edit-account-payable" ref="editAccountPayable" @updated="getAccountPayableRequest()"/>
   </div>
 </template>
 
@@ -126,8 +101,8 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
-import MCreateInventory from './MCreateInventory'
-import MEditInventory from './MEditInventory'
+import MCreateAccountPayable from './MCreateAccountPayable'
+import MEditAccountPayable from './MEditAccountPayable'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -144,38 +119,38 @@ export default {
     Breadcrumb,
     BreadcrumbAccounting,
     PointTable,
-    MCreateInventory,
-    MEditInventory
+    MCreateAccountPayable,
+    MEditAccountPayable
   },
   computed: {
-    ...mapGetters('accountingCutOffInventory', ['inventories'])
+    ...mapGetters('accountingCutOffAccountPayable', ['accountPayables'])
   },
   methods: {
-    ...mapActions('accountingCutOffInventory', ['get']),
+    ...mapActions('accountingCutOffAccountPayable', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getInventoryRequest()
+      this.getAccountPayableRequest()
     }, 300),
-    getInventoryRequest () {
+    getAccountPayableRequest () {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'cut_off_inventories.*',
+          fields: 'cut_off_account_payables.*',
           limit: 1000,
-          join: 'item',
+          join: 'supplier,cutOff,chartOfAccount',
           filter_like: {
-            'item.code': this.searchText,
-            'item.name': this.searchText
+            'supplier.name': this.searchText,
+            'amount': this.searchText,
+            'notes': this.searchText
           },
-          includes: 'item.account;warehouse',
-          sort_by: 'items.code,items.name'
+          includes: 'supplier'
         }
       }).then(response => {
         this.total = 0
-        this.inventories.forEach(element => {
-          this.total += parseFloat(element.quantity * element.price)
+        this.accountPayables.forEach(element => {
+          this.total += element.amount
         })
         this.isLoading = false
       }).catch(error => {
@@ -184,7 +159,7 @@ export default {
     }
   },
   created () {
-    this.getInventoryRequest()
+    this.getAccountPayableRequest()
   }
 }
 </script>
