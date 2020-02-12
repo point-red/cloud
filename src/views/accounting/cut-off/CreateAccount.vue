@@ -24,7 +24,7 @@
             </nav>
             <hr>
             <h5 class="text-center">CHART OF ACCOUNT</h5>
-            <div class="text-center" v-if="accounts.length == 0">
+            <div class="text-center" v-if="accounts.length == 0 && !this.searchText">
               <p-block-inner :is-loading="isLoading">
                 <p>
                   Anda tidak memiliki akun saat ini, klik tombol di bawah ini untuk generate default akun
@@ -113,8 +113,7 @@
     <m-edit-account
       id="edit-account"
       ref="editAccount"
-      @updated="getChartOfAccountsRequest()"
-      @deleted="getChartOfAccountsRequest()"/>
+      @updated="getChartOfAccountsRequest()"/>
     <m-create-account id="account" ref="account" @updated="getChartOfAccountsRequest()"/>
   </div>
 </template>

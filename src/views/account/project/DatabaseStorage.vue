@@ -36,8 +36,7 @@ export default {
   data () {
     return {
       rows: this.data,
-      name: this.tableName,
-      isLoading: this.isLoading
+      name: this.tableName
     }
   },
   props: {
@@ -58,9 +57,6 @@ export default {
     },
     tableName () {
       this.name = this.tableName
-    },
-    isLoading () {
-      this.isLoading = this.isLoading
     }
   }
 }

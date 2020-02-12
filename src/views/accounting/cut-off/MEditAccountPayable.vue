@@ -64,7 +64,7 @@
                 <button type="submit" class="btn btn-sm btn-primary mr-5" :disabled="isSaving">
                   <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
                 </button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="isSaving" @click="deleteAccount()">
+                <button type="button" class="btn btn-sm btn-danger" :disabled="isSaving" @click="deleteAccountPayable()">
                   <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
                 </button>
               </div>
@@ -122,10 +122,9 @@ export default {
   created () {
   },
   methods: {
-    ...mapActions('accountingCutOffAccountPayable', ['update']),
+    ...mapActions('accountingCutOffAccountPayable', ['update', 'delete']),
     onSubmit () {
       this.isSaving = true
-
       this.update(this.form)
         .then(response => {
           this.isSaving = false
@@ -138,6 +137,21 @@ export default {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
+    },
+    deleteAccountPayable () {
+      this.$alert.confirm('DELETE').then(response => {
+        this.isSaving = true
+        this.delete(this.form)
+          .then(response => {
+            this.$notification.success('delete success')
+            this.$emit('updated', true)
+            this.isSaving = false
+            this.close()
+          })
+      }).catch(error => {
+        this.$alert.error(error.message)
+        this.isSaving = false
+      })
     },
     show (cutOffAccountPayable) {
       this.form.id = cutOffAccountPayable.id

@@ -159,7 +159,7 @@ export default {
       this.delete(this.form)
         .then(response => {
           this.$notification.success('delete success')
-          this.$emit('deleted', true)
+          this.$emit('updated', true)
           this.close()
         })
     },
