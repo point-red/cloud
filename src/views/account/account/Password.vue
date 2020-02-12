@@ -9,7 +9,7 @@
       </div>
       <p-block
         :header="true"
-        :is-loading="loading"
+        :is-loading="isLoading"
         title="Change Password"
         column="col-xl-9">
         <form
@@ -38,10 +38,10 @@
           <div class="form-group row">
             <div class="col-md-9 offset-3">
               <button
-                :disabled="loadingSaveButton"
+                :disabled="isSaving"
                 type="submit"
                 class="btn btn-sm btn-primary"><i
-                  v-show="loadingSaveButton"
+                  v-show="isSaving"
                   class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}</button>
             </div>
           </div>
@@ -70,8 +70,8 @@ export default {
         password: '',
         password_confirmation: ''
       }),
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
   computed: {
@@ -80,28 +80,28 @@ export default {
   methods: {
     ...mapActions('auth', ['updatePassword', 'tryAutoLogin']),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.updatePassword(this.form)
         .then((response) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.form.reset()
           this.form.id = this.authUser.id
           this.$notification.success('Update success')
         }, (error) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.form.errors.record(error.errors)
           this.$notification.error(error.message)
         })
     }
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.tryAutoLogin()
       .then((response) => {
-        this.loading = false
+        this.isLoading = false
         this.form.id = this.authUser.id
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
   }

@@ -6,7 +6,7 @@
       <p-modal
         ref="score"
         :id="id"
-        :isLoading="loading"
+        :isLoading="isLoading"
         title="Score Criteria">
 
         <template slot="content">
@@ -39,24 +39,24 @@
             id="description"
             name="description"
             label="score description"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.description">
           </p-form-row>
           <p-form-row
             id="score"
             name="score"
             label="score"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.score">
           </p-form-row>
         </template>
         <template slot="footer">
           <button
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             type="submit"
             class="btn btn-primary">
             <i
-              v-show="loadingSaveButton"
+              v-show="isSaving"
               class="fa fa-asterisk fa-spin"/>
             <template v-if="isCreateMode">Add</template>
             <template v-if="!isCreateMode">{{ $t('update') | uppercase }}</template>
@@ -90,8 +90,8 @@ export default {
         description: ''
       }),
       isCreateMode: true,
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
   computed: {
@@ -130,18 +130,18 @@ export default {
       this.$refs.score.close()
     },
     onSubmitScore () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       if (this.isCreateMode) {
         this.createScore(this.form)
           .then(
             (response) => {
               this.$notification.success('Create success')
               this.form.reset()
-              this.loadingSaveButton = false
+              this.isSaving = false
             },
             (error) => {
               this.$notification.error('Create failed', error.message)
-              this.loadingSaveButton = false
+              this.isSaving = false
             })
       } else {
         this.updateScore(this.form)
@@ -149,12 +149,12 @@ export default {
             (response) => {
               this.$notification.success('Update success')
               this.form.reset()
-              this.loadingSaveButton = false
+              this.isSaving = false
               this.isCreateMode = true
             },
             (error) => {
               this.$notification.error('Update failed', error.message)
-              this.loadingSaveButton = false
+              this.isSaving = false
             })
       }
     },

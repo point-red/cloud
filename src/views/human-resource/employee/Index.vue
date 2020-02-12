@@ -61,7 +61,7 @@
             {{ $t('delete') | uppercase }}
           </button>
         </div>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th width="50px">#</th>
@@ -139,7 +139,7 @@ export default {
   },
   data () {
     return {
-      loading: false,
+      isLoading: false,
       listEmployee: this.employees,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
@@ -255,7 +255,7 @@ export default {
       this.getEmployeesRequest()
     }, 300),
     getEmployeesRequest () {
-      this.loading = true
+      this.isLoading = true
       this.getEmployees({
         params: {
           filter_like: {
@@ -270,9 +270,9 @@ export default {
           additional: 'groups'
         }
       }).then((response) => {
-        this.loading = false
+        this.isLoading = false
       }, (errors) => {
-        this.loading = false
+        this.isLoading = false
         console.log(errors.data)
       })
     }

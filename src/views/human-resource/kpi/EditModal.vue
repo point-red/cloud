@@ -12,7 +12,7 @@
             id="name"
             name="name"
             label="name"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.name"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)">
@@ -20,26 +20,26 @@
         </template>
         <template slot="footer">
           <button
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             type="submit"
             class="btn btn-primary">
             <i
-              v-show="loadingSaveButton"
+              v-show="isSaving"
               class="fa fa-asterisk fa-spin"/> Update
           </button>
           <button
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             type="button"
             class="btn btn-danger"
             v-if="$permission.has('delete employee kpi')"
             @click="remove">
             <i
-              v-show="loadingSaveButton"
+              v-show="isSaving"
               class="fa fa-asterisk fa-spin"/> Delete
           </button>
-          <button :disabled="loadingSaveButton" type="button" class="btn btn-sm btn-outline-danger" @click="close">
+          <button :disabled="isSaving" type="button" class="btn btn-sm btn-outline-danger" @click="close">
             <i
-              v-show="loadingSaveButton"
+              v-show="isSaving"
               class="fa fa-asterisk fa-spin"/> Close
           </button>
         </template>
@@ -71,7 +71,7 @@ export default {
     return {
       form: new Form(),
       isCreateMode: true,
-      loadingSaveButton: false
+      isSaving: false
     }
   },
   methods: {
@@ -94,31 +94,31 @@ export default {
     },
     onSubmit () {
       console.log(JSON.stringify(this.form))
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.updateKpiTemplate(this.form)
         .then(
           (response) => {
             this.$notification.success('Update success')
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.close()
           },
           (error) => {
             this.$notification.error('Update failed', error.message)
             this.form.errors.record(error.errors)
-            this.loadingSaveButton = false
+            this.isSaving = false
           })
     },
     remove () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.deleteKpiTemplate(this.form)
         .then(response => {
           this.$notification.success('Delete success')
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.close()
         })
         .catch(error => {
           this.$notification.error('Delete failed', error.message)
-          this.loadingSaveButton = false
+          this.isSaving = false
         })
     }
   }

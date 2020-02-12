@@ -12,7 +12,7 @@
 
     <p-block
       :title="title"
-      :is-loading="loading">
+      :is-loading="isLoading">
       <form
         class="px-30"
         @submit.prevent="onSubmit">
@@ -60,7 +60,7 @@ export default {
     return {
       title: 'Edit User',
       id: this.$route.params.id,
-      loading: true,
+      isLoading: true,
       form: new Form({
         name: '',
         email: ''

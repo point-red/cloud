@@ -19,7 +19,7 @@
       <p-block
         :title="$t('employee assessment')"
         :header="true"
-        :is-loading="loading">
+        :is-loading="isLoading">
         <p-form-row
           id="name"
           :label="$t('name')">
@@ -47,7 +47,7 @@
                   id="template_select"
                   name="template_select"
                   v-model="templateIndex"
-                  :disabled="loading"
+                  :disabled="isLoading"
                   :options="templateList"/>
               </div>
           </p-form-row>
@@ -108,7 +108,7 @@ export default {
       value: this.$route.params.value,
       type: this.$route.params.type,
       title: 'Kpi',
-      loading: false,
+      isLoading: false,
       templateList: [],
       templateIndex: 0,
       templateSelected: null
@@ -120,10 +120,10 @@ export default {
   },
   watch: {
     templateIndex: function (val) {
-      this.loading = true
+      this.isLoading = true
       setTimeout(() => {
         this.templateSelected = this.assessmentsBy[val]
-        this.loading = false
+        this.isLoading = false
       }, 100)
     }
   },
@@ -157,14 +157,14 @@ export default {
     }
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.findEmployeeAssessment({
       employeeId: this.id,
       value: this.value,
       type: this.type
     }).then(
       (response) => {
-        this.loading = false
+        this.isLoading = false
         this.templateList = []
         this.assessmentsBy.forEach((tpl, index) => {
           this.templateList.push({ id: index, label: tpl.template })
@@ -175,7 +175,7 @@ export default {
       },
       (error) => {
         console.log(JSON.stringify(error))
-        this.loading = false
+        this.isLoading = false
       }
     )
   }

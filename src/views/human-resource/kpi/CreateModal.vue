@@ -12,7 +12,7 @@
             id="name"
             name="name"
             label="name"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.name"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)">
@@ -20,16 +20,16 @@
         </template>
         <template slot="footer">
           <button
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             type="submit"
             class="btn btn-primary">
             <i
-              v-show="loadingSaveButton"
+              v-show="isSaving"
               class="fa fa-asterisk fa-spin"/> Add
           </button>
-          <button :disabled="loadingSaveButton" type="button" class="btn btn-sm btn-outline-danger" @click="close">
+          <button :disabled="isSaving" type="button" class="btn btn-sm btn-outline-danger" @click="close">
             <i
-              v-show="loadingSaveButton"
+              v-show="isSaving"
               class="fa fa-asterisk fa-spin"/> Close
           </button>
         </template>
@@ -57,7 +57,7 @@ export default {
       form: new Form({
         name: ''
       }),
-      loadingSaveButton: false
+      isSaving: false
     }
   },
   methods: {
@@ -71,19 +71,19 @@ export default {
       this.$refs.create.close()
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.createKpiTemplate(this.form)
         .then(
           (response) => {
             this.$notification.success('Create success')
             this.form.reset()
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.close()
           },
           (error) => {
             this.$notification.success('Create failed')
             this.form.errors.record(error.errors)
-            this.loadingSaveButton = false
+            this.isSaving = false
           })
     }
   }

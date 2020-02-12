@@ -28,7 +28,7 @@
           </router-link>
         </div>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th width="100%">{{ $t('name') }}</th>
@@ -74,7 +74,7 @@ export default {
   },
   data () {
     return {
-      loading: false,
+      isLoading: false,
       listStatus: this.statuses,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
@@ -97,7 +97,7 @@ export default {
       this.getStatusesRequest()
     }, 300),
     getStatusesRequest () {
-      this.loading = true
+      this.isLoading = true
       this.getStatuses({
         params: {
           filter_like: {
@@ -108,9 +108,9 @@ export default {
           sort_by: 'name'
         }
       }).then((response) => {
-        this.loading = false
+        this.isLoading = false
       }, (errors) => {
-        this.loading = false
+        this.isLoading = false
         console.log(errors.data)
       })
     }

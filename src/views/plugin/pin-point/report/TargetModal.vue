@@ -1,7 +1,7 @@
 <template>
   <div>
     <form class="row" @submit.prevent="onSubmit">
-      <p-modal ref="target" :id="id" :is-loading="loading" :title="'Target' | uppercase">
+      <p-modal ref="target" :id="id" :is-loading="isLoading" :title="'Target' | uppercase">
         <template slot="content">
           <p-form-row id="date" name="date" :label="$t('period')">
             <div slot="body" class="col-lg-9">
@@ -51,11 +51,11 @@
           </p-table>
         </template>
         <template slot="footer">
-          <button type="submit" class="btn btn-primary" :disabled="loadingSaveButton" v-show="!loading">
-            <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+          <button type="submit" class="btn btn-primary" :disabled="isSaving" v-show="!isLoading">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
           </button>
-          <button :disabled="loadingSaveButton" type="button" class="btn btn-sm btn-outline-danger" @click="close">
-            <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Close
+          <button :disabled="isSaving" type="button" class="btn btn-sm btn-outline-danger" @click="close">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Close
           </button>
         </template>
       </p-modal>
@@ -83,8 +83,8 @@ export default {
       date: this.$moment(),
       dateFrom: this.$moment(),
       dateTo: this.$moment(),
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
   computed: {
@@ -99,7 +99,7 @@ export default {
       getReport: 'get'
     }),
     show (dateFrom, dateTo) {
-      this.loading = true
+      this.isLoading = true
       this.dateFrom = dateFrom
       this.dateTo = dateTo
       this.get({
@@ -115,9 +115,9 @@ export default {
           element.date = this.date
           element.value = parseFloat(element.value)
         })
-        this.loading = false
+        this.isLoading = false
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error('Create failed', error.message)
       })
       this.$refs.target.show()
@@ -127,11 +127,11 @@ export default {
       this.$refs.target.close()
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.create(this.form)
         .then((response) => {
           this.$notification.success('Set target success')
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.form.reset()
           this.getReport({
             params: {
@@ -141,11 +141,11 @@ export default {
           })
         }, (error) => {
           this.$notification.error('Set target failed', error.message)
-          this.loadingSaveButton = false
+          this.isSaving = false
         })
     },
     changeDate () {
-      this.loading = true
+      this.isLoading = true
       this.get({
         params: {
           date: this.date
@@ -159,9 +159,9 @@ export default {
           element.date = this.date
           element.value = parseFloat(element.value)
         })
-        this.loading = false
+        this.isLoading = false
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
     }

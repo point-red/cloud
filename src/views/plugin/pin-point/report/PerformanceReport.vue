@@ -28,7 +28,7 @@
             </ul>
           </div>
         </p-form-row>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <div class="table-responsive">
             <p-table :is-bordered="true">
               <tr slot="p-head">
@@ -106,7 +106,7 @@ export default {
         start: this.$moment().format('YYYY-MM-DD 00:00:00'),
         end: this.$moment().format('YYYY-MM-DD 23:59:59')
       },
-      loading: false,
+      isLoading: false,
       isExporting: false,
       isColorful: false,
       downloadFiles: []
@@ -138,17 +138,17 @@ export default {
       this.isColorful = !this.isColorful
     },
     search () {
-      this.loading = true
+      this.isLoading = true
       this.get({
         params: {
           date_from: this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'),
           date_to: this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59')
         }
       }).then((response) => {
-        this.loading = false
+        this.isLoading = false
       }, (error) => {
         this.$notification.error(error.message)
-        this.loading = false
+        this.isLoading = false
       })
     },
     exportData () {

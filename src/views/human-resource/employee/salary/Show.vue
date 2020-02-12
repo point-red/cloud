@@ -17,7 +17,7 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('employee salary')" :header="true">
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
               <p-form-row
@@ -425,7 +425,7 @@ export default {
       id: this.$route.params.id,
       salaryId: this.$route.params.salaryId,
       title: 'Employee Salary',
-      loading: false,
+      isLoading: false,
       salaryData: {
         assessments: {},
         achievements: {}
@@ -512,7 +512,7 @@ export default {
     ...mapGetters('humanResourceEmployeeSalary', ['salary', 'additional'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.findEmployeeSalary({
       employeeId: this.id,
       salaryId: this.salaryId
@@ -521,7 +521,7 @@ export default {
         this.$set(this, 'salaryData', this.salary)
         this.$set(this, 'additionalData', this.additional)
         this.calculate()
-        this.loading = false
+        this.isLoading = false
       },
       (error) => {
         console.log(JSON.stringify(error))

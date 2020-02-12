@@ -32,7 +32,7 @@
           </div>
         </template>
         <template slot="footer">
-          <div v-if="templates.length > 0 && !loading">
+          <div v-if="templates.length > 0 && !isLoading">
             <button type="submit" class="btn btn-primary">Add</button>
           </div>
           <button
@@ -56,7 +56,7 @@ export default {
       employeeId: null,
       template: null,
       selectedIndex: null,
-      loading: false
+      isLoading: false
     }
   },
   computed: {

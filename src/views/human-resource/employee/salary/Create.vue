@@ -20,7 +20,7 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('employee salary')" :header="true">
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
               <p-form-row
@@ -54,7 +54,7 @@
                 <div slot="body" class="col-lg-3">
                   <p-form-number
                     v-model="form.active_days_in_month"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('active-days-in-month')"
@@ -82,7 +82,7 @@
               <td class="font-size-h6 font-w700">
                 <p-form-number
                   v-model="form.active_days_week_1"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('active-days-week-1')"
                   @errors="form.errors.set('active-days-week-1', null)"/>
@@ -90,7 +90,7 @@
               <td class="font-size-h6 font-w700">
                 <p-form-number
                   v-model="form.active_days_week_2"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('active-days-week-2')"
                   @errors="form.errors.set('active-days-week-2', null)"/>
@@ -98,7 +98,7 @@
               <td class="font-size-h6 font-w700">
                 <p-form-number
                   v-model="form.active_days_week_3"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('active-days-week-3')"
                   @errors="form.errors.set('active-days-week-3', null)"/>
@@ -106,7 +106,7 @@
               <td class="font-size-h6 font-w700">
                 <p-form-number
                   v-model="form.active_days_week_4"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('active-days-week-4')"
                   @errors="form.errors.set('active-days-week-4', null)"/>
@@ -114,7 +114,7 @@
               <td class="font-size-h6 font-w700">
                 <p-form-number
                   v-model="form.active_days_week_5"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('active-days-week-5')"
                   @errors="form.errors.set('active-days-week-5', null)"/>
@@ -157,7 +157,7 @@
                   id="indicator-weight"
                   name="indicator-weight"
                   v-model="indicator.weight"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @input="salaryAssessmentWeight"
                   :is-text-right="false"/>
               </td>
@@ -209,7 +209,7 @@
                   id="balance-weight"
                   name="balance-weight"
                   v-model="form.salary_achievement.automated.balance.weight"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @input="salaryAchievementWeight"
                   :is-text-right="false"/>
               </td>
@@ -228,7 +228,7 @@
                   id="call-national-achievement-weight"
                   name="call-national-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_national_call.weight"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @input="salaryAchievementWeight"
                   :is-text-right="false"/>
               </td>
@@ -247,7 +247,7 @@
                   id="effective-call-national-achievement-weight"
                   name="effective-call-national-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_national_effective_call.weight"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @input="salaryAchievementWeight"
                   :is-text-right="false"/>
               </td>
@@ -266,7 +266,7 @@
                   id="value-national-achievement-weight"
                   name="value-national-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_national_value.weight"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @input="salaryAchievementWeight"
                   :is-text-right="false"/>
               </td>
@@ -285,7 +285,7 @@
                   id="call-area-achievement-weight"
                   name="call-area-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_area_call.weight"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @input="salaryAchievementWeight"
                   :is-text-right="false"/>
               </td>
@@ -304,7 +304,7 @@
                   id="effective-call-area-achievement-weight"
                   name="effective-call-area-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_area_effective_call.weight"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @input="salaryAchievementWeight"
                   :is-text-right="false"/>
               </td>
@@ -323,7 +323,7 @@
                   id="value-area-achievement-weight"
                   name="value-area-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_area_value.weight"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   @input="salaryAchievementWeight"
                   :is-text-right="false"/>
               </td>
@@ -413,7 +413,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.receivable_cut_60_days_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('receivable-cut-60-days-week-1')"
@@ -424,7 +424,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.receivable_cut_60_days_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('receivable-cut-60-days-week-2')"
@@ -435,7 +435,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.receivable_cut_60_days_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('receivable-cut-60-days-week-3')"
@@ -446,7 +446,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.receivable_cut_60_days_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('receivable-cut-60-days-week-4')"
@@ -457,7 +457,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.receivable_cut_60_days_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('receivable-cut-60-days-week-5')"
@@ -500,7 +500,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.maximum_salary_amount"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('maximum-salary-amount')"
@@ -539,7 +539,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.overdue_receivable_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('overdue-receivable-week-1')"
@@ -550,7 +550,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.overdue_receivable_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('overdue-receivable-week-2')"
@@ -561,7 +561,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.overdue_receivable_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('overdue-receivable-week-3')"
@@ -572,7 +572,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.overdue_receivable_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('overdue-receivable-week-4')"
@@ -583,7 +583,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.overdue_receivable_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('overdue-receivable-week-5')"
@@ -600,7 +600,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_marketing_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-marketing-week-1')"
@@ -611,7 +611,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_marketing_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-marketing-week-2')"
@@ -622,7 +622,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_marketing_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-marketing-week-3')"
@@ -633,7 +633,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_marketing_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-marketing-week-4')"
@@ -644,7 +644,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_marketing_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-marketing-week-5')"
@@ -661,7 +661,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_sales_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-sales-week-1')"
@@ -672,7 +672,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_sales_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-sales-week-2')"
@@ -683,7 +683,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_sales_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-sales-week-3')"
@@ -694,7 +694,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_sales_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-sales-week-4')"
@@ -705,7 +705,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_sales_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-sales-week-5')"
@@ -722,7 +722,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_spg_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-spg-week-1')"
@@ -733,7 +733,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_spg_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-spg-week-2')"
@@ -744,7 +744,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_spg_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-spg-week-3')"
@@ -755,7 +755,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_spg_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-spg-week-4')"
@@ -766,7 +766,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_spg_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('payment-from-spg-week-5')"
@@ -783,7 +783,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.cash_payment_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('cash-payment-week-1')"
@@ -794,7 +794,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.cash_payment_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('cash-payment-week-2')"
@@ -805,7 +805,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.cash_payment_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('cash-payment-week-3')"
@@ -816,7 +816,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.cash_payment_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('cash-payment-week-4')"
@@ -827,7 +827,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.cash_payment_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('cash-payment-week-5')"
@@ -877,7 +877,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.wa_daily_report_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('wa-daily-report-week-1')"
@@ -888,7 +888,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.wa_daily_report_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('wa-daily-report-week-2')"
@@ -899,7 +899,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.wa_daily_report_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('wa-daily-report-week-3')"
@@ -910,7 +910,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.wa_daily_report_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('wa-daily-report-week-4')"
@@ -921,7 +921,7 @@
                 <span class="">
                   <p-form-number
                     v-model="form.wa_daily_report_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
                     @input="calculate"
                     :errors="form.errors.get('wa-daily-report-week-5')"
@@ -935,10 +935,10 @@
             <div class="col-md-12">
               <hr>
               <button
-                :disabled="loadingSaveButton"
+                :disabled="isSaving"
                 type="submit"
                 class="btn btn-sm btn-primary mr-5">
-                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
               </button>
               <button
                 type="button"
@@ -1107,8 +1107,8 @@ export default {
       company_profit_difference_minus_amount_week_3: 0,
       company_profit_difference_minus_amount_week_4: 0,
       company_profit_difference_minus_amount_week_5: 0,
-      loading: true,
-      loadingSaveButton: false,
+      isLoading: true,
+      isSaving: false,
       previousSalaryAchievement: {},
       average_minimum_component_score: 0,
       average_additional_component_score: 0,
@@ -1127,38 +1127,38 @@ export default {
   },
   watch: {
     'form.date' () {
-      if (!this.loadingSaveButton && this.form.date.start && this.form.date.end) {
-        this.loading = true
+      if (!this.isSaving && this.form.date.start && this.form.date.end) {
+        this.isLoading = true
         this.getAssessment()
       }
     },
     'form.activeDaysInMonth' () {
-      if (!this.loading) {
+      if (!this.isLoading) {
         this.calculate()
       }
     },
     'form.active_days_week_1' () {
-      if (!this.loading) {
+      if (!this.isLoading) {
         this.calculate()
       }
     },
     'form.active_days_week_2' () {
-      if (!this.loading) {
+      if (!this.isLoading) {
         this.calculate()
       }
     },
     'form.active_days_week_3' () {
-      if (!this.loading) {
+      if (!this.isLoading) {
         this.calculate()
       }
     },
     'form.active_days_week_4' () {
-      if (!this.loading) {
+      if (!this.isLoading) {
         this.calculate()
       }
     },
     'form.active_days_week_5' () {
-      if (!this.loading) {
+      if (!this.isLoading) {
         this.calculate()
       }
     }
@@ -1169,7 +1169,7 @@ export default {
     ...mapGetters('humanResourceEmployeeSalary', ['salary', 'salaryAssessment', 'salaryAchievement'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.findEmployee({ id: this.id })
       .then((response) => {
         this.form.daily_transport_allowance = Number(this.employee.daily_transport_allowance) || 0
@@ -1182,7 +1182,7 @@ export default {
         }
         this.getAssessment()
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         console.log(JSON.stringify(error))
       })
   },
@@ -1199,16 +1199,16 @@ export default {
       this.$router.go(-1)
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.createEmployeeSalary({ employeeId: this.employee.id, form: this.form })
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.success('Create success')
             this.$router.push('/human-resource/employee/' + this.employee.id + '/salary/' + response.data.id)
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.error('Create failed', error.message)
             this.form.errors.record(error.errors)
           }
@@ -1228,7 +1228,7 @@ export default {
           this.getAchievement()
         },
         (error) => {
-          this.loading = false
+          this.isLoading = false
           console.log(JSON.stringify(error))
         }
       )
@@ -1254,10 +1254,10 @@ export default {
 
           this.$set(this, 'previousSalaryAchievement', this.salaryAchievement.automated)
           this.calculate()
-          this.loading = false
+          this.isLoading = false
         },
         (error) => {
-          this.loading = false
+          this.isLoading = false
           console.log(JSON.stringify(error))
         }
       )
@@ -1277,7 +1277,7 @@ export default {
         }
       })
 
-      if (!this.loading) {
+      if (!this.isLoading) {
         this.calculate()
       }
     },
@@ -1303,7 +1303,7 @@ export default {
         }
       }
 
-      if (!this.loading) {
+      if (!this.isLoading) {
         this.calculate()
       }
     },

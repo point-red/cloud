@@ -18,7 +18,7 @@
           </div>
         </p-form-row>
         <hr>
-        <div class="block" :class="{ 'block-mode-loading' : loading }">
+        <div class="block" :class="{ 'block-mode-loading' : isLoading }">
           <div class="block-content block-content-inner row">
             <div class="col-sm-6">
               <p-table>
@@ -139,7 +139,7 @@ export default {
   data () {
     return {
       date: this.$moment().format('YYYY-MM-DD'),
-      loading: false,
+      isLoading: false,
       totalAsset: 0,
       totalCurrentAsset: 0,
       totalFixedAsset: 0,
@@ -166,13 +166,13 @@ export default {
   methods: {
     ...mapActions('accountingBalanceSheet', ['get']),
     load () {
-      this.loading = true
+      this.isLoading = true
       this.get({
         params: {
           date: this.date
         }
       }).then((response) => {
-        this.loading = false
+        this.isLoading = false
         this.chartOfAccounts.forEach(element => {
           if (element.type.name === 'cash' || element.type.name === 'bank' || element.type.name === 'note receivable' || element.type.name === 'inventory' || element.type.name === 'account receivable' || element.type.name === 'other account receivable') {
             this.totalCurrentAsset += element.total
@@ -202,7 +202,7 @@ export default {
         this.totalEquity = this.totalProfitAndLossNet
         this.totalAsset = this.totalCurrentAsset + this.totalFixedAsset
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
     }

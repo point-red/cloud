@@ -19,7 +19,7 @@
     </div>
 
     <div class="row">
-      <p-block :header="true" title="Point" :is-loading="loading">
+      <p-block :header="true" title="Point" :is-loading="isLoading">
         <p-block-inner>
           <point-table>
             <tr slot="p-head">
@@ -57,7 +57,7 @@ export default {
     PointTable
   },
   data: () => ({
-    loading: true
+    isLoading: true
   }),
   computed: {
     ...mapGetters('auth', ['authUser']),
@@ -76,13 +76,13 @@ export default {
   methods: {
     async getTokens (page) {
       try {
-        this.loading = true
+        this.isLoading = true
         page = page || 1
         await this.$store.dispatch('accountRewardToken/get', { page, limit: 10 })
       } catch (error) {
         console.log(JSON.stringify(error))
       } finally {
-        this.loading = false
+        this.isLoading = false
       }
     }
   }

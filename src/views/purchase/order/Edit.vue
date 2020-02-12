@@ -220,8 +220,8 @@
           <div class="form-group row">
             <div class="col-md-3"></div>
             <div class="col-md-9">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="loadingSaveButton">
-                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
               </button>
             </div>
           </div>
@@ -252,8 +252,8 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      loading: true,
-      loadingSaveButton: false,
+      isLoading: true,
+      isSaving: false,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         id: this.$route.params.id,
@@ -384,15 +384,15 @@ export default {
       }
     }, 300),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.update(this.form)
         .then(response => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.form.reset()
           this.$notification.success('Update success')
           this.$router.push('/purchase/order/' + response.data.id)
         }).catch(error => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })

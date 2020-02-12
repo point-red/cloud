@@ -50,12 +50,12 @@
         </p-form-row>
         <p-form-row>
           <div slot="body" class="col-lg-9">
-            <button class="btn btn-primary btn-sm mr-5" :disabled="loadingSaveButton" v-show="!loading" @click="search">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Search
+            <button class="btn btn-primary btn-sm mr-5" :disabled="isSaving" v-show="!isLoading" @click="search">
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Search
             </button>
           </div>
         </p-form-row>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <div class="table-responsive">
             <p-table :is-bordered="true">
               <tr slot="p-head">
@@ -115,8 +115,8 @@ export default {
   },
   data () {
     return {
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
       date: new Date()
     }
   },
@@ -126,8 +126,8 @@ export default {
   methods: {
     ...mapActions('pluginPinPointReportNoInterestReason', ['get']),
     search () {
-      this.loading = true
-      this.loadingSaveButton = true
+      this.isLoading = true
+      this.isSaving = true
       this.get({
         params: {
           date: this.date
@@ -136,8 +136,8 @@ export default {
       }).catch((error) => {
         this.$notification.error(error)
       }).then(() => {
-        this.loading = false
-        this.loadingSaveButton = false
+        this.isLoading = false
+        this.isSaving = false
       })
     }
   },

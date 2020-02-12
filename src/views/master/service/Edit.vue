@@ -56,7 +56,7 @@ export default {
     return {
       title: 'Edit Service',
       id: this.$route.params.id,
-      loading: true,
+      isLoading: true,
       isSaving: false,
       form: new Form({
         id: this.$route.params.id,

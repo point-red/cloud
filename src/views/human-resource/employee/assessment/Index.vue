@@ -38,7 +38,7 @@
           <a href="javascript:void(0)" class="btn btn-square btn-outline-secondary" :class="{ 'active': reportType == 'yearly' }" @click="chooseType('yearly')">Yearly</a>
         </div>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <p-table>
             <tr slot="p-head">
               <th>{{ $t('date') }}</th>
@@ -123,9 +123,9 @@
           type="button"
           @click="onDelete()"
           v-if="$permission.has('delete employee assessment')"
-          :disabled="loadingSaveButton"
+          :disabled="isSaving"
           class="btn btn-danger">
-          <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Delete
+          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Delete
         </button>
       </div>
     </p-modal>
@@ -152,27 +152,27 @@ export default {
     return {
       id: this.$route.params.id,
       title: 'Assessment',
-      loading: true,
+      isLoading: true,
       chartLabel: [],
       chartData: [],
       isScorer: false,
       hideChart: false,
       reportType: 'all',
-      loadingSaveButton: false,
+      isSaving: false,
       selectedAsessementId: ''
     }
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.getEmployeeAssessment({
       employeeId: this.id,
       params: {
         type: this.reportType
       }
     }).then(response => {
-      this.loading = false
+      this.isLoading = false
     }).catch(error => {
-      this.loading = false
+      this.isLoading = false
       console.log(JSON.stringify(error))
     })
     if (this.employee.scorers) {
@@ -208,7 +208,7 @@ export default {
       deleteEmployeeAssessment: 'delete'
     }),
     chooseType (type) {
-      this.loading = true
+      this.isLoading = true
       this.reportType = type
       this.getEmployeeAssessment({
         employeeId: this.id,
@@ -216,9 +216,9 @@ export default {
           type: type
         }
       }).then((response) => {
-        this.loading = false
+        this.isLoading = false
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         console.log(JSON.stringify(error))
       })
       if (this.employee.scorers) {
@@ -234,13 +234,13 @@ export default {
       this.$refs.delete.show()
     },
     onDelete () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.deleteEmployeeAssessment({ id: this.selectedAsessementId, employeeId: this.id })
         .then((response) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$refs.delete.close()
         }, (error) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.error('Delete failed', error.message)
           console.log(JSON.stringify(error))
         })

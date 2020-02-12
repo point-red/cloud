@@ -18,7 +18,7 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('employee assessment')" :header="true">
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
             :label="$t('name')">
@@ -141,10 +141,10 @@
               <hr>
               <button
                 v-if="form.template.weight > 0"
-                :disabled="loadingSaveButton"
+                :disabled="isSaving"
                 type="submit"
                 class="btn btn-sm btn-primary mr-5">
-                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
               </button>
               <button
                 type="button"
@@ -194,8 +194,8 @@ export default {
         }
       }),
       title: 'Kpi',
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
       scoreModalTitle: ''
     }
   },
@@ -212,7 +212,7 @@ export default {
     ...mapGetters('humanResourceKpiAutomated', ['template'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
 
     this.findEmployeeAssessment({
       employeeId: this.id,
@@ -222,11 +222,11 @@ export default {
         this.form.date = this.assessment.date
         this.form.template = this.assessment
         this.assignSelected()
-        this.loading = false
+        this.isLoading = false
       },
       (error) => {
         console.log(JSON.stringify(error))
-        this.loading = false
+        this.isLoading = false
       }
     )
   },
@@ -303,16 +303,16 @@ export default {
       this.$set(this.form.template, 'score_percentage', scorePercentage + (template.score_percentage || 0))
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.updateEmployeeAssessment({ employeeId: this.id, kpiId: this.kpiId, form: this.form })
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.success('Update success')
             this.$router.replace('/human-resource/employee/' + this.id + '/assessment/' + this.kpiId + '/edit')
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.error('Update failed', error.message)
             this.form.errors.record(error.errors)
           }

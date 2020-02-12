@@ -7,7 +7,7 @@
 
     <div class="row">
       <p-block title="Profit & Loss" :header="false">
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
               <p-form-row
@@ -155,7 +155,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      loading: false,
+      isLoading: false,
       date: new Date(),
       totalSalesIncome: 0,
       totalCostOfSales: 0,
@@ -181,10 +181,10 @@ export default {
     })
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.getChartOfAccounts()
       .then((response) => {
-        this.loading = false
+        this.isLoading = false
         this.chartOfAccounts.forEach(element => {
           if (element.type.name === 'sales income') {
             this.totalSalesIncome += element.total

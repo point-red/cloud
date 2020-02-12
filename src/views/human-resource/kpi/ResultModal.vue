@@ -6,7 +6,7 @@
       <p-modal
         ref="result"
         :id="id"
-        :isLoading="loading"
+        :isLoading="isLoading"
         :title="'Kpi Result' | uppercase">
         <template slot="content">
           <p-table>
@@ -34,7 +34,7 @@
             id="score-min"
             name="score-min"
             label="score min"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.score_min"
             :errors="form.errors.get('score_min')"
             @errors="form.errors.set('score_min', null)">
@@ -43,7 +43,7 @@
             id="score-max"
             name="score-max"
             label="score max"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.score_max"
             :errors="form.errors.get('score_max')"
             @errors="form.errors.set('score_max', null)">
@@ -52,7 +52,7 @@
             id="criteria"
             name="criteria"
             label="criteria"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.criteria"
             :errors="form.errors.get('criteria')"
             @errors="form.errors.set('criteria', null)">
@@ -61,7 +61,7 @@
             id="notes"
             name="notes"
             label="notes"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.notes"
             :errors="form.errors.get('notes')"
             @errors="form.errors.set('notes', null)">
@@ -69,18 +69,18 @@
         </template>
         <template slot="footer">
           <button
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             type="submit"
             class="btn btn-primary">
             <i
-              v-show="loadingSaveButton"
+              v-show="isSaving"
               class="fa fa-asterisk fa-spin"/>
               <template v-if="isCreateMode">Add</template>
               <template v-if="!isCreateMode">{{ $t('update') | uppercase }}</template>
           </button>
-          <button :disabled="loadingSaveButton" type="button" class="btn btn-sm btn-outline-danger" @click="cancel">
+          <button :disabled="isSaving" type="button" class="btn btn-sm btn-outline-danger" @click="cancel">
             <i
-              v-show="loadingSaveButton"
+              v-show="isSaving"
               class="fa fa-asterisk fa-spin"/>
               <template v-if="isCreateMode">{{ $t('close') | uppercase }}</template>
               <template v-if="!isCreateMode">Cancel</template>
@@ -112,8 +112,8 @@ export default {
         notes: ''
       }),
       isCreateMode: true,
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
   computed: {
@@ -137,12 +137,12 @@ export default {
       }
     },
     show () {
-      this.loading = true
+      this.isLoading = true
       this.isCreateMode = true
       this.getResults()
         .then(
           (response) => {
-            this.loading = false
+            this.isLoading = false
           }
         )
       this.form = new Form({
@@ -166,34 +166,34 @@ export default {
       }
     },
     create () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.createResult(this.form)
         .then(
           (response) => {
             this.$notification.success('Create success')
             this.form.reset()
-            this.loadingSaveButton = false
+            this.isSaving = false
           },
           (error) => {
             this.$notification.error('Create failed', error.message)
             this.form.errors.record(error.errors)
-            this.loadingSaveButton = false
+            this.isSaving = false
           })
     },
     update () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.updateResult(this.form)
         .then(
           (response) => {
             this.$notification.success('Update success')
             this.form.reset()
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.isCreateMode = true
           },
           (error) => {
             this.$notification.error('Update failed', error.message)
             this.form.errors.record(error.errors)
-            this.loadingSaveButton = false
+            this.isSaving = false
           })
     },
     edit (result) {

@@ -12,7 +12,7 @@
 
     <div class="row">
       <p-block :title="$t('employee status')" :header="true">
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-6">
               <p-table>
@@ -36,9 +36,9 @@
                 type="button"
                 @click="onDelete()"
                 v-if="$permission.has('delete employee')"
-                :disabled="loadingSaveButton"
+                :disabled="isSaving"
                 class="btn btn-sm btn-danger">
-                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Delete
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Delete
               </button>
             </div>
           </div>
@@ -63,17 +63,17 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
   computed: {
     ...mapGetters('humanResourceEmployeeStatus', ['status', 'statuses'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.findStatus({ id: this.id }).then((response) => {
-      this.loading = false
+      this.isLoading = false
     }, (error) => {
       console.log(JSON.stringify(error))
     })
@@ -81,13 +81,13 @@ export default {
   methods: {
     ...mapActions('humanResourceEmployeeStatus', { findStatus: 'find', deleteStatus: 'delete' }),
     onDelete () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.deleteStatus({ id: this.id })
         .then((response) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$router.push('/human-resource/employee-status')
         }, (error) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           console.log(JSON.stringify(error))
         })
     }

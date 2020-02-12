@@ -10,7 +10,7 @@
 
     <div class="row">
       <p-block :title="$t('performance report')" :header="true">
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="date"
             name="date"
@@ -87,7 +87,7 @@ export default {
   },
   data () {
     return {
-      loading: false
+      isLoading: false
     }
   },
   computed: {

@@ -14,14 +14,14 @@
     <div class="row">
       <p-block
         :header="true"
-        :is-loading="loading"
+        :is-loading="isLoading"
         title="Project">
         <form @submit.prevent="onSubmit">
           <p-form-row
             id="group"
             name="group"
             v-model="form.group"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             :label="$t('company group')"
             :errors="form.errors.get('group')"
             @errors="form.errors.set('group', null)">
@@ -41,7 +41,7 @@
             id="name"
             name="name"
             v-model="form.name"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             :label="$t('company name')"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)">
@@ -51,7 +51,7 @@
             id="address"
             name="address"
             v-model="form.address"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             :label="$t('company address')">
           </p-form-row>
 
@@ -59,7 +59,7 @@
             id="phone"
             name="phone"
             v-model="form.phone"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             :label="$t('company phone')">
           </p-form-row>
 
@@ -67,7 +67,7 @@
             id="whatsapp"
             name="whatsapp"
             v-model="form.whatsapp"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             :label="$t('company whatsapp')">
           </p-form-row>
 
@@ -75,7 +75,7 @@
             id="website"
             name="website"
             v-model="form.website"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             :label="$t('company website')">
           </p-form-row>
 
@@ -83,7 +83,7 @@
             id="marketplace-notes"
             name="marketplace-notes"
             v-model="form.marketplace_notes"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             :label="$t('marketplace notes')">
           </p-form-row>
 
@@ -91,7 +91,7 @@
             id="vat-id-number"
             name="vat_id_number"
             v-model="form.vat_id_number"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             :label="$t('vat identification number')">
           </p-form-row>
 
@@ -113,11 +113,11 @@
           <div class="form-group row">
             <div class="col-md-9 offset-3">
               <button
-                :disabled="loadingSaveButton"
+                :disabled="isSaving"
                 type="submit"
                 class="btn btn-sm btn-primary mr-5">
                 <i
-                  v-show="loadingSaveButton"
+                  v-show="isSaving"
                   class="fa fa-asterisk fa-spin"/> Update
               </button>
               <router-link
@@ -154,8 +154,8 @@ export default {
         invitation_code_enabled: null,
         timezone: null
       }),
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
       timezoneOptions: []
     }
   },
@@ -166,7 +166,7 @@ export default {
     ...mapGetters('accountProject', ['project'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.getAvailableTimezone()
     this.findProject({ id: this.id })
       .then((response) => {
@@ -183,10 +183,10 @@ export default {
         this.form.vat_id_number = this.project.vat_id_number
         this.form.invitation_code = this.project.invitation_code
         this.form.invitation_code_enabled = this.project.invitation_code_enabled
-        this.loading = false
+        this.isLoading = false
       }, (error) => {
         this.$notification.error(error.message)
-        this.loading = false
+        this.isLoading = false
       })
   },
   methods: {
@@ -224,17 +224,17 @@ export default {
       this.form.timezone = value.id
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.update(this.form)
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.form.reset()
             this.$notification.success('Update success')
             this.$router.push('/account/project/' + this.id)
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.error('Update failed')
             this.form.errors.record(error.errors)
           }

@@ -5,7 +5,7 @@
       <p-modal
         ref="serviceModal"
         :id="id"
-        :isLoading="loading"
+        :isLoading="isLoading"
         :title="title | uppercase">
         <template slot="content">
           <p-form-row
@@ -33,7 +33,7 @@
             <div slot="body" class="col-lg-9">
               <p-quantity
                 v-model="quantity"
-                :readonly="loadingSaveButton"
+                :readonly="isSaving"
                 :is-text-right="false"
                 :unsigned="true"
                 :showAddReduceButtons="true"/>
@@ -46,7 +46,7 @@
             <div slot="body" class="col-lg-9">
               <p-quantity
                 v-model="discount_percent"
-                :readonly="loadingSaveButton"
+                :readonly="isSaving"
                 :is-text-right="false"
                 :unsigned="true"
                 unit="%"/>
@@ -57,14 +57,14 @@
             name="notes"
             :label="$t('notes')">
             <div slot="body" class="col-lg-12 mt-5">
-              <textarea rows="5" class="form-control" placeholder="Notes" v-model="notes" :readonly="loadingSaveButton"></textarea>
+              <textarea rows="5" class="form-control" placeholder="Notes" v-model="notes" :readonly="isSaving"></textarea>
             </div>
           </p-form-row>
         </template>
         <template slot="footer">
-          <button :disabled="loadingSaveButton" type="button" class="btn btn-sm btn-outline-danger" @click="close">
+          <button :disabled="isSaving" type="button" class="btn btn-sm btn-outline-danger" @click="close">
             <i
-              v-show="loadingSaveButton"
+              v-show="isSaving"
               class="fa fa-asterisk fa-spin"/> Close
           </button>
         </template>
@@ -84,9 +84,9 @@ export default {
   },
   data () {
     return {
-      loading: false,
+      isLoading: false,
       title: 'Service',
-      loadingSaveButton: false,
+      isSaving: false,
       index: null,
       service_name: null,
       quantity: null,

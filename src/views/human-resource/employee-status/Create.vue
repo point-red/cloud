@@ -12,7 +12,7 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block
-        :is-loading="loading"
+        :is-loading="isLoading"
         :header="true"
         :title="$t('employee status')"
         column="col-sm-12">
@@ -24,7 +24,7 @@
               name="name"
               :label="$t('name')"
               v-model="form.name"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               :errors="form.errors.get('name')"
               @errors="form.errors.set('name', null)">
             </p-form-row>
@@ -32,8 +32,8 @@
         </div>
         <div class="form-group row">
           <div class="col-md-12">
-            <button :disabled="loadingSaveButton" type="submit" class="btn btn-sm btn-primary">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+            <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
             </button>
           </div>
         </div>
@@ -57,8 +57,8 @@ export default {
   },
   data () {
     return {
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
       form: new Form({
         name: ''
       })
@@ -69,16 +69,16 @@ export default {
       createEmployeeStatus: 'create'
     }),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.createEmployeeStatus(this.form)
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.success('Create success')
             this.$router.push('/human-resource/employee-status/' + response.data.id)
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.error('Create failed', error.message)
             this.form.errors.record(error.errors)
           }

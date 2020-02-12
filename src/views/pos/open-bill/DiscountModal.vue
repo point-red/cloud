@@ -5,7 +5,7 @@
       <p-modal
         ref="discountModal"
         :id="id"
-        :isLoading="loading"
+        :isLoading="isLoading"
         :title="title | uppercase">
         <template slot="content">
           <p-form-row
@@ -20,9 +20,9 @@
           </p-form-row>
         </template>
         <template slot="footer">
-          <button :disabled="loadingSaveButton" type="button" class="btn btn-sm btn-outline-danger" @click="close">
+          <button :disabled="isSaving" type="button" class="btn btn-sm btn-outline-danger" @click="close">
             <i
-              v-show="loadingSaveButton"
+              v-show="isSaving"
               class="fa fa-asterisk fa-spin"/> Close
           </button>
         </template>
@@ -42,9 +42,9 @@ export default {
   },
   data () {
     return {
-      loading: false,
+      isLoading: false,
       title: 'Discount',
-      loadingSaveButton: false,
+      isSaving: false,
       discount_percent: 0
     }
   },

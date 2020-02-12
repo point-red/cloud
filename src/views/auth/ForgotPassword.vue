@@ -26,9 +26,9 @@
       <div class="form-group text-center">
         <button
           type="submit"
-          :disabled="loadingSaveButton"
+          :disabled="isSaving"
           class="btn btn-sm btn-hero btn-primary">
-          <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Reset Password
+          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Reset Password
         </button>
         <div class="mt-30">
           Remember your password ?
@@ -51,7 +51,7 @@ import { mapActions } from 'vuex'
 export default {
   data () {
     return {
-      loadingSaveButton: false,
+      isSaving: false,
       form: new Form({
         email: ''
       })
@@ -60,16 +60,16 @@ export default {
   methods: {
     ...mapActions('auth', ['resetPasswordRequest']),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.resetPasswordRequest(this.form)
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.success('Please check your email to reset your password')
             this.form.reset()
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.form.errors.record(error.errors)
           }
         )

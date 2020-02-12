@@ -18,7 +18,7 @@
           :value="searchText"
           @input="filterSearch"/>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -88,7 +88,7 @@ export default {
   },
   data () {
     return {
-      loading: true,
+      isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
@@ -107,7 +107,7 @@ export default {
       this.getDownPayments()
     }, 300),
     getDownPayments () {
-      this.loading = true
+      this.isLoading = true
       this.get({
         params: {
           join: 'form,supplier',
@@ -124,9 +124,9 @@ export default {
           page: this.currentPage
         }
       }).then(response => {
-        this.loading = false
+        this.isLoading = false
       }).catch(error => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
     },

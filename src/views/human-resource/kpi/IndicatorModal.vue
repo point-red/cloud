@@ -6,7 +6,7 @@
       <p-modal
         ref="indicator"
         :id="id"
-        :isLoading="loading"
+        :isLoading="isLoading"
         :title="'Kpi Template Indicator' | uppercase"
         :hidden="selectingAutomatedIndicator">
         <template slot="content">
@@ -60,32 +60,32 @@
             id="name"
             name="name"
             label="name"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.name">
           </p-form-row>
           <p-form-row
             id="weight"
             name="weight"
             label="weight"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.weight">
           </p-form-row>
           <p-form-row
             id="target"
             name="target"
             label="target"
-            :disabled="loadingSaveButton || automatedIndicatorChecked || !canEditTarget"
+            :disabled="isSaving || automatedIndicatorChecked || !canEditTarget"
             v-model="form.target"
             :hidden="automatedIndicatorChecked || !canEditTarget">
           </p-form-row>
         </template>
         <template slot="footer">
           <button
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             type="submit"
             class="btn btn-primary">
             <i
-              v-show="loadingSaveButton"
+              v-show="isSaving"
               class="fa fa-asterisk fa-spin"/>
             <template v-if="isCreateMode">Add</template>
             <template v-if="!isCreateMode">{{ $t('update') | uppercase }}</template>
@@ -128,8 +128,8 @@ export default {
         target: ''
       }),
       isCreateMode: true,
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
       automatedIndicatorChecked: false,
       selectingAutomatedIndicator: false,
       canEditTarget: true
@@ -173,17 +173,17 @@ export default {
             this.form.target = 0
           }
 
-          this.loadingSaveButton = true
+          this.isSaving = true
           this.createIndicator(this.form)
             .then(
               (response) => {
                 this.$notification.success('Create success')
                 this.form.reset()
-                this.loadingSaveButton = false
+                this.isSaving = false
               },
               (error) => {
                 this.$notification.error('Create failed', error.message)
-                this.loadingSaveButton = false
+                this.isSaving = false
               })
         } else {
           this.$notification.error('Please Select one Automated Indicator')
@@ -194,17 +194,17 @@ export default {
             this.form.target = 0
           }
 
-          this.loadingSaveButton = true
+          this.isSaving = true
           this.updateIndicator(this.form)
             .then(
               (response) => {
                 this.$notification.success('Update success')
-                this.loadingSaveButton = false
+                this.isSaving = false
                 this.isCreateMode = false
               },
               (error) => {
                 this.$notification.error('Update failed', error.message)
-                this.loadingSaveButton = false
+                this.isSaving = false
               })
         } else {
           this.$notification.error('Please Select one Automated Indicator')

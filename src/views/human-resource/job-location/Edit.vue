@@ -15,7 +15,7 @@
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block
-        :is-loading="loading"
+        :is-loading="isLoading"
         :header="true"
         :title="$t('job location')"
         column="col-sm-12">
@@ -25,7 +25,7 @@
               id="name"
               name="name"
               :label="$t('name')"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               v-model="form.name"
               :errors="form.errors.get('name')"
               @errors="form.errors.set('name', null)">
@@ -41,7 +41,7 @@
               <div slot="body" class="col-lg-9">
                 <p-form-number
                   v-model="form.base_salary"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('base_salary')"
                   @errors="form.errors.set('base_salary', null)"/>
@@ -58,7 +58,7 @@
               <div slot="body" class="col-lg-9">
                 <p-form-number
                   v-model="form.multiplier_kpi"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('multiplier_kpi')"
                   @errors="form.errors.set('multiplier_kpi', null)"/>
@@ -71,9 +71,9 @@
             <hr>
             <button
               type="submit"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               class="btn btn-sm btn-primary mr-5">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Update
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Update
             </button>
             <button
               type="button"
@@ -104,8 +104,8 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
       form: new Form({
         name: '',
         base_salary: null,
@@ -117,11 +117,11 @@ export default {
     ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocation'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.findJobLocation({
       id: this.id
     }).then((response) => {
-      this.loading = false
+      this.isLoading = false
       for (let field in this.form) {
         console.log(JSON.stringify(field))
         if (response.data[field]) this.form[field] = response.data[field]
@@ -129,23 +129,23 @@ export default {
       this.form.id = response.data.id
       console.log(response.data)
     }, (error) => {
-      this.loading = false
+      this.isLoading = false
       console.log(JSON.stringify(error))
     })
   },
   methods: {
     ...mapActions('humanResourceEmployeeJobLocation', { findJobLocation: 'find', updateJobLocation: 'update' }),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.updateJobLocation(this.form)
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.success('Update success')
             this.$router.replace('/human-resource/job-location/' + this.jobLocation.id)
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.error('Update failed', error.message)
             this.form.errors.record(error.errors)
           }

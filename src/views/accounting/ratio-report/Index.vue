@@ -159,7 +159,7 @@ import { mapActions } from 'vuex'
 export default {
   data () {
     return {
-      loading: false,
+      isLoading: false,
       date: new Date(),
       dateB: new Date(),
       chartLabel: [],

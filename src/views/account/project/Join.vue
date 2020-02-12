@@ -32,10 +32,10 @@
             <div class="form-group row">
               <div class="col-md-9 offset-3">
                 <button
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   type="submit"
                   class="btn btn-sm btn-primary">
-                  <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> {{ $t('request to join') | titlecase }}
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('request to join') | titlecase }}
                 </button>
               </div>
             </div>
@@ -58,7 +58,7 @@ export default {
       form: new Form({
         invitation_code: null
       }),
-      loadingSaveButton: false
+      isSaving: false
     }
   },
   components: {
@@ -82,17 +82,17 @@ export default {
   methods: {
     ...mapActions('accountRequestJoinProject', ['create']),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.create(this.form)
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.form.reset()
             this.$notification.success('Create success')
             this.$router.push('/account/project')
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             if (error.message) {
               this.$notification.error(error.message)
             } else {

@@ -19,7 +19,7 @@
       <p-block
         :title="$t('employee assessment')"
         :header="true"
-        :is-loading="loading">
+        :is-loading="isLoading">
         <p-form-row
           id="name"
           :label="$t('name')">
@@ -109,7 +109,7 @@ export default {
       id: this.$route.params.id,
       kpiId: this.$route.params.kpiId,
       title: 'Kpi',
-      loading: false
+      isLoading: false
     }
   },
   computed: {
@@ -122,17 +122,17 @@ export default {
     })
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.findEmployeeAssessment({
       employeeId: this.id,
       kpiId: this.kpiId
     }).then(
       (response) => {
-        this.loading = false
+        this.isLoading = false
       },
       (error) => {
         console.log(JSON.stringify(error))
-        this.loading = false
+        this.isLoading = false
       }
     )
   }

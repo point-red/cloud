@@ -9,7 +9,7 @@
       </div>
       <p-block
         :header="true"
-        :is-loading="loading"
+        :is-loading="isLoading"
         title="Profile"
         column="col-xl-9">
         <form class="px-30" @submit.prevent="onSubmit">
@@ -17,7 +17,7 @@
             id="name"
             name="name"
             :label="$t('name')"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.name"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)">
@@ -27,7 +27,7 @@
             id="email"
             name="email"
             :label="$t('email')"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.email"
             :errors="form.errors.get('email')"
             @errors="form.errors.set('email', null)">
@@ -37,7 +37,7 @@
             id="address"
             name="address"
             :label="$t('address')"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.address"
             :errors="form.errors.get('address')"
             @errors="form.errors.set('address', null)">
@@ -47,7 +47,7 @@
             id="phone"
             name="phone"
             :label="$t('phone')"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.phone"
             :errors="form.errors.get('phone')"
             @errors="form.errors.set('phone', null)">
@@ -56,10 +56,10 @@
           <div class="form-group row">
             <div class="col-md-9 offset-3">
               <button
-                :disabled="loadingSaveButton"
+                :disabled="isSaving"
                 type="submit"
                 class="btn btn-sm btn-primary"><i
-                  v-show="loadingSaveButton"
+                  v-show="isSaving"
                   class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}</button>
             </div>
           </div>
@@ -93,37 +93,37 @@ export default {
         address: null,
         phone: null
       }),
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
   methods: {
     ...mapActions('auth', ['updateProfile', 'tryAutoLogin']),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.updateProfile(this.form)
         .then((response) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.success('Update success')
         }, (error) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
     }
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.tryAutoLogin()
       .then((response) => {
-        this.loading = false
+        this.isLoading = false
         this.form.id = this.authUser.id
         this.form.name = this.authUser.name
         this.form.email = this.authUser.email
         this.form.address = this.authUser.address
         this.form.phone = this.authUser.phone
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
   }

@@ -28,7 +28,7 @@
       <p-block
         :title="template.name"
         :header="true"
-        :is-loading="loading">
+        :is-loading="isLoading">
         <p-table>
           <tr slot="p-head">
             <td class="font-size-h6 font-w700">{{ 'No' | uppercase }}</td>
@@ -121,23 +121,23 @@ export default {
     return {
       id: this.$route.params.id,
       form: new Form(),
-      loading: false
+      isLoading: false
     }
   },
   computed: {
     ...mapGetters('humanResourceKpiTemplate', ['template', 'templates'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.templates.find((element) => {
       if (element.id === this.id) {
         this.$store.commit('humanResourceKpiTemplate/FETCH_OBJECT', element)
-        this.loading = false
+        this.isLoading = false
       }
     })
     this.findKpiTemplate({ id: this.id })
       .then(response => {
-        this.loading = false
+        this.isLoading = false
       })
   },
   methods: {

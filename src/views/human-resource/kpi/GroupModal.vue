@@ -6,7 +6,7 @@
       <p-modal
         ref="group"
         :id="id"
-        :isLoading="loading"
+        :isLoading="isLoading"
         :title="'Kpi Template Group' | uppercase">
         <template slot="content">
           <p-table>
@@ -32,17 +32,17 @@
             id="name"
             name="name"
             label="name"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             v-model="form.name">
           </p-form-row>
         </template>
         <template slot="footer">
           <button
-                :disabled="loadingSaveButton"
+                :disabled="isSaving"
                 type="submit"
                 class="btn btn-primary">
                 <i
-                  v-show="loadingSaveButton"
+                  v-show="isSaving"
                   class="fa fa-asterisk fa-spin"/>
                 <template v-if="isCreateMode">Add</template>
                 <template v-if="!isCreateMode">{{ $t('update') | uppercase }}</template>
@@ -72,8 +72,8 @@ export default {
     return {
       form: new Form(),
       isCreateMode: true,
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
   computed: {
@@ -104,18 +104,18 @@ export default {
       this.$refs.group.close()
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       if (this.isCreateMode) {
         this.createGroup(this.form)
           .then(
             (response) => {
               this.$notification.success('Create success')
               this.form.reset()
-              this.loadingSaveButton = false
+              this.isSaving = false
             },
             (error) => {
               this.$notification.error('Create failed', error.message)
-              this.loadingSaveButton = false
+              this.isSaving = false
             })
       } else {
         this.updateGroup(this.form)
@@ -123,12 +123,12 @@ export default {
             (response) => {
               this.$notification.success('Update success')
               this.form.reset()
-              this.loadingSaveButton = false
+              this.isSaving = false
               this.isCreateMode = true
             },
             (error) => {
               this.$notification.error('Update failed', error.message)
-              this.loadingSaveButton = false
+              this.isSaving = false
             })
       }
     },

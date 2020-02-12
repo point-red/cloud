@@ -14,11 +14,11 @@
       <p-block
         :title="title"
         :header="true"
-        :is-loading="loading">
+        :is-loading="isLoading">
         <p-form-row
           id="name"
           v-model="form.name"
-          :disabled="loadingSaveButton"
+          :disabled="isSaving"
           :label="$t('name')"
           name="name"
           :errors="form.errors.get('name')"
@@ -29,9 +29,9 @@
           <div class="col-md-9">
             <button
               type="submit"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               class="btn btn-sm btn-primary">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Submit
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Submit
             </button>
           </div>
         </div>
@@ -56,8 +56,8 @@ export default {
   data () {
     return {
       title: 'Role',
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
       form: new Form({
         name: ''
       })
@@ -66,15 +66,15 @@ export default {
   methods: {
     ...mapActions('masterRole', ['create']),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.create(this.form)
         .then(response => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.success('Create success')
           this.form.reset()
           this.$router.push('/master/role/' + response.data.id)
         }).catch(error => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.error('Create failed')
           this.form.errors.record(error.errors)
         })

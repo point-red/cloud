@@ -34,7 +34,7 @@
 
     <div class="row">
       <p-block :title="title" :header="true">
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <p-table>
             <tr slot="p-head">
               <th>Kpi Category</th>
@@ -122,7 +122,7 @@ export default {
   data () {
     return {
       title: 'kpi template',
-      loading: false,
+      isLoading: false,
       isDuplicating: false,
       isExporting: []
     }
@@ -143,9 +143,9 @@ export default {
         kpi_template_id: id
       }).then((response) => {
         this.isDuplicating = false
-        this.loading = true
+        this.isLoading = true
         this.getKpiTemplates().then((response) => {
-          this.loading = false
+          this.isLoading = false
         })
       }, (error) => {
         console.log(error)
@@ -176,7 +176,7 @@ export default {
       let data = new FormData()
       data.append('file', files[0])
       var self = this
-      self.loading = true
+      self.isLoading = true
       axios.post('/human-resource/kpi/templates/import/check', data, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -196,19 +196,19 @@ export default {
                 console.log(response)
                 document.getElementById('file').value = ''
                 self.getKpiTemplates()
-                self.loading = false
+                self.isLoading = false
               })
               .catch(function (error) {
                 console.log(error)
               })
           } else {
             document.getElementById('file').value = ''
-            self.loading = false
+            self.isLoading = false
           }
         } else {
           document.getElementById('file').value = ''
           self.getKpiTemplates()
-          self.loading = false
+          self.isLoading = false
         }
       }).catch(function (error) {
         console.log(error)
@@ -226,10 +226,10 @@ export default {
   },
   created () {
     if (this.templates.length === 0) {
-      this.loading = true
+      this.isLoading = true
     }
     this.getKpiTemplates().then((response) => {
-      this.loading = false
+      this.isLoading = false
     })
   }
 }
