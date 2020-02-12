@@ -24,7 +24,7 @@
             id="referralCode"
             type="text"
             name="referralCode"
-            class="btn btn-outline-secondary"
+            class="btn btn-sm btn-outline-secondary"
             value="SAMPLECODE"
             @click="copyToClipboard" >
         </div>

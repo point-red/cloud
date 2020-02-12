@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span @click="clickInput" class="link"><i class="fa fa-list mr-5"></i>{{ mutableChoosen || 'SELECT'}}</span>
+    <span @click="clickInput" class="link"><i class="fa fa-list mr-5"></i>{{ mutableChoosen || 'SELECT' || uppercase }}</span>
     <p-modal :ref="'select' + id" :id="'select' + id" :title="title">
       <template slot="content">
         <input type="text" class="form-control" v-model="search" placeholder="Search..." @keydown.enter.prevent="">

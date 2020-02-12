@@ -22,7 +22,7 @@
     <hr>
 
     <div class="row">
-      <p-block :is-loading="loading">
+      <p-block :is-loading="isLoading">
         <h2>Project</h2>
         <p-table>
           <tr slot="p-body">
@@ -81,10 +81,10 @@
           <button
             type="button"
             @click="onDelete()"
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             class="btn btn-sm btn-danger">
-            <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/>
-            <i v-show="!loadingSaveButton" class="fa fa-trash"/> DELETE
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>
+            <i v-show="!isSaving" class="fa fa-trash"/> DELETE
           </button>
         </div>
       </p-block>
@@ -102,8 +102,8 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
   components: {
@@ -115,27 +115,27 @@ export default {
     ...mapGetters('accountProject', ['project', 'projects'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     // Without parsing this.id into int it will always return false
     // Even this.id should be int already
     if (this.project.id === parseInt(this.id)) {
-      this.loading = false
+      this.isLoading = false
     }
     this.projects.find((element) => {
       // Without parsing this.id into int it will always return false
       // Even this.id should be int already
       if (element.id === parseInt(this.id)) {
         this.$store.commit('accountProject/FETCH_OBJECT', element)
-        this.loading = false
+        this.isLoading = false
       }
     })
     // Fetch new data
     this.findProject({ id: this.id })
       .then((response) => {
-        this.loading = false
+        this.isLoading = false
       }, (error) => {
         this.$router.replace('/account/whoops')
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
   },
@@ -150,17 +150,20 @@ export default {
       localStorage.setItem('tenantName', project.name)
     },
     onDelete () {
-      this.loadingSaveButton = true
-      this.deleteProject({ id: this.id })
-        .then(response => {
-          this.loadingSaveButton = false
-          this.$notification.success('Delete success')
-          this.$router.push('/account/project')
-        }).catch(error => {
-          this.$notification.error('Delete failed')
-          this.form.errors.record(error.errors)
-          this.loadingSaveButton = false
-        })
+      this.$alert.confirm('DELETE').then(response => {
+        this.isSaving = true
+        this.deleteProject({ id: this.id })
+          .then(response => {
+            this.$notification.success('delete success')
+            this.isSaving = false
+            this.$router.push('/account/project')
+          }).catch(error => {
+            this.isSaving = false
+          })
+      }).catch(error => {
+        this.$alert.error(error.message)
+        this.isSaving = false
+      })
     }
   }
 }

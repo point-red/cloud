@@ -88,7 +88,7 @@
                 <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
                 <td class="text-right">{{ row.price | numberFormat }}</td>
                 <td>
-                  <button type="button" class="btn btn-outline-secondary btn-sm" @click="row.more = !row.more">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more">
                     <i class="fa fa-ellipsis-h"/>
                   </button>
                 </td>

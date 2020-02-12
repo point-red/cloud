@@ -55,7 +55,7 @@
                 <a
                   href="javascript:void(0)"
                   v-if="$permission.has('update employee kpi')"
-                  class="btn btn-sm btn-secondary" @click="$refs.edit.show(template)"><i class="si si-note"></i> Edit</a>
+                  class="btn btn-sm btn-secondary" @click="$refs.edit.show(template)"><i class="si si-note"></i> {{ $t('edit') | uppercase }}</a>
                 <button :disabled="isExporting.includes(template.id)" type="submit" class="btn btn-sm btn-primary" @click="exportData(template.id)" style="margin-left:12px">
                   <i v-show="isExporting.includes(template.id)" class="fa fa-asterisk fa-spin" /> Export
                 </button>

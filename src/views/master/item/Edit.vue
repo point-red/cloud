@@ -16,7 +16,7 @@
           v-if="$permission.has('create item')"
           slot="header"
           exact
-          class="btn btn-outline-secondary btn-sm mr-5">
+          class="btn btn-sm btn-outline-secondary mr-5">
           <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
         </router-link>
         <p-block-inner>

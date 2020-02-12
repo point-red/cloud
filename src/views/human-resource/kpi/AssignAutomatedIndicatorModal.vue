@@ -30,7 +30,7 @@
           </div>
           <button
             type="button"
-            class="btn btn-outline-danger"
+            class="btn btn-sm btn-outline-danger"
             @click="close()">
             Close
           </button>

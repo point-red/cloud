@@ -32,7 +32,7 @@
         </div>
       </template>
       <template slot="footer">
-        <button type="button" @click="clear()" class="btn btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
         <button type="button" @click="submit()" class="btn btn-outline-primary">{{ $t('submit') | uppercase }}</button>
       </template>
     </p-modal>

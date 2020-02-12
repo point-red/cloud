@@ -27,7 +27,7 @@
               v-show="loadingSaveButton"
               class="fa fa-asterisk fa-spin"/> Add
           </button>
-          <button :disabled="loadingSaveButton" type="button" class="btn btn-outline-danger" @click="close">
+          <button :disabled="loadingSaveButton" type="button" class="btn btn-sm btn-outline-danger" @click="close">
             <i
               v-show="loadingSaveButton"
               class="fa fa-asterisk fa-spin"/> Close

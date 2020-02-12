@@ -78,8 +78,8 @@
           <tr slot="p-body">
             <td></td>
             <td></td>
-            <td class="text-center font-w700"><span class="btn btn-outline-danger">{{ template.weight | numberFormat }}%</span></td>
-            <td class="text-center font-w700"><span class="btn btn-outline-danger">{{ template.target }}</span></td>
+            <td class="text-center font-w700"><span class="btn btn-sm btn-outline-danger">{{ template.weight | numberFormat }}%</span></td>
+            <td class="text-center font-w700"><span class="btn btn-sm btn-outline-danger">{{ template.target }}</span></td>
             <td></td>
           </tr>
         </p-table>

@@ -43,7 +43,7 @@
         <div class="text-center mb-30" v-show="form.invitation_code_enabled && !isSaving">
           <p
             id="referralCode"
-            class="btn btn-outline-secondary"
+            class="btn btn-sm btn-outline-secondary"
             :value="form.invitation_code"
             @click="copyToClipboard">{{ form.invitation_code }}</p>
         </div>

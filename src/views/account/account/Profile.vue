@@ -60,7 +60,7 @@
                 type="submit"
                 class="btn btn-sm btn-primary"><i
                   v-show="loadingSaveButton"
-                  class="fa fa-asterisk fa-spin"/> Save</button>
+                  class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}</button>
             </div>
           </div>
         </form>

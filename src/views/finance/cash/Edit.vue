@@ -4,7 +4,7 @@
       <breadcrumb-finance/>
       <router-link :to="{ name: 'purchase.order.index' }" class="breadcrumb-item">{{ $t('cash') | titlecase }}</router-link>
       <router-link :to="{ name: 'purchase.order.show', params: { id: id }}" class="breadcrumb-item">{{ purchaseOrder.form.number | uppercase }}</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

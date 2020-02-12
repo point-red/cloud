@@ -76,13 +76,13 @@
               v-show="loadingSaveButton"
               class="fa fa-asterisk fa-spin"/>
               <template v-if="isCreateMode">Add</template>
-              <template v-if="!isCreateMode">Update</template>
+              <template v-if="!isCreateMode">{{ $t('update') | uppercase }}</template>
           </button>
-          <button :disabled="loadingSaveButton" type="button" class="btn btn-outline-danger" @click="cancel">
+          <button :disabled="loadingSaveButton" type="button" class="btn btn-sm btn-outline-danger" @click="cancel">
             <i
               v-show="loadingSaveButton"
               class="fa fa-asterisk fa-spin"/>
-              <template v-if="isCreateMode">Close</template>
+              <template v-if="isCreateMode">{{ $t('close') | uppercase }}</template>
               <template v-if="!isCreateMode">Cancel</template>
           </button>
         </template>

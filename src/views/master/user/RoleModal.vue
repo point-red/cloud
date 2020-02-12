@@ -19,7 +19,7 @@
           </div>
         </template>
         <template slot="footer">
-          <button type="button" class="btn btn-outline-secondary" @click="$refs.assignRole.close()">Close</button>
+          <button type="button" class="btn btn-outline-secondary" @click="$refs.assignRole.close()">{{ $t('close') | uppercase }}</button>
         </template>
       </p-modal>
     </form>

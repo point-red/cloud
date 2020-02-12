@@ -11,7 +11,7 @@
       <router-link
         :to="'/human-resource/employee/' + employee.id + '/assessment'"
         class="breadcrumb-item">Assessment</router-link>
-      <span class="breadcrumb-item active">Edit</span>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>

@@ -58,14 +58,22 @@
               </div>
             </p-form-row>
 
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
-            </button>
+            <div class="form-group row">
+              <div class="col-md-3"></div>
+              <div class="col-md-9">
+                <button type="submit" class="btn btn-sm btn-primary mr-5" :disabled="isSaving">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                </button>
+                <button type="button" class="btn btn-sm btn-danger" :disabled="isSaving" @click="deleteAccount()">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+                </button>
+              </div>
+            </div>
           </p-block>
         </form>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-outline-danger">Close</button>
+        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
       </template>
     </p-modal>
   </div>

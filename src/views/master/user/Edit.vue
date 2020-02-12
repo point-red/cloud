@@ -36,7 +36,7 @@
           <div class="col-md-9">
             <button
               type="submit"
-              class="btn btn-sm btn-primary">Save</button>
+              class="btn btn-sm btn-primary">{{ $t('save') | uppercase }}</button>
           </div>
         </div>
       </form>
