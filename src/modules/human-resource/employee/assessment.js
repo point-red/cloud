@@ -7,6 +7,7 @@ const url = function (employeeId) {
 const state = {
   assessment: {},
   assessments: [],
+  assessmentsBy: [],
   dataSet: []
 }
 
@@ -17,6 +18,9 @@ const getters = {
   assessments: state => {
     return state.assessments
   },
+  assessmentsBy: state => {
+    return state.assessmentsBy
+  },
   dataSet: state => {
     return state.dataSet
   }
@@ -26,6 +30,9 @@ const mutations = {
   'FETCH_ASSESSMENTS' (state, payload) {
     state.assessments = payload.data
     state.dataSet = payload.data_set
+  },
+  'FETCH_ASSESSMENTS_BY' (state, payload) {
+    state.assessmentsBy = payload
   },
   'FETCH_ASSESSMENT' (state, payload) {
     state.assessment = payload.data
@@ -59,6 +66,18 @@ const actions = {
       api.get(url(payload.employeeId) + '/' + payload.kpiId)
         .then(response => {
           commit('FETCH_ASSESSMENT', response)
+          dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  findBy ({ commit, dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get('/human-resource/employee/employees/' + payload.employeeId + '/assessment-by/' + payload.value + '?type=' + payload.type)
+        .then(response => {
+          commit('FETCH_ASSESSMENTS_BY', response)
           dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
           resolve(response)
         }).catch(error => {

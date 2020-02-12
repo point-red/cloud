@@ -60,13 +60,27 @@
                 </template>
                 <template v-else>
                   <template v-if="reportType == 'weekly'">
-                    {{ assessment.date | dateFormat('MMMM YYYY [(][Week] WW[)]') }}
+                    <template v-if="$permission.has('read employee kpi')">
+                      <router-link :to="{ name: 'humanResourceEmployeeAssessmentShowBy', params: { id: id, type: 'weekly', value: encodeURI(assessment.date) }}">
+                        {{ assessment.date | dateFormat('MMMM YYYY [(][Week] WW[)]') }}
+                      </router-link>
+                    </template>
+                    <template v-else>
+                      {{ assessment.date | dateFormat('MMMM YYYY [(][Week] WW[)]') }}
+                    </template>
                   </template>
                   <template v-if="reportType == 'monthly'">
-                    {{ assessment.date | dateFormat('MMMM YYYY') }}
+                    <template v-if="$permission.has('read employee kpi')">
+                      <router-link :to="{ name: 'humanResourceEmployeeAssessmentShowBy', params: { id: id, type: 'monthly', value: encodeURI(assessment.date) }}">
+                        {{ assessment.date | dateFormat('MMMM YYYY') }}
+                      </router-link>
+                    </template>
+                    <template v-else>
+                      {{ assessment.date | dateFormat('MMMM YYYY') }}
+                    </template>
                   </template>
                   <template v-if="reportType == 'yearly'">
-                    {{ assessment.date | dateFormat('YYYY') }}
+                    {{ assessment.date | dateFormat('YYYY') }} - {{ assessment.scorer.first_name + ' ' + assessment.scorer.last_name | titlecase }}
                   </template>
                   <template v-if="reportType == 'daily'">
                     {{ assessment.date | dateFormat('DD MMMM YYYY') }}
