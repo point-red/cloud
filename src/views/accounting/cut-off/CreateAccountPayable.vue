@@ -49,6 +49,7 @@
                 <point-table>
                   <tr slot="p-head">
                     <th>Supplier</th>
+                    <th>Account</th>
                     <th>Notes</th>
                     <th class="text-right">Amount</th>
                   </tr>
@@ -62,13 +63,16 @@
                       </a>
                     </td>
                     <td>
+                      {{ accountPayable.account.label }}
+                    </td>
+                    <td>
                       {{ accountPayable.notes }}
                     </td>
                     <td class="text-right">{{ accountPayable.amount | numberFormat }} {{ accountPayable.unit | lowercase }}</td>
                   </tr>
                   <tr slot="p-body">
                     <th></th>
-                    <td class="text-right"><b>TOTAL</b></td>
+                    <td colspan="2" class="text-right"><b>TOTAL</b></td>
                     <td class="text-right">{{ total | numberFormat }}</td>
                   </tr>
                 </point-table>

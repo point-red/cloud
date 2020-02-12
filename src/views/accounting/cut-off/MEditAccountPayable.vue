@@ -13,7 +13,7 @@
               :errors="form.errors.get('supplier')"
               @errors="form.errors.set('supplier', null)">
               <div slot="body" class="col-lg-9 mt-5">
-                <m-supplier id="supplier" v-model="form.supplier_id" :label="form.supplier_name"/>
+                <m-supplier id="edit-supplier" v-model="form.supplier_id" :label="form.supplier_name"/>
               </div>
             </p-form-row>
 
@@ -26,7 +26,7 @@
               @errors="form.errors.set('account', null)">
               <div slot="body" class="col-lg-9 mt-5">
                 <m-chart-of-account
-                  id="chart-of-account"
+                  id="edit-chart-of-account"
                   v-model="form.chart_of_account_id"
                   :label="form.chart_of_account_name"
                   sub-ledger="account payable"/>

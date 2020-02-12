@@ -44,10 +44,10 @@
                   {{ chartOfAccount.name }}
                 </router-link>
               </td>
-              <td>{{ chartOfAccount.type.name }}</td>
+              <td>{{ chartOfAccount.type.alias }}</td>
               <td>
                 <template v-if="chartOfAccount.sub_ledger">
-                  {{ chartOfAccount.sub_ledger.name }}
+                  {{ chartOfAccount.sub_ledger.alias }}
                 </template>
               </td>
             </tr>

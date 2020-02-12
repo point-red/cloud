@@ -98,14 +98,12 @@ export default {
         this.find({
           id: this.id
         }).then(response => {
-          console.log('response.data')
-          console.log(response.data)
           this.form.id = response.data.id
           this.form.type_id = response.data.type_id
-          this.form.type_name = response.data.type.name
+          this.form.type_name = response.data.type.alias
           this.form.sub_ledger_id = response.data.sub_ledger_id
           if (response.data.sub_ledger) {
-            this.form.sub_ledger_name = response.data.sub_ledger.name
+            this.form.sub_ledger_name = response.data.sub_ledger.alias
           }
           this.form.number = response.data.number
           this.form.name = response.data.name
@@ -113,12 +111,10 @@ export default {
           this.isLoading = false
         }).catch(error => {
           this.isLoading = false
-          this.$notification.error('helo')
           this.$notification.error(error.message)
         })
       }, (error) => {
         this.isLoading = false
-        this.$notification.error('ahao')
         this.$notification.error(error.message)
       })
   },
