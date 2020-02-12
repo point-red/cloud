@@ -28,7 +28,7 @@
               <div class="input-group block mb-5">
                 <a
                   href="javascript:void(0)"
-                  @click="() => $refs.accountPayable.show()"
+                  @click="() => $refs.createAccountPayable.show()"
                   v-if="$permission.has('create cut off')"
                   class="input-group-prepend">
                   <span class="input-group-text">
@@ -91,7 +91,7 @@
         </div>
       </div>
     </div>
-    <m-create-account-payable id="account-payable" ref="accountPayable" @updated="getAccountPayableRequest()"/>
+    <m-create-account-payable id="create-account-payable" ref="createAccountPayable" @updated="getAccountPayableRequest()"/>
     <m-edit-account-payable id="edit-account-payable" ref="editAccountPayable" @updated="getAccountPayableRequest()"/>
   </div>
 </template>
@@ -145,7 +145,7 @@ export default {
             'amount': this.searchText,
             'notes': this.searchText
           },
-          includes: 'supplier'
+          includes: 'supplier;cutOff;account'
         }
       }).then(response => {
         this.total = 0

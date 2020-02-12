@@ -22,7 +22,9 @@
       <a href="https://support.google.com/chrome/answer/2693767?hl=en">https://support.google.com/chrome/answer/2693767</a>
     </div>
 
-    <form class="row" @submit.prevent="onSubmit" v-else>
+    <hr>
+
+    <form class="row" @submit.prevent="onSubmit" v-show="isPermissionCameraGranted && isPermissionGeolocationGranted">
       <p-block
         :is-loading="isLoading"
         :header="false"
@@ -343,8 +345,11 @@
 
         <div class="form-group row">
           <div class="col-md-12">
-            <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
+            <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary" v-if="isPermissionCameraGranted && isPermissionGeolocationGranted">
               <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+            </button>
+            <button :disabled="isSaving" type="button" class="btn btn-sm btn-danger" v-else>
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Required to access your location and camera to use this feature
             </button>
           </div>
         </div>
@@ -487,9 +492,7 @@ export default {
       this.form.image = value
     },
     getLocation () {
-      if (this.isPermissionGeolocationGranted &&
-        this.isPermissionCameraGranted &&
-        navigator.geolocation) {
+      if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
           let pos = {
             lat: position.coords.latitude,
