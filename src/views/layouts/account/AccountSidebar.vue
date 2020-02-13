@@ -155,10 +155,7 @@ export default {
   data () {
     return {
       userName: localStorage.getItem('userName'),
-      accountPage: '//' + process.env.VUE_APP_DOMAIN + '/account',
-      options: {
-        height: window.innerHeight
-      }
+      accountPage: '//' + process.env.VUE_APP_DOMAIN + '/account'
     }
   },
   computed: {
@@ -167,18 +164,7 @@ export default {
     ])
   },
   methods: {
-    ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSidebarInverse']),
-    handleResize (event) {
-      this.options.height = window.innerHeight + 'px'
-      document.getElementById('sidebar-scroll').style.height = window.innerHeight + 'px'
-      document.getElementById('sidebar-scroll').parentElement.style.height = window.innerHeight + 'px'
-    }
-  },
-  beforeDestroy: function () {
-    window.removeEventListener('resize', this.handleResize)
-  },
-  mounted () {
-    window.addEventListener('resize', this.handleResize)
+    ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSidebarInverse'])
   }
 }
 </script>
