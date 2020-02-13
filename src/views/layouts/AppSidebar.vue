@@ -1,10 +1,6 @@
 <template>
-  <nav
-    id="sidebar"
-    ref="sidebarRef">
+  <nav id="sidebar">
     <!-- Sidebar Scroll Container -->
-    <!-- v-slimscroll="options" -->
-    <!-- <div id="sidebar-scroll" v-slimscroll="options"> -->
     <div id="sidebar-scroll" :v-scroll-lock="true">
       <!-- Sidebar Content -->
       <div class="sidebar-content">
@@ -110,7 +106,7 @@
               <span class="sidebar-mini-visible">MD</span>
               <span class="sidebar-mini-hidden">Modules</span>
             </li>
-            <li :class="{ 'open' : firstUri === 'master' }" v-if="$permission.has('menu master')">
+            <li :class="{ 'open' : true }" v-if="$permission.has('menu master')">
               <router-link
                 to="/master"
                 class="nav-submenu"
@@ -156,7 +152,7 @@
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'human-resource' }" v-if="$permission.has('menu human resource')">
+            <li :class="{ 'open' : true }" v-if="$permission.has('menu human resource')">
               <router-link to="/human-resource" class="nav-submenu" active-class="active">
                 <i class="si si-emoticon-smile"/>
                 <span class="sidebar-mini-hide">{{ $t("human resource") | uppercase }}</span>
@@ -469,7 +465,8 @@ export default {
 
 <style scoped>
 #sidebar-scroll {
-  overflow-y: auto
+  overflow-y: auto;
+  height: 100% !important;
 }
 #page-container.sidebar-inverse #sidebar .content-side-user {
   background-color: #424242;
