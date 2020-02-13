@@ -17,10 +17,10 @@
               <router-link to="/accounting/cut-off/create/account" class="breadcrumb-item">{{ $t('account') | uppercase }}</router-link>
               <router-link to="/accounting/cut-off/create/inventory" class="breadcrumb-item">{{ $t('inventory') | uppercase }}</router-link>
               <router-link to="/accounting/cut-off/create/account-payable" class="breadcrumb-item">{{ $t('account payable') | uppercase }}</router-link>
-              <router-link to="/accounting/cut-off/create/sales-down-payment" class="breadcrumb-item">{{ $t('sales down payment') | uppercase }}</router-link>
-              <router-link to="/accounting/cut-off/create/account receivable" class="breadcrumb-item">{{ $t('account receivable') | uppercase }}</router-link>
+              <router-link to="/accounting/cut-off/create/purchase-down-payment" class="breadcrumb-item">{{ $t('purchase down payment') | uppercase }}</router-link>
+              <router-link to="/accounting/cut-off/create/account-receivable" class="breadcrumb-item">{{ $t('account receivable') | uppercase }}</router-link>
               <span class="breadcrumb-item active">{{ $t('sales down payment') | uppercase }}</span>
-              <span class="breadcrumb-item">{{ $t('cut off') | uppercase }}</span>
+              <span class="breadcrumb-item">{{ $t('review') | uppercase }}</span>
             </nav>
             <hr>
             <h5 class="text-center">{{ $t('sales down payment') | uppercase }}</h5>
@@ -79,7 +79,7 @@
               </p-block-inner>
               <router-link
                 tag="button"
-                to="/accounting/cut-off/create/account-receivable"
+                to="/accounting/cut-off/create/review"
                 class="btn btn-sm btn-primary min-width-100 float-right">
                 {{ $t('next') | uppercase }}
               </router-link>

@@ -361,12 +361,12 @@
                     active-class="active">{{ $t('chart of account') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cut off')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cut off')">
                   <router-link
                     to="/accounting/cut-off"
                     active-class="active">{{ $t('cut off') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read balance sheet')">
                   <router-link
                     to="/accounting/balance-sheet"

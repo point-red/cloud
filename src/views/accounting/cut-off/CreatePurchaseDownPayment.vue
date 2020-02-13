@@ -20,7 +20,7 @@
               <span class="breadcrumb-item active">{{ $t('purchase down payment') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('account receivable') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('sales down payment') | uppercase }}</span>
-              <span class="breadcrumb-item">{{ $t('cut off') | uppercase }}</span>
+              <span class="breadcrumb-item">{{ $t('review') | uppercase }}</span>
             </nav>
             <hr>
             <h5 class="text-center">{{ $t('purchase down payment') | uppercase }}</h5>

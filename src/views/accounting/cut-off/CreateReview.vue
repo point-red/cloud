@@ -18,23 +18,14 @@
               <router-link to="/accounting/cut-off/create/inventory" class="breadcrumb-item">{{ $t('inventory') | uppercase }}</router-link>
               <router-link to="/accounting/cut-off/create/account-payable" class="breadcrumb-item">{{ $t('account payable') | uppercase }}</router-link>
               <router-link to="/accounting/cut-off/create/purchase-down-payment" class="breadcrumb-item">{{ $t('purchase down payment') | uppercase }}</router-link>
-              <span class="breadcrumb-item active">{{ $t('account receivable') | uppercase }}</span>
-              <span class="breadcrumb-item">{{ $t('sales down payment') | uppercase }}</span>
+              <router-link to="/accounting/cut-off/create/account-receivable" class="breadcrumb-item">{{ $t('account receivable') | uppercase }}</router-link>
+              <router-link to="/accounting/cut-off/create/sales-down-payment" class="breadcrumb-item">{{ $t('sales down payment') | uppercase }}</router-link>
               <span class="breadcrumb-item">{{ $t('review') | uppercase }}</span>
             </nav>
             <hr>
-            <h5 class="text-center">{{ $t('account receivable') | uppercase }}</h5>
+            <h5 class="text-center">CHART OF ACCOUNT</h5>
             <template>
               <div class="input-group block mb-5">
-                <a
-                  href="javascript:void(0)"
-                  @click="() => $refs.createAccountReceivable.show()"
-                  v-if="$permission.has('create cut off')"
-                  class="input-group-prepend">
-                  <span class="input-group-text">
-                    <i class="fa fa-plus"></i>
-                  </span>
-                </a>
                 <p-form-input
                   id="search-text"
                   name="search-text"
@@ -48,44 +39,45 @@
               <p-block-inner :is-loading="isLoading">
                 <point-table>
                   <tr slot="p-head">
-                    <th>Customer</th>
-                    <th>Account</th>
-                    <th>Notes</th>
-                    <th class="text-right">Amount</th>
+                    <th>Number</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Sub Ledger</th>
+                    <th class="text-right">Debit</th>
+                    <th class="text-right">Credit</th>
                   </tr>
                   <tr
-                    v-for="accountReceivable in accountReceivables"
-                    :key="accountReceivable.id"
+                    v-for="account in accounts"
+                    :key="account.id"
                     slot="p-body">
+                    <td>{{ account.chart_of_account.number }}</td>
+                    <td>{{ account.chart_of_account.name }}</td>
+                    <td>{{ account.chart_of_account.type.alias }}</td>
                     <td>
-                      <a href="javascript:void(0)" @click="$refs.editAccountReceivable.show(accountReceivable)">
-                        {{ accountReceivable.customer.name }}
-                      </a>
+                      <template v-if="account.chart_of_account.sub_ledger">
+                        {{ account.chart_of_account.sub_ledger.alias }}
+                      </template>
                     </td>
-                    <td>
-                      {{ accountReceivable.account.label }}
-                    </td>
-                    <td>
-                      {{ accountReceivable.notes }}
-                    </td>
-                    <td class="text-right">{{ accountReceivable.amount | numberFormat }} {{ accountReceivable.unit | lowercase }}</td>
+                    <td class="text-right">{{ account.debit | numberFormat }}</td>
+                    <td class="text-right">{{ account.credit | numberFormat }}</td>
                   </tr>
                   <tr slot="p-body">
                     <th></th>
-                    <td colspan="2" class="text-right"><b>TOTAL</b></td>
-                    <td class="text-right">{{ total | numberFormat }}</td>
+                    <td colspan="3" class="text-right"><b>TOTAL</b></td>
+                    <td class="text-right">{{ totalDebit | numberFormat }}</td>
+                    <td class="text-right">{{ totalCredit | numberFormat }}</td>
                   </tr>
                 </point-table>
               </p-block-inner>
               <router-link
                 tag="button"
-                to="/accounting/cut-off/create/sales-down-payment"
+                to="/accounting/cut-off/create/review"
                 class="btn btn-sm btn-primary min-width-100 float-right">
-                {{ $t('next') | uppercase }}
+                {{ $t('submit') | uppercase }}
               </router-link>
               <router-link
                 tag="button"
-                to="/accounting/cut-off/create/purchase-down-payment"
+                to="/accounting/cut-off/create/sales-down-payment"
                 class="btn btn-sm btn-primary min-width-100 float-left">
                 {{ $t('prev') | uppercase }}
               </router-link>
@@ -95,8 +87,11 @@
         </div>
       </div>
     </div>
-    <m-create-account-receivable id="create-account-receivable" ref="createAccountReceivable" @updated="getAccountReceivableRequest()"/>
-    <m-edit-account-receivable id="edit-account-receivable" ref="editAccountReceivable" @updated="getAccountReceivableRequest()"/>
+    <m-edit-account
+      id="edit-account"
+      ref="editAccount"
+      @updated="getChartOfAccountsRequest()"/>
+    <m-create-account id="account" ref="account" @updated="getChartOfAccountsRequest()"/>
   </div>
 </template>
 
@@ -105,8 +100,8 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
-import MCreateAccountReceivable from './MCreateAccountReceivable'
-import MEditAccountReceivable from './MEditAccountReceivable'
+import MCreateAccount from './MCreateAccount'
+import MEditAccount from './MEditAccount'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -114,7 +109,8 @@ export default {
     return {
       isSaving: false,
       isLoading: false,
-      total: 0,
+      totalCredit: 0,
+      totalDebit: 0,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1
     }
@@ -122,38 +118,52 @@ export default {
   components: {
     Breadcrumb,
     BreadcrumbAccounting,
-    PointTable,
-    MCreateAccountReceivable,
-    MEditAccountReceivable
+    MCreateAccount,
+    MEditAccount,
+    PointTable
   },
   computed: {
-    ...mapGetters('accountingCutOffAccountReceivable', ['accountReceivables'])
+    ...mapGetters('accountingCutOffAccount', ['accounts'])
   },
   methods: {
-    ...mapActions('accountingCutOffAccountReceivable', ['get']),
+    ...mapActions('accountingCutOffAccount', ['get']),
+    ...mapActions('accountingChartOfAccountGenerator', ['create']),
+    generate () {
+      this.isSaving = true
+      this.create()
+        .then(response => {
+          this.getChartOfAccountsRequest()
+        }).catch(error => {
+          this.isSaving = false
+        })
+    },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getAccountReceivableRequest()
+      this.getChartOfAccountsRequest()
     }, 300),
-    getAccountReceivableRequest () {
+    getChartOfAccountsRequest () {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'cut_off_account_receivables.*',
+          fields: 'cut_off_accounts.*',
           limit: 1000,
-          join: 'customer,cutOff,chartOfAccount',
+          join: 'chartOfAccount',
           filter_like: {
-            'customer.name': this.searchText,
-            'amount': this.searchText
+            'chartOfAccount.alias': this.searchText,
+            'chartOfAccount.name': this.searchText,
+            'chartOfAccount.number': this.searchText
           },
-          includes: 'customer;cutOff;account'
+          includes: 'chartOfAccount.type;chartOfAccount.subLedger',
+          sort_by: 'chart_of_accounts.number,chart_of_accounts.alias'
         }
       }).then(response => {
-        this.total = 0
-        this.accountReceivables.forEach(element => {
-          this.total += element.amount
+        this.totalCredit = 0
+        this.totalDebit = 0
+        this.accounts.forEach(element => {
+          this.totalCredit += parseFloat(element.credit)
+          this.totalDebit += parseFloat(element.debit)
         })
         this.isLoading = false
       }).catch(error => {
@@ -162,7 +172,7 @@ export default {
     }
   },
   created () {
-    this.getAccountReceivableRequest()
+    this.getChartOfAccountsRequest()
   }
 }
 </script>
