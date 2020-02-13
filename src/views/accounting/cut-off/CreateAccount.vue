@@ -24,8 +24,8 @@
             </nav>
             <hr>
             <h5 class="text-center">CHART OF ACCOUNT</h5>
-            <div class="text-center" v-if="accounts.length == 0 && !this.searchText">
-              <p-block-inner :is-loading="isLoading">
+            <div class="text-center" v-show="accounts.length == 0 && !this.searchText && !isLoading">
+              <p-block-inner>
                 <p>
                   Anda tidak memiliki akun saat ini, klik tombol di bawah ini untuk generate default akun
                 </p>
