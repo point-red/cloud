@@ -4,7 +4,8 @@
     ref="sidebarRef">
     <!-- Sidebar Scroll Container -->
     <!-- v-slimscroll="options" -->
-    <div id="sidebar-scroll" v-slimscroll="options">
+    <!-- <div id="sidebar-scroll" v-slimscroll="options"> -->
+    <div id="sidebar-scroll" :v-scroll-lock="true">
       <!-- Sidebar Content -->
       <div class="sidebar-content">
         <!-- Side Header -->

@@ -2261,6 +2261,11 @@ body-parser@1.19.0:
     raw-body "2.4.0"
     type-is "~1.6.17"
 
+body-scroll-lock@^2.6.4:
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/body-scroll-lock/-/body-scroll-lock-2.6.4.tgz#567abc60ef4d656a79156781771398ef40462e94"
+  integrity sha512-NP08WsovlmxEoZP9pdlqrE+AhNaivlTrz9a0FF37BQsnOrpN48eNqivKkE7SYpM9N+YIPjsdVzfLAUQDBm6OQw==
+
 bonjour@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/bonjour/-/bonjour-3.5.0.tgz#8e890a183d8ee9a2393b3844c691a42bcf7bc9f5"
@@ -11352,6 +11357,13 @@ v-dropdown@1.0.5:
   integrity sha512-8FgTkKd5p2Wt/DmoLVECJGQZym4oZJLzTfD046x2Fosao0rokAqc+M6nSwLBppV/Qg7oj6Ymuz5rY3TGrG98OQ==
   dependencies:
     vue "^2.5.11"
+
+v-scroll-lock@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/v-scroll-lock/-/v-scroll-lock-1.1.0.tgz#42835d13959f4f81f016bc81d0b5d8a99393e893"
+  integrity sha512-P7Zx9bvVsPGsbjqqm6OCfRp+gfKh/x9OIv5vpy8Ghco5AsJrx1+L574r8896GC7brhDz7ExYdFo73rl5as7PTA==
+  dependencies:
+    body-scroll-lock "^2.6.4"
 
 v-selectmenu@^1.0.5:
   version "1.0.8"

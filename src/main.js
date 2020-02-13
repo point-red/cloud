@@ -31,7 +31,9 @@ import ClickOutside from 'v-click-outside'
 import '@/firebase'
 import PackageVersion from '@/components/package-version'
 import * as VueGoogleMaps from 'vue2-google-maps'
+import VScrollLock from 'v-scroll-lock'
 
+Vue.use(VScrollLock)
 Vue.use(VueGoogleMaps, {
   load: {
     key: 'AIzaSyDxxNVTca2tPo-jSe_1O7fCP2e6A3QZFzI',
