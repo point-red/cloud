@@ -33,8 +33,9 @@
                   <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('generate account') | uppercase }}
                 </button>
               </p-block-inner>
+              <hr>
             </div>
-            <template v-else>
+            <template>
               <div class="input-group block mb-5">
                 <a
                   href="javascript:void(0)"
