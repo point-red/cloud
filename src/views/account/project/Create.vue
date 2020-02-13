@@ -1,5 +1,7 @@
 <template>
   <div>
+    <p-loading-block message="generate new database, please wait and do not close this page" v-show="isSaving"/>
+
     <breadcrumb>
       <router-link to="/account/project" class="breadcrumb-item">{{ $t('project') | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
@@ -19,6 +21,7 @@
             id="group"
             name="group"
             v-model="form.group"
+            :disabled="isSaving"
             :label="$t('company group')"
             :errors="form.errors.get('group')"
             @errors="form.errors.set('group', null)">
@@ -28,6 +31,7 @@
             id="code"
             name="code"
             v-model="form.code"
+            :disabled="isSaving"
             :label="$t('company identifier')"
             :errors="form.errors.get('code')"
             @errors="form.errors.set('code', null)">
@@ -37,6 +41,7 @@
             id="name"
             name="name"
             v-model="form.name"
+            :disabled="isSaving"
             :label="$t('company name')"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)">
@@ -46,6 +51,7 @@
             id="address"
             name="address"
             v-model="form.address"
+            :disabled="isSaving"
             :label="$t('company address')">
           </p-form-row>
 
@@ -53,6 +59,7 @@
             id="phone"
             name="phone"
             v-model="form.phone"
+            :disabled="isSaving"
             :label="$t('company phone')">
           </p-form-row>
 
@@ -60,6 +67,7 @@
             id="whatsapp"
             name="whatsapp"
             v-model="form.whatsapp"
+            :disabled="isSaving"
             :label="$t('company whatsapp')">
           </p-form-row>
 
@@ -67,6 +75,7 @@
             id="website"
             name="website"
             v-model="form.website"
+            :disabled="isSaving"
             :label="$t('company website')">
           </p-form-row>
 
@@ -74,6 +83,7 @@
             id="marketplace-notes"
             name="marketplace-notes"
             v-model="form.marketplace_notes"
+            :disabled="isSaving"
             :label="$t('marketplace notes')">
           </p-form-row>
 
@@ -81,6 +91,7 @@
             id="vat-id-number"
             name="vat_id_number"
             v-model="form.vat_id_number"
+            :disabled="isSaving"
             :label="$t('vat identification number')">
           </p-form-row>
 
