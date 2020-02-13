@@ -11582,11 +11582,6 @@ vue-router@^3.0.1, vue-router@^3.1.3:
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.1.3.tgz#e6b14fabc0c0ee9fda0e2cbbda74b350e28e412b"
   integrity sha512-8iSa4mGNXBjyuSZFCCO4fiKfvzqk+mhL0lnKuGcQtO1eoj8nq3CmbEG8FwK5QqoqwDgsjsf1GDuisDX4cdb/aQ==
 
-vue-slimscroll@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/vue-slimscroll/-/vue-slimscroll-1.0.1.tgz#65a3ba25e71c9c32b9fcb2dd2bb52a2bfb49fe05"
-  integrity sha512-LebIle1T1gIGrW4dLs4mUHCOtngfn4XTPXH9xhADi6KZrkU5t4UnGwT5x2Ox3yTptWQrYJBUzewtZEbCC7esqA==
-
 vue-style-loader@^4.1.0:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/vue-style-loader/-/vue-style-loader-4.1.2.tgz#dedf349806f25ceb4e64f3ad7c0a44fba735fcf8"

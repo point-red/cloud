@@ -10,7 +10,6 @@ import swal from './lib/sweetalert2'
 import Notifications from 'vue-notification'
 import VueI18n from 'vue-i18n'
 import i18n from './lang/lang'
-import VueSlimScroll from 'vue-slimscroll'
 import VueCookie from 'vue-cookie'
 import PointAlert from '@/components/point-alert'
 import PointDate from '@/components/point-date'
@@ -78,7 +77,6 @@ Vue.use(VueCookie)
 Vue.use(swal)
 Vue.use(Notifications)
 Vue.use(VueI18n)
-Vue.use(VueSlimScroll)
 Vue.use(PointAlert)
 Vue.use(PointFocus)
 Vue.use(PointFilter)
