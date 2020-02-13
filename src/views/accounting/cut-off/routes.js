@@ -3,6 +3,8 @@ import AccountingCutOffCreate from './Create'
 import AccountingCutOffCreateAccount from './CreateAccount'
 import AccountingCutOffCreateInventory from './CreateInventory'
 import AccountingCutOffCreateAccountPayable from './CreateAccountPayable'
+import AccountingCutOffCreatePurchaseDownPayment from './CreatePurchaseDownPayment'
+import AccountingCutOffCreateAccountReceivable from './CreateAccountReceivable'
 import AccountingCutOffShow from './Show'
 
 export default [
@@ -10,6 +12,8 @@ export default [
   { path: '/accounting/cut-off/create/account', name: 'accounting.cut.off.create.account', component: AccountingCutOffCreateAccount },
   { path: '/accounting/cut-off/create/inventory', name: 'accounting.cut.off.create.inventory', component: AccountingCutOffCreateInventory },
   { path: '/accounting/cut-off/create/account-payable', name: 'accounting.cut.off.create.account.payable', component: AccountingCutOffCreateAccountPayable },
+  { path: '/accounting/cut-off/create/purchase-down-payment', name: 'accounting.cut.off.create.purchase.down.payment', component: AccountingCutOffCreatePurchaseDownPayment },
+  { path: '/accounting/cut-off/create/account-receivable', name: 'accounting.cut.off.create.account.receivable', component: AccountingCutOffCreateAccountReceivable },
   { path: '/accounting/cut-off/:id', name: 'accounting.cut.off.show', component: AccountingCutOffShow },
   { path: '/accounting/cut-off', name: 'accounting.cut.off', component: AccountingCutOff }
 ]

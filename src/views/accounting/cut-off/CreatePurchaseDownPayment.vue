@@ -16,19 +16,19 @@
               <router-link to="/accounting/cut-off/create" class="breadcrumb-item">{{ $t('start') | uppercase }}</router-link>
               <router-link to="/accounting/cut-off/create/account" class="breadcrumb-item">{{ $t('account') | uppercase }}</router-link>
               <router-link to="/accounting/cut-off/create/inventory" class="breadcrumb-item">{{ $t('inventory') | uppercase }}</router-link>
-              <span class="breadcrumb-item active">{{ $t('account payable') | uppercase }}</span>
-              <span class="breadcrumb-item">{{ $t('purchase down payment') | uppercase }}</span>
+              <router-link to="/accounting/cut-off/create/account-payable" class="breadcrumb-item">{{ $t('account payable') | uppercase }}</router-link>
+              <span class="breadcrumb-item active">{{ $t('purchase down payment') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('account receivable') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('sales down payment') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('cut off') | uppercase }}</span>
             </nav>
             <hr>
-            <h5 class="text-center">{{ $t('account payable') | uppercase }}</h5>
+            <h5 class="text-center">{{ $t('purchase down payment') | uppercase }}</h5>
             <template>
               <div class="input-group block mb-5">
                 <a
                   href="javascript:void(0)"
-                  @click="() => $refs.createAccountPayable.show()"
+                  @click="() => $refs.createPurchaseDownPayment.show()"
                   v-if="$permission.has('create cut off')"
                   class="input-group-prepend">
                   <span class="input-group-text">
@@ -54,11 +54,11 @@
                     <th class="text-right">Amount</th>
                   </tr>
                   <tr
-                    v-for="accountPayable in accountPayables"
+                    v-for="accountPayable in purchaseDownPayments"
                     :key="accountPayable.id"
                     slot="p-body">
                     <td>
-                      <a href="javascript:void(0)" @click="$refs.editAccountPayable.show(accountPayable)">
+                      <a href="javascript:void(0)" @click="$refs.editPurchaseDownPayment.show(accountPayable)">
                         {{ accountPayable.supplier.name }}
                       </a>
                     </td>
@@ -79,13 +79,13 @@
               </p-block-inner>
               <router-link
                 tag="button"
-                to="/accounting/cut-off/create/purchase-down-payment"
+                to="/accounting/cut-off/create/account-receivable"
                 class="btn btn-sm btn-primary min-width-100 float-right">
                 {{ $t('next') | uppercase }}
               </router-link>
               <router-link
                 tag="button"
-                to="/accounting/cut-off/create/inventory"
+                to="/accounting/cut-off/create/account-payable"
                 class="btn btn-sm btn-primary min-width-100 float-left">
                 {{ $t('prev') | uppercase }}
               </router-link>
@@ -95,8 +95,8 @@
         </div>
       </div>
     </div>
-    <m-create-account-payable id="create-account-payable" ref="createAccountPayable" @updated="getAccountPayableRequest()"/>
-    <m-edit-account-payable id="edit-account-payable" ref="editAccountPayable" @updated="getAccountPayableRequest()"/>
+    <m-create-purchase-down-payment id="create-purchase-down-payment" ref="createPurchaseDownPayment" @updated="getPurchaseDownPaymentRequest()"/>
+    <m-edit-purchase-down-payment id="edit-purchase-down-payment" ref="editPurchaseDownPayment" @updated="getPurchaseDownPaymentRequest()"/>
   </div>
 </template>
 
@@ -105,8 +105,8 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
-import MCreateAccountPayable from './MCreateAccountPayable'
-import MEditAccountPayable from './MEditAccountPayable'
+import MCreatePurchaseDownPayment from './MCreatePurchaseDownPayment'
+import MEditPurchaseDownPayment from './MEditPurchaseDownPayment'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -123,25 +123,25 @@ export default {
     Breadcrumb,
     BreadcrumbAccounting,
     PointTable,
-    MCreateAccountPayable,
-    MEditAccountPayable
+    MCreatePurchaseDownPayment,
+    MEditPurchaseDownPayment
   },
   computed: {
-    ...mapGetters('accountingCutOffAccountPayable', ['accountPayables'])
+    ...mapGetters('accountingCutOffPurchaseDownPayment', ['purchaseDownPayments'])
   },
   methods: {
-    ...mapActions('accountingCutOffAccountPayable', ['get']),
+    ...mapActions('accountingCutOffPurchaseDownPayment', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getAccountPayableRequest()
+      this.getPurchaseDownPaymentRequest()
     }, 300),
-    getAccountPayableRequest () {
+    getPurchaseDownPaymentRequest () {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'cut_off_account_payables.*',
+          fields: 'cut_off_purchase_down_payments.*',
           limit: 1000,
           join: 'supplier,cutOff,chartOfAccount',
           filter_like: {
@@ -152,7 +152,7 @@ export default {
         }
       }).then(response => {
         this.total = 0
-        this.accountPayables.forEach(element => {
+        this.purchaseDownPayments.forEach(element => {
           this.total += element.amount
         })
         this.isLoading = false
@@ -162,7 +162,7 @@ export default {
     }
   },
   created () {
-    this.getAccountPayableRequest()
+    this.getPurchaseDownPaymentRequest()
   }
 }
 </script>
