@@ -106,7 +106,7 @@
               <span class="sidebar-mini-visible">MD</span>
               <span class="sidebar-mini-hidden">Modules</span>
             </li>
-            <li :class="{ 'open' : true }" v-if="$permission.has('menu master')">
+            <li :class="{ 'open' : firstUri === 'master' }" v-if="$permission.has('menu master')">
               <router-link
                 to="/master"
                 class="nav-submenu"
@@ -152,7 +152,7 @@
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : true }" v-if="$permission.has('menu human resource')">
+            <li :class="{ 'open' : firstUri === 'human-resource' }" v-if="$permission.has('menu human resource')">
               <router-link to="/human-resource" class="nav-submenu" active-class="active">
                 <i class="si si-emoticon-smile"/>
                 <span class="sidebar-mini-hide">{{ $t("human resource") | uppercase }}</span>
