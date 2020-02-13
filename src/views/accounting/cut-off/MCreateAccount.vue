@@ -9,7 +9,7 @@
               name="account-type"
               :label="$t('account type')">
               <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account-type :id="'account-type'" v-model="form.type_id" :label="form.type_alias"/>
+                <m-chart-of-account-type :id="'account-type'" v-model="form.type_id" :label="form.type_alias" @choosen="onChooseAccountType($event)"/>
               </div>
             </p-form-row>
 
@@ -18,7 +18,7 @@
               name="account-sub-ledger"
               :label="$t('account sub ledger')">
               <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account-sub-ledger :id="'account-sub-ledger'" v-model="form.sub_ledger_id" :label="form.sub_ledger_alias"/>
+                <m-chart-of-account-sub-ledger :id="'account-sub-ledger'" v-model="form.sub_ledger_id" :label="form.sub_ledger_alias" @choosen="onChooseSubLedger($event)"/>
               </div>
             </p-form-row>
 
@@ -125,7 +125,7 @@ export default {
         .then(response => {
           this.$notification.success('create success')
           this.$emit('updated', true)
-          this.form.type_alias = 'select'
+          this.form.type_alias = null
           this.form.reset()
           this.isSaving = false
         }).catch(error => {
@@ -133,6 +133,14 @@ export default {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
+    },
+    onChooseAccountType (accountType) {
+      this.form.type_id = accountType.id
+      this.form.type_alias = accountType.alias
+    },
+    onChooseSubLedger (subLedger) {
+      this.form.sub_ledger_id = subLedger.id
+      this.form.sub_ledger_alias = subLedger.alias
     },
     show () {
       this.$refs['select-' + this.id].show()

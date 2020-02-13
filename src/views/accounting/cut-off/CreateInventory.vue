@@ -31,7 +31,7 @@
               <div class="input-group block mb-5">
                 <a
                   href="javascript:void(0)"
-                  @click="() => $refs.inventory.show()"
+                  @click="() => $refs.createInventory.show()"
                   v-if="$permission.has('create cut off')"
                   class="input-group-prepend">
                   <span class="input-group-text">
@@ -116,7 +116,7 @@
         </div>
       </div>
     </div>
-    <m-create-inventory id="inventory" ref="inventory" @updated="getInventoryRequest()"/>
+    <m-create-inventory id="create-inventory" ref="createInventory" @updated="getInventoryRequest()"/>
     <m-edit-inventory id="edit-inventory" ref="editInventory" @updated="getInventoryRequest()"/>
   </div>
 </template>

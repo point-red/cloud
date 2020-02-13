@@ -5,7 +5,7 @@
         <form class="row" @submit.prevent="onSubmit">
           <p-block>
             <p-form-row
-              id="code"
+              :id="'code-' + id"
               name="code"
               :label="$t('code')"
               v-model="form.code"
@@ -14,7 +14,7 @@
               @errors="form.errors.set('code', null)"/>
 
             <p-form-row
-              id="name"
+              :id="'name-' + id"
               name="name"
               :label="$t('name')"
               v-model="form.name"
@@ -23,20 +23,25 @@
               @errors="form.errors.set('name', null)"/>
 
             <p-form-row
-              id="account"
+              :id="'account-' + id"
               name="account"
               :label="$t('account')"
               :disabled="isSaving"
               :errors="form.errors.get('account')"
               @errors="form.errors.set('account', null)">
               <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" :label="form.chart_of_account_name" sub-ledger="inventory"/>
+                <m-chart-of-account
+                  id="chart-of-account"
+                  v-model="form.chart_of_account_id"
+                  :label="form.chart_of_account_name"
+                  @choosen="onChooseChartOfAccount($event)"
+                  sub-ledger="inventory"/>
                 <p>{{ $t('create item helper - chart of account') }}</p>
               </div>
             </p-form-row>
 
             <p-form-row
-              id="unit"
+              :id="'unit-' + id"
               name="unit"
               :label="$t('unit')"
               v-model="form.unit"
@@ -51,14 +56,14 @@
             <hr>
 
             <p-form-row
-              id="require-production-number"
+              :id="'require-production-number-' + id"
               name="require-production-number"
               :label="$t('production number')">
               <div slot="body" class="col-lg-9">
                 <p-form-check-box
                   class="mb-0"
                   style="float:left"
-                  id="require-production-number"
+                  :id="'require-production-number-' + id"
                   name="require-production-number"
                   @click.native="chooseProductionNumber()"
                   :checked="form.require_production_number"/>
@@ -66,12 +71,12 @@
             </p-form-row>
 
             <p-form-row
-              id="require-expiry-date"
+              :id="'require-expiry-date-' + id"
               name="require-expiry-date"
               :label="$t('expiry date')">
               <div slot="body" class="col-lg-9">
                 <p-form-check-box
-                  id="require-expiry-date"
+                  :id="'require-expiry-date-' + id"
                   name="require-expiry-date"
                   @click.native="chooseExpiryDate()"
                   :checked="form.require_expiry_date"/>
@@ -121,10 +126,10 @@
                   </td>
                   <td v-if="form.require_production_number">
                     <p-form-input
-                      id="production-number"
+                      :id="'production-number-' + id"
                       :disabled="isSaving"
                       v-model="form.opening_stocks[index].production_number"
-                      name="production-number"/>
+                      :name="'production-number-' + id"/>
                   </td>
                   <td>
                     <a href="javascript:void(0)" @click="removeRow(index)"><i class="fa fa-trash"></i></a>
@@ -243,17 +248,20 @@ export default {
     removeRow (index) {
       this.$delete(this.form.opening_stocks, index)
     },
+    onChooseChartOfAccount (account) {
+      this.form.chart_of_account_id = account.id
+      this.form.chart_of_account_name = account.alias
+    },
     onSubmit () {
       this.isSaving = true
       this.create(this.form)
         .then(response => {
           this.isSaving = false
           this.form.chart_of_account_id = null
-          this.form.chart_of_account_name = 'select'
+          this.form.chart_of_account_name = null
           this.form.reset()
           this.$notification.success('create success')
           this.$emit('updated', true)
-          window.location.reload(true)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)
