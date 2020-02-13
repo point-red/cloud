@@ -38,7 +38,7 @@
                   :to="{ path: '/human-resource/employee/' + employee.id + '/salary/' + salary.id + '/edit', params: { id: employee.id, kpiId: salary.id }}"
                   v-if="$permission.has('update employee salary')"
                   class="btn btn-sm btn-secondary">
-                  <i class="si si-note"></i> Edit
+                  <i class="si si-note"></i> {{ $t('edit') | uppercase }}
                 </router-link>
                 <button :disabled="isExporting.includes(salary.id)" type="submit" class="btn btn-sm btn-primary" @click="exportData(salary.id)" style="margin-left:12px">
                   <i v-show="isExporting.includes(salary.id)" class="fa fa-asterisk fa-spin" /> Export
@@ -70,7 +70,7 @@
           v-if="$permission.has('delete employee salary')"
           :disabled="isSaving"
           class="btn btn-danger">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Delete
+          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
         </button>
       </div>
     </p-modal>

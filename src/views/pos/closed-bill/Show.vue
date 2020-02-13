@@ -208,7 +208,7 @@
               </tr>
             </p-table>
             <button type="button" class="btn btn-block btn-danger" :disabled="isDeleting" @click="onDelete" v-if="$permission.has('delete pos')" style="margin-bottom:30px;">
-              <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
+              <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
             </button>
           </div>
         </div>

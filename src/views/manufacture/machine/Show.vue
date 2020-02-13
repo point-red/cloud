@@ -38,7 +38,7 @@
             :to="{ path: '/manufacture/machine/' + machine.id + '/edit', params: { id: machine.id }}"
             v-if="$permission.has('update manufacture machine')"
             class="btn btn-sm btn-primary mr-5">
-            Edit
+            {{ $t('edit') | uppercase }}
           </router-link>
           <button
             type="button"
@@ -46,7 +46,7 @@
             v-if="$permission.has('delete manufacture machine')"
             :disabled="isDeleting"
             class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
           </button>
         </p-block-inner>
       </p-block>

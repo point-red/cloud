@@ -32,7 +32,7 @@
             :to="{ path: '/master/item-group/' + group.id + '/edit', params: { id: group.id }}"
             v-if="$permission.has('update item')"
             class="btn btn-sm btn-primary mr-5">
-            Edit
+            {{ $t('edit') | uppercase }}
           </router-link>
           <button
             type="button"
@@ -40,7 +40,7 @@
             v-if="$permission.has('delete item')"
             :disabled="isDeleting"
             class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
           </button>
         </p-block-inner>
       </p-block>

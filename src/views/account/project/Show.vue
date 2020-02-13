@@ -70,13 +70,13 @@
           <button
             class="btn btn-sm btn-primary mr-5"
             @click="redirectToProject(project)">
-            <i class="fa fa-globe"/> OPEN
+            <i class="fa fa-globe"/> {{ $t('open') | uppercase }}
           </button>
           <router-link
             tag="button"
             :to="{ path: '/account/project/' + project.id + '/edit', params: { id: project.id }}"
             class="btn btn-sm btn-primary mr-5">
-            <i class="fa fa-edit"/> EDIT
+            <i class="fa fa-edit"/> {{ $t('edit') | uppercase }}
           </router-link>
           <button
             type="button"
@@ -84,7 +84,7 @@
             :disabled="isSaving"
             class="btn btn-sm btn-danger">
             <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>
-            <i v-show="!isSaving" class="fa fa-trash"/> DELETE
+            <i v-show="!isSaving" class="fa fa-trash"/> {{ $t('delete') | uppercase }}
           </button>
         </div>
       </p-block>

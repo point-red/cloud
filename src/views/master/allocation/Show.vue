@@ -32,7 +32,7 @@
             :to="{ path: '/master/allocation/' + allocation.id + '/edit', params: { id: allocation.id }}"
             v-if="$permission.has('update allocation')"
             class="btn btn-sm btn-primary mr-5">
-            Edit
+            {{ $t('edit') | uppercase }}
           </router-link>
           <button
             type="button"
@@ -40,7 +40,7 @@
             v-if="$permission.has('delete allocation')"
             :disabled="isDeleting"
             class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
           </button>
         </p-block-inner>
       </p-block>

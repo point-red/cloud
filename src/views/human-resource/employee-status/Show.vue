@@ -30,7 +30,7 @@
                 :to="{ path: '/human-resource/employee-status/' + status.id + '/edit', params: { id: status.id }}"
                 v-if="$permission.has('update employee')"
                 class="btn btn-sm btn-primary mr-5">
-                Edit
+                {{ $t('edit') | uppercase }}
               </router-link>
               <button
                 type="button"
@@ -38,7 +38,7 @@
                 v-if="$permission.has('delete employee')"
                 :disabled="isSaving"
                 class="btn btn-sm btn-danger">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Delete
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
               </button>
             </div>
           </div>

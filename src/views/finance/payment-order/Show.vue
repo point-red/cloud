@@ -124,7 +124,7 @@
                 :to="{ path: '/finance/payment-order/' + paymentOrder.id + '/edit', params: { id: paymentOrder.id }}"
                 v-if="$permission.has('update payment order') && $formRules.allowedToUpdate(paymentOrder.form)"
                 class="btn btn-sm btn-primary mr-5">
-                Edit
+                {{ $t('edit') | uppercase }}
               </router-link>
               <a
                 href="javascript:void(0)"

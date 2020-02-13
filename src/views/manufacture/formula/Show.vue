@@ -198,7 +198,7 @@
             :to="{ path: '/manufacture/formula/' + formula.id + '/edit', params: { id: formula.id }}"
             v-if="$permission.has('update manufacture formula') && $formRules.allowedToUpdate(formula.form)"
             class="btn btn-sm btn-primary mr-5">
-            Edit
+            {{ $t('edit') | uppercase }}
           </router-link>
           <button type="submit" class="btn btn-sm btn-danger mr-5" :disabled="isDeleting" @click="onDelete">
             <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Cancel

@@ -173,7 +173,7 @@
             :to="{ path: '/manufacture/process-io/' + id + '/output/' + output.id + '/edit', params: { id: id, outputId: output.id }}"
             v-if="$permission.has('update manufacture') && $formRules.allowedToUpdate(output.form)"
             class="btn btn-sm btn-primary mr-5">
-            Edit
+            {{ $t('edit') | uppercase }}
           </router-link>
           <button type="submit" class="btn btn-sm btn-danger mr-5" :disabled="isDeleting" @click="onDelete">
             <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Cancel

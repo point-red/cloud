@@ -35,7 +35,7 @@
             @click="remove">
             <i
               v-show="isSaving"
-              class="fa fa-asterisk fa-spin"/> Delete
+              class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
           </button>
           <button :disabled="isSaving" type="button" class="btn btn-sm btn-outline-danger" @click="close">
             <i

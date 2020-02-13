@@ -63,7 +63,7 @@
                 <td>{{ bill.amount | numberFormat }}</td>
                 <td class="text-right">
                   <button class="btn btn-sm btn-danger" @click="deleteBill(bill.id)" :disabled="isDeleting">
-                    <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
+                    <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
                   </button>
                 </td>
               </tr>

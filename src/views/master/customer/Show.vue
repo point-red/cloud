@@ -75,7 +75,7 @@
             :to="{ path: '/master/customer/' + customer.id + '/edit', params: { id: customer.id }}"
             v-if="$permission.has('update customer')"
             class="btn btn-sm btn-primary mr-5">
-            Edit
+            {{ $t('edit') | uppercase }}
           </router-link>
           <button
             type="button"
@@ -83,7 +83,7 @@
             v-if="$permission.has('delete customer')"
             :disabled="isDeleting"
             class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
           </button>
           <button
             type="button"

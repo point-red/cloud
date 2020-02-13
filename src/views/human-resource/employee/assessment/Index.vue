@@ -96,7 +96,7 @@
                   :to="{ path: '/human-resource/employee/' + employee.id + '/assessment/' + assessment.id + '/edit', params: { id: employee.id, kpiId: assessment.id }}"
                   v-if="authUser.id == assessment.scorer.id && $permission.has('update employee assessment') && reportType == 'all'"
                   class="btn btn-sm btn-secondary mr-5">
-                  <i class="si si-note"></i> Edit
+                  <i class="si si-note"></i> {{ $t('edit') | uppercase }}
                 </router-link>
                 &nbsp;
                 <i class="fa fa-close" v-show="authUser.id == assessment.scorer.id && $permission.has('delete employee assessment') && reportType == 'all'" @click="deleteAssessment(assessment.id)"/>
@@ -125,7 +125,7 @@
           v-if="$permission.has('delete employee assessment')"
           :disabled="isSaving"
           class="btn btn-danger">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Delete
+          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
         </button>
       </div>
     </p-modal>

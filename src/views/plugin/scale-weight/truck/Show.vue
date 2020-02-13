@@ -50,7 +50,7 @@
             :to="{ path: '/plugin/scale-weight/truck/' + scaleWeight.id + '/edit', params: { id: scaleWeight.id }}"
             v-if="$permission.has('update scale weight truck')"
             class="btn btn-sm btn-primary mr-5">
-            Edit
+            {{ $t('edit') | uppercase }}
           </router-link>
           <button
             type="button"
@@ -58,7 +58,7 @@
             v-if="$permission.has('delete scale weight truck')"
             :disabled="isDeleting"
             class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
           </button>
         </p-block-inner>
       </p-block>
