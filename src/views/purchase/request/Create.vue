@@ -55,7 +55,11 @@
                 <th>Notes</th>
                 <th>Quantity</th>
                 <th>Estimated Price</th>
-                <th></th>
+                <th>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
+                    <i class="fa fa-ellipsis-h"/>
+                  </button>
+                </th>
               </tr>
               <template v-for="(row, index) in form.items">
                 <tr slot="p-body" :key="index">
@@ -307,6 +311,14 @@ export default {
         allocation: null,
         notes: null,
         more: false
+      })
+    },
+    toggleMore () {
+      let isMoreActive = this.form.items.some(function (el, index) {
+        return el.more === false
+      })
+      this.form.items.forEach(element => {
+        element.more = isMoreActive
       })
     },
     calculate () {
