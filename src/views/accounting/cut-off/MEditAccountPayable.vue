@@ -129,8 +129,10 @@ export default {
         .then(response => {
           this.isSaving = false
           this.$notification.success('update success')
-          Object.assign(this.$data, this.$options.data.call(this))
           this.$emit('updated', true)
+          this.form.type.name = 'SELECT'
+          this.form.sub_ledger.name = 'SELECT'
+          this.form.reset()
           this.close()
         }).catch(error => {
           this.isSaving = false

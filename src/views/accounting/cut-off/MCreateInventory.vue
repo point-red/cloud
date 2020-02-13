@@ -126,11 +126,14 @@
                       v-model="form.opening_stocks[index].production_number"
                       name="production-number"/>
                   </td>
+                  <td>
+                    <a href="javascript:void(0)" @click="removeRow(index)"><i class="fa fa-trash"></i></a>
+                  </td>
                 </tr>
               </p-table>
 
               <button type="button" class="btn btn-sm btn-secondary" @click="addOpeningStockRow">
-                <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
+                <i class="fa fa-plus"/>
               </button>
             </p-block-inner>
 
@@ -167,6 +170,8 @@ export default {
         converter: 1,
         price: 0,
         total: 0,
+        require_expiry_date: false,
+        require_production_number: false,
         units: [{
           label: 'PCS',
           name: 'PCS',
@@ -183,9 +188,7 @@ export default {
             expiry_date: this.$moment().format('YYYY-MM-DD'),
             production_number: null
           }
-        ],
-        require_expiry_date: false,
-        require_production_number: false
+        ]
       })
     }
   },
@@ -237,19 +240,20 @@ export default {
         production_number: null
       })
     },
+    removeRow (index) {
+      this.$delete(this.form.opening_stocks, index)
+    },
     onSubmit () {
       this.isSaving = true
-
       this.create(this.form)
         .then(response => {
           this.isSaving = false
           this.form.chart_of_account_id = null
-          this.form.chart_of_account_name = null
-          this.form.opening_stocks[0].warehouse_id = null
+          this.form.chart_of_account_name = 'select'
+          this.form.reset()
           this.$notification.success('create success')
-          Object.assign(this.$data, this.$options.data.call(this))
           this.$emit('updated', true)
-          this.close()
+          window.location.reload(true)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)

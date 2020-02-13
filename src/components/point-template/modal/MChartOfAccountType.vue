@@ -63,6 +63,7 @@ export default {
       this.search()
     }, 300),
     label () {
+      console.log('watch ' + this.label)
       this.mutableLabel = this.label
     }
   },
@@ -95,18 +96,6 @@ export default {
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
-      })
-    },
-    add () {
-      this.isSaving = true
-      this.create({
-        alias: this.searchText
-      }).then(response => {
-        this.search()
-        this.isSaving = false
-      }).catch(error => {
-        this.$notification.error(error.message)
-        this.isSaving = false
       })
     },
     choose (option) {

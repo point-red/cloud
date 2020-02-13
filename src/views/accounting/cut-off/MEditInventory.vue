@@ -242,9 +242,10 @@ export default {
         .then(response => {
           this.isSaving = false
           this.$notification.success('update success')
-          Object.assign(this.$data, this.$options.data.call(this))
           this.$emit('updated', true)
-          this.form.warehouse_id = null
+          this.form.warehouse_name = null
+          this.form.chart_of_account_name = null
+          this.form.reset()
           this.close()
         }).catch(error => {
           this.isSaving = false

@@ -119,6 +119,7 @@ export default {
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
           this.$emit('updated', true)
+          window.location.reload(true)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)

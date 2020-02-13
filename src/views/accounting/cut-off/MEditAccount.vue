@@ -141,9 +141,10 @@ export default {
         .then(response => {
           this.isSaving = false
           this.$notification.success('update success')
-          Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/accounting/cut-off/create/account')
           this.$emit('updated', true)
+          this.form.type.alias = 'select'
+          this.form.sub_ledger.alias = 'select'
+          this.form.reset()
           this.close()
         }).catch(error => {
           this.isSaving = false

@@ -13,7 +13,7 @@
               :errors="form.errors.get('customer_id')"
               @errors="form.errors.set('customer_id', null)">
               <div slot="body" class="col-lg-9 mt-5">
-                <m-customer id="customer" v-model="form.customer_id"/>
+                <m-customer id="customer" v-model="form.customer_id" :label="form.customer_name"/>
               </div>
             </p-form-row>
 
@@ -25,7 +25,7 @@
               :errors="form.errors.get('account')"
               @errors="form.errors.set('account', null)">
               <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" sub-ledger="account receivable"/>
+                <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" :label="form.chart_of_account_name" sub-ledger="account receivable"/>
               </div>
             </p-form-row>
 
@@ -80,7 +80,9 @@ export default {
       isSaving: false,
       form: new Form({
         customer_id: null,
+        customer_name: null,
         chart_of_account_id: null,
+        chart_of_account_name: null,
         notes: null,
         amount: 0
       })
@@ -117,8 +119,11 @@ export default {
         .then(response => {
           this.isSaving = false
           this.$notification.success('create success')
-          Object.assign(this.$data, this.$options.data.call(this))
+          this.form.customer_name = null
+          this.form.chart_of_account_name = null
+          this.form.reset()
           this.$emit('updated', true)
+          window.location.reload(true)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)

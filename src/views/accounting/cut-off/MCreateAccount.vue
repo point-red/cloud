@@ -9,7 +9,7 @@
               name="account-type"
               :label="$t('account type')">
               <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account-type :id="'account-type'" v-model="form.type_id"/>
+                <m-chart-of-account-type :id="'account-type'" v-model="form.type_id" :label="form.type_alias"/>
               </div>
             </p-form-row>
 
@@ -18,7 +18,7 @@
               name="account-sub-ledger"
               :label="$t('account sub ledger')">
               <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account-sub-ledger :id="'account-sub-ledger'" v-model="form.sub_ledger_id"/>
+                <m-chart-of-account-sub-ledger :id="'account-sub-ledger'" v-model="form.sub_ledger_id" :label="form.sub_ledger_alias"/>
               </div>
             </p-form-row>
 
@@ -86,7 +86,9 @@ export default {
       isSaving: false,
       form: new Form({
         type_id: null,
+        type_alias: null,
         sub_ledger_id: null,
+        sub_ledger_alias: null,
         name: null,
         number: null,
         balance: 0
@@ -119,13 +121,13 @@ export default {
     ...mapActions('accountingCutOffAccount', ['create']),
     onSubmit () {
       this.isSaving = true
-
       this.create(this.form)
         .then(response => {
-          this.isSaving = false
           this.$notification.success('create success')
-          Object.assign(this.$data, this.$options.data.call(this))
           this.$emit('updated', true)
+          this.form.type_alias = 'select'
+          this.form.reset()
+          this.isSaving = false
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)
