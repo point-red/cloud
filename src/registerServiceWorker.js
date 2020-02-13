@@ -16,6 +16,7 @@ if (process.env.NODE_ENV === 'production') {
     },
     cached () {
       console.log('Content has been cached for offline use.')
+      document.getElementById('loading-overlay').style.display = 'none'
     },
     updatefound () {
       console.log('New content is downloading.')
