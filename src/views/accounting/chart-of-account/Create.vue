@@ -48,7 +48,7 @@
           <div class="col-md-3"></div>
           <div class="col-md-9">
             <button type="submit" class="btn btn-sm btn-primary" :disabled="isLoading">
-              <i v-show="isLoading" class="fa fa-asterisk fa-spin"/> Save
+              <i v-show="isLoading" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
             </button>
           </div>
         </div>

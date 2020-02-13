@@ -10,29 +10,15 @@
     <tab-menu></tab-menu>
 
     <div class="row">
-      <p-block
-        :header="true"
-        title="Project">
-        <form
-          class="px-30"
-          @submit.prevent="onSubmit">
-
-          <p-form-row
-            id="group"
-            name="group"
-            v-model="form.group"
-            :disabled="isSaving"
-            :label="$t('company group')"
-            :errors="form.errors.get('group')"
-            @errors="form.errors.set('group', null)">
-          </p-form-row>
-
+      <p-block :header="true" title="Project">
+        <form @submit.prevent="onSubmit">
           <p-form-row
             id="code"
             name="code"
             v-model="form.code"
             :disabled="isSaving"
             :label="$t('company identifier')"
+            :help="'WEB URL : ' + form.code + '.cloud.point.red'"
             :errors="form.errors.get('code')"
             @errors="form.errors.set('code', null)">
           </p-form-row>
@@ -45,6 +31,29 @@
             :label="$t('company name')"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)">
+          </p-form-row>
+
+          <div class="form-group row">
+            <div class="col-md-9 offset-3">
+              <button
+                :disabled="isSaving"
+                type="submit"
+                class="btn btn-sm btn-primary">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
+              </button>
+            </div>
+          </div>
+
+          <p-separator></p-separator>
+
+          <p-form-row
+            id="group"
+            name="group"
+            v-model="form.group"
+            :disabled="isSaving"
+            :label="$t('company group')"
+            :errors="form.errors.get('group')"
+            @errors="form.errors.set('group', null)">
           </p-form-row>
 
           <p-form-row
@@ -117,7 +126,7 @@
                 :disabled="isSaving"
                 type="submit"
                 class="btn btn-sm btn-primary">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
               </button>
             </div>
           </div>
@@ -144,7 +153,7 @@ export default {
         whatsapp: null,
         website: null,
         marketplace_notes: null,
-        code: null,
+        code: '',
         vat_id_number: null,
         timezone: null
       }),
@@ -191,23 +200,16 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.create(this.form)
-        .then(
-          (response) => {
-            this.isSaving = false
-            this.form.reset()
-            this.$notification.success('Create success')
-            this.$router.push('/account/project/' + response.data.id)
-          },
-          (error) => {
-            this.isSaving = false
-            if (error.message) {
-              this.$notification.error(error.message)
-            } else {
-              this.$notification.error('Create failed')
-              this.form.errors.record(error.errors)
-            }
-          }
-        )
+        .then(response => {
+          this.isSaving = false
+          this.form.reset()
+          this.$notification.success('create success')
+          this.$router.push('/account/project/' + response.data.id)
+        }).catch(error => {
+          this.isSaving = false
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        })
     }
   },
   created () {

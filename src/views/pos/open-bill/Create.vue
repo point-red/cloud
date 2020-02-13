@@ -228,7 +228,7 @@
                     <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Charge {{ form.amount | numberFormat }}
                   </button>
                   <button v-if="form.items_temporary.length !== 0 || form.services.length !== 0" type="button" class="btn btn-block btn-primary" :disabled="isSaving || isLoading || isGroupLoading" @click="save">
-                    <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+                    <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
                   </button>
                 </div>
               </div>

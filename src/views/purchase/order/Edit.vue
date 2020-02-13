@@ -221,7 +221,7 @@
             <div class="col-md-3"></div>
             <div class="col-md-9">
               <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
               </button>
             </div>
           </div>

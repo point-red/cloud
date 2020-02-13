@@ -33,7 +33,7 @@
         <div class="form-group row">
           <div class="col-md-12">
             <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
             </button>
           </div>
         </div>

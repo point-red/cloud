@@ -239,7 +239,7 @@
                     <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Charge {{ form.amount | numberFormat }}
                   </button>
                   <button v-if="form.items_temporary.length !== 0 || form.services.length !== 0" type="button" class="btn btn-block btn-primary" :disabled="isSaving || isDeleting || isLoading || isGroupLoading" @click="save">
-                    <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+                    <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
                   </button>
                   <button type="button" class="btn btn-block btn-danger" :disabled="isSaving || isDeleting || isLoading || isGroupLoading" @click="onDelete" v-if="$permission.has('delete pos')">
                     <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
