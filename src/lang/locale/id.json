@@ -346,5 +346,6 @@
 	"wa daily report": "nilai pelaporan wa harian",
 	"amount received difference": "selisih nilai yang diterima",
 	"if kpi 100%": "jika kpi 100%",
-	"allowance": "allowance"
+	"allowance": "allowance",
+	"you do not have permission to see the employee scorer": "Anda tidak memiliki access untuk melihat penilai"
 }

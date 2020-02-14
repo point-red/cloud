@@ -39,26 +39,40 @@
             </template>
           </div>
         </p-form-row>
-          <p-form-row
-              id="assessment-category"
-              :label="$t('assessment category')">
-              <div slot="body" class="col-lg-9 col-form-label">
-                <p-select
-                  id="template_select"
-                  name="template_select"
-                  v-model="templateIndex"
-                  :disabled="isLoading"
-                  :options="templateList"/>
-              </div>
-          </p-form-row>
+        <p-form-row
+            name="template-category"
+            id="template-category"
+            :label="$t('assessment category')">
+            <div slot="body" class="col-lg-9 col-form-label" v-if="templateList.length > 0 && templateSelected">
+              <a href="javascript:void(0)" @click="$refs.kpiAssessmentCategory.show()">{{ templateSelected.template }}</a>
+            </div>
+        </p-form-row>
+        <div class="form-group row">
+            <div class="col-md-12">
+              <button
+                v-if="templateSelected"
+                :disabled="isLoading"
+                type="button"
+                @click="toggleHiglight"
+                :class="{
+                  'btn btn-sm mr-5 btn-primary': !isHighlight,
+                  'btn btn-sm mr-5 btn-outline-info': isHighlight
+                }">
+                Highlight
+              </button>
+            </div>
+          </div>
           <p-table v-if="templateSelected">
             <tr slot="p-head">
               <th rowspan="2" class="font-size-h6 font-w700">{{ $t('no') | uppercase }}</th>
               <th rowspan="2" class="font-size-h6 font-w700">{{ $t('key performance indicator') | uppercase }}</th>
               <th rowspan="2" class="font-size-h6 font-w700 text-center">{{ $t('weight') | uppercase }}</th>
               <th rowspan="2" class="font-size-h6 font-w700 text-center">{{ $t('target') | uppercase }}</th>
-              <template v-for="(sc, index) in templateSelected.scorer">
-                <th :key="'z'+index" colspan="2" class="font-size-h6 font-w700 text-center">{{ sc.name }}</th>
+              <template v-if="$permission.has('create employee kpi')">
+                <th v-for="(sc, index) in templateSelected.scorer" :key="'z'+index" colspan="2" class="font-size-h6 font-w700 text-center">{{ sc.name }}</th>
+              </template>
+              <template v-else>
+                <th :colspan="templateSelected.scorer.length*2" class="font-size-h6 font-w700 text-center">{{ $t('you do not have permission to see the employee scorer') }}</th>
               </template>
             </tr>
             <tr slot="p-head">
@@ -82,9 +96,17 @@
                     </td>
                   </tr>
             </template>
+            <tr slot="p-body">
+              <td></td>
+              <td v-for="(val, no) in templateSelected['total']" :key="'f'+no" class="font-size-h6 font-w700 text-center">
+                <b v-if="no>0">{{ (val%1 === 0 ? val : val.toFixed(2)) }}</b>
+                <b v-else>{{ val }}</b>
+              </td>
+            </tr>
           </p-table>
       </p-block>
     </form>
+  <kpi-assessment-category-modal ref="kpiAssessmentCategory" v-model="templateIndex" :templates="templateList"/>
   </div>
 </template>
 
@@ -93,6 +115,7 @@ import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import EmployeeWidget from '../EmployeeWidget'
+import KpiAssessmentCategoryModal from './KpiAssessmentCategoryModal'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -100,7 +123,8 @@ export default {
     TabMenu,
     Breadcrumb,
     BreadcrumbHumanResource,
-    EmployeeWidget
+    EmployeeWidget,
+    KpiAssessmentCategoryModal
   },
   data () {
     return {
@@ -111,7 +135,8 @@ export default {
       isLoading: false,
       templateList: [],
       templateIndex: 0,
-      templateSelected: null
+      templateSelected: null,
+      isHighlight: false
     }
   },
   computed: {
@@ -133,6 +158,26 @@ export default {
     }),
     formatIndicator (indicators, isGroup) {
       let fomatedIndicator = []
+      let TOLERANCE = 2
+      let showHighlight = false
+      if (this.isHighlight) {
+        let scoreList = []
+        indicators.forEach((el, j) => {
+          if (j > 3 && (j % 2) != 0) {
+            scoreList.push(el)
+          }
+        })
+        scoreList.forEach((el, i) => {
+          scoreList.forEach((el2, j) => {
+            if (i != j) {
+              if (Math.abs(el - el2) >= TOLERANCE) {
+                showHighlight = true
+                return 0
+              }
+            }
+          })
+        })
+      }
       indicators.forEach((el, j) => {
         let text = el
         let style = 'text-center'
@@ -147,6 +192,9 @@ export default {
           text = this.$options.filters.numberFormat(el) + '%'
         } else {
           text = this.$options.filters.numberFormat(el)
+          if (j > 3 && this.isHighlight && showHighlight) {
+            style = style + ' highlight'
+          }
         }
         if (isGroup) {
           style = 'font-size-h6 font-w700 ' + style
@@ -154,6 +202,9 @@ export default {
         fomatedIndicator.push({ text: text, style: style, colSpan: colSpan })
       })
       return fomatedIndicator
+    },
+    toggleHiglight () {
+      this.isHighlight = !this.isHighlight
     }
   },
   created () {
@@ -167,10 +218,11 @@ export default {
         this.isLoading = false
         this.templateList = []
         this.assessmentsBy.forEach((tpl, index) => {
-          this.templateList.push({ id: index, label: tpl.template })
+          this.templateList.push(tpl.template)
         })
         if (this.templateList.length > 0) {
           this.templateIndex = 0
+          this.templateSelected = this.assessmentsBy[this.templateIndex]
         }
       },
       (error) => {
@@ -181,3 +233,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .highlight {
+    background: red;
+  }
+</style>
