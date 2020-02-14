@@ -100,7 +100,7 @@
                 <hr :key="'item-group-hr-'+index"/>
               </template>
               <button type="button" class="btn btn-sm btn-secondary" @click="addItemGroupRow">
-                <i class="fa fa-plus"/> Add More Group
+                <i class="fa fa-plus"/>
               </button>
             </div>
           </p-form-row>
@@ -143,7 +143,7 @@
           <hr/>
 
           <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Update
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
           </button>
         </p-block-inner>
       </p-block>

@@ -65,7 +65,7 @@
           <button :disabled="isSaving" type="button" class="btn btn-sm btn-outline-danger" @click="close">
             <i
               v-show="isSaving"
-              class="fa fa-asterisk fa-spin"/> Close
+              class="fa fa-asterisk fa-spin"/> {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>

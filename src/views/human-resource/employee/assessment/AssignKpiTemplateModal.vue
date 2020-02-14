@@ -39,7 +39,7 @@
             type="button"
             class="btn btn-sm btn-outline-danger"
             @click="$refs.assignKpiTemplate.close()">
-            Close
+            {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>

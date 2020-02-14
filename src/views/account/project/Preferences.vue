@@ -121,7 +121,7 @@
           <hr>
 
           <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Update
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
           </button>
         </p-block-inner>
       </p-block>

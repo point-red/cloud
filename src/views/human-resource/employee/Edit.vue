@@ -507,13 +507,13 @@
               type="submit"
               :disabled="isSaving"
               class="btn btn-sm btn-primary mr-5">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Update
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
             </button>
             <button
               type="button"
               class="btn btn-sm btn-outline-danger"
               @click="$router.push('/human-resource/employee/' + id)">
-              Close
+              {{ $t('close') | uppercase }}
             </button>
           </div>
         </div>

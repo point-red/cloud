@@ -79,7 +79,7 @@
                 <hr :key="'group-hr-'+index"/>
               </template>
               <button type="button" class="btn btn-sm btn-secondary" @click="addGroupRow">
-                <i class="fa fa-plus"/> Add More Group
+                <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
               </button>
             </div>
           </p-form-row>

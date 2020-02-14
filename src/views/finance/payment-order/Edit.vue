@@ -121,7 +121,7 @@
             </tr>
           </point-table>
           <button type="button" class="btn btn-sm btn-secondary" @click="addRow">
-            <i class="fa fa-plus"/> Add
+            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
           </button>
 
           <p-separator></p-separator>
@@ -153,7 +153,7 @@
           <div class="form-group row">
             <div class="col-md-12">
               <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Update
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
               </button>
             </div>
           </div>

@@ -97,7 +97,7 @@
             </tr>
           </point-table>
           <button type="button" class="btn btn-sm btn-secondary" @click="addFinishGoodRow">
-            <i class="fa fa-plus"/> Add
+            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
           </button>
 
           <p-separator></p-separator>
@@ -143,7 +143,7 @@
             </tr>
           </point-table>
           <button type="button" class="btn btn-sm btn-secondary" @click="addRawMaterialRow">
-            <i class="fa fa-plus"/> Add
+            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
           </button>
 
           <p-separator></p-separator>

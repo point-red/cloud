@@ -32,7 +32,7 @@
             type="button"
             class="btn btn-sm btn-outline-danger"
             @click="close()">
-            Close
+            {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>

@@ -138,7 +138,7 @@
               </tr>
             </point-table>
             <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
-              <i class="fa fa-plus"/> Add
+              <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
             </button>
           </p-block-inner>
 

@@ -25,7 +25,7 @@
           {{ $t('click') }} <span class="link" @click="add"><i class="fa fa-xs" :class="{
             'fa-refresh fa-spin': isSaving,
             'fa-plus': !isSaving
-          }"></i> Add</span> {{ $t('to add new data') }}
+          }"></i> {{ $t('add') | uppercase }}</span> {{ $t('to add new data') }}
         </div>
         <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
           {{ $t('you don\'t have any') | capitalize }} {{ $t('no interest reason') | capitalize }}

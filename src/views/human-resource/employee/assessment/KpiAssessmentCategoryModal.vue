@@ -35,7 +35,7 @@
             type="button"
             class="btn btn-outline-danger"
             @click="$refs.kpiAssessmentCategory.close()">
-            Close
+            {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>

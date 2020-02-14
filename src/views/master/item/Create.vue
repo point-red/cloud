@@ -92,7 +92,7 @@
               <hr :key="'item-group-hr-'+index"/>
             </template>
             <button type="button" class="btn btn-sm btn-secondary" @click="addItemGroupRow">
-              <i class="fa fa-plus"/> Add More Group
+              <i class="fa fa-plus"/>
             </button>
           </div>
         </p-form-row>
@@ -193,7 +193,7 @@
           </point-table>
 
           <button type="button" class="btn btn-sm btn-secondary" @click="addOpeningStockRow">
-            <i class="fa fa-plus"/> Add
+            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
           </button>
 
           <hr>

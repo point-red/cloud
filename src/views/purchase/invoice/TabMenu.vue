@@ -7,7 +7,7 @@
         exact
         class="nav-link"
         active-class="active">
-        <span><i class="si si-plus"></i> Add</span>
+        <span><i class="si si-plus"></i> {{ $t('add') | uppercase }}</span>
       </router-link>
     </li>
     <li class="nav-item" v-if="$permission.has('read purchase invoice')">
