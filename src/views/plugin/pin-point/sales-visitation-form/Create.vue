@@ -24,7 +24,7 @@
 
     <hr>
 
-    <form class="row" @submit.prevent="onSubmit" v-show="isPermissionCameraGranted && isPermissionGeolocationGranted">
+    <form class="row" @submit.prevent="onSubmit">
       <p-block
         :is-loading="isLoading"
         :header="false"
