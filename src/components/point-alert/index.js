@@ -56,10 +56,10 @@ export default {
           })
         })
       },
-      confirm (title = 'Are you sure?', text = 'You won\'t be able to revert this!') {
+      confirm (title = 'Are you sure?', text = '') {
         return new Promise((resolve, reject) => {
           Vue.swal.fire({
-            title: title,
+            title: Vue.upperCase(title),
             text: text,
             icon: 'warning',
             showCancelButton: true,

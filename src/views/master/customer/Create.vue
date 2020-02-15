@@ -9,13 +9,14 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('create') + ' ' + $t('customer')" :header="true">
+      <p-block>
         <p-block-inner>
           <p-form-row
             id="name"
             v-model="form.name"
             :disabled="isSaving"
             :label="$t('name')"
+            :placeholder="$t('required') | uppercase"
             name="name"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"/>
@@ -47,29 +48,28 @@
             :errors="form.errors.get('phone')"
             @errors="form.errors.set('phone', null)"/>
 
-          <p-form-row id="pricing-group" name="pricing-group" :label="$t('pricing group')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <m-pricing-group
-                :id="'pricing-group-id'"
-                v-model="form.pricing_group_id"/>
-            </div>
-          </p-form-row>
+          <p-separator></p-separator>
 
-          <p-form-row id="group" name="group" :label="$t('group')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <template v-for="(group, index) in form.groups">
-                <m-customer-group
-                  :key="index"
-                  :id="'group'+index"
-                  v-model="group.id"
-                  @clear="removeGroupRow(index)"/>
-                <hr :key="'group-hr-'+index"/>
-              </template>
-              <button type="button" class="btn btn-sm btn-secondary" @click="addGroupRow">
-                <i class="fa fa-plus"/>
-              </button>
-            </div>
-          </p-form-row>
+          <h5>{{ $t('pricing group') | uppercase }}</h5>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus reiciendis ipsam praesentium aliquam quo, aperiam, autem consectetur animi veritatis fugiat velit magni earum ad ullam, hic beatae cum. Dicta, molestiae!</p>
+
+          <m-pricing-group :id="'pricing-group-id'" v-model="form.pricing_group_id"/>
+
+          <p-separator></p-separator>
+
+          <h5>{{ $t('group') | uppercase }}</h5>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus reiciendis ipsam praesentium aliquam quo, aperiam, autem consectetur animi veritatis fugiat velit magni earum ad ullam, hic beatae cum. Dicta, molestiae!</p>
+
+          <template v-for="(group, index) in form.groups">
+            <m-customer-group
+              :key="index"
+              :id="'group'+index"
+              v-model="group.id"
+              :label="group.label"
+              @choosen="chooseGroupRow($event, group)"
+              @clear="removeGroupRow(index)"/>
+            <hr :key="'group-hr-'+index"/>
+          </template>
 
           <hr/>
 
@@ -111,7 +111,7 @@ export default {
         }],
         groups: [{
           id: null,
-          name: null
+          label: null
         }]
       })
     }
@@ -124,12 +124,15 @@ export default {
     addGroupRow () {
       this.form.groups.push({
         id: null,
-        label: null,
-        name: null
+        label: null
       })
     },
     removeGroupRow (group) {
       this.$delete(this.form.groups, group)
+    },
+    chooseGroupRow (option, group) {
+      group.label = option.label
+      this.addGroupRow()
     },
     onSubmit () {
       this.isSaving = true

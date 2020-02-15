@@ -9,15 +9,46 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('customer')" :header="true">
-        <router-link
-          to="/master/customer/create"
-          v-if="$permission.has('create customer')"
-          slot="header"
-          exact
-          class="btn btn-sm btn-outline-secondary mr-5">
-          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
-        </router-link>
+      <p-block>
+        <div class="text-right">
+          <router-link
+            to="/master/customer/create"
+            v-if="$permission.has('update customer')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('create') | uppercase }}
+          </router-link>
+          <router-link
+            :to="{ path: '/master/customer/' + customer.id + '/edit', params: { id: customer.id }}"
+            v-if="$permission.has('update customer')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('edit') | uppercase }}
+          </router-link>
+          <button
+            type="button"
+            @click="onDelete()"
+            v-if="$permission.has('delete customer')"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-outline-secondary">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          </button>
+          <button
+            type="button"
+            @click="onArchive()"
+            v-if="$permission.has('delete customer') && customer.archived_at == null"
+            :disabled="isArchiving"
+            class="btn btn-sm btn-outline-secondary ml-5">
+            <i v-show="isArchiving" class="fa fa-asterisk fa-spin"/> {{ $t('archive') | uppercase }}
+          </button>
+          <button
+            type="button"
+            @click="onActivate()"
+            v-if="$permission.has('delete customer') && customer.archived_at != null"
+            :disabled="isArchiving"
+            class="btn btn-sm btn-outline-secondary ml-5">
+            <i v-show="isArchiving" class="fa fa-asterisk fa-spin"/> {{ $t('activate') | uppercase }}
+          </button>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
@@ -43,64 +74,23 @@
             name="phone"
             v-model="data.phone"
             readonly/>
-          <p-form-row
-            id="pricing-group"
-            label="Pricing Group"
-            name="pricing-group"
-            v-model="data.pricing_group.label"
-            readonly/>
 
-          <p-form-row
-            id="group"
-            :label="$t('group')"
-            name="group"
-            readonly>
-            <div slot="body" class="col-lg-9">
-              <table class="table">
-                <thead></thead>
-                <tbody>
-                  <template v-for="(group, index) in customer.groups">
-                    <tr :key="index">
-                      <td>{{ group.name }}</td>
-                    </tr>
-                  </template>
-                </tbody>
-              </table>
-            </div>
-          </p-form-row>
+          <p-separator></p-separator>
 
-          <hr/>
+          <h5>{{ $t('pricing group') | uppercase }}</h5>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus reiciendis ipsam praesentium aliquam quo, aperiam, autem consectetur animi veritatis fugiat velit magni earum ad ullam, hic beatae cum. Dicta, molestiae!</p>
 
-          <router-link
-            :to="{ path: '/master/customer/' + customer.id + '/edit', params: { id: customer.id }}"
-            v-if="$permission.has('update customer')"
-            class="btn btn-sm btn-primary mr-5">
-            {{ $t('edit') | uppercase }}
-          </router-link>
-          <button
-            type="button"
-            @click="onDelete()"
-            v-if="$permission.has('delete customer')"
-            :disabled="isDeleting"
-            class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
-          </button>
-          <button
-            type="button"
-            @click="onArchive()"
-            v-if="$permission.has('delete customer') && customer.archived_at == null"
-            :disabled="isDeleting"
-            class="btn btn-sm btn-outline-danger ml-5">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Archive
-          </button>
-          <button
-            type="button"
-            @click="onActivate()"
-            v-if="$permission.has('delete customer') && customer.archived_at != null"
-            :disabled="isDeleting"
-            class="btn btn-sm btn-outline-primary ml-5">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Activate
-          </button>
+          <ul v-if="data.pricing_group.label != null">
+            <li>{{ data.pricing_group.label }}</li>
+          </ul>
+
+          <p-separator></p-separator>
+
+          <h5>{{ $t('group') | uppercase }}</h5>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus reiciendis ipsam praesentium aliquam quo, aperiam, autem consectetur animi veritatis fugiat velit magni earum ad ullam, hic beatae cum. Dicta, molestiae!</p>
+          <ul v-for="(group, index) in customer.groups" :key="index">
+            <li>{{ group.name }}</li>
+          </ul>
         </p-block-inner>
       </p-block>
       <p-block v-if="forms.length > 0 && isLoadingSalesVisitation == false">
@@ -213,6 +203,7 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: false,
+      isArchiving: false,
       isDeleting: false,
       isLoadingSalesVisitation: false,
       data: {
@@ -258,37 +249,43 @@ export default {
       })
     },
     onDelete () {
-      this.isDeleting = true
-      this.delete({
-        id: this.id
-      }).then(response => {
-        this.isDeleting = false
-        this.$router.push('/master/customer')
-      }).catch(response => {
-        this.isDeleting = false
-        this.$notification.error('cannot delete this customer')
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({
+          id: this.id
+        }).then(response => {
+          this.isDeleting = false
+          this.$router.push('/master/customer')
+        }).catch(response => {
+          this.isDeleting = false
+          this.$notification.error('cannot delete this customer')
+        })
       })
     },
     onArchive () {
-      this.isDeleting = true
-      this.archive({
-        id: this.id
-      }).then(response => {
-        this.isDeleting = false
-      }).catch(response => {
-        this.isDeleting = false
-        this.$notification.error('cannot archive this customer')
+      this.$alert.confirm(this.$t('archive'), this.$t('confirmation archive message')).then(response => {
+        this.isArchiving = true
+        this.archive({
+          id: this.id
+        }).then(response => {
+          this.isArchiving = false
+        }).catch(response => {
+          this.isArchiving = false
+          this.$notification.error('cannot archive this customer')
+        })
       })
     },
     onActivate () {
-      this.isDeleting = true
-      this.activate({
-        id: this.id
-      }).then(response => {
-        this.isDeleting = false
-      }).catch(response => {
-        this.isDeleting = false
-        this.$notification.error('cannot activate this customer')
+      this.$alert.confirm(this.$t('activate'), this.$t('confirmation activate message')).then(response => {
+        this.isArchiving = true
+        this.activate({
+          id: this.id
+        }).then(response => {
+          this.isArchiving = false
+        }).catch(response => {
+          this.isArchiving = false
+          this.$notification.error('cannot activate this customer')
+        })
       })
     }
   },

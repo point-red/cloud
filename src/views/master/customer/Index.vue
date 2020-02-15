@@ -73,31 +73,33 @@
           </div>
         </div>
         <hr>
-        <div class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-          <button type="button" class="btn btn-secondary mr-5" @click="bulkArchiveCustomer()">
-            {{ $t('archive') | uppercase }}
-          </button>
-          <button type="button" class="btn btn-secondary mr-5" @click="bulkActivateCustomer()">
-            {{ $t('activate') | uppercase }}
-          </button>
-          <button type="button" class="btn btn-secondary" @click="bulkDeleteCustomer()">
-            {{ $t('delete') | uppercase }}
-          </button>
+        <div>
+          <label class="css-control css-control-primary css-checkbox mr-10">
+            <input
+              type="checkbox"
+              class="css-control-input"
+              @click="toggleCheckRows()"
+              :checked="isRowsChecked(customers, checkedRow)">
+            <span class="css-control-indicator"></span>
+          </label>
+          <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
+            <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="bulkArchiveCustomer()">
+              {{ $t('archive') | uppercase }}
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="bulkActivateCustomer()">
+              {{ $t('activate') | uppercase }}
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" @click="bulkDeleteCustomer()">
+              {{ $t('delete') | uppercase }}
+            </button>
+          </span>
         </div>
-        <hr v-if="checkedRow.length > 0">
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th width="50px">#</th>
-              <th width="50px">
-                <p-form-check-box
-                  id="subscibe"
-                  name="subscibe"
-                  :is-form="false"
-                  @click.native="toggleCheckRows()"
-                  :checked="isRowsChecked(customers, checkedRow)"
-                  class="text-center"/>
-              </th>
+              <th width="50px"></th>
               <th>Name</th>
               <th>Address</th>
               <th>Phone</th>
@@ -252,27 +254,33 @@ export default {
       return true
     },
     bulkArchiveCustomer () {
-      this.bulkArchive({
-        customers: this.checkedRow
-      }).then(response => {
-        this.checkedRow = []
-        this.getCustomerRequest()
+      this.$alert.confirm(this.$t('archive'), this.$t('confirmation archive message')).then(response => {
+        this.bulkArchive({
+          customers: this.checkedRow
+        }).then(response => {
+          this.checkedRow = []
+          this.getCustomerRequest()
+        })
       })
     },
     bulkActivateCustomer () {
-      this.bulkActivate({
-        customers: this.checkedRow
-      }).then(response => {
-        this.checkedRow = []
-        this.getCustomerRequest()
+      this.$alert.confirm(this.$t('activate'), this.$t('confirmation activate message')).then(response => {
+        this.bulkActivate({
+          customers: this.checkedRow
+        }).then(response => {
+          this.checkedRow = []
+          this.getCustomerRequest()
+        })
       })
     },
     bulkDeleteCustomer () {
-      this.bulkDelete({
-        customers: this.checkedRow
-      }).then(response => {
-        this.checkedRow = []
-        this.getCustomerRequest()
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.bulkDelete({
+          customers: this.checkedRow
+        }).then(response => {
+          this.checkedRow = []
+          this.getCustomerRequest()
+        })
       })
     },
     chooseGroup (option) {

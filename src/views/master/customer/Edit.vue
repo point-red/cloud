@@ -3,31 +3,22 @@
     <breadcrumb>
       <breadcrumb-master/>
       <router-link to="/master/customer" class="breadcrumb-item">{{ $t('customer') | uppercase }}</router-link>
-      <router-link :to="'/master/customer/'+form.id" class="breadcrumb-item">{{ form.name | uppercase }}</router-link>
+      <router-link :to="'/master/customer/'+form.id" class="breadcrumb-item">{{ customer.name | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('edit') + ' ' + $t('customer')" :header="true">
-
-        <router-link
-          to="/master/customer/create"
-          v-if="$permission.has('create customer')"
-          slot="header"
-          exact
-          class="btn btn-sm btn-outline-secondary mr-5">
-          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
-        </router-link>
-
+      <p-block>
         <p-block-inner>
           <p-form-row
             id="name"
             v-model="form.name"
             :disabled="isSaving"
-            :label="$t('name')"
             name="name"
+            :label="$t('name')"
+            :placeholder="$t('required') | uppercase"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"/>
 
@@ -58,31 +49,31 @@
             :errors="form.errors.get('phone')"
             @errors="form.errors.set('phone', null)"/>
 
-          <p-form-row id="pricing-group" name="pricing-group" :label="$t('pricing group')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <m-pricing-group
-                :id="'pricing-group-id'"
-                :label="form.pricing_group.label"
-                v-model="form.pricing_group_id"/>
-            </div>
-          </p-form-row>
+          <p-separator></p-separator>
 
-          <p-form-row id="group" name="group" :label="$t('group')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <template v-for="(group, index) in form.groups">
-                <m-customer-group
-                  :key="index"
-                  :id="'group'+index"
-                  v-model="group.id"
-                  :label="group.name"
-                  @clear="removeGroupRow(index)"/>
-                <hr :key="'group-hr-'+index"/>
-              </template>
-              <button type="button" class="btn btn-sm btn-secondary" @click="addGroupRow">
-                <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-              </button>
-            </div>
-          </p-form-row>
+          <h5>{{ $t('pricing group') | uppercase }}</h5>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus reiciendis ipsam praesentium aliquam quo, aperiam, autem consectetur animi veritatis fugiat velit magni earum ad ullam, hic beatae cum. Dicta, molestiae!</p>
+
+          <m-pricing-group
+            :id="'pricing-group-id'"
+            :label="form.pricing_group.label"
+            v-model="form.pricing_group_id"/>
+
+          <p-separator></p-separator>
+
+          <h5>{{ $t('group') | uppercase }}</h5>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus reiciendis ipsam praesentium aliquam quo, aperiam, autem consectetur animi veritatis fugiat velit magni earum ad ullam, hic beatae cum. Dicta, molestiae!</p>
+
+          <template v-for="(group, index) in form.groups">
+            <m-customer-group
+              :key="index"
+              :id="'group'+index"
+              v-model="group.id"
+              :label="group.label"
+              @choosen="chooseGroupRow($event, group)"
+              @clear="removeGroupRow(index)"/>
+            <br :key="'group-br-'+index"/>
+          </template>
 
           <hr/>
 
@@ -110,7 +101,6 @@ export default {
   },
   data () {
     return {
-      title: 'Edit Customer',
       id: this.$route.params.id,
       isLoading: true,
       isSaving: false,
@@ -147,7 +137,7 @@ export default {
       this.isLoading = false
       this.form.name = this.customer.name
       this.form.groups = this.customer.groups
-      this.form.pricing_group_id = this.customer.pricing_group_id
+      this.addGroupRow()
       if (this.customer.pricing_group) {
         this.form.pricing_group.id = this.customer.pricing_group.id
         this.form.pricing_group.label = this.customer.pricing_group.label
@@ -171,12 +161,15 @@ export default {
     addGroupRow () {
       this.form.groups.push({
         id: null,
-        label: null,
-        name: null
+        label: null
       })
     },
     removeGroupRow (group) {
       this.$delete(this.form.groups, group)
+    },
+    chooseGroupRow (option, group) {
+      group.label = option.label
+      this.addGroupRow()
     },
     onSubmit () {
       this.isSaving = true

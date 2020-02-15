@@ -52,5 +52,9 @@
   "clear": "clear",
   "photo": "photo",
   "cancellation status": "cancellation status",
+  "confirmation message": "are you sure ?",
+  "confirmation archive message": "are you sure want to archive?",
+  "confirmation activate message": "are you sure want to activate?",
+  "confirmation delete message": "are you sure? you won't be able to revert this!",
   "pending approval warning": "this {form} in pending state, need approval from {approvedBy}"
 }
