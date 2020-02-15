@@ -63,6 +63,7 @@
 	"select": "select",
 	"save": "save",
 	"review": "review",
+	"required": "required",
 	"close": "close",
 	"clear": "clear",
 	"photo": "photo",
