@@ -3,14 +3,14 @@
     <breadcrumb>
       <breadcrumb-master/>
       <router-link to="/master/customer-group" class="breadcrumb-item">{{ $t('customer group') | uppercase }}</router-link>
-      <router-link :to="'/master/customer-group/'+form.id" class="breadcrumb-item">{{ form.name | uppercase }}</router-link>
+      <router-link :to="'/master/customer-group/'+form.id" class="breadcrumb-item">{{ group.name | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('edit') + ' ' + $t('customer group')" :header="true">
+      <p-block>
         <router-link
           to="/master/customer-group/create"
           v-if="$permission.has('create customer')"
@@ -25,15 +25,21 @@
             v-model="form.name"
             :disabled="isSaving"
             :label="$t('name')"
+            :placeholder="$t('required') | uppercase"
             name="name"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"/>
 
           <hr/>
 
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
-          </button>
+          <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-9">
+              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('update') | uppercase }}
+              </button>
+            </div>
+          </div>
         </p-block-inner>
       </p-block>
     </form>
@@ -73,7 +79,7 @@ export default {
       id: this.id
     }).then(response => {
       this.isLoading = false
-      this.form.name = this.group.name
+      Object.assign(this.form, this.group)
     }).catch(error => {
       this.isLoading = false
       this.$notification.error(error.message)
