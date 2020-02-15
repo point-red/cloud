@@ -39,8 +39,7 @@
                 <div slot="body">
                   <m-status
                     :id="'status-id'"
-                    v-model="status.id"
-                    :label="status.label"
+                    v-model="statusId"
                     @choosen="chooseStatus($event)"
                     @clear="clearStatus()"/>
                 </div>
@@ -51,8 +50,7 @@
                 <div slot="body">
                   <m-pricing-group
                     :id="'pricing-group-id'"
-                    v-model="pricingGroup.id"
-                    :label="pricingGroup.label"
+                    v-model="pricingGroupId"
                     @choosen="choosePricingGroup($event)"
                     @clear="clearPricingGroup()"/>
                 </div>
@@ -63,8 +61,7 @@
                 <div slot="body">
                   <m-customer-group
                     :id="'group'"
-                    v-model="group.id"
-                    :label="group.label"
+                    v-model="groupId"
                     @choosen="chooseGroup($event)"
                     @clear="clearGroup()"/>
                 </div>
@@ -194,18 +191,9 @@ export default {
       lastPage: 1,
       isAdvanceFilter: false,
       checkedRow: [],
-      group: {
-        id: null,
-        label: null
-      },
-      pricingGroup: {
-        id: null,
-        label: null
-      },
-      status: {
-        id: 0,
-        label: null
-      }
+      groupId: this.$route.query.groupId,
+      pricingGroupId: this.$route.query.pricingGroupId,
+      statusId: this.$route.query.statusId
     }
   },
   computed: {
@@ -284,36 +272,50 @@ export default {
       })
     },
     chooseGroup (option) {
-      this.group.label = option
+      this.$router.push({
+        query: {
+          search: this.searchText,
+          statusId: this.statusId,
+          groupId: this.groupId,
+          pricingGroupId: this.pricingGroupId
+        }
+      })
+      this.group.label = option.label
       this.getCustomerRequest()
     },
     clearGroup () {
-      this.group = {
-        id: null,
-        label: null
-      }
+      this.groupId = null
       this.getCustomerRequest()
     },
     choosePricingGroup (option) {
-      this.pricingGroup.label = option
+      this.$router.push({
+        query: {
+          search: this.searchText,
+          statusId: this.statusId,
+          groupId: this.groupId,
+          pricingGroupId: this.pricingGroupId
+        }
+      })
+      this.pricingGroup.label = option.label
       this.getCustomerRequest()
     },
     clearPricingGroup () {
-      this.pricingGroup = {
-        id: null,
-        label: null
-      }
+      this.pricingGroupId = null
       this.getCustomerRequest()
     },
     chooseStatus (option) {
-      this.status.label = option
+      this.$router.push({
+        query: {
+          search: this.searchText,
+          statusId: this.statusId,
+          groupId: this.groupId,
+          pricingGroupId: this.pricingGroupId
+        }
+      })
       this.getCustomerRequest()
     },
     clearStatus () {
-      this.status = {
-        id: null,
-        label: null
-      }
+      this.statusId = null
       this.getCustomerRequest()
     },
     updatePage (value) {
@@ -333,10 +335,10 @@ export default {
             'phones.number': this.searchText
           },
           filter_equal: {
-            'pricing_group_id': this.pricingGroup.id,
-            'groups.id': this.group.id
+            'pricing_group_id': this.pricingGroupId,
+            'groups.id': this.groupId
           },
-          is_archived: this.status.id,
+          is_archived: this.statusId,
           join: 'addresses,phones,emails',
           includes: 'addresses;phones;emails;groups;pricingGroup',
           limit: 10,
@@ -349,7 +351,14 @@ export default {
       })
     },
     filterSearch: debounce(function (value) {
-      this.$router.push({ query: { search: value } })
+      this.$router.push({
+        query: {
+          search: value,
+          statusId: this.statusId,
+          groupId: this.groupId,
+          pricingGroupId: this.pricingGroupId
+        }
+      })
       this.searchText = value
       this.currentPage = 1
       this.getCustomerRequest()

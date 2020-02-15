@@ -67,12 +67,19 @@ export default {
       this.mutableLabel = this.label
     }
   },
+  created () {
+    this.options.forEach(element => {
+      if (this.value == element.id) {
+        this.mutableLabel = element.label
+      }
+    })
+  },
   methods: {
     choose (option) {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', option.label)
+      this.$emit('choosen', option)
       this.close()
     },
     clear () {
