@@ -280,7 +280,6 @@ export default {
           pricingGroupId: this.pricingGroupId
         }
       })
-      this.group.label = option.label
       this.getCustomerRequest()
     },
     clearGroup () {
@@ -296,7 +295,6 @@ export default {
           pricingGroupId: this.pricingGroupId
         }
       })
-      this.pricingGroup.label = option.label
       this.getCustomerRequest()
     },
     clearPricingGroup () {
