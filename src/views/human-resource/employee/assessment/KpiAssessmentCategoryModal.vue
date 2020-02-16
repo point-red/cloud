@@ -61,6 +61,10 @@ export default {
   },
   methods: {
     show () {
+      this.selectedIndex = 0
+      if (this.value) {
+        this.selectedIndex = this.value
+      }
       this.$refs.kpiAssessmentCategory.show()
     },
     close () {
