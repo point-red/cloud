@@ -49,17 +49,20 @@
         </p-form-row>
         <div class="form-group row">
             <div class="col-md-12">
-              <button
-                v-if="templateSelected"
-                :disabled="isLoading"
-                type="button"
-                @click="toggleHiglight"
-                :class="{
-                  'btn btn-sm mr-5 btn-primary': !isHighlight,
-                  'btn btn-sm mr-5 btn-outline-info': isHighlight
-                }">
-                Highlight
-              </button>
+              <div class="btn-group-toggle" data-toggle="buttons">
+                <label :class="{
+                    'btn btn-sm mr-5 btn-primary active': isHighlight,
+                    'btn btn-sm mr-5 btn-info': !isHighlight
+                    }">
+                  <input v-if="templateSelected"
+                    :disabled="isLoading" type="checkbox"
+                    :checked="{
+                      'checked': isHighlight,
+                      '': !isHighlight
+                    }"
+                    @click="toggleHiglight" data-toggle="button" :aria-pressed="!isHighlight" autocomplete="off"> Highlight
+                </label>
+              </div>
             </div>
           </div>
           <p-table v-if="templateSelected">
@@ -156,6 +159,10 @@ export default {
     ...mapActions('humanResourceEmployeeAssessment', {
       findEmployeeAssessment: 'findBy'
     }),
+    isScoreColumn (col) {
+      let FIRST_SCORER_INDEX = 3
+      return (col >= FIRST_SCORER_INDEX && (col % 2) != 0)
+    },
     formatIndicator (indicators, isGroup) {
       let fomatedIndicator = []
       let TOLERANCE = 2
@@ -163,7 +170,7 @@ export default {
       if (this.isHighlight) {
         let scoreList = []
         indicators.forEach((el, j) => {
-          if (j > 3 && (j % 2) != 0) {
+          if (this.isScoreColumn(j)) {
             scoreList.push(el)
           }
         })
@@ -188,13 +195,13 @@ export default {
           } else {
             style = ''
           }
-        } else if (j > 3 && (j % 2) == 0) {
-          text = this.$options.filters.numberFormat(el) + '%'
-        } else {
+        } else if (this.isScoreColumn(j)) {
           text = this.$options.filters.numberFormat(el)
-          if (j > 3 && this.isHighlight && showHighlight) {
+          if (this.isHighlight && showHighlight) {
             style = style + ' highlight'
           }
+        } else {
+          text = this.$options.filters.numberFormat(el) + '%'
         }
         if (isGroup) {
           style = 'font-size-h6 font-w700 ' + style
