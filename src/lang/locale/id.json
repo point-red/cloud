@@ -67,6 +67,8 @@
 	"close": "close",
 	"clear": "clear",
 	"photo": "photo",
+	"top up": "top up",
+	"pay now": "pay now",
 	"cancellation status": "cancellation status",
 	"confirmation message": "are you sure?",
 	"confirmation archive message": "are you sure want to archive?",
@@ -351,6 +353,5 @@
 	"wa daily report": "nilai pelaporan wa harian",
 	"amount received difference": "selisih nilai yang diterima",
 	"if kpi 100%": "jika kpi 100%",
-	"allowance": "allowance",
-	"you do not have permission to see the employee scorer": "Anda tidak memiliki access untuk melihat penilai"
+	"allowance": "allowance"
 }
