@@ -105,6 +105,7 @@ export default {
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
+            'name': key['name'],
             'label': key['name']
           })
 

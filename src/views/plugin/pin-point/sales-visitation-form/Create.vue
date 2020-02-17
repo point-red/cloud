@@ -534,8 +534,8 @@ export default {
     chooseCustomer (value) {
       this.form.customer_name = value
     },
-    chooseGroup (value) {
-      this.form.group_name = value
+    chooseGroup (option) {
+      this.form.group_name = option.name
     },
     // [Start] Google Map
     setDescription (description) {
