@@ -110,18 +110,18 @@
                 active-class="active"
                 class="sidebar-mini-hide"><i class="si si-info"/> {{ $t("notification") | uppercase }}</router-link>
             </li> -->
-            <li @click="toggleLeftSidebar('close-xs')">
+            <!-- <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/reward"
                 active-class="active"
                 class="sidebar-mini-hide"><i class="si si-diamond"/> {{ $t("reward") | uppercase }}</router-link>
-            </li>
-            <li @click="toggleLeftSidebar('close-xs')">
+            </li> -->
+            <!-- <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/referral"
                 active-class="active"
                 class="sidebar-mini-hide"><i class="si si-share"/> {{ $t("referral") | uppercase }}</router-link>
-            </li>
+            </li> -->
             <!-- <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/email-subscription"

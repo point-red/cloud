@@ -12,13 +12,3 @@
     <slot name="right"></slot>
   </ul>
 </template>
-
-<script>
-export default {
-  data () {
-    return {
-      id: this.$route.params.id
-    }
-  }
-}
-</script>

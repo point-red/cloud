@@ -9,10 +9,10 @@
       </div>
       <p-block
         :header="true"
-        :is-loading="isLoading"
         title="Profile"
+        :is-loading="isLoading"
         column="col-xl-9">
-        <form class="px-30" @submit.prevent="onSubmit">
+        <form @submit.prevent="onSubmit">
           <p-form-row
             id="name"
             name="name"
@@ -55,12 +55,9 @@
 
           <div class="form-group row">
             <div class="col-md-9 offset-3">
-              <button
-                :disabled="isSaving"
-                type="submit"
-                class="btn btn-sm btn-primary"><i
-                  v-show="isSaving"
-                  class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}</button>
+              <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+              </button>
             </div>
           </div>
         </form>

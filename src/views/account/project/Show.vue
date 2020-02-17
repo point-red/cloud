@@ -5,17 +5,7 @@
       <span class="breadcrumb-item active">{{ project.code | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item">
-        <router-link
-          :to="'/account/project/' + id"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span>Project</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu></tab-menu>
 
     <project-widget :project="project"></project-widget>
 

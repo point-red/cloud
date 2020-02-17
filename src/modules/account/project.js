@@ -7,7 +7,8 @@ const state = {
     code: null,
     name: null
   },
-  projects: []
+  projects: [],
+  pagination: {}
 }
 
 const getters = {
@@ -16,12 +17,16 @@ const getters = {
   },
   projects: state => {
     return state.projects
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.projects = payload.data
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     state.project = payload.data

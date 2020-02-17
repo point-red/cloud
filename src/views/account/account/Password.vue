@@ -12,9 +12,7 @@
         :is-loading="isLoading"
         title="Change Password"
         column="col-xl-9">
-        <form
-          class="px-30"
-          @submit.prevent="onSubmit">
+        <form @submit.prevent="onSubmit">
           <p-form-row
             id="password"
             name="password"
