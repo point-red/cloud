@@ -177,7 +177,7 @@ export default {
         scoreList.forEach((el, i) => {
           scoreList.forEach((el2, j) => {
             if (i != j) {
-              if (Math.abs(el - el2) >= TOLERANCE) {
+              if (Math.abs(el - el2) > TOLERANCE) {
                 showHighlight = true
                 return 0
               }
@@ -197,7 +197,7 @@ export default {
           }
         } else if (this.isScoreColumn(j)) {
           text = this.$options.filters.numberFormat(el)
-          if (this.isHighlight && showHighlight) {
+          if (!isGroup && this.isHighlight && showHighlight) {
             style = style + ' highlight'
           }
         } else {
