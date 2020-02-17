@@ -60,7 +60,7 @@ export default {
       if (first) {
         this.camera = first.deviceId
         this.deviceId = first.deviceId
-        this.onCameraChange($this.deviceId)
+        this.onCameraChange(this.deviceId)
       }
     }
   },
