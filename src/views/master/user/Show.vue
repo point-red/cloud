@@ -39,7 +39,12 @@
             <label class="col-form-label col-lg-3">{{ $t('role') | uppercase }}</label>
             <div class="col-lg-9 mt-5">
               <template v-for="role in user.roles">
+                <template v-if="authUser.is_owner">
+                  {{ role.name | uppercase }}
+                </template>
+                <template v-else>
                 <a v-if="$permission.has('update user')" href="javascript:void(0)" :key="role.id" @click="$refs.role.show(user)">{{ role.name | uppercase }}</a>
+                </template>
               </template>
             </div>
           </div>
@@ -71,6 +76,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('auth', ['authUser']),
     ...mapGetters('masterUser', ['user']),
     ...mapGetters('masterRole', ['roles'])
   },
