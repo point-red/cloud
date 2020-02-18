@@ -8,7 +8,7 @@
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" ref="menu plugin" @click.native="togglePermission('menu plugin')" :checked="$rolePermission.has('menu plugin', permissions)" :description="''"/></td>
-        <td>Plugin</td>
+        <td><b>{{ $t('plugin') | uppercase }}</b></td>
       </tr>
     </p-table>
     <p-separator></p-separator>
@@ -17,27 +17,34 @@
       <tr slot="p-head">
         <th width="5px"></th>
         <th>Feature</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
       </tr>
       <tr slot="p-body">
+        <td><p-form-check-box :is-form="false" ref="menu scale weight" @click.native="togglePermission('menu scale weight')" :checked="$rolePermission.has('menu scale weight', permissions)"/></td>
+        <td><b>{{ $t('scale weight') | uppercase }}</b></td>
         <td></td>
-        <td><b>Scale Weight</b></td>
-        <td><p-form-check-box :is-form="false" ref="menu scale weight" @click.native="togglePermission('menu scale weight')" :checked="$rolePermission.has('menu scale weight', permissions)" :description="'Menu'"/></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create scale weight truck', 'read scale weight truck', 'update scale weight truck', 'delete scale weight truck'], permissions)" :checked="checkPermissionRow(['create scale weight truck', 'read scale weight truck', 'update scale weight truck', 'delete scale weight truck'], permissions)" :description="''"/></td>
-        <td><b>Scale Weight - Truck</b></td>
-        <td><p-form-check-box :is-form="false" ref="create scale weight truck" @click.native="togglePermission('create scale weight truck')" :checked="$rolePermission.has('create scale weight truck', permissions)" :description="'Create'"/></td>
-        <td><p-form-check-box :is-form="false" ref="read scale weight truck" @click.native="togglePermission('read scale weight truck')" :checked="$rolePermission.has('read scale weight truck', permissions)" :description="'Read'"/></td>
-        <td><p-form-check-box :is-form="false" ref="update scale weight truck" @click.native="togglePermission('update scale weight truck')" :checked="$rolePermission.has('update scale weight truck', permissions)" :description="'Update'"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete scale weight truck" @click.native="togglePermission('delete scale weight truck')" :checked="$rolePermission.has('delete scale weight truck', permissions)" :description="'Delete'"/></td>
+        <td><b>{{ $t('scale weight - truck') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="create scale weight truck" @click.native="togglePermission('create scale weight truck')" :checked="$rolePermission.has('create scale weight truck', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read scale weight truck" @click.native="togglePermission('read scale weight truck')" :checked="$rolePermission.has('read scale weight truck', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update scale weight truck" @click.native="togglePermission('update scale weight truck')" :checked="$rolePermission.has('update scale weight truck', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete scale weight truck" @click.native="togglePermission('delete scale weight truck')" :checked="$rolePermission.has('delete scale weight truck', permissions)" :description="'delete' | uppercase"/></td>
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create scale weight item', 'read scale weight item', 'update scale weight item', 'delete scale weight item'], permissions)" :checked="checkPermissionRow(['create scale weight item', 'read scale weight item', 'update scale weight item', 'delete scale weight item'], permissions)" :description="''"/></td>
-        <td><b>Scale Weight - Item</b></td>
-        <td><p-form-check-box :is-form="false" ref="create scale weight item" @click.native="togglePermission('create scale weight item')" :checked="$rolePermission.has('create scale weight item', permissions)" :description="'Create'"/></td>
-        <td><p-form-check-box :is-form="false" ref="read scale weight item" @click.native="togglePermission('read scale weight item')" :checked="$rolePermission.has('read scale weight item', permissions)" :description="'Read'"/></td>
-        <td><p-form-check-box :is-form="false" ref="update scale weight item" @click.native="togglePermission('update scale weight item')" :checked="$rolePermission.has('update scale weight item', permissions)" :description="'Update'"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete scale weight item" @click.native="togglePermission('delete scale weight item')" :checked="$rolePermission.has('delete scale weight item', permissions)" :description="'Delete'"/></td>
+        <td><b>{{ $t('scale weight - item') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="create scale weight item" @click.native="togglePermission('create scale weight item')" :checked="$rolePermission.has('create scale weight item', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read scale weight item" @click.native="togglePermission('read scale weight item')" :checked="$rolePermission.has('read scale weight item', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update scale weight item" @click.native="togglePermission('update scale weight item')" :checked="$rolePermission.has('update scale weight item', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete scale weight item" @click.native="togglePermission('delete scale weight item')" :checked="$rolePermission.has('delete scale weight item', permissions)" :description="'delete' | uppercase"/></td>
       </tr>
     </p-table>
     <p-separator></p-separator>
@@ -46,32 +53,42 @@
       <tr slot="p-head">
         <th width="5px"></th>
         <th>Feature</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
       </tr>
       <tr slot="p-body">
+        <td><p-form-check-box :is-form="false" ref="menu pin point" @click.native="togglePermission('menu pin point')" :checked="$rolePermission.has('menu pin point', permissions)"/></td>
+        <td><b>{{ $t('pin point') | uppercase }}</b></td>
         <td></td>
-        <td><b>Pin Point</b></td>
-        <td><p-form-check-box :is-form="false" ref="menu pin point" @click.native="togglePermission('menu pin point')" :checked="$rolePermission.has('menu pin point', permissions)" :description="'Menu'"/></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create pin point sales visitation form', 'read pin point sales visitation form', 'update pin point sales visitation form', 'delete pin point sales visitation form'], permissions)" :checked="checkPermissionRow(['create pin point sales visitation form', 'read pin point sales visitation form', 'update pin point sales visitation form', 'delete pin point sales visitation form'], permissions)" :description="''"/></td>
-        <td><b>Sales Visitation Form</b></td>
-        <td><p-form-check-box :is-form="false" ref="create pin point sales visitation form" @click.native="togglePermission('create pin point sales visitation form')" :checked="$rolePermission.has('create pin point sales visitation form', permissions)" :description="'Create'"/></td>
-        <td><p-form-check-box :is-form="false" ref="read pin point sales visitation form" @click.native="togglePermission('read pin point sales visitation form')" :checked="$rolePermission.has('read pin point sales visitation form', permissions)" :description="'Read'"/></td>
-        <td><p-form-check-box :is-form="false" ref="update pin point sales visitation form" @click.native="togglePermission('update pin point sales visitation form')" :checked="$rolePermission.has('update pin point sales visitation form', permissions)" :description="'Update'"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete pin point sales visitation form" @click.native="togglePermission('delete pin point sales visitation form')" :checked="$rolePermission.has('delete pin point sales visitation form', permissions)" :description="'Delete'"/></td>
+        <td><b>{{ $t('sales visitation form') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="create pin point sales visitation form" @click.native="togglePermission('create pin point sales visitation form')" :checked="$rolePermission.has('create pin point sales visitation form', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read pin point sales visitation form" @click.native="togglePermission('read pin point sales visitation form')" :checked="$rolePermission.has('read pin point sales visitation form', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update pin point sales visitation form" @click.native="togglePermission('update pin point sales visitation form')" :checked="$rolePermission.has('update pin point sales visitation form', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete pin point sales visitation form" @click.native="togglePermission('delete pin point sales visitation form')" :checked="$rolePermission.has('delete pin point sales visitation form', permissions)" :description="'delete' | uppercase"/></td>
       </tr>
       <tr slot="p-body">
         <td></td>
-        <td><b>Report</b></td>
-        <td><p-form-check-box :is-form="false" ref="read pin point sales visitation form report" @click.native="togglePermission('read pin point sales visitation form report')" :checked="$rolePermission.has('read pin point sales visitation form report', permissions)" :description="'Sales Visitation Form'"/></td>
-        <td><p-form-check-box :is-form="false" ref="read pin point attendance report" @click.native="togglePermission('read pin point attendance report')" :checked="$rolePermission.has('read pin point attendance report', permissions)" :description="'Attendance'"/></td>
-        <td><p-form-check-box :is-form="false" ref="read pin point sales visitation report" @click.native="togglePermission('read pin point sales visitation report')" :checked="$rolePermission.has('read pin point sales visitation report', permissions)" :description="'Sales Visitation'"/></td>
+        <td><b>{{ $t('report') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="read pin point sales visitation form report" @click.native="togglePermission('read pin point sales visitation form report')" :checked="$rolePermission.has('read pin point sales visitation form report', permissions)" :description="'sales visitation form' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read pin point attendance report" @click.native="togglePermission('read pin point attendance report')" :checked="$rolePermission.has('read pin point attendance report', permissions)" :description="'attendance' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read pin point sales visitation report" @click.native="togglePermission('read pin point sales visitation report')" :checked="$rolePermission.has('read pin point sales visitation report', permissions)" :description="'sales visitation' | uppercase"/></td>
+        <td></td>
       </tr>
       <tr slot="p-body">
         <td></td>
-        <td><b>Notification</b></td>
-        <td><p-form-check-box :is-form="false" ref="notification pin point sales" @click.native="togglePermission('notification pin point sales')" :checked="$rolePermission.has('notification pin point sales', permissions)" :description="'Sales'"/></td>
-        <td><p-form-check-box :is-form="false" ref="notification pin point supervisor" @click.native="togglePermission('notification pin point supervisor')" :checked="$rolePermission.has('notification pin point supervisor', permissions)" :description="'Supervisor'"/></td>
+        <td><b>{{ $t('notification') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="notification pin point sales" @click.native="togglePermission('notification pin point sales')" :checked="$rolePermission.has('notification pin point sales', permissions)" :description="'sales' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="notification pin point supervisor" @click.native="togglePermission('notification pin point supervisor')" :checked="$rolePermission.has('notification pin point supervisor', permissions)" :description="'supervisor' | uppercase"/></td>
+        <td></td>
+        <td></td>
       </tr>
     </p-table>
   </div>

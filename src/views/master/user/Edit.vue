@@ -10,9 +10,7 @@
 
     <h2 class="content-heading">User</h2>
 
-    <p-block
-      :title="title"
-      :is-loading="isLoading">
+    <p-block :is-loading="isLoading">
       <form
         class="px-30"
         @submit.prevent="onSubmit">
@@ -58,7 +56,6 @@ export default {
   },
   data () {
     return {
-      title: 'Edit User',
       id: this.$route.params.id,
       isLoading: true,
       form: new Form({

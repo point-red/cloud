@@ -68,7 +68,7 @@
               :label="group.label"
               @choosen="chooseGroupRow($event, group)"
               @clear="removeGroupRow(index)"/>
-            <hr :key="'group-hr-'+index"/>
+            <br :key="'group-hr-'+index"/>
           </template>
 
           <hr/>

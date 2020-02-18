@@ -47,6 +47,7 @@
               <td class="text-center">
                 <p-form-check-box
                   :id="'default-purchase-' + index"
+                  :is-form="false"
                   @click.native="togglePurchase(index)"
                   :checked="units[index].default_purchase">
                 </p-form-check-box>
@@ -54,6 +55,7 @@
               <td class="text-center">
                 <p-form-check-box
                   :id="'default-sales-' + index"
+                  :is-form="false"
                   @click.native="toggleSales(index)"
                   :checked="units[index].default_sales">
                 </p-form-check-box>
@@ -64,7 +66,7 @@
             </tr>
           </p-table>
           <button type="button" class="btn btn-sm btn-secondary" @click="addRow">
-            <i class="fa fa-plus"/> Add
+            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
           </button>
         </div>
       </template>

@@ -18,7 +18,7 @@
               slot="p-body">
               <th>{{ user.name }}</th>
               <td v-for="(warehouse, index) in warehouses" :key="index" class="text-center">
-                <p-form-check-box @click.native="toggle(user.id, warehouse.id)" :checked="isChecked(user.id, warehouse.id)"/>
+                <p-form-check-box :is-form="false" @click.native="toggle(user.id, warehouse.id)" :checked="isChecked(user.id, warehouse.id)"/>
               </td>
             </tr>
           </point-table>

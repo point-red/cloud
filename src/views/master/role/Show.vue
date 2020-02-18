@@ -14,7 +14,7 @@
             <p class="mt-5">
               <i class="si si-badge fa-4x"></i>
             </p>
-            <p class="font-w600">{{ role.name }}</p>
+            <p class="font-w600">{{ role.name | uppercase }}</p>
           </div>
         </div>
       </div>
@@ -34,6 +34,9 @@
         <a href="javascript:void(0)" class="nav-link" @click="choose('master')" :class="{'active': choosen == 'master'}">{{ $t('master') | uppercase }}</a>
       </li>
       <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link" @click="choose('purchasing')" :class="{'active': choosen == 'purchasing'}">{{ $t('purchasing') | uppercase }}</a>
+      </li>
+      <li class="nav-item">
         <a href="javascript:void(0)" class="nav-link" @click="choose('accounting')" :class="{'active': choosen == 'accounting'}">{{ $t('accounting') | uppercase }}</a>
       </li>
       <li class="nav-item">
@@ -48,6 +51,7 @@
       <p-block>
         <p-block-inner :is-loading="isLoading">
           <permission-master :roleId="id" v-show="choosen === 'master'" />
+          <permission-purchasing :roleId="id" v-show="choosen === 'purchasing'" />
           <permission-accounting :roleId="id" v-show="choosen === 'accounting'" />
           <permission-human-resource :roleId="id" v-show="choosen === 'human-resource'" />
           <permission-plugin :roleId="id" v-show="choosen === 'plugin'" />
@@ -60,6 +64,7 @@
 <script>
 import TabMenu from './TabMenu'
 import PermissionMaster from './permission/PermissionMaster'
+import PermissionPurchasing from './permission/PermissionPurchasing'
 import PermissionAccounting from './permission/PermissionAccounting'
 import PermissionHumanResource from './permission/PermissionHumanResource'
 import PermissionPlugin from './permission/PermissionPlugin'
@@ -71,6 +76,7 @@ export default {
   components: {
     TabMenu,
     PermissionMaster,
+    PermissionPurchasing,
     PermissionAccounting,
     PermissionHumanResource,
     PermissionPlugin,
@@ -80,7 +86,6 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      title: 'Role & Permission',
       isLoading: true,
       choosen: 'master'
     }

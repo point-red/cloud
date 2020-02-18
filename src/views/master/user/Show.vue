@@ -36,8 +36,8 @@
             v-model="user.phone"
             readonly/>
           <div class="form-group row">
-            <label class="col-form-label col-lg-3">{{ 'Role' }}</label>
-            <div class="col-lg-9">
+            <label class="col-form-label col-lg-3">{{ $t('role') | uppercase }}</label>
+            <div class="col-lg-9 mt-5">
               <template v-for="role in user.roles">
                 <a v-if="$permission.has('update user')" href="javascript:void(0)" :key="role.id" @click="$refs.role.show(user)">{{ role.name | uppercase }}</a>
               </template>
@@ -46,7 +46,7 @@
         </p-block-inner>
       </p-block>
     </div>
-    <role-modal id="role" ref="role" :title="'Roles'"/>
+    <role-modal id="role" ref="role"/>
   </div>
 </template>
 
@@ -67,7 +67,6 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      title: 'User',
       isLoading: false
     }
   },

@@ -4,49 +4,66 @@
       <tr slot="p-head">
         <th width="5px"></th>
         <th>Feature</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
       </tr>
       <tr slot="p-body">
+        <td><p-form-check-box :is-form="false" ref="menu human resource" @click.native="togglePermission('menu human resource')" :checked="$rolePermission.has('menu human resource', permissions)"/></td>
+        <td><b>{{ $t('human resource') | uppercase }}</b></td>
         <td></td>
-        <td><b>Human Resource</b></td>
-        <td><p-form-check-box :is-form="false" ref="menu human resource" @click.native="togglePermission('menu human resource')" :checked="$rolePermission.has('menu human resource', permissions)" :description="'Menu'"/></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create employee', 'read employee', 'update employee', 'delete employee'], permissions)" :checked="checkPermissionRow(['create employee', 'read employee', 'update employee', 'delete employee'], permissions)" :description="''"/></td>
-        <td><b>Employee</b></td>
-        <td><p-form-check-box :is-form="false" ref="create employee" @click.native="togglePermission('create employee')" :checked="$rolePermission.has('create employee', permissions)" :description="'Create'"/></td>
-        <td><p-form-check-box :is-form="false" ref="read employee" @click.native="togglePermission('read employee')" :checked="$rolePermission.has('read employee', permissions)" :description="'Read'"/></td>
-        <td><p-form-check-box :is-form="false" ref="update employee" @click.native="togglePermission('update employee')" :checked="$rolePermission.has('update employee', permissions)" :description="'Update'"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete employee" @click.native="togglePermission('delete employee')" :checked="$rolePermission.has('delete employee', permissions)" :description="'Delete'"/></td>
+        <td><b>{{ $t('employee') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="create employee" @click.native="togglePermission('create employee')" :checked="$rolePermission.has('create employee', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read employee" @click.native="togglePermission('read employee')" :checked="$rolePermission.has('read employee', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update employee" @click.native="togglePermission('update employee')" :checked="$rolePermission.has('update employee', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete employee" @click.native="togglePermission('delete employee')" :checked="$rolePermission.has('delete employee', permissions)" :description="'delete' | uppercase"/></td>
+        <td></td>
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create employee salary', 'read employee salary', 'update employee salary', 'delete employee salary', 'print employee salary'], permissions)" :checked="checkPermissionRow(['create employee salary', 'read employee salary', 'update employee salary', 'delete employee salary', 'print employee salary'], permissions)" :description="''"/></td>
-        <td><b>Employee Salary</b></td>
-        <td><p-form-check-box :is-form="false" ref="create employee salary" @click.native="togglePermission('create employee salary')" :checked="$rolePermission.has('create employee salary', permissions)" :description="'Create'"/></td>
-        <td><p-form-check-box :is-form="false" ref="read employee salary" @click.native="togglePermission('read employee salary')" :checked="$rolePermission.has('read employee salary', permissions)" :description="'Read'"/></td>
-        <td><p-form-check-box :is-form="false" ref="update employee salary" @click.native="togglePermission('update employee salary')" :checked="$rolePermission.has('update employee salary', permissions)" :description="'Update'"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete employee salary" @click.native="togglePermission('delete employee salary')" :checked="$rolePermission.has('delete employee salary', permissions)" :description="'Delete'"/></td>
-        <td><p-form-check-box :is-form="false" ref="print employee salary" @click.native="togglePermission('print employee salary')" :checked="$rolePermission.has('print employee salary', permissions)" :description="'Print'"/></td>
+        <td><b>{{ $t('salary') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="create employee salary" @click.native="togglePermission('create employee salary')" :checked="$rolePermission.has('create employee salary', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read employee salary" @click.native="togglePermission('read employee salary')" :checked="$rolePermission.has('read employee salary', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update employee salary" @click.native="togglePermission('update employee salary')" :checked="$rolePermission.has('update employee salary', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete employee salary" @click.native="togglePermission('delete employee salary')" :checked="$rolePermission.has('delete employee salary', permissions)" :description="'delete' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="print employee salary" @click.native="togglePermission('print employee salary')" :checked="$rolePermission.has('print employee salary', permissions)" :description="'print' | uppercase"/></td>
+        <td></td>
       </tr>
       <tr slot="p-body">
+        <td><p-form-check-box :is-form="false" ref="manage employee contract" @click.native="togglePermission('manage employee contract')" :checked="$rolePermission.has('manage employee contract', permissions)"/></td>
+        <td><b>{{ $t('contract') | uppercase }}</b></td>
         <td></td>
-        <td><b>Employee Contract</b></td>
-        <td><p-form-check-box :is-form="false" ref="manage employee contract" @click.native="togglePermission('manage employee contract')" :checked="$rolePermission.has('manage employee contract', permissions)" :description="'Manage'"/></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create employee kpi', 'read employee kpi', 'update employee kpi', 'delete employee kpi'], permissions)" :checked="checkPermissionRow(['create employee kpi', 'read employee kpi', 'update employee kpi', 'delete employee kpi'], permissions)" :description="''"/></td>
-        <td><b>KPI Template</b></td>
-        <td><p-form-check-box :is-form="false" ref="create employee kpi" @click.native="togglePermission('create employee kpi')" :checked="$rolePermission.has('create employee kpi', permissions)" :description="'Create'"/></td>
-        <td><p-form-check-box :is-form="false" ref="read employee kpi" @click.native="togglePermission('read employee kpi')" :checked="$rolePermission.has('read employee kpi', permissions)" :description="'Read'"/></td>
-        <td><p-form-check-box :is-form="false" ref="update employee kpi" @click.native="togglePermission('update employee kpi')" :checked="$rolePermission.has('update employee kpi', permissions)" :description="'Update'"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete employee kpi" @click.native="togglePermission('delete employee kpi')" :checked="$rolePermission.has('delete employee kpi', permissions)" :description="'Delete'"/></td>
+        <td><b>{{ $t('kpi template') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="create employee kpi" @click.native="togglePermission('create employee kpi')" :checked="$rolePermission.has('create employee kpi', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read employee kpi" @click.native="togglePermission('read employee kpi')" :checked="$rolePermission.has('read employee kpi', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update employee kpi" @click.native="togglePermission('update employee kpi')" :checked="$rolePermission.has('update employee kpi', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete employee kpi" @click.native="togglePermission('delete employee kpi')" :checked="$rolePermission.has('delete employee kpi', permissions)" :description="'delete' | uppercase"/></td>
+        <td></td>
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create employee assessment', 'read employee assessment', 'update employee assessment', 'delete employee assessment'], permissions)" :checked="checkPermissionRow(['create employee assessment', 'read employee assessment', 'update employee assessment', 'delete employee assessment'], permissions)" :description="''"/></td>
-        <td><b>KPI Assessment</b></td>
-        <td><p-form-check-box :is-form="false" ref="create employee assessment" @click.native="togglePermission('create employee assessment')" :checked="$rolePermission.has('create employee assessment', permissions)" :description="'Create'"/></td>
-        <td><p-form-check-box :is-form="false" ref="read employee assessment" @click.native="togglePermission('read employee assessment')" :checked="$rolePermission.has('read employee assessment', permissions)" :description="'Read'"/></td>
-        <td><p-form-check-box :is-form="false" ref="update employee assessment" @click.native="togglePermission('update employee assessment')" :checked="$rolePermission.has('update employee assessment', permissions)" :description="'Update'"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete employee assessment" @click.native="togglePermission('delete employee assessment')" :checked="$rolePermission.has('delete employee assessment', permissions)" :description="'Delete'"/></td>
+        <td><b>{{ $t('kpi assessment') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="create employee assessment" @click.native="togglePermission('create employee assessment')" :checked="$rolePermission.has('create employee assessment', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read employee assessment" @click.native="togglePermission('read employee assessment')" :checked="$rolePermission.has('read employee assessment', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update employee assessment" @click.native="togglePermission('update employee assessment')" :checked="$rolePermission.has('update employee assessment', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete employee assessment" @click.native="togglePermission('delete employee assessment')" :checked="$rolePermission.has('delete employee assessment', permissions)" :description="'delete' | uppercase"/></td>
+        <td></td>
       </tr>
     </p-table>
   </div>
