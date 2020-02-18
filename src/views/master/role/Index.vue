@@ -37,7 +37,7 @@
               :key="role.id"
               slot="p-body">
               <td>
-                <router-link :to="{ name: 'RoleShow', params: { id: role.id }}">
+                <router-link :to="{ name: 'role.show', params: { id: role.id }}">
                   {{ role.name | titlecase }}
                 </router-link>
               </td>

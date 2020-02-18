@@ -18,6 +18,7 @@
           v-model="form.name"
           :disabled="isSaving"
           :label="$t('name')"
+          :placeholder="$t('required') | uppercase"
           name="name"
           :errors="form.errors.get('name')"
           @errors="form.errors.set('name', null)"/>
@@ -29,7 +30,7 @@
               type="submit"
               :disabled="isSaving"
               class="btn btn-sm btn-primary">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Submit
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
             </button>
           </div>
         </div>
@@ -61,19 +62,31 @@ export default {
       })
     }
   },
+  created () {
+    this.isLoading = true
+    this.find({ id: this.id })
+      .then((response) => {
+        this.form.id = response.data.id
+        this.form.name = response.data.name
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+  },
   methods: {
-    ...mapActions('masterRole', ['create']),
+    ...mapActions('masterRole', ['find', 'update']),
     onSubmit () {
       this.isSaving = true
-      this.create(this.form)
+      this.update(this.form)
         .then(response => {
           this.isSaving = false
-          this.$notification.success('Create success')
+          this.$notification.success('update success')
           this.form.reset()
           this.$router.push('/master/role/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
-          this.$notification.error('Create failed')
+          this.$notification.error('update failed')
           this.form.errors.record(error.errors)
         })
     }

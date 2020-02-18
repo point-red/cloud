@@ -8,25 +8,39 @@
     <tab-menu></tab-menu>
 
     <div class="row">
-      <div class="col-6 col-md-4 col-xl-2">
-        <div class="block text-center" href="javascript:void(0)">
-          <div class="block-content">
-            <p class="mt-5">
-              <i class="si si-badge fa-4x"></i>
-            </p>
-            <p class="font-w600">{{ role.name | uppercase }}</p>
-          </div>
+      <p-block>
+        <div class="text-right">
+          <router-link
+            to="/master/role/create"
+            v-if="$permission.has('update role')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('create') | uppercase }}
+          </router-link>
+          <router-link
+            :to="{ path: '/master/role/' + role.id + '/edit', params: { id: role.id }}"
+            v-if="$permission.has('update role')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('edit') | uppercase }}
+          </router-link>
+          <button
+            type="button"
+            @click="onDelete()"
+            v-if="$permission.has('delete role')"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-outline-secondary">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          </button>
         </div>
-      </div>
-      <div class="col-6 col-md-4 col-xl-10">
-        <div class="block" href="javascript:void(0)" style="height:136px">
-          <div class="block-content">
-            <p class="mt-5">
-              <b>USERS :</b>
-            </p>
-          </div>
-        </div>
-      </div>
+        <hr>
+        <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="name"
+            :label="$t('name') | uppercase"
+            name="name"
+            v-model="role.name"
+            readonly/>
+        </p-block-inner>
+      </p-block>
     </div>
 
     <ul class="nav nav-tabs nav-tabs-alt mb-10" data-toggle="tabs" role="tablist">
@@ -87,6 +101,8 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: true,
+      isDeleting: false,
+      isArchiving: false,
       choosen: 'master'
     }
   },
@@ -112,10 +128,27 @@ export default {
       })
   },
   methods: {
-    ...mapActions('masterRole', { findRole: 'find' }),
+    ...mapActions('masterRole', {
+      findRole: 'find',
+      deleteRole: 'delete'
+    }),
     ...mapActions('masterPermission', { getPermissions: 'get' }),
     choose (feature) {
       this.choosen = feature
+    },
+    onDelete () {
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.deleteRole({
+          id: this.id
+        }).then(response => {
+          this.isDeleting = false
+          this.$router.push('/master/role')
+        }).catch(response => {
+          this.isDeleting = false
+          this.$notification.error('cannot delete this role')
+        })
+      })
     }
   }
 }

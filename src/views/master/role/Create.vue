@@ -20,6 +20,7 @@
           v-model="form.name"
           :disabled="isSaving"
           :label="$t('name')"
+          :placeholder="$t('required') | uppercase"
           name="name"
           :errors="form.errors.get('name')"
           @errors="form.errors.set('name', null)"/>
@@ -31,7 +32,7 @@
               type="submit"
               :disabled="isSaving"
               class="btn btn-sm btn-primary">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Submit
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
             </button>
           </div>
         </div>
