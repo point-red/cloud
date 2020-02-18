@@ -19,10 +19,10 @@
         </div>
       </div>
       <div class="col-6 col-md-4 col-xl-10">
-        <div class="block" href="javascript:void(0)" style="min-height:147px">
+        <div class="block" href="javascript:void(0)" style="height:136px">
           <div class="block-content">
             <p class="mt-5">
-              <!-- <b>USER WHO HAVE THIS ROLE :</b><br> -->
+              <b>USERS :</b>
             </p>
           </div>
         </div>

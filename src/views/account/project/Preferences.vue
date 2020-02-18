@@ -187,7 +187,7 @@ export default {
         }
       }).catch(error => {
         this.isLoading = false
-        this.$notification.error(error.message)
+        // this.$notification.error(error.message)
       })
   },
   methods: {

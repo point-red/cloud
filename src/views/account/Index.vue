@@ -13,7 +13,7 @@
         name="Billing"
         link="/account/billing"
         icon="si si-docs"/>
-      <p-box
+      <!-- <p-box
         name="Reward"
         link="/account/reward"
         icon="si si-diamond"/>
@@ -24,7 +24,7 @@
       <p-box
         name="Email Subscription"
         link="/account/email-subscription"
-        icon="si si-envelope"/>
+        icon="si si-envelope"/> -->
     </div>
     <p-loading-block v-show="isLoading" />
   </div>
