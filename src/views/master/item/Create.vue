@@ -50,6 +50,8 @@
           <tr slot="p-head">
             <th width="50px">#</th>
             <th>Unit Converter</th>
+            <th class="text-center">Default Unit Purchasing</th>
+            <th class="text-center">Default Unit Sales</th>
           </tr>
           <tr slot="p-body" v-for="(row, index) in form.units" :key="index">
             <th>{{ ++index }}</th>
@@ -59,10 +61,10 @@
               </template>
               <template v-else>
                 1 {{ row.name | uppercase }} = {{ row.converter }} {{ form.units[0].name | uppercase }}
-                <span style="font-size: 10px" v-if="row.default_purchase">(DEFAULT UNIT FOR PURCHASE)</span>
-                <span style="font-size: 10px" v-if="row.default_sales">(DEFAULT UNIT FOR SALES)</span>
               </template>
             </td>
+            <td class="text-center"><i class="fa fa-check" v-if="row.default_purchase"></i></td>
+            <td class="text-center"><i class="fa fa-check" v-if="row.default_sales"></i></td>
           </tr>
         </point-table>
 

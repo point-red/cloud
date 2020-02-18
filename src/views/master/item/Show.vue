@@ -60,20 +60,24 @@
             <tr slot="p-head">
               <th width="50px">#</th>
               <th>Unit Converter</th>
+              <th class="text-center">Default Unit Purchasing</th>
+              <th class="text-center">Default Unit Sales</th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in item.units" :key="index">
               <th>{{ ++index }}</th>
               <td>
                 <template v-if="index == 1">
                   {{ row.converter }} {{ row.name }}
-                  <span style="font-size: 10px" v-if="row.id == item.unit_default_purchase">(DEFAULT UNIT FOR PURCHASE)</span>
-                  <span style="font-size: 10px" v-if="row.id == item.unit_default_sales">(DEFAULT UNIT FOR SALES)</span>
                 </template>
                 <template v-else>
                   1 {{ row.name | uppercase }} = {{ row.converter }} {{ item.units[0].name | uppercase }}
-                  <span style="font-size: 10px" v-if="row.id == item.unit_default_purchase">(DEFAULT UNIT FOR PURCHASE)</span>
-                  <span style="font-size: 10px" v-if="row.id == item.unit_default_sales">(DEFAULT UNIT FOR SALES)</span>
                 </template>
+              </td>
+              <td class="text-center">
+                <i class="fa fa-check" v-if="row.id == item.unit_default_purchase"></i>
+              </td>
+              <td class="text-center">
+                <i class="fa fa-check" v-if="row.id == item.unit_default_sales"></i>
               </td>
             </tr>
           </point-table>
