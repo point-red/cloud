@@ -38,7 +38,7 @@
               v-for="(warehouse, index) in warehouses"
               :key="warehouse.id"
               slot="p-body">
-              <th>{{ ++index }}</th>
+              <th>{{ (currentPage - 1) * limit + (index + 1) }}</th>
               <td>
                 <router-link :to="{ name: 'warehouse.show', params: { id: warehouse.id }}">
                   {{ warehouse.name | titlecase }}
@@ -77,7 +77,8 @@ export default {
       isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      lastPage: 1,
+      limit: 10
     }
   },
   computed: {
@@ -100,7 +101,7 @@ export default {
           filter_like: {
             'name': this.searchText
           },
-          limit: 10,
+          limit: this.limit,
           page: this.currentPage
         }
       }).then(response => {

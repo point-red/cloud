@@ -9,29 +9,18 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('warehouse')" :header="true">
-        <router-link
-          to="/master/warehouse/create"
-          v-if="$permission.has('create warehouse')"
-          slot="header"
-          exact
-          class="btn btn-sm btn-outline-secondary mr-5">
-          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
-        </router-link>
-        <p-block-inner :is-loading="isLoading">
-          <p-form-row
-            id="name"
-            label="Name"
-            name="name"
-            v-model="data.name"
-            readonly/>
-
-          <hr/>
-
+      <p-block>
+        <div class="text-right">
+          <router-link
+            to="/master/warehouse/create"
+            v-if="$permission.has('create warehouse')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('create') | uppercase }}
+          </router-link>
           <router-link
             :to="{ path: '/master/warehouse/' + warehouse.id + '/edit', params: { id: warehouse.id }}"
             v-if="$permission.has('update warehouse')"
-            class="btn btn-sm btn-primary mr-5">
+            class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
           </router-link>
           <button
@@ -39,9 +28,18 @@
             @click="onDelete()"
             v-if="$permission.has('delete warehouse')"
             :disabled="isDeleting"
-            class="btn btn-sm btn-danger">
+            class="btn btn-sm btn-outline-secondary">
             <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
           </button>
+        </div>
+        <hr>
+        <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="name"
+            label="Name"
+            name="name"
+            v-model="data.name"
+            readonly/>
         </p-block-inner>
       </p-block>
     </div>
@@ -63,7 +61,6 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      title: 'Warehouse',
       isLoading: false,
       isDeleting: false,
       data: {
@@ -77,15 +74,17 @@ export default {
   methods: {
     ...mapActions('masterWarehouse', ['find', 'delete']),
     onDelete () {
-      this.isDeleting = true
-      this.delete({ id: this.id })
-        .then(response => {
-          this.isDeleting = false
-          this.$router.push('/master/warehouse')
-        }).catch(response => {
-          this.isDeleting = false
-          this.$notification.error('cannot delete this service')
-        })
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({ id: this.id })
+          .then(response => {
+            this.isDeleting = false
+            this.$router.push('/master/warehouse')
+          }).catch(response => {
+            this.isDeleting = false
+            this.$notification.error('cannot delete this service')
+          })
+      })
     }
   },
   created () {

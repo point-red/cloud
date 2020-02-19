@@ -44,6 +44,7 @@
           <p-form-row
             id="name"
             :label="$t('name')"
+            :placeholder="$t('required') | uppercase"
             name="name"
             v-model="item.name"
             readonly/>
