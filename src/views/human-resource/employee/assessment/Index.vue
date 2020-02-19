@@ -117,7 +117,7 @@
           type="button"
           class="btn btn-alt-secondary"
           @click="$refs.delete.close()"
-          data-dismiss="modal">Cancel</button>
+          data-dismiss="modal">{{ $t('cancel') | uppercase }}</button>
         &nbsp;
         <button
           type="button"

@@ -10,6 +10,31 @@
 
     <div class="row">
       <p-block>
+        <div class="text-right">
+          <router-link
+            to="/master/user/create"
+            v-if="$permission.has('update user')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('invite') | uppercase }}
+          </router-link>
+          <template v-if="authUser.tenant_owner_id != user.id">
+            <router-link
+              :to="{ path: '/master/user/' + user.id + '/edit', params: { id: user.id }}"
+              v-if="$permission.has('update user')"
+              class="btn btn-sm btn-outline-secondary mr-5">
+              {{ $t('edit') | uppercase }}
+            </router-link>
+            <button
+              type="button"
+              @click="onDelete()"
+              v-if="$permission.has('delete user')"
+              :disabled="isDeleting"
+              class="btn btn-sm btn-outline-secondary">
+              <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            </button>
+          </template>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"

@@ -10,7 +10,7 @@
     <tab-menu></tab-menu>
 
     <div class="row">
-      <p-block :header="true" title="Project">
+      <p-block>
         <form @submit.prevent="onSubmit">
           <p-form-row
             id="code"
@@ -18,7 +18,7 @@
             v-model="form.code"
             :disabled="isSaving"
             :label="$t('company identifier')"
-            :help="'WEB URL : ' + form.code + '.cloud.point.red'"
+            :help="'WEBSITE URL : ' + form.code + '.cloud.point.red'"
             :errors="form.errors.get('code')"
             @errors="form.errors.set('code', null)">
           </p-form-row>

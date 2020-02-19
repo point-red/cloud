@@ -83,7 +83,7 @@
               v-show="isSaving"
               class="fa fa-asterisk fa-spin"/>
               <template v-if="isCreateMode">{{ $t('close') | uppercase }}</template>
-              <template v-if="!isCreateMode">Cancel</template>
+              <template v-if="!isCreateMode">{{ $t('cancel') | uppercase }}</template>
           </button>
         </template>
       </p-modal>

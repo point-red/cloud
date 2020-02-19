@@ -25,6 +25,7 @@
             class="btn-block"
             @input="filterSearch"/>
         </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <p-table>
             <tr slot="p-head">

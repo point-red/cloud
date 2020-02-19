@@ -12,21 +12,8 @@
     </breadcrumb>
 
     <div class="row">
-      <p-block
-        :header="true"
-        :is-loading="isLoading"
-        title="Project">
+      <p-block :is-loading="isLoading">
         <form @submit.prevent="onSubmit">
-          <p-form-row
-            id="group"
-            name="group"
-            v-model="form.group"
-            :disabled="isSaving"
-            :label="$t('company group')"
-            :errors="form.errors.get('group')"
-            @errors="form.errors.set('group', null)">
-          </p-form-row>
-
           <p-form-row
             id="code"
             name="code"
@@ -45,6 +32,18 @@
             :label="$t('company name')"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)">
+          </p-form-row>
+
+          <p-separator></p-separator>
+
+          <p-form-row
+            id="group"
+            name="group"
+            v-model="form.group"
+            :disabled="isSaving"
+            :label="$t('company group')"
+            :errors="form.errors.get('group')"
+            @errors="form.errors.set('group', null)">
           </p-form-row>
 
           <p-form-row
@@ -99,7 +98,7 @@
             id="timezone"
             name="timezone"
             :label="$t('timezone')">
-            <div slot="body" class="col-lg-9">
+            <div slot="body" class="col-lg-9 mt-5">
               <p-select-modal
                 id="timezone"
                 :title="'select timezone'"
@@ -110,20 +109,19 @@
             </div>
           </p-form-row>
 
+          <hr>
+
           <div class="form-group row">
-            <div class="col-md-9 offset-3">
+            <div class="col md-3"></div>
+            <div class="col-md-9">
               <button
                 :disabled="isSaving"
                 type="submit"
                 class="btn btn-sm btn-primary mr-5">
-                <i
-                  v-show="isSaving"
-                  class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
               </button>
-              <router-link
-                :to="{path: '/account/project/' + this.id}"
-                class="btn btn-sm btn-danger">
-                Cancel
+              <router-link :to="{path: '/account/project/' + this.id}" class="btn btn-sm btn-danger">
+                {{ $t('cancel') | uppercase }}
               </router-link>
             </div>
           </div>

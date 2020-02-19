@@ -16,7 +16,7 @@
         <button
           type="button"
           class="btn btn-alt-secondary"
-          data-dismiss="modal">Cancel</button>
+          data-dismiss="modal">{{ $t('cancel') | uppercase }}</button>
         <button
           type="button"
           class="btn btn-danger"

@@ -129,7 +129,7 @@
             href="javascript:void(0)"
             @click="onDelete"
             class="btn btn-sm btn-danger mr-5">
-            Cancel
+            {{ $t('cancel') | uppercase }}
           </a>
         </p-block-inner>
       </p-block>

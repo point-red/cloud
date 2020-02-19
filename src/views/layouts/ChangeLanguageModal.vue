@@ -27,7 +27,7 @@
       <template slot="footer">
         <button
           class="btn btn-danger"
-          @click="close">Cancel</button>
+          @click="close">{{ $t('cancel') | uppercase }}</button>
       </template>
     </p-modal>
   </div>

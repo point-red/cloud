@@ -2,17 +2,15 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <router-link to="/master/role" class="breadcrumb-item">{{ $t('role') | uppercase }}</router-link>
-      <router-link :to="'master/role/' + id" class="breadcrumb-item">{{ $t('role') | uppercase }}</router-link>
+      <router-link to="master/role" class="breadcrumb-item">{{ $t('role') | uppercase }}</router-link>
+      <router-link :to="'master/role/' + id" class="breadcrumb-item">{{ role.name | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
-    <form
-      class="row"
-      @submit.prevent="onSubmit">
-      <p-block :header="true" :is-loading="isLoading">
+    <form class="row" @submit.prevent="onSubmit">
+      <p-block :is-loading="isLoading">
         <p-form-row
           id="name"
           v-model="form.name"
@@ -44,7 +42,7 @@ import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
 import Form from '@/utils/Form'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -61,6 +59,9 @@ export default {
         name: ''
       })
     }
+  },
+  computed: {
+    ...mapGetters('masterRole', ['role'])
   },
   created () {
     this.isLoading = true

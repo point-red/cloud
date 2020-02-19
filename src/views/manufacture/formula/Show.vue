@@ -201,7 +201,7 @@
             {{ $t('edit') | uppercase }}
           </router-link>
           <button type="submit" class="btn btn-sm btn-danger mr-5" :disabled="isDeleting" @click="onDelete">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Cancel
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('cancel') | uppercase }}
           </button>
         </p-block-inner>
       </p-block>

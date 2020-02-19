@@ -834,7 +834,7 @@
                 type="button"
                 @click="cancel"
                 class="btn btn-sm btn-outline-danger">
-                Cancel
+                {{ $t('cancel') | uppercase }}
               </button>
             </div>
           </div>

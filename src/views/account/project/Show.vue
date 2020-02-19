@@ -13,70 +13,117 @@
 
     <div class="row">
       <p-block :is-loading="isLoading">
-        <h2>Project</h2>
-        <p-table>
-          <tr slot="p-body">
-            <td class="font-w700" width="300">{{ $t('company group') | titlecase }}</td>
-            <td>{{ project.group }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company identifier') | titlecase }}</td>
-            <td>{{ project.code | uppercase }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company name') | titlecase }}</td>
-            <td>{{ project.name }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company address') | titlecase }}</td>
-            <td>{{ project.address }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company phone') | titlecase }}</td>
-            <td>{{ project.phone }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company whatsapp') | titlecase }}</td>
-            <td>{{ project.whatsapp }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company website') | titlecase }}</td>
-            <td>{{ project.website }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('marketplace notes') | titlecase }}</td>
-            <td>{{ project.marketplace_notes }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('vat identification number') | titlecase }}</td>
-            <td>{{ project.vat_id_number }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('timezone') | titlecase }}</td>
-            <td>{{ project.timezone }}</td>
-          </tr>
-        </p-table>
-        <div class="mb-20">
+        <div class="text-right">
           <button
-            class="btn btn-sm btn-primary mr-5"
+            class="btn btn-sm btn-outline-secondary mr-5"
             @click="redirectToProject(project)">
-            <i class="fa fa-globe"/> {{ $t('open') | uppercase }}
+            <i class="fa fa-globe"></i> {{ $t('open') | uppercase }}
           </button>
           <router-link
             tag="button"
+            :to="{ path: '/account/project/create' }"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('create') | uppercase }}
+          </router-link>
+          <router-link
+            tag="button"
             :to="{ path: '/account/project/' + project.id + '/edit', params: { id: project.id }}"
-            class="btn btn-sm btn-primary mr-5">
-            <i class="fa fa-edit"/> {{ $t('edit') | uppercase }}
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('edit') | uppercase }}
           </router-link>
           <button
             type="button"
             @click="onDelete()"
             :disabled="isSaving"
-            class="btn btn-sm btn-danger">
+            class="btn btn-sm btn-outline-secondary">
             <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>
-            <i v-show="!isSaving" class="fa fa-trash"/> {{ $t('delete') | uppercase }}
+            {{ $t('delete') | uppercase }}
           </button>
         </div>
+        <hr>
+        <p-form-row
+          id="code"
+          name="code"
+          v-model="project.code"
+          :disabled="true"
+          :label="$t('company identifier')"
+          :help="'WEBSITE URL : ' + project.code + '.cloud.point.red'">
+        </p-form-row>
+
+        <p-form-row
+          id="name"
+          name="name"
+          v-model="project.name"
+          :disabled="true"
+          :label="$t('company name')">
+        </p-form-row>
+
+        <p-separator></p-separator>
+
+        <p-form-row
+          id="group"
+          name="group"
+          v-model="project.group"
+          :disabled="true"
+          :label="$t('company group')">
+        </p-form-row>
+
+        <p-form-row
+          id="address"
+          name="address"
+          v-model="project.address"
+          :disabled="true"
+          :label="$t('company address')">
+        </p-form-row>
+
+        <p-form-row
+          id="phone"
+          name="phone"
+          v-model="project.phone"
+          :disabled="true"
+          :label="$t('company phone')">
+        </p-form-row>
+
+        <p-form-row
+          id="whatsapp"
+          name="whatsapp"
+          v-model="project.whatsapp"
+          :disabled="true"
+          :label="$t('company whatsapp')">
+        </p-form-row>
+
+        <p-form-row
+          id="website"
+          name="website"
+          v-model="project.website"
+          :disabled="true"
+          :label="$t('company website')">
+        </p-form-row>
+
+        <p-form-row
+          id="marketplace-notes"
+          name="marketplace-notes"
+          v-model="project.marketplace_notes"
+          :disabled="true"
+          :label="$t('marketplace notes')">
+        </p-form-row>
+
+        <p-form-row
+          id="vat-id-number"
+          name="vat_id_number"
+          v-model="project.vat_id_number"
+          :disabled="true"
+          :label="$t('vat identification number')">
+        </p-form-row>
+
+        <p-form-row
+          id="timezone"
+          name="timezone"
+          :label="$t('timezone')">
+          <div slot="body" class="col-form-label col-lg-9">
+            {{ project.timezone }}
+          </div>
+        </p-form-row>
       </p-block>
     </div>
   </div>

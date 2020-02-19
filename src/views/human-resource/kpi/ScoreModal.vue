@@ -63,7 +63,7 @@
           </button>
           <button type="button" class="btn btn-sm btn-outline-danger" @click="cancel">
             <template v-if="isCreateMode">{{ $t('close') | uppercase }}</template>
-            <template v-if="!isCreateMode">Cancel</template>
+            <template v-if="!isCreateMode">{{ $t('cancel') | uppercase }}</template>
           </button>
         </template>
       </p-modal>
