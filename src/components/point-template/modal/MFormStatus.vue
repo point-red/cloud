@@ -1,9 +1,6 @@
 <template>
   <div>
     <span @click="show" class="link">{{ mutableLabel || 'ALL' | uppercase }}</span>
-    <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != null">
-      <i class="clickable fa fa-close"></i>
-    </a>
     <p-modal :ref="'select-form-' + id" :id="'select-form-' + id" title="select form status">
       <template slot="content">
         <div v-if="isLoading">
@@ -23,7 +20,8 @@
         </div>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
       </template>
     </p-modal>
   </div>
@@ -83,6 +81,7 @@ export default {
       this.$emit('choosen', {
         value: 'notArchived'
       })
+      this.close()
     },
     show () {
       this.$refs['select-form-' + this.id].show()

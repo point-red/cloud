@@ -39,10 +39,18 @@
     </div>
 
     <div class="row" v-if="purchaseRequest">
-      <p-block :header="false">
+      <p-block>
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
+              <div class="text-right">
+                <router-link :to="{ name: 'purchase.request.create' }" class="btn btn-sm btn-outline-secondary mr-5">
+                  {{ $t('create') | uppercase }}
+                </router-link>
+                <router-link :to="{ name: 'purchase.request.edit', params: { id: purchaseRequest.id }}" class="btn btn-sm btn-outline-secondary mr-5">
+                  {{ $t('edit') | uppercase }}
+                </router-link>
+              </div>
               <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
               <hr>
               <div class="float-sm-right text-right">
@@ -142,12 +150,6 @@
               </div>
               {{ purchaseRequest.approvers[0].requested_to.first_name | uppercase }} {{ purchaseRequest.approvers[0].requested_to.last_name | uppercase }}
               <div style="font-size:11px">{{ purchaseRequest.approvers[0].requested_to.email | lowercase }}</div>
-            </div>
-            <div class="col-sm-12">
-              <hr>
-              <router-link :to="{ name: 'purchase.request.edit', params: { id: purchaseRequest.id }}" class="btn btn-sm btn-primary mr-5">
-                {{ $t('edit') | uppercase }}
-              </router-link>
             </div>
           </div>
         </p-block-inner>

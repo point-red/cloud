@@ -8,7 +8,7 @@
     <purchase-menu/>
 
     <div class="row">
-      <p-block :title="$t('purchase request')" :header="true">
+      <p-block>
         <div class="input-group block">
           <router-link
             to="/purchase/request/create"
@@ -122,7 +122,10 @@
               v-for="(purchaseRequestItem, index2) in purchaseRequest.items"
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
-              <th>{{ ((currentPage - 1) * limit) + index + 1 }}</th>
+              <th>
+                {{ ((currentPage - 1) * limit) + index + 1 }}
+                <template v-if="purchaseRequest.items.length > 1">.{{ index2 + 1 }}</template>
+              </th>
               <td>
                 <p-form-check-box
                   :is-form="false"
