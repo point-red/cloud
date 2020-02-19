@@ -58,12 +58,12 @@
         <td><p-form-check-box :is-form="false" ref="delete sales delivery order" @click.native="togglePermission('delete sales delivery order')" :checked="$rolePermission.has('delete sales delivery order', permissions)" :description="'delete' | uppercase"/></td>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create sales delivery notes', 'read sales delivery notes', 'update sales delivery notes', 'delete sales delivery notes'], permissions)" :checked="checkPermissionRow(['create sales delivery notes', 'read sales delivery notes', 'update sales delivery notes', 'delete sales delivery notes'], permissions)" :description="''"/></td>
-        <td><b>{{ $t('delivery notes') | uppercase }}</b></td>
-        <td><p-form-check-box :is-form="false" ref="create sales delivery notes" @click.native="togglePermission('create sales delivery notes')" :checked="$rolePermission.has('create sales delivery notes', permissions)" :description="'create' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read sales delivery notes" @click.native="togglePermission('read sales delivery notes')" :checked="$rolePermission.has('read sales delivery notes', permissions)" :description="'read' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="update sales delivery notes" @click.native="togglePermission('update sales delivery notes')" :checked="$rolePermission.has('update sales delivery notes', permissions)" :description="'update' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete sales delivery notes" @click.native="togglePermission('delete sales delivery notes')" :checked="$rolePermission.has('delete sales delivery notes', permissions)" :description="'delete' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create sales delivery note', 'read sales delivery note', 'update sales delivery note', 'delete sales delivery note'], permissions)" :checked="checkPermissionRow(['create sales delivery note', 'read sales delivery note', 'update sales delivery note', 'delete sales delivery note'], permissions)" :description="''"/></td>
+        <td><b>{{ $t('delivery note') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="create sales delivery note" @click.native="togglePermission('create sales delivery note')" :checked="$rolePermission.has('create sales delivery note', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read sales delivery note" @click.native="togglePermission('read sales delivery note')" :checked="$rolePermission.has('read sales delivery note', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update sales delivery note" @click.native="togglePermission('update sales delivery note')" :checked="$rolePermission.has('update sales delivery note', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete sales delivery note" @click.native="togglePermission('delete sales delivery note')" :checked="$rolePermission.has('delete sales delivery note', permissions)" :description="'delete' | uppercase"/></td>
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create sales invoice', 'read sales invoice', 'update sales invoice', 'delete sales invoice'], permissions)" :checked="checkPermissionRow(['create sales invoice', 'read sales invoice', 'update sales invoice', 'delete sales invoice'], permissions)" :description="''"/></td>
