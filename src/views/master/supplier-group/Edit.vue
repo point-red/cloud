@@ -10,7 +10,7 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('edit') + ' ' + $t('supplier group')" :header="true">
+      <p-block>
         <router-link
           to="/master/supplier-group/create"
           v-if="$permission.has('create supplier')"
@@ -31,9 +31,14 @@
 
           <hr/>
 
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
-          </button>
+          <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-9">
+              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('update') | uppercase }}
+              </button>
+            </div>
+          </div>
         </p-block-inner>
       </p-block>
     </form>

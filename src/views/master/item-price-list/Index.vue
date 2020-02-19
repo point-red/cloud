@@ -138,7 +138,6 @@ export default {
       this.$refs.editPricingGroupModal.show(group)
     },
     onSubmitPricingGroup () {
-      console.log('onsubmit')
       this.getPriceList()
       this.$refs.pricingGroupModal.close()
     },

@@ -9,15 +9,30 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('supplier')" :header="true">
-        <router-link
-          to="/master/supplier/create"
-          v-if="$permission.has('create supplier')"
-          slot="header"
-          exact
-          class="btn btn-sm btn-outline-secondary mr-5">
-          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
-        </router-link>
+      <p-block>
+        <div class="text-right">
+          <router-link
+            to="/master/supplier/create"
+            v-if="$permission.has('create supplier')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('create') | uppercase }}
+          </router-link>
+          <router-link
+            :to="{ path: '/master/supplier/' + supplier.id + '/edit', params: { id: supplier.id }}"
+            v-if="$permission.has('update supplier')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('edit') | uppercase }}
+          </router-link>
+          <button
+            type="button"
+            @click="onDelete()"
+            v-if="$permission.has('delete supplier')"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-outline-secondary">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          </button>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
@@ -43,23 +58,6 @@
             name="phone"
             v-model="data.phone"
             readonly/>
-
-          <hr>
-
-          <router-link
-            :to="{ path: '/master/supplier/' + supplier.id + '/edit', params: { id: supplier.id }}"
-            v-if="$permission.has('update supplier')"
-            class="btn btn-sm btn-primary mr-5">
-            {{ $t('edit') | uppercase }}
-          </router-link>
-          <button
-            type="button"
-            @click="onDelete()"
-            v-if="$permission.has('delete supplier')"
-            :disabled="isDeleting"
-            class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
-          </button>
         </p-block-inner>
       </p-block>
     </div>
@@ -97,15 +95,17 @@ export default {
   methods: {
     ...mapActions('masterSupplier', ['find', 'delete']),
     onDelete () {
-      this.isDeleting = true
-      this.delete({
-        id: this.id
-      }).then(response => {
-        this.isDeleting = false
-        this.$router.push('/master/supplier')
-      }).catch(response => {
-        this.isDeleting = false
-        this.$notification.error('cannot delete this supplier')
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({
+          id: this.id
+        }).then(response => {
+          this.isDeleting = false
+          this.$router.push('/master/supplier')
+        }).catch(response => {
+          this.isDeleting = false
+          this.$notification.error('cannot delete this supplier')
+        })
       })
     }
   },

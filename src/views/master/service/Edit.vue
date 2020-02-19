@@ -9,15 +9,7 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('edit') + ' ' + $t('service')" :header="true">
-        <router-link
-          to="/master/service/create"
-          v-if="$permission.has('create service')"
-          slot="header"
-          exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new service') | titlecase }}</span>
-        </router-link>
+      <p-block>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
@@ -30,9 +22,14 @@
 
           <hr/>
 
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
-          </button>
+          <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-9">
+              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('update') | uppercase }}
+              </button>
+            </div>
+          </div>
         </p-block-inner>
       </p-block>
     </form>
