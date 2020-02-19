@@ -9,14 +9,14 @@
     <manufacture-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('create') + ' ' + $t('machine')" :header="true">
+      <p-block>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="code"
             name="code"
             :label="$t('code')"
             v-model="form.code"
-            :disabled="true"
+            :disabled="isSaving"
             :errors="form.errors.get('code')"
             @errors="form.errors.set('code', null)"/>
 
@@ -40,9 +40,14 @@
 
           <hr>
 
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
-          </button>
+          <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-9">
+              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+              </button>
+            </div>
+          </div>
         </p-block-inner>
       </p-block>
     </form>
@@ -83,7 +88,7 @@ export default {
       this.get()
         .then(response => {
           this.isLoading = false
-          this.form.code = 'MC-' + this.nextId
+          this.form.code = 'M' + this.nextId
         }).catch(error => {
           this.isLoading = false
           this.$notification.error(error.message)

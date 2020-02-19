@@ -2,7 +2,7 @@
   <div class="d-flex flex-nowrap" style="overflow-x:auto">
     <router-link
       to="/manufacture"
-      class="btn mr-5 mb-15"
+      class="btn btn-sm mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/manufacture')}"
       active-class="btn-primary"
       v-if="$permission.has('read manufacture')">
@@ -10,7 +10,7 @@
     </router-link>
     <router-link
       to="/manufacture/machine"
-      class="btn mr-5 mb-15"
+      class="btn btn-sm mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/manufacture/machine')}"
       active-class="btn-primary"
       v-if="$permission.has('read manufacture machine')">
@@ -18,7 +18,7 @@
     </router-link>
     <router-link
       to="/manufacture/process"
-      class="btn mr-5 mb-15"
+      class="btn btn-sm mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/manufacture/process')}"
       active-class="btn-primary"
       v-if="$permission.has('read manufacture process')">
@@ -26,7 +26,7 @@
     </router-link>
     <router-link
       to="/manufacture/formula"
-      class="btn mr-5 mb-15"
+      class="btn btn-sm mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/manufacture/formula')}"
       active-class="btn-primary"
       v-if="$permission.has('read manufacture formula')">

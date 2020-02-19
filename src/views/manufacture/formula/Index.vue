@@ -8,15 +8,16 @@
     <manufacture-menu/>
 
     <div class="row">
-      <p-block :title="$t('formula')" :header="true">
-        <div class="row mb-10">
-          <p-date-range-picker
-            id="date"
-            name="date"
-            class="col-sm-4"
-            v-model="date"/>
-        </div>
+      <p-block>
         <div class="input-group block">
+          <router-link
+            to="/manufacture/formula/create"
+            v-if="$permission.has('create manufacture formula')"
+            class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -24,14 +25,6 @@
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>
-          <router-link
-            to="/manufacture/formula/create"
-            v-if="$permission.has('create manufacture formula')"
-            class="input-group-append">
-            <span class="input-group-text">
-              <i class="fa fa-plus"></i>
-            </span>
-          </router-link>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -113,23 +106,7 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
-      limit: 10,
-      date: {
-        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
-        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
-      }
-    }
-  },
-  watch: {
-    date: function () {
-      this.$router.push({
-        query: {
-          ...this.$route.query,
-          date_from: this.date.start,
-          date_to: this.date.end
-        }
-      })
-      this.getManufactureFormulas()
+      limit: 10
     }
   },
   computed: {
@@ -163,12 +140,6 @@ export default {
             'rawMaterials.quantity': this.searchText,
             'finishedGoods.item.name': this.searchText,
             'finishedGoods.quantity': this.searchText
-          },
-          filter_min: {
-            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
-          },
-          filter_max: {
-            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
           includes: 'form;rawMaterials.item.units;finishedGoods.item.units',

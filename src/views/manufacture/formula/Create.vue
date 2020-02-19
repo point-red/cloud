@@ -9,7 +9,7 @@
     <manufacture-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('formula')" :header="true">
+      <p-block>
         <p-block-inner>
           <p-form-row
             id="process"
@@ -154,7 +154,7 @@
           <div class="form-group row">
             <div class="col-md-12">
               <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
               </button>
             </div>
           </div>

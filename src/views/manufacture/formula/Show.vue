@@ -259,17 +259,19 @@ export default {
       })
     },
     onDelete () {
-      this.isDeleting = true
-      this.delete({
-        id: this.id
-      }).then(response => {
-        this.isDeleting = false
-        this.$notification.success('cancel success')
-        this.$router.push('/manufacture/formula')
-      }).catch(error => {
-        this.isDeleting = false
-        this.$notification.error(error.message)
-        this.form.errors.record(error.errors)
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({
+          id: this.id
+        }).then(response => {
+          this.isDeleting = false
+          this.$notification.success('cancel success')
+          this.$router.push('/manufacture/formula')
+        }).catch(error => {
+          this.isDeleting = false
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        })
       })
     }
   },

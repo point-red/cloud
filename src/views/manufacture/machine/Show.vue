@@ -10,6 +10,29 @@
 
     <div class="row">
       <p-block>
+        <div class="text-right">
+          <router-link
+            :to="{ path: '/manufacture/machine/create' }"
+            v-if="$permission.has('update manufacture machine')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('create') | uppercase }}
+          </router-link>
+          <router-link
+            :to="{ path: '/manufacture/machine/' + machine.id + '/edit', params: { id: machine.id }}"
+            v-if="$permission.has('update manufacture machine')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('edit') | uppercase }}
+          </router-link>
+          <button
+            type="button"
+            @click="onDelete()"
+            v-if="$permission.has('delete manufacture machine')"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-outline-secondary">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          </button>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="code"
@@ -31,23 +54,6 @@
             name="notes"
             v-model="machine.notes"
             readonly/>
-
-          <hr>
-
-          <router-link
-            :to="{ path: '/manufacture/machine/' + machine.id + '/edit', params: { id: machine.id }}"
-            v-if="$permission.has('update manufacture machine')"
-            class="btn btn-sm btn-primary mr-5">
-            {{ $t('edit') | uppercase }}
-          </router-link>
-          <button
-            type="button"
-            @click="onDelete()"
-            v-if="$permission.has('delete manufacture machine')"
-            :disabled="isDeleting"
-            class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
-          </button>
         </p-block-inner>
       </p-block>
     </div>
@@ -80,16 +86,18 @@ export default {
   methods: {
     ...mapActions('manufactureMachine', ['find', 'delete']),
     onDelete () {
-      this.isDeleting = true
-      this.delete({ id: this.id })
-        .then(response => {
-          this.$notification.success('delete success')
-          this.$router.push('/manufacture/machine')
-          this.isDeleting = false
-        }).catch(error => {
-          this.$notification.error(error.message)
-          this.isDeleting = false
-        })
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({ id: this.id })
+          .then(response => {
+            this.$notification.success('delete success')
+            this.$router.push('/manufacture/machine')
+            this.isDeleting = false
+          }).catch(error => {
+            this.$notification.error(error.message)
+            this.isDeleting = false
+          })
+      })
     }
   },
   created () {

@@ -8,8 +8,16 @@
     <manufacture-menu/>
 
     <div class="row">
-      <p-block :title="$t('machine')" :header="true">
+      <p-block>
         <div class="input-group block">
+          <router-link
+            to="/manufacture/machine/create"
+            v-if="$permission.has('create manufacture machine')"
+            class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -17,14 +25,6 @@
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>
-          <router-link
-            to="/manufacture/machine/create"
-            v-if="$permission.has('create manufacture machine')"
-            class="input-group-append">
-            <span class="input-group-text">
-              <i class="fa fa-plus"></i>
-            </span>
-          </router-link>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">

@@ -8,8 +8,16 @@
     <manufacture-menu/>
 
     <div class="row">
-      <p-block :title="$t('process')" :header="true">
+      <p-block>
         <div class="input-group block">
+          <router-link
+            to="/manufacture/process/create"
+            v-if="$permission.has('create manufacture process')"
+            class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -17,14 +25,6 @@
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>
-          <router-link
-            to="/manufacture/process/create"
-            v-if="$permission.has('create manufacture process')"
-            class="input-group-append">
-            <span class="input-group-text">
-              <i class="fa fa-plus"></i>
-            </span>
-          </router-link>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -44,7 +44,7 @@
                 </td>
                 <td class="text-right">
                   <router-link class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.input.index', params: { id: process.id }}">
-                    <i class="fa fa-share-square-o"></i> {{ $t('start production') }}
+                    <i class="fa fa-share-square-o"></i> {{ $t('start production') | uppercase }}
                   </router-link>
                 </td>
               </tr>

@@ -10,6 +10,23 @@
 
     <div class="row">
       <p-block>
+        <div class="text-right">
+          <router-link
+            :to="{ path: '/manufacture/process/' + process.id + '/edit', params: { id: process.id }}"
+            v-if="$permission.has('update manufacture process')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('edit') | uppercase }}
+          </router-link>
+          <button
+            type="button"
+            @click="onDelete()"
+            v-if="$permission.has('delete manufacture process')"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-outline-secondary">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          </button>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
@@ -24,23 +41,6 @@
             name="notes"
             v-model="process.notes"
             readonly/>
-
-          <hr>
-
-          <router-link
-            :to="{ path: '/manufacture/process/' + process.id + '/edit', params: { id: process.id }}"
-            v-if="$permission.has('update manufacture process')"
-            class="btn btn-sm btn-primary mr-5">
-            {{ $t('edit') | uppercase }}
-          </router-link>
-          <button
-            type="button"
-            @click="onDelete()"
-            v-if="$permission.has('delete manufacture process')"
-            :disabled="isDeleting"
-            class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
-          </button>
         </p-block-inner>
       </p-block>
     </div>
@@ -73,16 +73,18 @@ export default {
   methods: {
     ...mapActions('manufactureProcess', ['find', 'delete']),
     onDelete () {
-      this.isDeleting = true
-      this.delete({ id: this.id })
-        .then(response => {
-          this.$notification.success('delete success')
-          this.$router.push('/manufacture/process')
-          this.isDeleting = false
-        }).catch(error => {
-          this.$notification.error(error.message)
-          this.isDeleting = false
-        })
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({ id: this.id })
+          .then(response => {
+            this.$notification.success('delete success')
+            this.$router.push('/manufacture/process')
+            this.isDeleting = false
+          }).catch(error => {
+            this.$notification.error(error.message)
+            this.isDeleting = false
+          })
+      })
     }
   },
   created () {

@@ -28,7 +28,7 @@
             <div class="col-lg-3"></div>
             <div class="col-lg-9">
               <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('update') | uppercase }}
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
               </button>
             </div>
           </div>

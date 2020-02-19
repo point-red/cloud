@@ -39,7 +39,7 @@
                 :disabled="isSaving"
                 type="submit"
                 class="btn btn-sm btn-primary">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
               </button>
             </div>
           </div>
@@ -126,7 +126,7 @@
                 :disabled="isSaving"
                 type="submit"
                 class="btn btn-sm btn-primary">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
               </button>
             </div>
           </div>

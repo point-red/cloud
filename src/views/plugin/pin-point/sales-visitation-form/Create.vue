@@ -346,7 +346,7 @@
         <div class="form-group row">
           <div class="col-md-12">
             <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary" v-if="isPermissionCameraGranted && isPermissionGeolocationGranted">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
             </button>
             <button :disabled="isSaving" type="button" class="btn btn-sm btn-danger" v-else>
               <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Required to access your location and camera to use this feature
