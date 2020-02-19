@@ -25,11 +25,12 @@
       v-if="$permission.has('menu finance')"
       link="/finance"
       icon="si si-wallet"/>
+     -->
     <p-box
       :name="$t('accounting')"
       v-if="$permission.has('menu accounting')"
       link="/accounting"
-      icon="si si-folder-alt"/> -->
+      icon="si si-folder-alt"/>
     <p-box
       :name="$t('plugin')"
       v-if="$permission.has('menu plugin')"
