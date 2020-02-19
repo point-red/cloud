@@ -9,29 +9,18 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('allocation')" :header="true">
-        <router-link
-          to="/master/allocation/create"
-          v-if="$permission.has('create allocation')"
-          slot="header"
-          exact
-          class="btn btn-sm btn-outline-secondary mr-5">
-          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
-        </router-link>
-        <p-block-inner :is-loading="isLoading">
-          <p-form-row
-            id="name"
-            label="Name"
-            name="name"
-            v-model="allocation.name"
-            readonly/>
-
-          <hr/>
-
+      <p-block>
+        <div class="text-right">
+          <router-link
+            to="/master/allocation/create"
+            v-if="$permission.has('create allocation')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('create') | uppercase }}
+          </router-link>
           <router-link
             :to="{ path: '/master/allocation/' + allocation.id + '/edit', params: { id: allocation.id }}"
             v-if="$permission.has('update allocation')"
-            class="btn btn-sm btn-primary mr-5">
+            class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
           </router-link>
           <button
@@ -39,9 +28,18 @@
             @click="onDelete()"
             v-if="$permission.has('delete allocation')"
             :disabled="isDeleting"
-            class="btn btn-sm btn-danger">
+            class="btn btn-sm btn-outline-secondary">
             <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
           </button>
+        </div>
+        <hr>
+        <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="name"
+            label="Name"
+            name="name"
+            v-model="allocation.name"
+            readonly/>
         </p-block-inner>
       </p-block>
     </div>
@@ -73,15 +71,17 @@ export default {
   methods: {
     ...mapActions('masterAllocation', ['find', 'delete']),
     onDelete () {
-      this.isDeleting = true
-      this.delete({ id: this.id })
-        .then(response => {
-          this.isDeleting = false
-          this.$router.push('/master/allocation')
-        }).catch(error => {
-          this.isDeleting = false
-          this.$notification.error('cannot delete this supplier')
-        })
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({ id: this.id })
+          .then(response => {
+            this.isDeleting = false
+            this.$router.push('/master/allocation')
+          }).catch(error => {
+            this.isDeleting = false
+            this.$notification.error('cannot delete this allocation')
+          })
+      })
     }
   },
   created () {

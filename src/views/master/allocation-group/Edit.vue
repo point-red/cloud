@@ -3,36 +3,35 @@
     <breadcrumb>
       <breadcrumb-master/>
       <router-link to="/master/allocation-group" class="breadcrumb-item">{{ $t('allocation group') | uppercase }}</router-link>
+      <router-link :to="'/master/allocation-group/'+form.id" class="breadcrumb-item">{{ group.name | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('edit') + ' ' + $t('allocation group')" :header="true">
-        <router-link
-          to="/master/allocation-group/create"
-          v-if="$permission.has('create allocation')"
-          slot="header"
-          exact
-          class="btn btn-sm btn-outline-secondary mr-5">
-          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
-        </router-link>
+      <p-block>
         <p-block-inner>
           <p-form-row
             id="name"
             v-model="form.name"
             :disabled="isSaving"
             :label="$t('name')"
+            :placeholder="$t('required') | uppercase"
             name="name"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"/>
 
           <hr/>
 
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('save') | uppercase }}
-          </button>
+          <div class="row">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-9">
+              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>{{ $t('update') | uppercase }}
+              </button>
+            </div>
+          </div>
         </p-block-inner>
       </p-block>
     </form>
