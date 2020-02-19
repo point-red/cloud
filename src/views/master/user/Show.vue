@@ -39,11 +39,11 @@
             <label class="col-form-label col-lg-3">{{ $t('role') | uppercase }}</label>
             <div class="col-lg-9 mt-5">
               <template v-for="role in user.roles">
-                <template v-if="authUser.owner_id == user.id">
+                <template v-if="authUser.tenant_owner_id == user.id">
                   {{ role.name | uppercase }}
                 </template>
                 <template v-else>
-                <a v-if="$permission.has('update user')" href="javascript:void(0)" :key="role.id" @click="$refs.role.show(user)">{{ role.name | uppercase }}</a>
+                  <a v-if="$permission.has('update user')" href="javascript:void(0)" :key="role.id" @click="$refs.role.show(user)">{{ role.name | uppercase }}</a>
                 </template>
               </template>
             </div>
