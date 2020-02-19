@@ -10,7 +10,7 @@
         <th></th>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" ref="menu accounting" @click.native="togglePermission('menu accounting')" :checked="$rolePermission.has('menu accounting', permissions)"/></td>
+        <td><p-form-check-box :is-form="false" ref="menu purchase" @click.native="togglePermission('menu purchase')" :checked="$rolePermission.has('menu purchase', permissions)"/></td>
         <td><b>{{ $t('purchasing') | uppercase }}</b></td>
         <td></td>
         <td></td>
@@ -42,6 +42,14 @@
         <td><p-form-check-box :is-form="false" ref="delete purchase order" @click.native="togglePermission('delete purchase order')" :checked="$rolePermission.has('delete purchase order', permissions)" :description="'delete' | uppercase"/></td>
       </tr>
       <tr slot="p-body">
+        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create purchase down payment', 'read purchase down payment', 'update purchase down payment', 'delete purchase down payment'], permissions)" :checked="checkPermissionRow(['create purchase down payment', 'read purchase down payment', 'update purchase down payment', 'delete purchase down payment'], permissions)" :description="''"/></td>
+        <td><b>{{ $t('down payment') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="create purchase down payment" @click.native="togglePermission('create purchase down payment')" :checked="$rolePermission.has('create purchase down payment', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read purchase down payment" @click.native="togglePermission('read purchase down payment')" :checked="$rolePermission.has('read purchase down payment', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update purchase down payment" @click.native="togglePermission('update purchase down payment')" :checked="$rolePermission.has('update purchase down payment', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete purchase down payment" @click.native="togglePermission('delete purchase down payment')" :checked="$rolePermission.has('delete purchase down payment', permissions)" :description="'delete' | uppercase"/></td>
+      </tr>
+      <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create purchase received', 'read purchase received', 'update purchase received', 'delete purchase received'], permissions)" :checked="checkPermissionRow(['create purchase received', 'read purchase received', 'update purchase received', 'delete purchase received'], permissions)" :description="''"/></td>
         <td><b>{{ $t('purchase received') | uppercase }}</b></td>
         <td><p-form-check-box :is-form="false" ref="create purchase received" @click.native="togglePermission('create purchase received')" :checked="$rolePermission.has('create purchase received', permissions)" :description="'create' | uppercase"/></td>
@@ -50,12 +58,20 @@
         <td><p-form-check-box :is-form="false" ref="delete purchase received" @click.native="togglePermission('delete purchase received')" :checked="$rolePermission.has('delete purchase received', permissions)" :description="'delete' | uppercase"/></td>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create purchase invoice]', 'read purchase invoice]', 'update purchase invoice]', 'delete purchase invoice]'], permissions)" :checked="checkPermissionRow(['create purchase invoice]', 'read purchase invoice]', 'update purchase invoice]', 'delete purchase invoice]'], permissions)" :description="''"/></td>
+        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create purchase invoice', 'read purchase invoice', 'update purchase invoice', 'delete purchase invoice'], permissions)" :checked="checkPermissionRow(['create purchase invoice', 'read purchase invoice', 'update purchase invoice', 'delete purchase invoice'], permissions)" :description="''"/></td>
         <td><b>{{ $t('invoice') | uppercase }}</b></td>
-        <td><p-form-check-box :is-form="false" ref="create purchase invoice]" @click.native="togglePermission('create purchase invoice]')" :checked="$rolePermission.has('create purchase invoice]', permissions)" :description="'create' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read purchase invoice]" @click.native="togglePermission('read purchase invoice]')" :checked="$rolePermission.has('read purchase invoice]', permissions)" :description="'read' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="update purchase invoice]" @click.native="togglePermission('update purchase invoice]')" :checked="$rolePermission.has('update purchase invoice]', permissions)" :description="'update' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete purchase invoice]" @click.native="togglePermission('delete purchase invoice]')" :checked="$rolePermission.has('delete purchase invoice]', permissions)" :description="'delete' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="create purchase invoice" @click.native="togglePermission('create purchase invoice')" :checked="$rolePermission.has('create purchase invoice', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read purchase invoice" @click.native="togglePermission('read purchase invoice')" :checked="$rolePermission.has('read purchase invoice', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update purchase invoice" @click.native="togglePermission('update purchase invoice')" :checked="$rolePermission.has('update purchase invoice', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete purchase invoice" @click.native="togglePermission('delete purchase invoice')" :checked="$rolePermission.has('delete purchase invoice', permissions)" :description="'delete' | uppercase"/></td>
+      </tr>
+      <tr slot="p-body">
+        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create purchase return', 'read purchase return', 'update purchase return', 'delete purchase return'], permissions)" :checked="checkPermissionRow(['create purchase return', 'read purchase return', 'update purchase return', 'delete purchase return'], permissions)" :description="''"/></td>
+        <td><b>{{ $t('return') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="create purchase return" @click.native="togglePermission('create purchase return')" :checked="$rolePermission.has('create purchase return', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read purchase return" @click.native="togglePermission('read purchase return')" :checked="$rolePermission.has('read purchase return', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update purchase return" @click.native="togglePermission('update purchase return')" :checked="$rolePermission.has('update purchase return', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete purchase return" @click.native="togglePermission('delete purchase return')" :checked="$rolePermission.has('delete purchase return', permissions)" :description="'delete' | uppercase"/></td>
       </tr>
     </p-table>
   </div>

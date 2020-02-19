@@ -30,12 +30,14 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
+              <th style="width:50px">#</th>
               <th>Name</th>
             </tr>
             <tr
-              v-for="role in roles"
+              v-for="(role, index) in roles"
               :key="role.id"
               slot="p-body">
+              <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'role.show', params: { id: role.id }}">
                   {{ role.name | titlecase }}

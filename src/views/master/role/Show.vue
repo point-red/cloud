@@ -51,6 +51,18 @@
         <a href="javascript:void(0)" class="nav-link" @click="choose('purchasing')" :class="{'active': choosen == 'purchasing'}">{{ $t('purchasing') | uppercase }}</a>
       </li>
       <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link" @click="choose('sales')" :class="{'active': choosen == 'sales'}">{{ $t('sales') | uppercase }}</a>
+      </li>
+      <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link" @click="choose('inventory')" :class="{'active': choosen == 'inventory'}">{{ $t('inventory') | uppercase }}</a>
+      </li>
+      <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link" @click="choose('manufacture')" :class="{'active': choosen == 'manufacture'}">{{ $t('manufacture') | uppercase }}</a>
+      </li>
+      <li class="nav-item">
+        <a href="javascript:void(0)" class="nav-link" @click="choose('finance')" :class="{'active': choosen == 'finance'}">{{ $t('finance') | uppercase }}</a>
+      </li>
+      <li class="nav-item">
         <a href="javascript:void(0)" class="nav-link" @click="choose('accounting')" :class="{'active': choosen == 'accounting'}">{{ $t('accounting') | uppercase }}</a>
       </li>
       <li class="nav-item">
@@ -66,6 +78,10 @@
         <p-block-inner :is-loading="isLoading">
           <permission-master :roleId="id" v-show="choosen === 'master'" />
           <permission-purchasing :roleId="id" v-show="choosen === 'purchasing'" />
+          <permission-sales :roleId="id" v-show="choosen === 'sales'" />
+          <permission-inventory :roleId="id" v-show="choosen === 'inventory'" />
+          <permission-manufacture :roleId="id" v-show="choosen === 'manufacture'" />
+          <permission-finance :roleId="id" v-show="choosen === 'finance'" />
           <permission-accounting :roleId="id" v-show="choosen === 'accounting'" />
           <permission-human-resource :roleId="id" v-show="choosen === 'human-resource'" />
           <permission-plugin :roleId="id" v-show="choosen === 'plugin'" />
@@ -79,6 +95,10 @@
 import TabMenu from './TabMenu'
 import PermissionMaster from './permission/PermissionMaster'
 import PermissionPurchasing from './permission/PermissionPurchasing'
+import PermissionSales from './permission/PermissionSales'
+import PermissionInventory from './permission/PermissionInventory'
+import PermissionManufacture from './permission/PermissionManufacture'
+import PermissionFinance from './permission/PermissionFinance'
 import PermissionAccounting from './permission/PermissionAccounting'
 import PermissionHumanResource from './permission/PermissionHumanResource'
 import PermissionPlugin from './permission/PermissionPlugin'
@@ -91,6 +111,10 @@ export default {
     TabMenu,
     PermissionMaster,
     PermissionPurchasing,
+    PermissionSales,
+    PermissionInventory,
+    PermissionManufacture,
+    PermissionFinance,
     PermissionAccounting,
     PermissionHumanResource,
     PermissionPlugin,
