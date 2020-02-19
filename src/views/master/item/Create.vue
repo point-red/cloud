@@ -9,7 +9,7 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block id="item-unit" :title="'Create Item'" :header="true">
+      <p-block>
         <p-form-row
           id="code"
           name="code"
@@ -36,7 +36,7 @@
 
         <hr>
 
-        <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" sub-ledger="account payable"/>
+        <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" sub-ledger="inventory"/>
 
         <p-separator></p-separator>
 

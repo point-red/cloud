@@ -10,7 +10,7 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('edit') + ' ' + $t('item')" :header="true">
+      <p-block>
         <router-link
           to="/master/item/create"
           v-if="$permission.has('create item')"
@@ -46,7 +46,7 @@
 
           <hr>
 
-          <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" :label="form.chart_of_account_label" sub-ledger="account payable"/>
+          <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" :label="form.chart_of_account_label" sub-ledger="inventory"/>
 
           <p-separator></p-separator>
 
@@ -117,13 +117,8 @@
             id="require-production-number"
             name="require-production-number"
             :label="$t('production number')">
-            <div slot="body" class="col-lg-9">
-              <p-form-check-box
-                class="mb-0"
-                style="float:left"
-                id="require-production-number"
-                name="require-production-number"
-                :checked="form.require_production_number"/>
+            <div slot="body" class="col-lg-9 mt-10">
+              <i class="fa fa-check" v-if="item.require_production_number"></i>
             </div>
           </p-form-row>
 
@@ -131,12 +126,8 @@
             id="require-expiry-date"
             name="require-expiry-date"
             :label="$t('expiry date')">
-            <div slot="body" class="col-lg-9">
-              <p-form-check-box
-                id="require-expiry-date"
-                name="require-expiry-date"
-                @click.native="chooseExpiryDate()"
-                :checked="form.require_expiry_date"/>
+            <div slot="body" class="col-lg-9 mt-10">
+              <i class="fa fa-check" v-if="item.require_expiry_date"></i>
             </div>
           </p-form-row>
 

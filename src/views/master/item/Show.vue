@@ -9,15 +9,30 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('item')" :header="true">
-        <router-link
-          to="/master/item/create"
-          v-if="$permission.has('create item')"
-          slot="header"
-          exact
-          class="btn btn-sm btn-outline-secondary mr-5">
-          <span><i class="si si-plus"></i> {{ $t('new') | uppercase }}</span>
-        </router-link>
+      <p-block>
+        <div class="text-right">
+          <router-link
+            to="/master/item/create"
+            v-if="$permission.has('create item')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('create') | uppercase }}
+          </router-link>
+          <router-link
+            :to="{ path: '/master/item/' + item.id + '/edit', params: { id: item.id }}"
+            v-if="$permission.has('update item')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('edit') | uppercase }}
+          </router-link>
+          <button
+            type="button"
+            @click="onDelete()"
+            v-if="$permission.has('delete item')"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-outline-secondary">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          </button>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="code"
@@ -115,13 +130,8 @@
             id="require-production-number"
             name="require-production-number"
             :label="$t('production number')">
-            <div slot="body" class="col-lg-9">
-              <p-form-check-box
-                class="mb-0"
-                style="float:left"
-                id="require-production-number"
-                name="require-production-number"
-                :checked="item.require_production_number"/>
+            <div slot="body" class="col-lg-9 mt-10">
+              <i class="fa fa-check" v-if="item.require_production_number"></i>
             </div>
           </p-form-row>
 
@@ -129,30 +139,10 @@
             id="require-expiry-date"
             name="require-expiry-date"
             :label="$t('expiry date')">
-            <div slot="body" class="col-lg-9">
-              <p-form-check-box
-                id="require-expiry-date"
-                name="require-expiry-date"
-                :checked="item.require_expiry_date"/>
+            <div slot="body" class="col-lg-9 mt-10">
+              <i class="fa fa-check" v-if="item.require_expiry_date"></i>
             </div>
           </p-form-row>
-
-          <hr>
-
-          <router-link
-            :to="{ path: '/master/item/' + item.id + '/edit', params: { id: item.id }}"
-            v-if="$permission.has('update item')"
-            class="btn btn-sm btn-primary mr-5">
-            {{ $t('edit') | uppercase }}
-          </router-link>
-          <button
-            type="button"
-            @click="onDelete()"
-            v-if="$permission.has('delete item')"
-            :disabled="isDeleting"
-            class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
-          </button>
         </p-block-inner>
       </p-block>
     </div>
@@ -312,16 +302,18 @@ export default {
       findInventory: 'find'
     }),
     onDelete () {
-      this.isDeleting = true
-      this.delete({ id: this.id })
-        .then(response => {
-          this.$notification.success('delete success')
-          this.$router.replace('/master/item')
-          this.isDeleting = false
-        }).catch(error => {
-          this.$notification.error(error.message)
-          this.isDeleting = false
-        })
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({ id: this.id })
+          .then(response => {
+            this.$notification.success('delete success')
+            this.$router.replace('/master/item')
+            this.isDeleting = false
+          }).catch(error => {
+            this.$notification.error(error.message)
+            this.isDeleting = false
+          })
+      })
     },
     getItemRequest () {
       this.isLoading = true
