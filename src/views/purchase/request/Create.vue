@@ -10,7 +10,7 @@
 
     <form @submit.prevent="onSubmit">
       <div class="row">
-        <p-block :header="false">
+        <p-block>
           <p-block-inner>
             <div class="row">
               <div class="col-sm-12">

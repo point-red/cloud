@@ -16,28 +16,40 @@
     <manufacture-menu/>
 
     <div class="row">
-      <p-block :title="$t('formula')" :header="true">
+      <p-block>
+        <div class="text-right">
+          <router-link
+            :to="{ path: '/manufacture/formula/create' }"
+            v-if="$permission.has('create manufacture formula')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('create') | uppercase }}
+          </router-link>
+          <!-- <router-link
+            :to="{ path: '/manufacture/formula/' + formula.id + '/edit', params: { id: formula.id }}"
+            v-if="$permission.has('update manufacture formula') && $formRules.allowedToUpdate(formula.form)"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('edit') | uppercase }}
+          </router-link> -->
+          <button type="button" class="btn btn-sm btn-outline-secondary mr-5" :disabled="isDeleting" @click="onDelete">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          </button>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
-          <p-form-row
-            id="number"
-            name="number"
-            :label="$t('number')">
-            <div slot="body" class="col-lg-9">
-              <template v-if="formula.form.number">
-                {{ formula.form.number }}
-              </template>
-              <template v-else>
-                <span class="badge badge-danger">{{ $t('archived') }}</span>
-                {{ formula.form.edited_number }}
-              </template>
+          <div class="row">
+            <div class="col-sm-12">
+              <h4 class="text-center m-0">{{ $t('formula') | uppercase }}</h4>
+              <p class="text-center m-0">{{ formula.form.number }}</p>
             </div>
-          </p-form-row>
+          </div>
+
+          <hr>
 
           <p-form-row
             id="date"
             name="date"
             :label="$t('date')">
-            <div slot="body" class="col-lg-9">
+            <div slot="body" class="col-lg-9 mt-5">
               {{ formula.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
             </div>
           </p-form-row>
@@ -46,7 +58,7 @@
             id="process"
             name="process"
             :label="$t('process')">
-            <div slot="body" class="col-lg-9">
+            <div slot="body" class="col-lg-9 mt-5">
               <template v-if="formula.manufacture_process">
                 {{ formula.manufacture_process.name }}
               </template>
@@ -57,32 +69,19 @@
             id="name"
             name="name"
             :label="$t('name')">
-            <div slot="body" class="col-lg-9">
+            <div slot="body" class="col-lg-9 mt-5">
               {{ formula.name }}
             </div>
           </p-form-row>
 
-          <p-form-row
-            id="notes"
-            name="notes"
-            :label="$t('notes')">
-            <div slot="body" class="col-lg-9">
-              {{ formula.notes }}
-            </div>
-          </p-form-row>
-
-          <p-separator></p-separator>
-
-          <h5>{{ $t('finished goods') | titlecase }}</h5>
+          <hr>
 
           <p-block-inner>
             <point-table>
               <tr slot="p-head">
                 <th>#</th>
-                <th style="min-width: 120px">Item</th>
+                <th style="min-width: 120px">Finished Goods</th>
                 <th>Quantity</th>
-                <th style="min-width: 120px">Warehouse</th>
-                <th></th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in formula.finished_goods" :key="index">
                 <th>{{ index + 1 }}</th>
@@ -94,27 +93,16 @@
                 <td>
                   {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
-                <td>
-                  <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
-                    {{ row.warehouse.name }}
-                  </router-link>
-                </td>
               </tr>
             </point-table>
           </p-block-inner>
-
-          <p-separator></p-separator>
-
-          <h5>{{ $t('raw materials') | titlecase }}</h5>
 
           <p-block-inner>
             <point-table>
               <tr slot="p-head">
                 <th>#</th>
-                <th style="min-width: 120px">Item</th>
+                <th style="min-width: 120px">Raw Material</th>
                 <th>Quantity</th>
-                <th style="min-width: 120px">Warehouse</th>
-                <th></th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in formula.raw_materials" :key="index">
                 <th>{{ index + 1 }}</th>
@@ -126,52 +114,38 @@
                 <td>
                   {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
-                <td>
-                  <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
-                    {{ row.warehouse.name }}
-                  </router-link>
-                </td>
               </tr>
             </point-table>
           </p-block-inner>
 
-          <p-separator></p-separator>
-
-          <h5 class="">Approver</h5>
-
-          <point-table>
-            <tr slot="p-head">
-              <th>#</th>
-              <th>Requested At</th>
-              <th>Requested By</th>
-              <th>Requested To</th>
-              <th>Approval Status</th>
-            </tr>
-            <tr slot="p-body" v-for="(approval, index) in formula.form.approvals" :key="index">
-              <th>{{ index + 1 }}</th>
-              <td>
-                {{ approval.requested_at | dateFormat('DD MMMM YYYY HH:mm') }}
-              </td>
-              <td>
-                {{ approval.requested_by.first_name }} {{ approval.requested_by.last_name }}
-              </td>
-              <td>
-                {{ approval.requested_to.first_name }} {{ approval.requested_to.last_name }}
-              </td>
-              <td>
-                <template v-if="approval.approval_at">
-                  <span v-if="approval.approved == true" class="badge badge-primary">{{ $t('approved') }}</span>
-                  <span v-if="approval.approved == false" class="badge badge-danger">{{ $t('rejected') }}</span>
-                  {{ approval.approval_at | dateFormat('DD MMMM YYYY HH:mm') }}
+          <div class="row mt-50">
+            <div class="col-sm-6">
+              <h6 class="mb-0">{{ $t('notes') | uppercase }}</h6>
+              <div style="white-space: pre-wrap;">{{ formula.form.notes }}</div>
+              <div class="d-sm-block d-md-none mt-10"></div>
+            </div>
+            <div class="col-sm-3 text-center">
+              <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
+              <div class="mb-50" style="font-size:11px">{{ formula.form.date | dateFormat('DD MMMM YYYY') }}</div>
+              {{ formula.form.created_by.first_name | uppercase }} {{ formula.form.created_by.last_name | uppercase }}
+              <div class="d-sm-block d-md-none mt-10"></div>
+            </div>
+            <div class="col-sm-3 text-center">
+              <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
+              <div class="mb-50" style="font-size:11px">
+                <template v-if="formula.approvers[0].approval_at">
+                  {{ formula.approvers[0].approval_at | dateFormat('DD MMMM YYYY') }}
                 </template>
                 <template v-else>
-                  <span class="badge badge-secondary">{{ $t('pending') }}</span>
+                  _______________
                 </template>
-              </td>
-            </tr>
-          </point-table>
+              </div>
+              {{ formula.approvers[0].requested_to.first_name | uppercase }} {{ formula.approvers[0].requested_to.last_name | uppercase }}
+              <div style="font-size:11px">{{ formula.approvers[0].requested_to.email | lowercase }}</div>
+            </div>
+          </div>
 
-          <p-separator></p-separator>
+          <p-separator v-if="formula.archives != undefined && formula.archives.length > 0"></p-separator>
 
           <h5 v-if="formula.archives != undefined && formula.archives.length > 0">Archives</h5>
 
@@ -193,16 +167,6 @@
               </td>
             </tr>
           </point-table>
-
-          <router-link
-            :to="{ path: '/manufacture/formula/' + formula.id + '/edit', params: { id: formula.id }}"
-            v-if="$permission.has('update manufacture formula') && $formRules.allowedToUpdate(formula.form)"
-            class="btn btn-sm btn-primary mr-5">
-            {{ $t('edit') | uppercase }}
-          </router-link>
-          <button type="submit" class="btn btn-sm btn-danger mr-5" :disabled="isDeleting" @click="onDelete">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('cancel') | uppercase }}
-          </button>
         </p-block-inner>
       </p-block>
     </div>
@@ -249,7 +213,7 @@ export default {
         id: this.id,
         params: {
           with_archives: true,
-          includes: 'manufactureProcess;rawMaterials.item.units;finishedGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishedGoods.warehouse'
+          includes: 'form.createdBy;manufactureProcess;rawMaterials.item.units;finishedGoods.item.units;form;approvers.requestedBy;approvers.requestedTo'
         }
       }).then(response => {
         this.isLoading = false
@@ -265,7 +229,7 @@ export default {
           id: this.id
         }).then(response => {
           this.isDeleting = false
-          this.$notification.success('cancel success')
+          this.$notification.success('delete success')
           this.$router.push('/manufacture/formula')
         }).catch(error => {
           this.isDeleting = false

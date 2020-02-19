@@ -5,7 +5,19 @@ const url = '/manufacture/formulas'
 const state = {
   formula: {
     name: '',
-    form: {}
+    form: {
+      number: null,
+      notes: null,
+      created_by: {
+        name: null
+      }
+    },
+    approvers: [{
+      requested_to: {
+        first_name: null,
+        last_name: null
+      }
+    }]
   },
   formulas: [],
   pagination: {}

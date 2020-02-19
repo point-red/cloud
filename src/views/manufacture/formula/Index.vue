@@ -67,8 +67,8 @@
                   </span>
                 </td>
                 <td class="text-right">
-                  <router-link class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.input.use.formula', params: { id: formula.manufacture_process_id, formulaId: formula.id }}">
-                    <i class="fa fa-share-square-o"></i> {{ $t('start production') }}
+                  <router-link v-if="formula.form.approved" class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.input.use.formula', params: { id: formula.manufacture_process_id, formulaId: formula.id }}">
+                    <i class="fa fa-share-square-o"></i> {{ $t('start production') | uppercase }}
                   </router-link>
                 </td>
               </tr>
@@ -132,7 +132,6 @@ export default {
           join: 'form',
           sort_by: '-forms.number',
           fields: 'manufacture_formulas.*',
-          filter_form: 'active',
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,
