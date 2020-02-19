@@ -54,6 +54,7 @@
                     <th>Code</th>
                     <th>Name</th>
                     <th>Account</th>
+                    <th>Warehouse</th>
                     <th class="text-right">Quantity</th>
                     <th class="text-right">Price</th>
                     <th class="text-right">Total</th>
@@ -75,6 +76,7 @@
                         {{ inventory.item.account.label }}
                       </template>
                     </td>
+                    <td>{{ inventory.warehouse.name }}</td>
                     <td class="text-right">{{ inventory.quantity | numberFormat }} {{ inventory.unit | lowercase }}</td>
                     <td class="text-right">{{ inventory.price | numberFormat }}</td>
                     <td class="text-right">{{ inventory.total | numberFormat }}</td>

@@ -9,7 +9,7 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="'Invite User'" :header="true">
+      <p-block>
         <p-form-row
           id="name"
           v-model="form.user_name"

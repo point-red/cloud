@@ -11,9 +11,7 @@
     <h2 class="content-heading">User</h2>
 
     <p-block :is-loading="isLoading">
-      <form
-        class="px-30"
-        @submit.prevent="onSubmit">
+      <form class="px-30" @submit.prevent="onSubmit">
         <p-form-input
           id="name"
           v-model="form.name"

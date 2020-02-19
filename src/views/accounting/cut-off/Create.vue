@@ -35,6 +35,20 @@
                   quo dolor similique optio atque hic quis nostrum minus nisi perspiciatis
                   error beatae ut labore distinctio!
                 </p>
+                <template v-if="cutOffs.length > 0">
+                  <h6 class="m-0">{{ $t('date') | uppercase }}</h6>
+                  {{ cutOffs[0].form.date | dateFormat('DD MMMM YYYY') }}
+                </template>
+                <template v-else>
+                <p-date-picker
+                  id="date"
+                  name="date"
+                  :label="$t('date')"
+                  v-model="form.date"
+                  :errors="form.errors.get('date')"
+                  @errors="form.errors.set('date', null)"/>
+                </template>
+                <hr>
                 <button type="submit" class="btn btn-sm btn-primary mb-15" :disabled="isSaving">
                   <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('start') | uppercase }}
                 </button>
@@ -71,14 +85,17 @@ export default {
     ...mapGetters('accountingCutOff', ['cutOffs'])
   },
   created () {
-    this.get()
-      .then(response => {
-        if (this.cutOffs.length > 0) {
-          this.isCutOffStarted = true
-        }
-      }).catch(error => {
-        //
-      })
+    this.get({
+      params: {
+        includes: 'form'
+      }
+    }).then(response => {
+      if (this.cutOffs.length > 0) {
+        this.isCutOffStarted = true
+      }
+    }).catch(error => {
+      //
+    })
   },
   methods: {
     ...mapActions('accountingCutOff', ['create', 'get']),
