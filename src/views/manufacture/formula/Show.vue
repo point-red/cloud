@@ -24,17 +24,20 @@
         <div v-if="$permission.has('approve purchase request')">
           <hr>
           <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
-          <button type="button" @click="onReject" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
+          <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
+          <m-form-reject id="form-reject" ref="formReject" @reject="onReject($event)"></m-form-reject>
         </div>
       </div>
     </div>
 
     <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15" role="alert" v-if="formula.form.approved == 0 && isLoading == false">
       <div class="flex-fill mr-10">
+        <hr>
         <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle"></i>
-          REJECTED
+          <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('rejected') | uppercase }}
         </p>
+        <hr>
+        <div style="white-space: pre-wrap;">{{ formula.approvers[0].reason }}</div>
       </div>
     </div>
 
@@ -71,6 +74,7 @@
           <p-form-row
             id="date"
             name="date"
+            class="m-0"
             :label="$t('date')">
             <div slot="body" class="col-lg-9 mt-5">
               {{ formula.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
@@ -80,6 +84,7 @@
           <p-form-row
             id="process"
             name="process"
+            class="m-0"
             :label="$t('process')">
             <div slot="body" class="col-lg-9 mt-5">
               <template v-if="formula.manufacture_process">
@@ -91,6 +96,7 @@
           <p-form-row
             id="name"
             name="name"
+            class="m-0"
             :label="$t('name')">
             <div slot="body" class="col-lg-9 mt-5">
               {{ formula.name }}
@@ -269,9 +275,10 @@ export default {
         this.formula.form.approved = response.data.form.approved
       })
     },
-    onReject () {
+    onReject (reason) {
       this.reject({
-        id: this.id
+        id: this.id,
+        reason: reason
       }).then(response => {
         this.$notification.success('reject success')
         this.formula.form.approved = response.data.form.approved
