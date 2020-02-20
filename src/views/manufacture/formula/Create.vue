@@ -62,7 +62,7 @@
                   :name="'quantity' + index"
                   v-model="row.quantity"
                   :item-id="row.item_id"
-                  :units="row.units"
+                  :units="row.item.units"
                   :unit="row.item.units[0]"
                   @choosen="chooseUnit($event, row)"/>
               </td>
@@ -98,12 +98,14 @@
                   :name="'quantity' + index"
                   v-model="row.quantity"
                   :item-id="row.item_id"
-                  :units="row.units"
+                  :units="row.item.units"
                   :unit="row.item.units[0]"
                   @choosen="chooseUnit($event, row)"/>
               </td>
               <td>
-                <i class="btn btn-sm fa fa-times" v-if="row.item_id != null" @click="deleteRawMaterialRow(index)"></i>
+                <button class="btn btn-sm btn-outline-danger" v-if="row.item_id != null" @click="deleteRawMaterialRow(index)">
+                  <i class="fa fa-times"></i>
+                </button>
               </td>
             </tr>
           </point-table>
@@ -178,9 +180,7 @@ export default {
         approver_id: null,
         raw_materials: [{
           item_id: null,
-          warehouse_id: null,
           item_name: null,
-          warehouse_name: null,
           item: {
             units: [{
               label: '',
@@ -194,9 +194,7 @@ export default {
         }],
         finished_goods: [{
           item_id: null,
-          warehouse_id: null,
           item_name: null,
-          warehouse_name: null,
           item: {
             units: [{
               label: '',
@@ -216,9 +214,7 @@ export default {
     addRawMaterialRow () {
       this.form.raw_materials.push({
         item_id: null,
-        warehouse_id: null,
         item_name: null,
-        warehouse_name: null,
         item: {
           units: [{
             label: '',
@@ -238,9 +234,7 @@ export default {
     addFinishGoodRow () {
       this.form.finished_goods.push({
         item_id: null,
-        warehouse_id: null,
         item_name: null,
-        warehouse_name: null,
         item: {
           units: [{
             label: '',
@@ -263,6 +257,7 @@ export default {
       this.form.manufacture_process_name = value
     },
     chooseRawMaterial (item, row) {
+      row.quantity = 0
       row.item_name = item.name
       row.item.units = item.units
       row.item.units.forEach((unit, keyUnit) => {
@@ -282,12 +277,9 @@ export default {
       }
     },
     chooseFinishGood (item, row) {
-      row.item_name = item.name
       row.quantity = 0
-      row.item.require_expiry_date = item.require_expiry_date
-      row.item.require_production_number = item.require_production_number
+      row.item_name = item.name
       row.item.units = item.units
-      row.inventories = []
       row.item.units.forEach((unit, keyUnit) => {
         if (unit.converter == 1) {
           row.unit = unit.label
