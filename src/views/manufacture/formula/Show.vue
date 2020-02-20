@@ -15,6 +15,29 @@
 
     <manufacture-menu/>
 
+    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert" v-if="formula.form.approved == null && isLoading == false">
+      <div class="flex-fill mr-10">
+        <p class="mb-0">
+          <i class="fa fa-fw fa-exclamation-triangle"></i>
+          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: formula.approvers[0].requested_to.first_name + ' ' + formula.approvers[0].requested_to.last_name }) | uppercase }}
+        </p>
+        <div v-if="$permission.has('approve purchase request')">
+          <hr>
+          <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
+          <button type="button" @click="onReject" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15" role="alert" v-if="formula.form.approved == 0 && isLoading == false">
+      <div class="flex-fill mr-10">
+        <p class="mb-0">
+          <i class="fa fa-fw fa-exclamation-triangle"></i>
+          REJECTED
+        </p>
+      </div>
+    </div>
+
     <div class="row">
       <p-block>
         <div class="text-right">
@@ -206,7 +229,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('manufactureFormula', ['find', 'delete']),
+    ...mapActions('manufactureFormula', ['find', 'delete', 'approve', 'reject']),
     manufactureFormulaRequest () {
       this.isLoading = true
       this.find({
@@ -236,6 +259,22 @@ export default {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
+      })
+    },
+    onApprove () {
+      this.approve({
+        id: this.id
+      }).then(response => {
+        this.$notification.success('approve success')
+        this.formula.form.approved = response.data.form.approved
+      })
+    },
+    onReject () {
+      this.reject({
+        id: this.id
+      }).then(response => {
+        this.$notification.success('reject success')
+        this.formula.form.approved = response.data.form.approved
       })
     }
   },

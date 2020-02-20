@@ -34,6 +34,7 @@
               <th>{{ $t('formula') | titlecase }}</th>
               <th>{{ $t('finished goods') | titlecase }}</th>
               <th>{{ $t('raw materials') | titlecase }}</th>
+              <th class="text-center">Approval Status</th>
               <th></th>
             </tr>
             <template v-for="(formula, index) in formulas">
@@ -65,6 +66,11 @@
                     = {{ rawMaterial.quantity | numberFormat }} {{ rawMaterial.item.units[0].name }}
                     <br>
                   </span>
+                </td>
+                <td class="text-center">
+                  <div v-if="formula.form.approved == null" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                  <div v-if="formula.form.approved == 0" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
+                  <div v-if="formula.form.approved == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
                 </td>
                 <td class="text-right">
                   <router-link v-if="formula.form.approved" class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.input.use.formula', params: { id: formula.manufacture_process_id, formulaId: formula.id }}">
