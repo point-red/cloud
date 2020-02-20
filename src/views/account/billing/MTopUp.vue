@@ -24,7 +24,7 @@
         <button type="button" @click="pay()" class="btn btn-primary" :disabled="isSaving">
           <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('pay now') | uppercase }}
         </button>
-        <button type="button" @click="close()" class="btn btn-outline-danger">{{ $t('cancel') | uppercase }}</button>
+        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('cancel') | uppercase }}</button>
       </template>
     </p-modal>
   </div>

@@ -9,12 +9,13 @@
     <manufacture-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('create') + ' ' + $t('process')" :header="true">
+      <p-block>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
             name="name"
             :label="$t('name')"
+            :placeholder="$t('required') | uppercase"
             v-model="form.name"
             :disabled="isSaving"
             :errors="form.errors.get('name')"

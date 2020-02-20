@@ -24,6 +24,7 @@
             id="name"
             name="name"
             :label="$t('name')"
+            :placeholder="$t('required') | uppercase"
             v-model="form.name"
             :disabled="isSaving"
             :errors="form.errors.get('name')"

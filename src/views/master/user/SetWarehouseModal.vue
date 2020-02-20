@@ -24,7 +24,7 @@
           </point-table>
         </template>
         <template slot="footer">
-          <button type="button" class="btn btn-outline-secondary" @click="$refs.modal.close()">{{ $t('close') | uppercase }}</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary" @click="$refs.modal.close()">{{ $t('close') | uppercase }}</button>
         </template>
       </p-modal>
     </div>

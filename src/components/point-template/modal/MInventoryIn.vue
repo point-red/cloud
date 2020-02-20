@@ -48,7 +48,7 @@
         </button>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
       </template>
     </p-modal>
   </div>

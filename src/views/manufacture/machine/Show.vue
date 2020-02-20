@@ -75,7 +75,6 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      title: 'Machine',
       isLoading: false,
       isDeleting: false
     }

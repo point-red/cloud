@@ -32,6 +32,7 @@
             <tr slot="p-head">
               <th width="50px">#</th>
               <th>{{ $t('name') | titlecase }}</th>
+              <th>{{ $t('notes') | titlecase }}</th>
             </tr>
             <template v-for="(machine, index) in machines">
               <tr :key="'mm-' + index" slot="p-body">
@@ -41,6 +42,7 @@
                     {{ machine.label }}
                   </router-link>
                 </td>
+                <td>{{ machine.notes }}</td>
               </tr>
             </template>
           </point-table>

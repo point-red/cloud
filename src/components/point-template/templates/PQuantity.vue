@@ -12,8 +12,8 @@
         <span class="input-group-text">
           {{ mutableUnit.label | uppercase }}
         </span>
-        <button v-show="showAddReduceButtons" class="btn btn-outline-secondary" type="button" @click="add">+</button>
-        <button v-show="showAddReduceButtons" class="btn btn-outline-secondary" type="button" @click="reduce">-</button>
+        <button v-show="showAddReduceButtons" class="btn btn-sm btn-outline-secondary" type="button" @click="add">+</button>
+        <button v-show="showAddReduceButtons" class="btn btn-sm btn-outline-secondary" type="button" @click="reduce">-</button>
       </div>
     </div>
     <m-quantity-unit

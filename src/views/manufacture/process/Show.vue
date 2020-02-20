@@ -12,6 +12,12 @@
       <p-block>
         <div class="text-right">
           <router-link
+            :to="{ path: '/manufacture/process/create' }"
+            v-if="$permission.has('update manufacture process')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('create') | uppercase }}
+          </router-link>
+          <router-link
             :to="{ path: '/manufacture/process/' + process.id + '/edit', params: { id: process.id }}"
             v-if="$permission.has('update manufacture process')"
             class="btn btn-sm btn-outline-secondary mr-5">
@@ -62,7 +68,6 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      title: 'Process',
       isLoading: false,
       isDeleting: false
     }

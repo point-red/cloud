@@ -32,6 +32,7 @@
             <tr slot="p-head">
               <th width="50px">#</th>
               <th>{{ $t('name') }}</th>
+              <th>{{ $t('notes') }}</th>
               <th></th>
             </tr>
             <template v-for="(process, index) in processes">
@@ -42,6 +43,7 @@
                      {{ process.name }}
                   </router-link>
                 </td>
+                <td>{{ process.notes }}</td>
                 <td class="text-right">
                   <router-link class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.input.index', params: { id: process.id }}">
                     <i class="fa fa-share-square-o"></i> {{ $t('start production') | uppercase }}

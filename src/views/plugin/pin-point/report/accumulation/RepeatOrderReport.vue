@@ -28,17 +28,17 @@
           <div slot="body" class="col-lg-9">
             <router-link
               to="/plugin/pin-point/report/accumulation/interest-reason"
-              class="btn btn-outline-dark btn-sm mr-5">
+              class="btn btn-sm btn-outline-dark mr-5">
               <span>{{ $t('interest reason') | titlecase }}</span>
             </router-link>
             <router-link
               to="/plugin/pin-point/report/accumulation/no-interest-reason"
-              class="btn btn-outline-dark btn-sm mr-5">
+              class="btn btn-sm btn-outline-dark mr-5">
               <span>{{ $t('no interest reason') | titlecase }}</span>
             </router-link>
             <router-link
               to="/plugin/pin-point/report/accumulation/similar-product"
-              class="btn btn-outline-dark btn-sm mr-5">
+              class="btn btn-sm btn-outline-dark mr-5">
               <span>{{ $t('similar product') | titlecase }}</span>
             </router-link>
             <router-link

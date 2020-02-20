@@ -32,7 +32,7 @@
           </div>
         </template>
         <template slot="footer">
-          <button type="button" class="btn btn-outline-secondary" :disabled="isSaving" @click="$refs.assignWarehouse.close()">
+          <button type="button" class="btn btn-sm btn-outline-secondary" :disabled="isSaving" @click="$refs.assignWarehouse.close()">
             <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('close') | uppercase }}
           </button>
         </template>
