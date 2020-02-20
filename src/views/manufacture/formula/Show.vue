@@ -20,7 +20,7 @@
         <hr>
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
-          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: formula.approvers[0].requested_to.first_name + ' ' + formula.approvers[0].requested_to.last_name }) | uppercase }}
+          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: formula.form.approvals[0].requested_to.first_name + ' ' + formula.form.approvals[0].requested_to.last_name }) | uppercase }}
         </p>
         <div v-if="$permission.has('approve purchase request')">
           <hr>
@@ -38,7 +38,7 @@
           <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('rejected') | uppercase }}
         </p>
         <hr>
-        <div style="white-space: pre-wrap;">{{ formula.approvers[0].reason }}</div>
+        <div style="white-space: pre-wrap;">{{ formula.form.approvals[0].reason }}</div>
       </div>
     </div>
 
@@ -163,15 +163,15 @@
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
               <div class="mb-50" style="font-size:11px">
-                <template v-if="formula.approvers[0].approval_at">
-                  {{ formula.approvers[0].approval_at | dateFormat('DD MMMM YYYY') }}
+                <template v-if="formula.form.approvals[0].approval_at">
+                  {{ formula.form.approvals[0].approval_at | dateFormat('DD MMMM YYYY') }}
                 </template>
                 <template v-else>
                   _______________
                 </template>
               </div>
-              {{ formula.approvers[0].requested_to.first_name | uppercase }} {{ formula.approvers[0].requested_to.last_name | uppercase }}
-              <div style="font-size:11px">{{ formula.approvers[0].requested_to.email | lowercase }}</div>
+              {{ formula.form.approvals[0].requested_to.first_name | uppercase }} {{ formula.form.approvals[0].requested_to.last_name | uppercase }}
+              <div style="font-size:11px">{{ formula.form.approvals[0].requested_to.email | lowercase }}</div>
             </div>
           </div>
 
@@ -243,7 +243,7 @@ export default {
         id: this.id,
         params: {
           with_archives: true,
-          includes: 'form.createdBy;manufactureProcess;rawMaterials.item.units;finishedGoods.item.units;form;approvers.requestedBy;approvers.requestedTo'
+          includes: 'form.createdBy;manufactureProcess;rawMaterials.item.units;finishedGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo'
         }
       }).then(response => {
         this.isLoading = false
@@ -283,6 +283,7 @@ export default {
       }).then(response => {
         this.$notification.success('reject success')
         this.formula.form.approved = response.data.form.approved
+        this.formula.form.approvals[0].reason = response.data.form.approvals[0].reason
       })
     }
   },

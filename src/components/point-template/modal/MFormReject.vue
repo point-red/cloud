@@ -36,6 +36,7 @@ export default {
   methods: {
     reject () {
       this.$emit('reject', this.reason)
+      this.close()
     },
     show () {
       this.$refs['form-reject-' + this.id].show()

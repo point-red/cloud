@@ -109,9 +109,6 @@
               </td>
             </tr>
           </point-table>
-          <!-- <button type="button" class="btn btn-sm btn-secondary" @click="addRawMaterialRow">
-            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-          </button> -->
 
           <div class="row mt-50">
             <div class="col-sm-6">

@@ -10,14 +10,14 @@ const state = {
       notes: null,
       created_by: {
         name: null
-      }
-    },
-    approvers: [{
-      requested_to: {
-        first_name: null,
-        last_name: null
-      }
-    }]
+      },
+      approvals: [{
+        requested_to: {
+          first_name: null,
+          last_name: null
+        }
+      }]
+    }
   },
   formulas: [],
   pagination: {}
