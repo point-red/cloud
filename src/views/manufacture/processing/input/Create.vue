@@ -420,7 +420,7 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/manufacture/processing/' + this.id + '/input/' + response.data.id)
+          this.$router.push('/manufacture/processing/input/' + response.data.id)
         }).catch(error => {
           console.log(error.errors)
           this.isSaving = false

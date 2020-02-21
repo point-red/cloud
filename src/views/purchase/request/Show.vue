@@ -51,6 +51,7 @@
                   {{ $t('edit') | uppercase }}
                 </router-link>
               </div>
+              <hr>
               <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
               <hr>
               <div class="float-sm-right text-right">

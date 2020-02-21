@@ -34,11 +34,12 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th>{{ $t('date') | titlecase }}</th>
-              <th>{{ $t('number') | titlecase }}</th>
-              <th>{{ $t('machine') | titlecase }}</th>
-              <th>{{ $t('notes') | titlecase }}</th>
-              <th>&nbsp;</th>
+              <th>{{ $t('date') | uppercase }}</th>
+              <th>{{ $t('number') | uppercase }}</th>
+              <th>{{ $t('machine') | uppercase }}</th>
+              <th>{{ $t('notes') | uppercase }}</th>
+              <th class="text-center">{{ $t('approval status') | uppercase }}</th>
+              <th class="text-center">{{ $t('form status') | uppercase }}</th>
             </tr>
             <template v-for="(input, index) in inputs">
               <tr
@@ -47,20 +48,31 @@
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>{{ input.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>
-                  <router-link :to="{ name: 'manufacture.process.io.input.show', params: { id: id, inputId: input.id }}">
+                  <router-link :to="{ name: 'manufacture.processing.input.show', params: { id: input.id }}">
                     {{ input.form.number }}
                   </router-link>
                 </td>
                 <td>{{ input.manufacture_machine_name }}</td>
                 <td>{{ input.notes }}</td>
-                <td>&nbsp;</td>
+                <td class="text-center">
+                  <div v-if="input.form.approved == null" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                  <div v-if="input.form.approved == 0" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
+                  <div v-if="input.form.approved == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
+                </td>
+                <td class="text-center">
+                  <div v-if="input.form.canceled == null && input.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                  <div v-if="input.form.canceled == null && input.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
+                  <div v-if="input.form.canceled == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
+                </td>
               </tr>
               <tr :key="'mia-' + index" slot="p-body">
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
-                <td><b>{{ $t('finished goods') | titlecase }}</b></td>
-                <td><b>{{ $t('quantity produced') | titlecase }}</b></td>
-                <td><b>{{ $t('warehouse') | titlecase }}</b></td>
+                <td><b>{{ $t('finished goods') | uppercase }}</b></td>
+                <td><b>{{ $t('quantity') | uppercase }}</b></td>
+                <td><b>{{ $t('warehouse') | uppercase }}</b></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
               </tr>
               <tr v-for="finishGood in input.finished_goods" :key="'fg-' + finishGood.id" slot="p-body">
                 <td>&nbsp;</td>
@@ -74,17 +86,19 @@
                   {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
                 </td>
                 <td>
-                  <router-link :to="{ name: 'warehouse.show', params: { id: finishGood.warehouse.id }}">
-                    {{ finishGood.warehouse.name }}
-                  </router-link>
+                  {{ finishGood.warehouse.name }}
                 </td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
               </tr>
               <tr :key="'mib-' + index" slot="p-body">
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
-                <td><b>{{ $t('raw materials') | titlecase }}</b></td>
-                <td><b>{{ $t('quantity used') | titlecase }}</b></td>
-                <td><b>{{ $t('warehouse') | titlecase }}</b></td>
+                <td><b>{{ $t('raw materials') | uppercase }}</b></td>
+                <td><b>{{ $t('quantity') | uppercase }}</b></td>
+                <td><b>{{ $t('warehouse') | uppercase }}</b></td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
               </tr>
               <tr v-for="rawMaterial in input.raw_materials_temporary" :key="'rm-' + rawMaterial.id" slot="p-body">
                 <td>&nbsp;</td>
@@ -98,12 +112,14 @@
                   {{ rawMaterial.quantity }} {{ rawMaterial.item.units[0].name }}
                 </td>
                 <td>
-                  <router-link :to="{ name: 'warehouse.show', params: { id: rawMaterial.warehouse.id }}">
-                    {{ rawMaterial.warehouse.name }}
-                  </router-link>
+                  {{ rawMaterial.warehouse.name }}
                 </td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
               </tr>
               <tr :key="'mic-' + index" slot="p-body">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -124,7 +140,7 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
+import TabMenu from '../TabMenu'
 import ManufactureMenu from '../../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'

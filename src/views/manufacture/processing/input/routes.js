@@ -12,6 +12,6 @@ export default [
   { path: '/manufacture/processing/input/create', name: 'manufacture.processing.input.create', component: ManufactureInputCreate },
   { path: '/manufacture/processing/input/choose-formula', name: 'manufacture.processing.input.choose.formula', component: ManufactureInputChooseFormula },
   { path: '/manufacture/processing/input/use-formula/:formulaId', name: 'manufacture.processing.input.use.formula', component: ManufactureInputUseFormula },
-  { path: '/manufacture/processing/input/:inputId', name: 'manufacture.processing.input.show', component: ManufactureInputShow },
-  { path: '/manufacture/processing/input/:inputId/edit', name: 'manufacture.processing.input.edit', component: ManufactureInputEdit }
+  { path: '/manufacture/processing/input/:id', name: 'manufacture.processing.input.show', component: ManufactureInputShow },
+  { path: '/manufacture/processing/input/:id/edit', name: 'manufacture.processing.input.edit', component: ManufactureInputEdit }
 ]

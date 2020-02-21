@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="inventory">
+    <p-modal :ref="'select-' + id" :id="'select-' + id" title="dna">
       <template slot="content">
         <p-table>
           <tr slot="p-head">
@@ -38,18 +38,14 @@ export default {
     id: {
       type: String,
       required: true
-    },
-    inventories: {
-      type: Array,
-      required: true
     }
   },
   methods: {
-    show (inventories) {
-      this.mutableItemUnit = itemUnit
+    show (inventories, unit, item) {
       this.mutableInventories = inventories
-      this.mutableRequireExpiryDate = true
-      this.mutableRequireProductionNumber = true
+      this.mutableItemUnit = unit
+      this.mutableRequireExpiryDate = item.require_expiry_date
+      this.mutableRequireProductionNumber = item.require_production_number
       this.$refs['select-' + this.id].show()
     },
     close () {

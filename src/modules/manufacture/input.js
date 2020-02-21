@@ -5,7 +5,16 @@ const url = '/manufacture/input-materials'
 const state = {
   input: {
     name: '',
-    form: {}
+    form: {
+      created_by: {
+        full_name: null
+      },
+      approvals: [{
+        requested_to: {
+          full_name: null
+        }
+      }]
+    }
   },
   inputs: [],
   pagination: {}
