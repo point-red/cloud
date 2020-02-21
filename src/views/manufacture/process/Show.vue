@@ -87,6 +87,7 @@ export default {
             this.isDeleting = false
           }).catch(error => {
             this.$notification.error(error.message)
+            this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
             this.isDeleting = false
           })
       })

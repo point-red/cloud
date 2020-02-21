@@ -110,8 +110,8 @@ export default {
         }).catch(error => {
           this.getMachines()
           this.isSaving = false
-          this.$notification.error(error.message)
           this.form.errors.record(error.errors)
+          this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
         })
     }
   },
