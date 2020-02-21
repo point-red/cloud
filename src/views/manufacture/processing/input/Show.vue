@@ -94,7 +94,6 @@
               <tr slot="p-head">
                 <th>#</th>
                 <th style="min-width: 120px">{{ $t('raw materials') }}</th>
-                <th>&nbsp;</th>
                 <th>Quantity</th>
                 <th style="min-width: 120px">Warehouse</th>
               </tr>
@@ -105,7 +104,6 @@
                     {{ row.item.label }}
                   </router-link>
                 </td>
-                <td></td>
                 <td>
                   <template v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)">
                     <a href="javascript:void(0)" @click="$refs.inventoryDna.show(row.inventories, row.unit, row.item)">

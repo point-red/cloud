@@ -31,6 +31,7 @@
           <point-table>
             <tr slot="p-head">
               <th width="50px">#</th>
+              <th>{{ $t('form') | titlecase }}</th>
               <th>{{ $t('formula') | titlecase }}</th>
               <th>{{ $t('finished goods') | titlecase }}</th>
               <th>{{ $t('raw materials') | titlecase }}</th>
@@ -44,8 +45,11 @@
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>
                   <router-link :to="{ name: 'manufacture.formula.show', params: { id: formula.id }}">
-                    {{ formula.name }}
+                    {{ formula.form.number }}
                   </router-link>
+                </td>
+                <td>
+                  {{ formula.name }}
                 </td>
                 <td>
                   <span v-for="(finishGood, index2) in formula.finished_goods" :key="finishGood.id">
@@ -138,6 +142,7 @@ export default {
           join: 'form',
           sort_by: '-forms.number',
           fields: 'manufacture_formulas.*',
+          filter_form: 'notArchived',
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,

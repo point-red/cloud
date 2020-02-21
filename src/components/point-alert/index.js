@@ -5,7 +5,7 @@ export default {
         return new Promise((resolve) => {
           Vue.prototype.$nextTick(() => {
             Vue.swal.fire({
-              type: options.type,
+              icon: options.type,
               title: options.title,
               html: options.text,
               footer: options.footer,

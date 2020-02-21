@@ -10,20 +10,19 @@
         <router-link v-if="formula.origin" :to="{ name: 'manufacture.formula.show', params: { id: formula.origin.id }}" class="breadcrumb-item">
           {{ formula.form.edited_number | uppercase }}
         </router-link>
+        <span class="breadcrumb-item active">{{ $t('archived') | uppercase }}</span>
       </template>
     </breadcrumb>
 
     <manufacture-menu/>
 
-    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert" v-if="formula.form.approved == null && isLoading == false">
+    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert" v-if="formula.form.number != null && formula.form.approved == null && isLoading == false">
       <div class="flex-fill mr-10">
-        <hr>
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
           {{ $t('pending approval warning', { form: 'purchase request', approvedBy: formula.form.approvals[0].requested_to.first_name + ' ' + formula.form.approvals[0].requested_to.last_name }) | uppercase }}
         </p>
-        <div v-if="$permission.has('approve purchase request')">
-          <hr>
+        <div v-if="$permission.has('approve purchase request')" class="mt-10">
           <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
           <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
           <m-form-reject id="form-reject" ref="formReject" @reject="onReject($event)"></m-form-reject>
@@ -33,12 +32,20 @@
 
     <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15" role="alert" v-if="formula.form.approved == 0 && isLoading == false">
       <div class="flex-fill mr-10">
-        <hr>
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('rejected') | uppercase }}
         </p>
-        <hr>
-        <div style="white-space: pre-wrap;">{{ formula.form.approvals[0].reason }}</div>
+        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ formula.form.approvals[0].reason }}</div>
+      </div>
+    </div>
+
+    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
+      role="alert"
+      v-if="formula.form.number == null && isLoading == false">
+      <div class="flex-fill mr-10">
+        <p class="mb-0">
+          <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('archived') | uppercase }}
+        </p>
       </div>
     </div>
 
@@ -51,12 +58,12 @@
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('create') | uppercase }}
           </router-link>
-          <!-- <router-link
+          <router-link
             :to="{ path: '/manufacture/formula/' + formula.id + '/edit', params: { id: formula.id }}"
             v-if="$permission.has('update manufacture formula') && $formRules.allowedToUpdate(formula.form)"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link> -->
+          </router-link>
           <button type="button" class="btn btn-sm btn-outline-secondary mr-5" :disabled="isDeleting" @click="onDelete">
             <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
           </button>
@@ -71,16 +78,6 @@
           </div>
 
           <hr>
-
-          <p-form-row
-            id="date"
-            name="date"
-            class="m-0"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9 mt-5">
-              {{ formula.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
-            </div>
-          </p-form-row>
 
           <p-form-row
             id="process"
@@ -109,9 +106,9 @@
           <p-block-inner>
             <point-table>
               <tr slot="p-head">
-                <th>#</th>
+                <th style="width: 50px">#</th>
                 <th style="min-width: 120px">Finished Goods</th>
-                <th>Quantity</th>
+                <th class="text-right">Quantity</th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in formula.finished_goods" :key="index">
                 <th>{{ index + 1 }}</th>
@@ -120,7 +117,7 @@
                     {{ row.item.label }}
                   </router-link>
                 </td>
-                <td>
+                <td class="text-right">
                   {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
               </tr>
@@ -130,9 +127,9 @@
           <p-block-inner>
             <point-table>
               <tr slot="p-head">
-                <th>#</th>
+                <th style="width: 50px">#</th>
                 <th style="min-width: 120px">Raw Material</th>
-                <th>Quantity</th>
+                <th class="text-right">Quantity</th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in formula.raw_materials" :key="index">
                 <th>{{ index + 1 }}</th>
@@ -141,7 +138,7 @@
                     {{ row.item.label }}
                   </router-link>
                 </td>
-                <td>
+                <td class="text-right">
                   {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
               </tr>
@@ -174,29 +171,6 @@
               <div style="font-size:11px">{{ formula.form.approvals[0].requested_to.email | lowercase }}</div>
             </div>
           </div>
-
-          <p-separator v-if="formula.archives != undefined && formula.archives.length > 0"></p-separator>
-
-          <h5 v-if="formula.archives != undefined && formula.archives.length > 0">Archives</h5>
-
-          <point-table v-if="formula.archives != undefined && formula.archives.length > 0">
-            <tr slot="p-head">
-              <th>#</th>
-              <th>Edited Date</th>
-              <th>Edited Reason</th>
-            </tr>
-            <tr slot="p-body" v-for="(archived, index) in formula.archives" :key="index">
-              <th>{{ index + 1 }}</th>
-              <td>
-                <router-link :to="{ name: 'manufacture.formula.show', params: { id: archived.id }}">
-                  {{ archived.form.updated_at | dateFormat('DD MMMM YYYY HH:mm') }}
-                </router-link>
-              </td>
-              <td>
-                {{ archived.edited_notes }}
-              </td>
-            </tr>
-          </point-table>
         </p-block-inner>
       </p-block>
     </div>
@@ -242,8 +216,13 @@ export default {
       this.find({
         id: this.id,
         params: {
-          with_archives: true,
-          includes: 'form.createdBy;manufactureProcess;rawMaterials.item.units;finishedGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo'
+          with_origin: true,
+          includes: 'form.createdBy;' +
+            'manufactureProcess;' +
+            'rawMaterials.item.units;' +
+            'finishedGoods.item.units;' +
+            'form.approvals.requestedBy;' +
+            'form.approvals.requestedTo'
         }
       }).then(response => {
         this.isLoading = false

@@ -66,15 +66,10 @@
                   :unit="row.item.units[0]"
                   @choosen="chooseUnit($event, row)"/>
               </td>
-              <td>
-                <!-- <i class="btn btn-sm fa fa-times" @click="deleteFinishGoodRow(index)"></i> -->
-              </td>
+              <td></td>
             </tr>
           </point-table>
-          <!-- <button type="button" class="btn btn-sm btn-secondary" @click="addFinishGoodRow">
-            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-          </button>
-          <hr> -->
+
           <point-table>
             <tr slot="p-head">
               <th>#</th>
@@ -293,15 +288,9 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      if (this.form.approver_id == null) {
-        this.$notification.error('approval cannot be null')
-        this.isSaving = false
-        this.form.errors.record({
-          approver_id: ['Approver should not empty']
-        })
-        return
+      if (this.form.raw_materials.length > 1) {
+        this.form.raw_materials = this.form.raw_materials.filter(item => item.item_id !== null)
       }
-      this.form.raw_materials = this.form.raw_materials.filter(item => item.item_id !== null)
       this.create(this.form)
         .then(response => {
           this.isSaving = false
@@ -311,7 +300,7 @@ export default {
         }).catch(error => {
           console.log(error.errors)
           this.isSaving = false
-          this.$notification.error(error.message)
+          this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
           this.form.errors.record(error.errors)
         })
     }
