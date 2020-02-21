@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/process-io/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
       <template v-if="input.form.number">
         <span class="breadcrumb-item active">{{ input.form.number | uppercase }}</span>
       </template>
@@ -197,7 +197,7 @@
           </point-table>
 
           <router-link
-            :to="{ path: '/manufacture/process-io/' + id + '/input/' + input.id + '/edit', params: { id: id, inputId: input.id }}"
+            :to="{ path: '/manufacture/processing/' + id + '/input/' + input.id + '/edit', params: { id: id, inputId: input.id }}"
             v-if="$permission.has('update manufacture') && $formRules.allowedToUpdate(input.form)"
             class="btn btn-sm btn-primary mr-5">
             {{ $t('edit') | uppercase }}
@@ -295,7 +295,7 @@ export default {
       }).then(response => {
         this.isDeleting = false
         this.$notification.success('cancel success')
-        this.$router.push('/manufacture/process-io/' + this.id + '/input')
+        this.$router.push('/manufacture/processing/' + this.id + '/input')
       }).catch(error => {
         this.isDeleting = false
         this.$notification.error(error.message)

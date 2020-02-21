@@ -1,8 +1,8 @@
 {
   "sales" : "sales",
-  "sales quotation" : "quotation",
   "sales contract" : "contract",
-  "sales order" : "order",
+  "sales quotation" : "sales quotation",
+  "sales order" : "sales order",
   "delivery order" : "delivery order",
   "delivery note" : "delivery note",
   "sales invoice" : "invoice",

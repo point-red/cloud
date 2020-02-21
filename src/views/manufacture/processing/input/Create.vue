@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/process-io/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
@@ -12,8 +12,22 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('input')" :header="true">
+      <p-block>
+        <div class="row">
+          <div class="col-sm-12">
+            <h4 class="text-center m-0">{{ $t('processing input') | uppercase }}</h4>
+          </div>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
+          <p-form-row
+            id="process"
+            name="process"
+            :label="$t('process')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-process id="process" v-model="form.manufacture_process_id" @choosen="chooseManufactureProcess" :label="form.manufacture_process_name"/>
+            </div>
+          </p-form-row>
           <p-form-row
             id="machine"
             name="machine"
@@ -23,23 +37,12 @@
             </div>
           </p-form-row>
 
-          <p-form-row
-            id="notes"
-            name="notes"
-            :label="$t('notes')"
-            v-model="form.notes"
-            :disabled="isSaving"
-            :errors="form.errors.get('notes')"
-            @errors="form.errors.set('notes', null)"/>
-
-          <p-separator></p-separator>
-
-          <h5>{{ $t('finished goods') | titlecase }}</h5>
           <hr>
+
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Item</th>
+              <th style="min-width: 120px">Finished Goods</th>
               <th style="min-width: 120px">Warehouse</th>
               <th>Quantity</th>
               <th></th>
@@ -75,18 +78,11 @@
               </td>
             </tr>
           </point-table>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addFinishGoodRow">
-            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-          </button>
 
-          <p-separator></p-separator>
-
-          <h5>{{ $t('raw materials') | titlecase }}</h5>
-          <hr>
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Item</th>
+              <th style="min-width: 120px">Raw Material</th>
               <th style="min-width: 120px">Warehouse</th>
               <th>Quantity</th>
               <th></th>
@@ -125,31 +121,31 @@
               </td>
             </tr>
           </point-table>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addMaterialRow">
-            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-          </button>
 
-          <p-separator></p-separator>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <h5>Approver</h5>
-              <hr>
-              <p-form-row
-                id="approver"
-                name="approver"
-                :label="$t('approver')">
-                <div slot="body" class="col-lg-9 mt-5">
-                  <m-user
-                    :id="'user'"
-                    v-model="form.approver_id"
-                    :errors="form.errors.get('approver_id')"
-                    @errors="form.errors.set('approver_id', null)"/>
-                </div>
-              </p-form-row>
+          <div class="row mt-50">
+            <div class="col-sm-6">
+              <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+              <div class="d-sm-block d-md-none mt-10"></div>
+            </div>
+            <div class="col-sm-3 text-center">
+              <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
+              <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+              {{ authUser.full_name | uppercase }}
+              <div class="d-sm-block d-md-none mt-10"></div>
+            </div>
+            <div class="col-sm-3 text-center">
+              <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
+              <div class="mb-50" style="font-size:11px">_______________</div>
+              <m-user
+                :id="'user'"
+                v-model="form.approver_id"
+                :errors="form.errors.get('approver_id')"
+                @errors="form.errors.set('approver_id', null)"
+                @choosen="chooseApprover"/>
+                {{ form.approver_email }} <br v-if="form.approver_email">
             </div>
           </div>
-
+          <hr>
           <div class="form-group row">
             <div class="col-md-12">
               <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
@@ -188,7 +184,6 @@ export default {
   },
   data () {
     return {
-      id: this.$route.params.id,
       isLoading: false,
       isSaving: false,
       selectedItem: {
@@ -272,24 +267,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('manufactureProcess', ['process'])
+    ...mapGetters('manufactureProcess', ['process']),
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
     ...mapActions('manufactureInput', ['create']),
-    ...mapActions('manufactureProcess', ['find']),
-    manufactureProcessRequest () {
-      this.isLoading = true
-      this.find({
-        id: this.id
-      }).then(response => {
-        this.form.manufacture_process_id = this.process.id
-        this.form.manufacture_process_name = this.process.name
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
-    },
     addMaterialRow () {
       this.materials.push({
         row_id: this.materials.length,
@@ -355,8 +337,15 @@ export default {
     deleteFinishGoodRow (index) {
       this.$delete(this.form.finished_goods, index)
     },
-    chooseManufactureMachine (value) {
-      this.form.manufacture_machine_name = value
+    chooseManufactureMachine (option) {
+      this.form.manufacture_machine_name = option.name
+    },
+    chooseApprover (value) {
+      this.form.approver_name = value.label
+      this.form.approver_email = value.email
+    },
+    chooseManufactureProcess (option) {
+      this.form.manufacture_process_name = option.name
     },
     chooseMaterial (item, row) {
       row.item_name = item.name
@@ -431,7 +420,7 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/manufacture/process-io/' + this.id + '/input/' + response.data.id)
+          this.$router.push('/manufacture/processing/' + this.id + '/input/' + response.data.id)
         }).catch(error => {
           console.log(error.errors)
           this.isSaving = false
@@ -439,9 +428,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    this.manufactureProcessRequest()
   }
 }
 </script>

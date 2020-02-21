@@ -81,16 +81,29 @@
             </div>
           </div>
         </div>
-        <div class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-          <!-- <button type="button" class="btn btn-secondary mr-5" @click="bulkApprove()">
-            {{ $t('approve') | uppercase }}
-          </button>
-          <button type="button" class="btn btn-secondary mr-5" @click="bulkReject()">
-            {{ $t('reject') | uppercase }}
-          </button>
-          <button type="button" class="btn btn-secondary" @click="bulkCancel()">
-            {{ $t('cancel') | uppercase }}
-          </button> -->
+        <div class="mt-10">
+          <label class="css-control css-control-primary css-checkbox mr-10">
+            <input
+              type="checkbox"
+              class="css-control-input"
+              @click="toggleCheckRows()"
+              :checked="isRowsChecked(purchaseRequests, checkedRow)">
+            <span class="css-control-indicator"></span>
+          </label>
+          <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
+            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
+              {{ $t('request approval') | uppercase }}
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkApprove()">
+              {{ $t('approve') | uppercase }}
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkReject()">
+              {{ $t('reject') | uppercase }}
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" @click="bulkCancel()">
+              {{ $t('archive') | uppercase }}
+            </button>
+          </span>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -98,13 +111,6 @@
             <tr slot="p-head">
               <th width="50px">#</th>
               <th width="50px">
-                <p-form-check-box
-                  id="check-box"
-                  name="check-box"
-                  :is-form="false"
-                  @click.native="toggleCheckRows()"
-                  :checked="isRowsChecked(purchaseRequests, checkedRow)"
-                  class="text-center"/>
               </th>
               <th>Number</th>
               <th>Date</th>

@@ -2,8 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('output') | uppercase }}</span>
+      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/' + id + '/output'" class="breadcrumb-item">{{ $t('output') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
     <manufacture-menu/>
@@ -11,7 +12,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('output')" :header="true">
+      <p-block :title="$t('input')" :header="true">
         <div class="row mb-10">
           <p-date-range-picker
             id="date"
@@ -28,7 +29,7 @@
             class="btn-block"
             @input="filterSearch"/>
           <router-link
-            :to="'/manufacture/process-io/' + id + '/output/create-step-1'"
+            to="/manufacture/input/create"
             v-if="$permission.has('create manufacture')"
             class="input-group-append">
             <span class="input-group-text">
@@ -43,55 +44,46 @@
               <th>#</th>
               <th>{{ $t('date') | titlecase }}</th>
               <th>{{ $t('number') | titlecase }}</th>
-              <th>{{ $t('process') | titlecase }}</th>
-              <th>{{ $t('machine') | titlecase }}</th>
               <th>{{ $t('notes') | titlecase }}</th>
+              <th>{{ $t('finished goods') | titlecase }}</th>
+              <th>{{ $t('raw materials') | titlecase }}</th>
+              <th>&nbsp;</th>
             </tr>
-            <template v-for="(output, index) in outputs">
-              <tr
-                :key="'mi-' + index"
-                slot="p-body">
-                <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
-                <td>{{ output.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+            <template v-for="(input, index) in inputs">
+              <tr :key="'mm-' + index" slot="p-body">
+                <th>{{ ++index }}</th>
+                <td>{{ input.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>
-                  <router-link :to="{ name: 'manufacture.process.io.output.show', params: { id: id, outputId: output.id }}">
-                    {{ output.form.number }}
+                  <router-link :to="'/manufacture/processing/' + id + '/input/' + input.id">
+                    {{ input.form.number }}
                   </router-link>
                 </td>
-                <td>{{ output.manufacture_process_name }}</td>
-                <td>{{ output.manufacture_machine_name }}</td>
-                <td>{{ output.notes }}</td>
-              </tr>
-              <tr :key="'moa-' + index" slot="p-body">
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td><b>{{ $t('finished goods') | titlecase }}</b></td>
-                <td><b>{{ $t('quantity produced') | titlecase }}</b></td>
-                <td><b>{{ $t('warehouse') | titlecase }}</b></td>
-              </tr>
-              <tr v-for="finishGood in output.finished_goods_temporary" :key="'fg-' + finishGood.id" slot="p-body">
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
+                <td>{{ input.notes }}</td>
                 <td>
-                  <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
-                    {{ finishGood.item.label }}
+                  <span v-for="(finishGood, index2) in input.finished_goods" :key="finishGood.id">
+                    {{ ++index2 }}.
+                    <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
+                      {{ finishGood.item.label }}
+                    </router-link>
+                      = {{ finishGood.quantity | numberFormat }} {{ finishGood.item.units[0].name }}
+                      <br>
+                  </span>
+                </td>
+                <td>
+                  <span v-for="(rawMaterial, index3) in input.raw_materials" :key="rawMaterial.id">
+                    {{ ++index3 }}.
+                    <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
+                      {{ rawMaterial.item.label }}
+                    </router-link>
+                      = {{ rawMaterial.quantity }} {{ rawMaterial.item.units[0].name }}
+                      <br>
+                  </span>
+                </td>
+                <td>
+                  <router-link class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.output.create.step.2', params: { id: id, inputId: input.id }}">
+                    <span><i class="si si-share-alt"></i> Create Process Output</span>
                   </router-link>
                 </td>
-                <td>
-                  {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
-                </td>
-                <td>
-                  <router-link :to="{ name: 'warehouse.show', params: { id: finishGood.warehouse.id }}">
-                    {{ finishGood.warehouse.name }}
-                  </router-link>
-                </td>
-              </tr>
-              <tr :key="'mob-' + index" slot="p-body">
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
               </tr>
             </template>
           </point-table>
@@ -146,14 +138,14 @@ export default {
           date_to: this.date.end
         }
       })
-      this.getManufactureOutputs()
+      this.getManufactureInputs()
     }
   },
   computed: {
-    ...mapGetters('manufactureOutput', ['outputs', 'pagination'])
+    ...mapGetters('manufactureInput', ['inputs', 'pagination'])
   },
   methods: {
-    ...mapActions('manufactureOutput', ['get']),
+    ...mapActions('manufactureInput', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({
         query: {
@@ -163,22 +155,21 @@ export default {
       })
       this.searchText = value
       this.currentPage = 1
-      this.getManufactureOutputs()
+      this.getManufactureInputs()
     }, 300),
-    getManufactureOutputs () {
+    getManufactureInputs () {
       this.isLoading = true
       this.get({
         params: {
           join: 'form',
           sort_by: '-forms.number',
-          fields: 'manufacture_outputs.*',
+          fields: 'manufacture_inputs.*',
           filter_form: 'active',
-          filter_equal: {
-            'manufacture_process_id': this.id
-          },
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,
+            'rawMaterials.item.name': this.searchText,
+            'rawMaterials.quantity': this.searchText,
             'finishedGoods.item.name': this.searchText,
             'finishedGoods.quantity': this.searchText
           },
@@ -189,29 +180,10 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;manufactureMachine;manufactureProcess;finishedGoods.item.units;finishedGoods.warehouse',
+          includes: 'form;rawMaterials.item.units;finishedGoods.item.units',
           page: this.currentPage
         }
       }).then(response => {
-        for (let index in this.outputs) {
-          this.outputs[index].finished_goods_temporary = []
-        }
-        for (let index in this.outputs) {
-          let output = this.outputs[index]
-          for (let finishGoodIndex in output.finished_goods) {
-            let finishGood = output.finished_goods[finishGoodIndex]
-            let finishGoodTemporaryIndex = this.outputs[index].finished_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
-            var finishGoodTemporary
-            if (finishGoodTemporaryIndex < 0) {
-              finishGoodTemporary = Object.assign({}, finishGood)
-              this.outputs[index].finished_goods_temporary.push(finishGoodTemporary)
-            } else {
-              finishGoodTemporary = this.outputs[index].finished_goods_temporary[finishGoodTemporaryIndex]
-              finishGoodTemporary.quantity += finishGood.quantity
-              this.outputs[index].finished_goods_temporary[finishGoodTemporaryIndex] = finishGoodTemporary
-            }
-          }
-        }
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
@@ -220,11 +192,11 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getManufactureOutputs()
+      this.getManufactureInputs()
     }
   },
   created () {
-    this.getManufactureOutputs()
+    this.getManufactureInputs()
   },
   updated () {
     this.lastPage = this.pagination.last_page

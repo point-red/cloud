@@ -27,7 +27,7 @@
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create sales quotation', 'read sales quotation', 'update sales quotation', 'delete sales quotation'], permissions)" :checked="checkPermissionRow(['create sales quotation', 'read sales quotation', 'update sales quotation', 'delete sales quotation'], permissions)" :description="''"/></td>
-        <td><b>{{ $t('quotation') | uppercase }}</b></td>
+        <td><b>{{ $t('sales quotation') | uppercase }}</b></td>
         <td><p-form-check-box :is-form="false" ref="create sales quotation" @click.native="togglePermission('create sales quotation')" :checked="$rolePermission.has('create sales quotation', permissions)" :description="'create' | uppercase"/></td>
         <td><p-form-check-box :is-form="false" ref="read sales quotation" @click.native="togglePermission('read sales quotation')" :checked="$rolePermission.has('read sales quotation', permissions)" :description="'read' | uppercase"/></td>
         <td><p-form-check-box :is-form="false" ref="update sales quotation" @click.native="togglePermission('update sales quotation')" :checked="$rolePermission.has('update sales quotation', permissions)" :description="'update' | uppercase"/></td>
@@ -35,7 +35,7 @@
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create sales order', 'read sales order', 'update sales order', 'delete sales order'], permissions)" :checked="checkPermissionRow(['create sales order', 'read sales order', 'update sales order', 'delete sales order'], permissions)" :description="''"/></td>
-        <td><b>{{ $t('order') | uppercase }}</b></td>
+        <td><b>{{ $t('sales order') | uppercase }}</b></td>
         <td><p-form-check-box :is-form="false" ref="create sales order" @click.native="togglePermission('create sales order')" :checked="$rolePermission.has('create sales order', permissions)" :description="'create' | uppercase"/></td>
         <td><p-form-check-box :is-form="false" ref="read sales order" @click.native="togglePermission('read sales order')" :checked="$rolePermission.has('read sales order', permissions)" :description="'read' | uppercase"/></td>
         <td><p-form-check-box :is-form="false" ref="update sales order" @click.native="togglePermission('update sales order')" :checked="$rolePermission.has('update sales order', permissions)" :description="'update' | uppercase"/></td>

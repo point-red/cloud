@@ -3,8 +3,7 @@
     <slot></slot>
     <li class="nav-item" v-if="$permission.has('read manufacture')">
       <router-link
-        :to="'/manufacture/process-io/' + id + '/input'"
-        exact
+        :to="'/manufacture/processing/input'"
         class="nav-link"
         active-class="active">
         <span>{{ $t('input') | uppercase }}</span>
@@ -12,8 +11,7 @@
     </li>
     <li class="nav-item" v-if="$permission.has('read manufacture')">
       <router-link
-        :to="'/manufacture/process-io/' + id + '/output'"
-        exact
+        :to="'/manufacture/processing/output'"
         class="nav-link"
         active-class="active">
         <span>{{ $t('output') | uppercase }}</span>
@@ -22,13 +20,3 @@
     <slot name="right"></slot>
   </ul>
 </template>
-
-<script>
-export default {
-  data () {
-    return {
-      id: this.$route.params.id
-    }
-  }
-}
-</script>

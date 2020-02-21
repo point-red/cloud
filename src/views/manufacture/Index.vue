@@ -5,19 +5,6 @@
     </breadcrumb>
 
     <manufacture-menu></manufacture-menu>
-
-    <hr>
-
-    <div class="row gutters-tiny">
-      <template v-for="(process, index) in processes">
-        <p-box-process
-          :id="'process-' + index"
-          :key="'process-' + index"
-          :name="$t('process') + ' ' + process.name"
-          :link="'/manufacture/process-io/' + process.id + '/input'"
-          icon="fa fa-cogs"/>
-      </template>
-    </div>
   </div>
 </template>
 

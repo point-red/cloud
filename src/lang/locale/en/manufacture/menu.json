@@ -2,6 +2,7 @@
   "machine" : "machine",
   "formula" : "formula",
   "process" : "process",
+  "processing" : "processing",
   "input" : "input",
   "output" : "output",
   "raw material" : "raw material",

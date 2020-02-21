@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('input') | uppercase }}</span>
     </breadcrumb>
 
@@ -11,15 +11,16 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('input')" :header="true">
-        <div class="row mb-10">
-          <p-date-range-picker
-            id="date"
-            name="date"
-            class="col-sm-4"
-            v-model="date"/>
-        </div>
+      <p-block>
         <div class="input-group block">
+          <router-link
+            to="/manufacture/processing/input/create"
+            v-if="$permission.has('create manufacture formula')"
+            class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -27,14 +28,6 @@
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>
-          <router-link
-            :to="'/manufacture/process-io/' + id + '/input/create'"
-            v-if="$permission.has('create manufacture')"
-            class="input-group-append">
-            <span class="input-group-text">
-              <i class="fa fa-plus"></i>
-            </span>
-          </router-link>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">

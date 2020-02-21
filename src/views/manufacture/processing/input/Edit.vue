@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/process-io/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
       <router-link :to="{ name: 'manufacture.process.io.input.show', params: { id: id, inputId: inputId }}" class="breadcrumb-item">{{ input.form.number | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
@@ -234,7 +234,7 @@ export default {
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
-        this.$router.replace('/manufacture/process-io/' + this.id + '/input/' + response.data.id)
+        this.$router.replace('/manufacture/processing/' + this.id + '/input/' + response.data.id)
       }
       this.isLoading = false
       this.form.date = new Date(response.data.form.date)
@@ -421,7 +421,7 @@ export default {
         .then(response => {
           this.isSaving = false
           this.$notification.success('Update success')
-          this.$router.push('/manufacture/process-io/' + this.id + '/input/' + response.data.id)
+          this.$router.push('/manufacture/processing/' + this.id + '/input/' + response.data.id)
         }).catch(error => {
           console.log(error.errors)
           this.isSaving = false

@@ -2,9 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/process-io/' + id + '/output'" class="breadcrumb-item">{{ $t('output') | uppercase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
+      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('choose formula') | uppercase }}</span>
     </breadcrumb>
 
     <manufacture-menu/>
@@ -12,7 +12,7 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('input')" :header="true">
+      <p-block :title="$t('formula')" :header="true">
         <div class="row mb-10">
           <p-date-range-picker
             id="date"
@@ -29,8 +29,8 @@
             class="btn-block"
             @input="filterSearch"/>
           <router-link
-            to="/manufacture/input/create"
-            v-if="$permission.has('create manufacture')"
+            to="/manufacture/formula/create"
+            v-if="$permission.has('create manufacture formula')"
             class="input-group-append">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
@@ -42,46 +42,44 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th>{{ $t('date') | titlecase }}</th>
               <th>{{ $t('number') | titlecase }}</th>
-              <th>{{ $t('notes') | titlecase }}</th>
               <th>{{ $t('finished goods') | titlecase }}</th>
               <th>{{ $t('raw materials') | titlecase }}</th>
               <th>&nbsp;</th>
             </tr>
-            <template v-for="(input, index) in inputs">
-              <tr :key="'mm-' + index" slot="p-body">
-                <th>{{ ++index }}</th>
-                <td>{{ input.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+            <template v-for="(formula, index) in formulas">
+              <tr
+                :key="'mm-' + index"
+                slot="p-body">
+                <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>
-                  <router-link :to="'/manufacture/process-io/' + id + '/input/' + input.id">
-                    {{ input.form.number }}
-                  </router-link>
-                </td>
-                <td>{{ input.notes }}</td>
-                <td>
-                  <span v-for="(finishGood, index2) in input.finished_goods" :key="finishGood.id">
-                    {{ ++index2 }}.
-                    <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
-                      {{ finishGood.item.label }}
-                    </router-link>
-                      = {{ finishGood.quantity | numberFormat }} {{ finishGood.item.units[0].name }}
-                      <br>
-                  </span>
-                </td>
-                <td>
-                  <span v-for="(rawMaterial, index3) in input.raw_materials" :key="rawMaterial.id">
-                    {{ ++index3 }}.
-                    <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
-                      {{ rawMaterial.item.label }}
-                    </router-link>
-                      = {{ rawMaterial.quantity }} {{ rawMaterial.item.units[0].name }}
-                      <br>
-                  </span>
+                <router-link :to="{ name: 'manufacture.formula.show', params: { id: formula.id }}">
+                  {{ formula.form.number }}
+                </router-link>
+              </td>
+              <td>
+                  <ol>
+                    <li v-for="finishGood in formula.finished_goods" :key="finishGood.id">
+                      <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
+                        {{ finishGood.item.label }}
+                      </router-link>
+                       = {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
+                    </li>
+                  </ol>
                 </td>
                 <td>
-                  <router-link class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.output.create.step.2', params: { id: id, inputId: input.id }}">
-                    <span><i class="si si-share-alt"></i> Create Process Output</span>
+                  <ol>
+                    <li v-for="rawMaterial in formula.raw_materials" :key="rawMaterial.id">
+                      <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
+                        {{ rawMaterial.item.label }}
+                      </router-link>
+                       = {{ rawMaterial.quantity }} {{ rawMaterial.item.units[0].name }}
+                    </li>
+                  </ol>
+                </td>
+                <td>
+                  <router-link :to="{ name: 'manufacture.process.io.input.use.formula', params: { id: id, formulaId: formula.id }}" class="btn btn-primary mr-5">
+                    <span><i class="si si-share-alt"></i> {{ $t('use') | titlecase }}</span>
                   </router-link>
                 </td>
               </tr>
@@ -138,14 +136,14 @@ export default {
           date_to: this.date.end
         }
       })
-      this.getManufactureInputs()
+      this.getManufactureFormulas()
     }
   },
   computed: {
-    ...mapGetters('manufactureInput', ['inputs', 'pagination'])
+    ...mapGetters('manufactureFormula', ['formulas', 'pagination'])
   },
   methods: {
-    ...mapActions('manufactureInput', ['get']),
+    ...mapActions('manufactureFormula', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({
         query: {
@@ -155,16 +153,19 @@ export default {
       })
       this.searchText = value
       this.currentPage = 1
-      this.getManufactureInputs()
+      this.getManufactureFormulas()
     }, 300),
-    getManufactureInputs () {
+    getManufactureFormulas () {
       this.isLoading = true
       this.get({
         params: {
           join: 'form',
           sort_by: '-forms.number',
-          fields: 'manufacture_inputs.*',
+          fields: 'manufacture_formulas.*',
           filter_form: 'active',
+          filter_equal: {
+            'manufacture_process_id': this.id
+          },
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,
@@ -192,11 +193,11 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getManufactureInputs()
+      this.getManufactureFormulas()
     }
   },
   created () {
-    this.getManufactureInputs()
+    this.getManufactureFormulas()
   },
   updated () {
     this.lastPage = this.pagination.last_page

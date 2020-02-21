@@ -34,17 +34,10 @@
               </td>
             </tr>
             <tr slot="p-body">
-              <td></td>
-              <td></td>
+              <td v-if="mutableRequireExpiryDate">
+              <td v-if="mutableRequireProductionNumber">
               <td class="text-right">
-                <p-quantity
-                  id="total-quantity"
-                  name="total-quantity"
-                  v-model="mutableTotalQuantity"
-                  :units="mutableItemUnits"
-                  :disable-unit-selection="true"
-                  :readonly="true"
-                  :unit="mutableItemUnit"/>
+                {{ mutableTotalQuantity | numberFormat }} {{ mutableItemUnit.label }}
               </td>
               <td class="text-right"></td>
             </tr>

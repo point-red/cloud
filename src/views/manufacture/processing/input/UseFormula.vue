@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/process-io/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/process-io/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('use formula') | uppercase }}</span>
     </breadcrumb>
 
@@ -287,7 +287,7 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/manufacture/process-io/' + this.id + '/input/' + response.data.id)
+          this.$router.push('/manufacture/processing/' + this.id + '/input/' + response.data.id)
         }).catch(error => {
           console.log(error.errors)
           this.isSaving = false

@@ -100,6 +100,7 @@ export default {
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
+            'name': key['name'],
             'label': key['name']
           })
 
@@ -128,7 +129,7 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', option.label)
+      this.$emit('choosen', option)
       this.close()
     },
     show () {
