@@ -61,7 +61,7 @@
                 <template v-else>
                   <template v-if="reportType == 'weekly'">
                     <template v-if="$permission.has('read employee assessment')">
-                      <router-link :to="{ name: 'humanResourceEmployeeAssessmentShowBy', params: { id: id, type: 'weekly', value: encodeURI(assessment.date) }}">
+                      <router-link :to="{ name: 'humanResourceEmployeeAssessmentShowBy', params: { id: id, type: 'weekly', value: assessment.id }}">
                         {{ assessment.date | dateFormat('MMMM YYYY [(][Week] WW[)]') }}
                       </router-link>
                     </template>
@@ -71,7 +71,7 @@
                   </template>
                   <template v-if="reportType == 'monthly'">
                     <template v-if="$permission.has('read employee assessment')">
-                      <router-link :to="{ name: 'humanResourceEmployeeAssessmentShowBy', params: { id: id, type: 'monthly', value: encodeURI(assessment.date) }}">
+                      <router-link :to="{ name: 'humanResourceEmployeeAssessmentShowBy', params: { id: id, type: 'monthly', value: assessment.id }}">
                         {{ assessment.date | dateFormat('MMMM YYYY') }}
                       </router-link>
                     </template>
