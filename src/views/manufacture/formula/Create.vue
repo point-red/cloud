@@ -118,7 +118,7 @@
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
               <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
-              {{ requestedBy | uppercase }}
+              {{ authUser.full_name | uppercase }}
               <div class="d-sm-block d-md-none mt-10"></div>
             </div>
             <div class="col-sm-3 text-center">
@@ -154,7 +154,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -163,10 +163,12 @@ export default {
     Breadcrumb,
     BreadcrumbManufacture
   },
+  computed: {
+    ...mapGetters('auth', ['authUser'])
+  },
   data () {
     return {
       isSaving: false,
-      requestedBy: localStorage.getItem('userName'),
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -250,8 +252,8 @@ export default {
     deleteFinishGoodRow (index) {
       this.$delete(this.form.finished_goods, index)
     },
-    chooseManufactureProcess (value) {
-      this.form.manufacture_process_name = value
+    chooseManufactureProcess (option) {
+      this.form.manufacture_process_name = option.name
     },
     chooseRawMaterial (item, row) {
       row.quantity = 0
