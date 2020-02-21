@@ -272,8 +272,22 @@ export default {
   computed: {
     ...mapGetters('masterItem', ['item'])
   },
+  created () {
+    this.getItemCode()
+  },
   methods: {
-    ...mapActions('masterItem', ['create']),
+    ...mapActions('masterItem', ['create', 'get']),
+    getItemCode () {
+      this.isLoading = true
+      this.get()
+        .then(response => {
+          this.isLoading = false
+          this.form.code = 'A' + response.next_id
+        }).catch(error => {
+          this.isLoading = false
+          this.$notification.error(error.message)
+        })
+    },
     updateItemUnit (units) {
       this.form.units = units
     },
