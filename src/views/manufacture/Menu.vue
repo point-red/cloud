@@ -4,7 +4,7 @@
       to="/manufacture/processing"
       class="btn btn-secondary mr-5 mb-15"
       active-class="active"
-      v-if="$permission.has('read manufacture')">
+      v-if="$permission.has('read manufacture processing')">
       <span>{{ $t('processing') | uppercase }}</span>
     </router-link>
     <router-link

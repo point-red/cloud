@@ -80,7 +80,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('manufactureMachine', ['machines', 'nextId'])
+    ...mapGetters('manufactureMachine', ['machines'])
   },
   methods: {
     ...mapActions('manufactureMachine', ['create', 'get']),
@@ -89,7 +89,7 @@ export default {
       this.get()
         .then(response => {
           this.isLoading = false
-          this.form.code = 'M' + this.nextId
+          this.form.code = 'M' + response.next_id
         }).catch(error => {
           this.isLoading = false
           this.$notification.error(error.message)
