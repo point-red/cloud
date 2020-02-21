@@ -31,11 +31,11 @@
           id="assessment-date"
           :label="$t('assessment date')">
           <div slot="body" class="col-lg-9 col-form-label">
-            <template v-if="type=='monthly'">
-              {{ decodeURI(value) | dateFormat('MMM YYYY') }}
+            <template v-if="templateSelected && type=='weekly'">
+              {{ templateSelected.date | dateFormat('MMM YYYY [(][Week] WW[)]') }}
             </template>
-            <template v-else>
-              {{ decodeURI(value) | dateFormat('YYYY') }}
+            <template v-if="templateSelected && type=='monthly'">
+              {{ templateSelected.date | dateFormat('MMM YYYY') }}
             </template>
           </div>
         </p-form-row>
