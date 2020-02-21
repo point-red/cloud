@@ -298,7 +298,6 @@ export default {
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/manufacture/formula/' + response.data.id)
         }).catch(error => {
-          console.log(error.errors)
           this.isSaving = false
           this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
           this.form.errors.record(error.errors)

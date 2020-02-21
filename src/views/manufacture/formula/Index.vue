@@ -77,9 +77,9 @@
                   <div v-if="formula.form.approved == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
                 </td>
                 <td class="text-right">
-                  <router-link v-if="formula.form.approved" class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.input.use.formula', params: { id: formula.manufacture_process_id, formulaId: formula.id }}">
+                  <!-- <router-link v-if="formula.form.approved" class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.input.use.formula', params: { id: formula.manufacture_process_id, formulaId: formula.id }}">
                     <i class="fa fa-share-square-o"></i> {{ $t('start production') | uppercase }}
-                  </router-link>
+                  </router-link> -->
                 </td>
               </tr>
             </template>

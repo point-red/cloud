@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/processing/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/'" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
@@ -73,9 +73,7 @@
                   :units="row.item.units"
                   :unit="row.item.units[0]"/>
               </td>
-              <td>
-                <i class="btn btn-sm fa fa-times" @click="deleteFinishGoodRow(index)"></i>
-              </td>
+              <td>&nbsp;</td>
             </tr>
           </point-table>
 
@@ -117,7 +115,9 @@
                   :readonly="onClickUnit(row)"/>
               </td>
               <td>
-                <i class="btn btn-sm fa fa-times" @click="deleteMaterialRow(index)"></i>
+                <button class="btn btn-sm btn-outline-danger" v-if="row.item_id != null" @click="deleteRawMaterialRow(index)">
+                  <i class="fa fa-times"></i>
+                </button>
               </td>
             </tr>
           </point-table>
@@ -272,7 +272,7 @@ export default {
   },
   methods: {
     ...mapActions('manufactureInput', ['create']),
-    addMaterialRow () {
+    addRawMaterialRow () {
       this.materials.push({
         row_id: this.materials.length,
         item_id: null,
@@ -348,6 +348,7 @@ export default {
       this.form.manufacture_process_name = option.name
     },
     chooseMaterial (item, row) {
+      console.log(item)
       row.item_name = item.name
       row.quantity = 0
       row.require_expiry_date = item.require_expiry_date
@@ -356,6 +357,21 @@ export default {
       row.item.units = item.units
       row.item.unit = item.unit
       row.inventories = []
+      row.item.units.forEach((unit, keyUnit) => {
+        if (unit.converter == 1) {
+          row.unit = unit.label
+          row.converter = unit.converter
+        }
+      })
+      let isNeedNewRow = true
+      this.form.raw_materials.forEach(element => {
+        if (element.item_id == null) {
+          isNeedNewRow = false
+        }
+      })
+      if (isNeedNewRow) {
+        this.addRawMaterialRow()
+      }
     },
     chooseFinishGood (item, row) {
       row.item_name = item.name
@@ -394,13 +410,6 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      if (this.form.approver_id == null) {
-        this.$notification.error('approval cannot be null')
-        this.isSaving = false
-        this.form.errors.record({
-          approver_id: ['Approver should not empty']
-        })
-      }
       this.form.raw_materials = []
       this.materials.forEach(material => {
         if (material.dna && material.dna.length > 0) {
@@ -415,6 +424,9 @@ export default {
           this.form.raw_materials.push(material)
         }
       })
+      if (this.form.raw_materials.length > 1) {
+        this.form.raw_materials = this.form.raw_materials.filter(item => item.item_id !== null)
+      }
       this.create(this.form)
         .then(response => {
           this.isSaving = false
@@ -422,9 +434,8 @@ export default {
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/manufacture/processing/input/' + response.data.id)
         }).catch(error => {
-          console.log(error.errors)
           this.isSaving = false
-          this.$notification.error(error.message)
+          this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
           this.form.errors.record(error.errors)
         })
     }

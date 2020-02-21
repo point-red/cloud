@@ -45,9 +45,9 @@
                 </td>
                 <td>{{ process.notes }}</td>
                 <td class="text-right">
-                  <router-link class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.input.index', params: { id: process.id }}">
+                  <!-- <router-link class="btn btn-sm btn-secondary" :to="{ name: 'manufacture.process.io.input.index', params: { id: process.id }}">
                     <i class="fa fa-share-square-o"></i> {{ $t('start production') | uppercase }}
-                  </router-link>
+                  </router-link> -->
                 </td>
               </tr>
             </template>

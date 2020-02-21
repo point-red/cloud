@@ -69,8 +69,8 @@
               <tr slot="p-head">
                 <th>#</th>
                 <th style="min-width: 120px">Finished Goods</th>
-                <th>Quantity</th>
                 <th style="min-width: 120px">Warehouse</th>
+                <th class="text-right">Quantity</th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in input.finished_goods" :key="index">
                 <th>{{ index + 1 }}</th>
@@ -79,12 +79,8 @@
                     {{ row.item.label }}
                   </router-link>
                 </td>
-                <td>
-                  {{ row.quantity | numberFormat }} {{ row.unit }}
-                </td>
-                <td>
-                  {{ row.warehouse.name }}
-                </td>
+                <td>{{ row.warehouse.name }}</td>
+                <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
               </tr>
             </point-table>
           </p-block-inner>
@@ -94,8 +90,8 @@
               <tr slot="p-head">
                 <th>#</th>
                 <th style="min-width: 120px">{{ $t('raw materials') }}</th>
-                <th>Quantity</th>
                 <th style="min-width: 120px">Warehouse</th>
+                <th class="text-right">Quantity</th>
               </tr>
               <tr slot="p-body" v-for="(row, index) in raw_materials_temporary" :key="index">
                 <th>{{ index + 1 }}</th>
@@ -104,7 +100,8 @@
                     {{ row.item.label }}
                   </router-link>
                 </td>
-                <td>
+                <td>{{ row.warehouse.name }}</td>
+                <td class="text-right">
                   <template v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)">
                     <a href="javascript:void(0)" @click="$refs.inventoryDna.show(row.inventories, row.unit, row.item)">
                       {{ row.quantity | numberFormat }} {{ row.unit }}
@@ -113,9 +110,6 @@
                   <template v-else>
                     {{ row.quantity | numberFormat }} {{ row.unit }}
                   </template>
-                </td>
-                <td>
-                  {{ row.warehouse.name }}
                 </td>
               </tr>
             </point-table>

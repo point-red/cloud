@@ -294,12 +294,18 @@
                 </li>
               </ul>
             </li> -->
-            <!-- <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
+            <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
               <router-link to="/manufacture" class="nav-submenu" active-class="active">
                 <i class="si si-settings"/>
                 <span class="sidebar-mini-hide">{{ $t("manufacture") | uppercase }}</span>
               </router-link>
               <ul>
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture processing')">
+                  <router-link
+                    to="/manufacture/processing"
+                    active-class="active">{{ $t('processing') | uppercase }}
+                  </router-link>
+                </li> -->
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture machine')">
                   <router-link
                     to="/manufacture/machine"
@@ -319,7 +325,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li> -->
+            </li>
             <!-- <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance')">
               <router-link to="/finance" class="nav-submenu" active-class="active">
                 <i class="si si-wallet"/>

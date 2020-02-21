@@ -37,14 +37,6 @@
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"/>
 
-          <p-form-row
-            id="notes"
-            name="notes"
-            :label="$t('notes')"
-            v-model="form.notes"
-            :disabled="isSaving"
-            :errors="form.errors.get('notes')"
-            @errors="form.errors.set('notes', null)"/>
           <hr>
           <point-table>
             <tr slot="p-head">
