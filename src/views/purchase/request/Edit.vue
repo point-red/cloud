@@ -81,24 +81,28 @@
                   </td>
                   <td>
                     <p-form-input
-                      id="notes"
-                      name="notes"
+                      :id="'notes-' + index"
+                      :name="'notes-' + index"
                       v-model="row.notes"/>
                   </td>
                   <td>
                     <p-quantity
-                      :id="'quantity' + index"
-                      :name="'quantity' + index"
+                      :id="'quantity-' + index"
+                      :name="'quantity-' + index"
                       v-model="row.quantity"
                       :item-id="row.item_id"
                       :units="row.units"
-                      :unit="row.choosenUnit"
+                      :unit="{
+                        name: row.unit,
+                        label: row.unit,
+                        converter: row.converter
+                      }"
                       @choosen="chooseUnit($event, row)"/>
                   </td>
                   <td>
                     <p-form-number
-                      :id="'price' + index"
-                      :name="'price' + index"
+                      :id="'price-' + index"
+                      :name="'price-' + index"
                       @keyup.native="calculate"
                       v-model="row.price"/>
                   </td>
@@ -128,9 +132,7 @@
                 </template>
               </template>
               <tr slot="p-body">
-                <th class="text-center">
-                  <button type="button" class="btn btn-primary btn-sm" @click="addItemRow"><i class=" fa fa-plus"/></button>
-                </th>
+                <th class="text-center"></th>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -251,21 +253,18 @@ export default {
       response.data.items.forEach((item, keyItem) => {
         this.form.items.push({
           item_id: item.item_id,
+          item_name: item.item.name,
           quantity: item.quantity,
           price: item.price,
           unit: item.unit,
-          choosenUnit: {
-            label: item.unit,
-            name: item.unit,
-            converter: item.converter
-          },
-          units: item.item.units,
           converter: item.converter,
+          units: item.item.units,
           allocation_id: item.allocation_id,
           notes: item.notes,
           more: false
         })
       })
+      this.addItemRow()
       this.calculate()
     }).catch(error => {
       this.isLoading = false
@@ -324,6 +323,15 @@ export default {
           row.converter = unit.converter
         }
       })
+      let isNeedNewRow = true
+      this.form.items.forEach(element => {
+        if (element.item_id == null) {
+          isNeedNewRow = false
+        }
+      })
+      if (isNeedNewRow) {
+        this.addItemRow()
+      }
     },
     chooseUnit (unit, row) {
       row.unit = unit.label

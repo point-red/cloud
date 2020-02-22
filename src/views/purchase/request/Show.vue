@@ -15,26 +15,31 @@
 
     <purchase-menu/>
 
-    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert" v-if="purchaseRequest.form.approved == null && isLoading == false">
+    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
+      role="alert"
+      v-if="purchaseRequest.form.approved == null && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
           {{ $t('pending approval warning', { form: 'purchase request', approvedBy: purchaseRequest.approvers[0].requested_to.first_name + ' ' + purchaseRequest.approvers[0].requested_to.last_name }) | uppercase }}
         </p>
+        <hr>
         <div v-if="$permission.has('approve purchase request')">
-          <hr>
           <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
-          <button type="button" @click="onReject" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
+          <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
+          <m-form-reject id="form-reject" ref="formReject" @reject="onReject($event)"></m-form-reject>
         </div>
       </div>
     </div>
 
-    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15" role="alert" v-if="purchaseRequest.form.approved == 0 && isLoading == false">
+    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
+      role="alert"
+      v-if="purchaseRequest.form.approved == 0 && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle"></i>
-          REJECTED
+          <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('rejected') | uppercase }}
         </p>
+        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ purchaseRequest.form.approvals[0].reason }}</div>
       </div>
     </div>
 
@@ -201,7 +206,14 @@ export default {
         params: {
           with_archives: true,
           with_origin: true,
-          includes: 'supplier;items.item;items.allocation;services.service;services.allocation;approvers.requestedBy;approvers.requestedTo'
+          includes: 'supplier;' +
+            'items.item;' +
+            'items.allocation;' +
+            'services.service;' +
+            'services.allocation;' +
+            'form.approvals;' +
+            'approvers.requestedBy;' +
+            'approvers.requestedTo'
         }
       }).then(response => {
         this.isLoading = false
@@ -233,15 +245,18 @@ export default {
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
-        this.purchaseRequest.form.approved = true
+        this.purchaseRequest.form.approved = response.data.form.approved
       })
     },
-    onReject () {
+    onReject (reason) {
       this.reject({
-        id: this.id
+        id: this.id,
+        reason: reason
       }).then(response => {
+        console.log(response.data.form)
         this.$notification.success('reject success')
-        this.purchaseRequest.form.approved = false
+        this.purchaseRequest.form.approved = response.data.form.approved
+        this.purchaseRequest.form.approvals[0].reason = response.data.form.approvals[0].reason
       })
     }
   },

@@ -22,6 +22,7 @@
           <i class="fa fa-fw fa-exclamation-triangle"></i>
           {{ $t('pending approval warning', { form: 'purchase request', approvedBy: formula.form.approvals[0].requested_to.first_name + ' ' + formula.form.approvals[0].requested_to.last_name }) | uppercase }}
         </p>
+        <hr>
         <div v-if="$permission.has('approve purchase request')" class="mt-10">
           <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
           <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>

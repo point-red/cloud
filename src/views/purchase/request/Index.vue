@@ -38,10 +38,10 @@
               <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
-                  id="date"
-                  name="date"
-                  label="Date"
-                  v-model="date.start"/>
+                    id="date"
+                    name="date"
+                    label="date"
+                    v-model="date.start"/>
                 </div>
               </p-form-row>
             </div>
@@ -49,10 +49,10 @@
               <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
-                  id="date"
-                  name="date"
-                  label="Date"
-                  v-model="date.end"/>
+                    id="date"
+                    name="date"
+                    label="date"
+                    v-model="date.end"/>
                 </div>
               </p-form-row>
             </div>
@@ -110,8 +110,7 @@
           <point-table>
             <tr slot="p-head">
               <th width="50px">#</th>
-              <th width="50px">
-              </th>
+              <th width="50px"></th>
               <th>Number</th>
               <th>Date</th>
               <th>Supplier</th>
@@ -129,8 +128,7 @@
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
               <th>
-                {{ ((currentPage - 1) * limit) + index + 1 }}
-                <template v-if="purchaseRequest.items.length > 1">.{{ index2 + 1 }}</template>
+                {{ ((currentPage - 1) * limit) + index + 1 }}<template v-if="purchaseRequest.items.length > 1">.{{ index2 + 1 }}</template>
               </th>
               <td>
                 <p-form-check-box
