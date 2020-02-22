@@ -1,10 +1,15 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Inventory</span>
+      <span class="breadcrumb-item active">{{ $t('inventory') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row gutters-tiny">
+      <p-box
+        :name="$t('inventory report')"
+        v-if="$permission.has('read inventory report')"
+        link="/inventory/report"
+        icon="si si-docs"/>
       <p-box
         :name="$t('inventory usage')"
         v-if="$permission.has('read inventory usage')"
@@ -25,11 +30,6 @@
         v-if="$permission.has('read transfer item')"
         link="/inventory/transfer"
         icon="si si-directions"/>
-      <p-box
-        :name="$t('inventory report')"
-        v-if="$permission.has('read inventory report')"
-        link="/inventory/report"
-        icon="si si-docs"/>
     </div>
   </div>
 </template>

@@ -256,12 +256,18 @@
                 </li>
               </ul>
             </li> -->
-            <!-- <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
+            <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
               <router-link to="/inventory" class="nav-submenu" active-class="active">
                 <i class="si si-tag"/>
                 <span class="sidebar-mini-hide">{{ $t("inventory") | uppercase }}</span>
               </router-link>
               <ul>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory report')">
+                  <router-link
+                    to="/inventory/report"
+                    active-class="active">{{ $t('inventory report') | uppercase }}
+                  </router-link>
+                </li>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
                   <router-link
                     to="/inventory/usage"
@@ -286,14 +292,8 @@
                     active-class="active">{{ $t('transfer item') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory report')">
-                  <router-link
-                    to="/inventory/report"
-                    active-class="active">{{ $t('inventory report') | uppercase }}
-                  </router-link>
-                </li>
               </ul>
-            </li> -->
+            </li>
             <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
               <router-link to="/manufacture" class="nav-submenu" active-class="active">
                 <i class="si si-settings"/>
