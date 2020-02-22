@@ -94,7 +94,8 @@ export default {
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
-            'label': key['name'],
+            'label': key['label'],
+            'name': key['name'],
             'require_expiry_date': key['require_expiry_date'],
             'require_production_number': key['require_production_number'],
             'unit_default': key['unit_default'],
@@ -104,7 +105,7 @@ export default {
           })
 
           if (this.value == key['id']) {
-            this.mutableLabel = key['name']
+            this.mutableLabel = key['label']
           }
         })
         this.isLoading = false
@@ -139,7 +140,7 @@ export default {
       this.$emit('input', option.id)
       this.$emit('choosen', {
         id: option.id,
-        name: option.label,
+        name: option.name,
         require_expiry_date: option.require_expiry_date,
         require_production_number: option.require_production_number,
         unit_default: option.unit_default,

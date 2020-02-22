@@ -2,7 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-inventory/>
-      <span class="breadcrumb-item active">{{ $t('report') | uppercase }}</span>
+      <router-link to="/inventory/report" class="breadcrumb-item">{{ $t('report') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ item.label | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
@@ -30,6 +31,16 @@
               </div>
             </p-form-row>
           </div>
+          <div class="col-sm-3 text-center">
+            <p-form-row id="item" name="item" :label="$t('item')" :is-horizontal="false">
+              <div slot="body">
+                <m-item
+                  :id="'item'"
+                  v-model="item.id"
+                  @choosen="chooseItem($event)"/>
+              </div>
+            </p-form-row>
+          </div>
         </div>
         <p-form-input
           id="search-text"
@@ -44,7 +55,6 @@
             <tr slot="p-head">
               <th></th>
               <th></th>
-              <th></th>
               <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">opening</th>
               <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">in</th>
               <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">out</th>
@@ -52,8 +62,7 @@
             </tr>
             <tr slot="p-head">
               <th>#</th>
-              <th>Item</th>
-              <th>Account</th>
+              <th>Warehouse</th>
               <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th>
               <th style="border: 1px solid #e4e7ed" class="text-center">Value</th>
               <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th>
@@ -64,13 +73,8 @@
               <th style="border: 1px solid #e4e7ed" class="text-center">Value</th>
             </tr>
             <tr slot="p-body" v-for="(inventory, index) in inventories" :key="index">
-              <th>{{ ((currentPage - 1) * limit) + index + 1 }}</th>
-              <td>
-                <router-link :to="{ name: 'inventory.report.show', params: { id: inventory.id }}">
-                  {{ inventory.label }}
-                </router-link>
-              </td>
-              <td>{{ inventory.account.label }}</td>
+              <th>{{ index + 1 }}</th>
+              <td>{{ inventory.name }}</td>
               <td class="text-right">{{ inventory.opening_balance | numberFormat }}</td>
               <td class="text-right">{{ 0 | numberFormat }}</td>
               <td class="text-right">{{ inventory.stock_in | numberFormat }}</td>
@@ -78,7 +82,13 @@
               <td class="text-right">{{ inventory.stock_out | numberFormat }}</td>
               <td class="text-right">{{ 0 | numberFormat }}</td>
               <td class="text-right">{{ inventory.ending_balance | numberFormat }}</td>
-              <td class="text-right">{{ 0 | numberFormat }}</td>
+              <td class="text-right">{{ 0 }}</td>
+            </tr>
+            <tr slot="p-body">
+              <th></th>
+              <td class="text-right font-weight-bold" colspan="7">{{ $t('total') | uppercase }}</td>
+              <td class="text-right font-weight-bold">{{ total | numberFormat }}</td>
+              <td class="text-right font-weight-bold">{{ 0 }}</td>
             </tr>
           </point-table>
         </p-block-inner>
@@ -112,7 +122,7 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
-      limit: 10,
+      total: 0,
       date: {
         start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
         end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
@@ -122,7 +132,7 @@ export default {
   watch: {
     'date': {
       handler: function () {
-        this.$router.replace({
+        this.$router.push({
           query: {
             ...this.$route.query,
             date_from: this.date.start,
@@ -135,10 +145,29 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('masterItem', ['item']),
     ...mapGetters('inventoryInventory', ['inventories', 'pagination'])
   },
   methods: {
-    ...mapActions('inventoryInventory', ['get']),
+    ...mapActions('masterItem', ['find']),
+    ...mapActions('inventoryInventory', {
+      get: 'getWarehouse'
+    }),
+    chooseItem (option) {
+      this.$router.push({
+        params: { id: option.id },
+        query: {
+          ...this.$route.query,
+          date_from: this.date.start,
+          date_to: this.date.end
+        }
+      })
+      this.find({
+        id: option.id
+      })
+      this.id = option.id
+      this.getInventoryRequest()
+    },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value, dateFrom: this.date_from, dateTo: this.date_to } })
       this.searchText = value
@@ -148,19 +177,24 @@ export default {
     getInventoryRequest () {
       this.isLoading = true
       this.get({
+        id: this.id,
         params: {
-          includes: 'account',
-          sort_by: 'code,name',
-          limit: this.limit,
+          item_id: this.id,
+          sort_by: 'name',
+          limit: 10,
           page: this.currentPage,
-          date_from: this.$route.query.date_from,
-          date_to: this.$route.query.date_to,
+          date_from: this.date.start,
+          date_to: this.date.end,
           filter_like: {
             'code': this.searchText,
             'name': this.searchText
           }
         }
       }).then(response => {
+        this.total = 0
+        this.inventories.forEach(element => {
+          this.total += parseFloat(element.ending_balance)
+        })
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
@@ -173,16 +207,10 @@ export default {
     }
   },
   created () {
-    if (this.$route.query.date_from != this.date.start && this.$route.query.date_to != this.date.end) {
-      this.$router.replace({
-        query: {
-          ...this.$route.query,
-          date_from: this.date.start,
-          date_to: this.date.end
-        }
-      })
-    }
     this.getInventoryRequest()
+    this.find({
+      id: this.id
+    })
   },
   updated () {
     this.lastPage = this.pagination.last_page

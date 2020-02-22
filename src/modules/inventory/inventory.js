@@ -85,6 +85,17 @@ const actions = {
         })
     })
   },
+  getWarehouse ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/' + payload.id + '/warehouses', payload)
+        .then(response => {
+          commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url + '/' + payload.itemId, payload)
