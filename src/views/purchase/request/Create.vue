@@ -289,15 +289,9 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      if (this.form.approver_id == null) {
-        this.$notification.error('approval cannot be null')
-        this.isSaving = false
-        this.form.errors.record({
-          approver_id: ['Approver should not empty']
-        })
-        return
+      if (this.form.items.length > 1) {
+        this.form.items = this.form.items.filter(item => item.item_id !== null)
       }
-      this.form.items = this.form.items.filter(item => item.item_id !== null)
       this.create(this.form)
         .then(response => {
           this.isSaving = false
@@ -307,7 +301,7 @@ export default {
         }).catch(error => {
           console.log(error.errors)
           this.isSaving = false
-          this.$notification.error(error.message)
+          this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
           this.form.errors.record(error.errors)
         })
     }
