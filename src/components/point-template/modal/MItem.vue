@@ -97,6 +97,9 @@ export default {
             'label': key['name'],
             'require_expiry_date': key['require_expiry_date'],
             'require_production_number': key['require_production_number'],
+            'unit_default': key['unit_default'],
+            'unit_default_purchase': key['unit_default_purchase'],
+            'unit_default_sales': key['unit_default_sales'],
             'units': key['units']
           })
 
@@ -139,6 +142,9 @@ export default {
         name: option.label,
         require_expiry_date: option.require_expiry_date,
         require_production_number: option.require_production_number,
+        unit_default: option.unit_default,
+        unit_default_purchase: option.unit_default_purchase,
+        unit_default_sales: option.unit_default_sales,
         units: option.units,
         unit: unit
       })

@@ -63,7 +63,6 @@ export default {
     return {
       searchText: '',
       options: [],
-      isSaving: false,
       isLoading: false,
       mutableWarehouseId: null,
       mutableItemId: null,

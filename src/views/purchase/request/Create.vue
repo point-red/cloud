@@ -83,7 +83,11 @@
                       v-model="row.quantity"
                       :item-id="row.item_id"
                       :units="row.units"
-                      :unit="row.units[0]"
+                      :unit="{
+                        name: row.unit,
+                        label: row.unit,
+                        converter: row.converter
+                      }"
                       @choosen="chooseUnit($event, row)"/>
                   </td>
                   <td>
@@ -119,9 +123,7 @@
                 </template>
               </template>
               <tr slot="p-body">
-                <th class="text-center">
-                  <button type="button" class="btn btn-primary btn-sm" @click="addItemRow"><i class=" fa fa-plus"/></button>
-                </th>
+                <th class="text-center"></th>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -204,94 +206,16 @@ export default {
         approver_name: null,
         approver_email: null,
         notes: null,
-        items: [
-          {
-            item_id: null,
-            item_name: null,
-            unit: null,
-            converter: null,
-            units: [{
-              label: '',
-              name: '',
-              converter: null
-            }],
-            quantity: null,
-            price: null,
-            allocation_id: null,
-            notes: null,
-            more: false
-          },
-          {
-            item_id: null,
-            item_name: null,
-            unit: null,
-            converter: null,
-            units: [{
-              label: '',
-              name: '',
-              converter: null
-            }],
-            quantity: null,
-            price: null,
-            allocation_id: null,
-            notes: null,
-            more: false
-          },
-          {
-            item_id: null,
-            item_name: null,
-            unit: null,
-            converter: null,
-            units: [{
-              label: '',
-              name: '',
-              converter: null
-            }],
-            quantity: null,
-            price: null,
-            allocation_id: null,
-            notes: null,
-            more: false
-          },
-          {
-            item_id: null,
-            item_name: null,
-            unit: null,
-            converter: null,
-            units: [{
-              label: '',
-              name: '',
-              converter: null
-            }],
-            quantity: null,
-            price: null,
-            allocation_id: null,
-            notes: null,
-            more: false
-          },
-          {
-            item_id: null,
-            item_name: null,
-            unit: null,
-            converter: null,
-            units: [{
-              label: '',
-              name: '',
-              converter: null
-            }],
-            quantity: null,
-            price: null,
-            allocation_id: null,
-            notes: null,
-            more: false
-          }
-        ]
+        items: []
       })
     }
   },
   computed: {
     ...mapGetters('purchaseRequest', ['purchaseRequest']),
     ...mapGetters('auth', ['authUser'])
+  },
+  created () {
+    this.addItemRow()
   },
   methods: {
     ...mapActions('purchaseRequest', ['create']),
@@ -301,16 +225,16 @@ export default {
         item_name: null,
         unit: null,
         converter: null,
+        quantity: null,
+        price: null,
+        allocation_id: null,
+        notes: null,
+        more: false,
         units: [{
           label: '',
           name: '',
           converter: null
-        }],
-        quantity: null,
-        price: null,
-        allocation: null,
-        notes: null,
-        more: false
+        }]
       })
     },
     toggleMore () {
@@ -343,11 +267,20 @@ export default {
       row.item_name = item.name
       row.units = item.units
       row.units.forEach((unit, keyUnit) => {
-        if (unit.converter == 1) {
+        if (unit.id == item.unit_default_purchase) {
           row.unit = unit.label
           row.converter = unit.converter
         }
       })
+      let isNeedNewRow = true
+      this.form.items.forEach(element => {
+        if (element.item_id == null) {
+          isNeedNewRow = false
+        }
+      })
+      if (isNeedNewRow) {
+        this.addItemRow()
+      }
     },
     chooseUnit (unit, row) {
       row.unit = unit.label

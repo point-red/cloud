@@ -2,9 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/processing/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
-      <router-link :to="{ name: 'manufacture.process.io.input.show', params: { id: id, inputId: inputId }}" class="breadcrumb-item">{{ input.form.number | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing'" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <router-link :to="'/manufacture/processing/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
+      <router-link :to="{ name: 'manufacture.processing.input.show', params: { id: id, inputId: inputId }}" class="breadcrumb-item">{{ input.form.number | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
@@ -13,23 +13,16 @@
     <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('input')" :header="true">
+      <p-block>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
-            id="number"
-            name="number"
-            :label="$t('number')">
-            <div slot="body" class="col-lg-9">
-              <template v-if="input.form.number">
-                {{ input.form.number }}
-              </template>
-              <template v-else>
-                <span class="badge badge-danger">{{ $t('archived') }}</span>
-                {{ input.form.edited_number }}
-              </template>
+            id="process"
+            name="process"
+            :label="$t('process')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-process id="process" v-model="form.manufacture_process_id" @choosen="chooseManufactureProcess" :label="form.manufacture_process_name"/>
             </div>
           </p-form-row>
-
           <p-form-row
             id="machine"
             name="machine"
@@ -38,26 +31,13 @@
               <m-machine id="machine" v-model="form.manufacture_machine_id" @choosen="chooseManufactureMachine" :label="form.manufacture_machine_name"/>
             </div>
           </p-form-row>
-
-          <p-form-row
-            id="notes"
-            name="notes"
-            :label="$t('notes')"
-            v-model="form.notes"
-            :disabled="isSaving"
-            :errors="form.errors.get('notes')"
-            @errors="form.errors.set('notes', null)"/>
-
-          <p-separator></p-separator>
-
-          <h5>{{ $t('finished goods') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Item</th>
-              <th>Quantity</th>
+              <th style="min-width: 120px">Finished Goods</th>
               <th style="min-width: 120px">Warehouse</th>
+              <th>Quantity</th>
               <th></th>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="index">
@@ -71,13 +51,6 @@
                   @choosen="chooseFinishGood($event, row)"/>
               </td>
               <td>
-                <p-quantity
-                  :id="'quantity' + index"
-                  :name="'quantity' + index"
-                  v-model="row.quantity"
-                  :unit="row.item.units[0].label"/>
-              </td>
-              <td>
                 <m-warehouse
                   :id="'warehouse-finish-' + index"
                   :data-index="index"
@@ -86,28 +59,25 @@
                   @choosen="chooseWarehouseFinishGood($event, row)"/>
               </td>
               <td>
-                <i class="btn btn-sm fa fa-times" @click="deleteFinishGoodRow(index)"></i>
+                <p-quantity
+                  :id="'quantity-finish-goods-' + index"
+                  :name="'quantity-finish-goods-' + index"
+                  v-model="row.quantity"
+                  :units="row.item.units"
+                  :unit="row.item.units[0]"/>
               </td>
+              <td></td>
             </tr>
           </point-table>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addFinishGoodRow">
-            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-          </button>
-
-          <p-separator></p-separator>
-
-          <h5>{{ $t('raw materials') | titlecase }}</h5>
-          <hr>
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Item</th>
-              <th>&nbsp;</th>
-              <th>Quantity</th>
+              <th style="min-width: 120px">Raw Material</th>
               <th style="min-width: 120px">Warehouse</th>
+              <th>Quantity</th>
               <th></th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.raw_materials_temporary" :key="index">
+            <tr slot="p-body" v-for="(row, index) in materials" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item
@@ -115,27 +85,7 @@
                   :data-index="index"
                   v-model="row.item_id"
                   :label="row.item_name"
-                  @choosen="chooseRawMaterial($event, row)"/>
-              </td>
-              <td>
-                <m-inventory-out
-                  :id="'inventory-' + index"
-                  :itemId="row.item_id"
-                  :itemUnit="row.item.units[0]"
-                  :requireExpiryDate="row.item.require_expiry_date"
-                  :requireProductionNumber="row.item.require_production_number"
-                  :warehouseId="row.warehouse_id"
-                  :inventories="row.inventories"
-                  @add="addInventory($event, row)"
-                  v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
-              </td>
-              <td>
-                <p-quantity
-                  :id="'quantity' + index"
-                  :name="'quantity' + index"
-                  v-model="row.quantity"
-                  :unit="row.item.units[0].label"
-                  :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
+                  @choosen="chooseMaterial($event, row)"/>
               </td>
               <td>
                 <m-warehouse
@@ -143,34 +93,55 @@
                   :data-index="index"
                   v-model="row.warehouse_id"
                   :label="row.warehouse_name"
-                  @choosen="chooseWarehouseRawMaterial($event, row)"/>
+                  @choosen="chooseWarehouseMaterial($event, row)"/>
               </td>
               <td>
-                <i class="btn btn-sm fa fa-times" @click="deleteRawMaterialRow(index)"></i>
+                <p-quantity
+                  :id="'quantity-raw-material-' + index"
+                  :name="'quantity-raw-material-' + index"
+                  v-model="row.quantity"
+                  :units="row.item.units"
+                  :unit="row.item.unit"
+                  @click.native="onClickQuantity(row)"
+                  :disable-unit-selection="onClickUnit(row)"
+                  :readonly="onClickUnit(row)"/>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline-danger" v-if="row.item_id != null" @click="deleteRawMaterialRow(index)">
+                  <i class="fa fa-times"></i>
+                </button>
               </td>
             </tr>
           </point-table>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addRawMaterialRow">
-            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-          </button>
 
-          <p-separator></p-separator>
-
-          <h5 class="">Approver</h5>
-
-          <p-form-row
-            id="approver"
-            name="approver"
-            :label="$t('approver')">
-            <div slot="body" class="col-lg-9">
-              <m-user :id="'user'" v-model="form.approver_id"/>
+          <div class="row mt-50">
+            <div class="col-sm-6">
+              <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+              <div class="d-sm-block d-md-none mt-10"></div>
             </div>
-          </p-form-row>
-
+            <div class="col-sm-3 text-center">
+              <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
+              <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+              {{ authUser.full_name | uppercase }}
+              <div class="d-sm-block d-md-none mt-10"></div>
+            </div>
+            <div class="col-sm-3 text-center">
+              <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
+              <div class="mb-50" style="font-size:11px">_______________</div>
+              <m-user
+                :id="'user'"
+                v-model="form.approver_id"
+                :errors="form.errors.get('approver_id')"
+                @errors="form.errors.set('approver_id', null)"
+                @choosen="chooseApprover"/>
+                {{ form.approver_email }} <br v-if="form.approver_email">
+            </div>
+          </div>
+          <hr>
           <div class="form-group row">
             <div class="col-md-12">
               <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
               </button>
             </div>
           </div>
@@ -183,7 +154,7 @@
 <script>
 import debounce from 'lodash/debounce'
 import ManufactureMenu from '../../Menu'
-import TabMenu from './TabMenu'
+import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
 import Form from '@/utils/Form'
@@ -219,18 +190,52 @@ export default {
         raw_materials_temporary: [],
         raw_materials: [],
         finished_goods: []
-      })
+      }),
+      materials: [{
+        row_id: 0,
+        item_id: null,
+        item_name: null,
+        warehouse_id: null,
+        warehouse_name: null,
+        require_expiry_date: false,
+        require_production_number: false,
+        unit: null,
+        quantity: null,
+        converter: null,
+        inventories: [],
+        item: {
+          require_expiry_date: false,
+          require_production_number: false,
+          units: [{
+            label: '',
+            name: '',
+            converter: null
+          }],
+          unit: {
+            label: '',
+            name: '',
+            converter: null
+          }
+        }
+      }]
     }
   },
   computed: {
-    ...mapGetters('manufactureInput', ['input'])
+    ...mapGetters('manufactureInput', ['input']),
+    ...mapGetters('auth', ['authUser'])
   },
   created () {
     this.isLoading = true
     this.find({
       id: this.inputId,
       params: {
-        includes: 'manufactureMachine;rawMaterials.item.units;finishedGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishedGoods.warehouse'
+        includes: 'manufactureMachine;' +
+          'rawMaterials.item.units;' +
+          'finishedGoods.item.units;' +
+          'form.approvals.requestedBy;' +
+          'form.approvals.requestedTo;' +
+          'rawMaterials.warehouse;' +
+          'finishedGoods.warehouse'
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
@@ -366,6 +371,13 @@ export default {
         }
       })
     },
+    chooseApprover (value) {
+      this.form.approver_name = value.label
+      this.form.approver_email = value.email
+    },
+    chooseManufactureProcess (option) {
+      this.form.manufacture_process_name = option.name
+    },
     chooseFinishGood (item, row) {
       row.item_name = item.name
       row.quantity = 0
@@ -394,34 +406,13 @@ export default {
       row.quantity = value.quantity
       row.inventories = value.inventories
     },
-    setRawMaterials () {
-      this.form.raw_materials = []
-      for (let index in this.form.raw_materials_temporary) {
-        let rawMaterial = this.form.raw_materials_temporary[index]
-        if (rawMaterial['inventories'].length > 0) {
-          for (let indexInventory in rawMaterial['inventories']) {
-            let inventory = rawMaterial['inventories'][indexInventory]
-            if (inventory['quantity']) {
-              var inputRawMaterial = Object.assign({}, rawMaterial)
-              inputRawMaterial.quantity = inventory['quantity']
-              inputRawMaterial.expiry_date = inventory['expiry_date']
-              inputRawMaterial.production_number = inventory['production_number']
-              this.form.raw_materials.push(inputRawMaterial)
-            }
-          }
-        } else {
-          this.form.raw_materials.push(rawMaterial)
-        }
-      }
-    },
     onSubmit () {
       this.isSaving = true
-      this.setRawMaterials()
       this.update(this.form)
         .then(response => {
           this.isSaving = false
           this.$notification.success('Update success')
-          this.$router.push('/manufacture/processing/' + this.id + '/input/' + response.data.id)
+          this.$router.push('/manufacture/processing/input/' + response.data.id)
         }).catch(error => {
           console.log(error.errors)
           this.isSaving = false

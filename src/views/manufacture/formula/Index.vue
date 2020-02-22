@@ -57,7 +57,7 @@
                     <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
                         {{ finishGood.item.label }}
                     </router-link>
-                    = {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
+                    = {{ finishGood.quantity }} {{ finishGood.unit }}
                     <br>
                   </span>
                 </td>
@@ -67,7 +67,7 @@
                     <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
                       {{ rawMaterial.item.label }}
                     </router-link>
-                    = {{ rawMaterial.quantity | numberFormat }} {{ rawMaterial.item.units[0].name }}
+                    = {{ rawMaterial.quantity | numberFormat }} {{ rawMaterial.unit }}
                     <br>
                   </span>
                 </td>

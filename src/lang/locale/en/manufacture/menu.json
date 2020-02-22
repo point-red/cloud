@@ -3,6 +3,8 @@
   "formula" : "formula",
   "process" : "process",
   "processing" : "processing",
+  "processing input" : "processing input",
+  "processing output" : "processing output",
   "input" : "input",
   "output" : "output",
   "raw material" : "raw material",

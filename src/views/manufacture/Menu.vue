@@ -1,12 +1,12 @@
 <template>
   <div class="d-flex flex-nowrap" style="overflow-x:auto">
-    <!-- <router-link
+    <router-link
       to="/manufacture/processing"
       class="btn btn-secondary mr-5 mb-15"
       active-class="active"
       v-if="$permission.has('read manufacture processing')">
       <span>{{ $t('processing') | uppercase }}</span>
-    </router-link> -->
+    </router-link>
     <router-link
       to="/manufacture/machine"
       class="btn btn-secondary mr-5 mb-15"

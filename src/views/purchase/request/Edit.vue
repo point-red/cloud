@@ -319,7 +319,7 @@ export default {
       row.item_name = item.name
       row.units = item.units
       row.units.forEach((unit, keyUnit) => {
-        if (unit.converter == 1) {
+        if (unit.id == item.unit_default_purchase) {
           row.unit = unit.label
           row.converter = unit.converter
         }

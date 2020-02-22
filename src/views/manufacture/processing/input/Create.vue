@@ -42,10 +42,14 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Finished Goods</th>
+              <th style="min-width: 120px">Item</th>
               <th style="min-width: 120px">Warehouse</th>
               <th>Quantity</th>
               <th></th>
+            </tr>
+            <tr slot="p-body">
+              <th></th>
+              <td colspan="4" class="font-weight-bold">{{ $t('finished goods') | uppercase }}</td>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="index">
               <th>{{ index + 1 }}</th>
@@ -75,15 +79,9 @@
               </td>
               <td>&nbsp;</td>
             </tr>
-          </point-table>
-
-          <point-table>
-            <tr slot="p-head">
-              <th>#</th>
-              <th style="min-width: 120px">Raw Material</th>
-              <th style="min-width: 120px">Warehouse</th>
-              <th>Quantity</th>
+            <tr slot="p-body">
               <th></th>
+              <td colspan="4" class="font-weight-bold">{{ $t('raw materials') | uppercase }}</td>
             </tr>
             <tr slot="p-body" v-for="(row, index) in materials" :key="index">
               <th>{{ index + 1 }}</th>
@@ -156,18 +154,14 @@
         </p-block-inner>
       </p-block>
     </form>
-    <m-inventory-out
-      ref="inventory"
-      :id="'inventory'"
-      :key="'inventory'"
-      @updated="updateDna($event)"/>
+    <m-inventory-out ref="inventory" :id="'inventory'" @updated="updateDna($event)"/>
   </div>
 </template>
 
 <script>
 import debounce from 'lodash/debounce'
 import ManufactureMenu from '../../Menu'
-import TabMenu from './TabMenu'
+import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
 import Form from '@/utils/Form'
@@ -186,26 +180,6 @@ export default {
     return {
       isLoading: false,
       isSaving: false,
-      selectedItem: {
-        item_id: 0,
-        item_name: null,
-        item_unit: null,
-        item_unit_id: 0,
-        unit: null,
-        converter: 0,
-        quantity: 0,
-        price: 0,
-        discount_value: 0,
-        discount_percent: 0,
-        total: 0,
-        pricing_group_id: -1,
-        notes: null,
-        error: null,
-        stock: 0,
-        require_expiry_date: 0,
-        require_production_number: 0,
-        inventories: []
-      },
       materials: [{
         row_id: 0,
         item_id: null,
@@ -214,6 +188,9 @@ export default {
         warehouse_name: null,
         require_expiry_date: false,
         require_production_number: false,
+        unit: null,
+        quantity: null,
+        converter: null,
         item: {
           require_expiry_date: false,
           require_production_number: false,
@@ -227,11 +204,7 @@ export default {
             name: '',
             converter: null
           }
-        },
-        unit: null,
-        quantity: null,
-        converter: null,
-        inventories: []
+        }
       }],
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
@@ -295,8 +268,7 @@ export default {
         },
         unit: null,
         quantity: null,
-        converter: null,
-        inventories: []
+        converter: null
       })
     },
     onClickQuantity (row) {
@@ -356,7 +328,6 @@ export default {
       row.item.id = item.id
       row.item.units = item.units
       row.item.unit = item.unit
-      row.inventories = []
       row.item.units.forEach((unit, keyUnit) => {
         if (unit.converter == 1) {
           row.unit = unit.label
@@ -379,7 +350,6 @@ export default {
       row.item.require_expiry_date = item.require_expiry_date
       row.item.require_production_number = item.require_production_number
       row.item.units = item.units
-      row.inventories = []
       row.item.units.forEach((unit, keyUnit) => {
         if (unit.converter == 1) {
           row.unit = unit.label
@@ -390,12 +360,10 @@ export default {
     chooseWarehouseMaterial (value, row) {
       row.warehouse_name = value
       row.quantity = 0
-      row.inventories = []
     },
     chooseWarehouseFinishGood (value, row) {
       row.warehouse_name = value
       row.quantity = 0
-      row.inventories = []
     },
     updateDna (e) {
       this.materials.forEach(element => {

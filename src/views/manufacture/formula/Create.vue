@@ -24,7 +24,10 @@
                 name="process"
                 :label="$t('process')">
                 <div slot="body" class="col-lg-9 mt-5">
-                  <m-process id="process" v-model="form.manufacture_process_id" @choosen="chooseManufactureProcess" :label="form.manufacture_process_name"/>
+                  <m-process id="process"
+                    v-model="form.manufacture_process_id"
+                    @choosen="chooseManufactureProcess"
+                    :label="form.manufacture_process_name"/>
                 </div>
               </p-form-row>
               <p-form-row
@@ -42,9 +45,13 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Finished Goods</th>
+              <th style="min-width: 120px">Item</th>
               <th class="text-right">Quantity</th>
               <th style="width: 50px"></th>
+            </tr>
+            <tr slot="p-body">
+              <th></th>
+              <td colspan="4" class="font-weight-bold">{{ $t('finished goods') | uppercase }}</td>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="index">
               <th>{{ index + 1 }}</th>
@@ -68,16 +75,11 @@
               </td>
               <td></td>
             </tr>
-          </point-table>
-
-          <point-table>
-            <tr slot="p-head">
-              <th>#</th>
-              <th style="min-width: 120px">Raw Material</th>
-              <th class="text-right">Quantity</th>
-              <th style="width: 50px"></th>
+            <tr slot="p-body">
+              <th></th>
+              <td colspan="4" class="font-weight-bold">{{ $t('raw materials') | uppercase }}</td>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.raw_materials" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.raw_materials" :key="'material-'+index">
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item

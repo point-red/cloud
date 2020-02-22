@@ -41,11 +41,15 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Finished Goods</th>
+              <th style="min-width: 120px">Item</th>
               <th class="text-right">Quantity</th>
               <th style="width: 50px"></th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="index">
+            <tr slot="p-body">
+              <th></th>
+              <td colspan="4" class="font-weight-bold">{{ $t('finished goods') | uppercase }}</td>
+            </tr>
+            <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="'finished-goods-' + index">
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item
@@ -62,23 +66,22 @@
                   v-model="row.quantity"
                   :item-id="row.item_id"
                   :units="row.item.units"
-                  :unit="row.item.units[0]"
+                  :unit="{
+                    name: row.unit,
+                    label: row.unit,
+                    converter: row.converter
+                  }"
                   @choosen="chooseUnit($event, row)"/>
               </td>
               <td>
                 &nbsp;
               </td>
             </tr>
-          </point-table>
-
-          <point-table>
-            <tr slot="p-head">
-              <th>#</th>
-              <th style="min-width: 120px">Raw Material</th>
-              <th class="text-right">Quantity</th>
-              <th style="width: 50px"></th>
+            <tr slot="p-body">
+              <th></th>
+              <td colspan="4" class="font-weight-bold">{{ $t('raw materials') | uppercase }}</td>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.raw_materials" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.raw_materials" :key="'material-' + index">
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item
@@ -95,7 +98,11 @@
                   v-model="row.quantity"
                   :item-id="row.item_id"
                   :units="row.item.units"
-                  :unit="row.item.units[0]"
+                  :unit="{
+                    name: row.unit,
+                    label: row.unit,
+                    converter: row.converter
+                  }"
                   @choosen="chooseUnit($event, row)"/>
               </td>
               <td>
@@ -189,7 +196,11 @@ export default {
     this.find({
       id: this.id,
       params: {
-        includes: 'manufactureProcess;rawMaterials.item.units;finishedGoods.item.units;form.approvals.requestedBy;form.approvals.requestedTo'
+        includes: 'manufactureProcess;' +
+        'rawMaterials.item.units;' +
+        'finishedGoods.item.units;' +
+        'form.approvals.requestedBy;' +
+        'form.approvals.requestedTo'
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
@@ -202,13 +213,15 @@ export default {
       this.form.manufacture_process_name = response.data.manufacture_process_name
       this.form.name = response.data.name
       this.form.notes = response.data.form.notes
+      console.log(response.data.raw_materials)
       response.data.raw_materials.forEach((item, keyItem) => {
+        console.log(item)
         this.form.raw_materials.push({
           item_id: item.item_id,
           item_name: item.item_name,
+          item: item.item,
           quantity: item.quantity,
           unit: item.unit,
-          item: item.item,
           converter: item.converter
         })
       })
@@ -271,6 +284,10 @@ export default {
     chooseManufactureProcess (option) {
       this.form.manufacture_process_name = option.name
     },
+    chooseUnit (unit, row) {
+      row.unit = unit.label
+      row.converter = unit.converter
+    },
     chooseRawMaterial (item, row) {
       row.item_name = item.name
       row.item.units = item.units
@@ -280,7 +297,15 @@ export default {
           row.converter = unit.converter
         }
       })
-      this.addRawMaterialRow()
+      let isNeedNewRow = true
+      this.form.raw_materials.forEach(element => {
+        if (element.item_id == null) {
+          isNeedNewRow = false
+        }
+      })
+      if (isNeedNewRow) {
+        this.addRawMaterialRow()
+      }
     },
     chooseFinishGood (item, row) {
       row.item_name = item.name
