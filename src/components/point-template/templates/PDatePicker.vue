@@ -123,4 +123,10 @@ export default {
 .mx-datepicker-popup {
   z-index: 1050 !important;
 }
+.mx-input {
+  min-width: 160px !important;
+}
+.mx-datepicker {
+  width: 170px !important;
+}
 </style>
