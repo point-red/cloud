@@ -66,14 +66,14 @@
             <tr slot="p-body" v-for="(inventory, index) in inventories" :key="index">
               <th>{{ ((currentPage - 1) * limit) + index + 1 }}</th>
               <td>
-                <router-link :to="{
-                  name: 'inventory.report.show',
-                  params: { id: inventory.id },
-                  query: {
-                    date_from: date.start,
-                    date_to: date.end
-                  }
-                }">
+                <router-link
+                  :to="{
+                    name: 'inventory.report.show',
+                    params: { id: inventory.id },
+                    query: {
+                      date_from: date.start,
+                      date_to: date.end
+                    }}">
                   {{ inventory.label }}
                 </router-link>
               </td>
