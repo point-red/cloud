@@ -5,13 +5,12 @@ const url = '/inventory/inventories'
 const state = {
   inventory: {},
   inventories: [],
+  warehouses: [],
   pagination: {},
   openingBalance: 0,
   openingBalanceCurrentPage: 0,
   stockIn: 0,
-  stockInCurrentPage: 0,
   stockOut: 0,
-  stockOutCurrentPage: 0,
   endingBalance: 0
 }
 
@@ -28,20 +27,17 @@ const getters = {
   stockIn: state => {
     return state.stockIn
   },
-  stockInCurrentPage: state => {
-    return state.stockInCurrentPage
-  },
   stockOut: state => {
     return state.stockOut
-  },
-  stockOutCurrentPage: state => {
-    return state.stockOutCurrentPage
   },
   endingBalance: state => {
     return state.endingBalance
   },
   inventories: state => {
     return state.inventories
+  },
+  warehouses: state => {
+    return state.warehouses
   },
   pagination: state => {
     return state.pagination
@@ -51,12 +47,14 @@ const getters = {
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.inventories = payload.data
+    state.pagination = payload.meta
+  },
+  'FETCH_WAREHOUSES' (state, payload) {
+    state.warehouses = payload.data
     state.openingBalance = payload.opening_balance
     state.openingBalanceCurrentPage = payload.opening_balance_current_page
     state.stockIn = payload.stock_in
-    state.stockInCurrentPage = payload.stock_in_current_page
     state.stockOut = payload.stock_out
-    state.stockOutCurrentPage = payload.stock_out_current_page
     state.endingBalance = payload.ending_balance
     state.pagination = payload.meta
   },
@@ -65,9 +63,7 @@ const mutations = {
     state.openingBalance = payload.opening_balance
     state.openingBalanceCurrentPage = payload.opening_balance_current_page
     state.stockIn = payload.stock_in
-    state.stockInCurrentPage = payload.stock_in_current_page
     state.stockOut = payload.stock_out
-    state.stockOutCurrentPage = payload.stock_out_current_page
     state.endingBalance = payload.ending_balance
     state.pagination = payload.meta
   }
@@ -89,7 +85,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.get(url + '/' + payload.id + '/warehouses', payload)
         .then(response => {
-          commit('FETCH_ARRAY', response)
+          commit('FETCH_WAREHOUSES', response)
           resolve(response)
         }).catch(error => {
           reject(error)

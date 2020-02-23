@@ -72,7 +72,7 @@
               <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th>
               <th style="border: 1px solid #e4e7ed" class="text-center">Value</th>
             </tr>
-            <tr slot="p-body" v-for="(inventory, index) in inventories" :key="index">
+            <tr slot="p-body" v-for="(inventory, index) in warehouses" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link
@@ -160,7 +160,7 @@ export default {
   },
   computed: {
     ...mapGetters('masterItem', ['item']),
-    ...mapGetters('inventoryInventory', ['inventories', 'pagination'])
+    ...mapGetters('inventoryInventory', ['warehouses', 'pagination'])
   },
   methods: {
     ...mapActions('masterItem', ['find']),
@@ -206,7 +206,7 @@ export default {
         }
       }).then(response => {
         this.total = 0
-        this.inventories.forEach(element => {
+        this.warehouses.forEach(element => {
           this.total += parseFloat(element.ending_balance)
         })
         this.isLoading = false

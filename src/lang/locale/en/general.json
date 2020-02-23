@@ -51,6 +51,8 @@
   "close": "close",
   "clear": "clear",
   "photo": "photo",
+  "opening": "opening",
+  "ending": "ending",
   "top up": "top up",
   "pay now": "pay now",
   "cancellation status": "cancellation status",
