@@ -68,9 +68,13 @@
             <point-table>
               <tr slot="p-head">
                 <th>#</th>
-                <th style="min-width: 120px">Finished Goods</th>
+                <th style="min-width: 120px">Item</th>
                 <th style="min-width: 120px">Warehouse</th>
                 <th class="text-right">Quantity</th>
+              </tr>
+              <tr slot="p-body">
+                <th></th>
+                <td colspan="3" class="font-weight-bold">{{ $t('finished goods') | uppercase }}</td>
               </tr>
               <tr slot="p-body" v-for="(row, index) in input.finished_goods" :key="index">
                 <th>{{ index + 1 }}</th>
@@ -82,16 +86,9 @@
                 <td>{{ row.warehouse.name }}</td>
                 <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
               </tr>
-            </point-table>
-          </p-block-inner>
-
-          <p-block-inner>
-            <point-table>
-              <tr slot="p-head">
-                <th>#</th>
-                <th style="min-width: 120px">{{ $t('raw materials') }}</th>
-                <th style="min-width: 120px">Warehouse</th>
-                <th class="text-right">Quantity</th>
+              <tr slot="p-body">
+                <th></th>
+                <td colspan="3" class="font-weight-bold">{{ $t('raw materials') | uppercase }}</td>
               </tr>
               <tr slot="p-body" v-for="(row, index) in raw_materials_temporary" :key="index">
                 <th>{{ index + 1 }}</th>

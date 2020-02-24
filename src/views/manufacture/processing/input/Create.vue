@@ -51,7 +51,7 @@
               <th></th>
               <td colspan="4" class="font-weight-bold">{{ $t('finished goods') | uppercase }}</td>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="'finished-goods-' + index">
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item
@@ -67,7 +67,7 @@
                   :data-index="index"
                   v-model="row.warehouse_id"
                   :label="row.warehouse_name"
-                  @choosen="chooseWarehouseFinishGood($event, row)"/>
+                  @choosen="chooseWarehouse($event, row)"/>
               </td>
               <td>
                 <p-quantity
@@ -83,7 +83,7 @@
               <th></th>
               <td colspan="4" class="font-weight-bold">{{ $t('raw materials') | uppercase }}</td>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in materials" :key="index">
+            <tr slot="p-body" v-for="(row, index) in materials" :key="'raw-materials-' + index">
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item
@@ -99,7 +99,7 @@
                   :data-index="index"
                   v-model="row.warehouse_id"
                   :label="row.warehouse_name"
-                  @choosen="chooseWarehouseMaterial($event, row)"/>
+                  @choosen="chooseWarehouse($event, row)"/>
               </td>
               <td>
                 <p-quantity
@@ -357,12 +357,8 @@ export default {
         }
       })
     },
-    chooseWarehouseMaterial (value, row) {
-      row.warehouse_name = value
-      row.quantity = 0
-    },
-    chooseWarehouseFinishGood (value, row) {
-      row.warehouse_name = value
+    chooseWarehouse (option, row) {
+      row.warehouse_name = option.name
       row.quantity = 0
     },
     updateDna (e) {

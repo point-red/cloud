@@ -85,7 +85,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('inventoryDna', ['inventories'])
+    ...mapGetters('inventoryInventoryDna', ['inventories'])
   },
   props: {
     id: {
@@ -106,11 +106,14 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('inventoryDna', ['get', 'pagination']),
+    ...mapActions('inventoryInventoryDna', ['get', 'pagination']),
     init () {
       this.isLoading = true
       this.get({
-        itemId: this.mutableItemId
+        itemId: this.mutableItemId,
+        params: {
+          warehouse_id: this.mutableWarehouseId
+        }
       }).then(response => {
         this.inventories.forEach(inventory => {
           inventory.quantity = 0

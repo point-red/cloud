@@ -8,7 +8,7 @@
             <th v-if="mutableRequireProductionNumber">Production No.</th>
             <th>Quantity</th>
           </tr>
-          <tr slot="p-body" v-for="(inventory, index) in mutableInventories" :key="index">
+          <tr slot="p-body" v-for="(inventory, index) in mutableInventories" :key="'inventory-dna-' + index">
             <td v-if="mutableRequireExpiryDate">{{ inventory.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
             <td v-if="mutableRequireProductionNumber">{{ inventory.production_number }}</td>
             <td>{{ inventory.quantity }} {{ mutableItemUnit }}</td>
