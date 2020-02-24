@@ -142,10 +142,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('inventoryInventory', ['inventories', 'pagination'])
+    ...mapGetters('inventoryInventoryRecapitulation', ['inventories', 'pagination'])
   },
   methods: {
-    ...mapActions('inventoryInventory', ['get']),
+    ...mapActions('inventoryInventoryRecapitulation', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value, dateFrom: this.date_from, dateTo: this.date_to } })
       this.searchText = value

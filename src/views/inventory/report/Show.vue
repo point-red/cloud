@@ -160,13 +160,11 @@ export default {
   },
   computed: {
     ...mapGetters('masterItem', ['item']),
-    ...mapGetters('inventoryInventory', ['warehouses', 'pagination'])
+    ...mapGetters('inventoryInventoryWarehouseRecapitulation', ['warehouses', 'pagination'])
   },
   methods: {
     ...mapActions('masterItem', ['find']),
-    ...mapActions('inventoryInventory', {
-      get: 'getWarehouse'
-    }),
+    ...mapActions('inventoryInventoryWarehouseRecapitulation', ['get']),
     chooseItem (option) {
       this.$router.push({
         params: { id: option.id },

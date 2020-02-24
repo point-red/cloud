@@ -90,9 +90,11 @@
               <td colspan="4" class="text-right font-weight-bold">{{ $t('opening') | uppercase }}</td>
               <td class="text-right font-weight-bold">{{ openingBalance | numberFormat }}</td>
             </tr>
-            <tr slot="p-body" v-if="page != 1">
+            <tr slot="p-body" v-if="parseInt($route.query.page) != 1 && inventories.length > 0">
               <th></th>
-              <td colspan="6" class="text-right font-weight-bold">
+              <td v-if="item.require_production_number"></td>
+              <td v-if="item.require_expiry_date"></td>
+              <td colspan="4" class="text-right font-weight-bold">
                 <router-link
                   :to="{
                     name: 'inventory.report.detail',
@@ -103,15 +105,13 @@
                     query: {
                       date_from: date.start,
                       date_to: date.end,
-                      page: page - 1
-                    }}">
-                  ...
-                </router-link>
+                      page: $route.query.page - 1
+                    }}">[...]</router-link>
               </td>
               <td class="text-right font-weight-bold">{{ openingBalanceCurrentPage | numberFormat }}</td>
             </tr>
             <tr slot="p-body" v-for="(row, index) in inventories" :key="index">
-              <th>{{ ((page - 1) * limit) + index + 1 }}</th>
+              <th>{{ ((parseInt($route.query.page) - 1) * limit) + index + 1 }}</th>
               <td>{{ row.form.date | dateFormat('DD MMMM YYYY HH:mm:ss') }}</td>
               <td>{{ row.form.number }}</td>
               <td>{{ row.warehouse.name }}</td>
@@ -120,9 +120,25 @@
               <td class="text-right">{{ row.quantity | numberFormat }}</td>
               <td class="text-right">{{ row.total_quantity | numberFormat }}</td>
             </tr>
-            <tr slot="p-body" v-if="page != lastPage">
+            <tr slot="p-body" v-if="parseInt($route.query.page) != lastPage && inventories.length > 0">
               <th></th>
-              <td colspan="6" class="text-right font-weight-bold">...</td>
+              <td v-if="item.require_production_number"></td>
+              <td v-if="item.require_expiry_date"></td>
+              <td colspan="4" class="text-right font-weight-bold">
+                <router-link
+                  :to="{
+                    name: 'inventory.report.detail',
+                    params: {
+                      id: id,
+                      warehouseId: warehouseId
+                    },
+                    query: {
+                      date_from: date.start,
+                      date_to: date.end,
+                      page: parseInt($route.query.page) + 1
+                    }}">[...]</router-link>
+              </td>
+              <td></td>
             </tr>
             <tr slot="p-body">
               <th></th>
@@ -134,7 +150,7 @@
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="page"
+          :current-page="parseInt(this.$route.query.page)"
           :last-page="lastPage"
           @updatePage="updatePage">
         </p-pagination>
@@ -178,6 +194,7 @@ export default {
         this.$router.replace({
           query: {
             ...this.$route.query,
+            page: 1,
             date_from: this.date.start,
             date_to: this.date.end
           }
@@ -189,9 +206,6 @@ export default {
     $route (to, from) {
       if (to.params.warehouseId != from.params.warehouseId || to.params.id != from.params.id) {
         this.$route.query.page = 1
-        this.page = 1
-      } else {
-        this.page = parseInt(this.$route.query.page)
       }
       this.id = parseInt(this.$route.params.id)
       this.warehouseId = parseInt(this.$route.params.warehouseId)
@@ -203,43 +217,31 @@ export default {
   computed: {
     ...mapGetters('masterItem', ['item']),
     ...mapGetters('masterWarehouse', ['warehouse']),
-    ...mapGetters('inventoryInventory', ['inventories', 'pagination', 'openingBalance', 'openingBalanceCurrentPage', 'stockIn', 'stockOut', 'endingBalance'])
+    ...mapGetters('inventoryInventoryDetail', ['inventories', 'pagination', 'openingBalance', 'openingBalanceCurrentPage', 'stockIn', 'stockOut', 'endingBalance'])
   },
   methods: {
     ...mapActions('masterItem', ['find', 'delete']),
-    ...mapActions('inventoryInventory', {
+    ...mapActions('inventoryInventoryDetail', {
       findInventory: 'find'
     }),
     ...mapActions('masterWarehouse', {
       findWarehouse: 'find'
     }),
     getItemRequest () {
-      this.isLoading = true
       this.find({
         id: this.id,
         params: {
           includes: 'account;units;groups'
         }
-      }).then(response => {
-        this.isLoading = false
-        this.getInventoryRequest()
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
       })
     },
     getWarehouseRequest () {
       this.findWarehouse({ id: this.warehouseId })
-        .then((response) => {
-          //
-        }, (error) => {
-          //
-        })
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value, dateFrom: this.date_from, dateTo: this.date_to } })
       this.searchText = value
-      this.page = 1
+      this.$route.query.page = 1
       this.getInventoryRequest()
     }, 300),
     chooseItem (option) {
@@ -250,14 +252,13 @@ export default {
         },
         query: {
           ...this.$route.query,
+          page: 1,
           date_from: this.date.start,
           date_to: this.date.end
         }
       })
-      this.find({
-        id: option.id
-      })
       this.id = option.id
+      this.find({ id: option.id })
       this.getInventoryRequest()
     },
     chooseWarehouse (option) {
@@ -268,10 +269,13 @@ export default {
         },
         query: {
           ...this.$route.query,
+          page: 1,
           date_from: this.date.start,
           date_to: this.date.end
         }
       })
+      this.warehouseId = option.id
+      this.findWarehouse({ id: option.id })
       this.getInventoryRequest()
     },
     getInventoryRequest () {
@@ -282,8 +286,7 @@ export default {
           includes: 'form;warehouse',
           sort_by: 'forms.date',
           searchText: this.$route.query.search,
-          page: this.$route.query.page * 1 || 1,
-          lastPage: this.lastPage,
+          page: parseInt(this.$route.query.page) || 1,
           limit: this.limit,
           warehouse_id: this.warehouseId,
           date_from: this.date.start,
@@ -304,6 +307,7 @@ export default {
           total += element.quantity
           element.total_quantity = total
         })
+        this.lastPage = this.pagination.last_page
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
@@ -311,18 +315,19 @@ export default {
       })
     },
     updatePage (value) {
-      this.page = value
+      this.$route.query.page = value
       this.getInventoryRequest()
     }
   },
   created () {
     this.warehouseId = this.$route.params.warehouseId
     this.id = this.$route.params.id
+    if (!this.$route.query.page) {
+      this.$route.query.page = 1
+    }
     this.getItemRequest()
     this.getWarehouseRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
+    this.getInventoryRequest()
   }
 }
 </script>

@@ -1,6 +1,6 @@
 import api from '@/api'
 
-const url = '/inventory/inventories'
+const url = '/inventory/inventory-dna'
 
 const state = {
   inventories: [],
@@ -26,7 +26,7 @@ const mutations = {
 const actions = {
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.itemId + '/dna', payload)
+      api.get(url + '/' + payload.itemId, payload)
         .then(response => {
           commit('FETCH_ARRAY', response)
           resolve(response)
