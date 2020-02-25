@@ -5,15 +5,17 @@
         <form class="row" @submit.prevent="onSubmit">
           <p-block>
             <p-form-row
-              id="customer_id"
-              name="customer_id"
-              :label="$t('customer')"
-              v-model="form.customer_id"
-              :disabled="isSaving"
-              :errors="form.errors.get('customer_id')"
-              @errors="form.errors.set('customer_id', null)">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-customer id="customer" v-model="form.customer_id" :label="form.customer_name"/>
+              id="date"
+              name="date"
+              :label="$t('date')">
+              <div slot="body" class="col-lg-9">
+                <p-date-picker
+                  id="date"
+                  name="date"
+                  :label="$t('date')"
+                  v-model="form.date"
+                  :errors="form.errors.get('date')"
+                  @errors="form.errors.set('date', null)"/>
               </div>
             </p-form-row>
 
@@ -26,6 +28,19 @@
               @errors="form.errors.set('account', null)">
               <div slot="body" class="col-lg-9 mt-5">
                 <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" :label="form.chart_of_account_name" sub-ledger="account receivable"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="customer_id"
+              name="customer_id"
+              :label="$t('customer')"
+              v-model="form.customer_id"
+              :disabled="isSaving"
+              :errors="form.errors.get('customer_id')"
+              @errors="form.errors.set('customer_id', null)">
+              <div slot="body" class="col-lg-9 mt-5">
+                <m-customer id="customer" v-model="form.customer_id" :label="form.customer_name"/>
               </div>
             </p-form-row>
 
@@ -79,6 +94,7 @@ export default {
     return {
       isSaving: false,
       form: new Form({
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         customer_id: null,
         customer_name: null,
         chart_of_account_id: null,

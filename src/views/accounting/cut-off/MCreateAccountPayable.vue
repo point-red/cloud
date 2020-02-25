@@ -5,6 +5,18 @@
         <form class="row" @submit.prevent="onSubmit">
           <p-block>
             <p-form-row
+              id="account"
+              name="account"
+              :label="$t('account')"
+              :disabled="isSaving"
+              :errors="form.errors.get('account')"
+              @errors="form.errors.set('account', null)">
+              <div slot="body" class="col-lg-9 mt-5">
+                <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" :label="form.chart_of_account_name" sub-ledger="account payable"/>
+              </div>
+            </p-form-row>
+
+            <p-form-row
               id="supplier_id"
               name="supplier_id"
               :label="$t('supplier')"
@@ -18,14 +30,17 @@
             </p-form-row>
 
             <p-form-row
-              id="account"
-              name="account"
-              :label="$t('account')"
-              :disabled="isSaving"
-              :errors="form.errors.get('account')"
-              @errors="form.errors.set('account', null)">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" :label="form.chart_of_account_name" sub-ledger="account payable"/>
+              id="date"
+              name="date"
+              :label="$t('date')">
+              <div slot="body" class="col-lg-9">
+                <p-date-picker
+                  id="date"
+                  name="date"
+                  :label="$t('date')"
+                  v-model="form.date"
+                  :errors="form.errors.get('date')"
+                  @errors="form.errors.set('date', null)"/>
               </div>
             </p-form-row>
 
@@ -54,10 +69,12 @@
               </div>
             </p-form-row>
 
-            <div class="col-lg-9 offset-3">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
-              </button>
+            <div class="row">
+              <div class="col-lg-9 offset-3">
+                <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                </button>
+              </div>
             </div>
           </p-block>
         </form>
@@ -79,6 +96,7 @@ export default {
     return {
       isSaving: false,
       form: new Form({
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         supplier_id: null,
         supplier_name: null,
         chart_of_account_id: null,
