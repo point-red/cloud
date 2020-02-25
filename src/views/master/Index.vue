@@ -9,11 +9,6 @@
         v-if="$permission.has('read user')"
         link="/master/user"
         icon="si si-people"/>
-      <p-box
-        name="Role & Permission"
-        v-if="$permission.has('read role')"
-        link="/master/role"
-        icon="si si-equalizer"/>
     </div>
     <hr>
     <div class="row gutters-tiny">

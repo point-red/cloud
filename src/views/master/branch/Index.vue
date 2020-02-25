@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-master/>
-      <span class="breadcrumb-item active">{{ $t('warehouse') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('branch') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
@@ -11,8 +11,8 @@
       <p-block>
         <div class="input-group block">
           <router-link
-            to="/master/warehouse/create"
-            v-if="$permission.has('create warehouse')"
+            to="/master/branch/create"
+            v-if="$permission.has('create branch')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
@@ -35,13 +35,13 @@
               <th>Name</th>
             </tr>
             <tr
-              v-for="(warehouse, index) in warehouses"
-              :key="warehouse.id"
+              v-for="(branch, index) in branches"
+              :key="branch.id"
               slot="p-body">
               <th>{{ (currentPage - 1) * limit + (index + 1) }}</th>
               <td>
-                <router-link :to="{ name: 'warehouse.show', params: { id: warehouse.id }}">
-                  {{ warehouse.name }}
+                <router-link :to="{ name: 'branch.show', params: { id: branch.id }}">
+                  {{ branch.name }}
                 </router-link>
               </td>
             </tr>
@@ -82,21 +82,21 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterWarehouse', ['warehouses', 'pagination'])
+    ...mapGetters('masterBranch', ['branches', 'pagination'])
   },
   methods: {
-    ...mapActions('masterWarehouse', ['get']),
+    ...mapActions('masterBranch', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getWarehouseRequest()
+      this.getBranchRequest()
     }, 300),
-    getWarehouseRequest () {
+    getBranchRequest () {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'warehouses.*',
+          fields: 'branches.*',
           sort_by: 'name',
           filter_like: {
             'name': this.searchText
@@ -112,11 +112,11 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getWarehouseRequest()
+      this.getBranchRequest()
     }
   },
   created () {
-    this.getWarehouseRequest()
+    this.getBranchRequest()
     this.$nextTick(() => {
       this.$refs.searchText.setFocus()
     })

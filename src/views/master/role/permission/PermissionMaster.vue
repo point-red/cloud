@@ -30,6 +30,14 @@
         <td><p-form-check-box :is-form="false" ref="delete role" @click.native="togglePermission('delete role')" :checked="$rolePermission.has('delete role', permissions)" :description="'delete' | uppercase"/></td>
       </tr>
       <tr slot="p-body">
+        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create branch', 'read branch', 'update branch', 'delete branch'], permissions)" :checked="checkPermissionRow(['create branch', 'read branch', 'update branch', 'delete branch'], permissions)"/></td>
+        <td><b>{{ $t('branch') | uppercase }}</b></td>
+        <td><p-form-check-box :is-form="false" ref="create branch" @click.native="togglePermission('create branch')" :checked="$rolePermission.has('create branch', permissions)" :description="'create' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="read branch" @click.native="togglePermission('read branch')" :checked="$rolePermission.has('read branch', permissions)" :description="'read' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="update branch" @click.native="togglePermission('update branch')" :checked="$rolePermission.has('update branch', permissions)" :description="'update' | uppercase"/></td>
+        <td><p-form-check-box :is-form="false" ref="delete branch" @click.native="togglePermission('delete branch')" :checked="$rolePermission.has('delete branch', permissions)" :description="'delete' | uppercase"/></td>
+      </tr>
+      <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create customer', 'read customer', 'update customer', 'delete customer'], permissions)" :checked="checkPermissionRow(['create customer', 'read customer', 'update customer', 'delete customer'], permissions)"/></td>
         <td><b>{{ $t('customer') | uppercase }}</b></td>
         <td><p-form-check-box :is-form="false" ref="create customer" @click.native="togglePermission('create customer')" :checked="$rolePermission.has('create customer', permissions)" :description="'create' | uppercase"/></td>

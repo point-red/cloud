@@ -17,6 +17,14 @@
         <span>{{ $t('role & permission') | uppercase }}</span>
       </router-link>
     </li>
+    <li class="nav-item" v-if="$permission.has('read branch')">
+      <router-link
+        to="/master/branch"
+        class="nav-link"
+        active-class="active">
+        <span>{{ $t('branch') | uppercase }}</span>
+      </router-link>
+    </li>
     <slot name="right"></slot>
   </ul>
 </template>

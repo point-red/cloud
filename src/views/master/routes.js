@@ -13,6 +13,7 @@ import Item from './item/routes'
 import ItemGroup from './item-group/routes'
 import ItemPriceList from './item-price-list/routes'
 import Warehouse from './warehouse/routes'
+import Branch from './branch/routes'
 
 export default [
   { path: '/master', name: 'Master', component: Master },
@@ -29,5 +30,6 @@ export default [
   ...Item,
   ...ItemGroup,
   ...ItemPriceList,
-  ...Warehouse
+  ...Warehouse,
+  ...Branch
 ]

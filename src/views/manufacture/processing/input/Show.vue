@@ -26,7 +26,7 @@
               <router-link :to="{ name: 'manufacture.processing.input.create' }" class="btn btn-sm btn-outline-secondary mr-5">
                 {{ $t('create') | uppercase }}
               </router-link>
-              <router-link :to="{ name: 'manufacture.processing.input.edit', params: { id: input.id }}" class="btn btn-sm btn-outline-secondary mr-5">
+              <router-link :to="{ name: 'manufacture.processing.input.edit', params: { id: id }}" class="btn btn-sm btn-outline-secondary mr-5">
                 {{ $t('edit') | uppercase }}
               </router-link>
               <button type="submit" class="btn btn-sm btn-outline-secondary mr-5" :disabled="isDeleting" @click="onDelete">
@@ -76,7 +76,7 @@
                 <th></th>
                 <td colspan="3" class="font-weight-bold">{{ $t('finished goods') | uppercase }}</td>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in input.finished_goods" :key="index">
+              <tr slot="p-body" v-for="(row, index) in input.finished_goods" :key="'finished-goods-' + index">
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -90,7 +90,7 @@
                 <th></th>
                 <td colspan="3" class="font-weight-bold">{{ $t('raw materials') | uppercase }}</td>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in raw_materials_temporary" :key="index">
+              <tr slot="p-body" v-for="(row, index) in raw_materials_temporary" :key="'raw-materials-' + index">
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">

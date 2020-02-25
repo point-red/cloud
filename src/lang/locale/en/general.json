@@ -49,6 +49,8 @@
   "review": "review",
   "required": "required",
   "close": "close",
+  "cancel": "cancel",
+  "canceled": "canceled",
   "clear": "clear",
   "photo": "photo",
   "opening": "opening",
