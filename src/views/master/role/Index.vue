@@ -40,7 +40,7 @@
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'role.show', params: { id: role.id }}">
-                  {{ role.name | titlecase }}
+                  {{ role.name }}
                 </router-link>
               </td>
             </tr>
