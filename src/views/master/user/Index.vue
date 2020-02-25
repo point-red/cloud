@@ -45,15 +45,15 @@
               <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'UserShow', params: { id: user.id }}">
-                  {{ user.name | titlecase }}
+                  {{ user.name }}
                 </router-link>
               </td>
-              <td>{{ user.first_name | lowercase }} {{ user.last_name | lowercase }}</td>
-              <td>{{ user.email | lowercase }}</td>
+              <td>{{ user.first_name }} {{ user.last_name }}</td>
+              <td>{{ user.email }}</td>
               <td>{{ user.phone }}</td>
               <td>
                 <template v-for="role in user.roles">
-                  {{ role.name | titlecase }}
+                  {{ role.name }}
                 </template>
               </td>
               <td>
@@ -61,14 +61,14 @@
                   <span v-for="(warehouse, index) in user.warehouses" :key="'warehouse-'+warehouse.id">
                     {{ ++index }}.
                     <a href="javascript:void(0)" @click="$refs.setWarehouseModal.show()">
-                      {{ warehouse.name | titlecase }}
+                      {{ warehouse.name }}
                     </a>
                     <br/>
                   </span>
                 </span>
                 <span v-else>
                   <a href="javascript:void(0)"  @click="$refs.setWarehouseModal.show()">
-                    <i class="fa fa-check-square-o"></i> {{ $t('set permission') | titlecase }}
+                    <i class="fa fa-check-square-o"></i> {{ $t('set permission') | uppercase }}
                   </a>
                 </span>
               </td>

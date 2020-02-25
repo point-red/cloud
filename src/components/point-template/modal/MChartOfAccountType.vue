@@ -88,6 +88,7 @@ export default {
           this.options.push({
             'id': key['id'],
             'alias': key['alias'],
+            'next_number': key['next_number'],
             'label': key['alias']
           })
           if (this.value == key['id']) {
@@ -107,6 +108,7 @@ export default {
       this.close()
     },
     show () {
+      this.search()
       this.$refs['select-' + this.id].show()
     },
     close () {

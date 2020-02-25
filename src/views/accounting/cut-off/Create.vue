@@ -24,36 +24,48 @@
             </nav>
             <hr>
             <h5>CUT OFF</h5>
-            <div class="col-sm-6 offset-sm-3">
-              <form @submit.prevent="onSubmit">
-                <p>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Cumque quis odio consectetur iste dolorem, ad reiciendis odit assumenda ullam
-                  tempora ipsa rerum placeat esse quo ab id eveniet quam nostrum.
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Molestiae necessitatibus ex itaque, deserunt nam,
-                  quo dolor similique optio atque hic quis nostrum minus nisi perspiciatis
-                  error beatae ut labore distinctio!
-                </p>
-                <template v-if="cutOffs.length > 0">
-                  <h6 class="m-0">{{ $t('date') | uppercase }}</h6>
-                  {{ cutOffs[0].form.date | dateFormat('DD MMMM YYYY') }}
-                </template>
-                <template v-else>
-                <p-date-picker
-                  id="date"
-                  name="date"
-                  :label="$t('date')"
-                  v-model="form.date"
-                  :errors="form.errors.get('date')"
-                  @errors="form.errors.set('date', null)"/>
-                </template>
-                <hr>
-                <button type="submit" class="btn btn-sm btn-primary mb-15" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('start') | uppercase }}
-                </button>
-              </form>
-            </div>
+            <p-block-inner :is-loading="isLoading">
+              <div class="col-sm-6 offset-sm-3 text-left">
+                <form @submit.prevent="onSubmit">
+                  <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Cumque quis odio consectetur iste dolorem, ad reiciendis odit assumenda ullam
+                    tempora ipsa rerum placeat esse quo ab id eveniet quam nostrum.
+                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                    Molestiae necessitatibus ex itaque, deserunt nam,
+                    quo dolor similique optio atque hic quis nostrum minus nisi perspiciatis
+                    error beatae ut labore distinctio!
+                  </p>
+                  <p-form-row
+                    id="date"
+                    name="date"
+                    v-if="!isLoading"
+                    :label="$t('date')">
+                    <div slot="body">
+                      <p-date-picker
+                        id="date"
+                        name="date"
+                        :label="$t('date')"
+                        v-model="form.date"
+                        :errors="form.errors.get('date')"
+                        @errors="form.errors.set('date', null)"/>
+                    </div>
+                  </p-form-row>
+                  <hr>
+                  <p-form-row
+                    id="start"
+                    name="start"
+                    v-if="!isLoading"
+                    label="">
+                    <div slot="body">
+                      <button type="submit" class="btn btn-sm btn-primary mb-15" :disabled="isSaving">
+                        <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('start') | uppercase }}
+                      </button>
+                    </div>
+                  </p-form-row>
+                </form>
+              </div>
+            </p-block-inner>
           </p-block>
         </div>
       </div>
@@ -71,6 +83,7 @@ export default {
   data () {
     return {
       isSaving: false,
+      isLoading: false,
       isCutOffStarted: false,
       form: new Form({
         date: this.$moment().format('YYYY-MM-DD')
@@ -85,23 +98,38 @@ export default {
     ...mapGetters('accountingCutOff', ['cutOffs'])
   },
   created () {
+    this.isLoading = true
     this.get({
       params: {
         includes: 'form'
       }
     }).then(response => {
       if (this.cutOffs.length > 0) {
+        this.cutOffs.forEach(element => {
+          this.form.date = element.form.date
+          this.form.id = element.id
+        })
         this.isCutOffStarted = true
+        this.isLoading = false
       }
     }).catch(error => {
       //
+      this.isLoading = false
     })
   },
   methods: {
-    ...mapActions('accountingCutOff', ['create', 'get']),
+    ...mapActions('accountingCutOff', ['create', 'update', 'get']),
     onSubmit () {
       if (this.isCutOffStarted) {
         this.$router.push('/accounting/cut-off/create/account')
+        this.update(this.form).then(response => {
+          this.isSaving = false
+          Object.assign(this.$data, this.$options.data.call(this))
+          this.$router.push('/accounting/cut-off/create/account')
+        }).catch(error => {
+          this.isSaving = false
+          this.$notification.error(error.message)
+        })
       } else {
         this.isSaving = true
         this.create(this.form)

@@ -13,7 +13,7 @@
           name="account-type"
           :label="$t('account type')">
           <div slot="body" class="col-lg-9 mt-5">
-            <m-chart-of-account-type :id="'account-type'" v-model="form.type_id"/>
+            <m-chart-of-account-type :id="'account-type'" v-model="form.type_id" @choosen="updateAccountType($event)"/>
           </div>
         </p-form-row>
 
@@ -86,6 +86,9 @@ export default {
   },
   methods: {
     ...mapActions('accountingChartOfAccount', ['create']),
+    updateAccountType (option) {
+      this.form.number = option.next_number
+    },
     onSubmit () {
       this.isLoading = true
 
