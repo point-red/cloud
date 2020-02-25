@@ -268,7 +268,7 @@
                     active-class="active">{{ $t('inventory report') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
                   <router-link
                     to="/inventory/usage"
                     active-class="active">{{ $t('inventory usage') | uppercase }}
@@ -291,7 +291,7 @@
                     to="/inventory/transfer"
                     active-class="active">{{ $t('transfer item') | uppercase }}
                   </router-link>
-                </li>
+                </li> -->
               </ul>
             </li>
             <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">

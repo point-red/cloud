@@ -10,7 +10,7 @@
         v-if="$permission.has('read inventory report')"
         link="/inventory/report"
         icon="si si-docs"/>
-      <p-box
+      <!-- <p-box
         :name="$t('inventory usage')"
         v-if="$permission.has('read inventory usage')"
         link="/inventory/usage"
@@ -26,10 +26,10 @@
         link="/inventory/correction"
         icon="si si-note"/>
       <p-box
-        :name="$t('transfer item')"
+      :name="$t('transfer item')"
         v-if="$permission.has('read transfer item')"
         link="/inventory/transfer"
-        icon="si si-directions"/>
+        icon="si si-directions"/> -->
     </div>
   </div>
 </template>
