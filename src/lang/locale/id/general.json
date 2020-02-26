@@ -1,5 +1,6 @@
 {
   "new" : "tambah",
+  "invite" : "undang",
   "start" : "start",
   "prev" : "prev",
   "next" : "next",
@@ -53,9 +54,10 @@
   "canceled": "canceled",
   "clear": "clear",
   "photo": "photo",
-  "top up": "top up",
   "opening": "opening",
   "ending": "ending",
+  "branch": "branch",
+  "top up": "top up",
   "pay now": "pay now",
   "cancellation status": "cancellation status",
   "confirmation message": "are you sure?",

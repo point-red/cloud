@@ -1,5 +1,6 @@
 {
   "new" : "new",
+  "invite" : "undang",
   "start" : "start",
   "prev" : "prev",
   "next" : "next",
@@ -55,6 +56,7 @@
   "photo": "photo",
   "opening": "opening",
   "ending": "ending",
+  "branch": "branch",
   "top up": "top up",
   "pay now": "pay now",
   "cancellation status": "cancellation status",

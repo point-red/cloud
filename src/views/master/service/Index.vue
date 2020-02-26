@@ -41,7 +41,7 @@
               <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'service.show', params: { id: service.id }}">
-                  {{ service.name | titlecase }}
+                  {{ service.name }}
                 </router-link>
               </td>
             </tr>

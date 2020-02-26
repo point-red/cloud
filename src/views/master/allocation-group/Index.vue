@@ -41,7 +41,7 @@
               <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'allocation-group.show', params: { id: group.id }}">
-                  {{ group.name | titlecase }}
+                  {{ group.name }}
                 </router-link>
               </td>
             </tr>

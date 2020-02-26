@@ -1,5 +1,6 @@
 {
   "scorer" : "scorer",
+  "kpi assessment" : "kpi assessment",
   "assessment date" : "assessment date",
   "assessment date help" : "if the assessment is monthly, the date can be filled the last date of the month",
   "automated indicator" : "automated indicator"
