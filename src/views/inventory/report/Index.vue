@@ -44,7 +44,6 @@
             <tr slot="p-head">
               <th></th>
               <th></th>
-              <th></th>
               <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">opening</th>
               <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">in</th>
               <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">out</th>
@@ -53,7 +52,6 @@
             <tr slot="p-head">
               <th>#</th>
               <th>Item</th>
-              <th>Account</th>
               <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th>
               <th style="border: 1px solid #e4e7ed" class="text-center">Value</th>
               <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th>
@@ -77,7 +75,6 @@
                   {{ inventory.label }}
                 </router-link>
               </td>
-              <td>{{ inventory.account.label }}</td>
               <td class="text-right">{{ inventory.opening_balance | numberFormat }}</td>
               <td class="text-right">{{ 0 | numberFormat }}</td>
               <td class="text-right">{{ inventory.stock_in | numberFormat }}</td>

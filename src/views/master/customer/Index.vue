@@ -129,27 +129,27 @@
               </td>
               <td>
                 <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">
-                  {{ customer.name | titlecase }}
+                  {{ customer.name }}
                 </router-link>
               </td>
               <td>
                 <template v-for="customerAddress in customer.addresses">
-                  {{ customerAddress.address | lowercase }}
+                  {{ customerAddress.address }}
                 </template>
               </td>
               <td>
                 <template v-for="customerPhone in customer.phones">
-                  {{ customerPhone.number | lowercase }}
+                  {{ customerPhone.number }}
                 </template>
               </td>
               <td>
                 <template v-for="customerEmail in customer.emails">
-                  {{ customerEmail.email | lowercase }}
+                  {{ customerEmail.email }}
                 </template>
               </td>
               <td>
                 <template v-for="group in customer.groups">
-                  {{ group.name | lowercase }}
+                  {{ group.name }}
                 </template>
               </td>
               <td>

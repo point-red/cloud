@@ -43,17 +43,17 @@
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'supplier.show', params: { id: supplier.id }}">
-                  {{ supplier.name | titlecase }}
+                  {{ supplier.name }}
                 </router-link>
               </td>
               <td>
                 <template v-for="supplierAddress in supplier.addresses">
-                  {{ supplierAddress.address | lowercase }}
+                  {{ supplierAddress.address }}
                 </template>
               </td>
               <td>
                 <template v-for="supplierPhone in supplier.phones">
-                  {{ supplierPhone.number | lowercase }}
+                  {{ supplierPhone.number }}
                 </template>
               </td>
             </tr>

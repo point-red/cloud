@@ -48,7 +48,7 @@
               </td>
               <td>
                 <template v-if="item.account">
-                  {{ item.account.number }} - {{ item.account.name | titlecase }}
+                  {{ item.account.number }} - {{ item.account.name }}
                 </template>
               </td>
               <td>
