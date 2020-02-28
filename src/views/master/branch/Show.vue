@@ -36,10 +36,41 @@
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
-            label="Name"
+            :label="$t('name') | uppercase"
             name="name"
             v-model="data.name"
             readonly/>
+          <hr>
+          <p-separator></p-separator>
+          <h5>{{ $t('user access') | uppercase }}</h5>
+          <point-table>
+            <tr slot="p-head">
+              <th width="50px">#</th>
+              <th>user</th>
+              <th class="text-center">access</th>
+              <th class="text-center">
+                set as default
+                <i class="fa fa-info-circle" @click="$alert.show('info', $t('branch - set as default'))"></i>
+              </th>
+            </tr>
+            <tr slot="p-body" v-for="(user, index) in users" :key="'user-' + index">
+              <th width="50px">1</th>
+              <td>{{ user.full_name }}</td>
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  :checked="isChecked(user.id)"
+                  @click="toggleRelation(user.id)">
+              </td>
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  v-if="isChecked(user.id)"
+                  :checked="user.branch_id == branch.id"
+                  @click="toggleDefault(user.id)">
+              </td>
+            </tr>
+          </point-table>
         </p-block-inner>
       </p-block>
     </div>
@@ -50,13 +81,15 @@
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster
+    BreadcrumbMaster,
+    PointTable
   },
   data () {
     return {
@@ -69,10 +102,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterBranch', ['branch'])
+    ...mapGetters('masterBranch', ['branch']),
+    ...mapGetters('masterUser', ['users'])
   },
   methods: {
     ...mapActions('masterBranch', ['find', 'delete']),
+    ...mapActions('masterUser', ['get']),
+    ...mapActions('masterBranchUser', ['attach', 'detach', 'updateDefault']),
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
         this.isDeleting = true
@@ -85,28 +121,73 @@ export default {
             this.$notification.error('cannot delete this service')
           })
       })
+    },
+    toggleRelation (userId) {
+      if (this.isChecked(userId)) {
+        this.detach({
+          user_id: userId,
+          branch_id: this.id
+        }).then(response => {
+          this.branch.users.splice(this.branch.users.indexOf(userId), 1)
+        })
+      } else {
+        this.attach({
+          user_id: userId,
+          branch_id: this.id
+        }).then(response => {
+          this.branch.users.push({
+            id: userId
+          })
+        })
+      }
+    },
+    toggleDefault (userId) {
+      this.branch.users.some(user => {
+        if (user.id == userId) {
+          console.log(user)
+          this.updateDefault({
+            user_id: userId,
+            branch_id: this.id,
+            is_default: !user.pivot.is_default
+          }).then(response => {
+            user.pivot.is_default = !user.pivot.is_default
+          })
+        }
+      })
+    },
+    isChecked (userId) {
+      if (this.branch.users) {
+        return this.branch.users.some(user => {
+          return user.id == userId
+        })
+      }
     }
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-        this.data.name = response.data.name
-        this.get({
-          params: {
-            branch_id: this.branch.id
-          }
-        }).then(response => {
-          this.isLoading = false
-        }).catch(error => {
-          this.isLoading = false
-          this.$notification.error(error.message)
-        })
-      }, (error) => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'users'
+      }
+    }).then((response) => {
+      this.isLoading = false
+      this.data.name = response.data.name
+    }, (error) => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
+
+    this.get({
+      params: {
+        branch_id: this.branch.id
+      }
+    }).then(response => {
+      this.isLoading = false
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   }
 }
 </script>

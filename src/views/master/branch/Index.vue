@@ -32,7 +32,8 @@
           <point-table>
             <tr slot="p-head">
               <th width="50px">#</th>
-              <th>Name</th>
+              <th>Branch</th>
+              <th>User</th>
             </tr>
             <tr
               v-for="(branch, index) in branches"
@@ -43,6 +44,14 @@
                 <router-link :to="{ name: 'branch.show', params: { id: branch.id }}">
                   {{ branch.name }}
                 </router-link>
+              </td>
+              <td>
+                <template v-for="(user, index2) in branch.users">
+                  <span class="mr-10" :key="'branch-user-' + index2">
+                    <i class="si si-user" v-if="!user.pivot.is_default"></i>
+                    <i class="si si-user-following" v-if="user.pivot.is_default"></i> {{ user.full_name }}
+                  </span>
+                </template>
               </td>
             </tr>
           </point-table>
@@ -101,6 +110,7 @@ export default {
           filter_like: {
             'name': this.searchText
           },
+          includes: 'users',
           limit: this.limit,
           page: this.currentPage
         }

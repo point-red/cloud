@@ -31,7 +31,8 @@
           <point-table>
             <tr slot="p-head">
               <th style="width:50px">#</th>
-              <th>Name</th>
+              <th>Role</th>
+              <th>User</th>
             </tr>
             <tr
               v-for="(role, index) in roles"
@@ -42,6 +43,14 @@
                 <router-link :to="{ name: 'role.show', params: { id: role.id }}">
                   {{ role.name }}
                 </router-link>
+              </td>
+              <td>
+                <template v-for="(user, index2) in role.users">
+                  <span class="mr-10" :key="'role-user-' + index2">
+                    <i class="si si-user" v-if="!user.pivot.is_default"></i>
+                    <i class="si si-user-following" v-if="user.pivot.is_default"></i> {{ user.full_name }}
+                  </span>
+                </template>
               </td>
             </tr>
           </point-table>
@@ -105,6 +114,7 @@ export default {
           filter_min: {
             'id': 2
           },
+          includes: 'users',
           page: this.currentPage
         }
       }).then(response => {
