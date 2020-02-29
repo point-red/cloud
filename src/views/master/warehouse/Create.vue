@@ -14,6 +14,15 @@
       <p-block>
         <p-block-inner>
           <p-form-row
+            id="branch"
+            name="branch"
+            :label="$t('branch')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <m-branch :id="'branch'" v-model="form.branch_id"/>
+            </div>
+          </p-form-row>
+
+          <p-form-row
             id="name"
             v-model="form.name"
             :disabled="isSaving"
@@ -22,6 +31,24 @@
             name="name"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"/>
+
+          <p-form-row
+            id="address"
+            v-model="form.address"
+            :disabled="isSaving"
+            :label="$t('address')"
+            name="address"
+            :errors="form.errors.get('address')"
+            @errors="form.errors.set('address', null)"/>
+
+          <p-form-row
+            id="phone"
+            v-model="form.phone"
+            :disabled="isSaving"
+            :label="$t('phone')"
+            name="phone"
+            :errors="form.errors.get('phone')"
+            @errors="form.errors.set('phone', null)"/>
 
           <hr/>
 
@@ -56,8 +83,11 @@ export default {
     return {
       isSaving: false,
       form: new Form({
+        branch_id: 1,
         code: null,
-        name: null
+        name: null,
+        address: null,
+        phone: null
       })
     }
   },

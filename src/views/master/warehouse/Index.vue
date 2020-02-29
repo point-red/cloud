@@ -33,6 +33,7 @@
             <tr slot="p-head">
               <th width="50px">#</th>
               <th>Name</th>
+              <th>Branch</th>
             </tr>
             <tr
               v-for="(warehouse, index) in warehouses"
@@ -43,6 +44,9 @@
                 <router-link :to="{ name: 'warehouse.show', params: { id: warehouse.id }}">
                   {{ warehouse.name }}
                 </router-link>
+              </td>
+              <td>
+                {{ warehouse.branch.name }}
               </td>
             </tr>
           </point-table>
@@ -101,6 +105,7 @@ export default {
           filter_like: {
             'name': this.searchText
           },
+          includes: 'branch',
           limit: this.limit,
           page: this.currentPage
         }

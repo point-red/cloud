@@ -36,10 +36,31 @@
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
-            label="Name"
+            label="branch"
+            name="name"
+            v-model="data.branch.name"
+            readonly/>
+
+          <p-form-row
+            id="name"
+            label="name"
             name="name"
             v-model="data.name"
             readonly/>
+
+          <p-form-row
+            id="address"
+            v-model="data.address"
+            :disabled="true"
+            :label="$t('address')"
+            name="address"/>
+
+          <p-form-row
+            id="phone"
+            v-model="data.phone"
+            :disabled="true"
+            :label="$t('phone')"
+            name="phone"/>
         </p-block-inner>
       </p-block>
     </div>
@@ -64,7 +85,11 @@ export default {
       isLoading: false,
       isDeleting: false,
       data: {
-        name: null
+        branch_id: null,
+        name: null,
+        address: null,
+        phone: null,
+        branch: null
       }
     }
   },
@@ -89,24 +114,22 @@ export default {
   },
   created () {
     this.isLoading = true
-    this.find({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-        this.data.name = response.data.name
-        this.get({
-          params: {
-            warehouse_id: this.warehouse.id
-          }
-        }).then(response => {
-          this.isLoading = false
-        }).catch(error => {
-          this.isLoading = false
-          this.$notification.error(error.message)
-        })
-      }, (error) => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'branch'
+      }
+    }).then(response => {
+      this.isLoading = false
+      this.data.branch_id = response.data.branch_id
+      this.data.name = response.data.name
+      this.data.address = response.data.address
+      this.data.phone = response.data.phone
+      this.data.branch = response.data.branch
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   }
 }
 </script>
