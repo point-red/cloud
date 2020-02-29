@@ -9,9 +9,6 @@
         v-if="$permission.has('read user')"
         link="/master/user"
         icon="si si-people"/>
-    </div>
-    <hr>
-    <div class="row gutters-tiny">
       <p-box
         name="Customer"
         v-if="$permission.has('read customer')"

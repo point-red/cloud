@@ -26,7 +26,7 @@
         link="/inventory/correction"
         icon="si si-note"/>
       <p-box
-      :name="$t('transfer item')"
+        :name="$t('transfer item')"
         v-if="$permission.has('read transfer item')"
         link="/inventory/transfer"
         icon="si si-directions"/> -->
