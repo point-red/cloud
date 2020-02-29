@@ -62,7 +62,12 @@ export default {
     onSubmitRole (role, index) {
       this.update({ id: this.user.id, role_id: role.id })
         .then((response) => {
-          this.findUser({ id: this.user.id })
+          this.findUser({
+            id: this.user.id,
+            params: {
+              includes: 'roles'
+            }
+          })
         }, (error) => {
           console.log(error.message)
         })

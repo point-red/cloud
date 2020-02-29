@@ -47,8 +47,7 @@
               <td>
                 <template v-for="(user, index2) in role.users">
                   <span class="mr-10" :key="'role-user-' + index2">
-                    <i class="si si-user" v-if="!user.pivot.is_default"></i>
-                    <i class="si si-user-following" v-if="user.pivot.is_default"></i> {{ user.full_name }}
+                    <i class="si si-user"></i> {{ user.full_name }}
                   </span>
                 </template>
               </td>
@@ -114,7 +113,6 @@ export default {
           filter_min: {
             'id': 2
           },
-          includes: 'users',
           page: this.currentPage
         }
       }).then(response => {

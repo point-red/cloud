@@ -63,6 +63,9 @@
           <div class="form-group row">
             <label class="col-form-label col-lg-3">{{ $t('role') | uppercase }}</label>
             <div class="col-lg-9 mt-5">
+              <template v-if="user.roles && user.roles.length == 0">
+                <a v-if="$permission.has('update user')" href="javascript:void(0)" @click="$refs.role.show(user)">{{ 'select' | uppercase }}</a>
+              </template>
               <template v-for="role in user.roles">
                 <template v-if="authUser.tenant_owner_id == user.id">
                   {{ role.name | uppercase }}
@@ -97,7 +100,8 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      isLoading: false
+      isLoading: false,
+      isDeleting: false
     }
   },
   computed: {
@@ -115,9 +119,9 @@ export default {
       params: {
         includes: 'roles'
       }
-    }).then((response) => {
+    }).then(response => {
       this.isLoading = false
-    }, (error) => {
+    }).catch(error => {
       this.isLoading = false
       this.$notification.error(error.message)
     })
