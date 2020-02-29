@@ -36,7 +36,8 @@
               <th>Email</th>
               <th>Phone</th>
               <th>Roles</th>
-              <th>Warehouse Permission</th>
+              <th>Branch</th>
+              <th>Warehouse</th>
             </tr>
             <tr
               v-for="(user, index) in users"
@@ -52,24 +53,22 @@
               <td>{{ user.email }}</td>
               <td>{{ user.phone }}</td>
               <td>
-                <template v-for="role in user.roles">
-                  {{ role.name }}
-                </template>
+                <span v-for="role in user.roles" :key="'role-' + role.id">
+                  <i class="si si-badge"></i> {{ role.name }}
+                </span>
+              </td>
+              <td>
+                <span v-if="user.branches && user.branches.length > 0">
+                  <span v-for="branch in user.branches" :key="'branch-' + branch.id">
+                    <i class="si si-globe-alt"></i> {{ branch.name }} <br>
+                  </span>
+                </span>
               </td>
               <td>
                 <span v-if="user.warehouses.length > 0">
-                  <span v-for="(warehouse, index) in user.warehouses" :key="'warehouse-'+warehouse.id">
-                    {{ ++index }}.
-                    <a href="javascript:void(0)" @click="$refs.setWarehouseModal.show()">
-                      {{ warehouse.name }}
-                    </a>
-                    <br/>
+                  <span v-for="warehouse in user.warehouses" :key="'warehouse-'+warehouse.id">
+                    <i class="si si-home"></i> {{ warehouse.name }} <br/>
                   </span>
-                </span>
-                <span v-else>
-                  <a href="javascript:void(0)"  @click="$refs.setWarehouseModal.show()">
-                    <i class="fa fa-check-square-o"></i> {{ $t('set permission') | uppercase }}
-                  </a>
                 </span>
               </td>
             </tr>
@@ -153,7 +152,7 @@ export default {
         params: {
           limit: 10,
           sort_by: 'name',
-          includes: 'roles;warehouses',
+          includes: 'roles;branches;warehouses',
           filter_like: {
             'name': this.searchText,
             'first_name': this.searchText,

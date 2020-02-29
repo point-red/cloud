@@ -38,25 +38,37 @@
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
-            label="Name"
+            label="name"
             name="name"
             v-model="user.name"
             readonly/>
           <p-form-row
             id="email"
-            label="Email"
+            label="email"
             name="email"
             v-model="user.email"
             readonly/>
           <p-form-row
+            id="first_name"
+            label="first name"
+            name="first_name"
+            v-model="user.first_name"
+            readonly/>
+          <p-form-row
+            id="last_name"
+            label="last name"
+            name="last_name"
+            v-model="user.last_name"
+            readonly/>
+          <p-form-row
             id="address"
-            label="Address"
+            label="address"
             name="address"
             v-model="user.address"
             readonly/>
           <p-form-row
             id="phone"
-            label="Phone"
+            label="phone"
             name="phone"
             v-model="user.phone"
             readonly/>
