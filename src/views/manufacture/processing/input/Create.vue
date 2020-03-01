@@ -320,14 +320,13 @@ export default {
       this.form.manufacture_process_name = option.name
     },
     chooseMaterial (item, row) {
-      console.log(item)
       row.item_name = item.name
       row.quantity = 0
-      row.require_expiry_date = item.require_expiry_date
-      row.require_production_number = item.require_production_number
       row.item.id = item.id
       row.item.units = item.units
       row.item.unit = item.unit
+      row.require_expiry_date = item.require_expiry_date
+      row.require_production_number = item.require_production_number
       row.item.units.forEach((unit, keyUnit) => {
         if (unit.converter == 1) {
           row.unit = unit.label

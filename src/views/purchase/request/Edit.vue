@@ -68,7 +68,11 @@
                 <th>Notes</th>
                 <th>Quantity</th>
                 <th>Estimated Price</th>
-                <th></th>
+                <th>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
+                    <i class="fa fa-ellipsis-h"/>
+                  </button>
+                </th>
               </tr>
               <template v-for="(row, index) in form.items">
                 <tr slot="p-body" :key="index">
@@ -83,12 +87,14 @@
                     <p-form-input
                       :id="'notes-' + index"
                       :name="'notes-' + index"
+                      :disabled="row.item_id == null"
                       v-model="row.notes"/>
                   </td>
                   <td>
                     <p-quantity
                       :id="'quantity-' + index"
                       :name="'quantity-' + index"
+                      :disabled="row.item_id == null"
                       v-model="row.quantity"
                       :item-id="row.item_id"
                       :units="row.units"
@@ -103,11 +109,12 @@
                     <p-form-number
                       :id="'price-' + index"
                       :name="'price-' + index"
+                      :disabled="row.item_id == null"
                       @keyup.native="calculate"
                       v-model="row.price"/>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more" v-if="isSaving">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more" v-if="!isSaving">
                       <i class="fa fa-ellipsis-h"/>
                     </button>
                   </td>
@@ -123,6 +130,7 @@
                       <m-allocation
                         slot="body"
                         class="mt-5"
+                        v-show="row.item_id != null"
                         :id="'allocation-' + index"
                         v-model="row.allocation_id"/>
                     </p-form-row>
@@ -337,7 +345,16 @@ export default {
       row.unit = unit.label
       row.converter = unit.converter
     },
+    toggleMore () {
+      let isMoreActive = this.form.items.some(function (el, index) {
+        return el.more === false
+      })
+      this.form.items.forEach(element => {
+        element.more = isMoreActive
+      })
+    },
     onSubmit () {
+      this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.items.length > 1) {
         this.form.items = this.form.items.filter(item => item.item_id !== null)

@@ -68,18 +68,21 @@
                     <m-item
                       :id="'item-' + index"
                       v-model="row.item_id"
+                      @clear="clearItem(row)"
                       @choosen="chooseItem($event, row)"/>
                   </td>
                   <td>
                     <p-form-input
                       id="notes"
                       name="notes"
+                      :disabled="row.item_id == null"
                       v-model="row.notes"/>
                   </td>
                   <td>
                     <p-quantity
                       :id="'quantity' + index"
                       :name="'quantity' + index"
+                      :disabled="row.item_id == null"
                       v-model="row.quantity"
                       :item-id="row.item_id"
                       :units="row.units"
@@ -94,16 +97,20 @@
                     <p-form-number
                       :id="'price' + index"
                       :name="'price' + index"
+                      :disabled="row.item_id == null"
                       @keyup.native="calculate"
                       v-model="row.price"/>
                   </td>
                   <td>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more" v-if="!isSaving">
+                    <button type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      @click="row.more = !row.more"
+                      v-if="!isSaving">
                       <i class="fa fa-ellipsis-h"/>
                     </button>
                   </td>
                 </tr>
-                <template v-if="row.more">
+                <template v-if="row.more && row.item_id">
                 <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
                   <th class="bg-gray-light"></th>
                   <td colspan="4">
@@ -256,6 +263,18 @@ export default {
     chooseApprover (value) {
       this.form.approver_name = value.label
       this.form.approver_email = value.email
+    },
+    clearItem (row) {
+      row.item_id = null
+      row.item_name = null
+      row.unit = null
+      row.converter = null
+      row.quantity = null
+      row.price = null
+      row.allocation_id = null
+      row.notes = null
+      row.more = false
+      row.units = []
     },
     chooseSupplier (value) {
       this.form.supplier_name = value.label

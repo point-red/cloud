@@ -2,12 +2,15 @@
   <div>
     <div class="input-group" style="min-width: 180px">
       <cleave
-        :readonly="readonly"
+        :readonly="readonly || disabled"
         v-model="number"
         :options="options"
-        style="background:white"
         class="form-control form-number"
-        :class="{ 'text-right' : isTextRight }"/>
+        :class="{
+          'text-right' : isTextRight,
+          'bg-gray-light' : disabled,
+          'bg-white' : !disabled
+        }"/>
       <div class="input-group-append" @click="onClickUnit">
         <span class="input-group-text">
           {{ mutableUnit.label | uppercase }}
@@ -68,6 +71,10 @@ export default {
       type: Boolean,
       default: false
     },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     unsigned: {
       type: Boolean,
       default: false
@@ -107,9 +114,10 @@ export default {
       }
     },
     onClickUnit () {
-      if (this.disableUnitSelection == false) {
-        this.$refs.quantityUnit.show(this.units)
+      if (this.disableUnitSelection == true || this.disabled == true) {
+        return
       }
+      this.$refs.quantityUnit.show(this.units)
     },
     chooseUnit (unit) {
       this.mutableUnit.label = unit.label
