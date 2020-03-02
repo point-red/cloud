@@ -169,10 +169,10 @@
                 <div class="mb-50" style="font-size:11px">_______________</div>
                 <m-user
                   :id="'user'"
-                  v-model="form.approver_id"
+                  v-model="form.request_approval_to"
                   :label="form.approver_name"
-                  :errors="form.errors.get('approver_id')"
-                  @errors="form.errors.set('approver_id', null)"
+                  :errors="form.errors.get('request_approval_to')"
+                  @errors="form.errors.set('request_approval_to', null)"
                   @choosen="chooseApprover"/>
                   {{ form.approver_email }} <br v-if="form.approver_email">
               </div>
@@ -221,7 +221,7 @@ export default {
         supplier_name: null,
         supplier_address: null,
         supplier_phone: null,
-        approver_id: null,
+        request_approval_to: null,
         approver_name: null,
         approver_email: null,
         notes: null,
@@ -238,14 +238,20 @@ export default {
     this.find({
       id: this.id,
       params: {
-        includes: 'supplier;form.createdBy;items.item.units;items.allocation;services.service;services.allocation;approvers.requestedBy;approvers.requestedTo'
+        includes: 'supplier;' +
+          'form.createdBy;' +
+          'items.item.units;' +
+          'items.allocation;' +
+          'services.service;' +
+          'services.allocation;' +
+          'form.requestApprovalTo'
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
         this.$router.replace('/purchase/request/' + response.data.id)
       }
       this.isLoading = false
-      this.requestedBy = response.data.form.created_by.first_name + ' ' + response.data.form.created_by.last_name
+      this.requestedBy = response.data.form.created_by.full_name
       this.form.edited_form_number = response.data.form.edited_form_number
       this.form.required_date = response.data.required_date
       this.form.supplier_id = response.data.supplier_id
@@ -253,11 +259,9 @@ export default {
       this.form.supplier_address = response.data.supplier_address
       this.form.supplier_phone = response.data.supplier_phone
       this.form.notes = response.data.form.notes
-      response.data.approvers.forEach((approval) => {
-        this.form.approver_id = approval.requested_to.id
-        this.form.approver_name = approval.requested_to.first_name + ' ' + approval.requested_to.last_name
-        this.form.approver_email = approval.requested_to.email
-      })
+      this.form.request_approval_to = response.data.form.request_approval_to.id
+      this.form.approver_name = response.data.form.request_approval_to.full_name
+      this.form.approver_email = response.data.form.request_approval_to.email
       response.data.items.forEach((item, keyItem) => {
         this.form.items.push({
           item_id: item.item_id,

@@ -13,17 +13,14 @@ const state = {
       notes: null,
       created_by: {
         name: null
+      },
+      request_approval_to: {
+        full_name: null
       }
     },
     supplier: {
       name: null
-    },
-    approvers: [{
-      requested_to: {
-        first_name: null,
-        last_name: null
-      }
-    }]
+    }
   },
   purchaseRequests: [],
   pagination: {}

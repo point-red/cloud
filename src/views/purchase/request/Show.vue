@@ -17,11 +17,11 @@
 
     <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
-      v-if="purchaseRequest.form.approved == null && isLoading == false">
+      v-if="purchaseRequest.form.approval_status == 0 && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
-          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: purchaseRequest.approvers[0].requested_to.first_name + ' ' + purchaseRequest.approvers[0].requested_to.last_name }) | uppercase }}
+          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: purchaseRequest.form.request_approval_to.full_name }) | uppercase }}
         </p>
         <hr>
         <div v-if="$permission.has('approve purchase request')">
@@ -34,12 +34,12 @@
 
     <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
       role="alert"
-      v-if="purchaseRequest.form.approved == 0 && isLoading == false">
+      v-if="purchaseRequest.form.approval_status == -1 && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('rejected') | uppercase }}
         </p>
-        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ purchaseRequest.form.approvals[0].reason }}</div>
+        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ purchaseRequest.form.approval_reason }}</div>
       </div>
     </div>
 
@@ -115,7 +115,7 @@
                     id="allocation"
                     name="allocation"
                     :label="$t('allocation')">
-                    <div slot="body">
+                    <div slot="body" class="mt-5">
                       <template v-if="row.allocation">{{ row.allocation.name }}</template>
                     </div>
                   </p-form-row>
@@ -147,15 +147,15 @@
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
               <div class="mb-50" style="font-size:11px">
-                <template v-if="purchaseRequest.approvers[0].approval_at">
-                  {{ purchaseRequest.approvers[0].approval_at | dateFormat('DD MMMM YYYY') }}
+                <template v-if="purchaseRequest.form.approval_at">
+                  {{ purchaseRequest.form.approval_at | dateFormat('DD MMMM YYYY') }}
                 </template>
                 <template v-else>
                   _______________
                 </template>
               </div>
-              {{ purchaseRequest.approvers[0].requested_to.first_name | uppercase }} {{ purchaseRequest.approvers[0].requested_to.last_name | uppercase }}
-              <div style="font-size:11px">{{ purchaseRequest.approvers[0].requested_to.email | lowercase }}</div>
+              {{ purchaseRequest.form.request_approval_to.first_name | uppercase }}
+              <div style="font-size:11px">{{ purchaseRequest.form.request_approval_to.email | lowercase }}</div>
             </div>
           </div>
         </p-block-inner>
@@ -211,9 +211,8 @@ export default {
             'items.allocation;' +
             'services.service;' +
             'services.allocation;' +
-            'form.approvals;' +
-            'approvers.requestedBy;' +
-            'approvers.requestedTo'
+            'form.requestApprovalTo;' +
+            'form.approvalBy'
         }
       }).then(response => {
         this.isLoading = false
@@ -245,18 +244,17 @@ export default {
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
-        this.purchaseRequest.form.approved = response.data.form.approved
+        this.purchaseRequest.form.approval_status = response.data.form.approval_status
       })
     },
     onReject (reason) {
       this.reject({
         id: this.id,
-        reason: reason
+        approval_reason: reason
       }).then(response => {
-        console.log(response.data.form)
         this.$notification.success('reject success')
-        this.purchaseRequest.form.approved = response.data.form.approved
-        this.purchaseRequest.form.approvals[0].reason = response.data.form.approvals[0].reason
+        this.purchaseRequest.form.approval_status = response.data.form.approval_status
+        this.purchaseRequest.form.approval_reason = response.data.form.approval_reason
       })
     }
   },
