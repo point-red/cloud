@@ -11,12 +11,9 @@ const state = {
       created_by: {
         name: null
       },
-      approvals: [{
-        requested_to: {
-          first_name: null,
-          last_name: null
-        }
-      }]
+      request_approval_to: {
+        full_name: null
+      }
     }
   },
   formulas: [],

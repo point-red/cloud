@@ -16,11 +16,11 @@
 
     <manufacture-menu/>
 
-    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert" v-if="formula.form.number != null && formula.form.approved == null && isLoading == false">
+    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert" v-if="formula.form.number != null && formula.form.approval_status == 0 && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
-          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: formula.form.approvals[0].requested_to.first_name + ' ' + formula.form.approvals[0].requested_to.last_name }) | uppercase }}
+          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: formula.form.request_approval_to.full_name }) | uppercase }}
         </p>
         <hr>
         <div v-if="$permission.has('approve purchase request')" class="mt-10">
@@ -31,12 +31,12 @@
       </div>
     </div>
 
-    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15" role="alert" v-if="formula.form.approved == 0 && isLoading == false">
+    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15" role="alert" v-if="formula.form.approval_status == -1 && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('rejected') | uppercase }}
         </p>
-        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ formula.form.approvals[0].reason }}</div>
+        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ formula.form.approval_reason }}</div>
       </div>
     </div>
 
@@ -161,15 +161,15 @@
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
               <div class="mb-50" style="font-size:11px">
-                <template v-if="formula.form.approvals[0].approval_at">
-                  {{ formula.form.approvals[0].approval_at | dateFormat('DD MMMM YYYY') }}
+                <template v-if="formula.form.approval_at">
+                  {{ formula.form.approval_at | dateFormat('DD MMMM YYYY') }}
                 </template>
                 <template v-else>
                   _______________
                 </template>
               </div>
-              {{ formula.form.approvals[0].requested_to.first_name | uppercase }} {{ formula.form.approvals[0].requested_to.last_name | uppercase }}
-              <div style="font-size:11px">{{ formula.form.approvals[0].requested_to.email | lowercase }}</div>
+              {{ formula.form.request_approval_to.full_name | uppercase }}
+              <div style="font-size:11px">{{ formula.form.request_approval_to.email | lowercase }}</div>
             </div>
           </div>
         </p-block-inner>
@@ -222,8 +222,7 @@ export default {
             'manufactureProcess;' +
             'rawMaterials.item.units;' +
             'finishedGoods.item.units;' +
-            'form.approvals.requestedBy;' +
-            'form.approvals.requestedTo'
+            'form.requestApprovalTo'
         }
       }).then(response => {
         this.isLoading = false
@@ -253,17 +252,17 @@ export default {
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
-        this.formula.form.approved = response.data.form.approved
+        this.formula.form.approval_status = response.data.form.approval_status
       })
     },
     onReject (reason) {
       this.reject({
         id: this.id,
-        reason: reason
+        approval_reason: reason
       }).then(response => {
         this.$notification.success('reject success')
-        this.formula.form.approved = response.data.form.approved
-        this.formula.form.approvals[0].reason = response.data.form.approvals[0].reason
+        this.formula.form.approval_status = response.data.form.approval_status
+        this.formula.form.approval_reason = response.data.form.approval_reason
       })
     }
   },

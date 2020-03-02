@@ -129,9 +129,9 @@
               <div class="mb-50" style="font-size:11px">_______________</div>
               <m-user
                 :id="'user'"
-                v-model="form.approver_id"
-                :errors="form.errors.get('approver_id')"
-                @errors="form.errors.set('approver_id', null)"
+                v-model="form.request_approval_to"
+                :errors="form.errors.get('request_approval_to')"
+                @errors="form.errors.set('request_approval_to', null)"
                 @choosen="chooseApprover"/>
                 {{ form.approver_email }} <br v-if="form.approver_email">
             </div>
@@ -181,7 +181,7 @@ export default {
         manufacture_process_name: null,
         name: null,
         notes: null,
-        approver_id: null,
+        request_approval_to: null,
         raw_materials: [],
         finished_goods: []
       })
@@ -199,8 +199,7 @@ export default {
         includes: 'manufactureProcess;' +
         'rawMaterials.item.units;' +
         'finishedGoods.item.units;' +
-        'form.approvals.requestedBy;' +
-        'form.approvals.requestedTo'
+        'form.requestApprovalTo'
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
@@ -213,9 +212,7 @@ export default {
       this.form.manufacture_process_name = response.data.manufacture_process_name
       this.form.name = response.data.name
       this.form.notes = response.data.form.notes
-      console.log(response.data.raw_materials)
       response.data.raw_materials.forEach((item, keyItem) => {
-        console.log(item)
         this.form.raw_materials.push({
           item_id: item.item_id,
           item_name: item.item_name,
