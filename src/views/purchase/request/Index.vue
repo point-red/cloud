@@ -156,14 +156,14 @@
               <td class="text-right">{{ purchaseRequestItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseRequestItem.quantity * purchaseRequestItem.price) | numberFormat }}</td>
               <td class="text-center">
-                <div v-if="purchaseRequest.form.approved == null" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-if="purchaseRequest.form.approved == 0" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
-                <div v-if="purchaseRequest.form.approved == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
+                <div v-if="purchaseRequest.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                <div v-if="purchaseRequest.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
+                <div v-if="purchaseRequest.form.approval_status == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
               </td>
               <td class="text-center">
-                <div v-if="purchaseRequest.form.canceled == null && purchaseRequest.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-if="purchaseRequest.form.canceled == null && purchaseRequest.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
-                <div v-if="purchaseRequest.form.canceled == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
+                <div v-if="purchaseRequest.form.cancellation_status == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
+                <div v-else-if="purchaseRequest.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                <div v-else-if="purchaseRequest.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
               </td>
             </tr>
             </template>
