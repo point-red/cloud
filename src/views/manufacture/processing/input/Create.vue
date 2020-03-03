@@ -59,7 +59,7 @@
                   :data-index="index"
                   v-model="row.item_id"
                   :label="row.item_name"
-                  @choosen="chooseFinishGood($event, row)"/>
+                  @choosen="chooseFinishedGood($event, row)"/>
               </td>
               <td>
                 <m-warehouse
@@ -75,7 +75,8 @@
                   :name="'quantity-finish-goods-' + index"
                   v-model="row.quantity"
                   :units="row.item.units"
-                  :unit="row.item.units[0]"/>
+                  :unit="row.item.units[0]"
+                  @choosen="chooseUnit($event, row)"/>
               </td>
               <td>&nbsp;</td>
             </tr>
@@ -108,6 +109,7 @@
                   v-model="row.quantity"
                   :units="row.item.units"
                   :unit="row.item.unit"
+                  @choosen="chooseUnit($event, row)"
                   @click.native="onClickQuantity(row)"
                   :disable-unit-selection="onClickUnit(row)"
                   :readonly="onClickUnit(row)"/>
@@ -343,7 +345,11 @@ export default {
         this.addMaterialRow()
       }
     },
-    chooseFinishGood (item, row) {
+    chooseUnit (unit, row) {
+      row.unit = unit.label
+      row.converter = unit.converter
+    },
+    chooseFinishedGood (item, row) {
       row.item_name = item.name
       row.quantity = 0
       row.item.require_expiry_date = item.require_expiry_date

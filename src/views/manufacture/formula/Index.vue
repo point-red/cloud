@@ -146,8 +146,10 @@ export default {
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,
+            'rawMaterials.item.code': this.searchText,
             'rawMaterials.item.name': this.searchText,
             'rawMaterials.quantity': this.searchText,
+            'finishedGoods.item.code': this.searchText,
             'finishedGoods.item.name': this.searchText,
             'finishedGoods.quantity': this.searchText
           },

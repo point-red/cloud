@@ -205,15 +205,13 @@ export default {
           join: 'form',
           sort_by: '-forms.number',
           fields: 'manufacture_inputs.*',
-          // filter_form: 'active',
-          // filter_equal: {
-          //   'manufacture_process_id': this.id
-          // },
+          filter_form: 'notArchived',
           filter_like: {
             'form.number': this.searchText,
-            'name': this.searchText,
+            'rawMaterials.item.code': this.searchText,
             'rawMaterials.item.name': this.searchText,
             'rawMaterials.quantity': this.searchText,
+            'finishedGoods.item.code': this.searchText,
             'finishedGoods.item.name': this.searchText,
             'finishedGoods.quantity': this.searchText
           },
@@ -224,7 +222,12 @@ export default {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;manufactureMachine;rawMaterials.item.units;finishedGoods.item.units;rawMaterials.warehouse;finishedGoods.warehouse',
+          includes: 'form;' +
+            'manufactureMachine;' +
+            'rawMaterials.item.units;' +
+            'finishedGoods.item.units;' +
+            'rawMaterials.warehouse;' +
+            'finishedGoods.warehouse',
           page: this.currentPage
         }
       }).then(response => {

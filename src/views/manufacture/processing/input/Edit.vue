@@ -29,6 +29,7 @@
               <m-process id="process" v-model="form.manufacture_process_id" @choosen="chooseManufactureProcess" :label="form.manufacture_process_name"/>
             </div>
           </p-form-row>
+
           <p-form-row
             id="machine"
             name="machine"
@@ -60,7 +61,7 @@
                   :data-index="index"
                   v-model="row.item_id"
                   :label="row.item_name"
-                  @choosen="chooseFinishGood($event, row)"/>
+                  @choosen="chooseFinishedGood($event, row)"/>
               </td>
               <td>
                 <m-warehouse
@@ -76,7 +77,8 @@
                   :name="'quantity-finish-goods-' + index"
                   v-model="row.quantity"
                   :units="row.item.units"
-                  :unit="row.item.units[0]"/>
+                  :unit="row.item.units[0]"
+                  @choosen="chooseUnit($event, row)"/>
               </td>
               <td>&nbsp;</td>
             </tr>
@@ -97,7 +99,6 @@
               <td>
                 <m-warehouse
                   :id="'warehouse-raw-' + index"
-                  :data-index="index"
                   v-model="row.warehouse_id"
                   :label="row.warehouse_name"
                   @choosen="chooseWarehouse($event, row)"/>
@@ -108,7 +109,12 @@
                   :name="'quantity-raw-material-' + index"
                   v-model="row.quantity"
                   :units="row.item.units"
-                  :unit="row.item.unit"
+                  :unit="{
+                    label: row.unit,
+                    name: row.unit,
+                    converter: row.converter
+                  }"
+                  @choosen="chooseUnit($event, row)"
                   @click.native="onClickQuantity(row)"
                   :disable-unit-selection="onClickUnit(row)"
                   :readonly="onClickUnit(row)"/>
@@ -137,9 +143,10 @@
               <div class="mb-50" style="font-size:11px">_______________</div>
               <m-user
                 :id="'user'"
-                v-model="form.approver_id"
-                :errors="form.errors.get('approver_id')"
-                @errors="form.errors.set('approver_id', null)"
+                v-model="form.request_approval_to"
+                :label="form.approver_name"
+                :errors="form.errors.get('request_approval_to')"
+                @errors="form.errors.set('request_approval_to', null)"
                 @choosen="chooseApprover"/>
                 {{ form.approver_email }} <br v-if="form.approver_email">
             </div>
@@ -218,7 +225,7 @@ export default {
         manufacture_process_name: null,
         manufacture_formula_name: null,
         notes: null,
-        approver_id: null,
+        request_approval_to: null,
         raw_materials: [],
         finished_goods: [{
           item_id: null,
@@ -257,7 +264,8 @@ export default {
           'rawMaterials.item.units;' +
           'finishedGoods.item.units;' +
           'rawMaterials.warehouse;' +
-          'finishedGoods.warehouse'
+          'finishedGoods.warehouse;' +
+          'form.requestApprovalTo'
       }
     }).then(response => {
       this.form.id = response.data.id
@@ -269,12 +277,15 @@ export default {
       this.form.manufacture_process_name = response.data.manufacture_process_name
       this.form.manufacture_formula_name = response.data.manufacture_formula_name
       this.form.finished_goods = response.data.finished_goods
-      this.form.materials = response.data.raw_materials
+      this.form.request_approval_to = response.data.form.request_approval_to.id
+      this.form.approver_name = response.data.form.request_approval_to.full_name
+      this.form.approver_email = response.data.form.request_approval_to.email
+      this.materials = response.data.raw_materials
     })
   },
   methods: {
     ...mapActions('manufactureInput', ['find', 'update']),
-    addRawMaterialRow () {
+    addMaterialRow () {
       this.materials.push({
         row_id: this.materials.length,
         item_id: null,
@@ -300,6 +311,10 @@ export default {
         converter: null
       })
     },
+    chooseUnit (unit, row) {
+      row.unit = unit.label
+      row.converter = unit.converter
+    },
     onClickQuantity (row) {
       if (row.require_expiry_date == 1 || row.require_production_number == 1) {
         this.$refs.inventory.show(row)
@@ -312,7 +327,7 @@ export default {
 
       return false
     },
-    addFinishGoodRow () {
+    addFinishedGoodRow () {
       this.form.finished_goods.push({
         item_id: null,
         warehouse_id: null,
@@ -370,10 +385,10 @@ export default {
         }
       })
       if (isNeedNewRow) {
-        this.addRawMaterialRow()
+        this.addMaterialRow()
       }
     },
-    chooseFinishGood (item, row) {
+    chooseFinishedGood (item, row) {
       row.item_name = item.name
       row.quantity = 0
       row.item.require_expiry_date = item.require_expiry_date
@@ -420,10 +435,10 @@ export default {
       if (this.form.raw_materials.length > 1) {
         this.form.raw_materials = this.form.raw_materials.filter(item => item.item_id !== null)
       }
-      this.create(this.form)
+      this.update(this.form)
         .then(response => {
           this.isSaving = false
-          this.$notification.success('create success')
+          this.$notification.success('update success')
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/manufacture/processing/input/' + response.data.id)
         }).catch(error => {

@@ -152,7 +152,7 @@
               </td>
               <td>{{ purchaseRequestItem.item.name }}</td>
               <td>{{ purchaseRequestItem.notes }}</td>
-              <td class="text-right">{{ purchaseRequestItem.quantity | numberFormat }}</td>
+              <td class="text-right">{{ purchaseRequestItem.quantity | numberFormat }} {{ purchaseRequestItem.unit }}</td>
               <td class="text-right">{{ purchaseRequestItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseRequestItem.quantity * purchaseRequestItem.price) | numberFormat }}</td>
               <td class="text-center">

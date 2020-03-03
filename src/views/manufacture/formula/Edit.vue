@@ -131,6 +131,7 @@
               <m-user
                 :id="'user'"
                 v-model="form.request_approval_to"
+                :label="form.approver_name"
                 :errors="form.errors.get('request_approval_to')"
                 @errors="form.errors.set('request_approval_to', null)"
                 @choosen="chooseApprover"/>
