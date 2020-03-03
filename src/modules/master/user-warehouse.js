@@ -34,6 +34,16 @@ const actions = {
           reject(error)
         })
     })
+  },
+  updateDefault ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/update-default', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 

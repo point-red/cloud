@@ -61,6 +61,37 @@
             :disabled="true"
             :label="$t('phone')"
             name="phone"/>
+
+          <p-separator></p-separator>
+          <h5>{{ $t('user access') | uppercase }}</h5>
+          <point-table>
+            <tr slot="p-head">
+              <th width="50px">#</th>
+              <th>user</th>
+              <th class="text-center">access</th>
+              <th class="text-center">
+                set as default
+                <i class="fa fa-info-circle" @click="$alert.show('info', $t('branch - set as default'))"></i>
+              </th>
+            </tr>
+            <tr slot="p-body" v-for="(user, index) in users" :key="'user-' + index">
+              <th width="50px">1</th>
+              <td>{{ user.full_name }}</td>
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  :checked="isChecked(user.id)"
+                  @click="toggleRelation(user.id)">
+              </td>
+              <td class="text-center">
+                <input
+                  type="checkbox"
+                  v-if="isChecked(user.id)"
+                  :checked="isDefault(user)"
+                  @click="toggleDefault(user.id)">
+              </td>
+            </tr>
+          </point-table>
         </p-block-inner>
       </p-block>
     </div>
@@ -71,13 +102,15 @@
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster
+    BreadcrumbMaster,
+    PointTable
   },
   data () {
     return {
@@ -89,15 +122,20 @@ export default {
         name: null,
         address: null,
         phone: null,
-        branch: null
+        branch: {
+          name: null
+        }
       }
     }
   },
   computed: {
-    ...mapGetters('masterWarehouse', ['warehouse'])
+    ...mapGetters('masterWarehouse', ['warehouse']),
+    ...mapGetters('masterUser', ['users'])
   },
   methods: {
     ...mapActions('masterWarehouse', ['find', 'delete']),
+    ...mapActions('masterUser', ['get']),
+    ...mapActions('masterUserWarehouse', ['attach', 'detach', 'updateDefault']),
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
         this.isDeleting = true
@@ -110,6 +148,50 @@ export default {
             this.$notification.error('cannot delete this service')
           })
       })
+    },
+    toggleRelation (userId) {
+      if (this.isChecked(userId)) {
+        this.detach({
+          user_id: userId,
+          warehouse_id: this.id
+        }).then(response => {
+          this.warehouse.users.splice(this.warehouse.users.indexOf(userId), 1)
+        })
+      } else {
+        this.attach({
+          user_id: userId,
+          warehouse_id: this.id
+        }).then(response => {
+          this.warehouse.users.push({
+            id: userId
+          })
+        })
+      }
+    },
+    toggleDefault (userId) {
+      this.warehouse.users.some(user => {
+        if (user.id == userId) {
+          this.updateDefault({
+            user_id: userId,
+            warehouse_id: this.id,
+            is_default: !user.pivot.is_default
+          }).then(response => {
+            user.pivot.is_default = !user.pivot.is_default
+          })
+        }
+      })
+    },
+    isDefault (user) {
+      return user.warehouses.some(element => {
+        return (this.warehouse.id == element.id && element.pivot.is_default)
+      })
+    },
+    isChecked (userId) {
+      if (this.warehouse.users) {
+        return this.warehouse.users.some(user => {
+          return user.id == userId
+        })
+      }
     }
   },
   created () {
@@ -117,7 +199,7 @@ export default {
     this.find({
       id: this.id,
       params: {
-        includes: 'branch'
+        includes: 'branch;users'
       }
     }).then(response => {
       this.isLoading = false
@@ -126,6 +208,17 @@ export default {
       this.data.address = response.data.address
       this.data.phone = response.data.phone
       this.data.branch = response.data.branch
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
+
+    this.get({
+      params: {
+        includes: 'warehouses'
+      }
+    }).then(response => {
+      this.isLoading = false
     }).catch(error => {
       this.isLoading = false
       this.$notification.error(error.message)

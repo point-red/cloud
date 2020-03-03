@@ -34,6 +34,8 @@
               <th width="50px">#</th>
               <th>Name</th>
               <th>Branch</th>
+              <th>Address</th>
+              <th>Phone</th>
             </tr>
             <tr
               v-for="(warehouse, index) in warehouses"
@@ -45,9 +47,9 @@
                   {{ warehouse.name }}
                 </router-link>
               </td>
-              <td>
-                {{ warehouse.branch.name }}
-              </td>
+              <td>{{ warehouse.branch.name }}</td>
+              <td>{{ warehouse.address }}</td>
+              <td>{{ warehouse.phone }}</td>
             </tr>
           </point-table>
         </p-block-inner>

@@ -4,8 +4,12 @@ const url = '/master/warehouses'
 
 const state = {
   warehouse: {
-    code: '',
-    name: ''
+    branch_id: null,
+    code: null,
+    name: null,
+    branch: {
+      name: null
+    }
   },
   warehouses: [],
   pagination: {}

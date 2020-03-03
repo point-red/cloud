@@ -66,7 +66,7 @@
                 <input
                   type="checkbox"
                   v-if="isChecked(user.id)"
-                  :checked="user.branch_id == branch.id"
+                  :checked="isDefault(user)"
                   @click="toggleDefault(user.id)">
               </td>
             </tr>
@@ -155,6 +155,11 @@ export default {
         }
       })
     },
+    isDefault (user) {
+      return user.branches.some(element => {
+        return (this.branch.id == element.id && element.pivot.is_default)
+      })
+    },
     isChecked (userId) {
       if (this.branch.users) {
         return this.branch.users.some(user => {
@@ -170,17 +175,17 @@ export default {
       params: {
         includes: 'users'
       }
-    }).then((response) => {
+    }).then(response => {
       this.isLoading = false
       this.data.name = response.data.name
-    }, (error) => {
+    }).catch(error => {
       this.isLoading = false
       this.$notification.error(error.message)
     })
 
     this.get({
       params: {
-        branch_id: this.branch.id
+        includes: 'branches'
       }
     }).then(response => {
       this.isLoading = false
