@@ -18,6 +18,42 @@
 
     <tab-menu/>
 
+    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert" v-if="input.form.number != null && input.form.approval_status == 0 && isLoading == false">
+      <div class="flex-fill mr-10">
+        <p class="mb-0">
+          <i class="fa fa-fw fa-exclamation-triangle"></i>
+          {{ $t('pending approval warning', { form: 'manufacture', approvedBy: input.form.request_approval_to.full_name }) | uppercase }}
+        </p>
+        <hr>
+        <div v-if="$permission.has('approve purchase request')" class="mt-10">
+          <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
+          <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
+          <m-form-reject id="form-reject" ref="formReject" @reject="onReject($event)"></m-form-reject>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert" v-if="input.form.number != null && input.form.cancellation_status == 0 && isLoading == false">
+      <div class="flex-fill mr-10">
+        <p class="mb-0">
+          <i class="fa fa-fw fa-exclamation-triangle"></i>
+          {{ $t('pending cancellation warning', { form: 'manufacture', approvedBy: input.form.request_cancellation_to.full_name }) | uppercase }}
+        </p>
+        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ input.form.request_cancellation_reason }}</div>
+        <hr>
+        <div v-if="$permission.has('approve purchase request')" class="mt-10">
+          <button type="button" @click="onCancellationApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
+          <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
+          <m-form-reject id="form-reject" ref="formReject" @reject="onCancellationReject($event)"></m-form-reject>
+        </div>
+      </div>
+    </div>
+
+    <p-info-form-rejected :reason="input.form.approval_reason" v-if="input.form.approval_status == -1 && isLoading == false"></p-info-form-rejected>
+    <p-info-form-cancellation-rejected :reason="input.form.cancellation_reason" v-if="input.form.cancellation_status == -1 && isLoading == false"></p-info-form-cancellation-rejected>
+    <p-info-form-archived v-if="input.form.number == null && isLoading == false"></p-info-form-archived>
+    <p-info-form-deleted v-if="input.form.cancellation_status == 1 && isLoading == false"></p-info-form-deleted>
+
     <div class="row">
       <p-block>
         <div class="row">
@@ -29,9 +65,15 @@
               <router-link :to="{ name: 'manufacture.processing.input.edit', params: { id: id }}" class="btn btn-sm btn-outline-secondary mr-5">
                 {{ $t('edit') | uppercase }}
               </router-link>
-              <button type="submit" class="btn btn-sm btn-outline-secondary mr-5" :disabled="isDeleting" @click="onDelete">
-                <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('archive') | uppercase }}
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-secondary mr-5"
+                v-if="input.form.cancellation_status < 1"
+                :disabled="isDeleting"
+                @click="$refs.formRequestDelete.show()">
+                <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
               </button>
+              <m-form-request-delete id="form-delete" ref="formRequestDelete" @deleted="onRequestDelete($event)"></m-form-request-delete>
             </div>
             <hr>
             <h4 class="text-center m-0">{{ $t('processing input') | uppercase }}</h4>
@@ -41,23 +83,23 @@
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
-            id="machine"
-            name="machine"
-            :label="$t('machine')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <template v-if="input.manufacture_machine">
-                {{ input.manufacture_machine.name }}
-              </template>
-            </div>
-          </p-form-row>
-
-          <p-form-row
             id="process"
             name="process"
             :label="$t('process')">
             <div slot="body" class="col-lg-9 mt-5">
               <template v-if="input.manufacture_process">
                 {{ input.manufacture_process.name }}
+              </template>
+            </div>
+          </p-form-row>
+
+          <p-form-row
+            id="machine"
+            name="machine"
+            :label="$t('machine')">
+            <div slot="body" class="col-lg-9 mt-5">
+              <template v-if="input.manufacture_machine">
+                {{ input.manufacture_machine.name }}
               </template>
             </div>
           </p-form-row>
@@ -205,7 +247,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('manufactureInput', ['find', 'delete']),
+    ...mapActions('manufactureInput', ['find', 'delete', 'approve', 'reject', 'cancellationApprove', 'cancellationReject']),
     manufactureInputRequest () {
       this.isLoading = true
       this.find({
@@ -218,6 +260,7 @@ export default {
             'finishedGoods.item.units;' +
             'form.createdBy;' +
             'form.requestApprovalTo;' +
+            'form.requestCancellationTo;' +
             'rawMaterials.warehouse;' +
             'finishedGoods.warehouse'
         }
@@ -252,20 +295,59 @@ export default {
         this.$notification.error(error.message)
       })
     },
-    onDelete () {
-      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
-        this.isDeleting = true
-        this.delete({
-          id: this.id
-        }).then(response => {
-          this.isDeleting = false
-          this.$notification.success('archive success')
-          this.$router.push('/manufacture/processing/' + this.id + '/input')
-        }).catch(error => {
-          this.isDeleting = false
-          this.$notification.error(error.message)
-          this.form.errors.record(error.errors)
-        })
+    onApprove () {
+      this.approve({
+        id: this.id
+      }).then(response => {
+        this.$notification.success('approve success')
+        this.input.form.approval_status = response.data.form.approval_status
+      })
+    },
+    onReject (reason) {
+      this.reject({
+        id: this.id,
+        approval_reason: reason
+      }).then(response => {
+        this.$notification.success('reject success')
+        this.input.form.approval_status = response.data.form.approval_status
+        this.input.form.approval_reason = response.data.form.approval_reason
+      })
+    },
+    onCancellationApprove () {
+      this.cancellationApprove({
+        id: this.id
+      }).then(response => {
+        this.$notification.success('approve success')
+        this.input.form.cancellation_status = response.data.form.cancellation_status
+      })
+    },
+    onCancellationReject (reason) {
+      this.cancellationReject({
+        id: this.id,
+        cancellation_reason: reason
+      }).then(response => {
+        this.$notification.success('reject success')
+        this.input.form.cancellation_status = response.data.form.cancellation_status
+        this.input.form.cancellation_reason = response.data.form.cancellation_reason
+      })
+    },
+    onRequestDelete (reason) {
+      this.isDeleting = true
+      this.delete({
+        id: this.id,
+        params: {
+          request_cancellation_reason: reason
+        }
+      }).then(response => {
+        this.isDeleting = false
+        this.input.form.cancellation_status = 0
+        this.input.form.request_cancellation_reason = response.data.form.request_cancellation_reason
+        this.$notification.success('archive success')
+        this.$router.push('/manufacture/processing/input/' + this.id)
+      }).catch(error => {
+        this.isDeleting = false
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
       })
     }
   },

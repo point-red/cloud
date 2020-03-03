@@ -64,5 +64,6 @@
   "confirmation archive message": "are you sure want to archive?",
   "confirmation activate message": "are you sure want to activate?",
   "confirmation delete message": "are you sure? you won't be able to revert this!",
-  "pending approval warning": "this {form} in pending state, need approval from {approvedBy}"
+  "pending approval warning": "this {form} in pending state, need approval from {approvedBy}",
+  "pending cancellation warning": "this {form} request to delete, need approval from {approvedBy}"
 }

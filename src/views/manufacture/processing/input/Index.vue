@@ -55,14 +55,14 @@
                 <td>{{ input.manufacture_machine_name }}</td>
                 <td>{{ input.notes }}</td>
                 <td class="text-center">
-                  <div v-if="input.form.approved == null" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                  <div v-if="input.form.approved == 0" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
-                  <div v-if="input.form.approved == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
+                  <div v-if="input.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                  <div v-if="input.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
+                  <div v-if="input.form.approval_status == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
                 </td>
                 <td class="text-center">
-                  <div v-if="input.form.canceled == null && input.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                  <div v-if="input.form.canceled == null && input.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
-                  <div v-if="input.form.canceled == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
+                  <div v-if="input.form.cancellation_status == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
+                  <div v-else-if="input.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                  <div v-else-if="input.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
                 </td>
               </tr>
               <tr :key="'mia-' + index" slot="p-body">
