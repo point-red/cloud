@@ -124,9 +124,9 @@
               <div class="mb-50" style="font-size:11px">_______________</div>
               <m-user
                 :id="'user'"
-                v-model="form.approver_id"
-                :errors="form.errors.get('approver_id')"
-                @errors="form.errors.set('approver_id', null)"
+                v-model="form.request_approval_to"
+                :errors="form.errors.get('request_approval_to')"
+                @errors="form.errors.set('request_approval_to', null)"
                 @choosen="chooseApprover"/>
                 {{ form.approver_email }} <br v-if="form.approver_email">
             </div>
@@ -174,7 +174,7 @@ export default {
         manufacture_process_name: null,
         name: null,
         notes: null,
-        approver_id: null,
+        request_approval_to: null,
         raw_materials: [{
           item_id: null,
           item_name: null,
@@ -303,8 +303,9 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      if (this.form.raw_materials.length > 1) {
-        this.form.raw_materials = this.form.raw_materials.filter(item => item.item_id !== null)
+      this.form.raw_materials = this.form.raw_materials.filter(item => item.item_id !== null)
+      if (this.form.raw_materials.length == 0) {
+        this.addRawMaterialRow()
       }
       this.create(this.form)
         .then(response => {

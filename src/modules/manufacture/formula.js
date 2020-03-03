@@ -13,6 +13,9 @@ const state = {
       },
       request_approval_to: {
         full_name: null
+      },
+      request_cancellation_to: {
+        full_name: null
       }
     }
   },
@@ -117,6 +120,26 @@ const actions = {
   reject (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/' + payload.id + '/reject', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationApprove (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-approve', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationReject (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-reject', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

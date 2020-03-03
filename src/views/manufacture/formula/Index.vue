@@ -142,7 +142,7 @@ export default {
           join: 'form',
           sort_by: '-forms.number',
           fields: 'manufacture_formulas.*',
-          filter_form: 'notArchived',
+          filter_form: 'notArchived;notCanceled',
           filter_like: {
             'form.number': this.searchText,
             'name': this.searchText,

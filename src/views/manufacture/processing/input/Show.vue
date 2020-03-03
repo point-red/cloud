@@ -37,14 +37,14 @@
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
-          {{ $t('pending cancellation warning', { form: 'manufacture', approvedBy: input.form.request_cancellation_to.full_name }) | uppercase }}
+          {{ $t('pending cancellation warning', { form: 'manufacture', approvedBy: input.form.request_approval_to.full_name }) | uppercase }}
         </p>
         <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ input.form.request_cancellation_reason }}</div>
         <hr>
         <div v-if="$permission.has('approve purchase request')" class="mt-10">
           <button type="button" @click="onCancellationApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
-          <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
-          <m-form-reject id="form-reject" ref="formReject" @reject="onCancellationReject($event)"></m-form-reject>
+          <button type="button" @click="$refs.formCancellationReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
+          <m-form-reject id="form-cancellation-reject" ref="formCancellationReject" @reject="onCancellationReject($event)"></m-form-reject>
         </div>
       </div>
     </div>
@@ -342,7 +342,6 @@ export default {
         this.isDeleting = false
         this.input.form.cancellation_status = 0
         this.input.form.request_cancellation_reason = response.data.form.request_cancellation_reason
-        this.$notification.success('archive success')
         this.$router.push('/manufacture/processing/input/' + this.id)
       }).catch(error => {
         this.isDeleting = false

@@ -200,7 +200,8 @@ export default {
         includes: 'manufactureProcess;' +
         'rawMaterials.item.units;' +
         'finishedGoods.item.units;' +
-        'form.requestApprovalTo'
+        'form.requestApprovalTo;' +
+        'form.requestCancellationTo'
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
@@ -214,6 +215,8 @@ export default {
       this.form.name = response.data.name
       this.form.notes = response.data.form.notes
       this.form.request_approval_to = response.data.form.request_approval_to.id
+      this.form.approver_name = response.data.form.request_approval_to.full_name
+      this.form.approver_email = response.data.form.request_approval_to.email
       response.data.raw_materials.forEach((item, keyItem) => {
         this.form.raw_materials.push({
           item_id: item.item_id,
@@ -334,8 +337,9 @@ export default {
     },
     onSubmit () {
       this.isSaving = true
-      if (this.form.raw_materials.length > 1) {
-        this.form.raw_materials = this.form.raw_materials.filter(item => item.item_id !== null)
+      this.form.raw_materials = this.form.raw_materials.filter(item => item.item_id !== null)
+      if (this.form.raw_materials.length == 0) {
+        this.addRawMaterialRow()
       }
       this.update(this.form)
         .then(response => {
