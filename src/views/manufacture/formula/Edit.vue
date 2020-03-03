@@ -57,7 +57,7 @@
                   :data-index="index"
                   v-model="row.item_id"
                   :label="row.item_name"
-                  @choosen="chooseFinishGood($event, row)"/>
+                  @choosen="chooseFinishedGood($event, row)"/>
               </td>
               <td>
                 <p-quantity
@@ -86,15 +86,16 @@
               <td>
                 <m-item
                   :id="'item-raw-' + index"
-                  :data-index="index"
                   v-model="row.item_id"
                   :label="row.item_name"
+                  @clear="clearItem(row)"
                   @choosen="chooseRawMaterial($event, row)"/>
               </td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
+                  :disabled="row.item_id == null"
                   v-model="row.quantity"
                   :item-id="row.item_id"
                   :units="row.item.units"
@@ -212,6 +213,7 @@ export default {
       this.form.manufacture_process_name = response.data.manufacture_process_name
       this.form.name = response.data.name
       this.form.notes = response.data.form.notes
+      this.form.request_approval_to = response.data.form.request_approval_to.id
       response.data.raw_materials.forEach((item, keyItem) => {
         this.form.raw_materials.push({
           item_id: item.item_id,
@@ -252,11 +254,11 @@ export default {
           }]
         },
         unit: null,
-        quantity: 0,
+        quantity: null,
         converter: null
       })
     },
-    addFinishGoodRow () {
+    addFinishedGoodRow () {
       this.form.finished_goods.push({
         item_id: null,
         item_name: null,
@@ -275,7 +277,7 @@ export default {
     deleteRawMaterialRow (index) {
       this.$delete(this.form.raw_materials, index)
     },
-    deleteFinishGoodRow (index) {
+    deleteFinishedGoodRow (index) {
       this.$delete(this.form.finished_goods, index)
     },
     chooseManufactureProcess (option) {
@@ -304,7 +306,7 @@ export default {
         this.addRawMaterialRow()
       }
     },
-    chooseFinishGood (item, row) {
+    chooseFinishedGood (item, row) {
       row.item_name = item.name
       row.item.units = item.units
       row.item.units.forEach((unit, keyUnit) => {
@@ -317,6 +319,18 @@ export default {
     chooseApprover (value) {
       this.form.approver_name = value.label
       this.form.approver_email = value.email
+    },
+    clearItem (row) {
+      row.item_id = null
+      row.item_name = null
+      row.unit = null
+      row.converter = null
+      row.quantity = null
+      row.price = null
+      row.allocation_id = null
+      row.notes = null
+      row.more = false
+      row.units = []
     },
     onSubmit () {
       this.isSaving = true

@@ -40,6 +40,18 @@
             name="name"
             v-model="data.name"
             readonly/>
+          <p-form-row
+            id="address"
+            :label="$t('address') | uppercase"
+            name="address"
+            v-model="data.address"
+            readonly/>
+          <p-form-row
+            id="phone"
+            :label="$t('phone') | uppercase"
+            name="phone"
+            v-model="data.phone"
+            readonly/>
           <hr>
           <p-separator></p-separator>
           <h5>{{ $t('user access') | uppercase }}</h5>
@@ -54,7 +66,7 @@
               </th>
             </tr>
             <tr slot="p-body" v-for="(user, index) in users" :key="'user-' + index">
-              <th width="50px">1</th>
+              <th width="50px">{{ index + 1 }}</th>
               <td>{{ user.full_name }}</td>
               <td class="text-center">
                 <input
@@ -97,7 +109,9 @@ export default {
       isLoading: false,
       isDeleting: false,
       data: {
-        name: null
+        name: null,
+        address: null,
+        phone: null
       }
     }
   },
@@ -178,6 +192,8 @@ export default {
     }).then(response => {
       this.isLoading = false
       this.data.name = response.data.name
+      this.data.address = response.data.address
+      this.data.phone = response.data.phone
     }).catch(error => {
       this.isLoading = false
       this.$notification.error(error.message)

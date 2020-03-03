@@ -58,15 +58,16 @@
               <td>
                 <m-item
                   :id="'item-finish-' + index"
-                  :data-index="index"
                   v-model="row.item_id"
                   :label="row.item_name"
+                  @clear="clearItem(row)"
                   @choosen="chooseFinishGood($event, row)"/>
               </td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
                   :name="'quantity' + index"
+                  :disabled="row.item_id == null"
                   v-model="row.quantity"
                   :item-id="row.item_id"
                   :units="row.item.units"
@@ -286,6 +287,18 @@ export default {
     chooseApprover (value) {
       this.form.approver_name = value.label
       this.form.approver_email = value.email
+    },
+    clearItem (row) {
+      row.item_id = null
+      row.item_name = null
+      row.unit = null
+      row.converter = null
+      row.quantity = null
+      row.price = null
+      row.allocation_id = null
+      row.notes = null
+      row.more = false
+      row.units = []
     },
     onSubmit () {
       this.isSaving = true

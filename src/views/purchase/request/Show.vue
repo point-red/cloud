@@ -61,8 +61,10 @@
               <hr>
               <div class="float-sm-right text-right">
                 <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
-                {{ authUser.tenant_address | uppercase }} <br v-if="authUser.tenant_address">
-                {{ authUser.tenant_phone | uppercase }} <br v-if="authUser.tenant_phone">
+                <template v-if="purchaseRequest.form.branch">
+                  {{ purchaseRequest.form.branch.address | uppercase }} <br v-if="purchaseRequest.form.branch.address">
+                  {{ purchaseRequest.form.branch.phone | uppercase }} <br v-if="purchaseRequest.form.branch.phone">
+                </template>
               </div>
               <div class="float-sm-left">
                 <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
@@ -212,7 +214,7 @@ export default {
             'services.service;' +
             'services.allocation;' +
             'form.requestApprovalTo;' +
-            'form.approvalBy'
+            'form.branch'
         }
       }).then(response => {
         this.isLoading = false

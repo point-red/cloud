@@ -22,6 +22,24 @@
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"/>
 
+          <p-form-row
+            id="address"
+            v-model="form.address"
+            :disabled="isSaving"
+            :label="$t('address')"
+            name="address"
+            :errors="form.errors.get('address')"
+            @errors="form.errors.set('address', null)"/>
+
+          <p-form-row
+            id="phone"
+            v-model="form.phone"
+            :disabled="isSaving"
+            :label="$t('phone')"
+            name="phone"
+            :errors="form.errors.get('phone')"
+            @errors="form.errors.set('phone', null)"/>
+
           <hr/>
 
           <div class="form-group row">
@@ -58,7 +76,9 @@ export default {
       isSaving: false,
       form: new Form({
         id: this.$route.params.id,
-        name: null
+        name: null,
+        address: null,
+        phone: null
       })
     }
   },
@@ -71,6 +91,8 @@ export default {
       .then(response => {
         this.isLoading = false
         this.form.name = this.branch.name
+        this.form.address = this.branch.address
+        this.form.phone = this.branch.phone
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)

@@ -22,6 +22,16 @@
               </p-form-row>
 
               <p-form-row
+                id="account-sub-ledger"
+                name="account-sub-ledger"
+                :is-horizontal="false"
+                :label="$t('account sub ledger')">
+                <div slot="body" class="col-lg-9 mt-5">
+                  {{ chartOfAccount.subLedger.alias }}
+                </div>
+              </p-form-row>
+
+              <p-form-row
                 id="number"
                 :label="$t('number')"
                 :is-horizontal="false"

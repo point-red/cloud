@@ -75,7 +75,7 @@
               </th>
             </tr>
             <tr slot="p-body" v-for="(user, index) in users" :key="'user-' + index">
-              <th width="50px">1</th>
+              <th width="50px">{{ index + 1 }}</th>
               <td>{{ user.full_name }}</td>
               <td class="text-center">
                 <input

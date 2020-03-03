@@ -18,8 +18,10 @@
                 <hr>
                 <div class="float-sm-right text-right">
                   <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
-                  {{ authUser.tenant_address | uppercase }} <br v-if="authUser.tenant_address">
-                  {{ authUser.tenant_phone | uppercase }} <br v-if="authUser.tenant_phone">
+                  <template v-if="authUser.branch">
+                    {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
+                    {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
+                  </template>
                 </div>
                 <div class="float-sm-left">
                   <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
