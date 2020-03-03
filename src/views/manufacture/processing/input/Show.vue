@@ -129,15 +129,15 @@
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
               <div class="mb-50" style="font-size:11px">
-                <template v-if="input.form.approvals[0].approval_at">
-                  {{ input.form.approvals[0].approval_at | dateFormat('DD MMMM YYYY') }}
+                <template v-if="input.form.approval_at">
+                  {{ input.form.approval_at | dateFormat('DD MMMM YYYY') }}
                 </template>
                 <template v-else>
                   _______________
                 </template>
               </div>
-              {{ input.form.approvals[0].requested_to.full_name | uppercase }}
-              <div style="font-size:11px">{{ input.form.approvals[0].requested_to.email | lowercase }}</div>
+              {{ input.form.request_approval_to.full_name | uppercase }}
+              <div style="font-size:11px">{{ input.form.request_approval_to.email | lowercase }}</div>
             </div>
           </div>
 
@@ -212,7 +212,14 @@ export default {
         id: this.id,
         params: {
           with_archives: true,
-          includes: 'manufactureMachine;manufactureProcess;rawMaterials.item.units;finishedGoods.item.units;form.createdBy;form.approvals.requestedBy;form.approvals.requestedTo;rawMaterials.warehouse;finishedGoods.warehouse'
+          includes: 'manufactureMachine;' +
+            'manufactureProcess;' +
+            'rawMaterials.item.units;' +
+            'finishedGoods.item.units;' +
+            'form.createdBy;' +
+            'form.requestApprovalTo;' +
+            'rawMaterials.warehouse;' +
+            'finishedGoods.warehouse'
         }
       }).then(response => {
         this.raw_materials_temporary = []

@@ -113,7 +113,7 @@
                   :readonly="onClickUnit(row)"/>
               </td>
               <td>
-                <button class="btn btn-sm btn-outline-danger" v-if="row.item_id != null" @click="deleteRawMaterialRow(index)">
+                <button type="button" class="btn btn-sm btn-outline-danger" v-if="row.item_id != null" @click="deleteMaterialRow(index)">
                   <i class="fa fa-times"></i>
                 </button>
               </td>
@@ -245,7 +245,7 @@ export default {
   },
   methods: {
     ...mapActions('manufactureInput', ['create']),
-    addRawMaterialRow () {
+    addMaterialRow () {
       this.materials.push({
         row_id: this.materials.length,
         item_id: null,
@@ -334,13 +334,13 @@ export default {
         }
       })
       let isNeedNewRow = true
-      this.form.raw_materials.forEach(element => {
+      this.materials.forEach(element => {
         if (element.item_id == null) {
           isNeedNewRow = false
         }
       })
       if (isNeedNewRow) {
-        this.addRawMaterialRow()
+        this.addMaterialRow()
       }
     },
     chooseFinishGood (item, row) {
