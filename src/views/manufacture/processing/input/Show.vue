@@ -132,7 +132,7 @@
                 <th></th>
                 <td colspan="3" class="font-weight-bold">{{ $t('raw materials') | uppercase }}</td>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in raw_materials_temporary" :key="'raw-materials-' + index">
+              <tr slot="p-body" v-for="(row, index) in materials" :key="'raw-materials-' + index">
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -142,7 +142,7 @@
                 <td>{{ row.warehouse.name }}</td>
                 <td class="text-right">
                   <template v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)">
-                    <a href="javascript:void(0)" @click="$refs.inventoryDna.show(row.inventories, row.unit, row.item)">
+                    <a href="javascript:void(0)" @click="$refs.inventoryDna.show(row.dna, row.unit, row.item)">
                       {{ row.quantity | numberFormat }} {{ row.unit }}
                     </a>
                   </template>
@@ -182,29 +182,6 @@
               <div style="font-size:11px">{{ input.form.request_approval_to.email | lowercase }}</div>
             </div>
           </div>
-
-          <p-separator v-if="input.archives != undefined && input.archives.length > 0"></p-separator>
-
-          <h5 v-if="input.archives != undefined && input.archives.length > 0">Archives</h5>
-
-          <point-table v-if="input.archives != undefined && input.archives.length > 0">
-            <tr slot="p-head">
-              <th>#</th>
-              <th>Edited Date</th>
-              <th>Edited Reason</th>
-            </tr>
-            <tr slot="p-body" v-for="(archived, index) in input.archives" :key="index">
-              <th>{{ index + 1 }}</th>
-              <td>
-                <router-link :to="{ name: 'manufacture.process.io.input.show', params: { id: id }}">
-                  {{ archived.form.updated_at | dateFormat('DD MMMM YYYY HH:mm') }}
-                </router-link>
-              </td>
-              <td>
-                {{ archived.edited_notes }}
-              </td>
-            </tr>
-          </point-table>
         </p-block-inner>
       </p-block>
     </div>
@@ -232,7 +209,7 @@ export default {
       id: this.$route.params.id,
       isLoading: false,
       isDeleting: false,
-      raw_materials_temporary: []
+      materials: []
     }
   },
   computed: {
@@ -265,30 +242,45 @@ export default {
             'finishedGoods.warehouse'
         }
       }).then(response => {
-        this.raw_materials_temporary = []
-        for (let index in this.input.raw_materials) {
-          let rawMaterial = this.input.raw_materials[index]
-          let rawMaterialTemporaryIndex = this.raw_materials_temporary.findIndex(o => o.item_id === rawMaterial.item_id && o.warehouse_id === rawMaterial.warehouse_id)
-          if (rawMaterialTemporaryIndex < 0) {
-            var newItem = Object.assign({}, rawMaterial)
-            newItem.inventories = []
-            newItem.inventories.push({
-              'quantity': rawMaterial.quantity,
-              'expiry_date': rawMaterial.expiry_date,
-              'production_number': rawMaterial.production_number
-            })
-            this.raw_materials_temporary.push(newItem)
-          } else {
-            var existing = this.raw_materials_temporary[rawMaterialTemporaryIndex]
-            existing.quantity += rawMaterial.quantity
-            existing.inventories.push({
-              'quantity': rawMaterial.quantity,
-              'expiry_date': rawMaterial.expiry_date,
-              'production_number': rawMaterial.production_number
-            })
-            this.raw_materials_temporary[rawMaterialTemporaryIndex] = existing
+        this.materials = []
+        response.data.raw_materials.forEach(rawMaterial => {
+          rawMaterial.row_id = this.materials.length
+          rawMaterial.item.unit = {
+            label: rawMaterial.unit,
+            name: rawMaterial.unit,
+            converter: rawMaterial.converter
           }
-        }
+
+          let foundIndex = this.materials.findIndex(o =>
+            o.item_id === rawMaterial.item_id &&
+            o.warehouse_id === rawMaterial.warehouse_id
+          )
+
+          if (rawMaterial.item.require_expiry_date || rawMaterial.item.require_production_number) {
+            if (foundIndex == -1) {
+              rawMaterial.dna = []
+              rawMaterial.dna.push({
+                item_id: rawMaterial.item_id,
+                quantity: rawMaterial.quantity,
+                expiry_date: rawMaterial.expiry_date,
+                production_number: rawMaterial.production_number
+              })
+              this.materials.push(rawMaterial)
+            } else {
+              var material = this.materials[foundIndex]
+              material.quantity += rawMaterial.quantity
+              material.dna.push({
+                item_id: rawMaterial.item_id,
+                quantity: rawMaterial.quantity,
+                expiry_date: rawMaterial.expiry_date,
+                production_number: rawMaterial.production_number
+              })
+              this.materials[foundIndex] = material
+            }
+          } else {
+            this.materials.push(rawMaterial)
+          }
+        })
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false

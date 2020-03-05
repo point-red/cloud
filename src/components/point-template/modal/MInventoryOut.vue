@@ -152,23 +152,27 @@ export default {
     show (row) {
       if (!row.warehouse_id) {
         this.$alert.info('INPUT REQURED', this.$t('please select warehouse'))
-      } else if (!row.item) {
-        this.$alert.info('ITEM REQUIRED', this.$t('please select item'))
-      } else {
-        this.mutableRowId = row.row_id
-        this.mutableItemId = row.item.id
-        this.mutableItemName = row.item.name
-        this.mutableItemUnit = row.item.unit
-        this.mutableItemUnits = row.item.units
-        this.mutableWarehouseId = row.warehouse_id
-        this.mutableRequireExpiryDate = row.require_expiry_date
-        this.mutableRequireProductionNumber = row.require_production_number
-        if (row.dna) {
-          this.mutableInventories = row.dna
-        }
-        this.init()
-        this.$refs['select-' + this.id].show()
+        return
       }
+
+      if (!row.item) {
+        this.$alert.info('ITEM REQUIRED', this.$t('please select item'))
+        return
+      }
+
+      this.mutableRowId = row.row_id
+      this.mutableItemId = row.item.id
+      this.mutableItemName = row.item.name
+      this.mutableItemUnit = row.item.unit
+      this.mutableItemUnits = row.item.units
+      this.mutableWarehouseId = row.warehouse_id
+      this.mutableRequireExpiryDate = row.item.require_expiry_date
+      this.mutableRequireProductionNumber = row.item.require_production_number
+      if (row.dna) {
+        this.mutableInventories = row.dna
+      }
+      this.init()
+      this.$refs['select-' + this.id].show()
     },
     update () {
       this.calculate()

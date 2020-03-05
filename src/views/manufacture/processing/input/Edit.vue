@@ -57,7 +57,7 @@
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item
-                  :id="'item-finish-' + index"
+                  :id="'item-finished-' + index"
                   :data-index="index"
                   v-model="row.item_id"
                   :label="row.item_name"
@@ -65,7 +65,7 @@
               </td>
               <td>
                 <m-warehouse
-                  :id="'warehouse-finish-' + index"
+                  :id="'warehouse-finished-' + index"
                   :data-index="index"
                   v-model="row.warehouse_id"
                   :label="row.warehouse_name"
@@ -73,11 +73,15 @@
               </td>
               <td>
                 <p-quantity
-                  :id="'quantity-finish-goods-' + index"
-                  :name="'quantity-finish-goods-' + index"
+                  :id="'quantity-finished-goods-' + index"
+                  :name="'quantity-finished-goods-' + index"
                   v-model="row.quantity"
                   :units="row.item.units"
-                  :unit="row.item.units[0]"
+                  :unit="{
+                    label: row.unit,
+                    name: row.unit,
+                    converter: row.converter
+                  }"
                   @choosen="chooseUnit($event, row)"/>
               </td>
               <td>&nbsp;</td>
@@ -189,32 +193,7 @@ export default {
       id: this.$route.params.id,
       isLoading: false,
       isSaving: false,
-      materials: [{
-        row_id: 0,
-        item_id: null,
-        item_name: null,
-        warehouse_id: null,
-        warehouse_name: null,
-        require_expiry_date: false,
-        require_production_number: false,
-        unit: null,
-        quantity: null,
-        converter: null,
-        item: {
-          require_expiry_date: false,
-          require_production_number: false,
-          units: [{
-            label: '',
-            name: '',
-            converter: null
-          }],
-          unit: {
-            label: '',
-            name: '',
-            converter: null
-          }
-        }
-      }],
+      materials: [],
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -270,6 +249,7 @@ export default {
     }).then(response => {
       this.form.id = response.data.id
       this.form.date = response.data.form.date
+      this.form.notes = response.data.form.notes
       this.form.manufacture_machine_id = response.data.manufacture_machine_id
       this.form.manufacture_process_id = response.data.manufacture_process_id
       this.form.manufacture_formula_id = response.data.manufacture_formula_id
@@ -280,7 +260,44 @@ export default {
       this.form.request_approval_to = response.data.form.request_approval_to.id
       this.form.approver_name = response.data.form.request_approval_to.full_name
       this.form.approver_email = response.data.form.request_approval_to.email
-      this.materials = response.data.raw_materials
+      response.data.raw_materials.forEach(rawMaterial => {
+        rawMaterial.row_id = this.materials.length
+        rawMaterial.item.unit = {
+          label: rawMaterial.unit,
+          name: rawMaterial.unit,
+          converter: rawMaterial.converter
+        }
+
+        if (rawMaterial.item.require_expiry_date || rawMaterial.item.require_production_number) {
+          let foundIndex = this.materials.findIndex(o =>
+            o.item_id === rawMaterial.item_id &&
+            o.warehouse_id === rawMaterial.warehouse_id
+          )
+
+          if (foundIndex == -1) {
+            rawMaterial.dna = []
+            rawMaterial.dna.push({
+              item_id: rawMaterial.item_id,
+              quantity: rawMaterial.quantity,
+              expiry_date: rawMaterial.expiry_date,
+              production_number: rawMaterial.production_number
+            })
+            this.materials.push(rawMaterial)
+          } else {
+            var material = this.materials[foundIndex]
+            material.quantity += rawMaterial.quantity
+            material.dna.push({
+              item_id: rawMaterial.item_id,
+              quantity: rawMaterial.quantity,
+              expiry_date: rawMaterial.expiry_date,
+              production_number: rawMaterial.production_number
+            })
+            this.materials[foundIndex] = material
+          }
+        } else {
+          this.materials.push(rawMaterial)
+        }
+      })
     })
   },
   methods: {
@@ -316,12 +333,12 @@ export default {
       row.converter = unit.converter
     },
     onClickQuantity (row) {
-      if (row.require_expiry_date == 1 || row.require_production_number == 1) {
+      if (row.item.require_expiry_date == 1 || row.item.require_production_number == 1) {
         this.$refs.inventory.show(row)
       }
     },
     onClickUnit (row) {
-      if (row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
+      if (row.item_id == null || row.item.require_expiry_date === 1 || row.item.require_production_number === 1) {
         return true
       }
 
@@ -385,7 +402,7 @@ export default {
         }
       })
       if (isNeedNewRow) {
-        this.addMaterialRow()
+        // this.addMaterialRow()
       }
     },
     chooseFinishedGood (item, row) {
@@ -443,7 +460,7 @@ export default {
           this.$router.push('/manufacture/processing/input/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
-          this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
+          this.$alert.error('Error Message', error.message + '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
           this.form.errors.record(error.errors)
         })
     }
