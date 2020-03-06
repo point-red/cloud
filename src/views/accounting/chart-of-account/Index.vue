@@ -32,7 +32,7 @@
               <th>Number</th>
               <th>Name</th>
               <th>Type</th>
-              <th>Sub Ledger</th>
+              <th class="text-center">Sub Ledger</th>
             </tr>
             <tr
               v-for="chartOfAccount in chartOfAccounts"
@@ -45,10 +45,8 @@
                 </router-link>
               </td>
               <td>{{ chartOfAccount.type.alias }}</td>
-              <td>
-                <template v-if="chartOfAccount.sub_ledger">
-                  {{ chartOfAccount.sub_ledger.alias }}
-                </template>
+              <td class="text-center">
+                <i class="fa fa-check" v-if="chartOfAccount.is_sub_ledger"></i>
               </td>
             </tr>
           </point-table>
@@ -103,7 +101,7 @@ export default {
             'name': this.searchText,
             'number': this.searchText
           },
-          includes: 'type;subLedger',
+          includes: 'type',
           sort_by: 'number,alias'
         }
       }).then(response => {

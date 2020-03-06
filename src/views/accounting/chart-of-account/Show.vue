@@ -22,12 +22,16 @@
               </p-form-row>
 
               <p-form-row
-                id="account-sub-ledger"
-                name="account-sub-ledger"
+                id="sub-ledger"
+                name="sub-ledger"
                 :is-horizontal="false"
-                :label="$t('account sub ledger')">
-                <div slot="body" class="col-lg-9 mt-5">
-                  {{ chartOfAccount.subLedger.alias }}
+                :label="$t('is sub ledger account')">
+                <div slot="body" class="col-lg-9">
+                  <p-form-check-box
+                    id="is-sub-ledger"
+                    name="is-sub-ledger"
+                    :checked="chartOfAccount.is_sub_ledger">
+                  </p-form-check-box>
                 </div>
               </p-form-row>
 

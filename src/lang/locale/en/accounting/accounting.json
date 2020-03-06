@@ -1,6 +1,6 @@
 {
   "account type" : "account type",
-  "account sub ledger" : "account sub ledger",
+  "is sub ledger account" : "is sub ledger account ",
   "account payable" : "account payable",
   "account receivable" : "account receivable",
   "purchase down payment" : "purchase down payment",

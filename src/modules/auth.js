@@ -153,50 +153,42 @@ const actions = {
   updateProfile (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(profileUrl + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            context.dispatch('tryAutoLogin')
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          context.dispatch('tryAutoLogin')
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   resetPasswordRequest (context, payload) {
     return new Promise((resolve, reject) => {
       api.get(resetPasswordRequestUrl, { params: payload })
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   resetPassword (context, payload) {
     return new Promise((resolve, reject) => {
       api.get(resetPasswordUrl, { params: payload })
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   updatePassword (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(passwordUrl + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   }
 }

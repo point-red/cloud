@@ -18,11 +18,16 @@
         </p-form-row>
 
         <p-form-row
-          id="account-sub-ledger"
-          name="account-sub-ledger"
-          :label="$t('account sub ledger')">
-          <div slot="body" class="col-lg-9 mt-5">
-            <m-chart-of-account-sub-ledger :id="'account-sub-ledger'" v-model="form.sub_ledger_id"/>
+          id="sub-ledger"
+          name="sub-ledger"
+          :label="$t('is sub ledger account')">
+          <div slot="body" class="col-lg-9">
+            <p-form-check-box
+              id="is-sub-ledger"
+              name="is-sub-ledger"
+              @click.native="form.is_sub_ledger = !form.is_sub_ledger"
+              :checked="form.is_sub_ledger">
+            </p-form-check-box>
           </div>
         </p-form-row>
 
@@ -73,7 +78,7 @@ export default {
       isLoading: false,
       form: new Form({
         type_id: null,
-        sub_ledger_id: null,
+        is_sub_ledger: false,
         name: null,
         number: null
       })

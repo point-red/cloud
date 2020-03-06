@@ -5,7 +5,11 @@ const url = '/accounting/chart-of-accounts'
 const state = {
   chartOfAccount: {
     number: '',
-    name: ''
+    name: '',
+    type: {
+      name: '',
+      alias: ''
+    }
   },
   chartOfAccounts: []
 }

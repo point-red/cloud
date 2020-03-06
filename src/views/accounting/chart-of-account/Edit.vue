@@ -22,14 +22,16 @@
         </p-form-row>
 
         <p-form-row
-          id="account-sub-ledger"
-          name="account-sub-ledger"
-          :label="$t('account sub ledger')">
-          <div slot="body" class="col-lg-9 mt-5">
-            <m-chart-of-account-sub-ledger
-              :id="'account-sub-ledger'"
-              v-model="form.sub_ledger_id"
-              :label="form.sub_ledger_name"/>
+          id="sub-ledger"
+          name="sub-ledger"
+          :label="$t('is sub ledger account')">
+          <div slot="body" class="col-lg-9">
+            <p-form-check-box
+              id="is-sub-ledger"
+              name="is-sub-ledger"
+              @click.native="form.is_sub_ledger = !form.is_sub_ledger"
+              :checked="form.is_sub_ledger">
+            </p-form-check-box>
           </div>
         </p-form-row>
 
@@ -81,8 +83,9 @@ export default {
       isLoading: false,
       form: new Form({
         type_id: null,
-        sub_ledger_id: null,
+        is_sub_ledger: null,
         name: null,
+        alias: null,
         number: null
       })
     }
@@ -93,7 +96,7 @@ export default {
   },
   created () {
     this.find({ id: this.id })
-      .then((response) => {
+      .then(response => {
         this.isLoading = false
         this.find({
           id: this.id
@@ -101,7 +104,7 @@ export default {
           this.form.id = response.data.id
           this.form.type_id = response.data.type_id
           this.form.type_name = response.data.type.alias
-          this.form.sub_ledger_id = response.data.sub_ledger_id
+          this.form.is_sub_ledger = response.data.is_sub_ledger
           if (response.data.sub_ledger) {
             this.form.sub_ledger_name = response.data.sub_ledger.alias
           }
@@ -113,7 +116,7 @@ export default {
           this.isLoading = false
           this.$notification.error(error.message)
         })
-      }, (error) => {
+      }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
       })
