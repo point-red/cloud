@@ -350,7 +350,11 @@ export default {
           this.$router.push('/manufacture/formula/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
-          this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
+          let json = ''
+          if (error.errors) {
+            json = '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>'
+          }
+          this.$alert.error('Error Message', error.message + json)
           this.form.errors.record(error.errors)
         })
     }

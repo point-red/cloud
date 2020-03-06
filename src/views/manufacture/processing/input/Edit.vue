@@ -98,6 +98,7 @@
                   :data-index="index"
                   v-model="row.item_id"
                   :label="row.item_name"
+                  @clear=clearMaterial(row)
                   @choosen="chooseMaterial($event, row)"/>
               </td>
               <td>
@@ -124,7 +125,7 @@
                   :readonly="onClickUnit(row)"/>
               </td>
               <td>
-                <button class="btn btn-sm btn-outline-danger" v-if="row.item_id != null" @click="deleteRawMaterialRow(index)">
+                <button type="button" class="btn btn-sm btn-outline-danger" v-if="index > 0" @click="deleteMaterialRow(index)">
                   <i class="fa fa-times"></i>
                 </button>
               </td>
@@ -298,6 +299,7 @@ export default {
           this.materials.push(rawMaterial)
         }
       })
+      this.addMaterialRow()
     })
   },
   methods: {
@@ -343,6 +345,18 @@ export default {
       }
 
       return false
+    },
+    clearMaterial (row) {
+      row.item_id = null
+      row.item_name = null
+      row.unit = null
+      row.converter = null
+      row.quantity = null
+      row.price = null
+      row.allocation_id = null
+      row.notes = null
+      row.more = false
+      row.units = []
     },
     addFinishedGoodRow () {
       this.form.finished_goods.push({
@@ -402,7 +416,7 @@ export default {
         }
       })
       if (isNeedNewRow) {
-        // this.addMaterialRow()
+        this.addMaterialRow()
       }
     },
     chooseFinishedGood (item, row) {
@@ -460,7 +474,11 @@ export default {
           this.$router.push('/manufacture/processing/input/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
-          this.$alert.error('Error Message', error.message + '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
+          let json = ''
+          if (error.errors) {
+            json = '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>'
+          }
+          this.$alert.error('Error Message', error.message + json)
           this.form.errors.record(error.errors)
         })
     }

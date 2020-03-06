@@ -21,6 +21,15 @@
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
+            id="formula"
+            name="formula"
+            v-if="formulaId"
+            :label="$t('formula')">
+            <div slot="body" class="col-lg-9 mt-5">
+              {{ formula.name }}
+            </div>
+          </p-form-row>
+          <p-form-row
             id="process"
             name="process"
             :label="$t('process')">
@@ -180,8 +189,12 @@ export default {
   },
   data () {
     return {
+      formulaId: this.$route.query.formulaId,
       isLoading: false,
       isSaving: false,
+      formula: {
+        name: ''
+      },
       materials: [{
         row_id: 0,
         item_id: null,
@@ -245,8 +258,35 @@ export default {
     ...mapGetters('manufactureProcess', ['process']),
     ...mapGetters('auth', ['authUser'])
   },
+  mounted () {
+    if (this.authUser != null) {
+      this.form.finished_goods.forEach(element => {
+        element.warehouse_id = this.authUser.warehouse.id
+        element.warehouse_name = this.authUser.warehouse.name
+      })
+    }
+  },
+  created () {
+    if (this.formulaId) {
+      this.find({
+        id: this.formulaId,
+        params: {
+          includes: 'manufactureProcess;finishedGoods.item.units;rawMaterials.item.units'
+        }
+      }).then(response => {
+        this.formula = response.data
+        this.form.manufacture_formula_id = response.data.id
+        this.form.manufacture_formula_name = response.data.name
+        this.form.manufacture_process_id = response.data.manufacture_process.id
+        this.form.manufacture_process_name = response.data.manufacture_process.name
+        this.form.finished_goods = response.data.finished_goods
+        this.form.materials = response.data.raw_materials
+      })
+    }
+  },
   methods: {
     ...mapActions('manufactureInput', ['create']),
+    ...mapActions('manufactureFormula', ['find']),
     addMaterialRow () {
       this.materials.push({
         row_id: this.materials.length,
@@ -404,7 +444,11 @@ export default {
           this.$router.push('/manufacture/processing/input/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
-          this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
+          let json = ''
+          if (error.errors) {
+            json = '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>'
+          }
+          this.$alert.error('Error Message', error.message + json)
           this.form.errors.record(error.errors)
         })
     }

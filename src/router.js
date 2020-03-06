@@ -52,17 +52,22 @@ export default new Router({
         if (!store.state.auth['user']) {
           if (Vue.cookie.get('TAT') !== null && Vue.cookie.get('TTT') !== null) {
             store.dispatch('reloadVuex')
+              .then(response => {
+                next()
+              }).catch(error => {
+                next('/503')
+              })
             next()
           } else {
             next({ path: '/auth/signin', query: { r: to.fullPath } })
-            return
           }
-        }
-        // redirect to account route if host is not tenant subdomain
-        if (window.location.host !== process.env.VUE_APP_DOMAIN) {
-          next('/')
         } else {
-          next()
+          // redirect to account route if host is not tenant subdomain
+          if (window.location.host !== process.env.VUE_APP_DOMAIN) {
+            next('/')
+          } else {
+            next()
+          }
         }
       }
     },
@@ -89,17 +94,21 @@ export default new Router({
         if (!store.state.auth['user']) {
           if (Vue.cookie.get('TAT') !== null) {
             store.dispatch('reloadVuex')
-            next()
+              .then(response => {
+                next()
+              }).catch(error => {
+                next('/503')
+              })
           } else {
             next({ path: '/auth/signin', query: { r: to.fullPath } })
-            return
           }
-        }
-        // redirect to account route if host is not tenant subdomain
-        if (window.location.host == process.env.VUE_APP_DOMAIN) {
-          next('/account')
         } else {
-          next()
+          // redirect to account route if host is not tenant subdomain
+          if (window.location.host == process.env.VUE_APP_DOMAIN) {
+            next('/account')
+          } else {
+            next()
+          }
         }
       }
     },
