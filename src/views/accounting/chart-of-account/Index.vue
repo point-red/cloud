@@ -33,6 +33,8 @@
               <th>Name</th>
               <th>Type</th>
               <th class="text-center">Sub Ledger</th>
+              <th class="text-center">Debit</th>
+              <th class="text-center">Credit</th>
             </tr>
             <tr
               v-for="chartOfAccount in chartOfAccounts"
@@ -46,7 +48,13 @@
               </td>
               <td>{{ chartOfAccount.type.alias }}</td>
               <td class="text-center">
-                <i class="fa fa-check" v-if="chartOfAccount.is_sub_ledger"></i>
+                {{ chartOfAccount.sub_ledger }}
+              </td>
+              <td class="text-center">
+                <i class="fa fa-check" v-if="chartOfAccount.position == 'DEBIT'"></i>
+              </td>
+              <td class="text-center">
+                <i class="fa fa-check" v-if="chartOfAccount.position == 'CREDIT'"></i>
               </td>
             </tr>
           </point-table>
