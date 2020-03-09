@@ -14,11 +14,16 @@
             </p-form-row>
 
             <p-form-row
-              id="account-sub-ledger"
-              name="account-sub-ledger"
-              :label="$t('account sub ledger')">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account-sub-ledger :id="'account-sub-ledger'" v-model="form.sub_ledger_id" :label="form.sub_ledger_alias" @choosen="onChooseSubLedger($event)"/>
+              id="sub-ledger"
+              name="sub-ledger"
+              :label="$t('is sub ledger account')">
+              <div slot="body" class="col-lg-9">
+                <p-form-check-box
+                  id="is-sub-ledger"
+                  name="is-sub-ledger"
+                  @click.native="form.is_sub_ledger = !form.is_sub_ledger"
+                  :checked="form.is_sub_ledger">
+                </p-form-check-box>
               </div>
             </p-form-row>
 
@@ -87,8 +92,7 @@ export default {
       form: new Form({
         type_id: null,
         type_alias: null,
-        sub_ledger_id: null,
-        sub_ledger_alias: null,
+        is_sub_ledger: null,
         name: null,
         number: null,
         balance: 0
@@ -137,10 +141,6 @@ export default {
     onChooseAccountType (accountType) {
       this.form.type_id = accountType.id
       this.form.type_alias = accountType.alias
-    },
-    onChooseSubLedger (subLedger) {
-      this.form.sub_ledger_id = subLedger.id
-      this.form.sub_ledger_alias = subLedger.alias
     },
     show () {
       this.$refs['select-' + this.id].show()

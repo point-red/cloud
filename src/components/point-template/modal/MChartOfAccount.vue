@@ -72,9 +72,6 @@ export default {
     },
     type: {
       type: String
-    },
-    subLedger: {
-      type: String
     }
   },
   watch: {
@@ -94,14 +91,15 @@ export default {
       this.isLoading = true
       this.get({
         params: {
+          fields: 'chart_of_accounts.*',
           sort_by: 'number',
           limit: 250,
+          join: 'type',
           filter_like: {
-            name: this.searchText,
-            number: this.searchText
-          },
-          filter_type: this.type,
-          filter_sub_ledger: this.subLedger
+            'chart_of_accounts.name': this.searchText,
+            'chart_of_accounts.number': this.searchText,
+            'type.name': this.type
+          }
         }
       }).then(response => {
         this.options = []

@@ -62,7 +62,7 @@
                     <th>Number</th>
                     <th>Name</th>
                     <th>Type</th>
-                    <th>Sub Ledger</th>
+                    <th class="text-center">Sub Ledger</th>
                     <th class="text-right">Debit</th>
                     <th class="text-right">Credit</th>
                   </tr>
@@ -73,15 +73,11 @@
                     <td>{{ account.chart_of_account.number }}</td>
                     <td>
                       <a href="javascript:void(0)" @click="$refs.editAccount.show(account)">
-                        {{ account.chart_of_account.name }}
+                        {{ account.chart_of_account.alias }}
                       </a>
                     </td>
                     <td>{{ account.chart_of_account.type.alias }}</td>
-                    <td>
-                      <template v-if="account.chart_of_account.sub_ledger">
-                        {{ account.chart_of_account.sub_ledger.alias }}
-                      </template>
-                    </td>
+                    <td class="text-center"><i v-if="account.is_sub_ledger == 1" class="fa fa-check"></i></td>
                     <td class="text-right">{{ account.debit | numberFormat }}</td>
                     <td class="text-right">{{ account.credit | numberFormat }}</td>
                   </tr>
@@ -179,7 +175,7 @@ export default {
             'chartOfAccount.name': this.searchText,
             'chartOfAccount.number': this.searchText
           },
-          includes: 'chartOfAccount.type;chartOfAccount.subLedger',
+          includes: 'chartOfAccount.type',
           sort_by: 'chart_of_accounts.number,chart_of_accounts.alias'
         }
       }).then(response => {

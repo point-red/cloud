@@ -155,7 +155,7 @@ export default {
             'chartOfAccount.name': this.searchText,
             'chartOfAccount.number': this.searchText
           },
-          includes: 'chartOfAccount.type;chartOfAccount.subLedger',
+          includes: 'chartOfAccount.type',
           sort_by: 'chart_of_accounts.number,chart_of_accounts.alias'
         }
       }).then(response => {

@@ -105,9 +105,6 @@ export default {
           this.form.type_id = response.data.type_id
           this.form.type_name = response.data.type.alias
           this.form.is_sub_ledger = response.data.is_sub_ledger
-          if (response.data.sub_ledger) {
-            this.form.sub_ledger_name = response.data.sub_ledger.alias
-          }
           this.form.number = response.data.number
           this.form.name = response.data.name
           this.form.alias = response.data.alias

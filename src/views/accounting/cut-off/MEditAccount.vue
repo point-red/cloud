@@ -17,15 +17,16 @@
             </p-form-row>
 
             <p-form-row
-              id="account-sub-ledger"
-              name="account-sub-ledger"
-              :label="$t('account sub ledger')">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account-sub-ledger
-                :id="'edit-account-sub-ledger'"
-                v-model="form.sub_ledger_id"
-                :label="form.sub_ledger.alias"
-                @clear="clearSubLedger()"/>
+              id="sub-ledger"
+              name="sub-ledger"
+              :label="$t('is sub ledger account')">
+              <div slot="body" class="col-lg-9">
+                <p-form-check-box
+                  id="is-sub-ledger"
+                  name="is-sub-ledger"
+                  @click.native="form.is_sub_ledger = !form.is_sub_ledger"
+                  :checked="form.is_sub_ledger">
+                </p-form-check-box>
               </div>
             </p-form-row>
 
@@ -100,10 +101,7 @@ export default {
         type: {
           alias: null
         },
-        sub_ledger_id: null,
-        sub_ledger: {
-          alias: null
-        },
+        is_sub_ledger: null,
         name: null,
         number: null,
         balance: 0
@@ -136,14 +134,12 @@ export default {
     ...mapActions('accountingCutOffAccount', ['update', 'delete']),
     onSubmit () {
       this.isSaving = true
-
       this.update(this.form)
         .then(response => {
           this.isSaving = false
           this.$notification.success('update success')
           this.$emit('updated', true)
           this.form.type.alias = 'select'
-          this.form.sub_ledger.alias = 'select'
           this.form.reset()
           this.close()
         }).catch(error => {
@@ -151,10 +147,6 @@ export default {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
-    },
-    clearSubLedger () {
-      this.form.sub_ledger_id = null
-      this.form.sub_ledger = null
     },
     deleteAccount () {
       this.delete(this.form)
@@ -168,8 +160,7 @@ export default {
       this.form.id = account.id
       this.form.type_id = account.chart_of_account.type_id
       this.form.type = account.chart_of_account.type
-      this.form.sub_ledger_id = account.chart_of_account.sub_ledger_id
-      this.form.sub_ledger = account.chart_of_account.sub_ledger || { name: null }
+      this.form.is_sub_ledger = account.chart_of_account.is_sub_ledger
       this.form.number = account.chart_of_account.number
       this.form.name = account.chart_of_account.name
       this.form.alias = account.chart_of_account.alias

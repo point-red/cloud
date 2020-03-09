@@ -110,10 +110,9 @@ export default {
           this.form.id = element.id
         })
         this.isCutOffStarted = true
-        this.isLoading = false
       }
+      this.isLoading = false
     }).catch(error => {
-      //
       this.isLoading = false
     })
   },
@@ -121,6 +120,7 @@ export default {
     ...mapActions('accountingCutOff', ['create', 'update', 'get']),
     onSubmit () {
       if (this.isCutOffStarted) {
+        this.isSaving = true
         this.$router.push('/accounting/cut-off/create/account')
         this.update(this.form).then(response => {
           this.isSaving = false
