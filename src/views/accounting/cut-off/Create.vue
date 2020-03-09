@@ -41,7 +41,7 @@
                     name="date"
                     v-if="!isLoading"
                     :label="$t('date')">
-                    <div slot="body">
+                    <div slot="body" class="col-lg-9">
                       <p-date-picker
                         id="date"
                         name="date"

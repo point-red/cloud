@@ -32,6 +32,79 @@
         </p-form-row>
 
         <p-form-row
+          id="sub_ledger"
+          v-model="form.sub_ledger"
+          :disabled="isLoading"
+          :label="$t('sub ledger')"
+          name="sub_ledger"
+          v-if="form.is_sub_ledger"
+          :errors="form.errors.get('sub_ledger')"
+          @errors="form.errors.set('sub_ledger', null)">
+          <div slot="body" class="col-lg-9">
+            <button
+              type="button"
+              class="btn btn-sm mr-5"
+              :class="{
+                'btn-success' : form.sub_ledger == 'CUSTOMER',
+                'btn-outline-success' : form.sub_ledger != 'CUSTOMER'
+              }"
+              @click="form.sub_ledger = 'CUSTOMER'">
+              CUSTOMER
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm mr-5"
+              :class="{
+                'btn-success' : form.sub_ledger == 'SUPPLIER',
+                'btn-outline-success' : form.sub_ledger != 'SUPPLIER'
+              }"
+              @click="form.sub_ledger = 'SUPPLIER'">
+              SUPPLIER
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm mr-5"
+              :class="{
+                'btn-success' : form.sub_ledger == 'EMPLOYEE',
+                'btn-outline-success' : form.sub_ledger != 'EMPLOYEE'
+              }"
+              @click="form.sub_ledger = 'EMPLOYEE'">
+              EMPLOYEE
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm mr-5"
+              :class="{
+                'btn-success' : form.sub_ledger == 'EXPEDITION',
+                'btn-outline-success' : form.sub_ledger != 'EXPEDITION'
+              }"
+              @click="form.sub_ledger = 'EXPEDITION'">
+              EXPEDITION
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm mr-5"
+              :class="{
+                'btn-success' : form.sub_ledger == 'ITEM',
+                'btn-outline-success' : form.sub_ledger != 'ITEM'
+              }"
+              @click="form.sub_ledger = 'ITEM'">
+              ITEM
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm mr-5"
+              :class="{
+                'btn-success' : form.sub_ledger == 'FIXED ASSET',
+                'btn-outline-success' : form.sub_ledger != 'FIXED ASSET'
+              }"
+              @click="form.sub_ledger = 'FIXED ASSET'">
+              FIXED ASSET
+            </button>
+          </div>
+        </p-form-row>
+
+        <p-form-row
           id="number"
           v-model="form.number"
           :disabled="isLoading"
@@ -48,6 +121,38 @@
           name="name"
           :errors="form.errors.get('name')"
           @errors="form.errors.set('name', null)"/>
+
+        <p-form-row
+          id="position"
+          v-model="form.position"
+          :disabled="isLoading"
+          :label="$t('position')"
+          name="position"
+          :errors="form.errors.get('position')"
+          @errors="form.errors.set('position', null)">
+          <div slot="body" class="col-lg-9">
+            <button
+              type="button"
+              class="btn btn-sm mr-5"
+              :class="{
+                'btn-success' : form.position == 'DEBIT',
+                'btn-outline-success' : form.position == 'CREDIT'
+              }"
+              @click="form.position = 'DEBIT'">
+              DEBIT
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm"
+              :class="{
+                'btn-success' : form.position == 'CREDIT',
+                'btn-outline-success' : form.position == 'DEBIT'
+              }"
+              @click="form.position = 'CREDIT'">
+              CREDIT
+            </button>
+          </div>
+        </p-form-row>
 
         <div class="form-group row">
           <div class="col-md-3"></div>
@@ -79,6 +184,8 @@ export default {
       form: new Form({
         type_id: null,
         is_sub_ledger: false,
+        sub_ledger: false,
+        position: 'DEBIT',
         name: null,
         number: null
       })
