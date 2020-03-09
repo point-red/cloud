@@ -189,6 +189,8 @@ export default {
       form: new Form({
         type_id: null,
         is_sub_ledger: null,
+        sub_ledger: null,
+        position: null,
         name: null,
         alias: null,
         number: null
@@ -210,6 +212,8 @@ export default {
           this.form.type_id = response.data.type_id
           this.form.type_name = response.data.type.alias
           this.form.is_sub_ledger = response.data.is_sub_ledger
+          this.form.sub_ledger = response.data.sub_ledger
+          this.form.position = response.data.position
           this.form.number = response.data.number
           this.form.name = response.data.name
           this.form.alias = response.data.alias

@@ -43,7 +43,7 @@
               <td>{{ chartOfAccount.number }}</td>
               <td>
                 <router-link :to="{ name: 'accounting.chart-of-account.show', params: { id: chartOfAccount.id }}">
-                  {{ chartOfAccount.name }}
+                  {{ chartOfAccount.alias }}
                 </router-link>
               </td>
               <td>{{ chartOfAccount.type.alias }}</td>

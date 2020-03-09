@@ -85,6 +85,15 @@
                 class="btn btn-sm btn-primary mr-5">
                 {{ $t('edit') | uppercase }}
               </router-link>
+              <button
+                type="button"
+                @click="onDelete()"
+                v-if="$permission.has('delete chart of account')"
+                :disabled="isDeleting || chartOfAccount.is_locked == true"
+                class="btn btn-sm btn-outline-secondary">
+                <i class="fa fa-lock" v-if="chartOfAccount.is_locked"></i>
+                <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+              </button>
             </p-block-inner>
           </p-block>
         </div>
@@ -133,7 +142,8 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      isLoading: false
+      isLoading: false,
+      isDeleting: false
     }
   },
   computed: {
@@ -141,13 +151,27 @@ export default {
     ...mapGetters('accountingJournal', ['journals'])
   },
   methods: {
-    ...mapActions('accountingChartOfAccount', ['find']),
-    ...mapActions('accountingJournal', ['get'])
+    ...mapActions('accountingChartOfAccount', ['find', 'delete']),
+    ...mapActions('accountingJournal', ['get']),
+    onDelete () {
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({
+          id: this.id
+        }).then(response => {
+          this.isDeleting = false
+          this.$router.push('/accounting/chart-of-account')
+        }).catch(response => {
+          this.isDeleting = false
+          this.$notification.error('cannot delete this account')
+        })
+      })
+    }
   },
   created () {
     this.isLoading = true
     this.find({ id: this.id })
-      .then((response) => {
+      .then(response => {
         this.isLoading = false
         this.find({
           id: this.id
@@ -157,7 +181,7 @@ export default {
           this.isLoading = false
           this.$notification.error(error.message)
         })
-      }, (error) => {
+      }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
       })
