@@ -2,12 +2,10 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link :to="{ name: 'purchase.request.index' }" class="breadcrumb-item">{{ $t('purchase request') | uppercase }}</router-link>
+      <router-link :to="{ name: 'purchase.request.index' }" class="breadcrumb-item">{{ $t('inventory usage') | uppercase }}</router-link>
       <router-link :to="{ name: 'purchase.request.show', params: { id: id }}" class="breadcrumb-item">{{ purchaseRequest.form.number | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
-
-    <purchase-menu/>
 
     <form @submit.prevent="onSubmit">
       <div class="row">
@@ -15,7 +13,7 @@
           <p-block-inner :is-loading="isLoading">
             <div class="row">
               <div class="col-sm-12">
-                <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
+                <h4 class="text-center">{{ $t('inventory usage') | uppercase }}</h4>
                 <hr>
                 <div class="float-sm-right text-right">
                   <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
@@ -185,9 +183,8 @@
 
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
+import BreadcrumbPurchase from '@/views/inventory/Breadcrumb'
 import Form from '@/utils/Form'
-import PurchaseMenu from '../Menu'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -195,8 +192,7 @@ export default {
   components: {
     Breadcrumb,
     BreadcrumbPurchase,
-    PointTable,
-    PurchaseMenu
+    PointTable
   },
   data () {
     return {
@@ -234,7 +230,7 @@ export default {
       }
     }).then(response => {
       if (!this.$formRules.allowedToUpdate(response.data.form)) {
-        this.$router.replace('/purchase/request/' + response.data.id)
+        this.$router.replace('/inventory/usage/' + response.data.id)
       }
       this.isLoading = false
       this.requestedBy = response.data.form.created_by.first_name + ' ' + response.data.form.created_by.last_name
@@ -347,7 +343,7 @@ export default {
           this.isSaving = false
           this.form.reset()
           this.$notification.success('Update success')
-          this.$router.push('/purchase/request/' + response.data.id)
+          this.$router.push('/inventory/usage/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
           this.form.errors.record(error.errors)

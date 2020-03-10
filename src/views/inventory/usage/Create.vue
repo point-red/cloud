@@ -2,11 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link to="/purchase/request" class="breadcrumb-item">{{ $t('purchase request') | uppercase }}</router-link>
+      <router-link to="/inventory/usage" class="breadcrumb-item">{{ $t('inventory usage') | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
-
-    <purchase-menu/>
 
     <form @submit.prevent="onSubmit">
       <div class="row">
@@ -14,37 +12,36 @@
           <p-block-inner>
             <div class="row">
               <div class="col-sm-12">
-                <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
+                <h4 class="text-center">{{ $t('inventory usage') | uppercase }}</h4>
                 <hr>
                 <div class="float-sm-right text-right">
                   <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
                   {{ authUser.tenant_address | uppercase }} <br v-if="authUser.tenant_address">
                   {{ authUser.tenant_phone | uppercase }} <br v-if="authUser.tenant_phone">
                 </div>
-                <div class="float-sm-left">
-                  <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
-                  <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
-                  <div style="font-size:12px" v-if="form.supplier_phone">
-                    {{ form.supplier_address | uppercase }} <br v-if="form.supplier_email">
-                    {{ form.supplier_phone }} <br v-if="form.supplier_phone">
-                    {{ form.supplier_email | uppercase }}
-                  </div>
-                </div>
               </div>
             </div>
-            <hr>
-            <p-form-row
-              id="required-date"
-              name="required-date"
-              :label="$t('required date')">
+            <!-- <p-form-row
+              id="date"
+              name="date"
+              :label="$t('date')">
               <div slot="body" class="col-lg-9">
                 <p-date-picker
-                  id="required-date"
-                  name="required-date"
-                  :label="$t('required date')"
-                  v-model="form.required_date"
-                  :errors="form.errors.get('required_date')"
-                  @errors="form.errors.set('required_date', null)"/>
+                  id="date"
+                  name="date"
+                  :label="$t('date')"
+                  v-model="form.date"
+                  :errors="form.errors.get('date')"
+                  @errors="form.errors.set('date', null)"/>
+              </div>
+            </p-form-row> -->
+            <p-form-row
+              id="warehouse"
+              name="warehouse"
+              :label="$t('warehouse')"
+              :is-horizontal="false">
+              <div slot="body">
+                <m-warehouse id="warehouse_id" v-model="form.warehouse_id"/>
               </div>
             </p-form-row>
             <hr>
@@ -53,8 +50,7 @@
                 <th class="text-center">#</th>
                 <th>Item</th>
                 <th>Notes</th>
-                <th>Quantity</th>
-                <th>Estimated Price</th>
+                <th>Quantity Usage</th>
                 <th>
                   <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
                     <i class="fa fa-ellipsis-h"/>
@@ -91,13 +87,6 @@
                       @choosen="chooseUnit($event, row)"/>
                   </td>
                   <td>
-                    <p-form-number
-                      :id="'price' + index"
-                      :name="'price' + index"
-                      @keyup.native="calculate"
-                      v-model="row.price"/>
-                  </td>
-                  <td>
                     <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more" v-if="!isSaving">
                       <i class="fa fa-ellipsis-h"/>
                     </button>
@@ -106,7 +95,7 @@
                 <template v-if="row.more">
                 <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
                   <th class="bg-gray-light"></th>
-                  <td colspan="4">
+                  <td colspan="3">
                     <p-form-row
                       id="allocation"
                       name="allocation"
@@ -122,19 +111,6 @@
                 </tr>
                 </template>
               </template>
-              <tr slot="p-body">
-                <th class="text-center"></th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <p-form-number
-                    :id="'total-price'"
-                    :name="'total-price'"
-                    :readonly="true"
-                    v-model="totalPrice"/>
-                </td>
-              </tr>
             </point-table>
             <div class="row mt-50">
               <div class="col-sm-6">
@@ -152,9 +128,9 @@
                 <div class="mb-50" style="font-size:11px">_______________</div>
                 <m-user
                   :id="'user'"
-                  v-model="form.approver_id"
-                  :errors="form.errors.get('approver_id')"
-                  @errors="form.errors.set('approver_id', null)"
+                  v-model="form.request_approval_to"
+                  :errors="form.errors.get('request_approval_to')"
+                  @errors="form.errors.set('request_approval_to', null)"
                   @choosen="chooseApprover"/>
                   {{ form.approver_email }} <br v-if="form.approver_email">
               </div>
@@ -174,16 +150,14 @@
 </template>
 
 <script>
-import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
+import BreadcrumbPurchase from '@/views/inventory/Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    PurchaseMenu,
     PointTable,
     Breadcrumb,
     BreadcrumbPurchase
@@ -196,29 +170,22 @@ export default {
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        required_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        supplier_id: null,
-        supplier_name: null,
-        supplier_address: null,
-        supplier_phone: null,
-        supplier_email: null,
-        approver_id: null,
-        approver_name: null,
-        approver_email: null,
+        warehouse_id: null,
+        request_approval_to: null,
         notes: null,
         items: []
       })
     }
   },
   computed: {
-    ...mapGetters('purchaseRequest', ['purchaseRequest']),
+    ...mapGetters('inventoryUsage', ['inventoryUsage']),
     ...mapGetters('auth', ['authUser'])
   },
   created () {
     this.addItemRow()
   },
   methods: {
-    ...mapActions('purchaseRequest', ['create']),
+    ...mapActions('inventoryUsage', ['create']),
     addItemRow () {
       this.form.items.push({
         item_id: null,
@@ -226,7 +193,6 @@ export default {
         unit: null,
         converter: null,
         quantity: null,
-        price: null,
         allocation_id: null,
         notes: null,
         more: false,
@@ -257,12 +223,6 @@ export default {
       this.form.approver_name = value.label
       this.form.approver_email = value.email
     },
-    chooseSupplier (value) {
-      this.form.supplier_name = value.label
-      this.form.supplier_address = value.address
-      this.form.supplier_phone = value.phone
-      this.form.supplier_email = value.email
-    },
     chooseItem (item, row) {
       row.item_name = item.name
       row.units = item.units
@@ -289,18 +249,17 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      if (this.form.items.length > 1) {
-        this.form.items = this.form.items.filter(item => item.item_id !== null)
-      }
+      this.form.items = this.form.items.filter(item => item.item_id !== null)
       this.create(this.form)
         .then(response => {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/purchase/request/' + response.data.id)
+          this.$router.push('/inventory/usage/' + response.data.id)
         }).catch(error => {
           console.log(error.errors)
           this.isSaving = false
+          this.addItemRow()
           this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
           this.form.errors.record(error.errors)
         })

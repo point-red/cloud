@@ -1,63 +1,61 @@
 <template>
   <div>
-    <breadcrumb v-if="purchaseRequest">
-      <breadcrumb-purchase/>
-      <router-link to="/purchase/request" class="breadcrumb-item">{{ $t('purchase request') | uppercase }}</router-link>
-      <template v-if="purchaseRequest.form.number">
-        <span class="breadcrumb-item active">{{ purchaseRequest.form.number | uppercase }}</span>
+    <breadcrumb v-if="inventoryUsage">
+      <breadcrumb-inventory/>
+      <router-link to="/inventory/usage" class="breadcrumb-item">{{ $t('inventory usage') | uppercase }}</router-link>
+      <!-- <template v-if="inventoryUsage.form.number">
+        <span class="breadcrumb-item active">{{ inventoryUsage.form.number | uppercase }}</span>
       </template>
       <template v-else>
-        <router-link v-if="purchaseRequest.origin" :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.origin.id }}" class="breadcrumb-item">
-          {{ purchaseRequest.edited_number | uppercase }}
+        <router-link v-if="inventoryUsage.origin" :to="{ name: 'inventory.usage.show', params: { id: inventoryUsage.origin.id }}" class="breadcrumb-item">
+          {{ inventoryUsage.edited_number | uppercase }}
         </router-link>
-      </template>
+      </template> -->
     </breadcrumb>
 
-    <purchase-menu/>
-
-    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
+    <!-- <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
-      v-if="purchaseRequest.form.approved == null && isLoading == false">
+      v-if="inventoryUsage.form.approved == null && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
-          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: purchaseRequest.approvers[0].requested_to.first_name + ' ' + purchaseRequest.approvers[0].requested_to.last_name }) | uppercase }}
+          {{ $t('pending approval warning', { form: 'inventory usage', approvedBy: inventoryUsage.form.request_approval_to.first_name + ' ' + inventoryUsage.form.request_approval_to.last_name }) | uppercase }}
         </p>
         <hr>
-        <div v-if="$permission.has('approve purchase request')">
+        <div v-if="$permission.has('approve inventory usage')">
           <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
           <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
           <m-form-reject id="form-reject" ref="formReject" @reject="onReject($event)"></m-form-reject>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
+    <!-- <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
       role="alert"
-      v-if="purchaseRequest.form.approved == 0 && isLoading == false">
+      v-if="inventoryUsage.form.approved == 0 && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('rejected') | uppercase }}
         </p>
-        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ purchaseRequest.form.approvals[0].reason }}</div>
+        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ inventoryUsage.form.approvals[0].reason }}</div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="row" v-if="purchaseRequest">
+    <div class="row" v-if="inventoryUsage">
       <p-block>
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
               <div class="text-right">
-                <router-link :to="{ name: 'purchase.request.create' }" class="btn btn-sm btn-outline-secondary mr-5">
+                <router-link :to="{ name: 'inventory.usage.create' }" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <router-link :to="{ name: 'purchase.request.edit', params: { id: purchaseRequest.id }}" class="btn btn-sm btn-outline-secondary mr-5">
+                <!-- <router-link :to="{ name: 'inventory.usage.edit', params: { id: inventoryUsage.id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
-                </router-link>
+                </router-link> -->
               </div>
               <hr>
-              <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
+              <h4 class="text-center">{{ $t('inventory usage') | uppercase }}</h4>
               <hr>
               <div class="float-sm-right text-right">
                 <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
@@ -65,30 +63,23 @@
                 {{ authUser.tenant_phone | uppercase }} <br v-if="authUser.tenant_phone">
               </div>
               <div class="float-sm-left">
-                <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
-                {{ purchaseRequest.supplier_name | uppercase }}
-                <div style="font-size:12px">
-                  {{ purchaseRequest.supplier_address | uppercase }}
-                  <br v-if="purchaseRequest.supplier_phone">{{ purchaseRequest.supplier_phone }}
-                  <br v-if="purchaseRequest.supplier_email">{{ purchaseRequest.supplier_email | uppercase }}
-                </div>
+                <h6 class="mb-0 ">{{ $t('warehouse') | uppercase }}</h6>
+                {{ inventoryUsage.warehouse.name | uppercase }}
               </div>
             </div>
           </div>
           <hr>
-          <div><b>{{ $t('form number') | uppercase }} : </b>{{ purchaseRequest.form.number }}</div>
-          <div><b>{{ $t('required date') | uppercase }} : </b>{{ purchaseRequest.required_date | dateFormat('DD MMMM YYYY') }}</div>
+          <div><b>{{ $t('form number') | uppercase }} : </b>{{ inventoryUsage.form.number }}</div>
           <hr>
           <point-table class="mt-20">
             <tr slot="p-head">
-              <th class="text-center">#</th>
+              <th class="text-center" width="50px">#</th>
               <th>Item</th>
               <th>Notes</th>
               <th class="text-right">Quantity</th>
-              <th class="text-right">Estimated Price</th>
               <th width="50px"></th>
             </tr>
-            <template v-for="(row, index) in purchaseRequest.items">
+            <template v-for="(row, index) in inventoryUsage.items">
               <tr slot="p-body" :key="index">
                 <th class="text-center">{{ index + 1 }}</th>
                 <td>
@@ -100,7 +91,6 @@
                 </td>
                 <td>{{ row.notes }}</td>
                 <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
-                <td class="text-right">{{ row.price | numberFormat }}</td>
                 <td>
                   <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more">
                     <i class="fa fa-ellipsis-h"/>
@@ -123,39 +113,31 @@
               </tr>
               </template>
             </template>
-            <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="text-right"><b>{{ totalPrice | numberFormat }}</b></td>
-              <td></td>
-            </tr>
           </point-table>
           <div class="row mt-50">
             <div class="col-sm-6">
               <h6 class="mb-0">{{ $t('notes') | uppercase }}</h6>
-              <div style="white-space: pre-wrap;">{{ purchaseRequest.form.notes }}</div>
+              <div style="white-space: pre-wrap;">{{ inventoryUsage.form.notes }}</div>
               <div class="d-sm-block d-md-none mt-10"></div>
             </div>
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY') }}</div>
-              {{ purchaseRequest.form.created_by.first_name | uppercase }} {{ purchaseRequest.form.created_by.last_name | uppercase }}
+              <div class="mb-50" style="font-size:11px">{{ inventoryUsage.form.date | dateFormat('DD MMMM YYYY') }}</div>
+              {{ inventoryUsage.form.created_by.full_name | uppercase }}
               <div class="d-sm-block d-md-none mt-10"></div>
             </div>
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
               <div class="mb-50" style="font-size:11px">
-                <template v-if="purchaseRequest.approvers[0].approval_at">
-                  {{ purchaseRequest.approvers[0].approval_at | dateFormat('DD MMMM YYYY') }}
+                <template v-if="inventoryUsage.form.request_approval_at">
+                  {{ inventoryUsage.form.request_approval_at | dateFormat('DD MMMM YYYY') }}
                 </template>
                 <template v-else>
                   _______________
                 </template>
               </div>
-              {{ purchaseRequest.approvers[0].requested_to.first_name | uppercase }} {{ purchaseRequest.approvers[0].requested_to.last_name | uppercase }}
-              <div style="font-size:11px">{{ purchaseRequest.approvers[0].requested_to.email | lowercase }}</div>
+              {{ inventoryUsage.form.request_approval_to.full_name | uppercase }}
+              <div style="font-size:11px">{{ inventoryUsage.form.request_approval_to.email | lowercase }}</div>
             </div>
           </div>
         </p-block-inner>
@@ -165,17 +147,15 @@
 </template>
 
 <script>
-import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbPurchase from '../Breadcrumb'
+import BreadcrumbInventory from '../Breadcrumb'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    PurchaseMenu,
     Breadcrumb,
-    BreadcrumbPurchase,
+    BreadcrumbInventory,
     PointTable
   },
   data () {
@@ -186,7 +166,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchaseRequest', ['purchaseRequest']),
+    ...mapGetters('inventoryUsage', ['inventoryUsage']),
     ...mapGetters('auth', ['authUser'])
   },
   watch: {
@@ -198,7 +178,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('purchaseRequest', ['find', 'delete', 'approve', 'reject']),
+    ...mapActions('inventoryUsage', ['find', 'delete', 'approve', 'reject']),
     findPurchaseRequisition () {
       this.isLoading = true
       this.find({
@@ -206,19 +186,17 @@ export default {
         params: {
           with_archives: true,
           with_origin: true,
-          includes: 'supplier;' +
+          includes: 'warehouse;' +
             'items.item;' +
             'items.allocation;' +
-            'services.service;' +
-            'services.allocation;' +
-            'form.approvals;' +
-            'approvers.requestedBy;' +
-            'approvers.requestedTo'
+            'form.createdBy;' +
+            'form.requestApprovalTo;' +
+            'form.requestCancellationTo'
         }
       }).then(response => {
         this.isLoading = false
-        this.purchaseRequest.items.forEach((element, index) => {
-          this.$set(this.purchaseRequest.items[index], 'more', false)
+        this.inventoryUsage.items.forEach((element, index) => {
+          this.$set(this.inventoryUsage.items[index], 'more', false)
           this.totalPrice += element.price
         })
       }).catch(error => {
@@ -233,11 +211,11 @@ export default {
       }).then(response => {
         this.isDeleting = false
         this.$notification.success('cancel success')
-        this.$router.push('/purchase/request')
+        this.$router.push('/inventory/usage')
       }).catch(error => {
         this.isDeleting = false
         this.$notification.error(error.message)
-        this.purchaseRequest.errors.record(error.errors)
+        this.inventoryUsage.errors.record(error.errors)
       })
     },
     onApprove () {
@@ -245,7 +223,7 @@ export default {
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
-        this.purchaseRequest.form.approved = response.data.form.approved
+        this.inventoryUsage.form.approved = response.data.form.approved
       })
     },
     onReject (reason) {
@@ -253,10 +231,9 @@ export default {
         id: this.id,
         reason: reason
       }).then(response => {
-        console.log(response.data.form)
         this.$notification.success('reject success')
-        this.purchaseRequest.form.approved = response.data.form.approved
-        this.purchaseRequest.form.approvals[0].reason = response.data.form.approvals[0].reason
+        this.inventoryUsage.form.approved = response.data.form.approved
+        this.inventoryUsage.form.approvals[0].reason = response.data.form.approvals[0].reason
       })
     }
   },

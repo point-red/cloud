@@ -2,17 +2,15 @@
   <div>
     <breadcrumb>
       <breadcrumb-inventory/>
-      <span class="breadcrumb-item active">{{ $t('report') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('inventory usage') | uppercase }}</span>
     </breadcrumb>
-
-    <purchase-menu/>
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <router-link
-            to="/purchase/request/create"
-            v-if="$permission.has('create purchase request')"
+            to="/inventory/usage/create"
+            v-if="$permission.has('create inventory usage')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
@@ -87,7 +85,7 @@
               type="checkbox"
               class="css-control-input"
               @click="toggleCheckRows()"
-              :checked="isRowsChecked(purchaseRequests, checkedRow)">
+              :checked="isRowsChecked(inventoryUsages, checkedRow)">
             <span class="css-control-indicator"></span>
           </label>
           <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
@@ -111,59 +109,49 @@
             <tr slot="p-head">
               <th width="50px">#</th>
               <th width="50px"></th>
-              <th>Number</th>
+              <th>Form</th>
               <th>Date</th>
-              <th>Supplier</th>
               <th>Item</th>
               <th>Notes</th>
               <th class="text-right">Quantity</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">Value</th>
               <th class="text-center">Approval Status</th>
               <th class="text-center">Form Status</th>
             </tr>
-            <template v-for="(purchaseRequest, index) in purchaseRequests">
+            <template v-for="(inventoryUsage, index) in inventoryUsages">
             <tr
-              v-for="(purchaseRequestItem, index2) in purchaseRequest.items"
+              v-for="(inventoryUsageItem, index2) in inventoryUsage.items"
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
               <th>
-                {{ ((currentPage - 1) * limit) + index + 1 }}<template v-if="purchaseRequest.items.length > 1">.{{ index2 + 1 }}</template>
+                {{ ((currentPage - 1) * limit) + index + 1 }}<template v-if="inventoryUsage.items.length > 1">.{{ index2 + 1 }}</template>
               </th>
               <td>
                 <p-form-check-box
                   :is-form="false"
                   id="check-box"
                   name="check-box"
-                  @click.native="toggleCheckRow(purchaseRequest.id)"
-                  :checked="isRowChecked(purchaseRequest.id)"
+                  @click.native="toggleCheckRow(inventoryUsage.id)"
+                  :checked="isRowChecked(inventoryUsage.id)"
                   class="text-center"/>
               </td>
               <td>
-                <router-link :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.id }}">
-                  {{ purchaseRequest.form.number }}
+                <router-link :to="{ name: 'inventory.usage.show', params: { id: inventoryUsage.id }}">
+                  {{ inventoryUsage.form.number }}
                 </router-link>
               </td>
-              <td>{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-              <td>
-                <template v-if="purchaseRequest.supplier">
-                  {{ purchaseRequest.supplier.name }}
-                </template>
-              </td>
-              <td>{{ purchaseRequestItem.item.name }}</td>
-              <td>{{ purchaseRequestItem.notes }}</td>
-              <td class="text-right">{{ purchaseRequestItem.quantity | numberFormat }}</td>
-              <td class="text-right">{{ purchaseRequestItem.price | numberFormat }}</td>
-              <td class="text-right">{{ (purchaseRequestItem.quantity * purchaseRequestItem.price) | numberFormat }}</td>
+              <td>{{ inventoryUsage.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+              <td>{{ inventoryUsageItem.item.name }}</td>
+              <td>{{ inventoryUsageItem.notes }}</td>
+              <td class="text-right">{{ inventoryUsageItem.quantity | numberFormat }}</td>
               <td class="text-center">
-                <div v-if="purchaseRequest.form.approved == null" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-if="purchaseRequest.form.approved == 0" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
-                <div v-if="purchaseRequest.form.approved == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
+                <div v-if="inventoryUsage.form.approved == null" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                <div v-if="inventoryUsage.form.approved == 0" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
+                <div v-if="inventoryUsage.form.approved == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
               </td>
               <td class="text-center">
-                <div v-if="purchaseRequest.form.canceled == null && purchaseRequest.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-if="purchaseRequest.form.canceled == null && purchaseRequest.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
-                <div v-if="purchaseRequest.form.canceled == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
+                <div v-if="inventoryUsage.form.canceled == null && inventoryUsage.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                <div v-if="inventoryUsage.form.canceled == null && inventoryUsage.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
+                <div v-if="inventoryUsage.form.canceled == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
               </td>
             </tr>
             </template>
@@ -180,7 +168,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import Menu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbInventory from '@/views/inventory/Breadcrumb'
@@ -190,7 +177,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     Menu,
     Breadcrumb,
     BreadcrumbInventory,
@@ -222,7 +208,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchaseRequest', ['purchaseRequests', 'pagination'])
+    ...mapGetters('inventoryUsage', ['inventoryUsages', 'pagination'])
   },
   watch: {
     'date': {
@@ -234,13 +220,13 @@ export default {
             date_to: this.date.end
           }
         })
-        this.getPurchaseRequest()
+        this.getInventoryUsage()
       },
       deep: true
     }
   },
   methods: {
-    ...mapActions('purchaseRequest', ['get']),
+    ...mapActions('inventoryUsage', ['get']),
     toggleCheckRow (id) {
       if (!this.isRowChecked(id)) {
         this.checkedRow.push({ id })
@@ -249,15 +235,15 @@ export default {
       }
     },
     toggleCheckRows () {
-      if (!this.isRowsChecked(this.purchaseRequests, this.checkedRow)) {
-        this.purchaseRequests.forEach(element => {
+      if (!this.isRowsChecked(this.inventoryUsages, this.checkedRow)) {
+        this.inventoryUsages.forEach(element => {
           if (!this.isRowChecked(element.id)) {
             let id = element.id
             this.checkedRow.push({ id })
           }
         })
       } else {
-        this.purchaseRequests.forEach(element => {
+        this.inventoryUsages.forEach(element => {
           this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(element.id), 1)
         })
       }
@@ -283,21 +269,21 @@ export default {
     },
     bulkApprove () {
       this.bulkApprove({
-        purchaseRequests: this.checkedRow
+        inventoryUsages: this.checkedRow
       }).then(response => {
         this.checkedRow = []
-        this.getPurchaseRequest()
+        this.getInventoryUsage()
       })
     },
     chooseFormStatus (option) {
       this.formStatus.label = option.label
       this.formStatus.value = option.value
-      this.getPurchaseRequest()
+      this.getInventoryUsage()
     },
     chooseFormApprovalStatus (option) {
       this.formApprovalStatus.label = option.label
       this.formApprovalStatus.value = option.value
-      this.getPurchaseRequest()
+      this.getInventoryUsage()
     },
     filterSearch: debounce(function (value) {
       this.$router.push({
@@ -308,32 +294,31 @@ export default {
       })
       this.searchText = value
       this.currentPage = 1
-      this.getPurchaseRequest()
+      this.getInventoryUsage()
     }, 300),
-    getPurchaseRequest () {
+    getInventoryUsage () {
       this.isLoading = true
       this.get({
         params: {
           join: 'form',
-          fields: 'purchase_requests.*',
+          fields: 'inventory_usages.*',
           sort_by: '-forms.number',
-          filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
-          filter_like: {
-            'form.number': this.searchText,
-            'supplier.name': this.searchText,
-            'items.item.name': this.searchText,
-            'items.notes': this.searchText,
-            'items.quantity': this.searchText,
-            'items.price': this.searchText
-          },
-          filter_min: {
-            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
-          },
-          filter_max: {
-            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
-          },
+          // filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
+          // filter_like: {
+          //   'form.number': this.searchText,
+          //   'warehouse.name': this.searchText,
+          //   'items.item.name': this.searchText,
+          //   'items.notes': this.searchText,
+          //   'items.quantity': this.searchText
+          // },
+          // filter_date_min: {
+          //   'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
+          // },
+          // filter_date_max: {
+          //   'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+          // },
           limit: 10,
-          includes: 'form;supplier;items.item;services.service',
+          includes: 'form;warehouse;items.item',
           page: this.currentPage
         }
       }).then(response => {
@@ -345,7 +330,7 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getPurchaseRequest()
+      this.getInventoryUsage()
     }
   },
   created () {
@@ -356,7 +341,7 @@ export default {
         date_to: this.date.end
       }
     })
-    this.getPurchaseRequest()
+    this.getInventoryUsage()
   },
   updated () {
     this.lastPage = this.pagination.last_page
