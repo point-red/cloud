@@ -268,13 +268,13 @@
                     active-class="active">{{ $t('inventory report') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
                   <router-link
                     to="/inventory/usage"
                     active-class="active">{{ $t('inventory usage') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory audit')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory audit')">
                   <router-link
                     to="/inventory/audit"
                     active-class="active">{{ $t('inventory audit') | uppercase }}
