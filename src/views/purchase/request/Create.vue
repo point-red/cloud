@@ -25,7 +25,11 @@
                 </div>
                 <div class="float-sm-left">
                   <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
-                  <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier"/>
+                  <m-supplier
+                    id="supplier"
+                    v-model="form.supplier_id"
+                    @choosen="chooseSupplier()"
+                    @clear="clearSupplier()"/>
                   <div style="font-size:12px" v-if="form.supplier_phone">
                     {{ form.supplier_address | uppercase }} <br v-if="form.supplier_email">
                     {{ form.supplier_phone }} <br v-if="form.supplier_phone">
@@ -283,6 +287,13 @@ export default {
       this.form.supplier_address = value.address
       this.form.supplier_phone = value.phone
       this.form.supplier_email = value.email
+    },
+    clearSupplier () {
+      this.form.supplier_id = null
+      this.form.supplier_name = null
+      this.form.supplier_address = null
+      this.form.supplier_phone = null
+      this.form.supplier_email = null
     },
     chooseItem (item, row) {
       row.item_name = item.name

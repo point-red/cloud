@@ -38,6 +38,7 @@
         </div>
       </template>
       <template slot="footer">
+        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
         <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
       </template>
     </p-modal>
@@ -151,6 +152,13 @@ export default {
     },
     show () {
       this.$refs['select-' + this.id].show()
+    },
+    clear () {
+      this.mutableId = null
+      this.mutableLabel = null
+      this.$emit('input', null)
+      this.$emit('choosen', '')
+      this.close()
     },
     close () {
       this.$refs['select-' + this.id].close()

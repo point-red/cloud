@@ -326,11 +326,11 @@ export default {
             'items.quantity': this.searchText,
             'items.price': this.searchText
           },
-          filter_min: {
-            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
+          filter_date_min: {
+            'form.date': this.serverDateTime(this.date.start, 'start')
           },
-          filter_max: {
-            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+          filter_date_max: {
+            'form.date': this.serverDateTime(this.date.end, 'start')
           },
           limit: 10,
           includes: 'form;supplier;items.item;services.service',
