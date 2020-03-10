@@ -46,7 +46,7 @@
 
           <hr>
 
-          <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" :label="form.chart_of_account_label" sub-ledger="inventory"/>
+          <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" :label="form.chart_of_account_label" type="inventory"/>
 
           <p-separator></p-separator>
 

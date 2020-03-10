@@ -96,9 +96,12 @@ export default {
           limit: 250,
           join: 'type',
           filter_like: {
-            'chart_of_accounts.name': this.searchText,
-            'chart_of_accounts.number': this.searchText,
-            'type.name': this.type
+            'chart_of_accounts.alias': this.searchText,
+            'chart_of_accounts.number': this.searchText
+          },
+          filter_equal: {
+            'type.name': this.type,
+            'type.is_locked': false
           }
         }
       }).then(response => {
@@ -141,6 +144,7 @@ export default {
     },
     show () {
       this.$refs['select-' + this.id].show()
+      this.search()
     },
     close () {
       this.$refs['select-' + this.id].close()
