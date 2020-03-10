@@ -106,7 +106,7 @@ export default {
           limit: 1000,
           filter_like: {
             'type.alias': this.searchText,
-            'name': this.searchText,
+            'alias': this.searchText,
             'number': this.searchText
           },
           includes: 'type',

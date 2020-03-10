@@ -57,7 +57,7 @@
                     name="start"
                     v-if="!isLoading"
                     label="">
-                    <div slot="body">
+                    <div slot="body" class="col-lg-9">
                       <button type="submit" class="btn btn-sm btn-primary mb-15" :disabled="isSaving">
                         <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('start') | uppercase }}
                       </button>

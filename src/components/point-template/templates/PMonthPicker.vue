@@ -5,6 +5,7 @@
       :name="name"
       format="YYYY-MM"
       type="month"
+      value-type="YYYY-MM"
       :editable="false"
       v-model="time">
       <i class="fa fa-calendar" slot="calendar-icon"></i>

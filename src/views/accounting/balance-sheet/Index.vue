@@ -171,7 +171,7 @@ export default {
         params: {
           date: this.date
         }
-      }).then((response) => {
+      }).then(response => {
         this.isLoading = false
         this.chartOfAccounts.forEach(element => {
           if (element.type.name === 'cash' || element.type.name === 'bank' || element.type.name === 'note receivable' || element.type.name === 'inventory' || element.type.name === 'account receivable' || element.type.name === 'other account receivable') {
@@ -201,7 +201,7 @@ export default {
 
         this.totalEquity = this.totalProfitAndLossNet
         this.totalAsset = this.totalCurrentAsset + this.totalFixedAsset
-      }, (error) => {
+      }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
       })

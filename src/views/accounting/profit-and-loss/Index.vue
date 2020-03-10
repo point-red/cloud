@@ -16,7 +16,7 @@
                 <div slot="body" class="col-lg-9">
                   <p-month-picker
                     name="date_from"
-                    v-model="date"/>
+                    v-model="date.start"/>
                 </div>
               </p-form-row>
               <p-form-row
@@ -25,7 +25,7 @@
                 <div slot="body" class="col-lg-9">
                   <p-month-picker
                     name="date_to"
-                    v-model="date"/>
+                    v-model="date.end"/>
                 </div>
               </p-form-row>
               <hr>
@@ -156,7 +156,10 @@ export default {
   data () {
     return {
       isLoading: false,
-      date: new Date(),
+      date: {
+        start: this.$moment().format('YYYY-MM'),
+        end: this.$moment().format('YYYY-MM')
+      },
       totalSalesIncome: 0,
       totalCostOfSales: 0,
       totalDirectExpense: 0,
@@ -182,27 +185,37 @@ export default {
   },
   created () {
     this.isLoading = true
-    this.getChartOfAccounts()
-      .then((response) => {
-        this.isLoading = false
-        this.chartOfAccounts.forEach(element => {
-          if (element.type.name === 'sales income') {
-            this.totalSalesIncome += element.total
-          } else if (element.type.name === 'cost of sales') {
-            this.totalCostOfSales += element.total
-          } else if (element.type.name === 'direct expense') {
-            this.totalDirectExpense += element.total
-          } else if (element.type.name === 'other income') {
-            this.totalOtherIncome += element.total
-          } else if (element.type.name === 'other expense') {
-            this.totalOtherExpense += element.total
-          }
-        })
+    this.getChartOfAccounts({
+      params: {
+        date_from: this.serverDateTime(this.date.start, 'start'),
+        date_to: this.serverDateTime(this.date.end, 'end')
+      }
+    }).then(response => {
+      this.totalSalesIncome = 0
+      this.totalCostOfSales = 0
+      this.totalDirectExpense = 0
+      this.totalOtherIncome = 0
+      this.totalOtherExpense = 0
 
-        this.totalProfitAndLossGross = this.totalSalesIncome - this.totalCostOfSales
-        this.totalProfitAndLossOperation = this.totalProfitAndLossGross - this.totalDirectExpense
-        this.totalProfitAndLossNet = this.totalProfitAndLossOperation + this.totalOtherIncome - this.totalOtherExpense
+      this.chartOfAccounts.forEach(element => {
+        if (element.type.name === 'sales income') {
+          this.totalSalesIncome += element.total
+        } else if (element.type.name === 'cost of sales') {
+          this.totalCostOfSales += element.total
+        } else if (element.type.name === 'direct expense') {
+          this.totalDirectExpense += element.total
+        } else if (element.type.name === 'other income') {
+          this.totalOtherIncome += element.total
+        } else if (element.type.name === 'other expense') {
+          this.totalOtherExpense += element.total
+        }
       })
+
+      this.totalProfitAndLossGross = this.totalSalesIncome - this.totalCostOfSales
+      this.totalProfitAndLossOperation = this.totalProfitAndLossGross - this.totalDirectExpense
+      this.totalProfitAndLossNet = this.totalProfitAndLossOperation + this.totalOtherIncome - this.totalOtherExpense
+      this.isLoading = false
+    })
   }
 }
 </script>
