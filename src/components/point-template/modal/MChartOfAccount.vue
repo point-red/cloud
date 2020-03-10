@@ -100,8 +100,7 @@ export default {
             'chart_of_accounts.number': this.searchText
           },
           filter_equal: {
-            'type.name': this.type,
-            'type.is_locked': false
+            'type.name': this.type
           }
         }
       }).then(response => {
