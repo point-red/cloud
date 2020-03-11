@@ -27,15 +27,7 @@
             <p-block-inner :is-loading="isLoading">
               <div class="col-sm-6 offset-sm-3 text-left">
                 <form @submit.prevent="onSubmit">
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Cumque quis odio consectetur iste dolorem, ad reiciendis odit assumenda ullam
-                    tempora ipsa rerum placeat esse quo ab id eveniet quam nostrum.
-                    Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                    Molestiae necessitatibus ex itaque, deserunt nam,
-                    quo dolor similique optio atque hic quis nostrum minus nisi perspiciatis
-                    error beatae ut labore distinctio!
-                  </p>
+                  <p>{{ $t('cut off helper - info') }}</p>
                   <p-form-row
                     id="date"
                     name="date"
