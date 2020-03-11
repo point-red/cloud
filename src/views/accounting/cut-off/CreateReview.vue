@@ -51,7 +51,7 @@
                     :key="account.id"
                     slot="p-body">
                     <td>{{ account.chart_of_account.number }}</td>
-                    <td>{{ account.chart_of_account.name }}</td>
+                    <td>{{ account.chart_of_account.alias }}</td>
                     <td>{{ account.chart_of_account.type.alias }}</td>
                     <td>
                       <template v-if="account.chart_of_account.sub_ledger">
@@ -152,7 +152,6 @@ export default {
           join: 'chartOfAccount',
           filter_like: {
             'chartOfAccount.alias': this.searchText,
-            'chartOfAccount.name': this.searchText,
             'chartOfAccount.number': this.searchText
           },
           includes: 'chartOfAccount.type',
