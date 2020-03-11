@@ -158,7 +158,6 @@ export default {
     toggleDefault (userId) {
       this.branch.users.some(user => {
         if (user.id == userId) {
-          console.log(user)
           this.updateDefault({
             user_id: userId,
             branch_id: this.id,

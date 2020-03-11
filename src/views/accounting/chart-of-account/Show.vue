@@ -70,7 +70,6 @@
                 id="position"
                 :label="$t('position')"
                 :is-horizontal="false"
-                v-if="chartOfAccount.position"
                 name="position">
                 <div slot="body" class="col-lg-9 mt-5">
                   {{ chartOfAccount.position }}

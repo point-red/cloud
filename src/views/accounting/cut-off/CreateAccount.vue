@@ -172,7 +172,6 @@ export default {
           join: 'chartOfAccount',
           filter_like: {
             'chartOfAccount.alias': this.searchText,
-            'chartOfAccount.name': this.searchText,
             'chartOfAccount.number': this.searchText
           },
           includes: 'chartOfAccount.type',

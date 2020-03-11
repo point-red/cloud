@@ -41,7 +41,7 @@
 
             <p-form-row
               id="name"
-              v-model="form.name"
+              v-model="form.alias"
               :disabled="isSaving"
               :label="$t('name')"
               name="name"
@@ -101,8 +101,9 @@ export default {
         type: {
           alias: null
         },
-        is_sub_ledger: null,
+        is_sub_ledger: false,
         name: null,
+        alias: null,
         number: null,
         balance: 0
       })

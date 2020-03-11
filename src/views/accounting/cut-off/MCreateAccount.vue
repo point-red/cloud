@@ -92,7 +92,7 @@ export default {
       form: new Form({
         type_id: null,
         type_alias: null,
-        is_sub_ledger: null,
+        is_sub_ledger: false,
         name: null,
         number: null,
         balance: 0
@@ -125,6 +125,7 @@ export default {
     ...mapActions('accountingCutOffAccount', ['create']),
     onSubmit () {
       this.isSaving = true
+      this.form.alias = this.form.name
       this.create(this.form)
         .then(response => {
           this.$notification.success('create success')
