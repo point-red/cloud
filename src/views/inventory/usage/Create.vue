@@ -49,6 +49,7 @@
               <tr slot="p-head">
                 <th class="text-center">#</th>
                 <th>Item</th>
+                <th>Account</th>
                 <th>Notes</th>
                 <th>Quantity Usage</th>
                 <th>
@@ -67,15 +68,23 @@
                       @choosen="chooseItem($event, row)"/>
                   </td>
                   <td>
+                    <m-chart-of-account
+                      :id="'chart-of-account-' + index"
+                      v-model="row.chart_of_account_id"
+                      type="direct expense;other expense;factory overhead cost"/>
+                  </td>
+                  <td>
                     <p-form-input
-                      id="notes"
-                      name="notes"
+                      :id="'notes-' + index"
+                      :name="'item-' + index"
+                      :disabled="row.item_id == null"
                       v-model="row.notes"/>
                   </td>
                   <td>
                     <p-quantity
                       :id="'quantity' + index"
                       :name="'quantity' + index"
+                      :disabled="row.item_id == null"
                       v-model="row.quantity"
                       :item-id="row.item_id"
                       :units="row.units"
@@ -103,6 +112,7 @@
                       <m-allocation
                         slot="body"
                         class="mt-5"
+                        :v-if="row.item_id == null"
                         :id="'allocation-' + index"
                         v-model="row.allocation_id"/>
                     </p-form-row>

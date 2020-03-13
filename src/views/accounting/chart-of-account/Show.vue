@@ -3,7 +3,7 @@
     <breadcrumb>
       <breadcrumb-accounting/>
       <router-link to="/accounting/chart-of-account" class="breadcrumb-item">{{ $t('chart of account') | uppercase }}</router-link>
-      <span class="breadcrumb-item active">{{ chartOfAccount.number }} - {{ chartOfAccount.name | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ chartOfAccount.label }}</span>
     </breadcrumb>
 
     <div class="row">
@@ -184,7 +184,9 @@ export default {
         this.isLoading = false
         this.$notification.error(error.message)
       })
-    this.get()
+    this.get({
+      chart_of_account_id: this.id
+    })
   }
 }
 </script>

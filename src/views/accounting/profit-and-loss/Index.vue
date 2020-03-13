@@ -39,7 +39,7 @@
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
                 <tr
-                  v-if="chartOfAccount.type.name === 'sales income'"
+                  v-if="chartOfAccount.type.name === 'SALES INCOME'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
@@ -55,7 +55,7 @@
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
                 <tr
-                  v-if="chartOfAccount.type.name === 'cost of sales'"
+                  v-if="chartOfAccount.type.name === 'COST OF SALES'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
@@ -65,6 +65,25 @@
                 <tr slot="p-body">
                   <td></td>
                   <td class="text-right font-w600">{{ totalCostOfSales | numberFormat }}</td>
+                </tr>
+                <tr slot="p-body">
+                  <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr slot="p-body">
+                  <td colspan="2" class="font-w600">FACTORY OVERHEAD COST</td>
+                </tr>
+                <template v-for="(chartOfAccount, index) in chartOfAccounts">
+                <tr
+                  v-if="chartOfAccount.type.name === 'FACTORY OVERHEAD COST'"
+                  :key="index"
+                  slot="p-body">
+                  <td>{{ chartOfAccount.alias }}</td>
+                  <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
+                </tr>
+                </template>
+                <tr slot="p-body">
+                  <td></td>
+                  <td class="text-right font-w600">{{ totalFactoryOverheadCost | numberFormat }}</td>
                 </tr>
                 <tr slot="p-body">
                   <td colspan="2">&nbsp;</td>
@@ -81,7 +100,7 @@
                 </tr>
                 <tr
                   v-for="(chartOfAccount, index) in chartOfAccounts"
-                  v-if="chartOfAccount.type.name === 'direct expense'"
+                  v-if="chartOfAccount.type.name === 'DIRECT EXPENSE'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
@@ -106,7 +125,7 @@
                 </tr>
                 <tr
                   v-for="(chartOfAccount, index) in chartOfAccounts"
-                  v-if="chartOfAccount.type.name === 'other income'"
+                  v-if="chartOfAccount.type.name === 'OTHER INCOME'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
@@ -121,7 +140,7 @@
                 </tr>
                 <tr
                   v-for="(chartOfAccount, index) in chartOfAccounts"
-                  v-if="chartOfAccount.type.name === 'other expense'"
+                  v-if="chartOfAccount.type.name === 'OTHER EXPENSE'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
@@ -164,6 +183,7 @@ export default {
       totalCostOfSales: 0,
       totalDirectExpense: 0,
       totalOtherExpense: 0,
+      totalFactoryOverheadCost: 0,
       totalOtherIncome: 0,
       totalProfitAndLossGross: 0,
       totalProfitAndLossOperation: 0,
@@ -196,23 +216,26 @@ export default {
       this.totalDirectExpense = 0
       this.totalOtherIncome = 0
       this.totalOtherExpense = 0
+      this.totalFactoryOverheadCost = 0
 
       this.chartOfAccounts.forEach(element => {
-        if (element.type.name === 'sales income') {
+        if (element.type.name === 'SALES INCOME') {
           this.totalSalesIncome += element.total
-        } else if (element.type.name === 'cost of sales') {
+        } else if (element.type.name === 'COST OF SALES') {
           this.totalCostOfSales += element.total
-        } else if (element.type.name === 'direct expense') {
+        } else if (element.type.name === 'DIRECT EXPENSE') {
           this.totalDirectExpense += element.total
-        } else if (element.type.name === 'other income') {
+        } else if (element.type.name === 'OTHER INCOME') {
           this.totalOtherIncome += element.total
-        } else if (element.type.name === 'other expense') {
+        } else if (element.type.name === 'OTHER EXPENSE') {
           this.totalOtherExpense += element.total
+        } else if (element.type.name === 'FACTORY OVERHEAD COST') {
+          this.totalFactoryOverheadCost += element.total
         }
       })
 
       this.totalProfitAndLossGross = this.totalSalesIncome - this.totalCostOfSales
-      this.totalProfitAndLossOperation = this.totalProfitAndLossGross - this.totalDirectExpense
+      this.totalProfitAndLossOperation = this.totalProfitAndLossGross - this.totalDirectExpense - this.totalFactoryOverheadCost
       this.totalProfitAndLossNet = this.totalProfitAndLossOperation + this.totalOtherIncome - this.totalOtherExpense
       this.isLoading = false
     })

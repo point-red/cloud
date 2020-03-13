@@ -154,7 +154,7 @@ export default {
       this.get({
         params: {
           includes: 'account',
-          sort_by: 'code,name',
+          sort_by: 'code;name',
           limit: this.limit,
           page: this.currentPage,
           date_from: this.$route.query.date_from,

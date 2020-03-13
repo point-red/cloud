@@ -155,7 +155,7 @@ export default {
             'chartOfAccount.number': this.searchText
           },
           includes: 'chartOfAccount.type',
-          sort_by: 'chart_of_accounts.number,chart_of_accounts.alias'
+          sort_by: 'chart_of_accounts.number;chart_of_accounts.alias'
         }
       }).then(response => {
         this.totalCredit = 0

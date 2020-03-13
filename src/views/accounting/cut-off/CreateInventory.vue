@@ -172,7 +172,7 @@ export default {
             'item.name': this.searchText
           },
           includes: 'item.account;warehouse',
-          sort_by: 'items.code,items.name'
+          sort_by: 'items.code;items.name'
         }
       }).then(response => {
         this.total = 0

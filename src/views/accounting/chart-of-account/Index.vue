@@ -110,7 +110,7 @@ export default {
             'number': this.searchText
           },
           includes: 'type',
-          sort_by: 'number,alias'
+          sort_by: 'number;alias'
         }
       }).then(response => {
         this.isLoading = false

@@ -29,12 +29,19 @@
                   <td colspan="2" class="font-w600">ASSET LANCAR</td>
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
-                <tr v-if="chartOfAccount.type.name === 'cash'
-                    || chartOfAccount.type.name === 'bank'
-                    || chartOfAccount.type.name === 'note receivable'
-                    || chartOfAccount.type.name === 'inventory'
-                    || chartOfAccount.type.name === 'account receivable'
-                    || chartOfAccount.type.name === 'other account receivable'"
+                <tr v-if="chartOfAccount.type.name === 'CASH'
+                    || chartOfAccount.type.name === 'CASH-BANK TRANSFER'
+                    || chartOfAccount.type.name === 'BANK'
+                    || chartOfAccount.type.name === 'SUPPLIES'
+                    || chartOfAccount.type.name === 'INVENTORY'
+                    || chartOfAccount.type.name === 'NOTE RECEIVABLE'
+                    || chartOfAccount.type.name === 'ACCOUNT RECEIVABLE'
+                    || chartOfAccount.type.name === 'ACCOUNT RECEIVABLE OF MANAGEMENT'
+                    || chartOfAccount.type.name === 'ACCOUNT RECEIVABLE OF EMPLOYEE'
+                    || chartOfAccount.type.name === 'OTHER ACCOUNT RECEIVABLE'
+                    || chartOfAccount.type.name === 'PURCHASE DOWN PAYMENT'
+                    || chartOfAccount.type.name === 'INCOME TAX RECEIVABLE'
+                    || chartOfAccount.type.name === 'OTHER CURRENT ASSET'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
@@ -49,10 +56,10 @@
                   <td colspan="2" class="font-w600">ASSET TETAP</td>
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
-                <tr v-if="chartOfAccount.type.name === 'fixed asset'
-                    || chartOfAccount.type.name === 'fixed asset depreciation'
-                    || chartOfAccount.type.name === 'other asset'
-                    || chartOfAccount.type.name === 'other asset amortization'"
+                <tr v-if="chartOfAccount.type.name === 'FIXED ASSET'
+                    || chartOfAccount.type.name === 'FIXED ASSET DEPRECIATION'
+                    || chartOfAccount.type.name === 'OTHER ASSET'
+                    || chartOfAccount.type.name === 'OTHER ASSET AMORTIZATION'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
@@ -74,9 +81,12 @@
                   <td colspan="2" class="font-w600">KEWAJIBAN</td>
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
-                <tr v-if="chartOfAccount.type.name === 'current liability'
-                    || chartOfAccount.type.name === 'other current liability'
-                    || chartOfAccount.type.name === 'long term liability'"
+                <tr v-if="chartOfAccount.type.name === 'NOTE PAYABLE'
+                    || chartOfAccount.type.name === 'ACCOUNT PAYABLE'
+                    || chartOfAccount.type.name === 'SALES DOWN PAYMENT'
+                    || chartOfAccount.type.name === 'INCOME TAX PAYABLE'
+                    || chartOfAccount.type.name === 'OTHER CURRENT LIABILITY'
+                    || chartOfAccount.type.name === 'LONG TERM LIABILITY'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
@@ -91,7 +101,21 @@
                   <td colspan="2" class="font-w600">MODAL</td>
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
-                <tr v-if="chartOfAccount.type.name === 'owner equity' || chartOfAccount.type.name === 'shareholder distribution'"
+                <tr v-if="chartOfAccount.type.name === 'OWNER EQUITY' ||
+                  chartOfAccount.type.name === 'SHAREHOLDER DISTRIBUTION' ||
+                  chartOfAccount.type.name === 'RETAINED EARNING'"
+                  :key="index"
+                  slot="p-body">
+                  <td>{{ chartOfAccount.alias }}</td>
+                  <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
+                </tr>
+                <tr v-if="chartOfAccount.name === 'NET INCOME FOR THE MONTH'"
+                  :key="index"
+                  slot="p-body">
+                  <td>{{ chartOfAccount.alias }}</td>
+                  <td class="text-right">{{ totalProfitAndLossNet | numberFormat }}</td>
+                </tr>
+                <tr v-if="chartOfAccount.name === 'NET INCOME FOR THE YEAR'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
@@ -100,7 +124,7 @@
                 </template>
                 <tr slot="p-body">
                   <td></td>
-                  <td class="text-right font-w600">{{ totalEquity | numberFormat }}</td>
+                  <td class="text-right font-w600">{{ totalEquity + totalProfitAndLossNet | numberFormat }}</td>
                 </tr>
               </p-table>
             </div>
@@ -147,6 +171,7 @@ export default {
       totalEquity: 0,
       totalSalesIncome: 0,
       totalCostOfSales: 0,
+      totalFactoryOverheadCost: 0,
       totalDirectExpense: 0,
       totalOtherExpense: 0,
       totalOtherIncome: 0,
@@ -174,32 +199,55 @@ export default {
       }).then(response => {
         this.isLoading = false
         this.chartOfAccounts.forEach(element => {
-          if (element.type.name === 'cash' || element.type.name === 'bank' || element.type.name === 'note receivable' || element.type.name === 'inventory' || element.type.name === 'account receivable' || element.type.name === 'other account receivable') {
+          if (element.type.name === 'CASH' ||
+            element.type.name === 'CASH-BANK TRANSFER' ||
+            element.type.name === 'BANK' ||
+            element.type.name === 'SUPPLIES' ||
+            element.type.name === 'INVENTORY' ||
+            element.type.name === 'NOTE RECEIVABLE' ||
+            element.type.name === 'ACCOUNT RECEIVABLE' ||
+            element.type.name === 'ACCOUNT RECEIVABLE OF MANAGEMENT' ||
+            element.type.name === 'ACCOUNT RECEIVABLE OF EMPLOYEE' ||
+            element.type.name === 'OTHER ACCOUNT RECEIVABLE' ||
+            element.type.name === 'PURCHASE DOWN PAYMENT' ||
+            element.type.name === 'INCOME TAX RECEIVABLE' ||
+            element.type.name === 'OTHER CURRENT ASSET') {
             this.totalCurrentAsset += element.total
-          } else if (element.type.name === 'fixed asset' || element.type.name === 'fixed asset depreciation' || element.type.name === 'other asset' || element.type.name === 'other asset amortization') {
+          } else if (element.type.name === 'FIXED ASSET' ||
+            element.type.name === 'FIXED ASSET DEPRECIATION' ||
+            element.type.name === 'OTHER ASSET' ||
+            element.type.name === 'OTHER ASSET AMORTIZATION') {
             this.totalFixedAsset += element.total
-          } else if (element.type.name === 'current liability' || element.type.name === 'other current liability' || element.type.name === 'long term liability') {
+          } else if (element.type.name === 'NOTE PAYABLE' ||
+            element.type.name === 'ACCOUNT PAYABLE' ||
+            element.type.name === 'SALES DOWN PAYMENT' ||
+            element.type.name === 'INCOME TAX PAYABLE' ||
+            element.type.name === 'OTHER CURRENT LIABILITY' ||
+            element.type.name === 'LONG TERM LIABILITY') {
             this.totalLiability += element.total
-          } else if (element.type.name === 'owner equity' || element.type.name === 'shareholder distribution' || element.type.name === 'retained earning') {
+          } else if (element.type.name === 'OWNER EQUITY' ||
+            element.type.name === 'SHAREHOLDER DISTRIBUTION' ||
+            element.type.name === 'RETAINED EARNING' ||
+            element.type.name === 'NET INCOME') {
             this.totalEquity += element.total
-          } else if (element.type.name === 'sales income') {
+          } else if (element.type.name === 'SALES INCOME') {
             this.totalSalesIncome += element.total
-          } else if (element.type.name === 'cost of sales') {
+          } else if (element.type.name === 'COST OF SALES') {
             this.totalCostOfSales += element.total
-          } else if (element.type.name === 'direct expense') {
+          } else if (element.type.name === 'DIRECT EXPENSE') {
             this.totalDirectExpense += element.total
-          } else if (element.type.name === 'other income') {
+          } else if (element.type.name === 'OTHER INCOME') {
             this.totalOtherIncome += element.total
-          } else if (element.type.name === 'other expense') {
+          } else if (element.type.name === 'OTHER EXPENSE') {
             this.totalOtherExpense += element.total
+          } else if (element.type.name === 'FACTORY OVERHEAD COST') {
+            this.totalFactoryOverheadCost += element.total
           }
         })
 
         this.totalProfitAndLossGross = this.totalSalesIncome - this.totalCostOfSales
-        this.totalProfitAndLossOperation = this.totalProfitAndLossGross - this.totalDirectExpense
+        this.totalProfitAndLossOperation = this.totalProfitAndLossGross - this.totalDirectExpense - this.totalFactoryOverheadCost
         this.totalProfitAndLossNet = this.totalProfitAndLossOperation + this.totalOtherIncome - this.totalOtherExpense
-
-        this.totalEquity = this.totalProfitAndLossNet
         this.totalAsset = this.totalCurrentAsset + this.totalFixedAsset
       }).catch(error => {
         this.isLoading = false

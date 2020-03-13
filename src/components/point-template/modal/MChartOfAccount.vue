@@ -94,12 +94,14 @@ export default {
           fields: 'chart_of_accounts.*',
           sort_by: 'number',
           limit: 250,
-          join: 'type',
+          joins: {
+            1: 'chart_of_account_types.id=chart_of_accounts.type_id'
+          },
           filter_like: {
             'chart_of_accounts.alias': this.searchText,
             'chart_of_accounts.number': this.searchText
           },
-          filter_equal: {
+          filter_equal_or: {
             'type.name': this.type
           }
         }
@@ -110,7 +112,7 @@ export default {
           this.options.push({
             'id': key['id'],
             'alias': key['alias'],
-            'label': key['number'] + ' - ' + key['alias']
+            'label': key['label']
           })
 
           if (this.value == key['id']) {
