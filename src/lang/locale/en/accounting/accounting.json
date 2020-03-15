@@ -7,5 +7,10 @@
   "sales down payment" : "sales down payment",
   "generate account" : "generate account",
   "position" : "position",
+  "cash flow" : "cash flow",
+  "cash flow position" : "cash flow position",
+  "operation" : "operation",
+  "investation" : "investation",
+  "funding" : "funding",
   "balance" : "balance"
 }

@@ -144,7 +144,7 @@
             <p-table>
               <tr slot="p-head">
                 <th>Total Kewajiban & Modal</th>
-                <th class="text-right font-w600">{{ totalLiability + totalEquity | numberFormat }}</th>
+                <th class="text-right font-w600">{{ totalLiability + totalEquity + totalProfitAndLossNet | numberFormat }}</th>
               </tr>
             </p-table>
           </div>

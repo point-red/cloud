@@ -35,6 +35,8 @@
               <th class="text-center">Sub Ledger</th>
               <th class="text-center">Debit</th>
               <th class="text-center">Credit</th>
+              <th class="text-center">Cash Flow</th>
+              <th class="text-center">Cash Flow Position</th>
             </tr>
             <tr
               v-for="chartOfAccount in chartOfAccounts"
@@ -55,6 +57,12 @@
               </td>
               <td class="text-center">
                 <i class="fa fa-check" v-if="chartOfAccount.position == 'CREDIT'"></i>
+              </td>
+              <td class="text-center">
+                {{ chartOfAccount.cash_flow }}
+              </td>
+              <td class="text-center">
+                {{ chartOfAccount.cash_flow_position }}
               </td>
             </tr>
           </point-table>

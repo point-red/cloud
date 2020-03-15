@@ -18,9 +18,61 @@
         </p-form-row>
 
         <p-form-row
+          id="number"
+          v-model="form.number"
+          :disabled="isLoading"
+          :label="$t('number')"
+          name="number"
+          :errors="form.errors.get('number')"
+          @errors="form.errors.set('number', null)"/>
+
+        <p-form-row
+          id="name"
+          v-model="form.name"
+          :disabled="isLoading"
+          :label="$t('name')"
+          name="name"
+          :errors="form.errors.get('name')"
+          @errors="form.errors.set('name', null)"/>
+
+        <p-form-row
+          id="position"
+          v-model="form.position"
+          :disabled="isLoading"
+          :label="$t('position')"
+          name="position"
+          :errors="form.errors.get('position')"
+          @errors="form.errors.set('position', null)">
+          <div slot="body" class="col-lg-9">
+            <button
+              type="button"
+              class="btn btn-sm mr-5"
+              :class="{
+                'btn-success' : form.position == 'DEBIT',
+                'btn-outline-success' : form.position != 'DEBIT'
+              }"
+              @click="form.position = 'DEBIT'">
+              DEBIT
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm"
+              :class="{
+                'btn-success' : form.position == 'CREDIT',
+                'btn-outline-success' : form.position != 'CREDIT'
+              }"
+              @click="form.position = 'CREDIT'">
+              CREDIT
+            </button>
+          </div>
+        </p-form-row>
+
+        <p-separator></p-separator>
+
+        <p-form-row
           id="sub-ledger"
           name="sub-ledger"
-          :label="$t('is sub ledger account')">
+          :label="$t('set sub ledger')">
           <div slot="body" class="col-lg-9">
             <p-form-check-box
               id="is-sub-ledger"
@@ -104,51 +156,93 @@
           </div>
         </p-form-row>
 
-        <p-form-row
-          id="number"
-          v-model="form.number"
-          :disabled="isLoading"
-          :label="$t('number')"
-          name="number"
-          :errors="form.errors.get('number')"
-          @errors="form.errors.set('number', null)"/>
+        <p-separator></p-separator>
 
         <p-form-row
-          id="name"
-          v-model="form.name"
-          :disabled="isLoading"
-          :label="$t('name')"
-          name="name"
-          :errors="form.errors.get('name')"
-          @errors="form.errors.set('name', null)"/>
+          id="is_cash_flow"
+          name="is_cash_flow"
+          :label="$t('set cash flow')">
+          <div slot="body" class="col-lg-9">
+            <p-form-check-box
+              id="is_cash_flow"
+              name="is_cash_flow"
+              @click.native="form.is_cash_flow = !form.is_cash_flow"
+              :checked="form.is_cash_flow">
+            </p-form-check-box>
+          </div>
+        </p-form-row>
 
         <p-form-row
-          id="position"
-          v-model="form.position"
+          id="cash_flow"
+          v-model="form.cash_flow"
           :disabled="isLoading"
-          :label="$t('position')"
-          name="position"
-          :errors="form.errors.get('position')"
-          @errors="form.errors.set('position', null)">
+          :label="$t('cash flow')"
+          name="cash_flow"
+          v-if="form.is_cash_flow == true"
+          :errors="form.errors.get('cash_flow')"
+          @errors="form.errors.set('cash_flow', null)">
           <div slot="body" class="col-lg-9">
             <button
               type="button"
               class="btn btn-sm mr-5"
               :class="{
-                'btn-success' : form.position == 'DEBIT',
-                'btn-outline-success' : form.position == 'CREDIT'
+                'btn-success' : form.cash_flow == 'OPERATION',
+                'btn-outline-success' : form.cash_flow != 'OPERATION'
               }"
-              @click="form.position = 'DEBIT'">
+              @click="form.cash_flow = 'OPERATION'">
+              {{ $t('operation') | uppercase }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm mr-5"
+              :class="{
+                'btn-success' : form.cash_flow == 'INVESTATION',
+                'btn-outline-success' : form.cash_flow != 'INVESTATION'
+              }"
+              @click="form.cash_flow = 'INVESTATION'">
+              {{ $t('investation') | uppercase }}
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm"
+              :class="{
+                'btn-success' : form.cash_flow == 'FUNDING',
+                'btn-outline-success' : form.cash_flow != 'FUNDING'
+              }"
+              @click="form.cash_flow = 'FUNDING'">
+              {{ $t('funding') | uppercase }}
+            </button>
+          </div>
+        </p-form-row>
+
+        <p-form-row
+          id="cash_flow_position"
+          v-model="form.cash_flow_position"
+          :disabled="isLoading"
+          :label="$t('cash flow position')"
+          name="cash_flow_position"
+          v-if="form.is_cash_flow == true"
+          :errors="form.errors.get('cash_flow_position')"
+          @errors="form.errors.set('cash_flow_position', null)">
+          <div slot="body" class="col-lg-9">
+            <button
+              type="button"
+              class="btn btn-sm mr-5"
+              :class="{
+                'btn-success' : form.cash_flow_position == 'DEBIT',
+                'btn-outline-success' : form.cash_flow_position == 'CREDIT'
+              }"
+              @click="form.cash_flow_position = 'DEBIT'">
               DEBIT
             </button>
             <button
               type="button"
               class="btn btn-sm"
               :class="{
-                'btn-success' : form.position == 'CREDIT',
-                'btn-outline-success' : form.position == 'DEBIT'
+                'btn-success' : form.cash_flow_position == 'CREDIT',
+                'btn-outline-success' : form.cash_flow_position == 'DEBIT'
               }"
-              @click="form.position = 'CREDIT'">
+              @click="form.cash_flow_position = 'CREDIT'">
               CREDIT
             </button>
           </div>
@@ -184,8 +278,11 @@ export default {
       form: new Form({
         type_id: null,
         is_sub_ledger: false,
+        is_cash_flow: false,
         sub_ledger: false,
         position: 'DEBIT',
+        cash_flow: null,
+        cash_flow_position: 'DEBIT',
         name: null,
         number: null
       })

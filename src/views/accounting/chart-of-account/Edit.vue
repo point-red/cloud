@@ -24,7 +24,7 @@
         <p-form-row
           id="sub-ledger"
           name="sub-ledger"
-          :label="$t('is sub ledger account')">
+          :label="$t('set sub ledger')">
           <div slot="body" class="col-lg-9">
             <p-form-check-box
               id="is-sub-ledger"
@@ -211,7 +211,7 @@ export default {
           this.form.id = response.data.id
           this.form.type_id = response.data.type_id
           this.form.type_name = response.data.type.alias
-          this.form.is_sub_ledger = response.data.is_sub_ledger
+          this.form.is_sub_ledger = response.data.sub_ledger != null
           this.form.sub_ledger = response.data.sub_ledger
           this.form.position = response.data.position
           this.form.number = response.data.number

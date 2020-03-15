@@ -3,14 +3,14 @@
     <breadcrumb v-if="inventoryUsage">
       <breadcrumb-inventory/>
       <router-link to="/inventory/usage" class="breadcrumb-item">{{ $t('inventory usage') | uppercase }}</router-link>
-      <!-- <template v-if="inventoryUsage.form.number">
+      <template v-if="inventoryUsage.form.number">
         <span class="breadcrumb-item active">{{ inventoryUsage.form.number | uppercase }}</span>
       </template>
       <template v-else>
         <router-link v-if="inventoryUsage.origin" :to="{ name: 'inventory.usage.show', params: { id: inventoryUsage.origin.id }}" class="breadcrumb-item">
           {{ inventoryUsage.edited_number | uppercase }}
         </router-link>
-      </template> -->
+      </template>
     </breadcrumb>
 
     <!-- <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
@@ -50,12 +50,13 @@
                 <router-link :to="{ name: 'inventory.usage.create' }" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <!-- <router-link :to="{ name: 'inventory.usage.edit', params: { id: inventoryUsage.id }}" class="btn btn-sm btn-outline-secondary mr-5">
+                <router-link :to="{ name: 'inventory.usage.edit', params: { id: inventoryUsage.id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
-                </router-link> -->
+                </router-link>
               </div>
               <hr>
-              <h4 class="text-center">{{ $t('inventory usage') | uppercase }}</h4>
+              <h4 class="text-center m-0">{{ $t('inventory usage') | uppercase }}</h4>
+              <p class="text-center m-0">{{ inventoryUsage.form.number }}</p>
               <hr>
               <div class="float-sm-right text-right">
                 <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
@@ -69,26 +70,24 @@
             </div>
           </div>
           <hr>
-          <div><b>{{ $t('form number') | uppercase }} : </b>{{ inventoryUsage.form.number }}</div>
-          <hr>
           <point-table class="mt-20">
             <tr slot="p-head">
               <th class="text-center" width="50px">#</th>
               <th>Item</th>
+              <th>Account</th>
               <th>Notes</th>
               <th class="text-right">Quantity</th>
-              <th width="50px"></th>
+              <th width="50px">
+                <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
+                  <i class="fa fa-ellipsis-h"/>
+                </button>
+              </th>
             </tr>
             <template v-for="(row, index) in inventoryUsage.items">
               <tr slot="p-body" :key="index">
                 <th class="text-center">{{ index + 1 }}</th>
-                <td>
-                  <router-link
-                    :to="'/master/item/' + row.item_id"
-                    v-if="$permission.has('read item')">
-                    {{ row.item.name }}
-                  </router-link>
-                </td>
+                <td>{{ row.item.label }}</td>
+                <td>{{ row.account.label }}</td>
                 <td>{{ row.notes }}</td>
                 <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
                 <td>
@@ -173,13 +172,13 @@ export default {
     '$route' (to, from) {
       if (to.params.id != from.params.id) {
         this.id = to.params.id
-        this.findPurchaseRequisition()
+        this.findInventoryUsage()
       }
     }
   },
   methods: {
     ...mapActions('inventoryUsage', ['find', 'delete', 'approve', 'reject']),
-    findPurchaseRequisition () {
+    findInventoryUsage () {
       this.isLoading = true
       this.find({
         id: this.id,
@@ -187,6 +186,7 @@ export default {
           with_archives: true,
           with_origin: true,
           includes: 'warehouse;' +
+            'items.account;' +
             'items.item;' +
             'items.allocation;' +
             'form.createdBy;' +
@@ -202,6 +202,14 @@ export default {
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
+      })
+    },
+    toggleMore () {
+      let isMoreActive = this.inventoryUsage.items.some(function (el, index) {
+        return el.more === false
+      })
+      this.inventoryUsage.items.forEach(element => {
+        element.more = isMoreActive
       })
     },
     onDelete () {
@@ -238,7 +246,7 @@ export default {
     }
   },
   created () {
-    this.findPurchaseRequisition()
+    this.findInventoryUsage()
   }
 }
 </script>
