@@ -4,6 +4,8 @@
   "create item helper - stock dna" : "Stock DNA berguna untuk mempermudah dalam melakukan tracking kode produksi ataupun tanggal kadaluarsa atas barang, centang opsi dibawah ini apabila item memiliki kode produksi dan tanggal kadaluarsa. Pilihan ini bersifat permanen dan tidak dapat diubah",
   "create item helper - opening stock" : "Silahkan tambahkan jumlah maupun harga beli atas barang ini, apabila anda sudah memiliki stock sebelumnya. Sehingga jumlah stock akan terupdate dalam sistem dan neraca",
   "create item helper - unit" : "Unit sifatnya adalah konversi jumlah barang dengan kode SKU yang sama, seperti contoh : Perusahaan membeli 1 box dengan isi 12 pcs, maka anda dapat memasukan unit box dengan jumlah converter 12. Sistem konversi berguna pada saat perusahaan melakukan input transaksi pembelian/penjualan atas 1 box barang maka secara otomatis stock anda akan bertambah/berkurang sebanyak 12 pcs. Default unit atas barang tersebut adalah selalu satuan terkecil",
+  "create customer helper - group" : "...",
+  "create customer helper - pricing group" : "...",
   "set warehouse helper" : "Hak akses untuk masing-masing user agar dapat melakukan penerimaan/pengeluaran barang dari gudang, fitur ini dibutuhkan untuk melakukan pembelian/penjualan/semua fitur yang berhubungan dengan penerimaan atau pengeluaran barang dari gudang",
   "branch - set as default" : "Centang cabang sebagai default, sehingga semua inputan user dapat berelasi ke cabang ini"
 }

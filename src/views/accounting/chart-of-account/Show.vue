@@ -62,6 +62,30 @@
                 </div>
               </p-form-row>
 
+              <p-form-row
+                id="cash_flow"
+                :disabled="isLoading"
+                :label="$t('cash flow')"
+                :is-horizontal="false"
+                name="cash_flow"
+                v-if="chartOfAccount.cash_flow != null">
+                <div slot="body" class="col-lg-9">
+                  {{ chartOfAccount.cash_flow }}
+                </div>
+              </p-form-row>
+
+              <p-form-row
+                id="cash_flow_position"
+                :disabled="isLoading"
+                :label="$t('cash flow position')"
+                :is-horizontal="false"
+                name="cash_flow_position"
+                v-if="chartOfAccount.cash_flow != null">
+                <div slot="body" class="col-lg-9">
+                  {{ chartOfAccount.cash_flow_position }}
+                </div>
+              </p-form-row>
+
               <hr>
 
               <router-link

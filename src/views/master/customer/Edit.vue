@@ -52,7 +52,7 @@
           <p-separator></p-separator>
 
           <h5>{{ $t('pricing group') | uppercase }}</h5>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus reiciendis ipsam praesentium aliquam quo, aperiam, autem consectetur animi veritatis fugiat velit magni earum ad ullam, hic beatae cum. Dicta, molestiae!</p>
+          <p>{{ $t('customer info helper - pricing group') }}</p>
 
           <m-pricing-group
             :id="'pricing-group-id'"
@@ -62,7 +62,7 @@
           <p-separator></p-separator>
 
           <h5>{{ $t('group') | uppercase }}</h5>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus reiciendis ipsam praesentium aliquam quo, aperiam, autem consectetur animi veritatis fugiat velit magni earum ad ullam, hic beatae cum. Dicta, molestiae!</p>
+          <p>{{ $t('customer info helper - group') }}</p>
 
           <template v-for="(group, index) in form.groups">
             <m-customer-group

@@ -85,7 +85,6 @@
 
         <p-form-row
           id="sub_ledger"
-          v-model="form.sub_ledger"
           :disabled="isLoading"
           :label="$t('sub ledger')"
           name="sub_ledger"
@@ -166,7 +165,7 @@
             <p-form-check-box
               id="is_cash_flow"
               name="is_cash_flow"
-              @click.native="form.is_cash_flow = !form.is_cash_flow"
+              @click.native="toggleCashFlow()"
               :checked="form.is_cash_flow">
             </p-form-check-box>
           </div>
@@ -174,7 +173,6 @@
 
         <p-form-row
           id="cash_flow"
-          v-model="form.cash_flow"
           :disabled="isLoading"
           :label="$t('cash flow')"
           name="cash_flow"
@@ -217,7 +215,6 @@
 
         <p-form-row
           id="cash_flow_position"
-          v-model="form.cash_flow_position"
           :disabled="isLoading"
           :label="$t('cash flow position')"
           name="cash_flow_position"
@@ -230,7 +227,7 @@
               class="btn btn-sm mr-5"
               :class="{
                 'btn-success' : form.cash_flow_position == 'DEBIT',
-                'btn-outline-success' : form.cash_flow_position == 'CREDIT'
+                'btn-outline-success' : form.cash_flow_position != 'DEBIT'
               }"
               @click="form.cash_flow_position = 'DEBIT'">
               DEBIT
@@ -240,7 +237,7 @@
               class="btn btn-sm"
               :class="{
                 'btn-success' : form.cash_flow_position == 'CREDIT',
-                'btn-outline-success' : form.cash_flow_position == 'DEBIT'
+                'btn-outline-success' : form.cash_flow_position != 'CREDIT'
               }"
               @click="form.cash_flow_position = 'CREDIT'">
               CREDIT
@@ -298,15 +295,25 @@ export default {
     updateAccountType (option) {
       this.form.number = option.next_number
     },
+    toggleCashFlow () {
+      this.form.is_cash_flow = !this.form.is_cash_flow
+      if (this.form.is_cash_flow == false) {
+        this.form.cash_flow = null
+        this.form.cash_flow_position = null
+      }
+    },
     onSubmit () {
+      if (this.form.cash_flow != null && this.form.cash_flow_position == null) {
+        this.$notification.error('please choose cash flow position')
+        return
+      }
       this.isLoading = true
-
       this.create(this.form)
         .then(response => {
           this.isLoading = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/accounting/chart-of-account')
+          this.$router.push('/accounting/chart-of-account/' + response.data.id)
         }).catch(error => {
           this.isLoading = false
           this.$notification.error(error.message)
