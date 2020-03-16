@@ -232,7 +232,7 @@ export default {
           fields: 'pin_point_sales_visitations.*',
           sort_by: '-forms.date',
           filter_like: {
-            'form.date': this.searchText,
+            'form.date': this.searchText
             // 'name': this.searchText,
             // 'group': this.searchText,
             // 'address': this.searchText,
@@ -240,7 +240,7 @@ export default {
             // 'sub_district': this.searchText,
             // 'phone': this.searchText,
             // 'notes': this.searchText,
-            'form.createdBy.name': this.searchText
+            // 'form.createdBy.name': this.searchText
           },
           limit: 20,
           page: this.currentPage
