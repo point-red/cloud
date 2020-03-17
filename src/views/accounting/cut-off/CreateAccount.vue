@@ -63,6 +63,7 @@
                     <th>Name</th>
                     <th>Type</th>
                     <th class="text-center">Sub Ledger</th>
+                    <th class="text-center">Cash Flow</th>
                     <th class="text-right">Debit</th>
                     <th class="text-right">Credit</th>
                   </tr>
@@ -77,13 +78,14 @@
                       </a>
                     </td>
                     <td>{{ account.chart_of_account.type.alias }}</td>
-                    <td class="text-center"><i v-if="account.is_sub_ledger == 1" class="fa fa-check"></i></td>
+                    <td class="text-center">{{ account.chart_of_account.sub_ledger }}</td>
+                    <td class="text-center">{{ account.chart_of_account.cash_flow }} <template v-if="account.chart_of_account.cash_flow">+</template>{{ account.chart_of_account.cash_flow_position }}</td>
                     <td class="text-right">{{ account.debit | numberFormat }}</td>
                     <td class="text-right">{{ account.credit | numberFormat }}</td>
                   </tr>
                   <tr slot="p-body">
                     <th></th>
-                    <td colspan="3" class="text-right"><b>TOTAL</b></td>
+                    <td colspan="4" class="text-right"><b>TOTAL</b></td>
                     <td class="text-right">{{ totalDebit | numberFormat }}</td>
                     <td class="text-right">{{ totalCredit | numberFormat }}</td>
                   </tr>

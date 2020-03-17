@@ -113,7 +113,7 @@
             <p-block-inner :is-loading="isLoading">
               <point-table>
                 <tr slot="p-head">
-                  <th></th>
+                  <th>Date</th>
                   <th>Notes</th>
                   <th class="text-right">Debit</th>
                   <th class="text-right">Credit</th>
@@ -122,10 +122,10 @@
                   slot="p-body"
                   v-for="(journal, index) in journals"
                   :key="index">
-                  <th>{{ $index + 1 }}</th>
+                  <th>{{ journal.form.date | dateFormat('DD MMMM YYYY') }}</th>
                   <td>{{ journal.notes }}</td>
-                  <td class="text-right">{{ journal.debit }}</td>
-                  <td class="text-right">{{ journal.credit }}</td>
+                  <td class="text-right">{{ journal.debit | numberFormat }}</td>
+                  <td class="text-right">{{ journal.credit | numberFormat }}</td>
                 </tr>
               </point-table>
             </p-block-inner>
@@ -195,7 +195,18 @@ export default {
         this.$notification.error(error.message)
       })
     this.get({
-      chart_of_account_id: this.id
+      params: {
+        joins: {
+          1: 'forms.id=journals.form_id'
+        },
+        fields: 'journals.*',
+        includes: 'form',
+        sort_by: '-forms.date',
+        filter_equal: {
+          chart_of_account_id: this.id
+        },
+        limit: 20
+      }
     })
   }
 }

@@ -88,6 +88,7 @@ export default {
           this.options.push({
             'id': key['id'],
             'alias': key['alias'],
+            'name': key['name'],
             'next_number': key['next_number'],
             'label': key['alias']
           })
