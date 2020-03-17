@@ -194,10 +194,10 @@
                   type="button"
                   class="btn btn-sm mr-5"
                   :class="{
-                    'btn-success' : form.cash_flow == 'INVESTATION',
-                    'btn-outline-success' : form.cash_flow != 'INVESTATION'
+                    'btn-success' : form.cash_flow == 'INVESTMENT',
+                    'btn-outline-success' : form.cash_flow != 'INVESTMENT'
                   }"
-                  @click="form.cash_flow = 'INVESTATION'">
+                  @click="form.cash_flow = 'INVESTMENT'">
                   {{ $t('investation') | uppercase }}
                 </button>
                 <button
