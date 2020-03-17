@@ -35,7 +35,7 @@
                   v-model="form.chart_of_account_id"
                   :label="form.chart_of_account_name"
                   @choosen="onChooseChartOfAccount($event)"
-                  type="inventory"/>
+                  type="INVENTORY"/>
                 <p>{{ $t('create item helper - chart of account') }}</p>
               </div>
             </p-form-row>

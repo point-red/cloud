@@ -50,9 +50,9 @@
                 <router-link :to="{ name: 'inventory.usage.create' }" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <router-link :to="{ name: 'inventory.usage.edit', params: { id: inventoryUsage.id }}" class="btn btn-sm btn-outline-secondary mr-5">
+                <!-- <router-link :to="{ name: 'inventory.usage.edit', params: { id: inventoryUsage.id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
-                </router-link>
+                </router-link> -->
               </div>
               <hr>
               <h4 class="text-center m-0">{{ $t('inventory usage') | uppercase }}</h4>

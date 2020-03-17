@@ -51,14 +51,14 @@
           <p-separator></p-separator>
 
           <h5>{{ $t('pricing group') | uppercase }}</h5>
-          <p>{{ $t('customer info helper - pricing group') }}</p>
+          <p>{{ $t('create customer helper - pricing group') }}</p>
 
           <m-pricing-group :id="'pricing-group-id'" v-model="form.pricing_group_id"/>
 
           <p-separator></p-separator>
 
           <h5>{{ $t('group') | uppercase }}</h5>
-          <p>{{ $t('customer info helper - group') }}</p>
+          <p>{{ $t('create customer helper - group') }}</p>
 
           <template v-for="(group, index) in form.groups">
             <m-customer-group
