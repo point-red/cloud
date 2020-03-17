@@ -71,6 +71,7 @@
               <th>Full Name</th>
               <th>Email</th>
               <th>Phone</th>
+              <th style="width:50px"></th>
             </tr>
             <tr
               v-for="(user, index) in project.users"
@@ -86,6 +87,7 @@
               <td>{{ user.first_name | lowercase }} {{ user.last_name | lowercase }}</td>
               <td>{{ user.email | lowercase }}</td>
               <td>{{ user.phone }}</td>
+              <td><button class="btn btn-sm btn-outline-danger" v-if="index > 0" @click="onDeleteProjectUser(user.id)">{{ $t('delete') | uppercase }}</button></td>
               </template>
             </tr>
           </point-table>
@@ -163,11 +165,48 @@ export default {
       findProject: 'find',
       updateProject: 'update'
     }),
+    ...mapActions('accountProjectUser', {
+      deleteProjectUser: 'delete'
+    }),
     ...mapActions('accountRequestJoinProject', {
       getRequest: 'get',
       updateRequest: 'update',
       deleteRequest: 'delete'
     }),
+    onDeleteProjectUser (userId) {
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isLoading = true
+        this.deleteProjectUser({
+          user_id: userId,
+          project_id: this.id
+        }).then(response => {
+          this.findProject({ id: this.id })
+            .then(response => {
+              this.form = this.project
+              this.updateCheckBoxDescription()
+              this.isLoading = false
+            }).catch(error => {
+              this.$router.replace('/account/whoops')
+              this.isLoading = false
+              this.$notification.error(error.message)
+            })
+          this.getRequest({
+            params: {
+              project_id: this.id
+            }
+          }).then(response => {
+            //
+          }).catch(error => {
+            this.$router.replace('/account/whoops')
+            this.$notification.error(error.message)
+          })
+          this.isLoading = false
+        }).catch(response => {
+          this.isLoading = false
+          this.$notification.error('cannot delete')
+        })
+      })
+    },
     updateCheckBoxDescription () {
       if (this.project.invitation_code_enabled == true) {
         this.invitationCodeStatus = 'Invitation Active'
