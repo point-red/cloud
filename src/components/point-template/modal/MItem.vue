@@ -83,8 +83,9 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          limit: 50,
+          limit: 100,
           filter_like: {
+            code: this.searchText,
             name: this.searchText
           },
           includes: 'units'
