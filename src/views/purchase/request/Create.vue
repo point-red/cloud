@@ -336,7 +336,6 @@ export default {
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/purchase/request/' + response.data.id)
         }).catch(error => {
-          console.log(error.errors)
           this.isSaving = false
           let json = ''
           if (error.errors) {
