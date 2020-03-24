@@ -31,7 +31,9 @@ import '@/firebase'
 import PackageVersion from '@/components/package-version'
 import * as VueGoogleMaps from 'vue2-google-maps'
 import VScrollLock from 'v-scroll-lock'
+import SweetModal from 'sweet-modal-vue/src/plugin.js'
 
+Vue.use(SweetModal)
 Vue.use(VScrollLock)
 Vue.use(VueGoogleMaps, {
   load: {

@@ -49,6 +49,8 @@
   "select": "select",
   "form": "form",
   "save": "save",
+  "save succeed": "save succeed",
+  "save failed": "save failed",
   "review": "review",
   "required": "required",
   "close": "close",

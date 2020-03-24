@@ -10,14 +10,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <router-link
-            to="/master/supplier/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addSupplier.open()"
             v-if="$permission.has('create supplier')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -66,6 +67,8 @@
         </p-pagination>
       </p-block>
     </div>
+
+    <m-add-supplier ref="addSupplier" @close="onClose"></m-add-supplier>
   </div>
 </template>
 
@@ -128,6 +131,9 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
+      this.getSupplierRequest()
+    },
+    onClose () {
       this.getSupplierRequest()
     }
   },

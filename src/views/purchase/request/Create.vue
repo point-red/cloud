@@ -25,10 +25,11 @@
                 </div>
                 <div class="float-sm-left">
                   <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
+                  <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span>
                   <m-supplier
                     id="supplier"
-                    v-model="form.supplier_id"
-                    @choosen="chooseSupplier()"
+                    ref="supplier"
+                    @choosen="chooseSupplier($event)"
                     @clear="clearSupplier()"/>
                   <div style="font-size:12px" v-if="form.supplier_phone">
                     {{ form.supplier_address | uppercase }} <br v-if="form.supplier_email">
@@ -212,6 +213,7 @@ export default {
         required_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         supplier_id: null,
         supplier_name: null,
+        supplier_label: null,
         supplier_address: null,
         supplier_phone: null,
         supplier_email: null,
@@ -283,7 +285,9 @@ export default {
       row.units = []
     },
     chooseSupplier (value) {
-      this.form.supplier_name = value.label
+      this.form.supplier_id = value.id
+      this.form.supplier_name = value.name
+      this.form.supplier_label = value.label
       this.form.supplier_address = value.address
       this.form.supplier_phone = value.phone
       this.form.supplier_email = value.email
@@ -291,6 +295,7 @@ export default {
     clearSupplier () {
       this.form.supplier_id = null
       this.form.supplier_name = null
+      this.form.supplier_label = null
       this.form.supplier_address = null
       this.form.supplier_phone = null
       this.form.supplier_email = null

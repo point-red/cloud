@@ -95,7 +95,11 @@ export default new Router({
           if (Vue.cookie.get('TAT') !== null) {
             store.dispatch('reloadVuex')
               .then(response => {
-                next()
+                if (window.location.host == process.env.VUE_APP_DOMAIN) {
+                  next('/account')
+                } else {
+                  next()
+                }
               }).catch(error => {
                 next('/503')
               })
