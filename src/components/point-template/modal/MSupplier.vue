@@ -28,8 +28,10 @@
       <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
         {{ $t('you don\'t have any') | capitalize }} {{ $t('supplier') | capitalize }}
       </div>
-      <button slot="button" type="button" @click="add()" class="btn btn-sm btn-outline-danger mr-5">{{ $t('add') | uppercase }}</button>
-      <button slot="button" type="button" @click="clear()" class="btn btn-sm btn-outline-danger mr-5">{{ $t('clear') | uppercase }}</button>
+      <div class="pull-right">
+        <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
+        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+      </div>
     </sweet-modal>
 
     <m-add-supplier id="add-supplier" ref="addSupplier" @close="onClose()"></m-add-supplier>
@@ -87,7 +89,7 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          limit: 50,
+          limit: 20,
           includes: 'addresses;phones;emails',
           filter_like: {
             'name': this.searchText

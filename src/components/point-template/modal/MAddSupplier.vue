@@ -44,12 +44,12 @@
             @errors="form.errors.set('phone', null)"/>
         </div>
       </div>
-      <template slot="button">
+      <div class="pull-right">
         <span style="color:red;font-size:10px" class="mr-5" v-if="this.isFailed"><i class="fa fa-warning"></i> {{ $t('save failed') | uppercase }}</span>
         <button  type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
           <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
         </button>
-      </template>
+      </div>
     </sweet-modal>
   </form>
 </template>
