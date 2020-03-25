@@ -41,7 +41,7 @@
               v-for="(supplier, index) in suppliers"
               :key="supplier.id"
               slot="p-body">
-              <th>{{ index + 1 }}</th>
+              <th>{{ (page - 1) * 10 + index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'supplier.show', params: { id: supplier.id }}">
                   {{ supplier.name }}
@@ -61,7 +61,7 @@
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
           @updatePage="updatePage">
         </p-pagination>
@@ -91,7 +91,7 @@ export default {
     return {
       isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
@@ -103,7 +103,7 @@ export default {
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
+      this.page = 1
       this.getSupplierRequest()
     }, 300),
     getSupplierRequest () {
@@ -121,7 +121,7 @@ export default {
           join: 'addresses,phones,emails',
           includes: 'addresses;phones;emails;groups',
           limit: 10,
-          page: this.currentPage
+          page: this.page
         }
       }).then(response => {
         this.isLoading = false
@@ -130,7 +130,7 @@ export default {
       })
     },
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
       this.getSupplierRequest()
     },
     onClose () {

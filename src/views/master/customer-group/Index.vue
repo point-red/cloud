@@ -10,14 +10,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <router-link
-            to="/master/customer-group/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addCustomerGroup.open()"
             v-if="$permission.has('create customer')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -38,7 +39,7 @@
               v-for="(group, index) in groups"
               :key="index"
               slot="p-body">
-              <th>{{ ++index }}</th>
+              <th>{{ (page - 1) * limit + index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'customer-group.show', params: { id: group.id }}">
                   {{ group.name }}
@@ -48,12 +49,14 @@
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
           @updatePage="updatePage">
         </p-pagination>
       </p-block>
     </div>
+
+    <m-add-customer-group ref="addCustomerGroup" @added="onAdded"></m-add-customer-group>
   </div>
 </template>
 
@@ -76,7 +79,8 @@ export default {
     return {
       isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1
     }
   },
@@ -88,7 +92,7 @@ export default {
       getGroup: 'get'
     }),
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
       this.getGroupRequest()
     },
     getGroupRequest () {
@@ -99,8 +103,8 @@ export default {
           filter_like: {
             'name': this.searchText
           },
-          limit: 10,
-          page: this.currentPage
+          limit: this.limit,
+          page: this.page
         }
       }).then((response) => {
         this.isLoading = false
@@ -112,9 +116,13 @@ export default {
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
+      this.page = 1
       this.getGroupRequest()
-    }, 300)
+    }, 300),
+    onAdded (group) {
+      this.searchText = group.name
+      this.getGroupRequest()
+    }
   },
   created () {
     this.getGroupRequest()

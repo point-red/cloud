@@ -11,18 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/customer-group/create"
+          <button
+            type="button"
+            @click="$refs.addCustomerGroup.open()"
             v-if="$permission.has('create customer')"
             class="btn btn-sm btn-outline-secondary mr-5">
             <span>{{ $t('create') | uppercase }}</span>
-          </router-link>
-          <router-link
-            :to="{ path: '/master/customer-group/' + group.id + '/edit', params: { id: group.id }}"
+          </button>
+          <button
+            type="button"
+            @click="$refs.editCustomerGroup.open(group)"
             v-if="$permission.has('update customer')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </button>
           <button
             type="button"
             @click="onDelete()"
@@ -43,6 +45,9 @@
         </p-block-inner>
       </p-block>
     </div>
+
+    <m-add-customer-group ref="addCustomerGroup" @added="onAddedCustomerGroup($event)"></m-add-customer-group>
+    <m-edit-customer-group ref="editCustomerGroup" @updated="onUpdatedCustomerGroup($event)"></m-edit-customer-group>
   </div>
 </template>
 
@@ -77,8 +82,16 @@ export default {
     updatePage (value) {
       this.currentPage = value
     },
+    onAddedCustomerGroup (group) {
+      this.$router.push('/master/customer-group/' + group.id)
+      this.id = group.id
+      this.findCustomerGroup()
+    },
+    onUpdatedCustomerGroup (group) {
+      this.findCustomerGroup()
+    },
     onDelete () {
-      this.$alert.confirm('DELETE').then(response => {
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
         this.isDeleting = true
         this.delete({
           id: this.id
@@ -90,18 +103,21 @@ export default {
           this.$notification.error('cannot delete this customer')
         })
       })
+    },
+    findCustomerGroup () {
+      this.isLoading = true
+      this.find({
+        id: this.id
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
     }
   },
   created () {
-    this.isLoading = true
-    this.find({
-      id: this.id
-    }).then(response => {
-      this.isLoading = false
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    this.findCustomerGroup()
   }
 }
 </script>

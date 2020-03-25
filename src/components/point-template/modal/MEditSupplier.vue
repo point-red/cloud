@@ -17,6 +17,7 @@
             :disabled="isSaving"
             :label="$t('name')"
             name="name"
+            ref="name"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"/>
 
@@ -49,7 +50,6 @@
         </div>
       </div>
       <div class="pull-right">
-        <span style="color:red;font-size:10px" class="mr-5" v-if="this.isFailed"><i class="fa fa-warning"></i> {{ $t('update failed') | uppercase }}</span>
         <button  type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
           <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
         </button>
@@ -114,6 +114,9 @@ export default {
         if (this.supplier.phones.length > 0) {
           this.form.phones[0].number = this.supplier.phones[0].number
         }
+        this.$nextTick(() => {
+          this.$refs.name.setFocus()
+        })
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
