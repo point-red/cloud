@@ -2,9 +2,13 @@
   <form @submit.prevent="onSubmit">
     <sweet-modal
       ref="modal"
-      :title="$t('add supplier') | uppercase"
+      :title="$t('edit supplier') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
+      <template v-if="isLoading">
+        <h3 class="text-center">Loading ...</h3>
+      </template>
+      <template v-else>
       <div class="row">
         <div class="col-sm-12">
           <p-form-row
@@ -45,11 +49,12 @@
         </div>
       </div>
       <div class="pull-right">
-        <span style="color:red;font-size:10px" class="mr-5" v-if="this.isFailed"><i class="fa fa-warning"></i> {{ $t('save failed') | uppercase }}</span>
+        <span style="color:red;font-size:10px" class="mr-5" v-if="this.isFailed"><i class="fa fa-warning"></i> {{ $t('update failed') | uppercase }}</span>
         <button  type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
         </button>
       </div>
+      </template>
     </sweet-modal>
   </form>
 </template>
@@ -61,9 +66,11 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
+      isLoading: false,
       isSaving: false,
       isFailed: false,
       form: new Form({
+        id: null,
         name: null,
         emails: [{
           email: null
@@ -81,20 +88,45 @@ export default {
     ...mapGetters('masterSupplier', ['supplier'])
   },
   methods: {
-    ...mapActions('masterSupplier', ['create']),
+    ...mapActions('masterSupplier', ['update', 'find']),
     onClose () {
       this.isFailed = false
       Object.assign(this.$data, this.$options.data.call(this))
       this.$emit('close')
     },
+    findSupplier () {
+      this.isLoading = true
+      this.find({
+        id: this.form.id,
+        params: {
+          includes: 'addresses;phones;emails'
+        }
+      }).then(response => {
+        this.isLoading = false
+        this.form.name = this.supplier.name
+
+        if (this.supplier.emails.length > 0) {
+          this.form.emails[0].email = this.supplier.emails[0].email
+        }
+        if (this.supplier.addresses.length > 0) {
+          this.form.addresses[0].address = this.supplier.addresses[0].address
+        }
+        if (this.supplier.phones.length > 0) {
+          this.form.phones[0].number = this.supplier.phones[0].number
+        }
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    },
     onSubmit () {
       this.isSaving = true
-      this.create(this.form)
+      this.update(this.form)
         .then(response => {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$emit('added', response.data)
+          this.$emit('updated', response.data)
           this.close()
         }).catch(error => {
           this.isSaving = false
@@ -102,7 +134,9 @@ export default {
           this.form.errors.record(error.errors)
         })
     },
-    open () {
+    open (id) {
+      this.form.id = id
+      this.findSupplier()
       this.$refs.modal.open()
     },
     close () {

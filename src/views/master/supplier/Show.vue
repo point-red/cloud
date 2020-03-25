@@ -11,18 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/supplier/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addSupplier.open()"
             v-if="$permission.has('create supplier')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('create') | uppercase }}
-          </router-link>
-          <router-link
-            :to="{ path: '/master/supplier/' + supplier.id + '/edit', params: { id: supplier.id }}"
+          </a>
+          <a
+            href="javascript:void(0)"
+            @click="$refs.editSupplier.open(supplier.id)"
             v-if="$permission.has('update supplier')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </a>
           <button
             type="button"
             @click="onDelete()"
@@ -61,6 +63,8 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-add-supplier ref="addSupplier" @added="onAddedSupplier($event)"></m-add-supplier>
+    <m-edit-supplier ref="editSupplier" @updated="onUpdatedSupplier($event)"></m-edit-supplier>
   </div>
 </template>
 
@@ -94,6 +98,38 @@ export default {
   },
   methods: {
     ...mapActions('masterSupplier', ['find', 'delete']),
+    findSupplier () {
+      this.isLoading = true
+      this.find({
+        id: this.id,
+        params: {
+          includes: 'addresses;phones;emails'
+        }
+      }).then(response => {
+        this.isLoading = false
+        this.data.name = response.data.name
+        if (response.data.emails.length > 0) {
+          this.data.email = response.data.emails[0].email
+        }
+        if (response.data.addresses.length > 0) {
+          this.data.address = response.data.addresses[0].address
+        }
+        if (response.data.phones.length > 0) {
+          this.data.phone = response.data.phones[0].number
+        }
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    },
+    onAddedSupplier (supplier) {
+      this.$router.push('/master/supplier/' + supplier.id)
+      this.id = supplier.id
+      this.findSupplier()
+    },
+    onUpdatedSupplier (supplier) {
+      this.findSupplier()
+    },
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
         this.isDeleting = true
@@ -110,28 +146,7 @@ export default {
     }
   },
   created () {
-    this.isLoading = true
-    this.find({
-      id: this.id,
-      params: {
-        includes: 'addresses;phones;emails'
-      }
-    }).then(response => {
-      this.isLoading = false
-      this.data.name = response.data.name
-      if (response.data.emails.length > 0) {
-        this.data.email = response.data.emails[0].email
-      }
-      if (response.data.addresses.length > 0) {
-        this.data.address = response.data.addresses[0].address
-      }
-      if (response.data.phones.length > 0) {
-        this.data.phone = response.data.phones[0].number
-      }
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    this.findSupplier()
   }
 }
 </script>
