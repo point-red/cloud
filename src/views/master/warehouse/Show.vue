@@ -35,9 +35,10 @@
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
-            id="name"
+            id="branch"
             label="branch"
-            name="name"
+            name="branch"
+            v-if="data.branch"
             v-model="data.branch.name"
             readonly/>
 

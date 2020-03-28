@@ -2,14 +2,14 @@
   <form @submit.prevent="onSubmit">
     <sweet-modal
       ref="modal"
-      :title="$t('add customer group') | uppercase"
+      :title="$t('add item group') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
       <div class="row">
         <div class="col-sm-12">
           <p-form-row
             id="name"
-            ref="name"
+            ref="groupName"
             v-model="form.name"
             :disabled="isSaving"
             :label="$t('name')"
@@ -42,10 +42,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterCustomerGroup', ['group'])
+    ...mapGetters('masterItemGroup', ['group'])
   },
   methods: {
-    ...mapActions('masterCustomerGroup', ['create']),
+    ...mapActions('masterItemGroup', ['create']),
     onClose () {
       this.isFailed = false
       Object.assign(this.$data, this.$options.data.call(this))
@@ -69,7 +69,7 @@ export default {
     open () {
       this.$refs.modal.open()
       this.$nextTick(() => {
-        this.$refs.name.setFocus()
+        this.$refs.groupName.setFocus()
       })
     },
     close () {

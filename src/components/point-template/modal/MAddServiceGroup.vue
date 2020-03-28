@@ -2,7 +2,7 @@
   <form @submit.prevent="onSubmit">
     <sweet-modal
       ref="modal"
-      :title="$t('add customer group') | uppercase"
+      :title="$t('add service group') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
       <div class="row">
@@ -42,10 +42,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterCustomerGroup', ['group'])
+    ...mapGetters('masterServiceGroup', ['group'])
   },
   methods: {
-    ...mapActions('masterCustomerGroup', ['create']),
+    ...mapActions('masterServiceGroup', ['create']),
     onClose () {
       this.isFailed = false
       Object.assign(this.$data, this.$options.data.call(this))

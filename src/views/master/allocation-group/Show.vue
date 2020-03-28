@@ -68,7 +68,7 @@ export default {
       data: {
         name: null
       },
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
@@ -78,7 +78,7 @@ export default {
   methods: {
     ...mapActions('masterAllocationGroup', ['find', 'delete']),
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
     },
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {

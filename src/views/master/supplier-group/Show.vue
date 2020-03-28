@@ -73,7 +73,7 @@ export default {
       data: {
         name: null
       },
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
@@ -83,7 +83,7 @@ export default {
   methods: {
     ...mapActions('masterSupplierGroup', ['find', 'delete']),
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
     },
     onAddedSupplierGroup (group) {
       this.$router.push('/master/supplier-group/' + group.id)

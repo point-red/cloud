@@ -47,7 +47,11 @@
                   {{ warehouse.name }}
                 </router-link>
               </td>
-              <td>{{ warehouse.branch.name }}</td>
+              <td>
+                <template v-if="warehouse.branch">
+                  {{ warehouse.branch.name }}
+                </template>
+              </td>
               <td>{{ warehouse.address }}</td>
               <td>{{ warehouse.phone }}</td>
             </tr>

@@ -10,14 +10,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <router-link
-            to="/master/service-group/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addServiceGroup.open()"
             v-if="$permission.has('create service')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -54,6 +55,8 @@
         </p-pagination>
       </p-block>
     </div>
+
+    <m-add-service-group ref="addServiceGroup" @added="onAdded"></m-add-service-group>
   </div>
 </template>
 
@@ -87,6 +90,10 @@ export default {
     ...mapActions('masterServiceGroup', {
       getGroup: 'get'
     }),
+    onAdded (group) {
+      this.searchText = group.name
+      this.getGroupRequest()
+    },
     updatePage (value) {
       this.currentPage = value
       this.getGroupRequest()

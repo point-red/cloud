@@ -11,18 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/item-group/create"
+          <button
+            type="button"
+            @click="$refs.addItemGroup.open()"
             v-if="$permission.has('create item')"
             class="btn btn-sm btn-outline-secondary mr-5">
-            {{ $t('create') | uppercase }}
-          </router-link>
-          <router-link
-            :to="{ path: '/master/item-group/' + group.id + '/edit', params: { id: group.id }}"
+            <span>{{ $t('create') | uppercase }}</span>
+          </button>
+          <button
+            type="button"
+            @click="$refs.editItemGroup.open(group)"
             v-if="$permission.has('update item')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </button>
           <button
             type="button"
             @click="onDelete()"
@@ -43,6 +45,9 @@
         </p-block-inner>
       </p-block>
     </div>
+
+    <m-add-item-group ref="addItemGroup" @added="onAddedItemGroup($event)"></m-add-item-group>
+    <m-edit-item-group ref="editItemGroup" @updated="onUpdatedItemGroup($event)"></m-edit-item-group>
   </div>
 </template>
 
@@ -68,7 +73,7 @@ export default {
       data: {
         name: null
       },
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
@@ -78,7 +83,15 @@ export default {
   methods: {
     ...mapActions('masterItemGroup', ['find', 'delete']),
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
+    },
+    onAddedItemGroup (group) {
+      this.$router.push('/master/item-group/' + group.id)
+      this.id = group.id
+      this.findItemGroup()
+    },
+    onUpdatedItemGroup (group) {
+      this.findItemGroup()
     },
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
@@ -93,19 +106,22 @@ export default {
           this.$notification.error('cannot delete this item')
         })
       })
+    },
+    findItemGroup () {
+      this.isLoading = true
+      this.find({
+        id: this.id
+      }).then(response => {
+        this.isLoading = false
+        this.data.name = response.data.name
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
     }
   },
   created () {
-    this.isLoading = true
-    this.find({
-      id: this.id
-    }).then(response => {
-      this.isLoading = false
-      this.data.name = response.data.name
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    this.findItemGroup()
   }
 }
 </script>

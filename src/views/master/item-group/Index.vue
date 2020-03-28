@@ -10,14 +10,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <router-link
-            to="/master/item-group/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addItemGroup.open()"
             v-if="$permission.has('create item')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -54,6 +55,8 @@
         </p-pagination>
       </p-block>
     </div>
+
+    <m-add-item-group ref="addItemGroup" @added="onAdded"></m-add-item-group>
   </div>
 </template>
 
@@ -114,7 +117,11 @@ export default {
       this.searchText = value
       this.currentPage = 1
       this.getGroupRequest()
-    }, 300)
+    }, 300),
+    onAdded (group) {
+      this.searchText = group.name
+      this.getGroupRequest()
+    }
   },
   created () {
     this.getGroupRequest()

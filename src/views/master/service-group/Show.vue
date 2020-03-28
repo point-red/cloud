@@ -11,18 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/service-group/create"
+          <button
+            type="button"
+            @click="$refs.addServiceGroup.open()"
             v-if="$permission.has('create service')"
             class="btn btn-sm btn-outline-secondary mr-5">
-            {{ $t('create') | uppercase }}
-          </router-link>
-          <router-link
-            :to="{ path: '/master/service-group/' + group.id + '/edit', params: { id: group.id }}"
+            <span>{{ $t('create') | uppercase }}</span>
+          </button>
+          <button
+            type="button"
+            @click="$refs.editServiceGroup.open(group)"
             v-if="$permission.has('update service')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </button>
           <button
             type="button"
             @click="onDelete()"
@@ -43,6 +45,9 @@
         </p-block-inner>
       </p-block>
     </div>
+
+    <m-add-service-group ref="addServiceGroup" @added="onAddedServiceGroup($event)"></m-add-service-group>
+    <m-edit-service-group ref="editServiceGroup" @updated="onUpdatedServiceGroup($event)"></m-edit-service-group>
   </div>
 </template>
 
@@ -68,7 +73,7 @@ export default {
       data: {
         name: null
       },
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
@@ -78,7 +83,15 @@ export default {
   methods: {
     ...mapActions('masterServiceGroup', ['find', 'delete']),
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
+    },
+    onAddedServiceGroup (group) {
+      this.$router.push('/master/service-group/' + group.id)
+      this.id = group.id
+      this.findServiceGroup()
+    },
+    onUpdatedServiceGroup (group) {
+      this.findServiceGroup()
     },
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
@@ -92,6 +105,18 @@ export default {
           this.isDeleting = false
           this.$notification.error('cannot delete this service')
         })
+      })
+    },
+    findServiceGroup () {
+      this.isLoading = true
+      this.find({
+        id: this.id
+      }).then(response => {
+        this.isLoading = false
+        this.data.name = response.data.name
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
       })
     }
   },

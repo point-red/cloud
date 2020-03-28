@@ -70,7 +70,7 @@ export default {
       id: this.$route.params.id,
       isLoading: false,
       isDeleting: false,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
@@ -80,7 +80,7 @@ export default {
   methods: {
     ...mapActions('masterCustomerGroup', ['find', 'delete']),
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
     },
     onAddedCustomerGroup (group) {
       this.$router.push('/master/customer-group/' + group.id)
