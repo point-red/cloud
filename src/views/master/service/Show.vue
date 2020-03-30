@@ -11,18 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/service/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addService.open()"
             v-if="$permission.has('create service')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('create') | uppercase }}
-          </router-link>
-          <router-link
-            :to="{ path: '/master/service/' + service.id + '/edit', params: { id: service.id }}"
+          </a>
+          <a
+            href="javascript:void(0)"
+            @click="$refs.editService.open(service.id)"
             v-if="$permission.has('update service')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </a>
           <button
             type="button"
             @click="onDelete()"
@@ -43,6 +45,8 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-add-service ref="addService" @added="onAddedService($event)"></m-add-service>
+    <m-edit-service ref="editService" @updated="onUpdatedService($event)"></m-edit-service>
   </div>
 </template>
 
@@ -64,11 +68,7 @@ export default {
       isLoading: false,
       isDeleting: false,
       data: {
-        name: null,
-        email: null,
-        address: null,
-        phone: null,
-        priority: false
+        name: null
       }
     }
   },
@@ -89,18 +89,29 @@ export default {
             this.$notification.error('cannot delete this service')
           })
       })
+    },
+    onAddedService (service) {
+      this.$router.push('/master/service/' + service.id)
+      this.id = service.id
+      this.findService()
+    },
+    onUpdatedService (service) {
+      this.findService()
+    },
+    findService () {
+      this.isLoading = true
+      this.find({ id: this.id })
+        .then(response => {
+          this.isLoading = false
+          this.data.name = response.data.name
+        }).catch(error => {
+          this.isLoading = false
+          this.$notification.error(error.message)
+        })
     }
   },
   created () {
-    this.isLoading = true
-    this.find({ id: this.id })
-      .then(response => {
-        this.isLoading = false
-        this.data.name = response.data.name
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.findService()
   }
 }
 </script>
