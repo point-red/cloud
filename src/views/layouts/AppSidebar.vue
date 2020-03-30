@@ -300,12 +300,12 @@
                 <span class="sidebar-mini-hide">{{ $t("manufacture") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture processing')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture processing')">
                   <router-link
                     to="/manufacture/processing"
                     active-class="active">{{ $t('processing') | uppercase }}
                   </router-link>
-                </li>
+                </li> -->
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture machine')">
                   <router-link
                     to="/manufacture/machine"
@@ -364,12 +364,12 @@
                     active-class="active">{{ $t('chart of account') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cut off')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cut off')">
                   <router-link
                     to="/accounting/cut-off"
                     active-class="active">{{ $t('cut off') | uppercase }}
                   </router-link>
-                </li>
+                </li> -->
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read balance sheet')">
                   <router-link
                     to="/accounting/balance-sheet"
