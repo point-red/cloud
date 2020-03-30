@@ -11,18 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/branch/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addBranch.open()"
             v-if="$permission.has('create branch')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('create') | uppercase }}
-          </router-link>
-          <router-link
-            :to="{ path: '/master/branch/' + branch.id + '/edit', params: { id: branch.id }}"
+          </a>
+          <a
+            href="javascript:void(0)"
+            @click="$refs.editBranch.open(branch.id)"
             v-if="$permission.has('update branch')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </a>
           <button
             type="button"
             @click="onDelete()"
@@ -86,6 +88,9 @@
         </p-block-inner>
       </p-block>
     </div>
+
+    <m-add-branch ref="addBranch" @added="onAddedBranch($event)"></m-add-branch>
+    <m-edit-branch ref="editBranch" @updated="onUpdatedBranch($event)"></m-edit-branch>
   </div>
 </template>
 
@@ -179,35 +184,46 @@ export default {
           return user.id == userId
         })
       }
+    },
+    onAddedBranch (branch) {
+      this.$router.push('/master/branch/' + branch.id)
+      this.id = branch.id
+      this.findBranch()
+    },
+    onUpdatedBranch (branch) {
+      this.findBranch()
+    },
+    findBranch () {
+      this.isLoading = true
+      this.find({
+        id: this.id,
+        params: {
+          includes: 'users'
+        }
+      }).then(response => {
+        this.isLoading = false
+        this.data.name = response.data.name
+        this.data.address = response.data.address
+        this.data.phone = response.data.phone
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+
+      this.get({
+        params: {
+          includes: 'branches'
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
     }
   },
   created () {
-    this.isLoading = true
-    this.find({
-      id: this.id,
-      params: {
-        includes: 'users'
-      }
-    }).then(response => {
-      this.isLoading = false
-      this.data.name = response.data.name
-      this.data.address = response.data.address
-      this.data.phone = response.data.phone
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
-
-    this.get({
-      params: {
-        includes: 'branches'
-      }
-    }).then(response => {
-      this.isLoading = false
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    this.findBranch()
   }
 }
 </script>

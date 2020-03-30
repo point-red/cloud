@@ -68,7 +68,7 @@
       </p-block>
     </div>
 
-    <m-add-supplier ref="addSupplier" @close="onClose"></m-add-supplier>
+    <m-add-supplier ref="addSupplier" @added="onAdded"></m-add-supplier>
   </div>
 </template>
 
@@ -133,7 +133,7 @@ export default {
       this.page = value
       this.getSupplierRequest()
     },
-    onClose () {
+    onAdded () {
       this.getSupplierRequest()
     }
   },
