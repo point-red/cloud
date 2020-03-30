@@ -10,14 +10,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <router-link
-            to="/master/allocation/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addAllocation.open()"
             v-if="$permission.has('create allocation')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -50,12 +51,13 @@
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
           @updatePage="updatePage">
         </p-pagination>
       </p-block>
     </div>
+    <m-add-allocation ref="addAllocation" @added="onAdded"></m-add-allocation>
   </div>
 </template>
 
@@ -78,7 +80,8 @@ export default {
     return {
       isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1
     }
   },
@@ -88,7 +91,7 @@ export default {
   methods: {
     ...mapActions('masterAllocation', ['get']),
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
       this.getAllocationRequest()
     },
     getAllocationRequest () {
@@ -96,8 +99,8 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          limit: 20,
-          page: this.currentPage,
+          limit: this.limit,
+          page: this.page,
           filter_like: {
             'code': this.searchText,
             'name': this.searchText
@@ -112,9 +115,12 @@ export default {
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
+      this.page = 1
       this.getAllocationRequest()
-    }, 300)
+    }, 300),
+    onAdded () {
+      this.getAllocationRequest()
+    }
   },
   created () {
     this.getAllocationRequest()

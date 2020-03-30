@@ -11,18 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/allocation/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addAllocation.open()"
             v-if="$permission.has('create allocation')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('create') | uppercase }}
-          </router-link>
-          <router-link
-            :to="{ path: '/master/allocation/' + allocation.id + '/edit', params: { id: allocation.id }}"
+          </a>
+          <a
+            href="javascript:void(0)"
+            @click="$refs.editAllocation.open(allocation.id)"
             v-if="$permission.has('update allocation')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </a>
           <button
             type="button"
             @click="onDelete()"
@@ -43,6 +45,8 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-add-allocation ref="addAllocation" @added="onAddedAllocation($event)"></m-add-allocation>
+    <m-edit-allocation ref="editAllocation" @updated="onUpdatedAllocation($event)"></m-edit-allocation>
   </div>
 </template>
 
@@ -70,6 +74,24 @@ export default {
   },
   methods: {
     ...mapActions('masterAllocation', ['find', 'delete']),
+    onAddedAllocation (allocation) {
+      this.$router.push('/master/allocation/' + allocation.id)
+      this.id = allocation.id
+      this.findAllocation()
+    },
+    onUpdatedAllocation (allocation) {
+      this.findAllocation()
+    },
+    findAllocation () {
+      this.isLoading = true
+      this.find({ id: this.id })
+        .then(response => {
+          this.isLoading = false
+        }).catch(error => {
+          this.isLoading = false
+          this.$notification.error(error.message)
+        })
+    },
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
         this.isDeleting = true
@@ -85,14 +107,7 @@ export default {
     }
   },
   created () {
-    this.isLoading = true
-    this.find({ id: this.id })
-      .then(response => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.findAllocation()
   }
 }
 </script>

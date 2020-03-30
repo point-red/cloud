@@ -2,7 +2,7 @@
   <form @submit.prevent="onSubmit">
     <sweet-modal
       ref="modal"
-      :title="$t('edit branch') | uppercase"
+      :title="$t('edit allocation') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
       <template v-if="isLoading">
@@ -20,24 +20,6 @@
             ref="name"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"/>
-
-          <p-form-row
-            id="address"
-            v-model="form.address"
-            :disabled="isSaving"
-            :label="$t('address')"
-            name="address"
-            :errors="form.errors.get('address')"
-            @errors="form.errors.set('address', null)"/>
-
-          <p-form-row
-            id="phone"
-            v-model="form.phone"
-            :disabled="isSaving"
-            :label="$t('phone')"
-            name="phone"
-            :errors="form.errors.get('phone')"
-            @errors="form.errors.set('phone', null)"/>
         </div>
       </div>
       <div class="pull-right">
@@ -62,32 +44,30 @@ export default {
       isFailed: false,
       form: new Form({
         id: null,
-        name: null,
-        address: null,
-        phone: null
+        name: null
       })
     }
   },
   computed: {
-    ...mapGetters('masterBranch', ['branch'])
+    ...mapGetters('masterAllocation', ['allocation'])
   },
   methods: {
-    ...mapActions('masterBranch', ['update', 'find']),
+    ...mapActions('masterAllocation', ['update', 'find']),
     onClose () {
       this.isFailed = false
       Object.assign(this.$data, this.$options.data.call(this))
       this.$emit('close')
     },
-    findBranch () {
+    findAllocation () {
       this.isLoading = true
       this.find({
-        id: this.form.id
+        id: this.form.id,
+        params: {
+          includes: 'addresses;phones;emails'
+        }
       }).then(response => {
         this.isLoading = false
-        this.form.name = this.branch.name
-        this.form.address = this.branch.address
-        this.form.phone = this.branch.phone
-
+        this.form.name = this.allocation.name
         this.$nextTick(() => {
           this.$refs.name.setFocus()
         })
@@ -113,7 +93,7 @@ export default {
     },
     open (id) {
       this.form.id = id
-      this.findBranch()
+      this.findAllocation()
       this.$refs.modal.open()
     },
     close () {
