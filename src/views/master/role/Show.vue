@@ -10,18 +10,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/role/create"
-            v-if="$permission.has('update role')"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addRole.open()"
+            v-if="$permission.has('create role')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('create') | uppercase }}
-          </router-link>
-          <router-link
-            :to="{ path: '/master/role/' + role.id + '/edit', params: { id: role.id }}"
+          </a>
+          <a
+            href="javascript:void(0)"
+            @click="$refs.editRole.open(role.id)"
             v-if="$permission.has('update role')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </a>
           <button
             type="button"
             @click="onDelete()"
@@ -88,6 +90,9 @@
         </p-block-inner>
       </p-block>
     </div>
+
+    <m-add-role ref="addRole" @added="onAddedRole($event)"></m-add-role>
+    <m-edit-role ref="editRole" @updated="onUpdatedRole($event)"></m-edit-role>
   </div>
 </template>
 
@@ -135,35 +140,46 @@ export default {
     ...mapGetters('masterPermission', ['permissions'])
   },
   created () {
-    this.isLoading = true
-    this.findRole({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
-    this.getPermissions({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
+    this.findRole()
   },
   methods: {
     ...mapActions('masterRole', {
-      findRole: 'find',
-      deleteRole: 'delete'
+      find: 'find',
+      delete: 'delete'
     }),
     ...mapActions('masterPermission', { getPermissions: 'get' }),
     choose (feature) {
       this.choosen = feature
     },
+    onAddedRole (role) {
+      this.$router.push('/master/role/' + role.id)
+      this.id = role.id
+      this.findRole()
+    },
+    onUpdatedRole (role) {
+      this.findRole()
+    },
+    findRole () {
+      this.isLoading = true
+      this.find({ id: this.id })
+        .then((response) => {
+          this.isLoading = false
+        }).catch(error => {
+          this.isLoading = false
+          this.$notification.error(error.message)
+        })
+      this.getPermissions({ id: this.id })
+        .then((response) => {
+          this.isLoading = false
+        }).catch(error => {
+          this.isLoading = false
+          this.$notification.error(error.message)
+        })
+    },
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
         this.isDeleting = true
-        this.deleteRole({
+        this.delete({
           id: this.id
         }).then(response => {
           this.isDeleting = false

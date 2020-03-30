@@ -10,14 +10,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <router-link
-            to="/master/role/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addRole.open()"
             v-if="$permission.has('create role')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -61,6 +62,8 @@
         </p-pagination>
       </p-block>
     </div>
+
+    <m-add-role ref="addRole" @added="onAdded"></m-add-role>
   </div>
 </template>
 
@@ -84,6 +87,7 @@ export default {
       isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1
     }
   },
@@ -127,7 +131,10 @@ export default {
       this.searchText = value
       this.currentPage = 1
       this.getRoleRequest()
-    }, 300)
+    }, 300),
+    onAdded () {
+      this.getRoleRequest()
+    }
   }
 }
 </script>

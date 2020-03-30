@@ -10,14 +10,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <router-link
-            to="/master/user/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addUser.open()"
             v-if="$permission.has('create user')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -96,12 +97,13 @@
           </template>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
           @updatePage="updatePage">
         </p-pagination>
       </p-block>
     </div>
+    <m-add-user ref="addUser" @added="onAdded"></m-add-user>
     <set-warehouse-modal id="setWarehouse" ref="setWarehouseModal" :title="'Set Warehouse'"/>
   </div>
 </template>
@@ -127,7 +129,8 @@ export default {
     return {
       isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1
     }
   },
@@ -143,7 +146,7 @@ export default {
       getUserInvitation: 'get'
     }),
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
       this.getUserRequest()
     },
     getUserRequest () {
@@ -161,7 +164,7 @@ export default {
             'phone': this.searchText,
             'email': this.searchText
           },
-          page: this.currentPage
+          page: this.page
         }
       }).then(response => {
         this.isLoading = false
@@ -169,25 +172,28 @@ export default {
         this.isLoading = false
         this.$notifications.error(error)
       })
+
+      this.getUserInvitation()
+        .then(response => {
+          this.isLoading = false
+        }).catch(error => {
+          this.isLoading = false
+          this.$notifications.error(error.message)
+        })
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
+      this.page = 1
       this.getUserRequest()
-    }, 300)
+    }, 300),
+    onAdded () {
+      this.getUserRequest()
+    }
   },
   created () {
     this.isLoading = true
     this.getUserRequest()
-
-    this.getUserInvitation()
-      .then(response => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notifications.error(error.message)
-      })
   }
 }
 </script>
