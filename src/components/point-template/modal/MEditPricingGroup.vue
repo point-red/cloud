@@ -1,9 +1,13 @@
 <template>
   <div>
-    <p-modal :ref="'pricing-group-' + id" :id="'pricing-group-' + id" title="pricing group">
-      <template slot="content">
-        <form class="row" @submit.prevent="onSubmit">
-          <p-block>
+    <form @submit.prevent="onSubmit">
+      <sweet-modal
+        ref="modal"
+        :title="$t('edit pricing group') | uppercase"
+        overlay-theme="dark"
+        @close="onClose()">
+        <div class="row">
+          <div class="col-sm-12">
             <p-form-row
               id="label"
               v-model="form.label"
@@ -12,27 +16,23 @@
               name="label"
               :errors="form.errors.get('label')"
               @errors="form.errors.set('label', null)"/>
-
-            <div class="form-group row">
-              <div class="col-md-3"></div>
-              <div class="col-md-9">
-                <button type="submit" class="btn btn-sm btn-primary mr-5" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Update
-                </button>
-                <button
-                  type="button"
-                  @click="onDelete()"
-                  v-if="$permission.has('delete item')"
-                  :disabled="isSaving"
-                  class="btn btn-sm btn-danger">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Delete
-                </button>
-              </div>
-            </div>
-          </p-block>
-        </form>
-      </template>
-    </p-modal>
+          </div>
+        </div>
+        <div class="pull-right">
+          <button type="submit" class="btn btn-sm btn-primary mr-5" :disabled="isSaving" @click="onSubmit">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+          </button>
+          <button
+            type="button"
+            @click="onDelete()"
+            v-if="$permission.has('delete item')"
+            :disabled="isSaving"
+            class="btn btn-sm btn-danger">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          </button>
+        </div>
+      </sweet-modal>
+    </form>
   </div>
 </template>
 
@@ -44,18 +44,13 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
+      isFailed: false,
       isSaving: false,
       isLoading: false,
       form: new Form({
         id: null,
         label: ''
       })
-    }
-  },
-  props: {
-    id: {
-      type: String,
-      required: true
     }
   },
   methods: {
@@ -66,7 +61,8 @@ export default {
         this.form.id = null
         this.form.label = ''
         this.isSaving = false
-        this.$emit('added', true)
+        this.$emit('updated', true)
+        this.close()
       }).catch(error => {
         this.$notification.error(error.message)
         this.isSaving = false
@@ -78,20 +74,25 @@ export default {
         this.form.id = null
         this.form.label = ''
         this.isSaving = false
-        this.$emit('added', true)
+        this.$emit('updated', true)
         this.close()
       }).catch(error => {
         this.$notification.error(error.message)
         this.isSaving = false
       })
     },
-    show (group) {
-      this.$refs['pricing-group-' + this.id].show()
+    onClose () {
+      this.isFailed = false
+      Object.assign(this.$data, this.$options.data.call(this))
+      this.$emit('close')
+    },
+    open (group) {
+      this.$refs.modal.open()
       this.form.id = group.id
       this.form.label = group.label
     },
     close () {
-      this.$refs['pricing-group-' + this.id].close()
+      this.$refs.modal.close()
       this.$emit('close', true)
     }
   }

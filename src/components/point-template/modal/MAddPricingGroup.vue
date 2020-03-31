@@ -1,30 +1,31 @@
 <template>
   <div>
-    <p-modal :ref="'pricing-group-' + id" :id="'pricing-group-' + id" title="pricing group">
-      <template slot="content">
-        <form class="row" @submit.prevent="onSubmit">
-          <p-block>
+    <form @submit.prevent="onSubmit">
+      <sweet-modal
+        ref="modal"
+        :title="$t('add pricing group') | uppercase"
+        overlay-theme="dark"
+        @close="onClose()">
+        <div class="row">
+          <div class="col-sm-12">
             <p-form-row
               id="label"
               v-model="form.label"
               :disabled="isSaving"
               :label="$t('label')"
               name="label"
+              ref="label"
               :errors="form.errors.get('label')"
               @errors="form.errors.set('label', null)"/>
-
-            <div class="form-group row">
-              <div class="col-md-3"></div>
-              <div class="col-md-9">
-                <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
-                </button>
-              </div>
-            </div>
-          </p-block>
-        </form>
-      </template>
-    </p-modal>
+          </div>
+        </div>
+        <div class="pull-right">
+          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+          </button>
+        </div>
+      </sweet-modal>
+    </form>
   </div>
 </template>
 
@@ -37,16 +38,11 @@ export default {
   data () {
     return {
       isSaving: false,
+      isFailed: false,
       isLoading: false,
       form: new Form({
         label: ''
       })
-    }
-  },
-  props: {
-    id: {
-      type: String,
-      required: true
     }
   },
   methods: {
@@ -54,19 +50,28 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.create(this.form).then(response => {
-        this.form.label = ''
+        Object.assign(this.$data, this.$options.data.call(this))
         this.isSaving = false
-        this.$emit('added', true)
+        this.$emit('added', response.data)
+        this.close()
       }).catch(error => {
         this.$notification.error(error.message)
         this.isSaving = false
       })
     },
-    show () {
-      this.$refs['pricing-group-' + this.id].show()
+    onClose () {
+      this.isFailed = false
+      Object.assign(this.$data, this.$options.data.call(this))
+      this.$emit('close')
+    },
+    open () {
+      this.$refs.modal.open()
+      this.$nextTick(() => {
+        this.$refs.label.setFocus()
+      })
     },
     close () {
-      this.$refs['pricing-group-' + this.id].close()
+      this.$refs.modal.close()
       this.$emit('close', true)
     }
   }

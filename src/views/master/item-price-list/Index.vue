@@ -10,7 +10,11 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <a href="javascript:void(0)" class="input-group-prepend" @click="addPricingGroup">
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addPricingGroup.open()"
+            v-if="$permission.has('create supplier')"
+            class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
@@ -33,8 +37,9 @@
               <th class="text-right" v-for="(group, index) in groups" :key="index">
                 <a
                   href="javascript:void(0)"
-                  style="color:blue"
-                  @click="editPricingGroup(group)">{{ group.label }}
+                  @click="$refs.editPricingGroup.open(group)"
+                  v-if="$permission.has('create item')">
+                  {{ group.label }}
                 </a>
               </th>
               <th></th>
@@ -73,25 +78,15 @@
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
           @updatePage="updatePage">
         </p-pagination>
       </p-block>
     </div>
 
-    <m-add-pricing-group
-      id="pricing-gorup"
-      name="pricing_gorup"
-      ref="pricingGroupModal"
-      title="Pricing Group"
-      @added="onSubmitPricingGroup"/>
-    <m-edit-pricing-group
-      id="edit-pricing-gorup"
-      name="edit_pricing_gorup"
-      ref="editPricingGroupModal"
-      title="Edit Pricing Group"
-      @added="onSubmitPricingGroup"/>
+    <m-add-pricing-group ref="addPricingGroup" @added="onAddedPricingGroup($event)"></m-add-pricing-group>
+    <m-edit-pricing-group ref="editPricingGroup" @updated="onUpdatedPricingGroup($event)"></m-edit-pricing-group>
   </div>
 </template>
 
@@ -114,7 +109,8 @@ export default {
     return {
       isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1,
       editPriceIndex: '',
       editPriceGroupId: 0
@@ -128,18 +124,11 @@ export default {
       getItem: 'get',
       updatePrice: 'create'
     }),
-    test () {
-      alert('asd')
-    },
-    addPricingGroup () {
-      this.$refs.pricingGroupModal.show()
-    },
-    editPricingGroup (group) {
-      this.$refs.editPricingGroupModal.show(group)
-    },
-    onSubmitPricingGroup () {
+    onUpdatedPricingGroup () {
       this.getPriceList()
-      this.$refs.pricingGroupModal.close()
+    },
+    onAddedPricingGroup () {
+      this.getPriceList()
     },
     editPrice (index, groupId) {
       this.editPriceIndex = index
@@ -161,19 +150,19 @@ export default {
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
+      this.page = 1
       this.getPriceList()
     }, 300),
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
       this.getPriceList()
     },
     getPriceList () {
       this.isLoading = true
       this.getItem({
         params: {
-          limit: 20,
-          page: this.currentPage,
+          limit: this.limit,
+          page: this.page,
           filter_like: {
             'code': this.searchText,
             'name': this.searchText
