@@ -129,4 +129,11 @@ export default {
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
+
+.invalid-input {
+  display: block;
+  margin-top: .25rem;
+  font-size: .875rem;
+  color: #ef5350;
+}
 </style>

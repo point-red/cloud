@@ -1,8 +1,11 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select branch">
-      <template slot="content">
+    <form @submit.prevent="onSubmit">
+      <sweet-modal
+        ref="modal"
+        :title="$t('add warehouse') | uppercase"
+        overlay-theme="dark"
+        @close="onClose()">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
         <div v-if="isLoading">
@@ -33,11 +36,11 @@
             <span>{{ $t('new one') }}</span>
           </router-link>
         </div>
-      </template>
-      <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </template>
-    </p-modal>
+        <template slot="footer">
+          <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        </template>
+      </sweet-modal>
+    </form>
   </div>
 </template>
 
@@ -60,10 +63,6 @@ export default {
     ...mapGetters('masterBranch', ['branches', 'pagination'])
   },
   props: {
-    id: {
-      type: String,
-      required: true
-    },
     value: {
       type: [String, Number]
     },
@@ -133,11 +132,14 @@ export default {
       this.$emit('choosen', option)
       this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    onClose () {
+      this.search()
+    },
+    open () {
+      this.$refs.modal.open()
     },
     close () {
-      this.$refs['select-' + this.id].close()
+      this.$refs.modal.close()
       this.$emit('close', true)
     }
   }

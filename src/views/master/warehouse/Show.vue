@@ -11,18 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/warehouse/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addWarehouse.open()"
             v-if="$permission.has('create warehouse')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('create') | uppercase }}
-          </router-link>
-          <router-link
-            :to="{ path: '/master/warehouse/' + warehouse.id + '/edit', params: { id: warehouse.id }}"
+          </a>
+          <a
+            href="javascript:void(0)"
+            @click="$refs.editWarehouse.open(warehouse.id)"
             v-if="$permission.has('update warehouse')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </a>
           <button
             type="button"
             @click="onDelete()"
@@ -96,6 +98,8 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-add-warehouse ref="addWarehouse" @added="onAddedWarehouse($event)"></m-add-warehouse>
+    <m-edit-warehouse ref="editWarehouse" @updated="onUpdatedWarehouse($event)"></m-edit-warehouse>
   </div>
 </template>
 
@@ -193,37 +197,48 @@ export default {
           return user.id == userId
         })
       }
+    },
+    findWarehouse () {
+      this.isLoading = true
+      this.find({
+        id: this.id,
+        params: {
+          includes: 'branch;users'
+        }
+      }).then(response => {
+        this.isLoading = false
+        this.data.branch_id = response.data.branch_id
+        this.data.name = response.data.name
+        this.data.address = response.data.address
+        this.data.phone = response.data.phone
+        this.data.branch = response.data.branch
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+
+      this.get({
+        params: {
+          includes: 'warehouses'
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    },
+    onAddedWarehouse (warehouse) {
+      this.$router.push('/master/warehouse/' + warehouse.id)
+      this.id = warehouse.id
+      this.findWarehouse()
+    },
+    onUpdatedWarehouse (warehouse) {
+      this.findWarehouse()
     }
   },
   created () {
-    this.isLoading = true
-    this.find({
-      id: this.id,
-      params: {
-        includes: 'branch;users'
-      }
-    }).then(response => {
-      this.isLoading = false
-      this.data.branch_id = response.data.branch_id
-      this.data.name = response.data.name
-      this.data.address = response.data.address
-      this.data.phone = response.data.phone
-      this.data.branch = response.data.branch
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
-
-    this.get({
-      params: {
-        includes: 'warehouses'
-      }
-    }).then(response => {
-      this.isLoading = false
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    this.findWarehouse()
   }
 }
 </script>
