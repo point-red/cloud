@@ -1,11 +1,14 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
-    <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != null">
-      <i class="clickable fa fa-close"></i>
-    </a>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select pricing group">
-      <template slot="content">
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select pricing group') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()">
+      <div v-if="isLoading">
+        <h3 class="text-center">Loading ...</h3>
+      </div>
+      <div v-else class="list-group push">
         <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
         <hr>
         <div v-if="isLoading">
@@ -23,17 +26,11 @@
           </a>
           </template>
         </div>
-        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('pricing group') | capitalize }}, <br/> {{ $t('you can create') }}
-          <router-link :to="'/master/item-price-list'">
-            <span>{{ $t('new one') }}</span>
-          </router-link>
-        </div>
-      </template>
-      <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </template>
-    </p-modal>
+      </div>
+      <div class="pull-right">
+        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+      </div>
+    </sweet-modal>
   </div>
 </template>
 
@@ -125,13 +122,16 @@ export default {
       this.mutableLabel = null
       this.$emit('input', null)
       this.$emit('choosen', '')
+      this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    onClose () {
+      this.$emit('close')
+    },
+    open () {
+      this.$refs['select-' + this.id].open()
     },
     close () {
       this.$refs['select-' + this.id].close()
-      this.$emit('close', true)
     }
   }
 }

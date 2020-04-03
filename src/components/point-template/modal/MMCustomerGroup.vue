@@ -15,7 +15,7 @@
         <a
           :key="index"
           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-          :class="{'active': option.id == mutableId }"
+          :class="{ 'active': isChoosen(option) }"
           @click="choose(option)"
           href="javascript:void(0)">
           {{ option.label | uppercase }}
@@ -25,12 +25,31 @@
       <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
+      <div class="pull-left">
+        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="$refs.addCustomerGroup.open()">
+          {{ $t('create new') | uppercase }}
+        </button>
+      </div>
+      <div class="pull-right">
+        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="clear">
+          {{ $t('clear') | uppercase }}
+        </button>
+        <button type="submit" class="btn btn-sm btn-primary" @click="onSubmit">
+          {{ $t('submit') | uppercase }}
+        </button>
+      </div>
     </sweet-modal>
+    <m-add-customer-group
+      id="add-customer-group"
+      ref="addCustomerGroup"
+      @added="onAddedPricingGroup($event)">
+    </m-add-customer-group>
   </div>
 </template>
 
 <script>
 import debounce from 'lodash/debounce'
+import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -38,11 +57,8 @@ export default {
     return {
       searchText: '',
       options: [],
-      mutableId: this.value,
-      mutableLabel: this.label,
-      mutableClassReference: this.classReference,
-      mutableType: this.type,
-      isSaving: false,
+      choosen: [],
+      limit: 20,
       isLoading: false
     }
   },
@@ -51,23 +67,13 @@ export default {
   },
   props: {
     id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
       type: String
     }
   },
   watch: {
     searchText: debounce(function () {
       this.search()
-    }, 300),
-    label () {
-      this.mutableLabel = this.label
-    }
+    }, 300)
   },
   created () {
     this.search()
@@ -79,55 +85,64 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          limit: 50,
+          limit: this.limit,
           filter_like: {
             name: this.searchText
           }
         }
       }).then(response => {
         this.options = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
             'name': key['name'],
             'label': key['name']
           })
-
-          if (this.value == key['id']) {
-            this.mutableLabel = key['name']
-          }
         })
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
       })
     },
+    onAddedPricingGroup () {
+      this.search()
+    },
     onSubmit () {
-      this.mutableId = option.id
-      this.mutableLabel = option.label
-      this.$emit('input', option.id)
-      this.$emit('choosen', option)
+      this.$emit('choosen', this.choosen)
       this.close()
+    },
+    isChoosen (option) {
+      return this.choosen.some(element => {
+        return element.id == option.id
+      })
     },
     choose (option) {
-      this.mutableId = option.id
-      this.mutableLabel = option.label
-      this.$emit('input', option.id)
-      this.$emit('choosen', option)
-    },
-    clear () {
-      this.mutableId = null
-      this.mutableLabel = null
-      this.$emit('input', null)
-      this.$emit('clear')
-      this.close()
+      let isChoosen = this.choosen.some(element => {
+        return element.id == option.id
+      })
+      if (isChoosen) {
+        this.choosen = _.reject(this.choosen, function (el) {
+          return el.id === option.id
+        })
+      } else {
+        this.choosen.push({
+          'id': option.id,
+          'name': option.name,
+          'label': option.label
+        })
+      }
     },
     onClose () {
       this.$emit('close', true)
     },
-    open () {
+    clear () {
+      this.choosen = []
+      this.$emit('choosen', this.choosen)
+      this.close()
+    },
+    open (choosen = []) {
       this.$refs['select-' + this.id].open()
+      this.choosen = choosen
     },
     close () {
       this.$refs['select-' + this.id].close()

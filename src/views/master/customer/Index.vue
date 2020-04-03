@@ -10,14 +10,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block mb-5">
-          <router-link
-            to="/master/customer/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addCustomer.open()"
             v-if="$permission.has('create customer')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -148,8 +149,8 @@
                 </template>
               </td>
               <td>
-                <template v-for="group in customer.groups">
-                  {{ group.name }}
+                <template v-for="(group, index) in customer.groups">
+                  {{ group.name }}<template v-if="customer.groups.length != index + 1">,</template>
                 </template>
               </td>
               <td>
@@ -165,6 +166,7 @@
         </p-pagination>
       </p-block>
     </div>
+    <m-add-customer ref="addCustomer" @added="onAdded"></m-add-customer>
   </div>
 </template>
 
@@ -360,7 +362,10 @@ export default {
       this.searchText = value
       this.currentPage = 1
       this.getCustomerRequest()
-    }, 300)
+    }, 300),
+    onAdded () {
+      this.getCustomerRequest()
+    }
   },
   created () {
     this.getCustomerRequest()
