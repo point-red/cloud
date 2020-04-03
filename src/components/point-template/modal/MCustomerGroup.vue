@@ -25,6 +25,9 @@
       <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
+      <div class="pull-right">
+        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+      </div>
     </sweet-modal>
   </div>
 </template>
@@ -40,8 +43,6 @@ export default {
       options: [],
       mutableId: this.value,
       mutableLabel: this.label,
-      mutableClassReference: this.classReference,
-      mutableType: this.type,
       isSaving: false,
       isLoading: false
     }
@@ -51,8 +52,7 @@ export default {
   },
   props: {
     id: {
-      type: String,
-      required: true
+      type: String
     },
     value: {
       type: [String, Number]
@@ -103,34 +103,29 @@ export default {
         this.isLoading = false
       })
     },
-    onSubmit () {
-      this.mutableId = option.id
-      this.mutableLabel = option.label
-      this.$emit('input', option.id)
-      this.$emit('choosen', option)
-      this.close()
-    },
     choose (option) {
       this.mutableId = option.id
       this.mutableLabel = option.label
-      this.$emit('input', option.id)
       this.$emit('choosen', option)
+      this.close()
     },
     clear () {
       this.mutableId = null
       this.mutableLabel = null
-      this.$emit('input', null)
-      this.$emit('clear')
+      this.$emit('choosen', {
+        id: null,
+        label: null
+      })
       this.close()
-    },
-    onClose () {
-      this.$emit('close', true)
     },
     open () {
       this.$refs['select-' + this.id].open()
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
+      this.$emit('close', true)
     }
   }
 }

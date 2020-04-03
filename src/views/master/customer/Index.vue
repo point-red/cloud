@@ -38,33 +38,27 @@
             <div class="col-sm-3 text-center">
               <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
                 <div slot="body">
-                  <m-status
-                    :id="'status-id'"
-                    v-model="statusId"
-                    @choosen="chooseStatus($event)"
-                    @clear="clearStatus()"/>
+                  <span @click="$refs.status.open({ id: statusId, label: statusLabel })" class="select-link">
+                    {{ statusLabel || $t('select') | uppercase }}
+                  </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
               <p-form-row id="pricing-group" name="pricing-group" :label="$t('pricing group')" :is-horizontal="false">
                 <div slot="body">
-                  <m-pricing-group
-                    :id="'pricing-group-id'"
-                    v-model="pricingGroupId"
-                    @choosen="choosePricingGroup($event)"
-                    @clear="clearPricingGroup()"/>
+                  <span @click="$refs.pricingGroup.open()" class="select-link">
+                    {{ pricingGroupLabel || $t('select') | uppercase }}
+                  </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
               <p-form-row id="group" name="group" :label="$t('group')" :is-horizontal="false">
                 <div slot="body">
-                  <m-customer-group
-                    :id="'group'"
-                    v-model="groupId"
-                    @choosen="chooseGroup($event)"
-                    @clear="clearGroup()"/>
+                  <span @click="$refs.customerGroup.open()" class="select-link">
+                    {{ groupLabel || $t('select') | uppercase }}
+                  </span>
                 </div>
               </p-form-row>
             </div>
@@ -160,13 +154,16 @@
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
           @updatePage="updatePage">
         </p-pagination>
       </p-block>
     </div>
     <m-add-customer ref="addCustomer" @added="onAdded"></m-add-customer>
+    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
+    <m-pricing-group ref="pricingGroup" @choosen="onChoosenPricingGroup"></m-pricing-group>
+    <m-customer-group ref="customerGroup" @choosen="onChoosenGroup"></m-customer-group>
   </div>
 </template>
 
@@ -189,13 +186,17 @@ export default {
     return {
       isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1,
       isAdvanceFilter: false,
       checkedRow: [],
       groupId: this.$route.query.groupId,
       pricingGroupId: this.$route.query.pricingGroupId,
-      statusId: this.$route.query.statusId
+      statusId: this.$route.query.statusId,
+      statusLabel: null,
+      pricingGroupLabel: null,
+      groupLabel: null
     }
   },
   computed: {
@@ -273,7 +274,9 @@ export default {
         })
       })
     },
-    chooseGroup (option) {
+    onChoosenGroup (option) {
+      this.groupId = option.id
+      this.groupLabel = option.label
       this.$router.push({
         query: {
           search: this.searchText,
@@ -284,11 +287,9 @@ export default {
       })
       this.getCustomerRequest()
     },
-    clearGroup () {
-      this.groupId = null
-      this.getCustomerRequest()
-    },
-    choosePricingGroup (option) {
+    onChoosenPricingGroup (option) {
+      this.pricingGroupId = option.id
+      this.pricingGroupLabel = option.label
       this.$router.push({
         query: {
           search: this.searchText,
@@ -299,11 +300,9 @@ export default {
       })
       this.getCustomerRequest()
     },
-    clearPricingGroup () {
-      this.pricingGroupId = null
-      this.getCustomerRequest()
-    },
-    chooseStatus (option) {
+    onChoosenStatus (option) {
+      this.statusId = option.id
+      this.statusLabel = option.label
       this.$router.push({
         query: {
           search: this.searchText,
@@ -312,14 +311,10 @@ export default {
           pricingGroupId: this.pricingGroupId
         }
       })
-      this.getCustomerRequest()
-    },
-    clearStatus () {
-      this.statusId = null
       this.getCustomerRequest()
     },
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
       this.getCustomerRequest()
     },
     getCustomerRequest () {
@@ -341,8 +336,8 @@ export default {
           is_archived: this.statusId,
           join: 'addresses,phones,emails',
           includes: 'addresses;phones;emails;groups;pricingGroup',
-          limit: 10,
-          page: this.currentPage
+          limit: this.limit,
+          page: this.page
         }
       }).then(response => {
         this.isLoading = false
@@ -360,7 +355,7 @@ export default {
         }
       })
       this.searchText = value
-      this.currentPage = 1
+      this.page = 1
       this.getCustomerRequest()
     }, 300),
     onAdded () {

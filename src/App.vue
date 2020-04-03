@@ -76,14 +76,6 @@ export default {
     },
     handleResize (event) {
       document.getElementById('app').style.minHeight = window.innerHeight + 'px'
-    },
-    closeModal () {
-      const els = document.getElementsByClassName('modal open')
-      Array.prototype.forEach.call(els, function (el) {
-        el.classList.remove('open')
-        el.style.display = 'none'
-      })
-      document.body.classList.remove('modal-open')
     }
   }
 }

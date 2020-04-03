@@ -43,10 +43,9 @@ export default {
     return {
       searchText: '',
       options: [],
+      limit: 10,
       mutableId: this.value,
       mutableLabel: this.label,
-      mutableClassReference: this.classReference,
-      mutableType: this.type,
       isSaving: false,
       isLoading: false
     }
@@ -56,8 +55,7 @@ export default {
   },
   props: {
     id: {
-      type: String,
-      required: true
+      type: String
     },
     value: {
       type: [String, Number]
@@ -87,7 +85,7 @@ export default {
       this.get({
         params: {
           sort_by: 'label',
-          limit: 50,
+          limit: this.limit,
           filter_like: {
             label: this.searchText
           }

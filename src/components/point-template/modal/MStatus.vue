@@ -1,31 +1,29 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'ACTIVE' | uppercase }}</span>
-    <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId == 1">
-      <i class="clickable fa fa-close"></i>
-    </a>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select status">
-      <template slot="content">
-        <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
-        </div>
-        <div v-else class="list-group push">
-          <template v-for="(option, index) in options">
-          <a
-            :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{'active': option.id == mutableId }"
-            @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label | uppercase }}
-          </a>
-          </template>
-        </div>
-      </template>
-      <template slot="footer">
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()">
+      <div v-if="isLoading">
+        <h3 class="text-center">Loading ...</h3>
+      </div>
+      <div v-else class="list-group push">
+        <template v-for="(option, index) in options">
+        <a
+          :key="index"
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          :class="{'active': option.id == mutableId }"
+          @click="choose(option)"
+          href="javascript:void(0)">
+          {{ option.label | uppercase }}
+        </a>
+        </template>
+      </div>
+      <div class="pull-right">
         <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </template>
-    </p-modal>
+      </div>
+    </sweet-modal>
   </div>
 </template>
 
@@ -49,8 +47,7 @@ export default {
   },
   props: {
     id: {
-      type: String,
-      required: true
+      type: String
     },
     value: {
       type: [String, Number]
@@ -78,21 +75,24 @@ export default {
     choose (option) {
       this.mutableId = option.id
       this.mutableLabel = option.label
-      this.$emit('input', option.id)
       this.$emit('choosen', option)
       this.close()
     },
     clear () {
       this.mutableId = null
       this.mutableLabel = null
-      this.$emit('input', null)
-      this.$emit('choosen', '')
+      this.$emit('choosen', null)
+      this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    open (status = { id: null, label: null }) {
+      this.mutableId = status.id
+      this.mutableLabel = status.label
+      this.$refs['select-' + this.id].open()
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }
