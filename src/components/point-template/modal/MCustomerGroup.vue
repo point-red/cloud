@@ -41,6 +41,7 @@ export default {
     return {
       searchText: '',
       options: [],
+      limit: 10,
       mutableId: this.value,
       mutableLabel: this.label,
       isSaving: false,
@@ -79,7 +80,7 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          limit: 50,
+          limit: this.limit,
           filter_like: {
             name: this.searchText
           }

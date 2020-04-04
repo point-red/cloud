@@ -11,20 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <a
-            href="javascript:void(0)"
+          <button
+            type="button"
             @click="$refs.addSupplier.open()"
             v-if="$permission.has('create supplier')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('create') | uppercase }}
-          </a>
-          <a
-            href="javascript:void(0)"
+          </button>
+          <button
+            type="button"
             @click="$refs.editSupplier.open(supplier.id)"
             v-if="$permission.has('update supplier')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </a>
+          </button>
           <button
             type="button"
             @click="onDelete()"

@@ -11,18 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/customer/create"
-            v-if="$permission.has('update customer')"
+          <button
+            type="button"
+            @click="$refs.addCustomer.open()"
+            v-if="$permission.has('create customer')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('create') | uppercase }}
-          </router-link>
-          <router-link
-            :to="{ path: '/master/customer/' + customer.id + '/edit', params: { id: customer.id }}"
+          </button>
+          <button
+            type="button"
+            @click="$refs.editCustomer.open(customer.id)"
             v-if="$permission.has('update customer')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </button>
           <button
             type="button"
             @click="onDelete()"
@@ -175,13 +177,15 @@
             </template>
           </point-table>
           <p-pagination
-            :current-page="currentPage"
+            :current-page="page"
             :last-page="lastPage"
             @updatePage="updatePage">
           </p-pagination>
         </p-block-inner>
       </p-block>
     </div>
+    <m-add-customer ref="addCustomer" @added="onAddedCustomer($event)"></m-add-customer>
+    <m-edit-customer ref="editCustomer" @updated="onUpdatedCustomer($event)"></m-edit-customer>
   </div>
 </template>
 
@@ -214,7 +218,7 @@ export default {
           label: null
         }
       },
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
@@ -226,7 +230,36 @@ export default {
     ...mapActions('masterCustomer', ['find', 'delete', 'archive', 'activate']),
     ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
+      this.getSalesVisitationRequest()
+    },
+    findCustomer () {
+      this.isLoading = true
+      this.find({
+        id: this.id,
+        params: {
+          includes: 'addresses;phones;emails;groups;pricingGroup'
+        }
+      }).then(response => {
+        this.isLoading = false
+        this.data.name = response.data.name
+        if (response.data.pricing_group) {
+          this.data.pricing_group.label = response.data.pricing_group.label
+        }
+        if (response.data.emails.length > 0) {
+          this.data.email = response.data.emails[0].email
+        }
+        if (response.data.addresses.length > 0) {
+          this.data.address = response.data.addresses[0].address
+        }
+        if (response.data.phones.length > 0) {
+          this.data.phone = response.data.phones[0].number
+        }
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+      this.isLoadingSalesVisitation = true
       this.getSalesVisitationRequest()
     },
     getSalesVisitationRequest () {
@@ -238,7 +271,7 @@ export default {
           date_from: this.$moment('1970-01-01').format('YYYY-MM-DD 00:00:00'),
           date_to: this.$moment().format('YYYY-MM-DD 23:59:59'),
           limit: 20,
-          page: this.currentPage,
+          page: this.page,
           sort_by: '-forms.date'
         }
       }).then(response => {
@@ -261,6 +294,14 @@ export default {
           this.$notification.error('cannot delete this customer')
         })
       })
+    },
+    onAddedCustomer (customer) {
+      this.$router.push('/master/customer/' + customer.id)
+      this.id = customer.id
+      this.findCustomer()
+    },
+    onUpdatedCustomer (customer) {
+      this.findCustomer()
     },
     onArchive () {
       this.$alert.confirm(this.$t('archive'), this.$t('confirmation archive message')).then(response => {
@@ -290,33 +331,7 @@ export default {
     }
   },
   created () {
-    this.isLoading = true
-    this.find({
-      id: this.id,
-      params: {
-        includes: 'addresses;phones;emails;groups;pricingGroup'
-      }
-    }).then(response => {
-      this.isLoading = false
-      this.data.name = response.data.name
-      if (response.data.pricing_group) {
-        this.data.pricing_group.label = response.data.pricing_group.label
-      }
-      if (response.data.emails.length > 0) {
-        this.data.email = response.data.emails[0].email
-      }
-      if (response.data.addresses.length > 0) {
-        this.data.address = response.data.addresses[0].address
-      }
-      if (response.data.phones.length > 0) {
-        this.data.phone = response.data.phones[0].number
-      }
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
-    this.isLoadingSalesVisitation = true
-    this.getSalesVisitationRequest()
+    this.findCustomer()
   }
 }
 </script>
