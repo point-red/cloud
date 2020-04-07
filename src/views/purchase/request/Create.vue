@@ -26,11 +26,6 @@
                 <div class="float-sm-left">
                   <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
                   <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span>
-                  <m-supplier
-                    id="supplier"
-                    ref="supplier"
-                    @choosen="chooseSupplier($event)"
-                    @clear="clearSupplier()"/>
                   <div style="font-size:12px" v-if="form.supplier_phone">
                     {{ form.supplier_address | uppercase }} <br v-if="form.supplier_email">
                     {{ form.supplier_phone }} <br v-if="form.supplier_phone">
@@ -72,11 +67,9 @@
                 <tr slot="p-body" :key="index">
                   <th class="text-center">{{ index + 1 }}</th>
                   <td>
-                    <m-item
-                      :id="'item-' + index"
-                      v-model="row.item_id"
-                      @clear="clearItem(row)"
-                      @choosen="chooseItem($event, row)"/>
+                    <span @click="$refs.item.open(index)" class="select-link">
+                      {{ row.item_label || $t('select') | uppercase }}
+                    </span>
                   </td>
                   <td>
                     <p-form-input
@@ -164,13 +157,7 @@
               <div class="col-sm-3 text-center">
                 <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
                 <div class="mb-50" style="font-size:11px">_______________</div>
-                <m-user
-                  :id="'user'"
-                  v-model="form.request_approval_to"
-                  :errors="form.errors.get('request_approval_to')"
-                  @errors="form.errors.set('request_approval_to', null)"
-                  @choosen="chooseApprover"/>
-                  {{ form.approver_email }} <br v-if="form.approver_email">
+                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_email || $t('select') | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
@@ -184,6 +171,9 @@
         </p-block>
       </div>
     </form>
+    <m-item ref="item" @choosen="chooseItem($event)"/>
+    <m-supplier ref="supplier" @choosen="chooseSupplier($event)"/>
+    <m-user ref="approver" @choosen="chooseApprover($event)"/>
   </div>
 </template>
 
@@ -269,12 +259,14 @@ export default {
       })
     },
     chooseApprover (value) {
-      this.form.approver_name = value.label
+      this.form.request_approval_to = value.id
+      this.form.approver_name = value.name
       this.form.approver_email = value.email
     },
     clearItem (row) {
       row.item_id = null
       row.item_name = null
+      row.item_label = null
       row.unit = null
       row.converter = null
       row.quantity = null
@@ -283,6 +275,10 @@ export default {
       row.notes = null
       row.more = false
       row.units = []
+      if (this.form.items.length > 1) {
+        this.form.items = this.form.items.filter(item => item.item_id !== null)
+        this.addItemRow()
+      }
     },
     chooseSupplier (value) {
       this.form.supplier_id = value.id
@@ -292,31 +288,30 @@ export default {
       this.form.supplier_phone = value.phone
       this.form.supplier_email = value.email
     },
-    clearSupplier () {
-      this.form.supplier_id = null
-      this.form.supplier_name = null
-      this.form.supplier_label = null
-      this.form.supplier_address = null
-      this.form.supplier_phone = null
-      this.form.supplier_email = null
-    },
-    chooseItem (item, row) {
-      row.item_name = item.name
-      row.units = item.units
-      row.units.forEach((unit, keyUnit) => {
-        if (unit.id == item.unit_default_purchase) {
-          row.unit = unit.label
-          row.converter = unit.converter
+    chooseItem (item) {
+      let row = this.form.items[item.index]
+      if (item.id == null) {
+        this.clearItem(row)
+      } else {
+        row.item_id = item.id
+        row.item_name = item.name
+        row.item_label = item.label
+        row.units = item.units
+        row.units.forEach((unit, keyUnit) => {
+          if (unit.id == item.unit_default_purchase) {
+            row.unit = unit.label
+            row.converter = unit.converter
+          }
+        })
+        let isNeedNewRow = true
+        this.form.items.forEach(element => {
+          if (element.item_id == null) {
+            isNeedNewRow = false
+          }
+        })
+        if (isNeedNewRow) {
+          this.addItemRow()
         }
-      })
-      let isNeedNewRow = true
-      this.form.items.forEach(element => {
-        if (element.item_id == null) {
-          isNeedNewRow = false
-        }
-      })
-      if (isNeedNewRow) {
-        this.addItemRow()
       }
     },
     chooseUnit (unit, row) {

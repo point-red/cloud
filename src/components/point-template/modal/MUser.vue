@@ -1,45 +1,35 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || $t('select') | uppercase }}</span>
-    <div
-      v-for="(error, index) in mutableErrors"
-      :key="index"
-      class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
-    <div
-      v-show="help"
-      class="form-text text-muted">{{ help }}</div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select user">
-      <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
-        <hr>
-        <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
-        </div>
-        <div v-else class="list-group push">
-          <template v-for="(option, index) in options">
-          <a
-            :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-left"
-            :class="{'active': option.id == mutableId }"
-            @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label | uppercase }} <br>
-            <span style="font-size:10px">{{ option.email | uppercase }}</span>
-          </a>
-          </template>
-        </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
-          {{ $t('searching not found', [searchText]) | capitalize }} <br>
-        </div>
-        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('allocation') | capitalize }}
-        </div>
-      </template>
-      <template slot="footer">
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select user') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()">
+      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <hr>
+      <div v-if="isLoading">
+        <h3 class="text-center">Loading ...</h3>
+      </div>
+      <div v-else class="list-group push">
+        <template v-for="(option, index) in options">
+        <a
+          :key="index"
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-left"
+          :class="{'active': option.id == mutableId }"
+          @click="choose(option)"
+          href="javascript:void(0)">
+          {{ option.label | uppercase }} <br>
+          <span style="font-size:10px">{{ option.email | uppercase }}</span>
+        </a>
+        </template>
+      </div>
+      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+        {{ $t('searching not found', [searchText]) | capitalize }} <br>
+      </div>
+      <div class="pull-right">
         <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </template>
-    </p-modal>
+      </div>
+    </sweet-modal>
   </div>
 </template>
 
@@ -54,7 +44,6 @@ export default {
       options: [],
       mutableId: this.value,
       mutableLabel: this.label,
-      mutableErrors: this.errors,
       isSaving: false,
       isLoading: false
     }
@@ -64,8 +53,7 @@ export default {
   },
   props: {
     id: {
-      type: String,
-      required: true
+      type: String
     },
     value: {
       type: [String, Number]
@@ -75,10 +63,6 @@ export default {
     },
     help: {
       type: String
-    },
-    errors: {
-      type: Array,
-      default: null
     }
   },
   watch: {
@@ -90,16 +74,13 @@ export default {
     },
     value () {
       this.mutableId = this.value
-    },
-    errors () {
-      this.mutableErrors = this.errors
     }
   },
   created () {
     this.search()
   },
   methods: {
-    ...mapActions('masterUser', ['get', 'create']),
+    ...mapActions('masterUser', ['get']),
     search () {
       this.isLoading = true
       this.get({
@@ -131,38 +112,25 @@ export default {
         this.isLoading = false
       })
     },
-    add () {
-      this.isSaving = true
-      this.create({
-        name: this.searchText
-      }).then(response => {
-        this.search()
-        this.isSaving = false
-      }).catch(error => {
-        this.$notification.error(error.message)
-        this.isSaving = false
-      })
-    },
     choose (option) {
-      this.mutableErrors = []
       this.mutableId = option.id
       this.mutableLabel = option.label
-      this.$emit('input', option.id)
       this.$emit('choosen', option)
       this.close()
     },
     clear () {
       this.mutableId = null
       this.mutableLabel = null
-      this.$emit('input', null)
       this.$emit('choosen', '')
       this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    open () {
+      this.$refs['select-' + this.id].open()
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }

@@ -246,34 +246,41 @@
             <th>Harga Satuan</th>
             <th>Total</th>
           </tr>
-          <tr slot="p-body" v-for="(row, index) in rows" :key="row">
+          <tr slot="p-body" v-for="(row, index) in form.items" :key="'row-' + index">
             <td>
-              <m-item
-                :id="'item-' + index"
-                :data-index="index"
-                v-model="form.item[index]"
-                @choosen="chooseItem($event, row)"/>
+              <span @click="$refs.item.open(index)" class="select-link">
+                {{ row.item_label || $t('select') | uppercase }}
+              </span>
+            </td>
+            <td>
+              <p-quantity
+                :id="'quantity' + index"
+                :name="'quantity' + index"
+                :disabled="row.item_id == null"
+                v-model="row.quantity"
+                :item-id="row.item_id"
+                :units="row.units"
+                :unit="{
+                  name: row.unit,
+                  label: row.unit,
+                  converter: row.converter
+                }"
+                @choosen="chooseUnit($event, row)"/>
             </td>
             <td>
               <p-form-number
-                v-model="form.quantity[index]"
-                @keyup.native="calculate()"
-                :disabled="isSaving"
-                :is-text-right="true"/>
+                :id="'price' + index"
+                :name="'price' + index"
+                :disabled="row.item_id == null"
+                @keyup.native="calculate"
+                v-model="row.price"/>
             </td>
             <td>
               <p-form-number
-                v-model="form.price[index]"
-                @keyup.native="calculate()"
-                :disabled="isSaving"
-                :is-text-right="true"/>
-            </td>
-            <td>
-              <p-form-number
-                v-model="form.total[index]"
+                :id="'total' + index"
+                :name="'total' + index"
                 :disabled="true"
-                :readonly="true"
-                :is-text-right="true"/>
+                v-model="row.total"/>
             </td>
           </tr>
           <tr slot="p-body">
@@ -282,7 +289,7 @@
             <td>Total</td>
             <td>
               <p-form-number
-                v-model="form.grandTotal"
+                v-model="form.totalPrice"
                 :readonly="true"
                 :is-text-right="true"/>
             </td>
@@ -357,6 +364,7 @@
     </form>
     <m-customer ref="customer" @choosen="chooseCustomer"/>
     <m-customer-group ref="group" @choosen="chooseGroup"/>
+    <m-item ref="item" @choosen="chooseItem($event)"/>
   </div>
 </template>
 
@@ -389,7 +397,6 @@ export default {
       isSaving: false,
       isPermissionCameraGranted: true,
       isPermissionGeolocationGranted: true,
-      rows: 1,
       form: new Form({
         date: this.serverDateTime(),
         image: null,
@@ -416,11 +423,8 @@ export default {
           id: null,
           name: null
         }],
-        item: [''],
-        quantity: [0],
-        price: [0],
-        total: [0],
-        grandTotal: 0,
+        items: [],
+        totalPrice: 0,
         payment_method: 'cash',
         due_date: null,
         received_payment: 0
@@ -591,12 +595,68 @@ export default {
       })
     },
     // [End] Google Map
-    chooseItem (event, row) {
-      this.form.item[row - 1] = event.name
-      if (this.rows === row) {
-        this.rows++
+    addItemRow () {
+      this.form.items.push({
+        item_id: null,
+        item_name: null,
+        item_label: null,
+        unit: null,
+        converter: null,
+        quantity: null,
+        price: null,
+        allocation_id: null,
+        notes: null,
+        more: false,
+        units: [{
+          label: '',
+          name: '',
+          converter: null
+        }]
+      })
+    },
+    chooseItem (item) {
+      let row = this.form.items[item.index]
+      if (item.id == null) {
+        this.clearItem(row)
+      } else {
+        row.item_id = item.id
+        row.item_name = item.name
+        row.item_label = item.label
+        row.units = item.units
+        row.units.forEach((unit, keyUnit) => {
+          if (unit.id == item.unit_default_purchase) {
+            row.unit = unit.label
+            row.converter = unit.converter
+          }
+        })
+        let isNeedNewRow = true
+        this.form.items.forEach(element => {
+          if (element.item_id == null) {
+            isNeedNewRow = false
+          }
+        })
+        if (isNeedNewRow) {
+          this.addItemRow()
+        }
       }
       this.calculate()
+    },
+    clearItem (row) {
+      row.item_id = null
+      row.item_name = null
+      row.item_label = null
+      row.unit = null
+      row.converter = null
+      row.quantity = null
+      row.price = null
+      row.allocation_id = null
+      row.notes = null
+      row.more = false
+      row.units = []
+      if (this.form.items.length > 1) {
+        this.form.items = this.form.items.filter(item => item.item_id !== null)
+        this.addItemRow()
+      }
     },
     chooseInterestReason (event, index) {
       this.form.interest_reasons[index].id = event.id
@@ -622,17 +682,15 @@ export default {
       this.form.similar_products[index].id = null
       this.form.similar_products[index].name = null
     },
-    calculate: debounce(function () {
-      this.form.grandTotal = 0
-      for (var i = 0; i < this.form.item.length; i++) {
-        if (this.form.item[i] && this.form.quantity[i] && this.form.price[i]) {
-          this.$set(this.form.total, i, parseFloat(this.form.quantity[i]) * parseFloat(this.form.price[i]))
-          this.form.grandTotal += parseFloat(this.form.total[i])
-        } else {
-          this.$set(this.form.total, i, parseFloat(0))
+    calculate () {
+      this.totalPrice = 0
+      this.form.items.forEach((item) => {
+        if (item.price > 0 && item.quantity > 0) {
+          item.total = item.quantity * item.price
+          this.totalPrice += parseFloat(item.price)
         }
-      }
-    }, 500),
+      })
+    },
     onSubmit () {
       this.isSaving = true
       this.create(this.form)
@@ -652,6 +710,7 @@ export default {
   },
   created () {
     let self = this
+    this.addItemRow()
     navigator.permissions.query({ name: 'camera' })
       .then(function (result) {
         if (result.state == 'granted') {

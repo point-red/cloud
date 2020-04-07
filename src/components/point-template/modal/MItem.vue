@@ -1,37 +1,39 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select item">
-      <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
-        <hr>
-        <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
-        </div>
-        <div v-else class="list-group push">
-          <template v-for="(option, index) in options">
-          <a
-            :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{'active': option.id == mutableId }"
-            @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label | uppercase }}
-          </a>
-          </template>
-        </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
-          {{ $t('searching not found', [searchText]) | capitalize }}
-        </div>
-        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('item') | capitalize }}
-        </div>
-      </template>
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select item') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()">
+      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <hr>
+      <div v-if="isLoading">
+        <h3 class="text-center">Loading ...</h3>
+      </div>
+      <div v-else class="list-group push">
+        <template v-for="(option, index) in options">
+        <a
+          :key="index"
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          :class="{'active': option.id == mutableId }"
+          @click="choose(option)"
+          href="javascript:void(0)">
+          {{ option.label | uppercase }}
+        </a>
+        </template>
+      </div>
+      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+        {{ $t('searching not found', [searchText]) | capitalize }}
+      </div>
+      <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
+        {{ $t('you don\'t have any') | capitalize }} {{ $t('item') | capitalize }}
+      </div>
       <div class="pull-right">
-        <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
+        <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('create') | uppercase }}</button>
         <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
       </div>
-    </p-modal>
+    </sweet-modal>
+    <m-add-item id="add-item" ref="addItem" @added="onAdded()"></m-add-item>
   </div>
 </template>
 
@@ -42,6 +44,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
+      index: null,
       searchText: '',
       options: [],
       mutableId: this.value,
@@ -55,8 +58,7 @@ export default {
   },
   props: {
     id: {
-      type: String,
-      required: true
+      type: String
     },
     value: {
       type: [String, Number]
@@ -115,14 +117,25 @@ export default {
         this.isLoading = false
       })
     },
-    add () {
-      //
+    onAdded () {
+      this.search()
     },
     clear (option) {
       this.mutableId = null
       this.mutableLabel = null
-      this.$emit('input', null)
-      this.$emit('clear')
+      this.$emit('choosen', {
+        index: this.index,
+        id: null,
+        name: null,
+        label: null,
+        require_expiry_date: null,
+        require_production_number: null,
+        unit_default: null,
+        unit_default_purchase: null,
+        unit_default_sales: null,
+        units: null,
+        unit: null
+      })
       this.close()
     },
     choose (option) {
@@ -130,10 +143,11 @@ export default {
       this.mutableLabel = option.label
       // make default unit non reactive
       let unit = JSON.parse(JSON.stringify(option.units[0]))
-      this.$emit('input', option.id)
       this.$emit('choosen', {
+        index: this.index,
         id: option.id,
         name: option.name,
+        label: option.label,
         require_expiry_date: option.require_expiry_date,
         require_production_number: option.require_production_number,
         unit_default: option.unit_default,
@@ -144,11 +158,14 @@ export default {
       })
       this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    open (index = null) {
+      this.index = index
+      this.$refs['select-' + this.id].open()
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }

@@ -50,30 +50,33 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
-              <th width="250px">{{ $t('date') }}</th>
-              <th width="150px">{{ $t('sales') }}</th>
-              <th width="150px">{{ $t('group') }}</th>
-              <th width="150px">{{ $t('customer') }}</th>
-              <th width="350px">{{ $t('address') }}</th>
-              <th width="100px">{{ $t('phone') }}</th>
-              <th width="250px">{{ $t('interest reason') }}</th>
-              <th width="250px">{{ $t('no interest reason') }}</th>
-              <th width="250px">{{ $t('similar product') }}</th>
-              <th width="250px">{{ $t('notes') }}</th>
-              <th width="250px">{{ $t('item') }}</th>
-              <th class="text-right" width="250px">{{ $t('quantity') }}</th>
-              <th class="text-right" width="250px">{{ $t('price') }}</th>
+              <th style="min-width: 50px">#</th>
+              <th style="min-width: 150px">{{ $t('photo') }}</th>
+              <th style="min-width: 100px">{{ $t('date') }}</th>
+              <th style="min-width: 150px">{{ $t('sales') }}</th>
+              <th style="min-width: 150px">{{ $t('group') }}</th>
+              <th style="min-width: 150px">{{ $t('customer') }}</th>
+              <th style="min-width: 250px">{{ $t('address') }}</th>
+              <th style="min-width: 100px">{{ $t('phone') }}</th>
+              <th style="min-width: 150px">{{ $t('interest reason') }}</th>
+              <th style="min-width: 150px">{{ $t('no interest reason') }}</th>
+              <th style="min-width: 150px">{{ $t('similar product') }}</th>
+              <th style="min-width: 150px">{{ $t('notes') }}</th>
+              <th style="min-width: 150px">{{ $t('item') }}</th>
+              <th class="text-right" style="min-width: 100px">{{ $t('quantity') }}</th>
+              <th class="text-right" style="min-width: 100px">{{ $t('price') }}</th>
             </tr>
             <template v-for="(form, index) in forms">
               <template v-if="form.details && form.details.length > 0">
                 <tr slot="p-body" v-for="(detail, index2) in form.details" :key="index + '-' + index2">
                   <th>{{ index + 1 }}</th>
                   <td>
-                    {{ formattedDateTime(form.form.date) }}
                     <template v-if="form.photo">
                       <img :src="form.photo" alt="" width="150px">
                     </template>
+                  </td>
+                  <td>
+                    {{ form.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
                   </td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>{{ form.group }}</td>
@@ -113,11 +116,11 @@
                 <tr slot="p-body" :key="index">
                   <th>{{ index + 1 }}</th>
                   <td>
-                    {{ formattedDateTime(form.form.date) }}
                     <template v-if="form.photo">
                       <img :src="form.photo" alt="" width="150px">
                     </template>
                   </td>
+                  <td>{{ form.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>{{ form.group }}</td>
                   <td>{{ form.name }}</td>
