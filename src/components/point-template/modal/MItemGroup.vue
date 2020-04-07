@@ -1,46 +1,35 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
-    <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != null">
-      <i class="clickable fa fa-close"></i>
-    </a>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select item group">
-      <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
-        <hr>
-        <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
-        </div>
-        <div v-else class="list-group push">
-          <template v-for="(option, index) in options">
-          <a
-            :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{'active': option.id == mutableId }"
-            @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label | uppercase }}
-          </a>
-          </template>
-        </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
-          {{ $t('searching not found', [searchText]) | capitalize }} <br>
-          {{ $t('click') }} <span class="link" @click="add"><i class="fa fa-xs" :class="{
-            'fa-refresh fa-spin': isSaving,
-            'fa-plus': !isSaving
-          }"></i> Add</span> {{ $t('to add new data') }}
-        </div>
-        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('group') | capitalize }}, <br/> {{ $t('you can create') }}
-          <router-link :to="'/master/item-group/create'">
-            <span>{{ $t('new one') }}</span>
-          </router-link>
-        </div>
-      </template>
-      <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </template>
-    </p-modal>
+    <sweet-modal
+      ref="modal"
+      :title="$t('select item group') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()">
+      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <hr>
+      <div v-if="isLoading">
+        <h3 class="text-center">Loading ...</h3>
+      </div>
+      <div v-else class="list-group push">
+        <template v-for="(option, index) in options">
+        <a
+          :key="index"
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          :class="{'active': option.id == mutableId }"
+          @click="choose(option)"
+          href="javascript:void(0)">
+          {{ option.label | uppercase }}
+        </a>
+        </template>
+      </div>
+      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+        {{ $t('searching not found', [searchText]) | capitalize }} <br>
+      </div>
+      <div class="pull-right">
+        <!-- <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
+        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button> -->
+      </div>
+    </sweet-modal>
   </div>
 </template>
 
@@ -64,8 +53,7 @@ export default {
   },
   props: {
     id: {
-      type: String,
-      required: true
+      type: String
     },
     value: {
       type: [String, Number]
@@ -108,6 +96,7 @@ export default {
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
+            'name': key['name'],
             'label': key['name']
           })
 
@@ -136,11 +125,7 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
-      this.$emit('choosen', {
-        id: option.id,
-        label: option.label,
-        name: option.label
-      })
+      this.$emit('choosen', option)
       this.close()
     },
     clear () {
@@ -149,11 +134,13 @@ export default {
       this.$emit('input', null)
       this.$emit('clear')
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    open () {
+      this.$refs.modal.open()
     },
     close () {
-      this.$refs['select-' + this.id].close()
+      this.$refs.modal.close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }

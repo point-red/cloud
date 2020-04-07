@@ -27,10 +27,10 @@
           {{ $t('you don\'t have any') | capitalize }} {{ $t('item') | capitalize }}
         </div>
       </template>
-      <template slot="footer">
-        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger mr-5">{{ $t('clear') | uppercase }}</button>
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </template>
+      <div class="pull-right">
+        <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
+        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+      </div>
     </p-modal>
   </div>
 </template>
@@ -116,23 +116,7 @@ export default {
       })
     },
     add () {
-      this.isSaving = true
-      this.create({
-        code: this.searchText,
-        name: this.searchText,
-        units: [
-          {
-            label: 'pcs',
-            name: 'pcs'
-          }
-        ]
-      }).then(response => {
-        this.search()
-        this.isSaving = false
-      }).catch(error => {
-        this.$notification.error(error.message)
-        this.isSaving = false
-      })
+      //
     },
     clear (option) {
       this.mutableId = null

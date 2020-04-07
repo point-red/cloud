@@ -10,14 +10,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <router-link
-            to="/master/item/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addItem.open()"
             v-if="$permission.has('create item')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -66,6 +67,7 @@
         </p-pagination>
       </p-block>
     </div>
+    <m-add-item ref="addItem" @added="onAdded"></m-add-item>
   </div>
 </template>
 
@@ -97,11 +99,14 @@ export default {
   },
   methods: {
     ...mapActions('masterItem', ['get']),
+    onAdded () {
+      this.search()
+    },
     updatePage (value) {
       this.currentPage = value
-      this.getItemRequest()
+      this.search()
     },
-    getItemRequest () {
+    search () {
       this.isLoading = true
       this.get({
         params: {
@@ -124,11 +129,11 @@ export default {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getItemRequest()
+      this.search()
     }, 300)
   },
   created () {
-    this.getItemRequest()
+    this.search()
     this.$nextTick(() => {
       this.$refs.searchText.setFocus()
     })

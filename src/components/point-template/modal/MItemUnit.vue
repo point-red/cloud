@@ -1,80 +1,80 @@
 <template>
   <div>
-    <button type="button" class="btn btn-sm btn-secondary" @click="show">
-      <i class="fa fa-plus"/> Add Unit Converter
-    </button>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" :title="'unit converter' | uppercase">
-      <template slot="content">
-        {{ $t('create item helper - unit') }}
-        <hr>
-        <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
-        </div>
-        <div v-else class="list-group push">
-          <p-table>
-            <tr slot="p-head">
-              <th class="text-center" width="300px">Unit</th>
-              <th class="text-center">Convert To</th>
-              <th class="text-center">Quantity</th>
-              <th class="text-center">Default (Purchase)</th>
-              <th class="text-center">Default (Sales)</th>
-              <th></th>
-            </tr>
-            <tr slot="p-body" v-for="(unit, index) in units" :key="index">
-              <th>
-                <template v-if="index == 0">
-                  1 {{ units[index].name | uppercase }}
-                </template>
-                <template v-else>
-                  1 {{ units[index].name | uppercase }} = {{ units[index].converter }} {{ units[0].name | uppercase }}
-                </template>
-              </th>
-              <td class="text-center">
-                <p-form-input
-                  :id="'id' + index"
-                  name="name[]"
-                  v-model="unit['name']"
-                  :placeholder="$t('convert to') | uppercase"/>
-              </td>
-              <td class="text-center">
-                <p-form-number
-                  :id="'converter-' + index"
-                  name="converter[]"
-                  :readonly="index == 0"
-                  v-model="unit['converter']"
-                  :is-text-right="true"/>
-              </td>
-              <td class="text-center">
-                <p-form-check-box
-                  :id="'default-purchase-' + index"
-                  :is-form="false"
-                  @click.native="togglePurchase(index)"
-                  :checked="units[index].default_purchase">
-                </p-form-check-box>
-              </td>
-              <td class="text-center">
-                <p-form-check-box
-                  :id="'default-sales-' + index"
-                  :is-form="false"
-                  @click.native="toggleSales(index)"
-                  :checked="units[index].default_sales">
-                </p-form-check-box>
-              </td>
-              <td>
-                <i class="clickable fa fa-close" @click="clear(index)"></i>
-              </td>
-            </tr>
-          </p-table>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addRow">
-            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-          </button>
-        </div>
-      </template>
-      <template slot="footer">
-        <button type="button" @click="update()" class="btn btn-primary">Update</button>
+    <sweet-modal
+      ref="modal"
+      :title="$t('select chart of account') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()">
+      {{ $t('create item helper - unit') }}
+      <div class="row">
+      <div v-if="isLoading">
+        <h3 class="text-center">Loading ...</h3>
+      </div>
+      <div v-else class="list-group push">
+        <p-table>
+          <tr slot="p-head">
+            <th class="text-center">Unit</th>
+            <th>Convert To</th>
+            <th>Quantity</th>
+            <th class="text-center">Default (Purchase)</th>
+            <th class="text-center">Default (Sales)</th>
+            <th></th>
+          </tr>
+          <tr slot="p-body" v-for="(unit, index) in units" :key="index">
+            <th>
+              <template v-if="index == 0">
+                1 {{ units[index].name | uppercase }}
+              </template>
+              <template v-else>
+                1 {{ units[index].name | uppercase }} = {{ units[index].converter }} {{ units[0].name | uppercase }}
+              </template>
+            </th>
+            <td class="text-center">
+              <p-form-input
+                :id="'id' + index"
+                name="name[]"
+                v-model="unit['name']"
+                :placeholder="$t('convert to') | uppercase"/>
+            </td>
+            <td class="text-center">
+              <p-form-number
+                :id="'converter-' + index"
+                name="converter[]"
+                :readonly="index == 0"
+                v-model="unit['converter']"
+                :is-text-right="true"/>
+            </td>
+            <td class="text-center">
+              <p-form-check-box
+                :id="'default-purchase-' + index"
+                :is-form="false"
+                @click.native="togglePurchase(index)"
+                :checked="units[index].default_purchase">
+              </p-form-check-box>
+            </td>
+            <td class="text-center">
+              <p-form-check-box
+                :id="'default-sales-' + index"
+                :is-form="false"
+                @click.native="toggleSales(index)"
+                :checked="units[index].default_sales">
+              </p-form-check-box>
+            </td>
+            <td>
+              <i class="clickable fa fa-close" @click="clear(index)"></i>
+            </td>
+          </tr>
+        </p-table>
+        <button type="button" class="btn btn-sm btn-secondary" @click="addRow">
+          <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
+        </button>
+      </div>
+      <div class="pull-right">
+        <button type="button" @click="update()" class="btn btn-sm btn-primary mr-5">{{ $t('update') | uppercase }}</button>
         <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </template>
-    </p-modal>
+      </div>
+      </div>
+    </sweet-modal>
   </div>
 </template>
 
@@ -96,8 +96,7 @@ export default {
   },
   props: {
     id: {
-      type: String,
-      required: true
+      type: String
     }
   },
   watch: {
@@ -145,11 +144,13 @@ export default {
       this.$emit('updated', this.units)
       this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    open () {
+      this.$refs.modal.open()
     },
     close () {
-      this.$refs['select-' + this.id].close()
+      this.$refs.modal.close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }

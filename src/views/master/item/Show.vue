@@ -11,18 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/item/create"
+          <button
+            type="button"
+            @click="$refs.addItem.open()"
             v-if="$permission.has('create item')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('create') | uppercase }}
-          </router-link>
-          <router-link
-            :to="{ path: '/master/item/' + item.id + '/edit', params: { id: item.id }}"
+          </button>
+          <button
+            type="button"
+            @click="$refs.editItem.open(item)"
             v-if="$permission.has('update item')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </button>
           <button
             type="button"
             @click="onDelete()"
@@ -147,6 +149,8 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-add-item ref="addItem" @added="onAddedItem($event)"></m-add-item>
+    <m-edit-item ref="editItem" @updated="onUpdatedItem($event)"></m-edit-item>
   </div>
 </template>
 
@@ -177,6 +181,14 @@ export default {
   },
   methods: {
     ...mapActions('masterItem', ['find', 'delete']),
+    onAddedItem (item) {
+      this.$router.push('/master/item/' + item.id)
+      this.id = item.id
+      this.findItem()
+    },
+    onUpdatedItem (item) {
+      this.findItem()
+    },
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
         this.isDeleting = true
@@ -191,7 +203,7 @@ export default {
           })
       })
     },
-    getItemRequest () {
+    findItem () {
       this.isLoading = true
       this.find({
         id: this.id,
@@ -207,7 +219,7 @@ export default {
     }
   },
   created () {
-    this.getItemRequest()
+    this.findItem()
   }
 }
 </script>

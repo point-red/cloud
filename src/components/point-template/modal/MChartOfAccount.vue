@@ -63,8 +63,7 @@ export default {
   },
   props: {
     id: {
-      type: String,
-      required: true
+      type: String
     },
     value: {
       type: [String, Number]
@@ -136,12 +135,14 @@ export default {
       this.$emit('choosen', option)
       this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    open () {
+      this.$refs.modal.open()
       this.search()
     },
     close () {
-      this.$refs['select-' + this.id].close()
+      this.$refs.modal.close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }
