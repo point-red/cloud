@@ -8,14 +8,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block mb-5">
-          <router-link
-            to="/accounting/chart-of-account/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addAccount.open()"
             v-if="$permission.has('create chart of account')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -69,6 +70,7 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-add-chart-of-account ref="addAccount" @added="onAdded"></m-add-chart-of-account>
   </div>
 </template>
 
@@ -104,9 +106,9 @@ export default {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getChartOfAccountsRequest()
+      this.search()
     }, 300),
-    getChartOfAccountsRequest () {
+    search () {
       this.isLoading = true
       this.getChartOfAccounts({
         params: {
@@ -125,10 +127,13 @@ export default {
       }).catch(error => {
         this.isLoading = false
       })
+    },
+    onAdded () {
+      this.search()
     }
   },
   created () {
-    this.getChartOfAccountsRequest()
+    this.search()
   }
 }
 </script>
