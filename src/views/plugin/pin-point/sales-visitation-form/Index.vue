@@ -253,7 +253,6 @@ export default {
         this.lastPage = this.pagination.last_page
       }).catch(errors => {
         this.isLoading = false
-        console.log(errors.data)
       })
     },
     exportData (file = '') {
@@ -266,7 +265,6 @@ export default {
       }).then((response) => {
         this.downloadLink = response.data.url
       }, (error) => {
-        console.log(error)
       }).then(() => {
         this.isExporting = false
       })
