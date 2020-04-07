@@ -88,12 +88,13 @@
 
               <hr>
 
-              <router-link
-                :to="{ path: '/accounting/chart-of-account/' + chartOfAccount.id + '/edit', params: { id: chartOfAccount.id }}"
+              <button
+                type="button"
                 v-if="$permission.has('update chart of account')"
+                @click="$refs.editAccount.open(chartOfAccount)"
                 class="btn btn-sm btn-primary mr-5">
                 {{ $t('edit') | uppercase }}
-              </router-link>
+              </button>
               <button
                 type="button"
                 @click="onDelete()"
@@ -133,6 +134,7 @@
         </div>
       </div>
     </div>
+    <m-edit-chart-of-account ref="editAccount" @updated="onUpdatedAccount($event)"></m-edit-chart-of-account>
   </div>
 </template>
 
@@ -175,39 +177,45 @@ export default {
           this.$notification.error('cannot delete this account')
         })
       })
-    }
-  },
-  created () {
-    this.isLoading = true
-    this.find({ id: this.id })
-      .then(response => {
-        this.isLoading = false
-        this.find({
-          id: this.id
-        }).then(response => {
+    },
+    findAccount () {
+      this.isLoading = true
+      this.find({ id: this.id })
+        .then(response => {
           this.isLoading = false
+          this.find({
+            id: this.id
+          }).then(response => {
+            this.isLoading = false
+          }).catch(error => {
+            this.isLoading = false
+            this.$notification.error(error.message)
+          })
         }).catch(error => {
           this.isLoading = false
           this.$notification.error(error.message)
         })
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
+      this.get({
+        params: {
+          joins: {
+            1: 'forms.id=journals.form_id'
+          },
+          fields: 'journals.*',
+          includes: 'form;type',
+          sort_by: '-forms.date',
+          filter_equal: {
+            chart_of_account_id: this.id
+          },
+          limit: 20
+        }
       })
-    this.get({
-      params: {
-        joins: {
-          1: 'forms.id=journals.form_id'
-        },
-        fields: 'journals.*',
-        includes: 'form',
-        sort_by: '-forms.date',
-        filter_equal: {
-          chart_of_account_id: this.id
-        },
-        limit: 20
-      }
-    })
+    },
+    onUpdatedAccount (supplier) {
+      this.findAccount()
+    }
+  },
+  created () {
+    this.findAccount()
   }
 }
 </script>

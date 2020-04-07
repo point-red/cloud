@@ -26,13 +26,13 @@
               @errors="form.errors.set('number', null)"/>
 
             <p-form-row
-              id="name"
-              v-model="form.name"
-              :label="$t('name')"
-              ref="name"
-              name="name"
-              :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"/>
+              id="alias"
+              v-model="form.alias"
+              :label="$t('alias')"
+              ref="alias"
+              name="alias"
+              :errors="form.errors.get('alias')"
+              @errors="form.errors.set('alias', null)"/>
 
             <p-form-row
               id="position"
@@ -262,6 +262,7 @@ export default {
       isSaving: false,
       isFailed: false,
       form: new Form({
+        id: null,
         type_id: null,
         type_alias: null,
         is_sub_ledger: false,
@@ -279,7 +280,7 @@ export default {
     ...mapGetters('accountingChartOfAccount', ['chart of account'])
   },
   methods: {
-    ...mapActions('accountingChartOfAccount', ['create']),
+    ...mapActions('accountingChartOfAccount', ['update']),
     onClose () {
       this.isFailed = false
       Object.assign(this.$data, this.$options.data.call(this))
@@ -287,24 +288,18 @@ export default {
     },
     onSubmit () {
       this.isSaving = true
-      this.create(this.form)
+      this.update(this.form)
         .then(response => {
           this.isSaving = false
-          this.$notification.success('create success')
+          this.$notification.success('update success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$emit('added', response.data)
+          this.$emit('updated', response.data)
           this.close()
         }).catch(error => {
           this.isSaving = false
           this.isFailed = true
           this.form.errors.record(error.errors)
         })
-    },
-    toggleSubLedger () {
-      this.form.is_sub_ledger = !this.form.is_sub_ledger
-      if (this.form.is_sub_ledger == false) {
-        this.form.sub_ledger = null
-      }
     },
     toggleCashFlow () {
       this.form.is_cash_flow = !this.form.is_cash_flow
@@ -313,14 +308,36 @@ export default {
         this.form.cash_flow_position = null
       }
     },
+    toggleSubLedger () {
+      this.form.is_sub_ledger = !this.form.is_sub_ledger
+      if (this.form.is_sub_ledger == false) {
+        this.form.sub_ledger = null
+      }
+    },
     updateAccountType (accountType) {
       this.form.type_id = accountType.id
       this.form.type_alias = accountType.alias
     },
-    open () {
+    open (chartOfAccount) {
+      this.form.id = chartOfAccount.id
+      this.form.type_id = chartOfAccount.type_id
+      this.form.type_alias = chartOfAccount.type.alias
+      this.form.number = chartOfAccount.number
+      this.form.name = chartOfAccount.name
+      this.form.alias = chartOfAccount.alias
+      if (chartOfAccount.sub_ledger) {
+        this.form.is_sub_ledger = true
+        this.form.sub_ledger = chartOfAccount.sub_ledger
+      }
+      this.form.position = chartOfAccount.position
+      if (chartOfAccount.cash_flow) {
+        this.form.is_cash_flow = true
+        this.form.cash_flow = chartOfAccount.cash_flow
+        this.form.cash_flow_position = chartOfAccount.type_id
+      }
       this.$refs.modal.open()
       this.$nextTick(() => {
-        this.$refs.name.setFocus()
+        this.$refs.alias.setFocus()
       })
     },
     close () {
