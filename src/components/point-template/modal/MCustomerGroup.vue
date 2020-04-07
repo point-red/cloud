@@ -26,9 +26,11 @@
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
       <div class="pull-right">
+        <button type="button" @click="$refs.addCustomerGroup.open()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('create') | uppercase }}</button>
         <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
       </div>
     </sweet-modal>
+    <m-add-customer-group id="add-customer-group" ref="addCustomerGroup" @added="onAdded()"></m-add-customer-group>
   </div>
 </template>
 
@@ -104,6 +106,9 @@ export default {
         this.isLoading = false
       })
     },
+    onAdded () {
+      this.search()
+    },
     choose (option) {
       this.mutableId = option.id
       this.mutableLabel = option.label
@@ -115,6 +120,7 @@ export default {
       this.mutableLabel = null
       this.$emit('choosen', {
         id: null,
+        name: null,
         label: null
       })
       this.close()

@@ -34,7 +34,7 @@
       </div>
     </sweet-modal>
 
-    <m-add-supplier id="add-supplier" ref="addSupplier" @close="onClose()"></m-add-supplier>
+    <m-add-supplier id="add-supplier" ref="addSupplier" @added="onAdded()"></m-add-supplier>
   </div>
 </template>
 
@@ -58,8 +58,7 @@ export default {
   },
   props: {
     id: {
-      type: String,
-      required: true
+      type: String
     },
     value: {
       type: [String, Number]
@@ -128,7 +127,7 @@ export default {
     add () {
       this.$refs.addSupplier.open()
     },
-    onClose () {
+    onAdded () {
       this.search()
     },
     save () {
@@ -160,6 +159,8 @@ export default {
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }

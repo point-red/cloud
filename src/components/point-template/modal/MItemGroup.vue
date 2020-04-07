@@ -26,10 +26,10 @@
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
       <div class="pull-right">
-        <!-- <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
-        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button> -->
+        <button type="button" @click="$refs.addItemGroup.open()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
       </div>
     </sweet-modal>
+    <m-add-item-group ref="addItemGroup" @added="onAdded"></m-add-item-group>
   </div>
 </template>
 
@@ -109,17 +109,8 @@ export default {
         this.isLoading = false
       })
     },
-    add () {
-      this.isSaving = true
-      this.create({
-        name: this.searchText
-      }).then(response => {
-        this.search()
-        this.isSaving = false
-      }).catch(error => {
-        this.$notification.error(error.message)
-        this.isSaving = false
-      })
+    onAdded () {
+      this.search()
     },
     choose (option) {
       this.mutableId = option.id

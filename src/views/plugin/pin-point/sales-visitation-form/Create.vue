@@ -50,13 +50,13 @@
           :errors="form.errors.get('customer')"
           @errors="form.errors.set('customer', null)">
           <div class="col-lg-9" slot="body">
-            <m-customer id="customer" v-model="form.customer_id" @choosen="chooseCustomer" :label="form.customer_name"/>
+            <span @click="$refs.customer.open()" class="select-link">{{ form.customer_name || $t('select') | uppercase }}</span>
           </div>
         </p-form-row>
 
         <p-form-row :label="'group'">
           <div class="col-lg-9" slot="body">
-            <m-customer-group id="group" v-model="form.group_id" @choosen="chooseGroup" :label="form.group_name" class-reference="Customer"/>
+            <span @click="$refs.group.open()" class="select-link">{{ form.group_name || $t('select') | uppercase }}</span>
           </div>
         </p-form-row>
 
@@ -355,6 +355,8 @@
         </div>
       </p-block>
     </form>
+    <m-customer ref="customer" @choosen="chooseCustomer"/>
+    <m-customer-group ref="group" @choosen="chooseGroup"/>
   </div>
 </template>
 
@@ -531,10 +533,12 @@ export default {
         name: null
       })
     },
-    chooseCustomer (value) {
-      this.form.customer_name = value
+    chooseCustomer (option) {
+      this.form.customer_id = option.id
+      this.form.customer_name = option.name
     },
     chooseGroup (option) {
+      this.form.group_id = option.id
       this.form.group_name = option.name
     },
     // [Start] Google Map

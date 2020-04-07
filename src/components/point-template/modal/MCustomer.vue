@@ -1,43 +1,40 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select customer">
-      <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
-        <hr>
-        <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
-        </div>
-        <div v-else class="list-group push">
-          <template v-for="(option, index) in options">
-          <a
-            :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{'active': option.id == mutableId }"
-            @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label | uppercase }}
-          </a>
-          </template>
-        </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
-          {{ $t('searching not found', [searchText]) | capitalize }} <br>
-          {{ $t('click') }} <span class="link" @click="add"><i class="fa fa-xs" :class="{
-            'fa-refresh fa-spin': isSaving,
-            'fa-plus': !isSaving
-          }"></i> Add</span> {{ $t('to add new data') }}
-        </div>
-        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('customer') | capitalize }}, <br/> {{ $t('you can create') }}
-          <router-link :to="'/master/customer/create'">
-            <span>{{ $t('new one') }}</span>
-          </router-link>
-        </div>
-      </template>
-      <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </template>
-    </p-modal>
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select customer') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()">
+      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <hr>
+      <div v-if="isLoading">
+        <h3 class="text-center">Loading ...</h3>
+      </div>
+      <div v-else class="list-group push">
+        <template v-for="(option, index) in options">
+        <a
+          :key="index"
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          :class="{'active': option.id == mutableId }"
+          @click="choose(option)"
+          href="javascript:void(0)">
+          {{ option.label | uppercase }}<br v-if="option.address">
+          {{ option.address | uppercase }}<br v-if="option.email">
+          {{ option.email | uppercase }}<br v-if="option.phone">
+          {{ option.phone | uppercase }}
+        </a>
+        </template>
+      </div>
+      <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
+        {{ $t('you don\'t have any') | capitalize }} {{ $t('customer') | capitalize }}
+      </div>
+      <div class="pull-right">
+        <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
+        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+      </div>
+    </sweet-modal>
+
+    <m-add-customer id="add-customer" ref="addCustomer" @added="onAdded()"></m-add-customer>
   </div>
 </template>
 
@@ -61,8 +58,7 @@ export default {
   },
   props: {
     id: {
-      type: String,
-      required: true
+      type: String
     },
     value: {
       type: [String, Number]
@@ -77,6 +73,9 @@ export default {
     }, 300),
     label () {
       this.mutableLabel = this.label
+    },
+    value () {
+      this.mutableId = this.value
     }
   },
   created () {
@@ -89,18 +88,31 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          limit: 50,
+          limit: 20,
+          includes: 'addresses;phones;emails',
           filter_like: {
-            name: this.searchText
+            'name': this.searchText
           }
         }
       }).then(response => {
         this.options = []
-        // this.mutableLabel = ''
         response.data.map((key, value) => {
-          this.options.push({
+          let obj = {
             'id': key['id'],
-            'label': key['name']
+            'name': key['name'],
+            'label': key['label']
+          }
+          if (key['addresses'].length > 0) {
+            obj.address = key['addresses'][0]['address']
+          }
+          if (key['emails'].length > 0) {
+            obj.email = key['emails'][0]['email']
+          }
+          if (key['phones'].length > 0) {
+            obj.phone = key['phones'][0]['number']
+          }
+          this.options.push({
+            ...obj
           })
 
           if (this.value == key['id']) {
@@ -113,29 +125,30 @@ export default {
       })
     },
     add () {
-      this.isSaving = true
-      this.create({
-        name: this.searchText
-      }).then(response => {
-        this.search()
-        this.isSaving = false
-      }).catch(error => {
-        this.$notification.error(error.message)
-        this.isSaving = false
-      })
+      this.$refs.addCustomer.open()
+    },
+    onAdded () {
+      this.search()
+    },
+    open () {
+      this.$refs['select-' + this.id].open()
     },
     choose (option) {
       this.mutableId = option.id
-      this.mutableLabel = option.label
-      this.$emit('input', option.id)
-      this.$emit('choosen', option.label)
+      this.$emit('choosen', option)
       this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    clear () {
+      this.mutableId = null
+      this.mutableLabel = null
+      this.$emit('input', null)
+      this.$emit('choosen', '')
+      this.close()
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }
@@ -148,10 +161,5 @@ input:readonly {
 }
 input {
   min-width: 200px;
-}
-.link {
-  border-bottom: dotted 1px #2196f3;
-  color: #2196f3;
-  cursor: pointer;
 }
 </style>

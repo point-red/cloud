@@ -1,7 +1,7 @@
 <template>
   <div>
     <sweet-modal
-      :ref="'select-' + id"
+      ref="modal"
       :title="$t('select customer group') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
@@ -15,7 +15,7 @@
         <a
           :key="index"
           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-          :class="{ 'active': isChoosen(option) }"
+          :class="{'active': option.id == mutableId }"
           @click="choose(option)"
           href="javascript:void(0)">
           {{ option.label | uppercase }}
@@ -25,31 +25,16 @@
       <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
-      <div class="pull-left">
-        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="$refs.addCustomerGroup.open()">
-          {{ $t('create new') | uppercase }}
-        </button>
-      </div>
       <div class="pull-right">
-        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="clear">
-          {{ $t('clear') | uppercase }}
-        </button>
-        <button type="submit" class="btn btn-sm btn-primary" @click="onSubmit">
-          {{ $t('submit') | uppercase }}
-        </button>
+        <button type="button" @click="$refs.addCustomerGroup.open()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
       </div>
     </sweet-modal>
-    <m-add-customer-group
-      id="add-customer-group"
-      ref="addCustomerGroup"
-      @added="onAddedPricingGroup($event)">
-    </m-add-customer-group>
+    <m-add-item-group ref="addCustomerGroup" @added="onAdded"></m-add-item-group>
   </div>
 </template>
 
 <script>
 import debounce from 'lodash/debounce'
-import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -57,8 +42,9 @@ export default {
     return {
       searchText: '',
       options: [],
-      choosen: [],
-      limit: 20,
+      mutableId: this.value,
+      mutableLabel: this.label,
+      isSaving: false,
       isLoading: false
     }
   },
@@ -68,12 +54,27 @@ export default {
   props: {
     id: {
       type: String
+    },
+    value: {
+      type: [String, Number]
+    },
+    label: {
+      type: String
+    },
+    type: {
+      type: String
     }
   },
   watch: {
     searchText: debounce(function () {
       this.search()
-    }, 300)
+    }, 300),
+    value () {
+      this.mutableId = this.value
+    },
+    label () {
+      this.mutableLabel = this.label
+    }
   },
   created () {
     this.search()
@@ -85,7 +86,7 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          limit: this.limit,
+          limit: 50,
           filter_like: {
             name: this.searchText
           }
@@ -98,54 +99,40 @@ export default {
             'name': key['name'],
             'label': key['name']
           })
+
+          if (this.value == key['id']) {
+            this.mutableLabel = key['name']
+          }
         })
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
       })
     },
-    onAddedPricingGroup () {
+    onAdded () {
       this.search()
     },
-    onSubmit () {
-      this.$emit('choosen', this.choosen)
+    choose (option) {
+      this.mutableId = option.id
+      this.mutableLabel = option.label
+      this.$emit('input', option.id)
+      this.$emit('choosen', option)
       this.close()
     },
-    isChoosen (option) {
-      return this.choosen.some(element => {
-        return element.id == option.id
-      })
+    clear () {
+      this.mutableId = null
+      this.mutableLabel = null
+      this.$emit('input', null)
+      this.$emit('clear')
     },
-    choose (option) {
-      let isChoosen = this.choosen.some(element => {
-        return element.id == option.id
-      })
-      if (isChoosen) {
-        this.choosen = _.reject(this.choosen, function (el) {
-          return el.id === option.id
-        })
-      } else {
-        this.choosen.push({
-          'id': option.id,
-          'name': option.name,
-          'label': option.label
-        })
-      }
+    open () {
+      this.$refs.modal.open()
+    },
+    close () {
+      this.$refs.modal.close()
     },
     onClose () {
       this.$emit('close', true)
-    },
-    clear () {
-      this.choosen = []
-      this.$emit('choosen', this.choosen)
-      this.close()
-    },
-    open (choosen = []) {
-      this.$refs['select-' + this.id].open()
-      this.choosen = choosen
-    },
-    close () {
-      this.$refs['select-' + this.id].close()
     }
   }
 }
@@ -161,6 +148,9 @@ input {
 .link {
   border-bottom: dotted 1px #2196f3;
   color: #2196f3;
+  cursor: pointer;
+}
+.clickable {
   cursor: pointer;
 }
 </style>
