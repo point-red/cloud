@@ -9,44 +9,75 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('sales visitation')" :header="true">
-        <p-form-row id="date" name="date" :label="$t('date')">
-          <div slot="body" class="col-lg-9">
-            <p-date-range-picker id="date" name="date" v-model="date"/>
-          </div>
-        </p-form-row>
-        <p-form-row>
-          <div slot="body" class="col-lg-9">
-            <button :disabled="isLoading" class="btn btn-sm btn-primary mr-5" @click="onClickSearchButton">
-              <i v-show="isLoading" class="fa fa-asterisk fa-spin"/> Search
-            </button>
-            <div class="btn-group">
-              <button :disabled="isExporting" class="btn btn-sm btn-primary" @click="toggleBtnDropdown">
-                <i v-show="isExporting" class="fa fa-asterisk fa-spin"/>
-                Export
-              </button>
-              <button :disabled="isExporting" type="button" class="btn btn-sm btn-primary dropdown-toggle dropdown-toggle-split" @click="toggleBtnDropdown">
-                <span class="sr-only">Toggle Dropdown</span>
-              </button>
-              <div :class="{'dropdown-menu': true, 'show': !isExporting && isDropdown}">
-                <a class="dropdown-item" @click="exportData('SalesVisitationReport')">Export Report</a>
-                <a class="dropdown-item" @click="exportData('ChartInterestReason')">Export Chart Interest Reason</a>
-                <a class="dropdown-item" @click="exportData('ChartNoInterestReason')">Export Chart Not Interest Reason</a>
-                <a class="dropdown-item" @click="exportData('ChartSimilarProduct')">Export Chart Similar Product</a>
-              </div>
+      <p-block>
+        <div class="input-group block">
+          <router-link
+            to="/plugin/pin-point/sales-visitation-form/create"
+            class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            ref="searchText"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
+        </div>
+        <div class="text-center font-size-sm mb-10">
+          <a href="javascript:void(0)" @click="isFilterOpen = !isFilterOpen">
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          </a>
+        </div>
+        <div class="card" :class="{ 'fadeIn': isFilterOpen }" v-show="isFilterOpen">
+          <div class="row">
+            <div class="col-sm-6 text-center">
+              <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+                <div slot="body">
+                  <p-date-picker
+                    id="date"
+                    name="date"
+                    label="date"
+                    v-model="date.start"/>
+                </div>
+              </p-form-row>
             </div>
-            <ul v-show="downloadLink">
-              <li><a :href="downloadLink" download>{{ downloadLink }}</a> (expired in 24 hour)</li>
-            </ul>
+            <div class="col-sm-6 text-center">
+              <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+                <div slot="body">
+                  <p-date-picker
+                    id="date"
+                    name="date"
+                    label="date"
+                    v-model="date.end"/>
+                </div>
+              </p-form-row>
+            </div>
           </div>
-        </p-form-row>
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
-        <hr>
+          <hr>
+          <div class="row">
+            <div class="col-sm-12 ml-10 mb-10">
+              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5" @click="exportData('SalesVisitationReport')">
+                <i v-show="isExporting" class="fa fa-asterisk fa-spin"></i> {{ $t('export report') | uppercase }}
+              </button>
+              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5" @click="exportData('ChartInterestReason')">
+                <i v-show="isExporting" class="fa fa-asterisk fa-spin"></i> {{ $t('export interest reason') | uppercase }}
+              </button>
+              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5" @click="exportData('ChartNoInterestReason')">
+                <i v-show="isExporting" class="fa fa-asterisk fa-spin"></i> {{ $t('export no interest reason') | uppercase }}
+              </button>
+              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5" @click="exportData('ChartSimilarProduct')">
+                <i v-show="isExporting" class="fa fa-asterisk fa-spin"></i> {{ $t('export similar product') | uppercase }}
+              </button>
+              <hr v-show="downloadLink">
+              <a v-show="downloadLink" :href="downloadLink">{{ downloadLink }}</a> <span v-show="downloadLink">(expired in 24 hour)</span>
+            </div>
+          </div>
+        </div>
+        <hr/>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
@@ -69,7 +100,9 @@
             <template v-for="(form, index) in forms">
               <template v-if="form.details && form.details.length > 0">
                 <tr slot="p-body" v-for="(detail, index2) in form.details" :key="index + '-' + index2">
-                  <th>{{ index + 1 }}</th>
+                  <th>
+                    {{ index + 1 }}<template v-if="form.details.length > 1">.{{ ++index2 }}</template>
+                  </th>
                   <td>
                     <template v-if="form.photo">
                       <img :src="form.photo" alt="" width="150px">
@@ -149,7 +182,7 @@
             </template>
           </point-table>
           <p-pagination
-            :current-page="currentPage"
+            :current-page="page"
             :last-page="lastPage"
             @updatePage="updatePage">
           </p-pagination>
@@ -180,14 +213,15 @@ export default {
     return {
       date: {
         start: this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00'),
-        end: this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 23:59:59')
+        end: this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59')
       },
+      isFilterOpen: false,
       isLoading: false,
       isExporting: false,
       isDropdown: false,
       downloadLink: '',
       searchText: '',
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
@@ -195,13 +229,18 @@ export default {
     ...mapGetters('pluginPinPointSalesVisitationForm', ['forms', 'pagination'])
   },
   watch: {
-    date: function () {
-      this.$router.push({
-        query: {
-          date_from: this.date.start,
-          date_to: this.date.end
-        }
-      })
+    'date': {
+      handler: function () {
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            date_from: this.date.start,
+            date_to: this.date.end
+          }
+        })
+        this.search()
+      },
+      deep: true
     }
   },
   methods: {
@@ -210,43 +249,41 @@ export default {
       this.isDropdown = !this.isDropdown
     },
     updatePage (value) {
-      this.currentPage = value
-      this.getSalesVisitationRequest()
+      this.page = value
+      this.search()
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
-      this.getSalesVisitationRequest()
+      this.page = 1
+      this.search()
     }, 300),
     onClickSearchButton () {
-      this.getSalesVisitationRequest()
+      this.search()
     },
     check (form) {
       this.$alert.error('', form.photo)
     },
-    getSalesVisitationRequest () {
+    search () {
       this.isLoading = true
       this.get({
         params: {
           date_from: this.date.start,
           date_to: this.date.end,
-          join: 'form',
-          fields: 'pin_point_sales_visitations.*',
+          fields: 'sales_visitation.*',
           sort_by: '-forms.date',
           filter_like: {
-            'form.date': this.searchText
-            // 'name': this.searchText,
-            // 'group': this.searchText,
-            // 'address': this.searchText,
-            // 'district': this.searchText,
-            // 'sub_district': this.searchText,
-            // 'phone': this.searchText,
-            // 'notes': this.searchText,
-            // 'form.createdBy.name': this.searchText
+            // 'sales_visitation.name': this.searchText,
+            // 'sales_visitation.group': this.searchText,
+            // 'sales_visitation.address': this.searchText,
+            // 'sales_visitation.district': this.searchText,
+            // 'sales_visitation.sub_district': this.searchText,
+            // 'sales_visitation.phone': this.searchText,
+            // 'sales_visitation.notes': this.searchText,
+            // 'created_by.name': this.searchText
           },
           limit: 20,
-          page: this.currentPage
+          page: this.page
         }
       }).then(response => {
         this.isLoading = false
@@ -262,16 +299,16 @@ export default {
         date_from: this.date.start,
         date_to: this.date.end,
         file_export: file
-      }).then((response) => {
+      }).then(response => {
         this.downloadLink = response.data.url
-      }, (error) => {
+      }).catch(error => {
       }).then(() => {
         this.isExporting = false
       })
     }
   },
   created () {
-    this.getSalesVisitationRequest()
+    this.search()
   }
 }
 </script>

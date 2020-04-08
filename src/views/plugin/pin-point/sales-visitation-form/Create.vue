@@ -20,9 +20,9 @@
       <a href="https://support.google.com/chrome/answer/114662?hl=en">https://support.google.com/chrome/answer/114662</a>
       <br>
       <a href="https://support.google.com/chrome/answer/2693767?hl=en">https://support.google.com/chrome/answer/2693767</a>
-    </div>
 
-    <hr>
+      <hr>
+    </div>
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block
@@ -470,7 +470,6 @@ export default {
     navigator.permissions.query({
       name: 'geolocation'
     }).then(permissionStatus => {
-      console.log('geolocation permission state is ', permissionStatus.state)
       if (permissionStatus.state == 'granted') {
         this.getLocation()
       } else if (permissionStatus.state == 'prompt') {
@@ -483,7 +482,6 @@ export default {
       }
 
       permissionStatus.onchange = () => {
-        console.log('geolocation permission state has changed to ', this.state)
         if (permissionStatus.state == 'denied') {
           this.isLoading = false
           this.loadingMessage = 'Permission denied'
@@ -550,7 +548,6 @@ export default {
       this.description = description
     },
     setPlace (place) {
-      console.log(place)
       this.center.lat = place.geometry.location.lat()
       this.center.lng = place.geometry.location.lng()
       this.markers[0].position.lat = place.geometry.location.lat()
@@ -575,7 +572,6 @@ export default {
     geocodeLatLng (geocoder, map, infowindow) {
       var self = this
       geocoder.geocode({ 'location': this.center }, function (results, status) {
-        console.log(results)
         if (status == 'OK') {
           self.addressComponent = results[0]
           self.setDescription(self.addressComponent.formatted_address)
@@ -682,7 +678,7 @@ export default {
       this.form.similar_products[index].id = null
       this.form.similar_products[index].name = null
     },
-    calculate () {
+    calculate: debounce(function (value) {
       this.totalPrice = 0
       this.form.items.forEach((item) => {
         if (item.price > 0 && item.quantity > 0) {
@@ -690,7 +686,7 @@ export default {
           this.totalPrice += parseFloat(item.price)
         }
       })
-    },
+    }, 100),
     onSubmit () {
       this.isSaving = true
       this.create(this.form)
