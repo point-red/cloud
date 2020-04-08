@@ -258,6 +258,7 @@
                 :name="'quantity' + index"
                 :disabled="row.item_id == null"
                 v-model="row.quantity"
+                @keyup.native="calculate"
                 :item-id="row.item_id"
                 :units="row.units"
                 :unit="{
