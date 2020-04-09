@@ -2,7 +2,7 @@
   <div>
     <sweet-modal
       :ref="'select-' + id"
-      :title="$t('select customer group') | uppercase"
+      :title="$t('select no interest reason') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
       <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
@@ -18,7 +18,7 @@
           :class="{ 'active': isChoosen(option) }"
           @click="choose(option)"
           href="javascript:void(0)">
-          {{ option.label | uppercase }}
+          {{ option.name | uppercase }}
         </a>
         </template>
       </div>
@@ -26,7 +26,7 @@
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
       <div class="pull-left">
-        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="$refs.addCustomerGroup.open()">
+        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="$refs.addNoInterestReason.open()">
           {{ $t('create new') | uppercase }}
         </button>
       </div>
@@ -39,20 +39,20 @@
         </button>
       </div>
     </sweet-modal>
-    <m-add-customer-group
-      id="add-customer-group"
-      ref="addCustomerGroup"
-      @added="onAddedCustomerGroup($event)">
-    </m-add-customer-group>
+    <m-add-no-interest-reason ref="addNoInterestReason" @added="onAdded($event)"/>
   </div>
 </template>
 
 <script>
 import debounce from 'lodash/debounce'
 import _ from 'lodash'
+import MAddNoInterestReason from './MAddNoInterestReason'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    MAddNoInterestReason
+  },
   data () {
     return {
       searchText: '',
@@ -63,7 +63,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterCustomerGroup', ['groups', 'pagination'])
+    ...mapGetters('pluginPinPointNoInterestReason', ['noInterestReasons', 'pagination'])
   },
   props: {
     id: {
@@ -79,7 +79,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('masterCustomerGroup', ['get', 'create']),
+    ...mapActions('pluginPinPointNoInterestReason', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
@@ -95,8 +95,7 @@ export default {
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
-            'name': key['name'],
-            'label': key['name']
+            'name': key['name']
           })
         })
         this.isLoading = false
@@ -104,7 +103,7 @@ export default {
         this.isLoading = false
       })
     },
-    onAddedCustomerGroup () {
+    onAdded () {
       this.search()
     },
     onSubmit () {
@@ -127,8 +126,7 @@ export default {
       } else {
         this.choosen.push({
           'id': option.id,
-          'name': option.name,
-          'label': option.label
+          'name': option.name
         })
       }
     },

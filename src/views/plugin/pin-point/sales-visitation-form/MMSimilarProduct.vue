@@ -2,7 +2,7 @@
   <div>
     <sweet-modal
       :ref="'select-' + id"
-      :title="$t('select customer group') | uppercase"
+      :title="$t('select similar product') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
       <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
@@ -18,7 +18,7 @@
           :class="{ 'active': isChoosen(option) }"
           @click="choose(option)"
           href="javascript:void(0)">
-          {{ option.label | uppercase }}
+          {{ option.name | uppercase }}
         </a>
         </template>
       </div>
@@ -26,7 +26,7 @@
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
       <div class="pull-left">
-        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="$refs.addCustomerGroup.open()">
+        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="$refs.addSimilarProduct.open()">
           {{ $t('create new') | uppercase }}
         </button>
       </div>
@@ -39,20 +39,24 @@
         </button>
       </div>
     </sweet-modal>
-    <m-add-customer-group
-      id="add-customer-group"
-      ref="addCustomerGroup"
-      @added="onAddedCustomerGroup($event)">
-    </m-add-customer-group>
+    <m-add-similar-product
+      id="add-similar-product"
+      ref="addSimilarProduct"
+      @added="onAddedSimilarProduct($event)">
+    </m-add-similar-product>
   </div>
 </template>
 
 <script>
 import debounce from 'lodash/debounce'
 import _ from 'lodash'
+import MAddSimilarProduct from './MAddSimilarProduct'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    MAddSimilarProduct
+  },
   data () {
     return {
       searchText: '',
@@ -63,7 +67,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterCustomerGroup', ['groups', 'pagination'])
+    ...mapGetters('pluginPinPointSimilarProduct', ['similarProduct', 'pagination'])
   },
   props: {
     id: {
@@ -79,7 +83,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('masterCustomerGroup', ['get', 'create']),
+    ...mapActions('pluginPinPointSimilarProduct', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
@@ -95,8 +99,7 @@ export default {
         response.data.map((key, value) => {
           this.options.push({
             'id': key['id'],
-            'name': key['name'],
-            'label': key['name']
+            'name': key['name']
           })
         })
         this.isLoading = false
@@ -104,7 +107,7 @@ export default {
         this.isLoading = false
       })
     },
-    onAddedCustomerGroup () {
+    onAddedSimilarProduct () {
       this.search()
     },
     onSubmit () {
@@ -127,8 +130,7 @@ export default {
       } else {
         this.choosen.push({
           'id': option.id,
-          'name': option.name,
-          'label': option.label
+          'name': option.name
         })
       }
     },

@@ -157,17 +157,12 @@
           name="similar_product"
           :label="$t('similar product') | titlecase">
           <div slot="body" class="col-lg-9">
-            <template v-for="({}, index) in form.similar_products">
-              <m-similar-product
-                :key="'similar-product-' + index"
-                :id="'similar-product-' + index"
-                style="float:left"
-                class="mr-10"
-                :input="form.similar_products[index]"
-                @choosen="chooseSimilarProduct($event, index)"
-                @clear="clearSimilarProduct($event, index)"/>
-            </template>
-            <a href="javascript:void(0)" @click="addMoreSimilarProduct"><i class="fa fa-plus"></i></a>
+            <span @click="$refs.similarProduct.open(form.similar_products)" class="select-link">
+              <template v-if="form.similar_products.length == 0">{{ $t('select') | uppercase }}</template>
+              <template v-for="(similarProduct, index) in form.similar_products">
+                {{ similarProduct.name | uppercase }}<template v-if="index + 1 != form.similar_products.length">,</template>
+              </template>
+            </span>
           </div>
         </p-form-row>
 
@@ -176,17 +171,12 @@
           name="interest"
           :label="$t('interest reason') | titlecase">
           <div slot="body" class="col-lg-9">
-            <template v-for="({}, index) in form.interest_reasons">
-              <m-interest-reason
-                :key="'interest-reason-' + index"
-                :id="'interest-reason-' + index"
-                style="float:left"
-                class="mr-10"
-                :input="form.interest_reasons[index]"
-                @choosen="chooseInterestReason($event, index)"
-                @clear="clearInterestReason($event, index)"/>
-            </template>
-            <a href="javascript:void(0)" @click="addMoreInterestReason"><i class="fa fa-plus"></i></a>
+            <span @click="$refs.interestReason.open(form.interest_reasons)" class="select-link">
+              <template v-if="form.interest_reasons.length == 0">{{ $t('select') | uppercase }}</template>
+              <template v-for="(interestReason, index) in form.interest_reasons">
+                {{ interestReason.name | uppercase }}<template v-if="index + 1 != form.interest_reasons.length">,</template>
+              </template>
+            </span>
           </div>
         </p-form-row>
 
@@ -195,17 +185,12 @@
           name="no_interest"
           :label="$t('no interest reason')">
           <div slot="body" class="col-lg-9">
-            <template v-for="({}, index) in form.no_interest_reasons">
-              <m-no-interest-reason
-                :key="'no-interest-reason-' + index"
-                :id="'no-interest-reason-' + index"
-                style="float:left"
-                class="mr-10"
-                :input="form.no_interest_reasons[index]"
-                @choosen="chooseNoInterestReason($event, index)"
-                @clear="clearNoInterestReason($event, index)"/>
-            </template>
-            <a href="javascript:void(0)" @click="addMoreNoInterestReason"><i class="fa fa-plus"></i></a>
+            <span @click="$refs.noInterestReason.open(form.no_interest_reasons)" class="select-link">
+              <template v-if="form.no_interest_reasons.length == 0">{{ $t('select') | uppercase }}</template>
+              <template v-for="(noInterestReason, index) in form.no_interest_reasons">
+                {{ noInterestReason.name | uppercase }}<template v-if="index + 1 != form.no_interest_reasons.length">,</template>
+              </template>
+            </span>
           </div>
         </p-form-row>
 
@@ -366,6 +351,9 @@
     <m-customer ref="customer" @choosen="chooseCustomer"/>
     <m-customer-group ref="group" @choosen="chooseGroup"/>
     <m-item ref="item" @choosen="chooseItem($event)"/>
+    <m-m-interest-reason ref="interestReason" @choosen="chooseInterestReason($event)"/>
+    <m-m-no-interest-reason ref="noInterestReason" @choosen="chooseNoInterestReason($event)"/>
+    <m-m-similar-product ref="similarProduct" @choosen="chooseSimilarProduct($event)"/>
   </div>
 </template>
 
@@ -376,9 +364,9 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPinPoint from '@/views/plugin/pin-point/Breadcrumb'
 import Form from '@/utils/Form'
-import MInterestReason from './MInterestReason'
-import MNoInterestReason from './MNoInterestReason'
-import MSimilarProduct from './MSimilarProduct'
+import MMInterestReason from './MMInterestReason'
+import MMNoInterestReason from './MMNoInterestReason'
+import MMSimilarProduct from './MMSimilarProduct'
 import { mapActions } from 'vuex'
 
 export default {
@@ -387,9 +375,9 @@ export default {
     Breadcrumb,
     BreadcrumbPlugin,
     BreadcrumbPinPoint,
-    MInterestReason,
-    MNoInterestReason,
-    MSimilarProduct
+    MMInterestReason,
+    MMNoInterestReason,
+    MMSimilarProduct
   },
   data () {
     return {
@@ -412,18 +400,9 @@ export default {
         group_name: null,
         phone: '',
         notes: '',
-        interest_reasons: [{
-          id: null,
-          name: null
-        }],
-        no_interest_reasons: [{
-          id: null,
-          name: null
-        }],
-        similar_products: [{
-          id: null,
-          name: null
-        }],
+        interest_reasons: [],
+        no_interest_reasons: [],
+        similar_products: [],
         items: [],
         totalPrice: 0,
         payment_method: 'cash',
@@ -517,18 +496,6 @@ export default {
       } else {
         this.loadingMessage = 'Geolocation not available, please update your browser or using another browser'
       }
-    },
-    addMoreInterestReason () {
-      this.form.interest_reasons.push({
-        id: null,
-        name: null
-      })
-    },
-    addMoreNoInterestReason () {
-      this.form.no_interest_reasons.push({
-        id: null,
-        name: null
-      })
     },
     addMoreSimilarProduct () {
       this.form.similar_products.push({
@@ -655,29 +622,14 @@ export default {
         this.addItemRow()
       }
     },
-    chooseInterestReason (event, index) {
-      this.form.interest_reasons[index].id = event.id
-      this.form.interest_reasons[index].name = event.name
+    chooseInterestReason (interestReasons) {
+      this.form.interest_reasons = interestReasons
     },
-    clearInterestReason (event, index) {
-      this.form.interest_reasons[index].id = null
-      this.form.interest_reasons[index].name = null
+    chooseNoInterestReason (noInterestReasons) {
+      this.form.no_interest_reasons = noInterestReasons
     },
-    chooseNoInterestReason (event, index) {
-      this.form.no_interest_reasons[index].id = event.id
-      this.form.no_interest_reasons[index].name = event.name
-    },
-    clearNoInterestReason (event, index) {
-      this.form.no_interest_reasons[index].id = null
-      this.form.no_interest_reasons[index].name = null
-    },
-    chooseSimilarProduct (event, index) {
-      this.form.similar_products[index].id = event.id
-      this.form.similar_products[index].name = event.name
-    },
-    clearSimilarProduct (event, index) {
-      this.form.similar_products[index].id = null
-      this.form.similar_products[index].name = null
+    chooseSimilarProduct (similarProducts) {
+      this.form.similar_products = similarProducts
     },
     calculate: debounce(function (value) {
       this.totalPrice = 0
