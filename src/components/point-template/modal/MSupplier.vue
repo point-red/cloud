@@ -5,7 +5,13 @@
       :title="$t('select supplier') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
-      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <input
+        type="text"
+        class="form-control"
+        ref="searchText"
+        v-model="searchText"
+        placeholder="Search..."
+        @keydown.enter.prevent="">
       <hr>
       <div v-if="isLoading">
         <h3 class="text-center">Loading ...</h3>
@@ -25,8 +31,8 @@
         </a>
         </template>
       </div>
-      <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-        {{ $t('you don\'t have any') | capitalize }} {{ $t('supplier') | capitalize }}
+      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+        {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
       <div class="pull-right">
         <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
@@ -88,7 +94,7 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          limit: 20,
+          limit: 10,
           includes: 'addresses;phones;emails',
           filter_like: {
             'name': this.searchText
@@ -144,6 +150,9 @@ export default {
     },
     open () {
       this.$refs['select-' + this.id].open()
+      this.$nextTick(() => {
+        this.$refs.searchText.focus()
+      })
     },
     choose (option) {
       this.mutableId = option.id

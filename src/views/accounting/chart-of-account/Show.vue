@@ -199,9 +199,7 @@ export default {
         })
       this.get({
         params: {
-          joins: {
-            1: 'forms.id=journals.form_id'
-          },
+          join: 'form',
           fields: 'journals.*',
           includes: 'form',
           sort_by: '-forms.date',

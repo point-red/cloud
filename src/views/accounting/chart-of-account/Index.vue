@@ -112,15 +112,16 @@ export default {
       this.isLoading = true
       this.getChartOfAccounts({
         params: {
-          fields: 'chart_of_accounts.*',
+          joins: 'account_type',
+          fields: 'account.*',
           limit: 1000,
           filter_like: {
-            'type.alias': this.searchText,
-            'alias': this.searchText,
-            'number': this.searchText
+            'account_type.alias': this.searchText,
+            'account.alias': this.searchText,
+            'account.number': this.searchText
           },
           includes: 'type',
-          sort_by: 'number;alias'
+          sort_by: 'account.number;account.alias'
         }
       }).then(response => {
         this.isLoading = false

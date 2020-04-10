@@ -25,11 +25,15 @@
         </a>
         </template>
       </div>
-      <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-        {{ $t('you don\'t have any') | capitalize }} {{ $t('customer') | capitalize }}
+      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+        {{ $t('searching not found', [searchText]) | capitalize }} <br>
+      </div>
+      <div class="pull-left">
+        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="$refs.addCustomer.open()">
+          {{ $t('create new') | uppercase }}
+        </button>
       </div>
       <div class="pull-right">
-        <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
         <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
       </div>
     </sweet-modal>
@@ -124,15 +128,6 @@ export default {
         this.isLoading = false
       })
     },
-    add () {
-      this.$refs.addCustomer.open()
-    },
-    onAdded () {
-      this.search()
-    },
-    open () {
-      this.$refs['select-' + this.id].open()
-    },
     choose (option) {
       this.mutableId = option.id
       this.$emit('choosen', option)
@@ -141,9 +136,14 @@ export default {
     clear () {
       this.mutableId = null
       this.mutableLabel = null
-      this.$emit('input', null)
       this.$emit('choosen', '')
       this.close()
+    },
+    onAdded () {
+      this.search()
+    },
+    open () {
+      this.$refs['select-' + this.id].open()
     },
     close () {
       this.$refs['select-' + this.id].close()
@@ -154,12 +154,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-input:readonly {
-  background-color: white
-}
-input {
-  min-width: 200px;
-}
-</style>

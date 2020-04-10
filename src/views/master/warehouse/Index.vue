@@ -108,10 +108,10 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'warehouses.*',
-          sort_by: 'name',
+          fields: 'warehouse.*',
+          sort_by: 'warehouse.name',
           filter_like: {
-            'name': this.searchText
+            'warehouse.name': this.searchText
           },
           includes: 'branch',
           limit: this.limit,

@@ -275,7 +275,7 @@
             <td>Total</td>
             <td>
               <p-form-number
-                v-model="form.totalPrice"
+                v-model="form.total_price"
                 :readonly="true"
                 :is-text-right="true"/>
             </td>
@@ -404,7 +404,7 @@ export default {
         no_interest_reasons: [],
         similar_products: [],
         items: [],
-        totalPrice: 0,
+        total_price: 0,
         payment_method: 'cash',
         due_date: null,
         received_payment: 0
@@ -632,11 +632,11 @@ export default {
       this.form.similar_products = similarProducts
     },
     calculate: debounce(function (value) {
-      this.totalPrice = 0
+      this.form.total_price = 0
       this.form.items.forEach((item) => {
         if (item.price > 0 && item.quantity > 0) {
           item.total = item.quantity * item.price
-          this.totalPrice += parseFloat(item.price)
+          this.form.total_price += parseFloat(item.total)
         }
       })
     }, 100),
