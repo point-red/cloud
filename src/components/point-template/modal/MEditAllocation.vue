@@ -61,10 +61,7 @@ export default {
     findAllocation () {
       this.isLoading = true
       this.find({
-        id: this.form.id,
-        params: {
-          includes: 'addresses;phones;emails'
-        }
+        id: this.form.id
       }).then(response => {
         this.isLoading = false
         this.form.name = this.allocation.name

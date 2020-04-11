@@ -265,14 +265,15 @@ export default {
     getSalesVisitationRequest () {
       this.get({
         params: {
+          join: 'customer,created_by',
           filter_equal: {
-            'customer.id': this.id
+            'sales_visitation.customer_id': this.id
           },
           date_from: this.$moment('1970-01-01').format('YYYY-MM-DD 00:00:00'),
           date_to: this.$moment().format('YYYY-MM-DD 23:59:59'),
           limit: 20,
           page: this.page,
-          sort_by: '-forms.date'
+          sort_by: '-form.date'
         }
       }).then(response => {
         this.isLoadingSalesVisitation = false

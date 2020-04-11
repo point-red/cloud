@@ -108,7 +108,7 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'branches.*',
+          fields: 'branch.*',
           sort_by: 'name',
           filter_like: {
             'name': this.searchText

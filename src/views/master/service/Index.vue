@@ -79,6 +79,7 @@ export default {
       isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1
     }
   },
@@ -97,12 +98,12 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'services.*',
+          fields: 'service.*',
           sort_by: 'name',
           filter_like: {
             'name': this.searchText
           },
-          limit: 10,
+          limit: this.limit,
           page: this.currentPage
         }
       }).then(response => {

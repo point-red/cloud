@@ -321,20 +321,20 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'customers.*',
-          sort_by: 'name',
+          fields: 'customer.*',
+          join: 'address,phone,email',
+          sort_by: 'customer.name',
           filter_like: {
-            'name': this.searchText,
-            'addresses.address': this.searchText,
-            'emails.email': this.searchText,
-            'phones.number': this.searchText
+            'customer.name': this.searchText,
+            'address.address': this.searchText,
+            'email.email': this.searchText,
+            'phone.number': this.searchText
           },
           filter_equal: {
             'pricing_group_id': this.pricingGroupId,
-            'groups.id': this.groupId
+            'customer_group.id': this.groupId
           },
           is_archived: this.statusId,
-          join: 'addresses,phones,emails',
           includes: 'addresses;phones;emails;groups;pricingGroup',
           limit: this.limit,
           page: this.page

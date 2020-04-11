@@ -11,18 +11,20 @@
     <div class="row">
       <p-block>
         <div class="text-right">
-          <router-link
-            to="/master/allocation-group/create"
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addAllocationGroup.open()"
             v-if="$permission.has('create allocation')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('create') | uppercase }}
-          </router-link>
-          <router-link
-            :to="{ path: '/master/allocation-group/' + group.id + '/edit', params: { id: group.id }}"
+          </a>
+          <a
+            href="javascript:void(0)"
+            @click="$refs.editAllocationGroup.open(group)"
             v-if="$permission.has('update allocation')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
-          </router-link>
+          </a>
           <button
             type="button"
             @click="onDelete()"
@@ -43,6 +45,8 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-add-allocation-group ref="addAllocationGroup" @added="onAddedAllocationGroup($event)"></m-add-allocation-group>
+    <m-edit-allocation-group ref="editAllocationGroup" @updated="onUpdatedAllocationGroup($event)"></m-edit-allocation-group>
   </div>
 </template>
 
@@ -77,6 +81,26 @@ export default {
   },
   methods: {
     ...mapActions('masterAllocationGroup', ['find', 'delete']),
+    onAddedAllocationGroup (allocationGroup) {
+      this.$router.push('/master/allocation-group/' + allocationGroup.id)
+      this.id = allocationGroup.id
+      this.findAllocationGroup()
+    },
+    onUpdatedAllocationGroup (allocationGroup) {
+      this.findAllocationGroup()
+    },
+    findAllocationGroup () {
+      this.isLoading = true
+      this.find({
+        id: this.id
+      }).then(response => {
+        this.isLoading = false
+        this.data.name = response.data.name
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    },
     updatePage (value) {
       this.page = value
     },
@@ -96,16 +120,7 @@ export default {
     }
   },
   created () {
-    this.isLoading = true
-    this.find({
-      id: this.id
-    }).then(response => {
-      this.isLoading = false
-      this.data.name = response.data.name
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    this.findAllocationGroup()
   }
 }
 </script>

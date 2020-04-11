@@ -110,15 +110,15 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'suppliers.*',
+          join: 'address,phone,email',
+          fields: 'supplier.*',
           sort_by: 'name',
           filter_like: {
             'name': this.searchText,
-            'addresses.address': this.searchText,
-            'phones.number': this.searchText,
-            'emails.email': this.searchText
+            'address.address': this.searchText,
+            'phone.number': this.searchText,
+            'email.email': this.searchText
           },
-          join: 'addresses,phones,emails',
           includes: 'addresses;phones;emails;groups',
           limit: 10,
           page: this.page

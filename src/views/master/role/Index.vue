@@ -109,7 +109,7 @@ export default {
       this.isLoading = true
       this.getRoles({
         params: {
-          limit: 20,
+          limit: this.limit,
           sort_by: 'name',
           filter_like: {
             'name': this.searchText
