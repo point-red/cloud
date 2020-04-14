@@ -19,10 +19,10 @@ instance.defaults.headers.common['Authorization'] = Vue.cookie.get('TTT') + ' ' 
 instance.defaults.headers.common['Timezone'] = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 instance.interceptors.request.use((config) => {
-  // if (process.env.NODE_ENV !== 'production') {
-  console.log('Request: ', config.url)
-  console.log('Request: ', config)
-  // }
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('Request: ', config.url)
+    console.log('Request: ', config)
+  }
   return config
 }, function (error) {
   console.log('Response Error: ', error.response)
@@ -30,10 +30,10 @@ instance.interceptors.request.use((config) => {
 })
 
 instance.interceptors.response.use((response) => {
-  // if (process.env.NODE_ENV !== 'production') {
-  console.log('Response: ', response.config.url)
-  console.log('Response: ', response.data)
-  // }
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('Response: ', response.config.url)
+    console.log('Response: ', response.data)
+  }
   return response
 }, function (error) {
   if (!error.response) {
