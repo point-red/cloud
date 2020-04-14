@@ -46,6 +46,7 @@
   "no" : "no",
   "weight" : "bobot",
   "target" : "target",
+  "add scorer" : "add scorer",
   "score" : "skor",
   "score percentage" : "nilai",
   "key performance indicator" : "key performance indicator",

@@ -23,6 +23,7 @@
             </button>
             <button
               type="button"
+              @click="$refs.editEmployee.open(employee)"
               v-if="$permission.has('update employee')"
               class="btn btn-sm btn-outline-secondary mr-5">
               {{ $t('edit') | uppercase }}
@@ -230,23 +231,6 @@
                 </template>
               </p-table>
             </div>
-            <div class="col-sm-12 mb-20">
-              <hr>
-              <router-link
-                :to="{ path: '/human-resource/employee/' + employee.id + '/edit', params: { id: employee.id }}"
-                v-if="$permission.has('update employee')"
-                class="btn btn-sm btn-primary mr-5">
-                {{ $t('edit') | uppercase }}
-              </router-link>
-              <button
-                type="button"
-                @click="onDelete()"
-                v-if="$permission.has('delete employee')"
-                :disabled="isDeleting"
-                class="btn btn-sm btn-danger">
-                <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
-              </button>
-            </div>
           </div>
         </p-block-inner>
       </p-block>
@@ -279,6 +263,7 @@
       </p-block>
     </div>
     <m-add-employee ref="addEmployee" @added="onAdded"></m-add-employee>
+    <m-edit-employee ref="editEmployee" @updated="onUpdated"></m-edit-employee>
   </div>
 </template>
 
@@ -317,6 +302,10 @@ export default {
     ...mapActions('cloudStorage', { getAttachment: 'get' }),
     onAdded (employee) {
       this.$router.push('/human-resource/employee/' + employee.id)
+      this.id = employee.id
+      this.findEmployeeRequest()
+    },
+    onUpdated (employee) {
       this.id = employee.id
       this.findEmployeeRequest()
     },

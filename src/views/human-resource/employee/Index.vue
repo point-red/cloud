@@ -27,14 +27,6 @@
             ref="searchText"
             :value="searchText"
             @input="filterSearch"/>
-          <router-link
-            to="/human-resource/employee/create"
-            v-if="$permission.has('create employee')"
-            class="input-group-append">
-            <span class="input-group-text">
-              <i class="fa fa-plus"></i>
-            </span>
-          </router-link>
         </div>
         <hr>
         <div class="text-center font-size-sm mb-10">

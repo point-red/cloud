@@ -46,6 +46,7 @@
   "no" : "no",
   "weight" : "weight",
   "target" : "target",
+  "add scorer" : "add scorer",
   "score" : "score",
   "score percentage" : "score percentage",
   "key performance indicator" : "key performance indicator",
