@@ -104,6 +104,11 @@
             </tr>
           </p-table>
         </p-block-inner>
+        <p-pagination
+          :current-page="page"
+          :last-page="lastPage"
+          @updatePage="updatePage">
+        </p-pagination>
       </p-block>
     </div>
 
@@ -159,34 +164,18 @@ export default {
       hideChart: false,
       reportType: 'all',
       isSaving: false,
-      selectedAsessementId: ''
+      selectedAsessementId: '',
+      page: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   created () {
-    this.isLoading = true
-    this.getEmployeeAssessment({
-      employeeId: this.id,
-      params: {
-        type: this.reportType
-      }
-    }).then(response => {
-      this.isLoading = false
-    }).catch(error => {
-      this.isLoading = false
-      console.log(JSON.stringify(error))
-    })
-    if (this.employee.scorers) {
-      this.employee.scorers.find((element) => {
-        if (element.id == this.authUser.id) {
-          this.isScorer = true
-        }
-      })
-    }
+    this.getEmployeeAssessmentRequest()
   },
   computed: {
     ...mapGetters('auth', ['authUser']),
     ...mapGetters('humanResourceEmployee', ['employee']),
-    ...mapGetters('humanResourceEmployeeAssessment', ['assessments', 'dataSet'])
+    ...mapGetters('humanResourceEmployeeAssessment', ['assessments', 'dataSet', 'pagination'])
   },
   watch: {
     dataSet: function (val) {
@@ -202,18 +191,26 @@ export default {
       }
     }
   },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('humanResourceEmployeeAssessment', {
       getEmployeeAssessment: 'get',
       deleteEmployeeAssessment: 'delete'
     }),
     chooseType (type) {
-      this.isLoading = true
       this.reportType = type
+      this.page = 1
+      this.getEmployeeAssessmentRequest()
+    },
+    getEmployeeAssessmentRequest () {
+      this.isLoading = true
       this.getEmployeeAssessment({
         employeeId: this.id,
         params: {
-          type: type
+          page: this.page,
+          type: this.reportType
         }
       }).then((response) => {
         this.isLoading = false
@@ -232,6 +229,10 @@ export default {
     deleteAssessment (assessmentId) {
       this.selectedAsessementId = assessmentId
       this.$refs.delete.show()
+    },
+    updatePage (value) {
+      this.page = value
+      this.getEmployeeAssessmentRequest()
     },
     onDelete () {
       this.isSaving = true

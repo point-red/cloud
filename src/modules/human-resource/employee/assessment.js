@@ -7,6 +7,7 @@ const url = function (employeeId) {
 const state = {
   assessment: {},
   assessments: [],
+  pagination: {},
   assessmentsBy: [],
   dataSet: []
 }
@@ -17,6 +18,9 @@ const getters = {
   },
   assessments: state => {
     return state.assessments
+  },
+  pagination: state => {
+    return state.pagination
   },
   assessmentsBy: state => {
     return state.assessmentsBy
@@ -29,6 +33,7 @@ const getters = {
 const mutations = {
   'FETCH_ASSESSMENTS' (state, payload) {
     state.assessments = payload.data
+    state.pagination = payload.meta
     state.dataSet = payload.data_set
   },
   'FETCH_ASSESSMENTS_BY' (state, payload) {

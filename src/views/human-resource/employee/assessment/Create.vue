@@ -327,11 +327,10 @@ export default {
             .then(response => {
               this.$alert.success(response.data.criteria, response.data.notes)
                 .then(() => {
-                  this.$router.replace('human-resource/employee/' + this.id + '/assessment')
+                  this.$router.push('/human-resource/employee/' + this.id + '/assessment')
                 })
             }).catch(error => {
-              console.log(JSON.stringify(error))
-              this.$router.replace('human-resource/employee/' + this.id + '/assessment')
+              this.$router.push('/human-resource/employee/' + this.id + '/assessment')
             })
         }).catch(error => {
           this.isSaving = false
