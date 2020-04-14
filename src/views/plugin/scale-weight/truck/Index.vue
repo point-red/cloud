@@ -39,13 +39,6 @@
           </div>
         </div>
         <div class="block input-group">
-          <p-form-input
-            id="search-text"
-            name="search-text"
-            placeholder="Search"
-            :value="searchText"
-            class="btn-block"
-            @input="filterSearch"/>
           <router-link
             to="/plugin/scale-weight/truck/create"
             v-if="$permission.has('create scale weight truck')"
@@ -54,6 +47,13 @@
               <i class="fa fa-plus"></i>
             </span>
           </router-link>
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"/>
         </div>
         <p-form-row id="date" name="date">
           <div slot="body" class="col-lg-12">

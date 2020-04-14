@@ -112,7 +112,7 @@ export default {
       this.isLoading = true
       this.getChartOfAccounts({
         params: {
-          joins: 'account_type',
+          join: 'account_type',
           fields: 'account.*',
           limit: 1000,
           filter_like: {

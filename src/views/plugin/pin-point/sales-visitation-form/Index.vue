@@ -268,19 +268,19 @@ export default {
       this.isLoading = true
       this.get({
         params: {
+          join: 'form',
           date_from: this.date.start,
           date_to: this.date.end,
           fields: 'sales_visitation.*',
-          sort_by: '-forms.date',
+          sort_by: '-form.date',
           filter_like: {
-            // 'sales_visitation.name': this.searchText,
-            // 'sales_visitation.group': this.searchText,
-            // 'sales_visitation.address': this.searchText,
-            // 'sales_visitation.district': this.searchText,
-            // 'sales_visitation.sub_district': this.searchText,
-            // 'sales_visitation.phone': this.searchText,
-            // 'sales_visitation.notes': this.searchText,
-            // 'created_by.name': this.searchText
+            'sales_visitation.name': this.searchText,
+            'sales_visitation.group': this.searchText,
+            'sales_visitation.address': this.searchText,
+            'sales_visitation.district': this.searchText,
+            'sales_visitation.sub_district': this.searchText,
+            'sales_visitation.phone': this.searchText,
+            'sales_visitation.notes': this.searchText
           },
           limit: 20,
           page: this.page
