@@ -1,19 +1,23 @@
 <template>
   <div>
     <form class="row" @submit.prevent="onSubmitFile">
-      <p-modal ref="uploadModalRef" :id="id" :title="'upload file' | uppercase">
-        <template slot="content">
-          <p-form-row id="file" name="file" :label="$t('file')">
-            <div slot="body" class="col-lg-9">
-              <p-form-file id="file" name="file" @fileChanged="onFileChange" ref="file"/>
-            </div>
-          </p-form-row>
-          <p-form-row id="notes" name="notes" :label="$t('notes')" v-model="notes"></p-form-row>
-        </template>
-        <template slot="footer">
-          <button class="btn btn-primary">{{ $t('upload') | uppercase }}</button>
-        </template>
-      </p-modal>
+      <sweet-modal
+        ref="modal"
+        :title="$t('add attachment') | uppercase"
+        overlay-theme="dark"
+        @close="onClose()">
+        <p-form-row id="file" name="file" :label="$t('file')">
+          <div slot="body" class="col-lg-9">
+            <p-form-file id="file" name="file" @fileChanged="onFileChange" ref="file"/>
+          </div>
+        </p-form-row>
+        <p-form-row id="notes" name="notes" :label="$t('notes')" v-model="notes"></p-form-row>
+        <div class="pull-right">
+          <button type="submit" class="btn btn-sm btn-primary">
+            {{ $t('add') | uppercase }}
+          </button>
+        </div>
+      </sweet-modal>
     </form>
   </div>
 </template>
@@ -24,8 +28,7 @@ import { mapActions } from 'vuex'
 export default {
   props: {
     id: {
-      type: String,
-      required: true
+      type: String
     },
     feature: {
       type: String,
@@ -58,13 +61,16 @@ export default {
     onFileChange (file) {
       this.file = file
     },
-    show () {
+    open () {
       this.$refs.file.reset()
       this.notes = ''
-      this.$refs.uploadModalRef.show()
+      this.$refs.modal.open()
     },
     close () {
-      this.$refs.uploadModalRef.close()
+      this.$refs.modal.close()
+    },
+    onClose () {
+      this.$emit('close')
     },
     onSubmitFile () {
       let formData = new FormData()

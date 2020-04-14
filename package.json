@@ -27,7 +27,7 @@
     "sweetalert2": "^9.7.2",
     "v-click-outside": "^2.0.2",
     "v-scroll-lock": "^1.1.0",
-    "v-selectmenu": "^1.0.5",
+    "v-selectmenu": "^2.0.2",
     "vue": "^2.6.10",
     "vue-autosuggest": "^1.7.3",
     "vue-blockui": "^1.1.7",

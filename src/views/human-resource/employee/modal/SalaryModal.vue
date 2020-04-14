@@ -3,36 +3,38 @@
     <form
       class="row"
       @submit.prevent="onSubmitContract">
-      <p-modal
-        ref="salaryModal"
-        :id="id"
-        :title="title">
-        <template slot="content">
-          <p-form-row
-            id="salary-date"
-            :label="$t('salary date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                name="salary-date"
-                v-model="salary_date"/>
-            </div>
-          </p-form-row>
+      <sweet-modal
+        ref="modal"
+        :title="$t('add salary history') | uppercase"
+        overlay-theme="dark"
+        @close="onClose()">
+        <p-form-row
+          id="salary-date"
+          :label="$t('salary date')">
+          <div slot="body" class="col-lg-9">
+            <p-date-picker
+              name="salary-date"
+              v-model="salary_date"/>
+          </div>
+        </p-form-row>
 
-          <p-form-row
-            id="salary"
-            name="salary"
-            :label="$t('salary')">
-            <div slot="body" class="col-lg-9">
-              <p-form-number
-                v-model="salary"
-                :is-text-right="false"/>
-            </div>
-          </p-form-row>
-        </template>
-        <template slot="footer">
-          <button class="btn btn-primary">Add</button>
-        </template>
-      </p-modal>
+        <p-form-row
+          id="salary"
+          name="salary"
+          :label="$t('salary')">
+          <div slot="body" class="col-lg-9">
+            <p-form-number
+              v-model="salary"
+              :is-text-right="false"/>
+          </div>
+        </p-form-row>
+
+        <div class="pull-right">
+          <button type="submit" class="btn btn-sm btn-primary">
+            {{ $t('add') | uppercase }}
+          </button>
+        </div>
+      </sweet-modal>
     </form>
   </div>
 </template>
@@ -60,11 +62,14 @@ export default {
     }
   },
   methods: {
-    show () {
-      this.$refs.salaryModal.show()
+    open () {
+      this.$refs.modal.open()
     },
     close () {
-      this.$refs.salaryModal.close()
+      this.$refs.modal.close()
+    },
+    onClose () {
+      this.$emit('close')
     },
     onSubmitContract () {
       this.$emit('add', {
@@ -72,7 +77,7 @@ export default {
         salary: this.salary
       })
       this.salary = ''
-      this.$refs.salaryModal.close()
+      this.$refs.modal.close()
     }
   }
 }

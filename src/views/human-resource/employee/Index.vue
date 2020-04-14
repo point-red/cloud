@@ -10,6 +10,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block mb-5">
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addEmployee.open()"
+            v-if="$permission.has('create employee')"
+            class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -38,12 +47,9 @@
             <div class="col-sm-3 text-center">
               <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
                 <div slot="body">
-                  <m-status
-                    :id="'status-id'"
-                    v-model="status.id"
-                    :label="status.label"
-                    @choosen="chooseStatus($event)"
-                    @clear="clearStatus()"/>
+                  <span @click="$refs.status.open({ id: statusId, label: statusLabel })" class="select-link">
+                    {{ statusLabel || $t('select') | uppercase }}
+                  </span>
                 </div>
               </p-form-row>
             </div>
@@ -113,12 +119,14 @@
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
           @updatePage="updatePage">
         </p-pagination>
       </p-block>
     </div>
+    <m-add-employee ref="addEmployee" @added="onAdded"></m-add-employee>
+    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
   </div>
 </template>
 
@@ -140,16 +148,13 @@ export default {
   data () {
     return {
       isLoading: false,
-      listEmployee: this.employees,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
       lastPage: 1,
       isAdvanceFilter: false,
       checkedRow: [],
-      status: {
-        id: 0,
-        label: null
-      }
+      statusId: null,
+      statusLabel: null
     }
   },
   computed: {
@@ -164,6 +169,9 @@ export default {
       bulkActivate: 'bulkActivate',
       bulkDelete: 'bulkDelete'
     }),
+    onAdded () {
+      this.getEmployeesRequest()
+    },
     toggleCheckRow (id) {
       if (!this.isRowChecked(id)) {
         this.checkedRow.push({ id })
@@ -228,30 +236,30 @@ export default {
         this.getEmployeesRequest()
       })
     },
-    chooseStatus (option) {
-      this.status.label = option
-      this.getEmployeesRequest()
-    },
-    clearStatus () {
-      this.status = {
-        id: null,
-        label: null
-      }
-      this.getEmployeesRequest()
-    },
     isShow (scorers) {
       return scorers.some(element => {
         return element.id == this.authUser.id
       })
     },
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
+      this.getEmployeesRequest()
+    },
+    onChoosenStatus (option) {
+      this.statusId = option.id
+      this.statusLabel = option.label
+      this.$router.push({
+        query: {
+          search: this.searchText,
+          statusId: this.statusId
+        }
+      })
       this.getEmployeesRequest()
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
+      this.page = 1
       this.getEmployeesRequest()
     }, 300),
     getEmployeesRequest () {
@@ -263,8 +271,8 @@ export default {
             'job_title': this.searchText
           },
           limit: 10,
-          page: this.currentPage,
-          is_archived: this.status.id,
+          page: this.page,
+          is_archived: this.statusId,
           sort_by: 'name',
           includes: 'scorers',
           additional: 'groups'

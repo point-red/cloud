@@ -5,6 +5,7 @@
       key-field="id"
       show-field="label"
       position="left"
+      ref="select"
       :multiple="multiple"
       :max-selected="maxSelected"
       :key="options.length"
@@ -18,25 +19,6 @@ export default {
   data () {
     return {
       selectedValue: ''
-    }
-  },
-  computed: {
-    selected: {
-      get: function () {
-        if (this.value !== undefined) {
-          return ''
-        }
-
-        if (this.value !== null) {
-          return ''
-        }
-
-        return this.value.toString()
-      },
-      set: function (newValue) {
-        console.log(newValue)
-        this.selectedValue = newValue
-      }
     }
   },
   props: {
@@ -77,7 +59,11 @@ export default {
       this.$emit('input', this.selectedValue)
     },
     'value' () {
-      this.selected = this.value.toString()
+      if (this.value) {
+        this.selectedValue = this.value.toString()
+      } else {
+        this.$refs.select.clear()
+      }
     }
   }
 }
@@ -97,5 +83,10 @@ export default {
 }
 .v-dropdown-container {
   max-width: 75%;
+}
+</style>
+<style>
+.v-dropdown-container {
+  z-index: 10950 !important;
 }
 </style>

@@ -121,7 +121,7 @@
               type="button"
               class="btn btn-alt-primary mb-15"
               :disabled="isSaving"
-              @click="$refs.socialMedia.show()">
+              @click="$refs.socialMedia.open()">
               <i class="fa fa-plus"/> {{ $t('social media') | titlecase }}
             </button>
             <p-table>

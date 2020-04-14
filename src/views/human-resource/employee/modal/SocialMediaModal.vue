@@ -3,34 +3,36 @@
     <form
       class="row"
       @submit.prevent="onSubmitSocialMedia">
-      <p-modal
-        ref="socialMediaModalRef"
-        :id="id"
-        :title="title">
-        <template slot="content">
-          <p-form-row
-            id="social-media"
-            name="social-media"
-            :label="$t('social media')">
-            <div slot="body" class="col-lg-9">
-              <p-select
-                id="social-media-type"
-                name="social-media-type"
-                v-model="socialMediaType"
-                :options="options"/>
-            </div>
-          </p-form-row>
-          <p-form-row
-            id="social-media-account"
-            name="social-media-account"
-            label="account"
-            v-model="socialMediaAccount">
-          </p-form-row>
-        </template>
-        <template slot="footer">
-          <button class="btn btn-primary">Add</button>
-        </template>
-      </p-modal>
+      <sweet-modal
+        ref="modal"
+        :title="$t('add social media') | uppercase"
+        overlay-theme="dark"
+        @close="onClose()">
+        <p-form-row
+          id="social-media"
+          name="social-media"
+          :label="$t('social media')">
+          <div slot="body" class="col-lg-9">
+            <p-select
+              id="social-media-type"
+              name="social-media-type"
+              v-model="socialMediaType"
+              :options="options"/>
+          </div>
+        </p-form-row>
+        <p-form-row
+          id="social-media-account"
+          name="social-media-account"
+          label="account"
+          ref="account"
+          v-model="socialMediaAccount">
+        </p-form-row>
+        <div class="pull-right">
+          <button type="submit" class="btn btn-sm btn-primary">
+            {{ $t('add') | uppercase }}
+          </button>
+        </div>
+      </sweet-modal>
     </form>
   </div>
 </template>
@@ -42,15 +44,13 @@ export default {
       type: String
     },
     id: {
-      type: String,
-      required: true
+      type: String
     }
   },
   data () {
     return {
       socialMediaType: null,
       socialMediaAccount: '',
-      socialMediaTypes: '',
       options: [
         { label: 'Facebook', id: 'Facebook' },
         { label: 'Twitter', id: 'Twitter' },
@@ -67,11 +67,15 @@ export default {
     }
   },
   methods: {
-    show () {
-      this.$refs.socialMediaModalRef.show()
+    open () {
+      this.$refs.modal.open()
     },
     close () {
-      this.$refs.socialMediaModalRef.close()
+      this.$refs.modal.close()
+    },
+    onClose () {
+      Object.assign(this.$data, this.$options.data.call(this))
+      this.$emit('close')
     },
     onSubmitSocialMedia () {
       this.$emit('add', {
@@ -80,7 +84,7 @@ export default {
       })
       this.socialMediaAccount = ''
       this.socialMediaType = null
-      this.$refs.socialMediaModalRef.close()
+      this.$refs.modal.close()
     },
     socialMediaName (value) {
       var obj = this.options.filter(function (el) {

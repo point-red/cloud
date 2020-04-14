@@ -10,6 +10,14 @@
     <div class="row">
       <p-block :title="$t('job location')">
         <div class="input-group block mb-5">
+          <router-link
+            to="/human-resource/job-location/create"
+            v-if="$permission.has('create employee')"
+            class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -18,14 +26,6 @@
             ref="searchText"
             :value="searchText"
             @input="filterSearch"/>
-          <router-link
-            to="/human-resource/job-location/create"
-            v-if="$permission.has('create employee')"
-            class="input-group-append">
-            <span class="input-group-text">
-              <i class="fa fa-plus"></i>
-            </span>
-          </router-link>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">

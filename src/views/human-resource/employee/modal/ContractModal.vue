@@ -3,42 +3,44 @@
     <form
       class="row"
       @submit.prevent="onSubmitContract">
-      <p-modal
-        ref="contractModalRef"
-        :id="id"
-        :title="title">
-        <template slot="content">
-          <p-form-row
-            id="contract-date"
-            :label="$t('contract begin')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                name="contract-date"
-                v-model="contract_begin"/>
-            </div>
-          </p-form-row>
+      <sweet-modal
+        ref="modal"
+        :title="$t('add social media') | uppercase"
+        overlay-theme="dark"
+        @close="onClose()">
+        <p-form-row
+          id="contract-date"
+          :label="$t('contract begin')">
+          <div slot="body" class="col-lg-9">
+            <p-date-picker
+              name="contract-date"
+              v-model="contract_begin"/>
+          </div>
+        </p-form-row>
 
-          <p-form-row
-            id="expired-date"
-            :label="$t('contract end')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                name="expired-date"
-                v-model="contract_end"/>
-            </div>
-          </p-form-row>
+        <p-form-row
+          id="expired-date"
+          :label="$t('contract end')">
+          <div slot="body" class="col-lg-9">
+            <p-date-picker
+              name="expired-date"
+              v-model="contract_end"/>
+          </div>
+        </p-form-row>
 
-          <p-form-row
-            id="notes"
-            name="notes"
-            :label="$t('notes')"
-            v-model="notes">
-          </p-form-row>
-        </template>
-        <template slot="footer">
-          <button class="btn btn-primary">Add</button>
-        </template>
-      </p-modal>
+        <p-form-row
+          id="notes"
+          name="notes"
+          :label="$t('notes')"
+          v-model="notes">
+        </p-form-row>
+
+        <div class="pull-right">
+          <button type="submit" class="btn btn-sm btn-primary">
+            {{ $t('add') | uppercase }}
+          </button>
+        </div>
+      </sweet-modal>
     </form>
   </div>
 </template>
@@ -50,8 +52,7 @@ export default {
       type: String
     },
     id: {
-      type: String,
-      required: true
+      type: String
     }
   },
   data () {
@@ -67,11 +68,14 @@ export default {
     }
   },
   methods: {
-    show () {
-      this.$refs.contractModalRef.show()
+    open () {
+      this.$refs.modal.open()
     },
     close () {
-      this.$refs.contractModalRef.close()
+      this.$refs.modal.close()
+    },
+    onClose () {
+      this.$emit('close')
     },
     onSubmitContract () {
       this.$emit('add', {
@@ -80,7 +84,7 @@ export default {
         notes: this.notes
       })
       this.contract = ''
-      this.$refs.contractModalRef.close()
+      this.$refs.modal.close()
     }
   }
 }

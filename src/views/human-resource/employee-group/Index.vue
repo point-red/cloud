@@ -2,58 +2,61 @@
   <div>
     <breadcrumb>
       <breadcrumb-human-resource/>
-      <span class="breadcrumb-item active">{{ 'employee status' | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('employee group') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('employee status')">
-        <div class="input-group block mb-5">
-          <router-link
-            to="/human-resource/employee-status/create"
+      <p-block>
+        <div class="input-group block">
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addEmployeeGroup.open()"
             v-if="$permission.has('create employee')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
             placeholder="Search"
-            class="btn-block"
             ref="searchText"
             :value="searchText"
+            class="btn-block"
             @input="filterSearch"/>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="100%">{{ $t('name') }}</th>
+              <th width="50px">#</th>
+              <th>Name</th>
             </tr>
-            <template v-if="$permission.has('read employee')">
-              <tr
-                v-for="status in statuses"
-                :key="status.id"
-                slot="p-body">
-                <td>
-                  <router-link :to="{ name: 'EmployeeStatusShow', params: { id: status.id }}">
-                    {{ status.name }}
-                  </router-link>
-                </td>
-              </tr>
-            </template>
+            <tr
+              v-for="(group, index) in groups"
+              :key="index"
+              slot="p-body">
+              <th>{{ (page - 1) * limit + index + 1 }}</th>
+              <td>
+                <router-link :to="{ name: 'employee-group.show', params: { id: group.id }}">
+                  {{ group.name }}
+                </router-link>
+              </td>
+            </tr>
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
           @updatePage="updatePage">
         </p-pagination>
       </p-block>
     </div>
+
+    <m-add-employee-group ref="addEmployeeGroup" @added="onAdded"></m-add-employee-group>
   </div>
 </template>
 
@@ -74,49 +77,58 @@ export default {
   },
   data () {
     return {
-      isLoading: false,
-      listStatus: this.statuses,
+      isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1
     }
   },
   computed: {
-    ...mapGetters('humanResourceEmployeeStatus', ['statuses', 'pagination'])
+    ...mapGetters('humanResourceEmployeeGroup', ['groups', 'pagination'])
   },
   methods: {
-    ...mapActions('humanResourceEmployeeStatus', { getStatuses: 'get' }),
+    ...mapActions('humanResourceEmployeeGroup', {
+      getGroup: 'get'
+    }),
     updatePage (value) {
-      this.currentPage = value
-      this.getStatusesRequest()
+      this.page = value
+      this.getGroupRequest()
+    },
+    getGroupRequest () {
+      this.isLoading = true
+      this.getGroup({
+        params: {
+          sort_by: 'name',
+          filter_like: {
+            'name': this.searchText
+          },
+          limit: this.limit,
+          page: this.page
+        }
+      }).then((response) => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notifications.error(error.message)
+      })
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
-      this.getStatusesRequest()
+      this.page = 1
+      this.getGroupRequest()
     }, 300),
-    getStatusesRequest () {
-      this.isLoading = true
-      this.getStatuses({
-        params: {
-          filter_like: {
-            'name': this.searchText
-          },
-          limit: 10,
-          page: this.currentPage,
-          sort_by: 'name'
-        }
-      }).then((response) => {
-        this.isLoading = false
-      }, (errors) => {
-        this.isLoading = false
-        console.log(errors.data)
-      })
+    onAdded (group) {
+      this.searchText = group.name
+      this.getGroupRequest()
     }
   },
   created () {
-    this.getStatusesRequest()
+    this.getGroupRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
   },
   updated () {
     this.lastPage = this.pagination.last_page

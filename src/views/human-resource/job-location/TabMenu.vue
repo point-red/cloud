@@ -11,6 +11,14 @@
     </li>
     <li class="nav-item" v-if="$permission.has('read employee')">
       <router-link
+        to="/human-resource/employee-group"
+        class="nav-link"
+        active-class="active">
+        <span>{{ $t('group') | uppercase }}</span>
+      </router-link>
+    </li>
+    <li class="nav-item" v-if="$permission.has('read employee')">
+      <router-link
         to="/human-resource/job-location"
         class="nav-link"
         active-class="active">

@@ -11,8 +11,32 @@
     <tab-menu></tab-menu>
 
     <div class="row">
-      <p-block :title="$t('employee')" :header="true">
+      <p-block>
         <p-block-inner :is-loading="isLoading">
+          <div class="text-right">
+            <button
+              type="button"
+              @click="$refs.addEmployee.open()"
+              v-if="$permission.has('create employee')"
+              class="btn btn-sm btn-outline-secondary mr-5">
+              {{ $t('create') | uppercase }}
+            </button>
+            <button
+              type="button"
+              v-if="$permission.has('update employee')"
+              class="btn btn-sm btn-outline-secondary mr-5">
+              {{ $t('edit') | uppercase }}
+            </button>
+            <button
+              type="button"
+              @click="onDelete()"
+              v-if="$permission.has('delete employee')"
+              :disabled="isDeleting"
+              class="btn btn-sm btn-outline-secondary">
+              <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            </button>
+          </div>
+          <br>
           <div class="row">
             <div class="col-sm-6">
               <p-table>
@@ -28,37 +52,31 @@
                   <tr v-if="$permission.has('read employee')">
                     <td><span class="font-w700">{{ $t('address') | titlecase }}</span></td>
                     <td>
-                      <ul>
-                        <li
-                          v-for="(employeeAddress, index) in employee.addresses"
-                          :key="index">
-                          {{ employeeAddress.address }}
-                        </li>
-                      </ul>
+                      <span
+                        v-for="(employeeAddress, index) in employee.addresses"
+                        :key="index">
+                        {{ employeeAddress.address }}
+                      </span>
                     </td>
                   </tr>
                   <tr v-if="$permission.has('read employee')">
                     <td><span class="font-w700">{{ $t('phone') | titlecase }}</span></td>
                     <td>
-                      <ul>
-                        <li
+                        <span
                           v-for="(employeePhone, index) in employee.phones"
                           :key="index">
-                          {{ employeePhone.phone }}
-                        </li>
-                      </ul>
+                          {{ employeePhone.number }}
+                        </span>
                     </td>
                   </tr>
                   <tr v-if="$permission.has('read employee')">
                     <td><span class="font-w700">{{ $t('email') | titlecase }}</span></td>
                     <td>
-                      <ul>
-                        <li
-                          v-for="(employeeEmail, index) in employee.emails"
-                          :key="index">
-                          {{ employeeEmail.email }}
-                        </li>
-                      </ul>
+                      <span
+                        v-for="(employeeEmail, index) in employee.emails"
+                        :key="index">
+                        {{ employeeEmail.email }}
+                      </span>
                     </td>
                   </tr>
                   <tr v-if="$permission.has('read employee')">
@@ -260,6 +278,7 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-add-employee ref="addEmployee" @added="onAdded"></m-add-employee>
   </div>
 </template>
 
@@ -291,34 +310,45 @@ export default {
     ...mapGetters('cloudStorage', ['cloudStorages'])
   },
   created () {
-    this.isLoading = true
-    this.findEmployee({ id: this.id }).then(response => {
-      if (this.employee.scorers) {
-        this.employee.scorers.find((element) => {
-          if (element.id == this.authUser.id) {
-            this.isScorer = true
-          }
-        })
-      }
-      this.isLoading = false
-    }).catch(error => {
-      console.log(JSON.stringify(error))
-    })
-    this.getAttachmentRequest()
+    this.findEmployeeRequest()
   },
   methods: {
     ...mapActions('humanResourceEmployee', { findEmployee: 'find', deleteEmployee: 'delete' }),
     ...mapActions('cloudStorage', { getAttachment: 'get' }),
+    onAdded (employee) {
+      this.$router.push('/human-resource/employee/' + employee.id)
+      this.id = employee.id
+      this.findEmployeeRequest()
+    },
+    findEmployeeRequest () {
+      this.isLoading = true
+      this.findEmployee({ id: this.id }).then(response => {
+        if (this.employee.scorers) {
+          this.employee.scorers.find((element) => {
+            if (element.id == this.authUser.id) {
+              this.isScorer = true
+            }
+          })
+        }
+        this.isLoading = false
+      }).catch(error => {
+        console.log(JSON.stringify(error))
+      })
+      this.getAttachmentRequest()
+    },
     onDelete () {
-      this.isDeleting = true
-      this.deleteEmployee({ id: this.id })
-        .then(response => {
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.deleteEmployee({
+          id: this.id
+        }).then(response => {
           this.isDeleting = false
           this.$router.push('/human-resource/employee')
-        }).catch(error => {
+        }).catch(response => {
           this.isDeleting = false
-          console.log(JSON.stringify(error))
+          this.$notification.error('cannot delete this employee')
         })
+      })
     },
     getAttachmentRequest () {
       this.isLoading = true

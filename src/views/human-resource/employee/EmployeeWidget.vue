@@ -80,6 +80,9 @@ export default {
   },
   methods: {
     isShow (scorers) {
+      if (!scorers) {
+        return false
+      }
       return scorers.some(element => {
         return element.id == this.authUser.id
       })

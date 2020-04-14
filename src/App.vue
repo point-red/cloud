@@ -128,4 +128,7 @@ export default {
   font-size: .875rem;
   color: #ef5350;
 }
+.swal2-container {
+  z-index: 9060 !important;
+}
 </style>
