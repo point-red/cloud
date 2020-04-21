@@ -1,19 +1,19 @@
 import api from '@/api'
 
-const url = '/project/projects'
+const url = '/plugins'
 
 const state = {
-  project: {},
-  projects: [],
+  plugin: {},
+  plugins: [],
   pagination: {}
 }
 
 const getters = {
-  project: state => {
-    return state.project
+  plugin: state => {
+    return state.plugin
   },
-  projects: state => {
-    return state.projects
+  plugins: state => {
+    return state.plugins
   },
   pagination: state => {
     return state.pagination
@@ -22,20 +22,20 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.projects = payload.data
+    state.plugins = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.project = payload.data
+    state.plugin = payload.data
   },
   'CREATE' (state, payload) {
-    state.project = payload
+    state.plugin = payload
   },
   'UPDATE' (state, payload) {
-    state.project = payload
+    state.plugin = payload
   },
   'DELETE' (state, payload) {
-    state.project = {}
+    state.plugin = {}
   }
 }
 

@@ -109,73 +109,33 @@
     <h3>{{ $t('plugins') | uppercase }}</h3>
 
     <div class="row gutters-tiny">
-      <div class="col-md-6 col-xl-3">
-        <div class="block block-link-shadow">
-          <div class="block-content block-content-full clearfix">
-            <div class="font-size-h5 font-w600">
-              HCMS
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia rem aliquid odit esse ipsa facilis, dignissimos consequuntur, repudiandae reiciendis eius accusantium assumenda, deleniti et eligendi sapiente dolorem atque at similique?
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              IDR 300,000 / month
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">SUBSCRIBE</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6 col-xl-3">
-        <div class="block block-link-shadow">
-          <div class="block-content block-content-full clearfix">
-            <div class="font-size-h5 font-w600">
-              SCALE WEIGHT
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia rem aliquid odit esse ipsa facilis, dignissimos consequuntur, repudiandae reiciendis eius accusantium assumenda, deleniti et eligendi sapiente dolorem atque at similique?
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              IDR 100,000 / user / month
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+      <template v-for="(plugin, index) in plugins">
+        <div class="col-md-6 col-xl-3" :key="index">
+          <div class="block block-link-shadow">
+            <div class="block-content block-content-full clearfix">
+              <div class="font-size-h5 font-w600">
+                {{ plugin.name }}
+              </div>
+              <hr>
+              <div class="font-size-sm font-w600 text-uppercase text-muted">
+                {{ plugin.description }}
+              </div>
+              <hr>
+              <div v-if="plugin.price" class="font-size-sm font-w600 text-uppercase text-muted">
+                IDR {{ plugin.price | numberFormat }} / month
+              </div>
+              <div v-else class="font-size-sm font-w600 text-uppercase text-muted">
+                IDR {{ plugin.price_per_user | numberFormat }} / user / month
+              </div>
+              <hr>
+              <div class="font-size-sm font-w600 text-uppercase text-muted">
+                <button type="button" class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="col-md-6 col-xl-3">
-        <div class="block block-link-shadow">
-          <div class="block-content block-content-full clearfix">
-            <div class="font-size-h5 font-w600">
-              PIN POINT
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia rem aliquid odit esse ipsa facilis, dignissimos consequuntur, repudiandae reiciendis eius accusantium assumenda, deleniti et eligendi sapiente dolorem atque at similique?
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              IDR 100,000 / user / month
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">SUBSCRIBE</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      </template>
     </div>
-
   </div>
 </template>
 
@@ -217,6 +177,7 @@ export default {
   },
   computed: {
     ...mapGetters('accountProject', ['project']),
+    ...mapGetters('accountPlugin', ['plugins']),
     ...mapGetters('accountProjectPreference', ['preferences'])
   },
   created () {
@@ -249,6 +210,16 @@ export default {
         this.isLoading = false
         // this.$notification.error(error.message)
       })
+
+    this.getPlugin({
+      params: {
+        is_active: true
+      }
+    }).then(response => {
+      //
+    }).catch(error => {
+      //
+    })
   },
   methods: {
     ...mapActions('accountProject', {
@@ -257,6 +228,9 @@ export default {
     ...mapActions('accountProjectPreference', {
       findPreference: 'find',
       updatePreference: 'update'
+    }),
+    ...mapActions('accountPlugin', {
+      getPlugin: 'get'
     }),
     onSubmit () {
       this.isSaving = true
