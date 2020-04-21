@@ -29,7 +29,7 @@
         </template>
         <template slot="footer">
           <div v-if="templates.length > 0">
-            <button type="submit" class="btn btn-primary">Change</button>
+            <button type="submit" class="btn btn-sm btn-primary">Change</button>
           </div>
           <button
             type="button"

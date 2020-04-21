@@ -24,7 +24,7 @@
           </div>
         </template>
         <template slot="footer">
-          <button type="submit" class="btn btn-primary">Add</button>
+          <button type="submit" class="btn btn-sm btn-primary">Add</button>
         </template>
       </p-modal>
     </form>
