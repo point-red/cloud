@@ -12,7 +12,9 @@
 
     <hr>
 
-    <h3>{{ $t('erp package') | uppercase }}</h3>
+    <h5>{{ $t('choose package') | uppercase }}</h5>
+
+    <hr>
 
     <div class="row gutters-tiny">
       <div class="col-md-6 col-xl-3">
@@ -22,12 +24,12 @@
               COMMUNITY EDITION
             </div>
             <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia rem aliquid odit esse ipsa facilis, dignissimos consequuntur, repudiandae reiciendis eius accusantium assumenda, deleniti et eligendi sapiente dolorem atque at similique?
+            <div class="font-size-sm" style="height:70px">
+              -
             </div>
             <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              FREE
+            <div class="font-size-sm">
+              <span class="font-size-lg">FREE</span>
             </div>
             <hr>
             <div class="font-size-sm font-w600 text-uppercase text-muted">
@@ -41,19 +43,21 @@
         <div class="block block-link-shadow">
           <div class="block-content block-content-full clearfix">
             <div class="font-size-h5 font-w600">
-              SILVER
+              BASIC
+            </div>
+            <hr>
+            <div class="font-size-sm" style="height:70px">
+              1. Suitable for smaller businesses <br>
+              2. Basic resource management features <br>
+              3. Up to 10 users
+            </div>
+            <hr>
+            <div class="text-uppercase">
+              <span class="font-size-lg">IDR 1.000.000</span> <small>/ month</small>
             </div>
             <hr>
             <div class="font-size-sm font-w600 text-uppercase text-muted">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia rem aliquid odit esse ipsa facilis, dignissimos consequuntur, repudiandae reiciendis eius accusantium assumenda, deleniti et eligendi sapiente dolorem atque at similique?
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              IDR 299,000 / month
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+              <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
             </div>
           </div>
         </div>
@@ -63,19 +67,21 @@
         <div class="block block-link-shadow">
           <div class="block-content block-content-full clearfix">
             <div class="font-size-h5 font-w600">
-              GOLD
+              PRO
+            </div>
+            <hr>
+            <div class="font-size-sm" style="height:70px">
+              1. Suitable for medium businesses <br>
+              2. Include all basic features and accounting forecast <br>
+              3. Up to 100 users
+            </div>
+            <hr>
+            <div class="text-uppercase">
+              <span class="font-size-lg">IDR 3.000.000</span> <small>/ month</small>
             </div>
             <hr>
             <div class="font-size-sm font-w600 text-uppercase text-muted">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia rem aliquid odit esse ipsa facilis, dignissimos consequuntur, repudiandae reiciendis eius accusantium assumenda, deleniti et eligendi sapiente dolorem atque at similique?
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              IDR 999,000 / month
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+              <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
             </div>
           </div>
         </div>
@@ -85,19 +91,21 @@
         <div class="block block-link-shadow">
           <div class="block-content block-content-full clearfix">
             <div class="font-size-h5 font-w600">
-              PLATINUM
+              PREMIUM
+            </div>
+            <hr>
+            <div class="font-size-sm" style="height:70px">
+              1. Suitable for larger businesses <br>
+              2. Enterprise resource management features <br>
+              3. Unlimited users
+            </div>
+            <hr>
+            <div class="text-uppercase">
+              <span class="font-size-lg">IDR 9.000.000</span> <small>/ month</small>
             </div>
             <hr>
             <div class="font-size-sm font-w600 text-uppercase text-muted">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Mollitia rem aliquid odit esse ipsa facilis, dignissimos consequuntur, repudiandae reiciendis eius accusantium assumenda, deleniti et eligendi sapiente dolorem atque at similique?
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              IDR 2,999,000 / month
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+              <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
             </div>
           </div>
         </div>
@@ -106,30 +114,30 @@
 
     <hr>
 
-    <h3>{{ $t('plugins') | uppercase }}</h3>
+    <h5>{{ $t('choose plugin') | uppercase }}</h5>
+
+    <hr>
 
     <div class="row gutters-tiny">
       <template v-for="(plugin, index) in plugins">
-        <div class="col-md-6 col-xl-3" :key="index">
+        <div class="col-md-6 col-xl-3" :key="index" v-if="plugin.is_active">
           <div class="block block-link-shadow">
             <div class="block-content block-content-full clearfix">
               <div class="font-size-h5 font-w600">
                 {{ plugin.name }}
               </div>
               <hr>
-              <div class="font-size-sm font-w600 text-uppercase text-muted">
+              <div class="font-size-sm">
                 {{ plugin.description }}
               </div>
               <hr>
-              <div v-if="plugin.price" class="font-size-sm font-w600 text-uppercase text-muted">
-                IDR {{ plugin.price | numberFormat }} / month
-              </div>
-              <div v-else class="font-size-sm font-w600 text-uppercase text-muted">
-                IDR {{ plugin.price_per_user | numberFormat }} / user / month
+              <div class="text-uppercase">
+                <span class="font-size-lg">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
               </div>
               <hr>
               <div class="font-size-sm font-w600 text-uppercase text-muted">
-                <button type="button" class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+                <button type="button" @click="choosePlugin(plugin)" v-if="form.plugins.findIndex(element => element.id == plugin.id) >= 0" class="btn btn-sm btn-primary">SUBSCRIBED</button>
+                <button type="button" @click="choosePlugin(plugin)" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
               </div>
             </div>
           </div>
@@ -156,16 +164,7 @@ export default {
       form: new Form({
         id: this.$route.params.id,
         project_id: this.$route.params.id,
-        mail_driver: null,
-        mail_host: null,
-        mail_username: null,
-        mail_password: null,
-        mail_from_name: null,
-        mail_from_address: null,
-        mail_port: null,
-        mail_encryption: null,
-        mail_domain: null,
-        mail_secret: null
+        plugins: []
       })
     }
   },
@@ -177,8 +176,7 @@ export default {
   },
   computed: {
     ...mapGetters('accountProject', ['project']),
-    ...mapGetters('accountPlugin', ['plugins']),
-    ...mapGetters('accountProjectPreference', ['preferences'])
+    ...mapGetters('accountPlugin', ['plugins', 'pagination'])
   },
   created () {
     this.isLoading = true
@@ -189,26 +187,6 @@ export default {
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
-      })
-
-    this.findPreference({ id: this.id })
-      .then(response => {
-        this.isLoading = false
-        if (response.data) {
-          this.form.mail_driver = response.data.mail_driver
-          this.form.mail_host = response.data.mail_host
-          this.form.mail_username = response.data.mail_username
-          this.form.mail_password = response.data.mail_password
-          this.form.mail_from_name = response.data.mail_from_name
-          this.form.mail_from_address = response.data.mail_from_address
-          this.form.mail_port = response.data.mail_port
-          this.form.mail_encryption = response.data.mail_encryption
-          this.form.mail_domain = response.data.mail_domain
-          this.form.mail_secret = response.data.mail_secret
-        }
-      }).catch(error => {
-        this.isLoading = false
-        // this.$notification.error(error.message)
       })
 
     this.getPlugin({
@@ -225,24 +203,31 @@ export default {
     ...mapActions('accountProject', {
       findProject: 'find'
     }),
-    ...mapActions('accountProjectPreference', {
-      findPreference: 'find',
-      updatePreference: 'update'
-    }),
     ...mapActions('accountPlugin', {
       getPlugin: 'get'
     }),
-    onSubmit () {
-      this.isSaving = true
-      this.updatePreference(this.form).then(response => {
-        this.isSaving = false
-        this.$notification.success('Update success')
-        this.$router.push('/account/project/' + this.id + '/preferences')
-      }).catch(error => {
-        this.isSaving = false
-        this.$notification.error('Update failed')
-        this.form.errors.record(error.errors)
+    calculate () {
+      this.form.sub_total_price = 0
+      this.form.vat = 0
+      this.form.total_price = 0
+      this.form.plugins.forEach(el => {
+        this.form.sub_total_price += el.price_per_user_proportional * this.form.total_user
       })
+      this.form.vat = this.form.sub_total_price * 10 / 100
+      this.form.total_price = this.form.sub_total_price + this.form.vat
+    },
+    choosePlugin (plugin) {
+      let dateNow = this.$moment(new Date()).format('DD')
+      let dateEnd = this.$moment(new Date()).endOf('month').format('DD')
+      plugin.price_proportional = (dateEnd - dateNow) / dateEnd * plugin.price
+      plugin.price_per_user_proportional = (dateEnd - dateNow) / dateEnd * plugin.price_per_user
+      plugin.notes = plugin.name + ' ( ' + this.$moment(new Date()).format('DD MMMM YYYY') + ' - ' + this.$moment(new Date()).endOf('month').format('DD MMMM YYYY') + ' )'
+      let index = this.form.plugins.findIndex(element => element.id == plugin.id)
+      if (index >= 0) {
+        this.form.plugins.splice(index, 1)
+      } else {
+        this.form.plugins.push(plugin)
+      }
     }
   }
 }

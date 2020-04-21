@@ -164,7 +164,7 @@
                     active-class="active">{{ $t('employee') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read employee kpi')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$plugin.has('KPI') && $permission.has('read employee kpi')">
                   <router-link
                     to="/human-resource/kpi"
                     active-class="active">{{ $t('kpi template') | uppercase }}
