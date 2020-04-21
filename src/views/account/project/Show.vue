@@ -15,6 +15,7 @@
       <p-block :is-loading="isLoading">
         <div class="text-right">
           <button
+            v-if="project.is_generated == true"
             class="btn btn-sm btn-outline-secondary mr-5"
             @click="redirectToProject(project)">
             <i class="fa fa-globe"></i> {{ $t('open') | uppercase }}
@@ -56,6 +57,14 @@
           v-model="project.name"
           :disabled="true"
           :label="$t('company name')">
+        </p-form-row>
+
+        <p-form-row
+          id="total-user"
+          name="total-user"
+          v-model="project.total_user"
+          :disabled="true"
+          :label="$t('total user')">
         </p-form-row>
 
         <p-separator></p-separator>

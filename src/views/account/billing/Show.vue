@@ -1,87 +1,92 @@
 <template>
   <div>
+    <p-loading-block message="please wait and do not close this page" v-show="isSaving"/>
     <breadcrumb>
       <router-link to="/billing" class="breadcrumb-item">{{ $t('billing') | uppercase }}</router-link>
-      <span class="breadcrumb-item active">1903010001</span>
+      <span class="breadcrumb-item active">{{ invoice.number }}</span>
     </breadcrumb>
 
-    <p class="p-10 bg-danger text-white"><i class="fa fa-warning"></i> Under Construction (Demo Page)</p>
+    <div class="mb-15">
+      <button
+        type="button"
+        v-if="invoice.paidable_id == null"
+        class="btn btn-primary mr-5"
+        @click="pay()">
+        {{ $t('pay with credit card / virtual account') | uppercase }}
+      </button>
+      <button
+        type="button"
+        v-if="invoice.paidable_id == null"
+        class="btn btn-primary mr-5">
+        {{ $t('pay with wallet') | uppercase }}
+      </button>
+    </div>
 
-    <div class="row">
-      <p-block :header="true">
-        <p-block-inner>
-          <!-- Invoice Info -->
-          <div class="row my-20">
-            <!-- Company Info -->
-            <div class="col-6">
-              <p class="h3">INVOICE #1903010001</p>
-              <address>
-                Street Address<br>
-                State, City<br>
-                Region, Postal Code<br>
-                ltd@example.com
-              </address>
-            </div>
-            <!-- END Company Info -->
-
-            <!-- Client Info -->
-            <div class="col-6 text-right">
-              <p class="h3">Client</p>
-              <address>
-                Street Address<br>
-                State, City<br>
-                Region, Postal Code<br>
-                ctr@example.com
-              </address>
-            </div>
-            <!-- END Client Info -->
+    <div class="block">
+      <div class="block-content">
+        <div>
+          <div v-if="invoice.paidable_id == null" style="float:right" class="badge badge-danger">UNPAID</div>
+          <div v-else style="float:right" class="badge badge-success">PAID</div>
+          <h5>INVOICE #{{ invoice.number}}</h5>
+        </div>
+        <hr>
+        <div class="row my-20">
+          <div class="col-6">
+            <p class="h3">POINT</p>
+            <address>
+              Jl Musi no 21<br>
+              Jawa Timur, Surabaya<br>
+              billing@point.red<br>
+            </address>
           </div>
-          <!-- END Invoice Info -->
-
-          <!-- Table -->
-          <div class="table-responsive push">
-            <table class="table table-bordered table-hover">
-              <thead>
-                <tr>
-                  <th class="text-center" style="width: 60px;"></th>
-                  <th>Product</th>
-                  <th class="text-center" style="width: 90px;">Qty</th>
-                  <th class="text-right" style="width: 120px;">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="text-center">1</td>
-                  <td>
-                    01 Feb 2019 - 28 Feb 2019 - KBSURABAYA.CLOUD.POINT.RED
-                  </td>
-                  <td class="text-center">
-                    1
-                  </td>
-                  <td class="text-right">300,000.00</td>
-                </tr>
-                <tr>
-                  <td colspan="3" class="font-w600 text-right">Subtotal</td>
-                  <td class="text-right">300,000.00</td>
-                </tr>
-                <tr>
-                  <td colspan="3" class="font-w600 text-right">Vat (10%)</td>
-                  <td class="text-right">30,000.00</td>
-                </tr>
-                <tr class="table-warning">
-                  <td colspan="3" class="font-w700 text-uppercase text-right">Total</td>
-                  <td class="font-w700 text-right">330,000.00</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="col-6 text-right">
+            <p class="h3">{{ invoice.project_name | uppercase }}</p>
+            <address>
+              {{ invoice.project_address }}<br>
+              {{ invoice.project_phone }}<br>
+            </address>
           </div>
-          <!-- END Table -->
-
-          <!-- Footer -->
-          <p class="text-muted text-center"></p>
-          <!-- END Footer -->
-        </p-block-inner>
-      </p-block>
+        </div>
+        <div class="table-responsive push">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th class="text-center" style="width: 60px;"></th>
+                <th>Product</th>
+                <th class="text-center" style="width: 90px;">Qnt</th>
+                <th class="text-right" style="width: 120px;">Price</th>
+                <th class="text-right" style="width: 120px;">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in invoice.items" :key="index">
+                <td class="text-center">2</td>
+                <td>
+                  {{ item.description | uppercase }}
+                </td>
+                <td class="text-center">
+                  {{ item.quantity | numberFormat }}
+                </td>
+                <td class="text-right">{{ item.amount | numberFormat }}</td>
+                <td class="text-right">{{ item.amount * item.quantity | numberFormat }}</td>
+              </tr>
+              <tr>
+                <td colspan="4" class="font-w600 text-right">SUBTOTAL</td>
+                <td class="text-right">{{ invoice.sub_total | numberFormat }}</td>
+              </tr>
+              <tr>
+                <td colspan="4" class="font-w600 text-right">PPN (10%)</td>
+                <td class="text-right">{{ invoice.vat | numberFormat }}</td>
+              </tr>
+              <tr class="table-warning">
+                <td colspan="4" class="font-w700 text-uppercase text-right">Total Due</td>
+                <td class="font-w700 text-right">{{ invoice.total | numberFormat }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-muted text-center">Thank you very much for doing business with us. We look forward to working with you again!</p>
+      </div>
     </div>
   </div>
 </template>
@@ -89,11 +94,61 @@
 <script>
 import Breadcrumb from '@/views/account/Breadcrumb'
 import PointTable from 'point-table-vue'
+import Form from '@/utils/Form'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   components: {
     Breadcrumb,
-    PointTable
+    PointTable,
+    Form
+  },
+  data () {
+    return {
+      id: this.$route.params.id,
+      isSaving: false,
+      form: new Form({
+        amount: 0,
+        invoice_id: this.id
+      })
+    }
+  },
+  computed: {
+    ...mapGetters('accountInvoice', ['invoice'])
+  },
+  methods: {
+    ...mapActions('accountInvoice', ['find']),
+    ...mapActions('accountWalletTopUp', ['create']),
+    pay () {
+      this.isSaving = true
+      this.form.invoice_id = this.invoice.id
+      this.form.amount = this.invoice.total
+      this.create(this.form).then(response => {
+        this.isSaving = false
+        window.open(response.data.invoice_url, '_blank')
+        this.close()
+      }).catch(error => {
+        this.$notification.error(error.message)
+        this.isSaving = false
+      })
+    }
+  },
+  created () {
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'items'
+      }
+    })
+
+    window.setInterval(() => {
+      this.find({
+        id: this.id,
+        params: {
+          includes: 'items'
+        }
+      })
+    }, 5000)
   }
 }
 </script>

@@ -276,19 +276,19 @@
           <div class="block-content">
             <div class="row my-20">
                 <div class="col-6">
-                    <p class="h3">POINT</p>
-                    <address>
-                        Jl Musi no 21<br>
-                        Jawa Timur, Surabaya<br>
-                        billing@point.red<br>
-                    </address>
+                  <p class="h3">POINT</p>
+                  <address>
+                    Jl Musi no 21<br>
+                    Jawa Timur, Surabaya<br>
+                    billing@point.red<br>
+                  </address>
                 </div>
                 <div class="col-6 text-right">
-                    <p class="h3">{{ form.name }}</p>
-                    <address>
-                        {{ form.address }}<br>
-                        {{ form.phone }}<br>
-                    </address>
+                  <p class="h3">{{ form.name }}</p>
+                  <address>
+                    {{ form.address }}<br>
+                    {{ form.phone }}<br>
+                  </address>
                 </div>
             </div>
             <div class="table-responsive push">
@@ -298,7 +298,7 @@
                             <th class="text-center" style="width: 60px;"></th>
                             <th>Product</th>
                             <th class="text-center" style="width: 90px;">Qnt</th>
-                            <th class="text-right" style="width: 120px;">Unit</th>
+                            <th class="text-right" style="width: 120px;">Price</th>
                             <th class="text-right" style="width: 120px;">Amount</th>
                         </tr>
                     </thead>
@@ -341,7 +341,7 @@
                 </table>
             </div>
             <p class="text-muted text-center">Thank you very much for doing business with us. We look forward to working with you again!</p>
-        </div>
+          </div>
 
           <div class="form-group row">
             <div class="col-md-12">
