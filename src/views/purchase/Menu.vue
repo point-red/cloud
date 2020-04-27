@@ -7,14 +7,14 @@
       active-class="btn-primary">
       <span><i class="si si-folder-alt"></i> {{ $t('purchase request') | uppercase }}</span>
     </router-link>
-    <!-- <router-link
+    <router-link
       to="/purchase/order"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/order')}"
       active-class="btn-primary">
       <span><i class="si si-folder-alt"></i> {{ $t('purchase order') | uppercase }}</span>
     </router-link>
-    <router-link
+    <!-- <router-link
       to="/purchase/down-payment"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/down-payment')}"

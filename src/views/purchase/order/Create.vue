@@ -8,248 +8,262 @@
 
     <purchase-menu/>
 
-    <tab-menu/>
-
-    <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('purchase order')" :header="true">
-        <p-block-inner :is-loading="isLoading">
-          <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="Date"
-                v-model="form.date"
-                :errors="form.errors.get('date')"
-                @errors="form.errors.set('date', null)"/>
+    <form @submit.prevent="onSubmit">
+      <div class="row">
+        <p-block>
+          <p-block-inner :is-loading="isLoading">
+            <div class="row">
+              <div class="col-sm-12">
+                <h4 class="text-center">{{ $t('purchase order') | uppercase }}</h4>
+                <hr>
+                <div class="float-sm-right text-right">
+                  <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                  <template v-if="authUser.branch">
+                    {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
+                    {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
+                  </template>
+                </div>
+                <div class="float-sm-left">
+                  <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
+                  <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span>
+                  <div style="font-size:12px" v-if="form.supplier_phone">
+                    {{ form.supplier_address | uppercase }} <br v-if="form.supplier_email">
+                    {{ form.supplier_phone }} <br v-if="form.supplier_phone">
+                    {{ form.supplier_email | uppercase }}
+                  </div>
+                </div>
+              </div>
             </div>
-          </p-form-row>
+            <hr>
+            <p-form-row
+              id="date"
+              name="date"
+              :label="$t('date')">
+              <div slot="body" class="col-lg-9">
+                <p-date-picker
+                  id="date"
+                  name="date"
+                  label="Date"
+                  v-model="form.date"
+                  :errors="form.errors.get('date')"
+                  @errors="form.errors.set('date', null)"/>
+              </div>
+            </p-form-row>
 
-          <p-form-row
-            id="supplier"
-            name="supplier"
-            :label="$t('supplier')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <m-supplier id="supplier" v-model="form.supplier_id" @choosen="chooseSupplier" :label="form.supplier_name"/>
-            </div>
-          </p-form-row>
+            <p-separator></p-separator>
 
-          <p-separator></p-separator>
-
-          <h5>Item</h5>
-          <hr>
-          <point-table>
-            <tr slot="p-head">
-              <th>#</th>
-              <th style="min-width: 120px">Item</th>
-              <th>Notes</th>
-              <th>Quantity</th>
-              <th>Price</th>
-              <th>Discount</th>
-              <th>Total</th>
-              <th style="min-width: 120px">Allocation</th>
-              <th></th>
-            </tr>
-            <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
-              <th>{{ index + 1 }}</th>
-              <td>
-                <m-item
-                  :id="'item-' + index"
-                  :data-index="index"
-                  v-model="row.item_id"
-                  :label="row.item_name"
-                  @choosen="chooseItem($event, row)"/>
-              </td>
-              <td>
-                <p-form-input
-                  :id="'notes-' + index"
-                  :name="'notes-' + index"
-                  v-model="form.items[index].notes"/>
-              </td>
-              <td>
-                <p-quantity
-                  :id="'quantity' + index"
-                  :name="'quantity' + index"
-                  v-model="form.items[index].quantity"
-                  :unit="form.items[index].item.units[0].label"
-                  @keyup.native="calculate()"/>
-              </td>
-              <td>
-                <p-form-number
-                  :id="'price' + index"
-                  :name="'price' + index"
-                  v-model="form.items[index].price"
-                  @keyup.native="calculate()"/>
-              </td>
-              <td>
-                <p-discount
-                  :id="'discount' + index"
-                  :name="'discount' + index"
-                  v-model="form.items[index].discount_percent"
-                  @keyup.native="calculate()"/>
-              </td>
-              <td>
-                <p-form-number
-                  :id="'total-' + index"
-                  :name="'total-' + index"
-                  :readonly="true"
-                  v-model="form.items[index].total"/>
-              </td>
-              <td>
-                <m-allocation
-                  :id="'allocation-' + index"
-                  v-model="form.items[index].allocation_id"
-                  :label="row.allocation_name"
-                  @choosen="chooseAllocation($event, row)"/>
-              </td>
-              <td>
-                <i class="btn btn-sm fa fa-times" @click="deleteRow(index)"></i>
-              </td>
-            </tr>
-            <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>
-                <p-form-number
-                  :id="'subtotal'"
-                  :name="'subtotal'"
-                  :readonly="true"
-                  v-model="form.subtotal"/>
-              </td>
-            </tr>
-          </point-table>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
-            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-          </button>
-
-          <p-separator></p-separator>
-
-          <div class="row">
-            <div class="col-sm-6">
-              <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
-            </div>
-            <div class="col-sm-6">
-              <p-form-row
-                id="discount"
-                name="discount"
-                :label="$t('discount')">
-                <div slot="body" class="col-lg-9 mt-5">
-                  <p-discount
-                    id="discount"
-                    name="discount"
-                    v-model="form.discount_percent"
+            <h5>Item</h5>
+            <hr>
+            <point-table>
+              <tr slot="p-head">
+                <th>#</th>
+                <th style="min-width: 120px">Item</th>
+                <th>Notes</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Total</th>
+                <th style="min-width: 120px">Allocation</th>
+                <th></th>
+              </tr>
+              <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
+                <th>{{ index + 1 }}</th>
+                <td>
+                  <m-item
+                    :id="'item-' + index"
+                    :data-index="index"
+                    v-model="row.item_id"
+                    :label="row.item_name"
+                    @choosen="chooseItem($event, row)"/>
+                </td>
+                <td>
+                  <p-form-input
+                    :id="'notes-' + index"
+                    :name="'notes-' + index"
+                    v-model="form.items[index].notes"/>
+                </td>
+                <td>
+                  <p-quantity
+                    :id="'quantity' + index"
+                    :name="'quantity' + index"
+                    v-model="form.items[index].quantity"
+                    :unit="form.items[index].item.units[0].label"
                     @keyup.native="calculate()"/>
-                </div>
-              </p-form-row>
-              <p-form-row
-                id="need-down-payment"
-                name="need-down-payment"
-                :label="$t('tax')">
-                <div slot="body" class="col-lg-9">
-                  <p-form-check-box
-                    class="mb-0"
-                    style="float:left"
-                    id="need-down-payment"
-                    name="need-down-payment"
-                    @click.native="chooseTax('include')"
-                    :checked="form.type_of_tax == 'include'"
-                    :description="$t('include tax')"/>
-                  <p-form-check-box
-                    id="need-down-payment"
-                    name="need-down-payment"
-                    @click.native="chooseTax('exclude')"
-                    :checked="form.type_of_tax == 'exclude'"
-                    :description="$t('exclude tax')"/>
+                </td>
+                <td>
                   <p-form-number
-                    :id="'total'"
-                    :name="'total'"
+                    :id="'price' + index"
+                    :name="'price' + index"
+                    v-model="form.items[index].price"
+                    @keyup.native="calculate()"/>
+                </td>
+                <td>
+                  <p-discount
+                    :id="'discount' + index"
+                    :name="'discount' + index"
+                    v-model="form.items[index].discount_percent"
+                    @keyup.native="calculate()"/>
+                </td>
+                <td>
+                  <p-form-number
+                    :id="'total-' + index"
+                    :name="'total-' + index"
                     :readonly="true"
-                    v-model="form.tax"/>
-                </div>
-              </p-form-row>
-              <p-form-row
-                id="total"
-                name="total"
-                :label="$t('total')">
-                <div slot="body" class="col-lg-9 mt-5">
+                    v-model="form.items[index].total"/>
+                </td>
+                <td>
+                  <m-allocation
+                    :id="'allocation-' + index"
+                    v-model="form.items[index].allocation_id"
+                    :label="row.allocation_name"
+                    @choosen="chooseAllocation($event, row)"/>
+                </td>
+                <td>
+                  <i class="btn btn-sm fa fa-times" @click="deleteRow(index)"></i>
+                </td>
+              </tr>
+              <tr slot="p-body">
+                <th></th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
                   <p-form-number
-                    :id="'total'"
-                    :name="'total'"
+                    :id="'subtotal'"
+                    :name="'subtotal'"
                     :readonly="true"
-                    v-model="form.amount"/>
-                </div>
-              </p-form-row>
-            </div>
-          </div>
+                    v-model="form.subtotal"/>
+                </td>
+              </tr>
+            </point-table>
+            <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
+              <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
+            </button>
 
-          <p-separator></p-separator>
+            <p-separator></p-separator>
 
-          <div class="row">
-            <div class="col-sm-6">
-              <h5>Options</h5>
-              <hr>
-              <p-form-row
-                id="need-down-payment"
-                name="need-down-payment"
-                :help="'* surat jalan bisa dibuat setelah pembayaran uang muka'"
-                :label="$t('require down payment')">
-                <div slot="body" class="col-lg-9">
-                  <p-form-number
-                    id="need-down-payment"
-                    name="need-down-payment"
-                    :is-text-right="false"
-                    v-model="form.need_down_payment"/>
-                </div>
-              </p-form-row>
+            <div class="row">
+              <div class="col-sm-6">
+                <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+              </div>
+              <div class="col-sm-6">
+                <p-form-row
+                  id="discount"
+                  name="discount"
+                  :label="$t('discount')">
+                  <div slot="body" class="col-lg-9 mt-5">
+                    <p-discount
+                      id="discount"
+                      name="discount"
+                      v-model="form.discount_percent"
+                      @keyup.native="calculate()"/>
+                  </div>
+                </p-form-row>
+                <p-form-row
+                  id="need-down-payment"
+                  name="need-down-payment"
+                  :label="$t('tax')">
+                  <div slot="body" class="col-lg-9">
+                    <p-form-check-box
+                      class="mb-0"
+                      style="float:left"
+                      id="need-down-payment"
+                      name="need-down-payment"
+                      @click.native="chooseTax('include')"
+                      :checked="form.type_of_tax == 'include'"
+                      :description="$t('include tax')"/>
+                    <p-form-check-box
+                      id="need-down-payment"
+                      name="need-down-payment"
+                      @click.native="chooseTax('exclude')"
+                      :checked="form.type_of_tax == 'exclude'"
+                      :description="$t('exclude tax')"/>
+                    <p-form-number
+                      :id="'total'"
+                      :name="'total'"
+                      :readonly="true"
+                      v-model="form.tax"/>
+                  </div>
+                </p-form-row>
+                <p-form-row
+                  id="total"
+                  name="total"
+                  :label="$t('total')">
+                  <div slot="body" class="col-lg-9 mt-5">
+                    <p-form-number
+                      :id="'total'"
+                      :name="'total'"
+                      :readonly="true"
+                      v-model="form.amount"/>
+                  </div>
+                </p-form-row>
+              </div>
+            </div>
 
-              <p-form-row
-                id="cash-only"
-                name="cash-only"
-                :label="$t('cash only')">
-                <div slot="body" class="col-lg-9">
-                  <p-form-check-box
-                    id="cash-only"
-                    name="cash-only"
-                    @click.native="form.cash_only = !form.cash_only"
-                    :checked="form.cash_only"
-                    :description="'surat jalan dapat dibuat sebesar jumlah pembayaran'"/>
-                </div>
-              </p-form-row>
-            </div>
-            <div class="col-sm-6">
-              <h5>Approver</h5>
-              <hr>
-              <p-form-row
-                id="approver"
-                name="approver"
-                :label="$t('approver')">
-                <div slot="body" class="col-lg-9 mt-5">
-                  <m-user
-                    :id="'user'"
-                    v-model="form.approver_id"
-                    :errors="form.errors.get('approver_id')"
-                    @errors="form.errors.set('approver_id', null)"/>
-                </div>
-              </p-form-row>
-            </div>
-          </div>
+            <p-separator></p-separator>
 
-          <div class="form-group row">
-            <div class="col-md-12">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
-              </button>
+            <div class="row">
+              <div class="col-sm-6">
+                <h5>Options</h5>
+                <hr>
+                <p-form-row
+                  id="need-down-payment"
+                  name="need-down-payment"
+                  :help="'* surat jalan bisa dibuat setelah pembayaran uang muka'"
+                  :label="$t('require down payment')">
+                  <div slot="body" class="col-lg-9">
+                    <p-form-number
+                      id="need-down-payment"
+                      name="need-down-payment"
+                      :is-text-right="false"
+                      v-model="form.need_down_payment"/>
+                  </div>
+                </p-form-row>
+
+                <p-form-row
+                  id="cash-only"
+                  name="cash-only"
+                  :label="$t('cash only')">
+                  <div slot="body" class="col-lg-9">
+                    <p-form-check-box
+                      id="cash-only"
+                      name="cash-only"
+                      @click.native="form.cash_only = !form.cash_only"
+                      :checked="form.cash_only"
+                      :description="'surat jalan dapat dibuat sebesar jumlah pembayaran'"/>
+                  </div>
+                </p-form-row>
+              </div>
+              <div class="col-sm-6">
+                <h5>Approver</h5>
+                <hr>
+                <p-form-row
+                  id="approver"
+                  name="approver"
+                  :label="$t('approver')">
+                  <div slot="body" class="col-lg-9 mt-5">
+                    <m-user
+                      :id="'user'"
+                      v-model="form.approver_id"
+                      :errors="form.errors.get('approver_id')"
+                      @errors="form.errors.set('approver_id', null)"/>
+                  </div>
+                </p-form-row>
+              </div>
             </div>
-          </div>
-        </p-block-inner>
-      </p-block>
+
+            <div class="form-group row">
+              <div class="col-md-12">
+                <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                </button>
+              </div>
+            </div>
+          </p-block-inner>
+        </p-block>
+      </div>
     </form>
   </div>
 </template>
@@ -257,7 +271,6 @@
 <script>
 import debounce from 'lodash/debounce'
 import PurchaseMenu from '../Menu'
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import Form from '@/utils/Form'
@@ -267,7 +280,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     PurchaseMenu,
-    TabMenu,
     PointTable,
     Breadcrumb,
     BreadcrumbPurchase
@@ -276,6 +288,8 @@ export default {
     return {
       isSaving: false,
       isLoading: false,
+      requestedBy: localStorage.getItem('userName'),
+      totalPrice: 0,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -318,7 +332,8 @@ export default {
   },
   computed: {
     ...mapGetters('purchaseRequest', ['purchaseRequest']),
-    ...mapGetters('purchaseOrder', ['purchaseOrder'])
+    ...mapGetters('purchaseOrder', ['purchaseOrder']),
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
     ...mapActions('purchaseRequest', ['find']),
