@@ -69,12 +69,9 @@
               <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
                 <th>{{ index + 1 }}</th>
                 <td>
-                  <m-item
-                    :id="'item-' + index"
-                    :data-index="index"
-                    v-model="row.item_id"
-                    :label="row.item_name"
-                    @choosen="chooseItem($event, row)"/>
+                  <span @click="$refs.item.open(index)" class="select-link">
+                    {{ row.item_label || $t('select') | uppercase }}
+                  </span>
                 </td>
                 <td>
                   <p-form-input
@@ -84,11 +81,18 @@
                 </td>
                 <td>
                   <p-quantity
-                    :id="'quantity' + index"
-                    :name="'quantity' + index"
-                    v-model="form.items[index].quantity"
-                    :unit="form.items[index].item.units[0].label"
-                    @keyup.native="calculate()"/>
+                      :id="'quantity' + index"
+                      :name="'quantity' + index"
+                      :disabled="row.item_id == null"
+                      v-model="row.quantity"
+                      :item-id="row.item_id"
+                      :units="row.units"
+                      :unit="{
+                        name: row.unit,
+                        label: row.unit,
+                        converter: row.converter
+                      }"
+                      @choosen="chooseUnit($event, row)"/>
                 </td>
                 <td>
                   <p-form-number
@@ -144,7 +148,7 @@
 
             <p-separator></p-separator>
 
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-sm-6">
                 <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
               </div>
@@ -162,20 +166,17 @@
                   </div>
                 </p-form-row>
                 <p-form-row
-                  id="need-down-payment"
                   name="need-down-payment"
                   :label="$t('tax')">
                   <div slot="body" class="col-lg-9">
                     <p-form-check-box
                       class="mb-0"
                       style="float:left"
-                      id="need-down-payment"
                       name="need-down-payment"
                       @click.native="chooseTax('include')"
                       :checked="form.type_of_tax == 'include'"
                       :description="$t('include tax')"/>
                     <p-form-check-box
-                      id="need-down-payment"
                       name="need-down-payment"
                       @click.native="chooseTax('exclude')"
                       :checked="form.type_of_tax == 'exclude'"
@@ -260,11 +261,14 @@
                   <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
                 </button>
               </div>
-            </div>
+            </div> -->
           </p-block-inner>
         </p-block>
       </div>
     </form>
+    <m-supplier ref="supplier" @choosen="chooseSupplier($event)"/>
+    <m-item ref="item" @choosen="chooseItem($event)"/>
+    <m-user ref="approver" @choosen="chooseApprover($event)"/>
   </div>
 </template>
 
@@ -295,7 +299,11 @@ export default {
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         supplier_id: null,
         supplier_name: null,
+        supplier_label: null,
         approver_id: null,
+        supplier_address: null,
+        supplier_phone: null,
+        supplier_email: null,
         need_down_payment: 0,
         cash_only: false,
         notes: null,
@@ -364,18 +372,48 @@ export default {
     deleteRow (index) {
       this.$delete(this.form.items, index)
     },
-    chooseSupplier (value) {
-      this.form.supplier_name = value
+    chooseApprover (value) {
+      this.form.request_approval_to = value.id
+      this.form.approver_name = value.name
+      this.form.approver_email = value.email
     },
-    chooseItem (item, row) {
-      row.item_name = item.name
-      row.item.units = item.units
-      row.item.units.forEach((unit, keyUnit) => {
-        if (unit.converter == 1) {
-          row.unit = unit.label
-          row.converter = unit.converter
+    chooseSupplier (value) {
+      this.form.supplier_id = value.id
+      this.form.supplier_name = value.name
+      this.form.supplier_label = value.label
+      this.form.supplier_address = value.address
+      this.form.supplier_phone = value.phone
+      this.form.supplier_email = value.email
+    },
+    chooseItem (item) {
+      let row = this.form.items[item.index]
+      if (item.id == null) {
+        this.clearItem(row)
+      } else {
+        row.item_id = item.id
+        row.item_name = item.name
+        row.item_label = item.label
+        row.units = item.units
+        row.units.forEach((unit, keyUnit) => {
+          if (unit.id == item.unit_default_purchase) {
+            row.unit = unit.label
+            row.converter = unit.converter
+          }
+        })
+        let isNeedNewRow = true
+        this.form.items.forEach(element => {
+          if (element.item_id == null) {
+            isNeedNewRow = false
+          }
+        })
+        if (isNeedNewRow) {
+          this.addItemRow()
         }
-      })
+      }
+    },
+    chooseUnit (unit, row) {
+      row.unit = unit.label
+      row.converter = unit.converter
     },
     chooseAllocation (allocation, row) {
       row.allocation_name = allocation
@@ -386,33 +424,33 @@ export default {
       } else {
         this.form.type_of_tax = taxType
       }
-      this.calculate()
+      // this.calculate()
     },
-    calculate: debounce(function () {
-      var subtotal = 0
-      this.form.items.forEach(function (element) {
-        element.allocation_name = ''
-        if (element.allocation) {
-          element.allocation_name = element.allocation.name
-        }
-        element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
-        element.discount_value = element.discount_percent * element.price / 100
-        subtotal += parseFloat(element.total)
-      })
-      this.form.subtotal = subtotal
-      this.form.discount_value = this.form.discount_percent * subtotal / 100
-      this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount_percent / 100)
-      if (this.form.type_of_tax == 'include') {
-        this.form.tax = this.form.tax_base * 10 / 100
-        this.form.amount = this.form.tax_base
-      } else if (this.form.type_of_tax == 'exclude') {
-        this.form.tax = this.form.tax_base * 10 / 100
-        this.form.amount = this.form.tax_base + this.form.tax
-      } else {
-        this.form.tax = 0
-        this.form.amount = this.form.tax_base
-      }
-    }, 300),
+    // calculate: debounce(function () {
+    //   var subtotal = 0
+    //   this.form.items.forEach(function (element) {
+    //     element.allocation_name = ''
+    //     if (element.allocation) {
+    //       element.allocation_name = element.allocation.name
+    //     }
+    //     element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
+    //     element.discount_value = element.discount_percent * element.price / 100
+    //     subtotal += parseFloat(element.total)
+    //   })
+    //   this.form.subtotal = subtotal
+    //   this.form.discount_value = this.form.discount_percent * subtotal / 100
+    //   this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount_percent / 100)
+    //   if (this.form.type_of_tax == 'include') {
+    //     this.form.tax = this.form.tax_base * 10 / 100
+    //     this.form.amount = this.form.tax_base
+    //   } else if (this.form.type_of_tax == 'exclude') {
+    //     this.form.tax = this.form.tax_base * 10 / 100
+    //     this.form.amount = this.form.tax_base + this.form.tax
+    //   } else {
+    //     this.form.tax = 0
+    //     this.form.amount = this.form.tax_base
+    //   }
+    // }, 300),
     onSubmit () {
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
