@@ -52,6 +52,10 @@ export default {
     show (indicator) {
       this.indicatorId = indicator.id
       this.options = indicator.scores
+      this.options = this.options.sort(function (a, b) {
+        return a['score'] - b['score']
+      })
+
       this.$refs.employeeAssessment.show()
     },
     close () {
