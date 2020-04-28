@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-sm-6 col-xl-3" v-if="$plugin.has('KPI') && ($permission.has('create employee assessment') && isShow(employee.scorers)) || $plugin.has('KPI') && $permission.has('read employee assessment')">
+    <div class="col-sm-6 col-xl-3" v-if="$plugin.has('KPI') && ($permission.has('create employee assessment') && isShow(employee.scorers) || $plugin.has('KPI') && $permission.has('read employee assessment'))">
       <div class="block block-themed text-center">
         <div class="block-content block-content-full block-content-sm bg-gray-lighter">
           <div class="font-w600">KPI</div>
