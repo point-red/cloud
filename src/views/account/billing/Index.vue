@@ -46,7 +46,7 @@
                   <td>{{ invoice.due_date | dateFormat('DD MMMM YYYY')}}</td>
                   <td class="text-right">IDR {{ invoice.total | numberFormat }}</td>
                   <td>
-                    <div v-if="invoice.paidable_id == null" style="float:right" class="badge badge-danger">UNPAID</div>
+                    <div v-if="invoice.total > 0 && invoice.paidable_id == null" style="float:right" class="badge badge-danger">UNPAID</div>
                     <div v-else style="float:right" class="badge badge-success">PAID</div>
                   </td>
                 </tr>

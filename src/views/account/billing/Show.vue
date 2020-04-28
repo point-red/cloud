@@ -9,14 +9,14 @@
     <div class="mb-15">
       <button
         type="button"
-        v-if="invoice.paidable_id == null"
+        v-if="invoice.total > 0 && invoice.paidable_id == null"
         class="btn btn-primary mr-5"
         @click="pay()">
         {{ $t('pay with credit card / virtual account') | uppercase }}
       </button>
       <button
         type="button"
-        v-if="invoice.paidable_id == null"
+        v-if="invoice.total > 0 && invoice.paidable_id == null"
         class="btn btn-primary mr-5">
         {{ $t('pay with wallet') | uppercase }}
       </button>
@@ -25,7 +25,7 @@
     <div class="block">
       <div class="block-content">
         <div>
-          <div v-if="invoice.paidable_id == null" style="float:right" class="badge badge-danger">UNPAID</div>
+          <div v-if="invoice.total > 0 && invoice.paidable_id == null" style="float:right" class="badge badge-danger">UNPAID</div>
           <div v-else style="float:right" class="badge badge-success">PAID</div>
           <h5>INVOICE #{{ invoice.number}}</h5>
         </div>
