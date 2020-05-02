@@ -33,16 +33,28 @@
             @errors="form.errors.set('name', null)">
           </p-form-row>
 
-          <div class="form-group row">
-            <div class="col-md-9 offset-3">
-              <button
+          <p-form-row
+            id="total_user"
+            name="total_user"
+            :is-text-right="false"
+            v-model="form.total_user"
+            :disabled="isSaving"
+            :label="$t('total user')"
+            :errors="form.errors.get('total_user')"
+            @errors="form.errors.set('total_user', null)">
+            <div slot="body" class="col-lg-9">
+              <p-form-number
+                id="total_user"
+                name="total_user"
+                :is-text-right="false"
+                v-model="form.total_user"
                 :disabled="isSaving"
-                type="submit"
-                class="btn btn-sm btn-primary">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
-              </button>
+                :label="$t('total user')"
+                :errors="form.errors.get('total_user')"
+                @errors="form.errors.set('total_user', null)">
+              </p-form-number>
             </div>
-          </div>
+          </p-form-row>
 
           <p-separator></p-separator>
 
@@ -120,13 +132,224 @@
             </div>
           </p-form-row>
 
+          <p-separator></p-separator>
+
+          <h5>{{ $t('choose package') | uppercase }}</h5>
+
+          <hr>
+
+          <div class="row gutters-tiny">
+            <div class="col-md-6 col-xl-3">
+              <div class="block block-link-shadow">
+                <div class="block-content block-content-full clearfix">
+                  <div class="font-size-h5 font-w600">
+                    COMMUNITY EDITION
+                  </div>
+                  <hr>
+                  <div class="font-size-sm" style="height:70px">
+                    -
+                  </div>
+                  <hr>
+                  <div class="font-size-sm">
+                    <span class="font-size-lg">FREE</span>
+                  </div>
+                  <hr>
+                  <div class="font-size-sm font-w600 text-uppercase text-muted">
+                    <button type="button" class="btn btn-sm btn-primary">SUBSCRIBED</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+              <div class="block block-link-shadow">
+                <div class="block-content block-content-full clearfix">
+                  <div class="font-size-h5 font-w600">
+                    BASIC
+                  </div>
+                  <hr>
+                  <div class="font-size-sm" style="height:70px">
+                    1. Suitable for smaller businesses <br>
+                    2. Basic resource management features <br>
+                    3. Up to 10 users
+                  </div>
+                  <hr>
+                  <div class="text-uppercase">
+                    <span class="font-size-lg">IDR 1.000.000</span> <small>/ month</small>
+                  </div>
+                  <hr>
+                  <div class="font-size-sm font-w600 text-uppercase text-muted">
+                    <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+              <div class="block block-link-shadow">
+                <div class="block-content block-content-full clearfix">
+                  <div class="font-size-h5 font-w600">
+                    PRO
+                  </div>
+                  <hr>
+                  <div class="font-size-sm" style="height:70px">
+                    1. Suitable for medium businesses <br>
+                    2. Include all basic features and accounting forecast <br>
+                    3. Up to 100 users
+                  </div>
+                  <hr>
+                  <div class="text-uppercase">
+                    <span class="font-size-lg">IDR 3.000.000</span> <small>/ month</small>
+                  </div>
+                  <hr>
+                  <div class="font-size-sm font-w600 text-uppercase text-muted">
+                    <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6 col-xl-3">
+              <div class="block block-link-shadow">
+                <div class="block-content block-content-full clearfix">
+                  <div class="font-size-h5 font-w600">
+                    PREMIUM
+                  </div>
+                  <hr>
+                  <div class="font-size-sm" style="height:70px">
+                    1. Suitable for larger businesses <br>
+                    2. Enterprise resource management features <br>
+                    3. Unlimited users
+                  </div>
+                  <hr>
+                  <div class="text-uppercase">
+                    <span class="font-size-lg">IDR 9.000.000</span> <small>/ month</small>
+                  </div>
+                  <hr>
+                  <div class="font-size-sm font-w600 text-uppercase text-muted">
+                    <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p-separator></p-separator>
+
+          <h5>{{ $t('choose plugin') | uppercase }}</h5>
+
+          <hr>
+
+          <div class="row gutters-tiny">
+            <template v-for="(plugin, index) in plugins">
+              <div class="col-md-6 col-xl-3" :key="index" v-if="plugin.is_active">
+                <div class="block block-link-shadow">
+                  <div class="block-content block-content-full clearfix">
+                    <div class="font-size-h5 font-w600">
+                      {{ plugin.name }}
+                    </div>
+                    <hr>
+                    <div class="font-size-sm">
+                      {{ plugin.description }}
+                    </div>
+                    <hr>
+                    <div class="text-uppercase">
+                      <span class="font-size-lg">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
+                    </div>
+                    <hr>
+                    <div class="font-size-sm font-w600 text-uppercase text-muted">
+                      <button type="button" @click="choosePlugin(plugin)" v-if="form.plugins.findIndex(element => element.id == plugin.id) >= 0" class="btn btn-sm btn-primary">SUBSCRIBED</button>
+                      <button type="button" @click="choosePlugin(plugin)" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <p-separator></p-separator>
+
+          <h5>{{ $t('invoice') | uppercase }}</h5>
+
+          <hr>
+
+          <div class="block-content">
+            <div class="row my-20">
+                <div class="col-6">
+                  <p class="h3">POINT</p>
+                  <address>
+                    Jl Musi no 21<br>
+                    Jawa Timur, Surabaya<br>
+                    billing@point.red<br>
+                  </address>
+                </div>
+                <div class="col-6 text-right">
+                  <p class="h3">{{ form.name }}</p>
+                  <address>
+                    {{ form.address }}<br>
+                    {{ form.phone }}<br>
+                  </address>
+                </div>
+            </div>
+            <div class="table-responsive push">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 60px;"></th>
+                            <th>Product</th>
+                            <th class="text-center" style="width: 90px;">Qnt</th>
+                            <th class="text-right" style="width: 120px;">Price</th>
+                            <th class="text-right" style="width: 120px;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">1</td>
+                            <td>
+                                ERP PACKAGE - COMMUNITY EDITION
+                            </td>
+                            <td class="text-center">
+                                -
+                            </td>
+                            <td class="text-right">0</td>
+                            <td class="text-right">0</td>
+                        </tr>
+                        <tr v-for="(plugin, index) in form.plugins" :key="index">
+                            <td class="text-center">2</td>
+                            <td>
+                                {{ plugin.notes | uppercase }}
+                            </td>
+                            <td class="text-center">
+                                {{ form.total_user }}
+                            </td>
+                            <td class="text-right">{{ plugin.price_per_user_proportional | numberFormat }}</td>
+                            <td class="text-right">{{ plugin.price_per_user_proportional * form.total_user | numberFormat }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="font-w600 text-right">SUBTOTAL</td>
+                            <td class="text-right">{{ this.form.sub_total_price | numberFormat }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" class="font-w600 text-right">PPN (10%)</td>
+                            <td class="text-right">{{ this.form.vat | numberFormat }}</td>
+                        </tr>
+                        <tr class="table-warning">
+                            <td colspan="4" class="font-w700 text-uppercase text-right">Total Due</td>
+                            <td class="font-w700 text-right">{{ this.form.total_price | numberFormat }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-muted text-center">Thank you very much for doing business with us. We look forward to working with you again!</p>
+          </div>
+
           <div class="form-group row">
-            <div class="col-md-9 offset-3">
+            <div class="col-md-12">
               <button
                 :disabled="isSaving"
                 type="submit"
                 class="btn btn-sm btn-primary">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('create project') | uppercase }}
               </button>
             </div>
           </div>
@@ -140,12 +363,13 @@
 import Breadcrumb from '@/views/account/Breadcrumb'
 import TabMenu from './TabMenu'
 import Form from '@/utils/Form'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   data () {
     return {
       form: new Form({
+        code: '',
         name: null,
         group: null,
         address: null,
@@ -153,9 +377,13 @@ export default {
         whatsapp: null,
         website: null,
         marketplace_notes: null,
-        code: '',
         vat_id_number: null,
-        timezone: null
+        timezone: null,
+        plugins: [],
+        total_user: 1,
+        sub_total_price: 0,
+        vat: 0,
+        total_price: 0
       }),
       localTimezone: '',
       timezoneOptions: [],
@@ -166,8 +394,33 @@ export default {
     Breadcrumb,
     TabMenu
   },
+  computed: {
+    ...mapGetters('accountPlugin', ['plugins', 'pagination'])
+  },
+  watch: {
+    'form.total_user' () {
+      this.calculate()
+    },
+    'form.plugins': {
+      handler: function () {
+        this.calculate()
+      },
+      deep: true
+    }
+  },
   methods: {
     ...mapActions('accountProject', ['create']),
+    ...mapActions('accountPlugin', ['get']),
+    calculate () {
+      this.form.sub_total_price = 0
+      this.form.vat = 0
+      this.form.total_price = 0
+      this.form.plugins.forEach(el => {
+        this.form.sub_total_price += el.price_per_user_proportional * this.form.total_user
+      })
+      this.form.vat = this.form.sub_total_price * 10 / 100
+      this.form.total_price = this.form.sub_total_price + this.form.vat
+    },
     getAvailableTimezone () {
       var tzNames = this.$moment.tz.names()
       this.timezoneOptions = []
@@ -177,6 +430,19 @@ export default {
           id: tzNames[i],
           label: tz
         })
+      }
+    },
+    choosePlugin (plugin) {
+      let dateNow = this.$moment(new Date()).format('DD')
+      let dateEnd = this.$moment(new Date()).endOf('month').format('DD')
+      plugin.price_proportional = (dateEnd - dateNow) / dateEnd * plugin.price
+      plugin.price_per_user_proportional = (dateEnd - dateNow) / dateEnd * plugin.price_per_user
+      plugin.notes = plugin.name + ' ( ' + this.$moment(new Date()).format('DD MMMM YYYY') + ' - ' + this.$moment(new Date()).endOf('month').format('DD MMMM YYYY') + ' )'
+      let index = this.form.plugins.findIndex(element => element.id == plugin.id)
+      if (index >= 0) {
+        this.form.plugins.splice(index, 1)
+      } else {
+        this.form.plugins.push(plugin)
       }
     },
     searchTimezone (value) {
@@ -218,6 +484,7 @@ export default {
     if (this.localTimezone) {
       this.form.timezone = this.localTimezone
     }
+    this.get()
   }
 }
 </script>

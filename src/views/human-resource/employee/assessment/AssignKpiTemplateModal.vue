@@ -33,7 +33,7 @@
         </template>
         <template slot="footer">
           <div v-if="templates.length > 0 && !isLoading">
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button type="submit" class="btn btn-sm btn-primary">Add</button>
           </div>
           <button
             type="button"

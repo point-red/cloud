@@ -19,6 +19,7 @@ import PointNotification from '@/components/point-notification'
 import PointNumber from '@/components/point-number'
 import PointMask from '@/components/point-mask'
 import PointPermission from '@/components/point-permission'
+import PointPlugin from '@/components/point-plugin'
 import PointRolePermission from '@/components/point-permission/role-permission'
 import PointFormRules from '@/components/point-form-rules'
 import PointTemplate from '@/components/point-template'
@@ -86,6 +87,7 @@ Vue.use(PointNotification)
 Vue.use(PointNumber)
 Vue.use(PointMask)
 Vue.use(PointPermission)
+Vue.use(PointPlugin)
 Vue.use(PointRolePermission)
 Vue.use(PointFormRules)
 Vue.use(PointTemplate)

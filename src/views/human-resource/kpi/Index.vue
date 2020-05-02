@@ -35,16 +35,18 @@
     <div class="row">
       <p-block :title="title" :header="true">
         <p-block-inner :is-loading="isLoading">
-          <p-table>
+          <point-table>
             <tr slot="p-head">
+              <th>#</th>
               <th>Kpi Category</th>
               <th class="text-center">Total Weight</th>
-              <th></th>
+              <th class="text-right"></th>
             </tr>
             <tr
-              v-for="template in templates"
+              v-for="(template, index) in templates"
               slot="p-body"
               :key="template.id">
+              <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'KpiShow', params: { id: template.id }}">
                   {{ template.name }}
@@ -55,16 +57,18 @@
                 <a
                   href="javascript:void(0)"
                   v-if="$permission.has('update employee kpi')"
-                  class="btn btn-sm btn-secondary" @click="$refs.edit.show(template)"><i class="si si-note"></i> {{ $t('edit') | uppercase }}</a>
-                <button :disabled="isExporting.includes(template.id)" type="submit" class="btn btn-sm btn-primary" @click="exportData(template.id)" style="margin-left:12px">
-                  <i v-show="isExporting.includes(template.id)" class="fa fa-asterisk fa-spin" /> Export
+                  class="btn btn-sm btn-secondary" @click="$refs.edit.show(template)">
+                  {{ $t('rename') | uppercase }}
+                </a>
+                <button :disabled="isExporting.includes(template.id)" type="submit" class="btn btn-sm btn-secondary" @click="exportData(template.id)" style="margin-left:12px">
+                  <i v-show="isExporting.includes(template.id)" class="fa fa-asterisk fa-spin" /> {{ $t('export') | uppercase }}
                 </button>
-                <button :disabled="isDuplicating" type="submit" class="btn btn-sm btn-primary" @click="duplicate(template.id)" style="margin-left:12px">
-                  <i v-show="isDuplicating" class="fa fa-asterisk fa-spin" /> Duplicate
+                <button :disabled="isDuplicating" type="submit" class="btn btn-sm btn-secondary" @click="duplicate(template.id)" style="margin-left:12px">
+                  <i v-show="isDuplicating" class="fa fa-asterisk fa-spin" /> {{ $t('duplicate') | uppercase }}
                 </button>
               </td>
             </tr>
-          </p-table>
+          </point-table>
           <nav v-show="pagination.last_page > 1">
             <ul class="pagination justify-content-center">
               <li class="page-item" v-show="pagination.current_page > 1">
@@ -96,7 +100,7 @@
       </p-block>
     </div>
 
-    <result-modal id="result" ref="result" :title="'Kpi Result'"/>
+    <result-modal id="result" ref="result" :title="'KPI RESULT'"/>
     <create-modal id="create" ref="create" :title="'KPI CATEGORY'"/>
     <edit-modal id="edit" ref="edit" :title="'KPI CATEGORY'"/>
   </div>
@@ -108,6 +112,7 @@ import EditModal from './EditModal'
 import ResultModal from './ResultModal'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 import axios from '@/axios'
 
@@ -117,7 +122,8 @@ export default {
     EditModal,
     ResultModal,
     Breadcrumb,
-    BreadcrumbHumanResource
+    BreadcrumbHumanResource,
+    PointTable
   },
   data () {
     return {

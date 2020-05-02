@@ -11,7 +11,7 @@
         icon="si si-people"/>
       <p-box
         name="Kpi Template"
-        v-if="$permission.has('read employee kpi')"
+        v-if="$plugin.has('KPI') && $permission.has('read employee kpi')"
         link="/human-resource/kpi"
         icon="si si-badge"/>
     </div>

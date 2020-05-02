@@ -31,7 +31,8 @@
             <tr slot="p-head">
               <th>Company Id</th>
               <th>Company Name</th>
-              <th>Company Group</th>
+              <th class="text-center">Max User</th>
+              <th>Expired Date</th>
               <th></th>
             </tr>
             <tr
@@ -47,7 +48,8 @@
                 </template>
                 <template v-else>{{ project.name }}</template>
               </td>
-              <td>{{ project.group | uppercase }}</td>
+              <td class="text-center">{{ project.total_user | uppercase }}</td>
+              <td>{{ project.expired_date | dateFormat('DD MMMM YYYY') }}</td>
               <td class="text-right">
                 <template v-if="project.joined == false && project.request_join_at == null">
                   <button
@@ -73,7 +75,7 @@
                     <i class="fa fa-users"/> Pending Request
                   </a>
                 </template>
-                <template v-if="project.joined == true">
+                <template v-if="project.is_generated == true && project.joined == true">
                   <a
                     class="btn btn-sm btn-secondary"
                     :href="'//' + project.code + '.' + domain"
