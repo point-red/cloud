@@ -97,6 +97,10 @@ const actions = {
       Vue.cookie.delete('TAT')
       Vue.cookie.delete('TED')
     } else {
+      Vue.cookie.delete('TID')
+      Vue.cookie.delete('TTT')
+      Vue.cookie.delete('TAT')
+      Vue.cookie.delete('TED')
       Vue.cookie.delete('TID', { domain: '.' + process.env.VUE_APP_DOMAIN })
       Vue.cookie.delete('TTT', { domain: '.' + process.env.VUE_APP_DOMAIN })
       Vue.cookie.delete('TAT', { domain: '.' + process.env.VUE_APP_DOMAIN })

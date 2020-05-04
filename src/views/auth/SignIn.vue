@@ -73,10 +73,10 @@ export default {
   },
   created () {
     if (this.$route.query.access_token) {
-      this.$cookie.set('TTT', 'Bearer')
-      this.$cookie.set('TID', this.$route.query.id)
-      this.$cookie.set('TAT', this.$route.query.access_token)
-      this.$cookie.set('TED', this.$route.query.ed)
+      this.$cookie.set('TTT', 'Bearer', { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
+      this.$cookie.set('TID', this.$route.query.id, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
+      this.$cookie.set('TAT', this.$route.query.access_token, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
+      this.$cookie.set('TED', this.$route.query.ed, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
     }
     if (this.$cookie.get('TAT') !== null) {
       this.showLoadingBlock()
