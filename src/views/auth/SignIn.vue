@@ -107,11 +107,11 @@ export default {
     ...mapActions('uiHandler', ['showLoadingBlock', 'dismissLoadingBlock']),
     ...mapActions('firebaseToken', ['create']),
     loginWithGoogle () {
-      let url = process.env.VUE_APP_API_DOMAIN + '/login/google?callback=http://localhost:8080/auth/signin'
+      let url = process.env.VUE_APP_API_DOMAIN + '/login/google?callback=' + process.env.VUE_APP_DOMAIN + '/auth/signin'
       window.open(url, '_self')
     },
     loginWithGithub () {
-      let url = process.env.VUE_APP_API_DOMAIN + '/login/github?callback=http://localhost:8080/auth/signin'
+      let url = process.env.VUE_APP_API_DOMAIN + '/login/github?callback=' + process.env.VUE_APP_DOMAIN + '/auth/signin'
       window.open(url, '_self')
     },
     onSubmit () {
