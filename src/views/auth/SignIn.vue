@@ -6,10 +6,19 @@
         src="/assets/img/guest/logo.svg"
         alt=""></div>
       <h1 class="h3 font-w700 mt-30 mb-10">Welcome to Point.RED</h1>
-      <h2 class="h5 font-w400 text-muted mb-0">Please sign in</h2>
     </div>
     <!-- END Header -->
 
+    <div class="mb-30">
+      <a class="btn btn-block btn-social btn-google text-white" href="javascript:void(0)" @click="loginWithGoogle()">
+        <span class="fa fa-google"></span> Sign in with Google
+      </a>
+      <a class="btn btn-block btn-social btn-github text-white" href="javascript:void(0)" @click="loginWithGithub()">
+        <span class="fa fa-github"></span> Sign in with Github
+      </a>
+    </div>
+    <hr>
+    <h2 class="h5 font-w400 text-muted mx-30 text-center">OR</h2>
     <!-- Sign In Form -->
     <form
       class="px-30"
@@ -31,21 +40,9 @@
         <button
           :disabled="isLoading"
           type="submit"
-          class="btn btn-sm btn-hero btn-primary">
-          <i
-            v-show="isLoading"
-            class="fa fa-asterisk fa-spin"/>
-          <i
-            v-show="!isLoading"
-            class="si si-login mr-10"/> Sign In
+          class="btn btn-sm btn-hero btn-outline-dark mb-10">
+          <i v-show="isLoading" class="fa fa-asterisk fa-spin"/> Sign In
         </button>
-        <div class="mt-30">
-          <router-link
-            class="link-effect text-muted mb-5 d-inline-block"
-            to="/auth/forgot-password">
-            <i class="fa fa-warning mr-5"/> Forgot Password
-          </router-link>
-        </div>
       </div>
     </form>
     <!-- END Sign In Form -->
@@ -75,6 +72,12 @@ export default {
     }
   },
   created () {
+    if (this.$route.query.access_token) {
+      this.$cookie.set('TTT', 'Bearer')
+      this.$cookie.set('TID', this.$route.query.id)
+      this.$cookie.set('TAT', this.$route.query.access_token)
+      this.$cookie.set('TED', this.$route.query.ed)
+    }
     if (this.$cookie.get('TAT') !== null) {
       this.showLoadingBlock()
       this.tryAutoLogin().then(response => {
@@ -103,6 +106,14 @@ export default {
     ...mapActions('auth', ['tryAutoLogin']),
     ...mapActions('uiHandler', ['showLoadingBlock', 'dismissLoadingBlock']),
     ...mapActions('firebaseToken', ['create']),
+    loginWithGoogle () {
+      let url = process.env.VUE_APP_API_DOMAIN + '/login/google?callback=http://localhost:8080/auth/signin'
+      window.open(url, '_self')
+    },
+    loginWithGithub () {
+      let url = process.env.VUE_APP_API_DOMAIN + '/login/github?callback=http://localhost:8080/auth/signin'
+      window.open(url, '_self')
+    },
     onSubmit () {
       this.isLoading = true
       this.$store.dispatch('auth/login', {
