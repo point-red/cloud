@@ -634,6 +634,8 @@ export default {
         this.form.scorers = this.employee.scorers
         this.form.user_id = this.employee.user_id
         // this.form.attachments = this.employee.attachments
+        // this.form.attachments = this.employee.attachments.forEach(attachment => {
+        // })
       })
     },
     ...mapActions('cloudStorage', {
@@ -728,6 +730,9 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.form.attachments = this.cloudStorages
+      this.form.attachments.forEach(attachment => {
+        delete attachment.preview
+      })
       this.update(this.form)
         .then(response => {
           this.isSaving = false
@@ -738,7 +743,9 @@ export default {
         }).catch(error => {
           this.isSaving = false
           this.isFailed = true
-          this.form.errors.record(error.errors)
+          if (typeof (error.errors) !== 'undefined') {
+            this.form.errors.record(error.errors)
+          }
         })
     },
     open (employee) {

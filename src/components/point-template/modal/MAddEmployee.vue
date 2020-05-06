@@ -679,6 +679,9 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.form.attachments = this.cloudStorages
+      this.form.attachments.forEach(attachment => {
+        delete attachment.preview
+      })
       this.create(this.form)
         .then(response => {
           this.isSaving = false
