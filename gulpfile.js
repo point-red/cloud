@@ -31,6 +31,7 @@ gulp.task('styles', function () {
   return gulp.src([
     'resources/js/plugins/jquery-auto-complete/jquery.auto-complete.min.css',
     'resources/css/codebase.css',
+    'resources/css/bootstrap-social.css',
     'resources/css/custom.css'
   ])
     .pipe(concat('core.min.css'))

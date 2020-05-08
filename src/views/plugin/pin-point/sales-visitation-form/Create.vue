@@ -11,7 +11,7 @@
 
     <tab-menu/>
 
-    <div v-if="isPermissionCameraGranted == false || isPermissionGeolocationGranted == false">
+    <div v-if="isPermissionGeolocationGranted == false">
       <h2><i class="fa fa-warning"></i> {{ $t('permission required') | uppercase }}</h2>
       <p>{{ $t('browser permission warning - sales visitation form') }}</p>
       <hr>
@@ -338,7 +338,7 @@
 
         <div class="form-group row">
           <div class="col-md-12">
-            <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary" v-if="isPermissionCameraGranted && isPermissionGeolocationGranted">
+            <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary" v-if="isPermissionGeolocationGranted">
               <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
             </button>
             <button :disabled="isSaving" type="button" class="btn btn-sm btn-danger" v-else>
@@ -662,6 +662,7 @@ export default {
     this.addItemRow()
     navigator.permissions.query({ name: 'camera' })
       .then(function (result) {
+        console.log('a ' + result.state)
         if (result.state == 'granted') {
           self.isPermissionCameraGranted = true
         } else if (result.state == 'prompt') {
@@ -673,6 +674,7 @@ export default {
 
     navigator.permissions.query({ name: 'geolocation' })
       .then(function (result) {
+        console.log('b ' + result.state)
         if (result.state == 'granted') {
           self.isPermissionGeolocationGranted = true
         } else if (result.state == 'prompt') {
