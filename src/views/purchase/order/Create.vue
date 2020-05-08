@@ -63,69 +63,90 @@
                 <th>Price</th>
                 <th>Discount</th>
                 <th>Total</th>
-                <th style="min-width: 120px">Allocation</th>
-                <th></th>
+                <th>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
+                    <i class="fa fa-ellipsis-h"/>
+                  </button>
+                </th>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
-                <th>{{ index + 1 }}</th>
-                <td>
-                  <span @click="$refs.item.open(index)" class="select-link">
-                    {{ row.item_label || $t('select') | uppercase }}
-                  </span>
-                </td>
-                <td>
-                  <p-form-input
-                    :id="'notes-' + index"
-                    :name="'notes-' + index"
-                    v-model="form.items[index].notes"/>
-                </td>
-                <td>
-                  <p-quantity
-                      :id="'quantity' + index"
-                      :name="'quantity' + index"
-                      :disabled="row.item_id == null"
-                      v-model="row.quantity"
-                      :item-id="row.item_id"
-                      :units="row.units"
-                      :unit="{
-                        name: row.unit,
-                        label: row.unit,
-                        converter: row.converter
-                      }"
-                      @choosen="chooseUnit($event, row)"/>
-                </td>
-                <td>
-                  <p-form-number
-                    :id="'price' + index"
-                    :name="'price' + index"
-                    v-model="form.items[index].price"
-                    @keyup.native="calculate()"/>
-                </td>
-                <td>
-                  <p-discount
-                    :id="'discount' + index"
-                    :name="'discount' + index"
-                    v-model="form.items[index].discount_percent"
-                    @keyup.native="calculate()"/>
-                </td>
-                <td>
-                  <p-form-number
-                    :id="'total-' + index"
-                    :name="'total-' + index"
-                    :readonly="true"
-                    v-model="form.items[index].total"/>
-                </td>
-                <td>
-                  <m-allocation
-                    :id="'allocation-' + index"
-                    v-model="form.items[index].allocation_id"
-                    :label="row.allocation_name"
-                    @choosen="chooseAllocation($event, row)"/>
-                </td>
-                <td>
-                  <i class="btn btn-sm fa fa-times" @click="deleteRow(index)"></i>
-                </td>
-              </tr>
+              <template v-for="(row, index) in form.items">
+                <tr slot="p-body" :key="index">
+                  <th>{{ index + 1 }}</th>
+                  <td>
+                    <span @click="$refs.item.open(index)" class="select-link">
+                      {{ row.item_label || $t('select') | uppercase }}
+                    </span>
+                  </td>
+                  <td>
+                    <p-form-input
+                      :id="'notes-' + index"
+                      :name="'notes-' + index"
+                      v-model="form.items[index].notes"/>
+                  </td>
+                  <td>
+                    <p-quantity
+                        :id="'quantity' + index"
+                        :name="'quantity' + index"
+                        :disabled="row.item_id == null"
+                        v-model="row.quantity"
+                        :item-id="row.item_id"
+                        :units="row.units"
+                        :unit="{
+                          name: row.unit,
+                          label: row.unit,
+                          converter: row.converter
+                        }"
+                        @choosen="chooseUnit($event, row)"/>
+                  </td>
+                  <td>
+                    <p-form-number
+                      :id="'price' + index"
+                      :name="'price' + index"
+                      v-model="form.items[index].price"
+                      @keyup.native="calculate()"/>
+                  </td>
+                  <td>
+                    <p-discount
+                      :id="'discount' + index"
+                      :name="'discount' + index"
+                      v-model="form.items[index].discount_percent"
+                      @keyup.native="calculate()"/>
+                  </td>
+                  <td>
+                    <p-form-number
+                      :id="'total-' + index"
+                      :name="'total-' + index"
+                      :readonly="true"
+                      v-model="form.items[index].total"/>
+                  </td>
+                  <td>
+                    <button type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      @click="row.more = !row.more"
+                      v-if="!isSaving">
+                      <i class="fa fa-ellipsis-h"/>
+                    </button>
+                  </td>
+                </tr>
+                <template v-if="row.more && row.item_id">
+                  <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
+                    <th class="bg-gray-light"></th>
+                    <td colspan="4">
+                      <p-form-row
+                        id="allocation"
+                        name="allocation"
+                        :label="$t('allocation')">
+                        <m-allocation
+                          slot="body"
+                          class="mt-5"
+                          :id="'allocation-' + index"
+                          v-model="row.allocation_id"/>
+                      </p-form-row>
+                    </td>
+                    <td></td>
+                  </tr>
+                </template>
+              </template>
               <tr slot="p-body">
                 <th></th>
                 <td></td>
@@ -142,13 +163,10 @@
                 </td>
               </tr>
             </point-table>
-            <button type="button" class="btn btn-sm btn-secondary" @click="addItemRow">
-              <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-            </button>
 
             <p-separator></p-separator>
 
-            <!-- <div class="row">
+            <div class="row">
               <div class="col-sm-6">
                 <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
               </div>
@@ -205,10 +223,10 @@
 
             <p-separator></p-separator>
 
+            <h5>Options</h5>
+            <hr>
             <div class="row">
               <div class="col-sm-6">
-                <h5>Options</h5>
-                <hr>
                 <p-form-row
                   id="need-down-payment"
                   name="need-down-payment"
@@ -222,7 +240,8 @@
                       v-model="form.need_down_payment"/>
                   </div>
                 </p-form-row>
-
+              </div>
+              <div class="col-sm-6">
                 <p-form-row
                   id="cash-only"
                   name="cash-only"
@@ -237,31 +256,34 @@
                   </div>
                 </p-form-row>
               </div>
-              <div class="col-sm-6">
-                <h5>Approver</h5>
-                <hr>
-                <p-form-row
-                  id="approver"
-                  name="approver"
-                  :label="$t('approver')">
-                  <div slot="body" class="col-lg-9 mt-5">
-                    <m-user
-                      :id="'user'"
-                      v-model="form.approver_id"
-                      :errors="form.errors.get('approver_id')"
-                      @errors="form.errors.set('approver_id', null)"/>
-                  </div>
-                </p-form-row>
-              </div>
             </div>
 
-            <div class="form-group row">
-              <div class="col-md-12">
+            <p-separator></p-separator>
+
+            <div class="row mt-50">
+              <div class="col-sm-6">
+                <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+                <div class="d-sm-block d-md-none mt-10"></div>
+              </div>
+              <div class="col-sm-3 text-center">
+                <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
+                <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+                {{ requestedBy | uppercase }}
+                <div class="d-sm-block d-md-none mt-10"></div>
+              </div>
+              <div class="col-sm-3 text-center">
+                <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
+                <div class="mb-50" style="font-size:11px">_______________</div>
+                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_email || $t('select') | uppercase }}</span>
+              </div>
+
+              <div class="col-sm-12">
+                <hr>
                 <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
                   <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
                 </button>
               </div>
-            </div> -->
+            </div>
           </p-block-inner>
         </p-block>
       </div>
@@ -300,7 +322,6 @@ export default {
         supplier_id: null,
         supplier_name: null,
         supplier_label: null,
-        approver_id: null,
         supplier_address: null,
         supplier_phone: null,
         supplier_email: null,
@@ -314,27 +335,10 @@ export default {
         tax: 0,
         type_of_tax: 'exclude',
         amount: 0,
-        items: [{
-          item_id: null,
-          item_name: null,
-          item: {
-            units: [{
-              label: '',
-              name: '',
-              converter: null
-            }]
-          },
-          unit: null,
-          converter: null,
-          quantity: null,
-          price: null,
-          discount_percent: 0,
-          discount_value: 0,
-          total: null,
-          allocation_id: null,
-          allocation_name: null,
-          notes: null
-        }]
+        items: [],
+        request_approval_to: null,
+        approver_name: null,
+        approver_email: null
       })
     }
   },
@@ -350,13 +354,7 @@ export default {
       this.form.items.push({
         item_id: null,
         item_name: null,
-        item: {
-          units: [{
-            label: '',
-            name: '',
-            converter: null
-          }]
-        },
+        more: false,
         unit: null,
         converter: null,
         quantity: null,
@@ -369,8 +367,19 @@ export default {
         notes: null
       })
     },
-    deleteRow (index) {
-      this.$delete(this.form.items, index)
+    toggleMore () {
+      let isMoreActive = this.form.items.some(function (el, index) {
+        return el.more === false
+      })
+      this.form.items.forEach(element => {
+        element.more = isMoreActive
+      })
+    },
+    clearItem (index) {
+      this.form.items.splice(index, 1)
+      if (this.form.items.length === 0) {
+        this.addItemRow()
+      }
     },
     chooseApprover (value) {
       this.form.request_approval_to = value.id
@@ -386,29 +395,31 @@ export default {
       this.form.supplier_email = value.email
     },
     chooseItem (item) {
-      let row = this.form.items[item.index]
       if (item.id == null) {
-        this.clearItem(row)
-      } else {
-        row.item_id = item.id
-        row.item_name = item.name
-        row.item_label = item.label
-        row.units = item.units
-        row.units.forEach((unit, keyUnit) => {
-          if (unit.id == item.unit_default_purchase) {
-            row.unit = unit.label
-            row.converter = unit.converter
-          }
-        })
-        let isNeedNewRow = true
-        this.form.items.forEach(element => {
-          if (element.item_id == null) {
-            isNeedNewRow = false
-          }
-        })
-        if (isNeedNewRow) {
-          this.addItemRow()
+        this.clearItem(item.index)
+        return
+      }
+
+      let row = this.form.items[item.index]
+
+      row.item_id = item.id
+      row.item_name = item.name
+      row.item_label = item.label
+      row.units = item.units
+      row.units.forEach((unit, keyUnit) => {
+        if (unit.id == item.unit_default_purchase) {
+          row.unit = unit.label
+          row.converter = unit.converter
         }
+      })
+      let isNeedNewRow = true
+      this.form.items.forEach(element => {
+        if (element.item_id == null) {
+          isNeedNewRow = false
+        }
+      })
+      if (isNeedNewRow) {
+        this.addItemRow()
       }
     },
     chooseUnit (unit, row) {
@@ -424,44 +435,37 @@ export default {
       } else {
         this.form.type_of_tax = taxType
       }
-      // this.calculate()
+      this.calculate()
     },
-    // calculate: debounce(function () {
-    //   var subtotal = 0
-    //   this.form.items.forEach(function (element) {
-    //     element.allocation_name = ''
-    //     if (element.allocation) {
-    //       element.allocation_name = element.allocation.name
-    //     }
-    //     element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
-    //     element.discount_value = element.discount_percent * element.price / 100
-    //     subtotal += parseFloat(element.total)
-    //   })
-    //   this.form.subtotal = subtotal
-    //   this.form.discount_value = this.form.discount_percent * subtotal / 100
-    //   this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount_percent / 100)
-    //   if (this.form.type_of_tax == 'include') {
-    //     this.form.tax = this.form.tax_base * 10 / 100
-    //     this.form.amount = this.form.tax_base
-    //   } else if (this.form.type_of_tax == 'exclude') {
-    //     this.form.tax = this.form.tax_base * 10 / 100
-    //     this.form.amount = this.form.tax_base + this.form.tax
-    //   } else {
-    //     this.form.tax = 0
-    //     this.form.amount = this.form.tax_base
-    //   }
-    // }, 300),
+    calculate: debounce(function () {
+      var subtotal = 0
+      this.form.items.forEach(function (element) {
+        element.allocation_name = ''
+        if (element.allocation) {
+          element.allocation_name = element.allocation.name
+        }
+        element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
+        element.discount_value = element.discount_percent * element.price / 100
+        subtotal += parseFloat(element.total)
+      })
+      this.form.subtotal = subtotal
+      this.form.discount_value = this.form.discount_percent * subtotal / 100
+      this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount_percent / 100)
+      if (this.form.type_of_tax == 'include') {
+        this.form.tax = this.form.tax_base * 10 / 100
+        this.form.amount = this.form.tax_base
+      } else if (this.form.type_of_tax == 'exclude') {
+        this.form.tax = this.form.tax_base * 10 / 100
+        this.form.amount = this.form.tax_base + this.form.tax
+      } else {
+        this.form.tax = 0
+        this.form.amount = this.form.tax_base
+      }
+    }, 300),
     onSubmit () {
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      if (this.form.approver_id == null) {
-        this.$notification.error('approval cannot be null')
-        this.isSaving = false
-        this.form.errors.record({
-          approver_id: ['Approver should not empty']
-        })
-        return
-      }
+      this.form.items = this.form.items.filter(item => item.item_id !== null)
       this.create(this.form)
         .then(response => {
           this.isSaving = false
@@ -476,6 +480,8 @@ export default {
     }
   },
   created () {
+    this.addItemRow()
+
     if (this.$route.query.id) {
       this.isLoading = true
       this.find({
