@@ -72,6 +72,11 @@ export default {
     PointTable,
     MTopUp
   },
+  data () {
+    return {
+      getBalanceInterval: null
+    }
+  },
   computed: {
     ...mapGetters('accountWalletBalance', ['amount']),
     ...mapGetters('accountInvoice', ['invoices', 'pagination'])
@@ -82,10 +87,13 @@ export default {
       getInvoices: 'get'
     })
   },
+  beforeDestroy () {
+    clearInterval(this.getBalanceInterval)
+  },
   created () {
     this.get()
     this.getInvoices()
-    window.setInterval(() => {
+    this.getBalanceInterval = window.setInterval(() => {
       console.log('time')
       this.get()
     }, 5000)
