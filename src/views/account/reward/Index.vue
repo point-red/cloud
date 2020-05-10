@@ -49,7 +49,7 @@
 <script>
 import Breadcrumb from '@/views/account/Breadcrumb'
 import PointTable from 'point-table-vue'
-import { mapGetters, mapActions, mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   components: {

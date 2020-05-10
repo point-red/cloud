@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import GuestLayout from './views/layouts/GuestLayout.vue'
 import AuthLayout from '@/views/layouts/AuthLayout'
 import AccountLayout from '@/views/layouts/account/AccountLayout'
+import CandidateLayout from '@/views/layouts/CandidateLayout'
 // Authentication Pages
 import E404 from '@/views/error/404'
 import E503 from '@/views/error/503'
@@ -20,6 +21,8 @@ import Finance from '@/views/finance/routes'
 import Accounting from '@/views/accounting/routes'
 import Account from '@/views/account/routes'
 import Plugin from '@/views/plugin/routes'
+// Psychotest Pages
+import Psychotest from '@/views/psychotest/routes'
 
 import store from '@/store'
 
@@ -29,6 +32,15 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
+    // ...Psychotest,
+    {
+      path: '/psychotest',
+      name: 'psychotest',
+      component: CandidateLayout,
+      children: [
+        ...Psychotest
+      ]
+    },
     {
       path: '/auth',
       name: 'signin',

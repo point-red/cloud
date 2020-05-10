@@ -46,7 +46,7 @@
           </button>
         </div>
       </div>
-      <div class="block-content">
+      <div class="block-content" v-if="!!this.$slots.default">
         <slot/>
       </div>
     </div>

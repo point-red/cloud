@@ -490,6 +490,7 @@ export default {
             this.isLoading = false
             this.geocodeLatLng(new google.maps.Geocoder(), pos, google.maps.InfoWindow)
           }).catch(error => {
+            this.$notification.error(error.message)
             this.isLoading = false
           })
         }.bind(this))

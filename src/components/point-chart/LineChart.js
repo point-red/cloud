@@ -31,6 +31,9 @@ export default {
       cd: this.chartData
     }
   },
+  mounted () {
+    this.updateData()
+  },
   methods: {
     updateData () {
       this.renderChart({

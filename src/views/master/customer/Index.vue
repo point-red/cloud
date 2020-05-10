@@ -343,6 +343,7 @@ export default {
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
+        this.$notification.error(error.message)
       })
     },
     filterSearch: debounce(function (value) {

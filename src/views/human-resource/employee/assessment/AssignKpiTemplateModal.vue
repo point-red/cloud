@@ -9,18 +9,20 @@
         title="Assign Kpi Template">
         <template slot="content">
           <div class="list-group mb-20">
-            <template v-for="(template, index) in templates" v-if="templates.length > 0">
-              <a
-                :key="index"
-                @click="choose(template, index)"
-                @dblclick="chooseAndSubmit(template, index)"
-                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                :class="{
-                  'active': selectedIndex === index
-                }"
-                href="javascript:void(0)">
-                  <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ template.name }}</span>
-              </a>
+            <template v-if="templates.length > 0">
+              <template v-for="(template, index) in templates">
+                <a
+                  :key="index"
+                  @click="choose(template, index)"
+                  @dblclick="chooseAndSubmit(template, index)"
+                  class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                  :class="{
+                    'active': selectedIndex === index
+                  }"
+                  href="javascript:void(0)">
+                    <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ template.name }}</span>
+                </a>
+              </template>
             </template>
             <template v-if="templates.length === 0">
               <h5 class="text-center">KPI Template not found</h5>

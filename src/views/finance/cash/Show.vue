@@ -95,11 +95,11 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
+// import debounce from 'lodash/debounce'
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
-import Form from '@/utils/Form'
+// import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 

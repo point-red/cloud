@@ -449,6 +449,7 @@ export default {
         })
         this.calculate()
       }).catch(error => {
+        this.$notification.error(error.message)
         this.isLoading = false
       })
     }

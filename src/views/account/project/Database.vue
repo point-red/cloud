@@ -44,7 +44,7 @@
 import Breadcrumb from '@/views/account/Breadcrumb'
 import TabMenu from './TabMenu'
 import ProjectWidget from './Widget'
-import Form from '@/utils/Form'
+// import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import DatabaseStorage from './DatabaseStorage'
 import DatabaseBackup from './DatabaseBackup'
@@ -144,6 +144,7 @@ export default {
             this.isLoading = false
             this.$swal.fire('Finish', 'Your database has been reset.', 'success')
           }).catch(error => {
+            this.$notification.error(error.message)
             this.isLoading = false
           })
         }

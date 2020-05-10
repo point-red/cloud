@@ -114,6 +114,7 @@ export default {
         })
         this.isLoading = false
       }).catch(error => {
+        this.$notification.error(error.message)
         this.isLoading = false
       })
     },

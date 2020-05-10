@@ -75,20 +75,22 @@
                 </template>
               </tr>
               <template v-for="(week, indexWeek) in totalPerWeek">
-                <template v-for="(reason, indexReason) in reasons" v-if="indexWeek == 0">
-                  <tr slot="p-body" :key="'week-' + indexWeek + indexReason">
-                    <td>{{ reason.name }}</td>
-                    <td class="text-right">{{ reason.week1 }}</td>
-                    <td class="text-right">{{ reason.week1 / totalPerWeek[0] * 100 | numberFormat }}%</td>
-                    <td class="text-right">{{ reason.week2 }}</td>
-                    <td class="text-right">{{ reason.week2 / totalPerWeek[1] * 100 | numberFormat }}%</td>
-                    <td class="text-right">{{ reason.week3 }}</td>
-                    <td class="text-right">{{ reason.week3 / totalPerWeek[2] * 100 | numberFormat }}%</td>
-                    <td class="text-right">{{ reason.week4 }}</td>
-                    <td class="text-right">{{ reason.week4 / totalPerWeek[3] * 100 | numberFormat }}%</td>
-                    <td class="text-right" v-show="totalPerWeek.length > 4">{{ reason.week5 }}</td>
-                    <td class="text-right" v-show="totalPerWeek.length > 4">{{ reason.week5 / totalPerWeek[4] * 100 | numberFormat }}%</td>
-                  </tr>
+                <template v-if="indexWeek == 0">
+                  <template v-for="(reason, indexReason) in reasons">
+                    <tr slot="p-body" :key="'week-' + indexWeek + indexReason">
+                      <td>{{ reason.name }}</td>
+                      <td class="text-right">{{ reason.week1 }}</td>
+                      <td class="text-right">{{ reason.week1 / totalPerWeek[0] * 100 | numberFormat }}%</td>
+                      <td class="text-right">{{ reason.week2 }}</td>
+                      <td class="text-right">{{ reason.week2 / totalPerWeek[1] * 100 | numberFormat }}%</td>
+                      <td class="text-right">{{ reason.week3 }}</td>
+                      <td class="text-right">{{ reason.week3 / totalPerWeek[2] * 100 | numberFormat }}%</td>
+                      <td class="text-right">{{ reason.week4 }}</td>
+                      <td class="text-right">{{ reason.week4 / totalPerWeek[3] * 100 | numberFormat }}%</td>
+                      <td class="text-right" v-show="totalPerWeek.length > 4">{{ reason.week5 }}</td>
+                      <td class="text-right" v-show="totalPerWeek.length > 4">{{ reason.week5 / totalPerWeek[4] * 100 | numberFormat }}%</td>
+                    </tr>
+                  </template>
                 </template>
               </template>
             </p-table>

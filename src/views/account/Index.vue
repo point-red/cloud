@@ -31,13 +31,13 @@
 </template>
 
 <script>
-import Breadcrumb from '@/views/account/Breadcrumb'
+// import Breadcrumb from '@/views/account/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  components: {
-    Breadcrumb
-  },
+  // components: {
+  //   Breadcrumb
+  // },
   data () {
     return {
       isLoading: false

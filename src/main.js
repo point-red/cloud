@@ -28,6 +28,7 @@ import BlockUI from 'vue-blockui'
 import VueClipboard from 'vue-clipboard2'
 import VueSelectMenu from 'v-selectmenu'
 import ClickOutside from 'v-click-outside'
+import VueMoment from 'vue-moment'
 import '@/firebase'
 import PackageVersion from '@/components/package-version'
 import * as VueGoogleMaps from 'vue2-google-maps'
@@ -91,6 +92,7 @@ Vue.use(PointPlugin)
 Vue.use(PointRolePermission)
 Vue.use(PointFormRules)
 Vue.use(PointTemplate)
+Vue.use(VueMoment)
 
 Vue.config.productionTip = false
 

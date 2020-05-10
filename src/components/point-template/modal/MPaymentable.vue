@@ -143,6 +143,7 @@ export default {
         })
         this.isLoadingSupplier = false
       }).catch(error => {
+        this.$notification.error(error.message)
         this.isLoadingSupplier = false
       })
 
@@ -171,6 +172,7 @@ export default {
         })
         this.isLoadingCustomer = false
       }).catch(error => {
+        this.$notification.error(error.message)
         this.isLoadingCustomer = false
       })
 
@@ -199,6 +201,7 @@ export default {
         })
         this.isLoadingEmployee = false
       }).catch(error => {
+        this.$notification.error(error.message)
         this.isLoadingEmployee = false
       })
     },

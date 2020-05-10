@@ -150,7 +150,7 @@ import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import Form from '@/utils/Form'
 import PurchaseMenu from '../Menu'
 import PointTable from 'point-table-vue'
-import debounce from 'lodash/debounce'
+// import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {

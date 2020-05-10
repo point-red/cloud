@@ -2,8 +2,8 @@
   <div>
     <v-selectmenu
       :data="options"
-      key-field="id"
-      show-field="label"
+      :key-field="keyField"
+      :show-field="labelField"
       position="left"
       ref="select"
       :multiple="multiple"

@@ -124,7 +124,7 @@ import Breadcrumb from '@/views/account/Breadcrumb'
 import TabMenu from './TabMenu'
 import ProjectWidget from './Widget'
 import Form from '@/utils/Form'
-import PointTable from 'point-table-vue'
+// import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -152,8 +152,8 @@ export default {
   components: {
     Breadcrumb,
     TabMenu,
-    ProjectWidget,
-    PointTable
+    ProjectWidget
+    // PointTable
   },
   computed: {
     ...mapGetters('accountProject', ['project']),
