@@ -92,19 +92,19 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'chart_of_accounts.*',
-          sort_by: 'number',
-          limit: 250,
-          joins: {
-            1: 'chart_of_account_types.id=chart_of_accounts.type_id'
-          },
+          join: 'account_type',
+          fields: 'account.*',
+          limit: 1000,
           filter_like: {
-            'chart_of_accounts.alias': this.searchText,
-            'chart_of_accounts.number': this.searchText
+            'account_type.alias': this.searchText,
+            'account.alias': this.searchText,
+            'account.number': this.searchText
           },
-          filter_equal_or: {
-            'type.name': this.type
-          }
+          filter_equal: {
+            'account_type.name': this.type
+          },
+          includes: 'type',
+          sort_by: 'account.number;account.alias'
         }
       }).then(response => {
         this.options = []

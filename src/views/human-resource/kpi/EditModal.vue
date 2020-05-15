@@ -22,7 +22,7 @@
           <button
             :disabled="isSaving"
             type="submit"
-            class="btn btn-primary">
+            class="btn btn-sm btn-primary">
             <i
               v-show="isSaving"
               class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
@@ -30,7 +30,7 @@
           <button
             :disabled="isSaving"
             type="button"
-            class="btn btn-danger"
+            class="btn btn-sm btn-danger"
             v-if="$permission.has('delete employee kpi')"
             @click="remove">
             <i

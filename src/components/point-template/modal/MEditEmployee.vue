@@ -597,9 +597,15 @@ export default {
       }).then(response => {
         this.form.id = this.employee.id
         this.form.name = this.employee.name
-        this.form.emails[0].email = this.employee.emails[0].email
-        this.form.addresses[0].address = this.employee.addresses[0].address
-        this.form.phones[0].number = this.employee.phones[0].number
+        if (this.employee.emails.length > 0) {
+          this.form.emails[0].email = this.employee.emails[0].email
+        }
+        if (this.employee.addresses.length > 0) {
+          this.form.addresses[0].address = this.employee.addresses[0].address
+        }
+        if (this.employee.phones.length > 0) {
+          this.form.phones[0].number = this.employee.phones[0].number
+        }
         this.form.birth_date = this.employee.birth_date
         this.form.birth_place = this.employee.birth_place
         this.form.personal_identity = this.employee.personal_identity
@@ -619,13 +625,17 @@ export default {
         this.form.daily_transport_allowance = this.employee.daily_transport_allowance
         this.form.functional_allowance = this.employee.functional_allowance
         this.form.communication_allowance = this.employee.communication_allowance
-        this.form.company_emails[0].email = this.employee.company_emails[0].email
+        if (this.employee.company_emails.length > 0) {
+          this.form.company_emails[0].email = this.employee.company_emails[0].email
+        }
         this.form.social_media = this.employee.social_media
         this.form.contracts = this.employee.contracts
         this.form.salary_histories = this.employee.salary_histories
         this.form.scorers = this.employee.scorers
         this.form.user_id = this.employee.user_id
         // this.form.attachments = this.employee.attachments
+        // this.form.attachments = this.employee.attachments.forEach(attachment => {
+        // })
       })
     },
     ...mapActions('cloudStorage', {
@@ -720,6 +730,9 @@ export default {
     onSubmit () {
       this.isSaving = true
       this.form.attachments = this.cloudStorages
+      this.form.attachments.forEach(attachment => {
+        delete attachment.preview
+      })
       this.update(this.form)
         .then(response => {
           this.isSaving = false
@@ -730,7 +743,9 @@ export default {
         }).catch(error => {
           this.isSaving = false
           this.isFailed = true
-          this.form.errors.record(error.errors)
+          if (typeof (error.errors) !== 'undefined') {
+            this.form.errors.record(error.errors)
+          }
         })
     },
     open (employee) {

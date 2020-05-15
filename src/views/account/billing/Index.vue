@@ -28,29 +28,31 @@
       </div>
       <div class="col-lg-9">
         <div class="row">
-        <p-block>
-          <p-block-inner>
-            <point-table>
-              <tr slot="p-head">
-                <th>Invoice Number</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th class="text-right">Amount</th>
-              </tr>
-              <tr slot="p-body">
-                <!-- <th>
-                  <router-link :to="{ name: 'billing.show', params: { id: 1 }}">
-                    <i class="fa fa-file-text-o"></i> INVOICE19010001 (unpaid)
-                  </router-link>
-                </th>
-                <td>Subscribe</td>
-                <td>01 Jan 2019</td>
-                <td class="text-right">IDR 300.000</td>
-                -->
-              </tr>
-            </point-table>
-          </p-block-inner>
-        </p-block>
+          <p-block>
+            <p-block-inner>
+              <point-table>
+                <tr slot="p-head">
+                  <th>Invoice Number</th>
+                  <th>Due Date</th>
+                  <th class="text-right">Total DUE</th>
+                  <th>Status</th>
+                </tr>
+                <tr slot="p-body" v-for="(invoice, index) in invoices" :key="index">
+                  <th>
+                    <router-link :to="{ name: 'billing.show', params: { id: invoice.id }}">
+                      <i class="fa fa-file-text-o"></i> {{ invoice.number }}
+                    </router-link>
+                  </th>
+                  <td>{{ invoice.due_date | dateFormat('DD MMMM YYYY')}}</td>
+                  <td class="text-right">IDR {{ invoice.total | numberFormat }}</td>
+                  <td>
+                    <div v-if="invoice.total > 0 && invoice.paidable_id == null" style="float:right" class="badge badge-danger">UNPAID</div>
+                    <div v-else style="float:right" class="badge badge-success">PAID</div>
+                  </td>
+                </tr>
+              </point-table>
+            </p-block-inner>
+          </p-block>
         </div>
       </div>
     </div>
@@ -70,15 +72,28 @@ export default {
     PointTable,
     MTopUp
   },
+  data () {
+    return {
+      getBalanceInterval: null
+    }
+  },
   computed: {
-    ...mapGetters('accountWalletBalance', ['amount'])
+    ...mapGetters('accountWalletBalance', ['amount']),
+    ...mapGetters('accountInvoice', ['invoices', 'pagination'])
   },
   methods: {
-    ...mapActions('accountWalletBalance', ['get'])
+    ...mapActions('accountWalletBalance', ['get']),
+    ...mapActions('accountInvoice', {
+      getInvoices: 'get'
+    })
+  },
+  beforeDestroy () {
+    clearInterval(this.getBalanceInterval)
   },
   created () {
     this.get()
-    window.setInterval(() => {
+    this.getInvoices()
+    this.getBalanceInterval = window.setInterval(() => {
       console.log('time')
       this.get()
     }, 5000)

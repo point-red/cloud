@@ -24,7 +24,7 @@
           </div>
         </template>
         <template slot="footer">
-          <button type="submit" class="btn btn-primary">Add</button>
+          <button type="submit" class="btn btn-sm btn-primary">Add</button>
         </template>
       </p-modal>
     </form>
@@ -52,6 +52,10 @@ export default {
     show (indicator) {
       this.indicatorId = indicator.id
       this.options = indicator.scores
+      this.options = this.options.sort(function (a, b) {
+        return a['score'] - b['score']
+      })
+
       this.$refs.employeeAssessment.show()
     },
     close () {

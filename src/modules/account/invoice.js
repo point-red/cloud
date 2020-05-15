@@ -1,19 +1,19 @@
 import api from '@/api'
 
-const url = '/project/projects'
+const url = '/invoices'
 
 const state = {
-  project: {},
-  projects: [],
+  invoice: {},
+  invoices: [],
   pagination: {}
 }
 
 const getters = {
-  project: state => {
-    return state.project
+  invoice: state => {
+    return state.invoice
   },
-  projects: state => {
-    return state.projects
+  invoices: state => {
+    return state.invoices
   },
   pagination: state => {
     return state.pagination
@@ -22,20 +22,20 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.projects = payload.data
+    state.invoices = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.project = payload.data
+    state.invoice = payload.data
   },
   'CREATE' (state, payload) {
-    state.project = payload
+    state.invoice = payload
   },
   'UPDATE' (state, payload) {
-    state.project = payload
+    state.invoice = payload
   },
   'DELETE' (state, payload) {
-    state.project = {}
+    state.invoice = {}
   }
 }
 

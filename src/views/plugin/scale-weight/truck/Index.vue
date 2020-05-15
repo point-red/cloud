@@ -191,6 +191,7 @@ export default {
             'driver': this.searchText,
             'license_number': this.searchText
           },
+          filter_null: 'deleted_at',
           filter_min: {
             'time_in': this.serverDateTime(this.date_from, 'start')
           },
