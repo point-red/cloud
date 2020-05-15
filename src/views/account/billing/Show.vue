@@ -2,7 +2,7 @@
   <div>
     <p-loading-block message="please wait and do not close this page" v-show="isSaving"/>
     <breadcrumb>
-      <router-link to="/billing" class="breadcrumb-item">{{ $t('billing') | uppercase }}</router-link>
+      <router-link to="/account/billing" class="breadcrumb-item">{{ $t('billing') | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ invoice.number }}</span>
     </breadcrumb>
 
@@ -17,7 +17,8 @@
       <button
         type="button"
         v-if="invoice.total > 0 && invoice.paidable_id == null"
-        class="btn btn-primary mr-5">
+        class="btn btn-primary mr-5"
+        @click="$refs.payWithWalletRef.open(invoice)">
         {{ $t('pay with wallet') | uppercase }}
       </button>
     </div>
@@ -27,7 +28,7 @@
         <div>
           <div v-if="invoice.total > 0 && invoice.paidable_id == null" style="float:right" class="badge badge-danger">UNPAID</div>
           <div v-else style="float:right" class="badge badge-success">PAID</div>
-          <h5>INVOICE #{{ invoice.number}}</h5>
+          <h5>INVOICE #{{ invoice.number }}</h5>
         </div>
         <hr>
         <div class="row my-20">
@@ -60,7 +61,7 @@
             </thead>
             <tbody>
               <tr v-for="(item, index) in invoice.items" :key="index">
-                <td class="text-center">2</td>
+                <td class="text-center">{{ index + 1 }}</td>
                 <td>
                   {{ item.description | uppercase }}
                 </td>
@@ -88,12 +89,14 @@
         <p class="text-muted text-center">Thank you very much for doing business with us. We look forward to working with you again!</p>
       </div>
     </div>
+    <m-pay-with-wallet ref="payWithWalletRef"></m-pay-with-wallet>
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/views/account/Breadcrumb'
 import PointTable from 'point-table-vue'
+import MPayWithWallet from './MPayWithWallet'
 import Form from '@/utils/Form'
 import { mapActions, mapGetters } from 'vuex'
 
@@ -101,12 +104,14 @@ export default {
   components: {
     Breadcrumb,
     PointTable,
-    Form
+    Form,
+    MPayWithWallet
   },
   data () {
     return {
       id: this.$route.params.id,
       isSaving: false,
+      getInvoiceInterval: null,
       form: new Form({
         amount: 0,
         invoice_id: this.id
@@ -133,6 +138,9 @@ export default {
       })
     }
   },
+  beforeDestroy () {
+    clearInterval(this.getInvoiceInterval)
+  },
   created () {
     this.find({
       id: this.id,
@@ -141,7 +149,7 @@ export default {
       }
     })
 
-    window.setInterval(() => {
+    this.getInvoiceInterval = window.setInterval(() => {
       this.find({
         id: this.id,
         params: {
