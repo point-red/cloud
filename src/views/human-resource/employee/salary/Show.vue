@@ -221,7 +221,7 @@
               <td><span class="">Rp {{ total_component_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ total_component_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ total_component_amount_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="font-w700">Rp {{ total_component_amount | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -232,7 +232,7 @@
               <td class="font-w700"><span class="">Rp {{ total_amount_week_3 | numberFormat }}</span></td>
               <td class="font-w700"><span class="">Rp {{ total_amount_week_4 | numberFormat }}</span></td>
               <td class="font-w700"><span class="">Rp {{ total_amount_week_5 | numberFormat }}</span></td>
-              <td class="font-w700"><span class=""></span></td>
+              <td class="font-w700"><span class="">Rp {{ total_amount_received | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -435,6 +435,11 @@ export default {
         total_assessments: {},
         total_achievements: {}
       },
+      active_days_percentage_week_1: 0,
+      active_days_percentage_week_2: 0,
+      active_days_percentage_week_3: 0,
+      active_days_percentage_week_4: 0,
+      active_days_percentage_week_5: 0,
       base_salary_week_1: 0,
       base_salary_week_2: 0,
       base_salary_week_3: 0,
@@ -471,6 +476,7 @@ export default {
       total_component_amount_week_3: 0,
       total_component_amount_week_4: 0,
       total_component_amount_week_5: 0,
+      total_component_amount: 0,
       total_amount_week_1: 0,
       total_amount_week_2: 0,
       total_amount_week_3: 0,
@@ -482,6 +488,11 @@ export default {
       total_amount_received_week_4: 0,
       total_amount_received_week_5: 0,
       total_amount_received: 0,
+      receivable_week_1: 0,
+      receivable_week_2: 0,
+      receivable_week_3: 0,
+      receivable_week_4: 0,
+      receivable_week_5: 0,
       company_profit_week_1: 0,
       company_profit_week_2: 0,
       company_profit_week_3: 0,
@@ -543,25 +554,38 @@ export default {
 
       if (Number(this.salary.active_days_in_month) != 0) {
         let baseSalaryPerWeek = (this.salary.base_salary || 0) / Number(this.salary.active_days_in_month || 0)
+        let baseMultiplierKpiPerWeek = (this.salary.multiplier_kpi || 0) / Number(this.salary.active_days_in_month || 0)
 
         if (this.additionalData.score_percentages_assessments.length != 0) {
-          this.base_salary_week_1 = baseSalaryPerWeek * Number(this.salary.active_days_week1 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week1 || 0)) / 100)
-          this.base_salary_week_2 = baseSalaryPerWeek * Number(this.salary.active_days_week2 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week2 || 0)) / 100)
-          this.base_salary_week_3 = baseSalaryPerWeek * Number(this.salary.active_days_week3 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week3 || 0)) / 100)
-          this.base_salary_week_4 = baseSalaryPerWeek * Number(this.salary.active_days_week4 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week4 || 0)) / 100)
-          this.base_salary_week_5 = baseSalaryPerWeek * Number(this.salary.active_days_week5 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week5 || 0)) / 100)
+          let percentageCallWeek1 = (Number(this.additionalData.score_percentages_assessments[0].week1 || 0)) / 100
+          let percentageCallWeek2 = (Number(this.additionalData.score_percentages_assessments[0].week2 || 0)) / 100
+          let percentageCallWeek3 = (Number(this.additionalData.score_percentages_assessments[0].week3 || 0)) / 100
+          let percentageCallWeek4 = (Number(this.additionalData.score_percentages_assessments[0].week4 || 0)) / 100
+          let percentageCallWeek5 = (Number(this.additionalData.score_percentages_assessments[0].week5 || 0)) / 100
 
-          this.real_transport_allowance_week_1 = this.salary.daily_transport_allowance * Number(this.salary.active_days_week1 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week1 || 0)) / 100)
-          this.real_transport_allowance_week_2 = this.salary.daily_transport_allowance * Number(this.salary.active_days_week2 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week2 || 0)) / 100)
-          this.real_transport_allowance_week_3 = this.salary.daily_transport_allowance * Number(this.salary.active_days_week3 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week3 || 0)) / 100)
-          this.real_transport_allowance_week_4 = this.salary.daily_transport_allowance * Number(this.salary.active_days_week4 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week4 || 0)) / 100)
-          this.real_transport_allowance_week_5 = this.salary.daily_transport_allowance * Number(this.salary.active_days_week5 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week5 || 0)) / 100)
+          this.active_days_percentage_week_1 = percentageCallWeek1 * Number(this.salary.active_days_week1 || 0)
+          this.active_days_percentage_week_2 = percentageCallWeek2 * Number(this.salary.active_days_week2 || 0)
+          this.active_days_percentage_week_3 = percentageCallWeek3 * Number(this.salary.active_days_week3 || 0)
+          this.active_days_percentage_week_4 = percentageCallWeek4 * Number(this.salary.active_days_week4 || 0)
+          this.active_days_percentage_week_5 = percentageCallWeek5 * Number(this.salary.active_days_week5 || 0)
 
-          this.multiplier_kpi_week_1 = (Number(this.salary.multiplier_kpi || 0) * Number(this.salary.active_days_week1 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week1 || 0)) / 100) / Number(this.salary.active_days_in_month || 0)) || 0
-          this.multiplier_kpi_week_2 = (Number(this.salary.multiplier_kpi || 0) * Number(this.salary.active_days_week2 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week2 || 0)) / 100) / Number(this.salary.active_days_in_month || 0)) || 0
-          this.multiplier_kpi_week_3 = (Number(this.salary.multiplier_kpi || 0) * Number(this.salary.active_days_week3 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week3 || 0)) / 100) / Number(this.salary.active_days_in_month || 0)) || 0
-          this.multiplier_kpi_week_4 = (Number(this.salary.multiplier_kpi || 0) * Number(this.salary.active_days_week4 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week4 || 0)) / 100) / Number(this.salary.active_days_in_month || 0)) || 0
-          this.multiplier_kpi_week_5 = (Number(this.salary.multiplier_kpi || 0) * Number(this.salary.active_days_week5 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week5 || 0)) / 100) / Number(this.salary.active_days_in_month || 0)) || 0
+          this.base_salary_week_1 = baseSalaryPerWeek * this.active_days_percentage_week_1
+          this.base_salary_week_2 = baseSalaryPerWeek * this.active_days_percentage_week_2
+          this.base_salary_week_3 = baseSalaryPerWeek * this.active_days_percentage_week_3
+          this.base_salary_week_4 = baseSalaryPerWeek * this.active_days_percentage_week_4
+          this.base_salary_week_5 = baseSalaryPerWeek * this.active_days_percentage_week_5
+
+          this.real_transport_allowance_week_1 = this.salary.daily_transport_allowance * this.active_days_percentage_week_1
+          this.real_transport_allowance_week_2 = this.salary.daily_transport_allowance * this.active_days_percentage_week_2
+          this.real_transport_allowance_week_3 = this.salary.daily_transport_allowance * this.active_days_percentage_week_3
+          this.real_transport_allowance_week_4 = this.salary.daily_transport_allowance * this.active_days_percentage_week_4
+          this.real_transport_allowance_week_5 = this.salary.daily_transport_allowance * this.active_days_percentage_week_5
+
+          this.multiplier_kpi_week_1 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_1
+          this.multiplier_kpi_week_2 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_2
+          this.multiplier_kpi_week_3 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_3
+          this.multiplier_kpi_week_4 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_4
+          this.multiplier_kpi_week_5 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_5
         }
       }
 
@@ -589,6 +613,8 @@ export default {
       this.total_component_amount_week_4 = Number(this.minimum_component_amount_week_4 || 0) + Number(this.additional_component_amount_week_4 || 0)
       this.total_component_amount_week_5 = Number(this.minimum_component_amount_week_5 || 0) + Number(this.additional_component_amount_week_5 || 0)
 
+      this.total_component_amount = Number(this.total_component_amount_week_1 || 0) + Number(this.total_component_amount_week_2 || 0) + Number(this.total_component_amount_week_3 || 0) + Number(this.total_component_amount_week_4 || 0) + Number(this.total_component_amount_week_5 || 0)
+
       this.total_amount_week_1 = Number(this.total_component_amount_week_1 || 0) + Number(this.real_transport_allowance_week_1 || 0)
       this.total_amount_week_2 = Number(this.total_component_amount_week_2 || 0) + Number(this.real_transport_allowance_week_2 || 0)
       this.total_amount_week_3 = Number(this.total_component_amount_week_3 || 0) + Number(this.real_transport_allowance_week_3 || 0)
@@ -603,23 +629,29 @@ export default {
 
       this.total_amount_received = Number(this.total_amount_received_week_1 || 0) + Number(this.total_amount_received_week_2 || 0) + Number(this.total_amount_received_week_3 || 0) + Number(this.total_amount_received_week_4 || 0) + Number(this.total_amount_received_week_5 || 0)
 
-      this.company_profit_week_1 = 0.05 * (Number(this.salary.payment_from_marketing_week1 || 0) + Number(this.salary.payment_from_sales_week1 || 0) + Number(this.salary.payment_from_spg_week1 || 0) + Number(this.salary.cash_payment_week1 || 0))
-      this.company_profit_week_2 = 0.05 * (Number(this.salary.payment_from_marketing_week2 || 0) + Number(this.salary.payment_from_sales_week2 || 0) + Number(this.salary.payment_from_spg_week2 || 0) + Number(this.salary.cash_payment_week2 || 0))
-      this.company_profit_week_3 = 0.05 * (Number(this.salary.payment_from_marketing_week3 || 0) + Number(this.salary.payment_from_sales_week3 || 0) + Number(this.salary.payment_from_spg_week3 || 0) + Number(this.salary.cash_payment_week3 || 0))
-      this.company_profit_week_4 = 0.05 * (Number(this.salary.payment_from_marketing_week4 || 0) + Number(this.salary.payment_from_sales_week4 || 0) + Number(this.salary.payment_from_spg_week4 || 0) + Number(this.salary.cash_payment_week4 || 0))
-      this.company_profit_week_5 = 0.05 * (Number(this.salary.payment_from_marketing_week5 || 0) + Number(this.salary.payment_from_sales_week5 || 0) + Number(this.salary.payment_from_spg_week5 || 0) + Number(this.salary.cash_payment_week5 || 0))
+      this.receivable_week_1 = Number(this.salary.payment_from_marketing_week1 || 0) + Number(this.salary.payment_from_sales_week1 || 0) + Number(this.salary.payment_from_spg_week1 || 0) + Number(this.salary.cash_payment_week1 || 0)
+      this.receivable_week_2 = Number(this.salary.payment_from_marketing_week2 || 0) + Number(this.salary.payment_from_sales_week2 || 0) + Number(this.salary.payment_from_spg_week2 || 0) + Number(this.salary.cash_payment_week2 || 0)
+      this.receivable_week_3 = Number(this.salary.payment_from_marketing_week3 || 0) + Number(this.salary.payment_from_sales_week3 || 0) + Number(this.salary.payment_from_spg_week3 || 0) + Number(this.salary.cash_payment_week3 || 0)
+      this.receivable_week_4 = Number(this.salary.payment_from_marketing_week4 || 0) + Number(this.salary.payment_from_sales_week4 || 0) + Number(this.salary.payment_from_spg_week4 || 0) + Number(this.salary.cash_payment_week4 || 0)
+      this.receivable_week_5 = Number(this.salary.payment_from_marketing_week5 || 0) + Number(this.salary.payment_from_sales_week5 || 0) + Number(this.salary.payment_from_spg_week5 || 0) + Number(this.salary.cash_payment_week5 || 0)
 
-      this.settlement_difference_minus_amount_week_1 = Number(this.salary.payment_from_marketing_week1 || 0) + Number(this.salary.payment_from_sales_week1 || 0) + Number(this.salary.payment_from_spg_week1 || 0) + Number(this.salary.cash_payment_week1 || 0) - Number(this.total_amount_received_week_1 || 0)
-      this.settlement_difference_minus_amount_week_2 = Number(this.salary.payment_from_marketing_week2 || 0) + Number(this.salary.payment_from_sales_week2 || 0) + Number(this.salary.payment_from_spg_week2 || 0) + Number(this.salary.cash_payment_week2 || 0) - Number(this.total_amount_received_week_2 || 0)
-      this.settlement_difference_minus_amount_week_3 = Number(this.salary.payment_from_marketing_week3 || 0) + Number(this.salary.payment_from_sales_week3 || 0) + Number(this.salary.payment_from_spg_week3 || 0) + Number(this.salary.cash_payment_week3 || 0) - Number(this.total_amount_received_week_3 || 0)
-      this.settlement_difference_minus_amount_week_4 = Number(this.salary.payment_from_marketing_week4 || 0) + Number(this.salary.payment_from_sales_week4 || 0) + Number(this.salary.payment_from_spg_week4 || 0) + Number(this.salary.cash_payment_week4 || 0) - Number(this.total_amount_received_week_4 || 0)
-      this.settlement_difference_minus_amount_week_5 = Number(this.salary.payment_from_marketing_week5 || 0) + Number(this.salary.payment_from_sales_week5 || 0) + Number(this.salary.payment_from_spg_week5 || 0) + Number(this.salary.cash_payment_week5 || 0) - Number(this.total_amount_received_week_5 || 0)
+      this.company_profit_week_1 = 0.05 * this.receivable_week_1
+      this.company_profit_week_2 = 0.05 * this.receivable_week_2
+      this.company_profit_week_3 = 0.05 * this.receivable_week_3
+      this.company_profit_week_4 = 0.05 * this.receivable_week_4
+      this.company_profit_week_5 = 0.05 * this.receivable_week_5
 
-      this.company_profit_difference_minus_amount_week_1 = Number(this.company_profit_week_1 || 0) - Number(this.total_amount_week_1 || 0)
-      this.company_profit_difference_minus_amount_week_2 = Number(this.company_profit_week_2 || 0) - Number(this.total_amount_week_2 || 0)
-      this.company_profit_difference_minus_amount_week_3 = Number(this.company_profit_week_3 || 0) - Number(this.total_amount_week_3 || 0)
-      this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4 || 0) - Number(this.total_amount_week_4 || 0)
-      this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5 || 0) - Number(this.total_amount_week_5 || 0)
+      this.settlement_difference_minus_amount_week_1 = this.receivable_week_1 - Number(this.total_amount_received_week_1 || 0)
+      this.settlement_difference_minus_amount_week_2 = this.receivable_week_2 - Number(this.total_amount_received_week_2 || 0)
+      this.settlement_difference_minus_amount_week_3 = this.receivable_week_3 - Number(this.total_amount_received_week_3 || 0)
+      this.settlement_difference_minus_amount_week_4 = this.receivable_week_3 - Number(this.total_amount_received_week_4 || 0)
+      this.settlement_difference_minus_amount_week_5 = this.receivable_week_4 - Number(this.total_amount_received_week_5 || 0)
+
+      this.company_profit_difference_minus_amount_week_1 = Number(this.company_profit_week_1 || 0) - Number(this.total_amount_received_week_1 || 0)
+      this.company_profit_difference_minus_amount_week_2 = Number(this.company_profit_week_2 || 0) - Number(this.total_amount_received_week_2 || 0)
+      this.company_profit_difference_minus_amount_week_3 = Number(this.company_profit_week_3 || 0) - Number(this.total_amount_received_week_3 || 0)
+      this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4 || 0) - Number(this.total_amount_received_week_4 || 0)
+      this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5 || 0) - Number(this.total_amount_received_week_5 || 0)
 
       var dayAverageDivisor = 0
       var totalMinimumComponentScore = 0
@@ -661,7 +693,7 @@ export default {
       this.average_additional_component_score = dayAverageDivisor != 0 ? totalAdditionalComponentScore / dayAverageDivisor : 0
       this.average_final_score = dayAverageDivisor != 0 ? totalFinalScore / dayAverageDivisor : 0
 
-      this.total_payment = Number(this.salary.payment_from_marketing_week1 || 0) + Number(this.salary.payment_from_sales_week1 || 0) + Number(this.salary.payment_from_spg_week1 || 0) + Number(this.salary.cash_payment_week1 || 0) + Number(this.salary.payment_from_marketing_week2 || 0) + Number(this.salary.payment_from_sales_week2 || 0) + Number(this.salary.payment_from_spg_week2 || 0) + Number(this.salary.cash_payment_week2 || 0) + Number(this.salary.payment_from_marketing_week3 || 0) + Number(this.salary.payment_from_sales_week3 || 0) + Number(this.salary.payment_from_spg_week3 || 0) + Number(this.salary.cash_payment_week3 || 0) + Number(this.salary.payment_from_marketing_week4 || 0) + Number(this.salary.payment_from_sales_week4 || 0) + Number(this.salary.payment_from_spg_week4 || 0) + Number(this.salary.cash_payment_week4 || 0) + Number(this.salary.payment_from_marketing_week5 || 0) + Number(this.salary.payment_from_sales_week5 || 0) + Number(this.salary.payment_from_spg_week5 || 0) + Number(this.salary.cash_payment_week5 || 0)
+      this.total_payment = this.receivable_week_1 + this.receivable_week_2 + this.receivable_week_3 + this.receivable_week_4 + this.receivable_week_5
 
       this.total_settlement_difference_minus_amount = this.settlement_difference_minus_amount_week_1 + this.settlement_difference_minus_amount_week_2 + this.settlement_difference_minus_amount_week_3 + this.settlement_difference_minus_amount_week_4 + this.settlement_difference_minus_amount_week_5
 
