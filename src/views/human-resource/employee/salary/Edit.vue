@@ -1107,8 +1107,8 @@ export default {
       this.form.salary.active_days_in_month = this.form.salary.active_days_in_month || 0
 
       if (Number(this.form.salary.active_days_in_month) != 0) {
-        let baseSalaryPerWeek = (this.form.salary.base_salary || 0) / Number(this.form.salary.active_days_in_month || 0)
-        let baseMultiplierKpiPerWeek = (this.form.salary.multiplier_kpi || 0) / Number(this.form.salary.active_days_in_month || 0)
+        let baseSalaryPerWeek = (this.form.salary.active_days_in_month || 0) != 0 ? (this.form.salary.base_salary || 0) / Number(this.form.salary.active_days_in_month || 0) : 0
+        let baseMultiplierKpiPerWeek = (this.form.salary.active_days_in_month || 0) != 0 ? (this.form.salary.multiplier_kpi || 0) / Number(this.form.salary.active_days_in_month || 0) : 0
 
         if (this.additionalData.score_percentages_assessments.length != 0) {
           let percentageCallWeek1 = (Number(this.additionalData.score_percentages_assessments[0].week1 || 0)) / 100
