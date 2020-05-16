@@ -54,18 +54,21 @@
               </td>
               <td class="text-center">{{ template.weight | numberFormat }}%</td>
               <td>
-                <a
-                  href="javascript:void(0)"
-                  v-if="$permission.has('update employee kpi')"
-                  class="btn btn-sm btn-secondary" @click="$refs.edit.show(template)">
-                  {{ $t('rename') | uppercase }}
-                </a>
-                <button :disabled="isExporting.includes(template.id)" type="submit" class="btn btn-sm btn-secondary" @click="exportData(template.id)" style="margin-left:12px">
-                  <i v-show="isExporting.includes(template.id)" class="fa fa-asterisk fa-spin" /> {{ $t('export') | uppercase }}
-                </button>
-                <button :disabled="isDuplicating" type="submit" class="btn btn-sm btn-secondary" @click="duplicate(template.id)" style="margin-left:12px">
-                  <i v-show="isDuplicating" class="fa fa-asterisk fa-spin" /> {{ $t('duplicate') | uppercase }}
-                </button>
+                  <a
+                    href="javascript:void(0)"
+                    v-if="$permission.has('update employee kpi')"
+                    class="btn btn-sm btn-secondary" @click="$refs.edit.show(template)">
+                    {{ $t('rename') | uppercase }}
+                  </a>
+                  <button :disabled="isExporting.includes(template.id)" type="submit" class="btn btn-sm btn-secondary" @click="exportData(template.id)" style="margin-left:12px">
+                    <i v-show="isExporting.includes(template.id)" class="fa fa-asterisk fa-spin" /> {{ $t('export') | uppercase }}
+                  </button>
+                  <button :disabled="isDuplicating" type="submit" class="btn btn-sm btn-secondary" @click="duplicate(template.id)" style="margin-left:12px">
+                    <i v-show="isDuplicating" class="fa fa-asterisk fa-spin" /> {{ $t('duplicate') | uppercase }}
+                  </button>
+                  <button :disabled="isRemoving" type="submit" class="btn btn-sm btn-secondary" @click="remove(template.id)" style="margin-left:12px">
+                    <i v-show="isRemoving" class="fa fa-spinner fa-spin" /> {{ $t('remove') | uppercase }}
+                  </button>
               </td>
             </tr>
           </point-table>
@@ -130,6 +133,7 @@ export default {
       title: 'kpi template',
       isLoading: false,
       isDuplicating: false,
+      isRemoving: false,
       isExporting: []
     }
   },
@@ -140,7 +144,8 @@ export default {
     ...mapActions('humanResourceKpiTemplate', {
       getKpiTemplates: 'get',
       export: 'export',
-      duplicateKpiTemplate: 'duplicate'
+      duplicateKpiTemplate: 'duplicate',
+      deleteKpiTemplate: 'delete'
     }),
     duplicate (id) {
       console.log('duplicate kpi template')
@@ -156,6 +161,23 @@ export default {
       }, (error) => {
         console.log(error)
       })
+    },
+    remove (id) {
+      console.log('removing kpi template')
+      if (confirm('do you want remove ?')) {
+        this.isRemoving = true
+        this.deleteKpiTemplate({
+          id: id
+        }).then((response) => {
+          this.isRemoving = false
+          this.isLoading = true
+          this.getKpiTemplates().then((response) => {
+            this.isLoading = false
+          })
+        }, (error) => {
+          console.log(error)
+        })
+      }
     },
     exportData (value) {
       this.isExporting.push(value)

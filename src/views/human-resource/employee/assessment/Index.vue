@@ -183,8 +183,8 @@ export default {
         this.hideChart = false
         this.chartLabel.splice(0, this.chartLabel.length)
         this.chartData.splice(0, this.chartData.length)
-        Array.prototype.push.apply(this.chartLabel, val.dates)
-        Array.prototype.push.apply(this.chartData, val.scores)
+        Array.prototype.push.apply(this.chartLabel, val.dates.reverse())
+        Array.prototype.push.apply(this.chartData, val.scores.reverse())
         this.$refs.linechart.updateData()
       } else {
         this.hideChart = true
