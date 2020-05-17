@@ -283,7 +283,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('purchaseOrder', ['find', 'delete']),
+    ...mapActions('purchaseOrder', ['find', 'delete', 'approve', 'reject']),
     purchaseOrderRequest () {
       this.isLoading = true
       this.find({

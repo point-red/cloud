@@ -49,6 +49,22 @@
                   @errors="form.errors.set('date', null)"/>
               </div>
             </p-form-row>
+            <hr>
+            <p-form-row
+              id="purchase-request"
+              name="purchase-request"
+              :label="$t('purchase request')">
+              <div slot="body" class="col-lg-9">
+                <span @click="$refs.selectPurchaseRequest.open()" class="select-link">
+                  <template v-if="purchaseRequest">
+                    {{ purchaseRequest.form.number }}
+                  </template>
+                  <template v-else>
+                    {{ form.supplier_label || $t('select') | uppercase }}
+                  </template>
+                </span>
+              </div>
+            </p-form-row>
 
             <p-separator></p-separator>
 
@@ -288,9 +304,10 @@
         </p-block>
       </div>
     </form>
-    <m-supplier ref="supplier" @choosen="chooseSupplier($event)"/>
-    <m-item ref="item" @choosen="chooseItem($event)"/>
-    <m-user ref="approver" @choosen="chooseApprover($event)"/>
+    <m-supplier ref="supplier" @choosen="chooseSupplier"/>
+    <m-item ref="item" @choosen="chooseItem"/>
+    <m-user ref="approver" @choosen="chooseApprover"/>
+    <select-purchase-request ref="selectPurchaseRequest" @choosen="choosePurchaseRequest"></select-purchase-request>
   </div>
 </template>
 
@@ -301,6 +318,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
+import SelectPurchaseRequest from './SelectPurchaseRequest'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -308,7 +326,8 @@ export default {
     PurchaseMenu,
     PointTable,
     Breadcrumb,
-    BreadcrumbPurchase
+    BreadcrumbPurchase,
+    SelectPurchaseRequest
   },
   data () {
     return {
@@ -316,6 +335,7 @@ export default {
       isLoading: false,
       requestedBy: localStorage.getItem('userName'),
       totalPrice: 0,
+      purchaseRequest: null,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -338,17 +358,16 @@ export default {
         items: [],
         request_approval_to: null,
         approver_name: null,
-        approver_email: null
+        approver_email: null,
+        purchase_request_id: null
       })
     }
   },
   computed: {
-    ...mapGetters('purchaseRequest', ['purchaseRequest']),
     ...mapGetters('purchaseOrder', ['purchaseOrder']),
     ...mapGetters('auth', ['authUser'])
   },
   methods: {
-    ...mapActions('purchaseRequest', ['find']),
     ...mapActions('purchaseOrder', ['create']),
     addItemRow () {
       this.form.items.push({
@@ -401,7 +420,6 @@ export default {
       }
 
       let row = this.form.items[item.index]
-
       row.item_id = item.id
       row.item_name = item.name
       row.item_label = item.label
@@ -436,6 +454,30 @@ export default {
         this.form.type_of_tax = taxType
       }
       this.calculate()
+    },
+    choosePurchaseRequest (purchaseRequest) {
+      this.purchaseRequest = purchaseRequest
+      this.form.purchase_request_id = purchaseRequest.id
+      this.form.items = purchaseRequest.items.map(item => {
+        let total = item.quantity * (item.price - item.discount_value)
+        return {
+          item_id: item.item_id,
+          item_name: item.item.name,
+          item_label: item.item.name,
+          more: false,
+          unit: item.unit,
+          converter: item.converter,
+          quantity: item.quantity,
+          price: item.price,
+          discount_percent: item.discount_percent,
+          discount_value: item.discount_value,
+          total,
+          allocation_id: item.allocation_id,
+          allocation_name: null, // TODO get alocation name
+          notes: item.notes
+        }
+      })
+      this.addItemRow()
     },
     calculate: debounce(function () {
       var subtotal = 0
