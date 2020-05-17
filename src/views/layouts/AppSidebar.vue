@@ -411,6 +411,12 @@
                     active-class="active">{{'pin point' | uppercase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('menu play book')">
+                  <router-link
+                    to="/plugin/play-book"
+                    active-class="active">{{'play book' | uppercase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
           </ul>
