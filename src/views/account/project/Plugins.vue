@@ -144,6 +144,10 @@
         </div>
       </template>
     </div>
+
+    <sweet-modal ref="subscribed" icon="success">
+      Thankyou for subscribe, please click this <a href="javascript:void(0)" @click="redirectToPluginUrl()">LINK</a> to open the app
+    </sweet-modal>
   </div>
 </template>
 
@@ -165,7 +169,8 @@ export default {
         id: this.$route.params.id,
         project_id: this.$route.params.id,
         plugins: []
-      })
+      }),
+      plugin_url: ''
     }
   },
   components: {
@@ -208,6 +213,9 @@ export default {
       subscribe: 'subscribe',
       unsubscribe: 'unsubscribe'
     }),
+    redirectToPluginUrl () {
+      window.open(this.plugin_url, '_self')
+    },
     calculate () {
       this.form.sub_total_price = 0
       this.form.vat = 0
@@ -228,6 +236,10 @@ export default {
           this.findProject({ id: this.id })
             .then(response => {
               this.isLoading = false
+              if (plugin.app_url) {
+                this.plugin_url = plugin.app_url
+                this.$refs.subscribed.open()
+              }
             }).catch(error => {
               this.isLoading = false
               this.$notification.error(error.message)
