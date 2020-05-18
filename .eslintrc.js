@@ -13,6 +13,8 @@ module.exports = {
     'no-unused-vars': 'off',
     'vue/no-unused-components': 'off',
     'vue/no-use-v-if-with-v-for': 'off',
+    "template-curly-spacing" : "off",
+    "indent": "off",
     'no-undef': 'off',
     'handle-callback-err': 'off',
     'eqeqeq': 'off'

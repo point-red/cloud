@@ -69,6 +69,8 @@ export default {
           }).then((result) => {
             if (result.value) {
               resolve()
+            } else {
+              reject(new Error('fail'))
             }
           })
         })
