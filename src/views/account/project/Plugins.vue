@@ -127,7 +127,7 @@
                 {{ plugin.name }}
               </div>
               <hr>
-              <div class="font-size-sm">
+              <div class="font-size-sm plugin-description">
                 {{ plugin.description }}
               </div>
               <hr>
@@ -136,8 +136,8 @@
               </div>
               <hr>
               <div class="font-size-sm font-w600 text-uppercase text-muted">
-                <button type="button" @click="choosePlugin(plugin)" v-if="form.plugins.findIndex(element => element.id == plugin.id) >= 0" class="btn btn-sm btn-primary">SUBSCRIBED</button>
-                <button type="button" @click="choosePlugin(plugin)" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+                <button type="button" @click="choosePlugin(plugin, 'unsubscribe')" v-if="project.plugins.length > 0 && project.plugins.findIndex(element => element.id == plugin.id) >= 0" class="btn btn-sm btn-primary">SUBSCRIBED</button>
+                <button type="button" @click="choosePlugin(plugin, 'subscribe')" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
               </div>
             </div>
           </div>
@@ -204,7 +204,9 @@ export default {
       findProject: 'find'
     }),
     ...mapActions('accountPlugin', {
-      getPlugin: 'get'
+      getPlugin: 'get',
+      subscribe: 'subscribe',
+      unsubscribe: 'unsubscribe'
     }),
     calculate () {
       this.form.sub_total_price = 0
@@ -216,19 +218,47 @@ export default {
       this.form.vat = this.form.sub_total_price * 10 / 100
       this.form.total_price = this.form.sub_total_price + this.form.vat
     },
-    choosePlugin (plugin) {
-      let dateNow = this.$moment(new Date()).format('DD')
-      let dateEnd = this.$moment(new Date()).endOf('month').format('DD')
-      plugin.price_proportional = (dateEnd - dateNow) / dateEnd * plugin.price
-      plugin.price_per_user_proportional = (dateEnd - dateNow) / dateEnd * plugin.price_per_user
-      plugin.notes = plugin.name + ' ( ' + this.$moment(new Date()).format('DD MMMM YYYY') + ' - ' + this.$moment(new Date()).endOf('month').format('DD MMMM YYYY') + ' )'
-      let index = this.form.plugins.findIndex(element => element.id == plugin.id)
-      if (index >= 0) {
-        this.form.plugins.splice(index, 1)
-      } else {
-        this.form.plugins.push(plugin)
+    choosePlugin (plugin, method) {
+      if (method == 'subscribe') {
+        this.subscribe({
+          id: plugin.id,
+          project_id: this.project.id
+        }).then(response => {
+          this.isLoading = true
+          this.findProject({ id: this.id })
+            .then(response => {
+              this.isLoading = false
+            }).catch(error => {
+              this.isLoading = false
+              this.$notification.error(error.message)
+            })
+        })
+      } else if (method == 'unsubscribe') {
+        let self = this
+        this.$alert.confirm(this.$t('unsubscribe'), 'are you sure to unsubscribe this plugin ?').then(response => {
+          this.unsubscribe({
+            id: plugin.id,
+            project_id: this.project.id
+          }).then(response => {
+            self.isLoading = true
+            self.findProject({ id: self.id })
+              .then(response => {
+                self.isLoading = false
+              }).catch(error => {
+                self.isLoading = false
+                self.$notification.error(error.message)
+              })
+          })
+        })
       }
     }
   }
 }
 </script>
+
+<style scoped>
+  .plugin-description {
+    height: 80px;
+    overflow: auto;
+  }
+</style>

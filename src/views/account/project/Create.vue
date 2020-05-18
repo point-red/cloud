@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p-loading-block message="generate new database, please wait and do not close this page" v-show="isSaving"/>
+    <p-loading-block message="generate new database, this may take a while, please wait and do not close this page" v-show="isSaving"/>
 
     <breadcrumb>
       <router-link to="/account/project" class="breadcrumb-item">{{ $t('project') | uppercase }}</router-link>
@@ -249,7 +249,7 @@
                       {{ plugin.name }}
                     </div>
                     <hr>
-                    <div class="font-size-sm">
+                    <div class="font-size-sm plugin-description">
                       {{ plugin.description }}
                     </div>
                     <hr>
@@ -488,3 +488,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .plugin-description {
+    height: 80px;
+    overflow: auto;
+  }
+</style>
