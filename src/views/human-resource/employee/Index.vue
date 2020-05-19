@@ -88,7 +88,7 @@
                 'bg-gray': employee.archived_at != null,
                 'bg-primary-lighter': isRowChecked(employee.id)
               }">
-                {{ index + 1}}
+                {{ getNumberIndex(index) }}
               </th>
               <td>
                 <p-form-check-box
@@ -161,6 +161,9 @@ export default {
       bulkActivate: 'bulkActivate',
       bulkDelete: 'bulkDelete'
     }),
+    getNumberIndex (index) {
+      return (this.page * 10) - 10 + index + 1
+    },
     onAdded () {
       this.getEmployeesRequest()
     },
