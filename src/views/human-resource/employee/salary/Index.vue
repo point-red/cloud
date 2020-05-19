@@ -32,7 +32,7 @@
                   {{ dataSet.startDates[salaryIndex] | dateFormat('DD MMMM YYYY') }} - {{ dataSet.endDates[salaryIndex] | dateFormat('DD MMMM YYYY') }}
                 </router-link>
               </td>
-              <td class="text-center">Rp {{ dataSet.scores[salaryIndex] | numberFormat }}</td>
+              <td class="text-center">{{ dataSet.scores[salaryIndex] | numberFormat }}</td>
               <td class="text-right">
                 <router-link
                   :to="{ path: '/human-resource/employee/' + employee.id + '/salary/' + salary.id + '/edit', params: { id: employee.id, kpiId: salary.id }}"

@@ -430,7 +430,10 @@
 	"job location": "penempatan",
 	"location": "penempatan",
 	"multiplier kpi": "pengali berdasarkan kpi",
-	"daily transport allowance": "transportasi harian",
+	"multiplier kpi (weekly result)": "pengali berdasarkan kpi (hasil mingguan)",
+	"daily transport": "transport harian",
+	"real transport received": "penerimaan transport real",
+	"daily transport allowance": "tunjangan transport harian",
 	"functional allowance": "tunjangan jabatan",
 	"communication allowance": "tunjangan komunikasi",
 	"base salary": "umk",
@@ -456,6 +459,7 @@
 	"salary period": "periode gaji",
 	"minimum component": "komponen minimum",
 	"minimum component score": "nilai komponen minimum",
+	"additional point": "poin penambah",
 	"additional component": "komponen penambah",
 	"additional component score": "nilai komponen penambah",
 	"final score": "nilai akhir",
@@ -473,6 +477,7 @@
 	"total amount received": "nilai total yang diterima",
 	"maximum amount receivable": "maksimal nilai yang bisa diterima",
 	"active days / month": "hari aktif / bulan",
+	"active days / week": "hari aktif / minggu",
 	"active days": "hari aktif",
 	"receivable cut > 60 days": "potongan piutang > 60 hari",
 	"company profit": "profit perusahaan",
@@ -488,5 +493,7 @@
 	"wa daily report": "nilai pelaporan wa harian",
 	"amount received difference": "selisih nilai yang diterima",
 	"if kpi 100%": "jika kpi 100%",
-	"allowance": "allowance"
+	"allowance": "allowance",
+	"area value": "nilai area",
+	"area value per week": "nilai area per minggu"
 }

@@ -20,7 +20,7 @@
                     <td>{{ jobLocation.name }}</td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('base salary') | titlecase }}</span></td>
+                    <td><span class="font-w700">{{ $t('area value') | titlecase }}</span></td>
                     <td>{{ jobLocation.base_salary | numberFormat }}</td>
                   </tr>
                   <tr>

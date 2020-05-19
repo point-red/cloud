@@ -32,7 +32,7 @@
           <point-table>
             <tr slot="p-head">
               <th width="33%">{{ $t('name') }}</th>
-              <th width="33%">{{ $t('base salary') }}</th>
+              <th width="33%">{{ $t('area value') }}</th>
               <th width="33%">{{ $t('multiplier kpi') }}</th>
             </tr>
             <template v-if="$permission.has('read employee')">
