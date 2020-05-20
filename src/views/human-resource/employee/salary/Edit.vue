@@ -1166,6 +1166,12 @@ export default {
         this.calculate()
       }
     },
+    getWeekOfMonth (date) {
+      let dateObject = new Date(date)
+      let adjustedDate = dateObject.getDate() + dateObject.getDay()
+      let prefixes = ['0', '1', '2', '3', '4', '5']
+      return (parseInt(prefixes[0 | adjustedDate / 7]) + 1)
+    },
     calculate () {
       this.salary_final_score.week1 = ((this.additionalData.total_assessments.week1 || 0) + (this.additionalData.total_achievements.week1 || 0)) / 2
       this.salary_final_score.week2 = ((this.additionalData.total_assessments.week2 || 0) + (this.additionalData.total_achievements.week2 || 0)) / 2
@@ -1248,11 +1254,15 @@ export default {
       this.total_amount_week_4 = Number(this.total_component_amount_week_4 || 0) + Number(this.real_transport_allowance_week_4 || 0)
       this.total_amount_week_5 = Number(this.total_component_amount_week_5 || 0) + Number(this.real_transport_allowance_week_5 || 0)
 
-      this.total_amount_received_week_1 = Number(this.total_amount_week_1 || 0) + Number(this.form.salary.communication_allowance || 0) + Number(this.form.salary.functional_allowance || 0)
+      this.total_amount_received_week_1 = Number(this.total_amount_week_1 || 0)
       this.total_amount_received_week_2 = Number(this.total_amount_week_2 || 0)
       this.total_amount_received_week_3 = Number(this.total_amount_week_3 || 0)
       this.total_amount_received_week_4 = Number(this.total_amount_week_4 || 0)
       this.total_amount_received_week_5 = Number(this.total_amount_week_5 || 0)
+
+      if (this.getWeekOfMonth(this.form.salary.start_date) === 1) {
+        this.total_amount_received_week_1 = this.total_amount_received_week_1 + Number(this.form.salary.communication_allowance || 0) + Number(this.form.salary.functional_allowance || 0)
+      }
 
       this.total_amount_received = Number(this.total_amount_received_week_1 || 0) + Number(this.total_amount_received_week_2 || 0) + Number(this.total_amount_received_week_3 || 0) + Number(this.total_amount_received_week_4 || 0) + Number(this.total_amount_received_week_5 || 0)
 

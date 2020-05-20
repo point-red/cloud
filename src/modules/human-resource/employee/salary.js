@@ -10,7 +10,9 @@ const state = {
   salaryAssessment: {},
   salaryAchievement: {},
   salaries: [],
-  dataSet: []
+  pagination: {},
+  salariesBy: {},
+  additionalBy: {}
 }
 
 const getters = {
@@ -29,29 +31,35 @@ const getters = {
   salaries: state => {
     return state.salaries
   },
-  dataSet: state => {
-    return state.dataSet
+  pagination: state => {
+    return state.pagination
+  },
+  salariesBy: state => {
+    return state.salariesBy
+  },
+  additionalBy: state => {
+    return state.additionalBy
   }
 }
 
 const mutations = {
   'FETCH_SALARIES' (state, payload) {
-    state.salaries = payload
+    state.salaries = payload.data
+    state.pagination = payload.meta
   },
-  'FETCH_DATA_SET' (state, payload) {
-    state.dataSet = payload
+  'FETCH_SALARIES_BY' (state, payload) {
+    state.salariesBy = payload
+    state.additionalBy = payload.additional
   },
   'FETCH_SALARY' (state, payload) {
-    state.salary = payload
-  },
-  'FETCH_SALARY_ADDITIONAL' (state, payload) {
-    state.additional = payload
+    state.salary = payload.data
+    state.additional = payload.additional
   },
   'FETCH_SALARY_ASSESSMENT' (state, payload) {
-    state.salaryAssessment = payload
+    state.salaryAssessment = payload.data
   },
   'FETCH_SALARY_ACHIEVEMENT' (state, payload) {
-    state.salaryAchievement = payload
+    state.salaryAchievement = payload.data
   },
   'CREATE' (state, payload) {
     state.salary = payload
@@ -78,96 +86,90 @@ const actions = {
   get ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url(payload.employeeId), { params: payload.params })
-        .then(
-          (response) => {
-            commit('FETCH_SALARIES', response.data)
-            commit('FETCH_DATA_SET', response.data_set)
-            dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          commit('FETCH_SALARIES', response)
+          dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   getAssessment ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url(payload.employeeId) + '/assessment', { params: payload.params })
-        .then(
-          (response) => {
-            commit('FETCH_SALARY_ASSESSMENT', response.data)
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          commit('FETCH_SALARY_ASSESSMENT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   getAchievement ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url(payload.employeeId) + '/achievement', { params: payload.params })
-        .then(
-          (response) => {
-            commit('FETCH_SALARY_ACHIEVEMENT', response.data)
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          commit('FETCH_SALARY_ACHIEVEMENT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   find ({ commit, dispatch }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url(payload.employeeId) + '/' + payload.salaryId)
-        .then(
-          (response) => {
-            commit('FETCH_SALARY', response.data)
-            commit('FETCH_SALARY_ADDITIONAL', response.additional)
-            dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          commit('FETCH_SALARY', response)
+          dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  findBy ({ commit, dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get('/human-resource/employee/employees/' + payload.employeeId + '/salary-by/' + payload.value + '?type=' + payload.type)
+        .then(response => {
+          commit('FETCH_SALARIES_BY', response)
+          dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url(payload.employeeId), payload.form)
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   update (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url(payload.employeeId) + '/' + payload.salaryId, payload.form)
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   delete (context, payload) {
     return new Promise((resolve, reject) => {
       api.delete(url(payload.employeeId) + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            context.dispatch('get', {
-              employeeId: response.data.employee.id
-            })
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          context.dispatch('find')
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   }
 }
