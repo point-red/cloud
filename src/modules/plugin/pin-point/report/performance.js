@@ -4,7 +4,8 @@ const url = '/plugin/pin-point/report/performances'
 
 const state = {
   reports: [],
-  items: []
+  items: [],
+  dataSet: []
 }
 
 const getters = {
@@ -13,13 +14,17 @@ const getters = {
   },
   items: state => {
     return state.items
+  },
+  dataSet: state => {
+    return state.dataSet
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.reports = payload.reports
-    state.items = payload.items
+    state.reports = payload.data.reports
+    state.items = payload.data.items
+    state.dataSet = payload.data_set
   }
 }
 
@@ -38,7 +43,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.get(url, payload)
         .then((response) => {
-          commit('FETCH_ARRAY', response.data)
+          commit('FETCH_ARRAY', response)
           resolve(response)
         }, (error) => {
           reject(error)
