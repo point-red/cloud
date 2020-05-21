@@ -2,63 +2,67 @@
   <div>
     <breadcrumb>
       <breadcrumb-human-resource/>
-      <span class="breadcrumb-item active">{{ 'employee status' | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('employee status') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('employee status')">
-        <div class="input-group block mb-5">
-          <router-link
-            to="/human-resource/employee-status/create"
+      <p-block>
+        <div class="input-group block">
+          <a
+            href="javascript:void(0)"
+            @click="$refs.addEmployeeStatus.open()"
             v-if="$permission.has('create employee')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             name="search-text"
             placeholder="Search"
-            class="btn-block"
             ref="searchText"
             :value="searchText"
+            class="btn-block"
             @input="filterSearch"/>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="100%">{{ $t('name') }}</th>
+              <th width="50px">#</th>
+              <th>Name</th>
             </tr>
-            <template v-if="$permission.has('read employee')">
-              <tr
-                v-for="status in statuses"
-                :key="status.id"
-                slot="p-body">
-                <td>
-                  <router-link :to="{ name: 'EmployeeStatusShow', params: { id: status.id }}">
-                    {{ status.name }}
-                  </router-link>
-                </td>
-              </tr>
-            </template>
+            <tr
+              v-for="(status, index) in statuses"
+              :key="index"
+              slot="p-body">
+              <th>{{ (page - 1) * limit + index + 1 }}</th>
+              <td>
+                <router-link :to="{ name: 'employee-status.show', params: { id: status.id }}">
+                  {{ status.name }}
+                </router-link>
+              </td>
+            </tr>
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
           @updatePage="updatePage">
         </p-pagination>
       </p-block>
     </div>
+
+    <m-add-employee-status ref="addEmployeeStatus" @added="onAdded"></m-add-employee-status>
   </div>
 </template>
 
 <script>
-import TabMenu from './TabMenu'
+import TabMenu from '@/views/human-resource/TabMenu'
+
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import PointTable from 'point-table-vue'
@@ -74,10 +78,10 @@ export default {
   },
   data () {
     return {
-      isLoading: false,
-      listStatus: this.statuses,
+      isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1
     }
   },
@@ -85,38 +89,47 @@ export default {
     ...mapGetters('humanResourceEmployeeStatus', ['statuses', 'pagination'])
   },
   methods: {
-    ...mapActions('humanResourceEmployeeStatus', { getStatuses: 'get' }),
+    ...mapActions('humanResourceEmployeeStatus', {
+      getStatus: 'get'
+    }),
     updatePage (value) {
-      this.currentPage = value
-      this.getStatusesRequest()
+      this.page = value
+      this.getStatusRequest()
+    },
+    getStatusRequest () {
+      this.isLoading = true
+      this.getStatus({
+        params: {
+          sort_by: 'name',
+          filter_like: {
+            'name': this.searchText
+          },
+          limit: this.limit,
+          page: this.page
+        }
+      }).then((response) => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notifications.error(error.message)
+      })
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
-      this.getStatusesRequest()
+      this.page = 1
+      this.getStatusRequest()
     }, 300),
-    getStatusesRequest () {
-      this.isLoading = true
-      this.getStatuses({
-        params: {
-          filter_like: {
-            'name': this.searchText
-          },
-          limit: 10,
-          page: this.currentPage,
-          sort_by: 'name'
-        }
-      }).then((response) => {
-        this.isLoading = false
-      }, (errors) => {
-        this.isLoading = false
-        console.log(errors.data)
-      })
+    onAdded (status) {
+      this.searchText = status.name
+      this.getStatusRequest()
     }
   },
   created () {
-    this.getStatusesRequest()
+    this.getStatusRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
   },
   updated () {
     this.lastPage = this.pagination.last_page

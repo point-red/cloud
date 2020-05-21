@@ -9,94 +9,148 @@
     <tab-menu/>
 
     <div class="row">
-      <p-block :title="$t('job location')" :header="true">
+      <p-block>
+        <div class="text-right">
+          <button
+            type="button"
+            @click="$refs.addJobLocation.open()"
+            v-if="$permission.has('create employee')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            <span>{{ $t('create') | uppercase }}</span>
+          </button>
+          <button
+            type="button"
+            @click="$refs.editJobLocation.open(jobLocation)"
+            v-if="$permission.has('update employee')"
+            class="btn btn-sm btn-outline-secondary mr-5">
+            {{ $t('edit') | uppercase }}
+          </button>
+          <button
+            type="button"
+            @click="onDelete()"
+            v-if="$permission.has('delete employee')"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-outline-secondary">
+            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          </button>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
-          <div class="row">
-            <div class="col-sm-6">
-              <p-table>
-                <template slot="p-body">
-                  <tr>
-                    <td><span class="font-w700">{{ $t('name') | titlecase }}</span></td>
-                    <td>{{ jobLocation.name }}</td>
-                  </tr>
-                  <tr>
-                    <td><span class="font-w700">{{ $t('area value') | titlecase }}</span></td>
-                    <td>{{ jobLocation.base_salary | numberFormat }}</td>
-                  </tr>
-                  <tr>
-                    <td><span class="font-w700">{{ $t('multiplier kpi') | titlecase }}</span></td>
-                    <td>{{ jobLocation.multiplier_kpi | numberFormat }}</td>
-                  </tr>
-                </template>
-              </p-table>
+          <p-form-row
+            id="name"
+            label="Name"
+            name="name"
+            v-model="jobLocation.name"
+            readonly/>
+          <p-form-row
+            id="base-salary"
+            name="base-salary"
+            :label="$t('area value')"
+            readonly>
+            <div slot="body" class="col-lg-9">
+              <p-form-number
+                id="base-salary"
+                name="base-salary"
+                :is-text-right="false"
+                v-model="jobLocation.base_salary"
+                :disabled="true"
+                :label="$t('area value')">
+              </p-form-number>
             </div>
-            <div class="col-sm-12 mb-20">
-              <hr>
-              <router-link
-                :to="{ path: '/human-resource/job-location/' + jobLocation.id + '/edit', params: { id: jobLocation.id }}"
-                v-if="$permission.has('update employee')"
-                class="btn btn-sm btn-primary mr-5">
-                {{ $t('edit') | uppercase }}
-              </router-link>
-              <button
-                type="button"
-                @click="onDelete()"
-                v-if="$permission.has('delete employee')"
-                :disabled="isSaving"
-                class="btn btn-sm btn-danger">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
-              </button>
+          </p-form-row>
+          <p-form-row
+            id="multiplier-kpi"
+            name="multiplier-kpi"
+            :label="$t('multiplier kpi')"
+            readonly>
+            <div slot="body" class="col-lg-9">
+              <p-form-number
+                id="multiplier-kpi"
+                name="multiplier-kpi"
+                :is-text-right="false"
+                v-model="jobLocation.multiplier_kpi"
+                :disabled="true"
+                :label="$t('multiplier kpi')">
+              </p-form-number>
             </div>
-          </div>
+          </p-form-row>
         </p-block-inner>
       </p-block>
     </div>
+
+    <m-add-job-location ref="addJobLocation" @added="onAddedJobLocation($event)"></m-add-job-location>
+    <m-edit-job-location ref="editJobLocation" @updated="onUpdatedJobLocation($event)"></m-edit-job-location>
   </div>
 </template>
 
 <script>
-import TabMenu from './TabMenu'
+import TabMenu from '@/views/human-resource/TabMenu'
+
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource
+    BreadcrumbHumanResource,
+    PointTable
   },
   data () {
     return {
       id: this.$route.params.id,
       isLoading: false,
-      isSaving: false
+      isDeleting: false,
+      page: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {
-    ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocation', 'jobLocations'])
-  },
-  created () {
-    this.isLoading = true
-    this.findJobLocation({ id: this.id }).then((response) => {
-      this.isLoading = false
-    }, (error) => {
-      console.log(JSON.stringify(error))
-    })
+    ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocation'])
   },
   methods: {
-    ...mapActions('humanResourceEmployeeJobLocation', { findJobLocation: 'find', deleteJobLocation: 'delete' }),
+    ...mapActions('humanResourceEmployeeJobLocation', ['find', 'delete']),
+    updatePage (value) {
+      this.page = value
+    },
+    onAddedJobLocation (jobLocation) {
+      this.$router.push('/human-resource/job-location/' + jobLocation.id)
+      this.id = jobLocation.id
+      this.findJobLocation()
+    },
+    onUpdatedJobLocation (jobLocation) {
+      this.findJobLocation()
+    },
     onDelete () {
-      this.isSaving = true
-      this.deleteJobLocation({ id: this.id })
-        .then((response) => {
-          this.isSaving = false
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({
+          id: this.id
+        }).then(response => {
+          this.isDeleting = false
           this.$router.push('/human-resource/job-location')
-        }, (error) => {
-          this.isSaving = false
-          console.log(JSON.stringify(error))
+        }).catch(response => {
+          this.isDeleting = false
+          this.$notification.error('cannot delete this employee')
         })
+      })
+    },
+    findJobLocation () {
+      this.isLoading = true
+      this.find({
+        id: this.id
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
     }
+  },
+  created () {
+    this.findJobLocation()
   }
 }
 </script>

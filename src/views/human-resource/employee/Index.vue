@@ -123,7 +123,8 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
+import TabMenu from '@/views/human-resource/TabMenu'
+
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import PointTable from 'point-table-vue'
