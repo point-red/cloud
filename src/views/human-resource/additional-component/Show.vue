@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-human-resource/>
-      <router-link to="/human-resource/job-location" class="breadcrumb-item">{{ $t('job location') | uppercase }}</router-link>
-      <span class="breadcrumb-item active">{{ jobLocation.name | uppercase }}</span>
+      <router-link to="/human-resource/additional-component" class="breadcrumb-item">{{ $t('additional component') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ additionalComponent.name | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu/>
@@ -13,22 +13,22 @@
         <div class="text-right">
           <button
             type="button"
-            @click="$refs.addJobLocation.open()"
-            v-if="$permission.has('create employee')"
+            @click="$refs.addAdditionalComponent.open()"
+            v-if="$permission.has('create employee salary additional component')"
             class="btn btn-sm btn-outline-secondary mr-5">
             <span>{{ $t('create') | uppercase }}</span>
           </button>
           <button
             type="button"
-            @click="$refs.editJobLocation.open(jobLocation)"
-            v-if="$permission.has('update employee')"
+            @click="$refs.editAdditionalComponent.open(additionalComponent)"
+            v-if="$permission.has('update employee salary additional component')"
             class="btn btn-sm btn-outline-secondary mr-5">
             {{ $t('edit') | uppercase }}
           </button>
           <button
             type="button"
             @click="onDelete()"
-            v-if="$permission.has('delete employee')"
+            v-if="$permission.has('delete employee salary additional component')"
             :disabled="isDeleting"
             class="btn btn-sm btn-outline-secondary">
             <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
@@ -40,46 +40,36 @@
             id="name"
             label="Name"
             name="name"
-            v-model="jobLocation.name"
+            v-model="additionalComponent.name"
             readonly/>
           <p-form-row
-            id="base-salary"
-            name="base-salary"
-            :label="$t('area value')"
+            id="weight"
+            name="weight"
+            :label="$t('weight')"
             readonly>
             <div slot="body" class="col-lg-9">
               <p-form-number
-                id="base-salary"
-                name="base-salary"
+                id="weight"
+                name="weight"
                 :is-text-right="false"
-                v-model="jobLocation.base_salary"
+                v-model="additionalComponent.weight"
                 :disabled="true"
-                :label="$t('area value')">
+                :label="$t('weight')">
               </p-form-number>
             </div>
           </p-form-row>
           <p-form-row
-            id="multiplier-kpi"
-            name="multiplier-kpi"
-            :label="$t('multiplier kpi')"
-            readonly>
-            <div slot="body" class="col-lg-9">
-              <p-form-number
-                id="multiplier-kpi"
-                name="multiplier-kpi"
-                :is-text-right="false"
-                v-model="jobLocation.multiplier_kpi"
-                :disabled="true"
-                :label="$t('multiplier kpi')">
-              </p-form-number>
-            </div>
-          </p-form-row>
+            id="automated-code-name"
+            label="Source"
+            name="automated-code-name"
+            v-model="additionalComponent.automated_code_name"
+            readonly/>
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-job-location ref="addJobLocation" @added="onAddedJobLocation($event)"></m-add-job-location>
-    <m-edit-job-location ref="editJobLocation" @updated="onUpdatedJobLocation($event)"></m-edit-job-location>
+    <m-add-additional-component ref="addAdditionalComponent" @added="onAddedAdditionalComponent($event)"></m-add-additional-component>
+    <m-edit-additional-component ref="editAdditionalComponent" @updated="onUpdatedAdditionalComponent($event)"></m-edit-additional-component>
   </div>
 </template>
 
@@ -108,20 +98,20 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocation'])
+    ...mapGetters('humanResourceEmployeeAdditionalComponent', ['additionalComponent'])
   },
   methods: {
-    ...mapActions('humanResourceEmployeeJobLocation', ['find', 'delete']),
+    ...mapActions('humanResourceEmployeeAdditionalComponent', ['find', 'delete']),
     updatePage (value) {
       this.page = value
     },
-    onAddedJobLocation (jobLocation) {
-      this.$router.push('/human-resource/job-location/' + jobLocation.id)
-      this.id = jobLocation.id
-      this.findJobLocation()
+    onAddedAdditionalComponent (additionalComponent) {
+      this.$router.push('/human-resource/additional-component/' + additionalComponent.id)
+      this.id = additionalComponent.id
+      this.findAdditionalComponent()
     },
-    onUpdatedJobLocation (jobLocation) {
-      this.findJobLocation()
+    onUpdatedAdditionalComponent (additionalComponent) {
+      this.findAdditionalComponent()
     },
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
@@ -130,14 +120,14 @@ export default {
           id: this.id
         }).then(response => {
           this.isDeleting = false
-          this.$router.push('/human-resource/job-location')
+          this.$router.push('/human-resource/additional-component')
         }).catch(response => {
           this.isDeleting = false
-          this.$notification.error('cannot delete this job location')
+          this.$notification.error('cannot delete this additional component')
         })
       })
     },
-    findJobLocation () {
+    findAdditionalComponent () {
       this.isLoading = true
       this.find({
         id: this.id
@@ -150,7 +140,7 @@ export default {
     }
   },
   created () {
-    this.findJobLocation()
+    this.findAdditionalComponent()
   }
 }
 </script>
