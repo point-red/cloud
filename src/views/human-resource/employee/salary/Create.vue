@@ -196,135 +196,21 @@
               <td class="font-size-h6 font-w700"></td>
             </tr>
 
-            <tr slot="p-body">
-              <td>1</td>
-              <td>{{ $t('balance Sku area') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.balance.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.balance.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.balance.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.balance.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.balance.week5 | numberFormat }}%</td>
+            <tr slot="p-body" v-for="automated in form.salary_achievement.automated" :key="'automated' + automated.id">
+              <td>{{ automated.id }}</td>
+              <td>{{ automated.name }}</td>
+              <td>{{ automated.week1 | numberFormat }}%</td>
+              <td>{{ automated.week2 | numberFormat }}%</td>
+              <td>{{ automated.week3 | numberFormat }}%</td>
+              <td>{{ automated.week4 | numberFormat }}%</td>
+              <td>{{ automated.week5 | numberFormat }}%</td>
               <td>
                 <p-form-input
-                  id="balance-weight"
-                  name="balance-weight"
-                  v-model="form.salary_achievement.automated.balance.weight"
+                  id="automated-weight"
+                  name="automated-weight"
+                  v-model="automated.weight"
                   :disabled="isSaving"
-                  @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>2</td>
-              <td>{{ $t('%C national achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_call.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_call.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_call.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_call.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_call.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="call-national-achievement-weight"
-                  name="call-national-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_national_call.weight"
-                  :disabled="isSaving"
-                  @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>3</td>
-              <td>{{ $t('%EC national achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_effective_call.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_effective_call.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_effective_call.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_effective_call.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_effective_call.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="effective-call-national-achievement-weight"
-                  name="effective-call-national-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_national_effective_call.weight"
-                  :disabled="isSaving"
-                  @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>4</td>
-              <td>{{ $t('%value national achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_value.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_value.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_value.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_value.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_value.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="value-national-achievement-weight"
-                  name="value-national-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_national_value.weight"
-                  :disabled="isSaving"
-                  @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>5</td>
-              <td>{{ $t('%C area achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_call.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_call.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_call.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_call.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_call.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="call-area-achievement-weight"
-                  name="call-area-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_area_call.weight"
-                  :disabled="isSaving"
-                  @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>6</td>
-              <td>{{ $t('%EC area achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_effective_call.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_effective_call.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_effective_call.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_effective_call.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_effective_call.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="effective-call-area-achievement-weight"
-                  name="effective-call-area-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_area_effective_call.weight"
-                  :disabled="isSaving"
-                  @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>7</td>
-              <td>{{ $t('%value area achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_value.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_value.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_value.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_value.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_value.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="value-area-achievement-weight"
-                  name="value-area-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_area_value.weight"
-                  :disabled="isSaving"
-                  @input="salaryAchievementWeight"
+                  @input="salaryAssessmentWeight"
                   :is-text-right="false"/>
               </td>
             </tr>
@@ -1106,16 +992,7 @@ export default {
           total: {}
         },
         salary_achievement: {
-          automated: {
-            balance: {},
-            achievement_national_call: {},
-            achievement_national_effective_call: {},
-            achievement_national_value: {},
-            achievement_area_call: {},
-            achievement_area_effective_call: {},
-            achievement_area_value: {}
-          },
-          cash_payment: {},
+          automated: {},
           weekly_sales: {},
           total: {}
         },
@@ -1245,7 +1122,6 @@ export default {
       company_profit_difference_minus_amount_week_5: 0,
       isLoading: true,
       isSaving: false,
-      previousSalaryAchievement: {},
       average_minimum_component_score: 0,
       average_additional_component_score: 0,
       average_final_score: 0,
@@ -1379,16 +1255,7 @@ export default {
       }).then(
         (response) => {
           this.$set(this.form, 'salary_achievement', this.salaryAchievement)
-
-          if (Object.keys(this.previousSalaryAchievement).length !== 0) {
-            for (const key in this.form.salary_achievement.automated) {
-              this.form.salary_achievement.automated[key].weight = this.previousSalaryAchievement[key].weight || 0
-            }
-
-            this.salaryAchievementWeight()
-          }
-
-          this.$set(this, 'previousSalaryAchievement', this.salaryAchievement.automated)
+          this.salaryAchievementWeight()
           this.calculate()
           this.isLoading = false
         },

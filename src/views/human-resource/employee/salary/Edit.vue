@@ -195,13 +195,7 @@
 
             <tr slot="p-body" v-for="(achievement, achievementIndex) in form.salary.achievements" :key="'achievement' + achievement.id">
               <td>{{ achievementIndex + 1 }}</td>
-              <td v-if="achievementIndex == 0">{{ $t('balance Sku area') | titlecase }}</td>
-              <td v-if="achievementIndex == 1">{{ $t('%C national achievement') | titlecase }}</td>
-              <td v-if="achievementIndex == 2">{{ $t('%EC national achievement') | titlecase }}</td>
-              <td v-if="achievementIndex == 3">{{ $t('%value national achievement') | titlecase }}</td>
-              <td v-if="achievementIndex == 4">{{ $t('%C area achievement') | titlecase }}</td>
-              <td v-if="achievementIndex == 5">{{ $t('%EC area achievement') | titlecase }}</td>
-              <td v-if="achievementIndex == 6">{{ $t('%value area achievement') | titlecase }}</td>
+              <td>{{ achievement.name }}</td>
               <td>{{ achievement.week1 | numberFormat }}%</td>
               <td>{{ achievement.week2 | numberFormat }}%</td>
               <td>{{ achievement.week3 | numberFormat }}%</td>
