@@ -60,7 +60,7 @@
                     {{ purchaseRequest.form.number }}
                   </template>
                   <template v-else>
-                    {{ form.supplier_label || $t('select') | uppercase }}
+                    {{ $t('select') | uppercase }}
                   </template>
                 </span>
               </div>
@@ -97,7 +97,7 @@
                     <p-form-input
                       :id="'notes-' + index"
                       :name="'notes-' + index"
-                      v-model="form.items[index].notes"/>
+                      v-model="row.notes"/>
                   </td>
                   <td>
                     <p-quantity
@@ -118,14 +118,14 @@
                     <p-form-number
                       :id="'price' + index"
                       :name="'price' + index"
-                      v-model="form.items[index].price"
+                      v-model="row.price"
                       @keyup.native="calculate()"/>
                   </td>
                   <td>
                     <p-discount
                       :id="'discount' + index"
                       :name="'discount' + index"
-                      v-model="form.items[index].discount_percent"
+                      v-model="row.discount_percent"
                       @keyup.native="calculate()"/>
                   </td>
                   <td>
@@ -133,7 +133,7 @@
                       :id="'total-' + index"
                       :name="'total-' + index"
                       :readonly="true"
-                      v-model="form.items[index].total"/>
+                      v-model="row.total"/>
                   </td>
                   <td>
                     <button type="button"
@@ -478,6 +478,7 @@ export default {
         }
       })
       this.addItemRow()
+      this.calculate()
     },
     calculate: debounce(function () {
       var subtotal = 0
