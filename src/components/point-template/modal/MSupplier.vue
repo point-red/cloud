@@ -18,17 +18,19 @@
       </div>
       <div v-else class="list-group push">
         <template v-for="(option, index) in options">
-        <a
+        <div
           :key="index"
-          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          class="list-group-item list-group-item-action justify-content-between align-items-center"
           :class="{'active': option.id == mutableId }"
           @click="choose(option)"
           href="javascript:void(0)">
-          {{ option.label | uppercase }}<br v-if="option.address">
-          {{ option.address | uppercase }}<br v-if="option.email">
-          {{ option.email | uppercase }}<br v-if="option.phone">
-          {{ option.phone | uppercase }}
-        </a>
+          {{ option.label | uppercase }}
+          <span style="font-size: 10px">
+            <br v-if="option.address">{{ option.address | uppercase }}
+            <br v-if="option.email">{{ option.email | uppercase }}
+            <br v-if="option.phone">{{ option.phone | uppercase }}
+          </span>
+        </div>
         </template>
       </div>
       <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">

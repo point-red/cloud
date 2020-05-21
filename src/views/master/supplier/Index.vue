@@ -34,6 +34,7 @@
             <tr slot="p-head">
               <th width="50px">#</th>
               <th>Name</th>
+              <th>Email</th>
               <th>Address</th>
               <th>Phone</th>
             </tr>
@@ -46,6 +47,11 @@
                 <router-link :to="{ name: 'supplier.show', params: { id: supplier.id }}">
                   {{ supplier.name }}
                 </router-link>
+              </td>
+              <td>
+                <template v-for="supplierEmail in supplier.emails">
+                  {{ supplierEmail.email }}
+                </template>
               </td>
               <td>
                 <template v-for="supplierAddress in supplier.addresses">

@@ -52,7 +52,7 @@
                 <router-link :to="{ name: 'purchase.request.create' }" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <router-link :to="{ name: 'purchase.request.edit', params: { id: purchaseRequest.id }}" class="btn btn-sm btn-outline-secondary mr-5">
+                <router-link :to="{ name: 'purchase.request.edit', params: { id: id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
                 </router-link>
               </div>
@@ -117,7 +117,7 @@
                     id="allocation"
                     name="allocation"
                     :label="$t('allocation')">
-                    <div slot="body" class="mt-5">
+                    <div slot="body" class="col-lg-9 mt-5">
                       <template v-if="row.allocation">{{ row.allocation.name }}</template>
                     </div>
                   </p-form-row>

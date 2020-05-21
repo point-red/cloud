@@ -5,7 +5,7 @@
       :title="$t('select item') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
-      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <input type="text" ref="searchText" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
       <hr>
       <div v-if="isLoading">
         <h3 class="text-center">Loading ...</h3>
@@ -161,6 +161,9 @@ export default {
     open (index = null) {
       this.index = index
       this.$refs['select-' + this.id].open()
+      this.$nextTick(() => {
+        this.$refs.searchText.focus()
+      })
     },
     close () {
       this.$refs['select-' + this.id].close()

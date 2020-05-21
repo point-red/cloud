@@ -26,11 +26,11 @@
                 <div class="float-sm-left">
                   <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
                   <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span>
-                  <div style="font-size:12px" v-if="form.supplier_phone">
-                    {{ form.supplier_address | uppercase }} <br v-if="form.supplier_email">
-                    {{ form.supplier_phone }} <br v-if="form.supplier_phone">
-                    {{ form.supplier_email | uppercase }}
-                  </div>
+                  <span class="mt-0" style="font-size:10px">
+                    <br v-if="form.supplier_email">{{ form.supplier_email | uppercase }}
+                    <br v-if="form.supplier_address">{{ form.supplier_address | uppercase }}
+                    <br v-if="form.supplier_phone">{{ form.supplier_phone }}
+                  </span>
                 </div>
               </div>
             </div>
@@ -118,11 +118,11 @@
                       id="allocation"
                       name="allocation"
                       :label="$t('allocation')">
-                      <m-allocation
-                        slot="body"
-                        class="mt-5"
-                        :id="'allocation-' + index"
-                        v-model="row.allocation_id"/>
+                      <div slot="body" class="col-lg-9 mt-5">
+                        <span @click="$refs.allocation.open(index)" class="select-link">
+                          {{ row.allocation_name || $t('select') | uppercase }}
+                        </span>
+                      </div>
                     </p-form-row>
                   </td>
                   <td></td>
@@ -174,6 +174,7 @@
     <m-item ref="item" @choosen="chooseItem($event)"/>
     <m-supplier ref="supplier" @choosen="chooseSupplier($event)"/>
     <m-user ref="approver" @choosen="chooseApprover($event)"/>
+    <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
   </div>
 </template>
 
@@ -233,6 +234,7 @@ export default {
         quantity: null,
         price: null,
         allocation_id: null,
+        allocation_name: null,
         notes: null,
         more: false,
         units: [{
@@ -287,6 +289,11 @@ export default {
       this.form.supplier_address = value.address
       this.form.supplier_phone = value.phone
       this.form.supplier_email = value.email
+    },
+    chooseAllocation (value) {
+      let row = this.form.items[value.index]
+      row.allocation_id = value.id
+      row.allocation_name = value.name
     },
     chooseItem (item) {
       let row = this.form.items[item.index]
