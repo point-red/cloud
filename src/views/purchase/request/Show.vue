@@ -56,30 +56,31 @@
                   {{ $t('edit') | uppercase }}
                 </router-link>
               </div>
-              <hr>
-              <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
-              <hr>
-              <div class="float-sm-right text-right">
-                <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
-                <template v-if="purchaseRequest.form.branch">
-                  {{ purchaseRequest.form.branch.address | uppercase }} <br v-if="purchaseRequest.form.branch.address">
-                  {{ purchaseRequest.form.branch.phone | uppercase }} <br v-if="purchaseRequest.form.branch.phone">
-                </template>
-              </div>
-              <div class="float-sm-left">
-                <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
-                {{ purchaseRequest.supplier_name | uppercase }}
-                <div style="font-size:12px">
-                  {{ purchaseRequest.supplier_address | uppercase }}
-                  <br v-if="purchaseRequest.supplier_phone">{{ purchaseRequest.supplier_phone }}
-                  <br v-if="purchaseRequest.supplier_email">{{ purchaseRequest.supplier_email | uppercase }}
-                </div>
-              </div>
             </div>
           </div>
           <hr>
-          <div><b>{{ $t('form number') | uppercase }} : </b>{{ purchaseRequest.form.number }}</div>
-          <div><b>{{ $t('required date') | uppercase }} : </b>{{ purchaseRequest.required_date | dateFormat('DD MMMM YYYY') }}</div>
+          <div class="row">
+            <div class="col-sm-6">
+              <h4>{{ $t('purchase request') | uppercase }}</h4>
+              <table class="table table-sm table-bordered">
+                <tr>
+                  <td width="150px" class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                  <td>{{ purchaseRequest.form.number }}</td>
+                </tr>
+                <tr>
+                  <td class="font-weight-bold">{{ $t('required date') | uppercase }}</td>
+                  <td>{{ purchaseRequest.required_date | dateFormat('DD MMMM YYYY') }}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-sm-6 text-right">
+              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <template v-if="purchaseRequest.form.branch">
+                {{ purchaseRequest.form.branch.address | uppercase }} <br v-if="purchaseRequest.form.branch.address">
+                {{ purchaseRequest.form.branch.phone | uppercase }} <br v-if="purchaseRequest.form.branch.phone">
+              </template>
+            </div>
+          </div>
           <hr>
           <point-table class="mt-20">
             <tr slot="p-head">
@@ -87,22 +88,14 @@
               <th>Item</th>
               <th>Notes</th>
               <th class="text-right">Quantity</th>
-              <th class="text-right">Estimated Price</th>
               <th width="50px"></th>
             </tr>
             <template v-for="(row, index) in purchaseRequest.items">
               <tr slot="p-body" :key="index">
                 <th class="text-center">{{ index + 1 }}</th>
-                <td>
-                  <router-link
-                    :to="'/master/item/' + row.item_id"
-                    v-if="$permission.has('read item')">
-                    {{ row.item.name }}
-                  </router-link>
-                </td>
+                <td>{{ row.item.name }}</td>
                 <td>{{ row.notes }}</td>
                 <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
-                <td class="text-right">{{ row.price | numberFormat }}</td>
                 <td>
                   <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more">
                     <i class="fa fa-ellipsis-h"/>
@@ -125,14 +118,6 @@
               </tr>
               </template>
             </template>
-            <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="text-right"><b>{{ totalPrice | numberFormat }}</b></td>
-              <td></td>
-            </tr>
           </point-table>
           <div class="row mt-50">
             <div class="col-sm-6">
@@ -156,8 +141,8 @@
                   _______________
                 </template>
               </div>
-              {{ purchaseRequest.form.request_approval_to.first_name | uppercase }}
-              <div style="font-size:11px">{{ purchaseRequest.form.request_approval_to.email | lowercase }}</div>
+              {{ purchaseRequest.form.request_approval_to.full_name | uppercase }}
+              <div style="font-size:9px">{{ purchaseRequest.form.request_approval_to.email | uppercase }}</div>
             </div>
           </div>
         </p-block-inner>

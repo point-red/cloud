@@ -13,18 +13,34 @@
         <p-block>
           <p-block-inner>
             <div class="row">
-              <div class="col-sm-12">
-                <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
-                <hr>
-                <div class="float-sm-right text-right">
+              <div class="col-sm-6">
+                <h4>{{ $t('purchase request') | uppercase }}</h4>
+                <p-form-row
+                  id="required-date"
+                  name="required-date"
+                  :is-horizontal="false"
+                  :label="$t('required date')">
+                  <div slot="body">
+                    <p-date-picker
+                      id="required-date"
+                      name="required-date"
+                      :label="$t('required date')"
+                      v-model="form.required_date"
+                      :errors="form.errors.get('required_date')"
+                      @errors="form.errors.set('required_date', null)"/>
+                  </div>
+                </p-form-row>
+              </div>
+              <div class="col-sm-6 text-right">
+                <div class="mb-30">
                   <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
                   <template v-if="authUser.branch">
                     {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
                     {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
                   </template>
                 </div>
-                <div class="float-sm-left">
-                  <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
+                <div>
+                  <h6 class="mb-0 ">{{ $t('to') + ' :' | uppercase }}</h6>
                   <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span>
                   <span class="mt-0" style="font-size:10px">
                     <br v-if="form.supplier_email">{{ form.supplier_email | uppercase }}
@@ -35,28 +51,12 @@
               </div>
             </div>
             <hr>
-            <p-form-row
-              id="required-date"
-              name="required-date"
-              :label="$t('required date')">
-              <div slot="body" class="col-lg-9">
-                <p-date-picker
-                  id="required-date"
-                  name="required-date"
-                  :label="$t('required date')"
-                  v-model="form.required_date"
-                  :errors="form.errors.get('required_date')"
-                  @errors="form.errors.set('required_date', null)"/>
-              </div>
-            </p-form-row>
-            <hr>
             <point-table class="mt-20">
               <tr slot="p-head">
                 <th class="text-center">#</th>
                 <th>Item</th>
                 <th>Notes</th>
                 <th>Quantity</th>
-                <th>Estimated Price</th>
                 <th>
                   <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
                     <i class="fa fa-ellipsis-h"/>
@@ -94,14 +94,6 @@
                       @choosen="chooseUnit($event, row)"/>
                   </td>
                   <td>
-                    <p-form-number
-                      :id="'price' + index"
-                      :name="'price' + index"
-                      :disabled="row.item_id == null"
-                      @keyup.native="calculate"
-                      v-model="row.price"/>
-                  </td>
-                  <td>
                     <button type="button"
                       class="btn btn-sm btn-outline-secondary"
                       @click="row.more = !row.more"
@@ -113,7 +105,7 @@
                 <template v-if="row.more && row.item_id">
                 <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
                   <th class="bg-gray-light"></th>
-                  <td colspan="4">
+                  <td colspan="3">
                     <p-form-row
                       id="allocation"
                       name="allocation"
@@ -129,19 +121,6 @@
                 </tr>
                 </template>
               </template>
-              <tr slot="p-body">
-                <th class="text-center"></th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <p-form-number
-                    :id="'total-price'"
-                    :name="'total-price'"
-                    :readonly="true"
-                    v-model="totalPrice"/>
-                </td>
-              </tr>
             </point-table>
             <div class="row mt-50">
               <div class="col-sm-6">
@@ -157,7 +136,8 @@
               <div class="col-sm-3 text-center">
                 <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
                 <div class="mb-50" style="font-size:11px">_______________</div>
-                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_email || $t('select') | uppercase }}</span>
+                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
@@ -196,7 +176,7 @@ export default {
   data () {
     return {
       isSaving: false,
-      requestedBy: localStorage.getItem('userName'),
+      requestedBy: localStorage.getItem('fullName'),
       totalPrice: 0,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
@@ -232,7 +212,6 @@ export default {
         unit: null,
         converter: null,
         quantity: null,
-        price: null,
         allocation_id: null,
         allocation_name: null,
         notes: null,
@@ -262,7 +241,7 @@ export default {
     },
     chooseApprover (value) {
       this.form.request_approval_to = value.id
-      this.form.approver_name = value.name
+      this.form.approver_name = value.fullName
       this.form.approver_email = value.email
     },
     clearItem (row) {

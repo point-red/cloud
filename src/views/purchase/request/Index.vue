@@ -59,23 +59,22 @@
             <div class="col-sm-6 text-center">
               <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('approval status')" :is-horizontal="false">
                 <div slot="body">
-                  <m-form-approval-status
-                    :id="'form-approval-status-id'"
-                    v-model="formApprovalStatus.id"
-                    :label="formApprovalStatus.label"
-                    @choosen="chooseFormApprovalStatus($event)"
-                    @clear="chooseFormApprovalStatus($event)"/>
+                  <span
+                    @click="$refs.formApprovalStatus.open()"
+                    class="select-link">
+                    {{ formApprovalStatus.label || $t('select') | uppercase }}
+                  </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-6 text-center">
               <p-form-row id="form-status" name="form-status" :label="$t('form status')" :is-horizontal="false">
                 <div slot="body">
-                  <m-form-status
-                    :id="'status-id'"
-                    :label="formStatus.label"
-                    @choosen="chooseFormStatus($event)"
-                    @clear="chooseFormStatus($event)"/>
+                  <span
+                    @click="$refs.formStatus.open()"
+                    class="select-link">
+                    {{ formStatus.label || $t('select') | uppercase }}
+                  </span>
                 </div>
               </p-form-row>
             </div>
@@ -109,16 +108,13 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">Form</th>
               <th width="50px"></th>
-              <th>Number</th>
               <th>Date</th>
               <th>Supplier</th>
               <th>Item</th>
               <th>Notes</th>
               <th class="text-right">Quantity</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">Value</th>
               <th class="text-center">Approval Status</th>
               <th class="text-center">Form Status</th>
             </tr>
@@ -128,7 +124,9 @@
               :key="'pr-' + index + '-i-' + index2"
               slot="p-body">
               <th>
-                {{ ((currentPage - 1) * limit) + index + 1 }}<template v-if="purchaseRequest.items.length > 1">.{{ index2 + 1 }}</template>
+                <router-link :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.id }}">
+                  {{ purchaseRequest.form.number }}
+                </router-link>
               </th>
               <td>
                 <p-form-check-box
@@ -139,11 +137,6 @@
                   :checked="isRowChecked(purchaseRequest.id)"
                   class="text-center"/>
               </td>
-              <td>
-                <router-link :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.id }}">
-                  {{ purchaseRequest.form.number }}
-                </router-link>
-              </td>
               <td>{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
               <td>
                 <template v-if="purchaseRequest.supplier">
@@ -153,8 +146,6 @@
               <td>{{ purchaseRequestItem.item.name }}</td>
               <td>{{ purchaseRequestItem.notes }}</td>
               <td class="text-right">{{ purchaseRequestItem.quantity | numberFormat }} {{ purchaseRequestItem.unit }}</td>
-              <td class="text-right">{{ purchaseRequestItem.price | numberFormat }}</td>
-              <td class="text-right">{{ (purchaseRequestItem.quantity * purchaseRequestItem.price) | numberFormat }}</td>
               <td class="text-center">
                 <div v-if="purchaseRequest.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
                 <div v-if="purchaseRequest.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
@@ -176,6 +167,8 @@
         </p-pagination>
       </p-block>
     </div>
+    <m-form-approval-status ref="formApprovalStatus" @choosen="chooseFormApprovalStatus($event)"/>
+    <m-form-status ref="formStatus" @choosen="chooseFormStatus($event)"/>
   </div>
 </template>
 
@@ -314,23 +307,24 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form',
-          fields: 'purchase_requests.*',
-          sort_by: '-forms.number',
+          join: 'form,items,item,supplier',
+          fields: 'purchase_request.*',
+          sort_by: '-form.number',
           filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
           filter_like: {
             'form.number': this.searchText,
             'supplier.name': this.searchText,
-            'items.item.name': this.searchText,
-            'items.notes': this.searchText,
-            'items.quantity': this.searchText,
-            'items.price': this.searchText
+            'item.code': this.searchText,
+            'item.name': this.searchText,
+            'purchase_request_item.notes': this.searchText,
+            'purchase_request_item.quantity': this.searchText,
+            'purchase_request_item.price': this.searchText
           },
           filter_date_min: {
             'form.date': this.serverDateTime(this.date.start, 'start')
           },
           filter_date_max: {
-            'form.date': this.serverDateTime(this.date.end, 'start')
+            'form.date': this.serverDateTime(this.date.end, 'end')
           },
           limit: 10,
           includes: 'form;supplier;items.item;services.service',

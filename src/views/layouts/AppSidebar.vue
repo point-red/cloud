@@ -184,13 +184,13 @@
                     active-class="active">{{ $t('purchase request') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
                   <router-link
                     to="/purchase/order"
                     active-class="active">{{ $t('purchase order') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
                   <router-link
                     to="/purchase/down-payment"
                     active-class="active">{{ $t('down payment') | uppercase }}
