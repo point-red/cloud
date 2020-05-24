@@ -111,7 +111,6 @@
               <th width="50px">Form</th>
               <th width="50px"></th>
               <th>Date</th>
-              <th>Supplier</th>
               <th>Item</th>
               <th>Notes</th>
               <th class="text-right">Quantity</th>
@@ -138,12 +137,7 @@
                   class="text-center"/>
               </td>
               <td>{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-              <td>
-                <template v-if="purchaseRequest.supplier">
-                  {{ purchaseRequest.supplier.name }}
-                </template>
-              </td>
-              <td>{{ purchaseRequestItem.item.name }}</td>
+              <td>{{ purchaseRequestItem.item_name }}</td>
               <td>{{ purchaseRequestItem.notes }}</td>
               <td class="text-right">{{ purchaseRequestItem.quantity | numberFormat }} {{ purchaseRequestItem.unit }}</td>
               <td class="text-center">
@@ -307,19 +301,20 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form,items,item,supplier',
+          join: 'form,items,item',
           fields: 'purchase_request.*',
           sort_by: '-form.number',
+          group_by: 'form.id',
           filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
           filter_like: {
             'form.number': this.searchText,
-            'supplier.name': this.searchText,
             'item.code': this.searchText,
             'item.name': this.searchText,
             'purchase_request_item.notes': this.searchText,
             'purchase_request_item.quantity': this.searchText,
             'purchase_request_item.price': this.searchText
           },
+          filter_not_null: 'form.number',
           filter_date_min: {
             'form.date': this.serverDateTime(this.date.start, 'start')
           },
@@ -327,7 +322,7 @@ export default {
             'form.date': this.serverDateTime(this.date.end, 'end')
           },
           limit: 10,
-          includes: 'form;supplier;items.item;services.service',
+          includes: 'form;items.item',
           page: this.currentPage
         }
       }).then(response => {

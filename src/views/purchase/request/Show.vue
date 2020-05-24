@@ -55,6 +55,9 @@
                 <router-link :to="{ name: 'purchase.request.edit', params: { id: id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
                 </router-link>
+                <button @click="onDelete" class="btn btn-sm btn-outline-secondary mr-5">
+                  {{ $t('delete') | uppercase }}
+                </button>
               </div>
             </div>
           </div>
@@ -193,11 +196,8 @@ export default {
         params: {
           with_archives: true,
           with_origin: true,
-          includes: 'supplier;' +
-            'items.item;' +
+          includes: 'items.item;' +
             'items.allocation;' +
-            'services.service;' +
-            'services.allocation;' +
             'form.requestApprovalTo;' +
             'form.branch'
         }
@@ -213,17 +213,19 @@ export default {
       })
     },
     onDelete () {
-      this.isDeleting = true
-      this.delete({
-        id: this.id
-      }).then(response => {
-        this.isDeleting = false
-        this.$notification.success('cancel success')
-        this.$router.push('/purchase/request')
-      }).catch(error => {
-        this.isDeleting = false
-        this.$notification.error(error.message)
-        this.purchaseRequest.errors.record(error.errors)
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({
+          id: this.id
+        }).then(response => {
+          this.isDeleting = false
+          this.$notification.success('cancel success')
+          this.$router.push('/purchase/request')
+        }).catch(error => {
+          this.isDeleting = false
+          this.$notification.error(error.message)
+          this.purchaseRequest.errors.record(error.errors)
+        })
       })
     },
     onApprove () {

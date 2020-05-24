@@ -39,15 +39,6 @@
                     {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
                   </template>
                 </div>
-                <div>
-                  <h6 class="mb-0 ">{{ $t('to') + ' :' | uppercase }}</h6>
-                  <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span>
-                  <span class="mt-0" style="font-size:10px">
-                    <br v-if="form.supplier_email">{{ form.supplier_email | uppercase }}
-                    <br v-if="form.supplier_address">{{ form.supplier_address | uppercase }}
-                    <br v-if="form.supplier_phone">{{ form.supplier_phone }}
-                  </span>
-                </div>
               </div>
             </div>
             <hr>
@@ -152,7 +143,6 @@
       </div>
     </form>
     <m-item ref="item" @choosen="chooseItem($event)"/>
-    <m-supplier ref="supplier" @choosen="chooseSupplier($event)"/>
     <m-user ref="approver" @choosen="chooseApprover($event)"/>
     <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
   </div>
@@ -182,12 +172,6 @@ export default {
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         required_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        supplier_id: null,
-        supplier_name: null,
-        supplier_label: null,
-        supplier_address: null,
-        supplier_phone: null,
-        supplier_email: null,
         request_approval_to: null,
         approver_name: null,
         approver_email: null,
@@ -260,14 +244,6 @@ export default {
         this.form.items = this.form.items.filter(item => item.item_id !== null)
         this.addItemRow()
       }
-    },
-    chooseSupplier (value) {
-      this.form.supplier_id = value.id
-      this.form.supplier_name = value.name
-      this.form.supplier_label = value.label
-      this.form.supplier_address = value.address
-      this.form.supplier_phone = value.phone
-      this.form.supplier_email = value.email
     },
     chooseAllocation (value) {
       let row = this.form.items[value.index]

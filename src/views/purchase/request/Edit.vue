@@ -227,7 +227,7 @@ export default {
           converter: item.converter,
           units: item.item.units,
           allocation_id: item.allocation_id,
-          allocation_name: item.allocation_name,
+          allocation_name: item.allocation.name,
           notes: item.notes,
           more: false
         })
