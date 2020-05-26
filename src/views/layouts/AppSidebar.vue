@@ -184,12 +184,12 @@
                     active-class="active">{{ $t('purchase request') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
                   <router-link
                     to="/purchase/order"
                     active-class="active">{{ $t('purchase order') | uppercase }}
                   </router-link>
-                </li>
+                </li> -->
                 <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
                   <router-link
                     to="/purchase/down-payment"
@@ -318,12 +318,12 @@
                     active-class="active">{{ $t('process') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture formula')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture formula')">
                   <router-link
                     to="/manufacture/formula"
                     active-class="active">{{ $t('formula') | uppercase }}
                   </router-link>
-                </li>
+                </li> -->
               </ul>
             </li>
             <!-- <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance')">

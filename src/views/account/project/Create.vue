@@ -179,7 +179,7 @@
                   </div>
                   <hr>
                   <div class="font-size-sm font-w600 text-uppercase text-muted">
-                    <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
+                    <button type="button" class="btn btn-sm btn-secondary">COMING SOON</button>
                   </div>
                 </div>
               </div>
@@ -203,7 +203,7 @@
                   </div>
                   <hr>
                   <div class="font-size-sm font-w600 text-uppercase text-muted">
-                    <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
+                    <button type="button" class="btn btn-sm btn-secondary">COMING SOON</button>
                   </div>
                 </div>
               </div>
@@ -227,7 +227,7 @@
                   </div>
                   <hr>
                   <div class="font-size-sm font-w600 text-uppercase text-muted">
-                    <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
+                    <button type="button" class="btn btn-sm btn-secondary">COMING SOON</button>
                   </div>
                 </div>
               </div>

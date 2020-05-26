@@ -62,30 +62,6 @@
                 </div>
               </p-form-row>
 
-              <p-form-row
-                id="cash_flow"
-                :disabled="isLoading"
-                :label="$t('cash flow')"
-                :is-horizontal="false"
-                name="cash_flow"
-                v-if="chartOfAccount.cash_flow != null">
-                <div slot="body" class="col-lg-9">
-                  {{ chartOfAccount.cash_flow }}
-                </div>
-              </p-form-row>
-
-              <p-form-row
-                id="cash_flow_position"
-                :disabled="isLoading"
-                :label="$t('cash flow position')"
-                :is-horizontal="false"
-                name="cash_flow_position"
-                v-if="chartOfAccount.cash_flow != null">
-                <div slot="body" class="col-lg-9">
-                  {{ chartOfAccount.cash_flow_position }}
-                </div>
-              </p-form-row>
-
               <hr>
 
               <button
@@ -182,21 +158,17 @@ export default {
     },
     findAccount () {
       this.isLoading = true
-      this.find({ id: this.id })
-        .then(response => {
-          this.isLoading = false
-          this.find({
-            id: this.id
-          }).then(response => {
-            this.isLoading = false
-          }).catch(error => {
-            this.isLoading = false
-            this.$notification.error(error.message)
-          })
-        }).catch(error => {
-          this.isLoading = false
-          this.$notification.error(error.message)
-        })
+      this.find({
+        id: this.id,
+        params: {
+          includes: 'type'
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
       this.get({
         params: {
           join: 'form',
