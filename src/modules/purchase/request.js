@@ -44,6 +44,9 @@ const mutations = {
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
+    payload.data.items.forEach(element => {
+      element.more = false
+    })
     state.purchaseRequest = payload.data
   },
   'CREATE' (state, payload) {
@@ -123,6 +126,26 @@ const actions = {
   reject (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/' + payload.id + '/reject', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationApprove (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-approve', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationReject (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-reject', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

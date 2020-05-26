@@ -1,13 +1,13 @@
 <template>
   <div>
     <sweet-modal
-      :ref="'form-request-delete'"
-      :title="$t('form request delete') | uppercase"
+      :ref="'form-cancellation-reject'"
+      :title="$t('form cancellation reject') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
       <textarea rows="5" class="form-control" ref="reason" placeholder="reason" v-model="reason"></textarea>
       <hr>
-      <button type="button" @click="onDelete()" class="btn btn-block btn-sm btn-danger mr-5">{{ $t('delete') | uppercase }}</button>
+      <button type="button" @click="reject()" class="btn btn-block btn-sm btn-danger mr-5">{{ $t('reject') | uppercase }}</button>
     </sweet-modal>
   </div>
 </template>
@@ -25,17 +25,17 @@ export default {
   },
   methods: {
     open () {
-      this.$refs['form-request-delete'].open()
+      this.$refs['form-cancellation-reject'].open()
       this.$nextTick(() => {
         this.$refs.reason.focus()
       })
     },
     close () {
-      this.$refs['form-request-delete'].close()
+      this.$refs['form-cancellation-reject'].close()
       this.$emit('close', true)
     },
-    onDelete () {
-      this.$emit('delete', this.reason)
+    reject () {
+      this.$emit('reject', this.reason)
       this.close()
     },
     onClose () {

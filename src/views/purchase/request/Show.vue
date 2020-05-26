@@ -17,7 +17,7 @@
 
     <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
-      v-if="purchaseRequest.form.approval_status == 0 && isLoading == false">
+      v-if="purchaseRequest.form.cancellation_status == null && purchaseRequest.form.approval_status == 0 && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
@@ -26,8 +26,26 @@
         <hr>
         <div v-if="$permission.has('approve purchase request')">
           <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
-          <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
-          <m-form-reject id="form-reject" ref="formReject" @reject="onReject($event)"></m-form-reject>
+          <button type="button" @click="$refs.formApprovalReject.open()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
+      role="alert"
+      v-if="purchaseRequest.form.cancellation_status == 0 && isLoading == false">
+      <div class="flex-fill mr-10">
+        <p class="mb-0">
+          <i class="fa fa-fw fa-exclamation-triangle"></i>
+          {{ $t('pending cancellation warning', { form: 'purchase requisition', approvedBy: purchaseRequest.form.request_approval_to.full_name }) | uppercase }}
+        </p>
+        <p class="mb-0" style="font-size: 10px">
+          <b>{{ $t('reason') | uppercase }}</b> : <pre>{{ purchaseRequest.form.request_cancellation_reason | uppercase }}</pre>
+        </p>
+        <hr>
+        <div v-if="$permission.has('approve purchase request')">
+          <button type="button" @click="onCancellationApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
+          <button type="button" @click="$refs.formCancellationReject.open()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
         </div>
       </div>
     </div>
@@ -37,9 +55,31 @@
       v-if="purchaseRequest.form.approval_status == -1 && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('rejected') | uppercase }}
+          <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('approval rejected') | uppercase }}
         </p>
-        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ purchaseRequest.form.approval_reason }}</div>
+        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> <pre>{{ purchaseRequest.form.approval_reason }}</pre></div>
+      </div>
+    </div>
+
+    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
+      role="alert"
+      v-if="purchaseRequest.form.cancellation_status == -1 && isLoading == false">
+      <div class="flex-fill mr-10">
+        <p class="mb-0">
+          <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('cancellation request rejected') | uppercase }}
+        </p>
+        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> <pre>{{ purchaseRequest.form.cancellation_approval_reason }}</pre></div>
+      </div>
+    </div>
+
+    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
+      role="alert"
+      v-if="purchaseRequest.form.cancellation_status == 1 && isLoading == false">
+      <div class="flex-fill mr-10">
+        <p class="mb-0">
+          <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('canceled') | uppercase }}
+        </p>
+        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> <pre>{{ purchaseRequest.form.request_cancellation_reason }}</pre></div>
       </div>
     </div>
 
@@ -55,7 +95,9 @@
                 <router-link :to="{ name: 'purchase.request.edit', params: { id: id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
                 </router-link>
-                <button @click="onDelete" class="btn btn-sm btn-outline-secondary mr-5">
+                <button
+                  v-if="purchaseRequest.form.cancellation_status == null"
+                  @click="$refs.formRequestDelete.open()" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('delete') | uppercase }}
                 </button>
               </div>
@@ -91,7 +133,11 @@
               <th>Item</th>
               <th>Notes</th>
               <th class="text-right">Quantity</th>
-              <th width="50px"></th>
+              <th width="50px">
+                <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
+                  <i class="fa fa-ellipsis-h"/>
+                </button>
+              </th>
             </tr>
             <template v-for="(row, index) in purchaseRequest.items">
               <tr slot="p-body" :key="index">
@@ -151,6 +197,9 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-form-approval-reject ref="formApprovalReject" @reject="onReject($event)"></m-form-approval-reject>
+    <m-form-request-delete ref="formRequestDelete" @delete="onDelete($event)"></m-form-request-delete>
+    <m-form-cancellation-reject ref="formCancellationReject" @reject="onCancellationReject($event)"></m-form-cancellation-reject>
   </div>
 </template>
 
@@ -171,8 +220,8 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      isLoading: false,
-      totalPrice: null
+      rows: [],
+      isLoading: false
     }
   },
   computed: {
@@ -188,7 +237,22 @@ export default {
     }
   },
   methods: {
-    ...mapActions('purchaseRequest', ['find', 'delete', 'approve', 'reject']),
+    ...mapActions('purchaseRequest', {
+      find: 'find',
+      delete: 'delete',
+      approve: 'approve',
+      reject: 'reject',
+      cancellationApprove: 'cancellationApprove',
+      cancellationReject: 'cancellationReject'
+    }),
+    toggleMore () {
+      let isMoreActive = this.purchaseRequest.items.some(function (el, index) {
+        return el.more === false
+      })
+      this.purchaseRequest.items.forEach(element => {
+        element.more = isMoreActive
+      })
+    },
     findPurchaseRequisition () {
       this.isLoading = true
       this.find({
@@ -203,47 +267,56 @@ export default {
         }
       }).then(response => {
         this.isLoading = false
-        this.purchaseRequest.items.forEach((element, index) => {
-          this.$set(this.purchaseRequest.items[index], 'more', false)
-          this.totalPrice += element.price
-        })
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
       })
     },
-    onDelete () {
-      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
-        this.isDeleting = true
-        this.delete({
-          id: this.id
-        }).then(response => {
-          this.isDeleting = false
-          this.$notification.success('cancel success')
-          this.$router.push('/purchase/request')
-        }).catch(error => {
-          this.isDeleting = false
-          this.$notification.error(error.message)
-          this.purchaseRequest.errors.record(error.errors)
-        })
+    onDelete (reason) {
+      this.delete({
+        id: this.id,
+        data: {
+          reason: reason
+        }
+      }).then(response => {
+        this.$notification.success('cancel success')
+        this.findPurchaseRequisition()
       })
     },
     onApprove () {
       this.approve({
         id: this.id
       }).then(response => {
-        this.$notification.success('approve success')
-        this.purchaseRequest.form.approval_status = response.data.form.approval_status
+        this.$notification.success('approval approved')
+        this.findPurchaseRequisition()
       })
     },
     onReject (reason) {
       this.reject({
         id: this.id,
-        approval_reason: reason
+        reason: reason
       }).then(response => {
-        this.$notification.success('reject success')
-        this.purchaseRequest.form.approval_status = response.data.form.approval_status
-        this.purchaseRequest.form.approval_reason = response.data.form.approval_reason
+        this.$notification.success('approval rejected')
+        this.findPurchaseRequisition()
+      })
+    },
+    onCancellationApprove () {
+      this.cancellationApprove({
+        id: this.id
+      }).then(response => {
+        this.$notification.success('cancellation approved')
+        this.$router.push('/purchase/request')
+      })
+    },
+    onCancellationReject (reason) {
+      this.cancellationReject({
+        id: this.id,
+        reason: reason
+      }).then(response => {
+        this.$notification.success('cancellation rejected')
+        this.findPurchaseRequisition()
+      }).catch(error => {
+        console.log(error.message)
       })
     }
   },

@@ -155,7 +155,12 @@ export default {
       this.mutableId = null
       this.mutableLabel = null
       this.$emit('input', null)
-      this.$emit('choosen', '')
+      this.$emit('choosen', {
+        index: this.index,
+        id: null,
+        name: null,
+        label: null
+      })
       this.close()
     },
     close () {
