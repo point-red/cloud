@@ -130,7 +130,6 @@
                 <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
                 <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
-
               <div class="col-sm-12">
                 <hr>
                 <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">

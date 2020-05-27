@@ -24,16 +24,9 @@
       </div>
       <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
-        {{ $t('click') }} <span class="link" @click="add"><i class="fa fa-xs" :class="{
-          'fa-refresh fa-spin': isSaving,
-          'fa-plus': !isSaving
-        }"></i> Add</span> {{ $t('to add new data') }}
       </div>
       <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
         {{ $t('you don\'t have any') | capitalize }} {{ $t('chart of account') | capitalize }}, <br/> {{ $t('you can create') }}
-        <router-link :to="'/accounting/chart-of-account/create'">
-          <span>{{ $t('new one') }}</span>
-        </router-link>
       </div>
       <div class="pull-right">
         <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
@@ -50,6 +43,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
+      index: null,
       searchText: '',
       options: [],
       mutableId: this.value,
@@ -90,52 +84,88 @@ export default {
     ...mapActions('accountingChartOfAccount', ['get', 'create']),
     search () {
       this.isLoading = true
-      this.get({
-        params: {
-          join: 'account_type',
-          fields: 'account.*',
-          limit: 1000,
-          filter_like: {
-            'account_type.alias': this.searchText,
-            'account.alias': this.searchText,
-            'account.number': this.searchText
-          },
-          filter_equal: {
-            'account_type.name': this.type
-          },
-          includes: 'type',
-          sort_by: 'account.number;account.alias'
-        }
-      }).then(response => {
-        this.options = []
-        this.mutableLabel = null
-        response.data.map((key, value) => {
-          this.options.push({
-            'id': key['id'],
-            'alias': key['alias'],
-            'label': key['label']
-          })
-
-          if (this.value == key['id']) {
-            this.mutableLabel = key['number'] + ' - ' + key['alias']
+      if (this.type) {
+        this.get({
+          params: {
+            join: 'account_type',
+            fields: 'account.*',
+            limit: 1000,
+            filter_like: {
+              'account_type.alias': this.searchText,
+              'account.alias': this.searchText,
+              'account.number': this.searchText
+            },
+            filter_equal: {
+              'account_type.name': this.type
+            },
+            includes: 'type',
+            sort_by: 'account.number;account.alias'
           }
+        }).then(response => {
+          this.options = []
+          this.mutableLabel = null
+          response.data.map((key, value) => {
+            this.options.push({
+              'id': key['id'],
+              'alias': key['alias'],
+              'label': key['label']
+            })
+
+            if (this.value == key['id']) {
+              this.mutableLabel = key['number'] + ' - ' + key['alias']
+            }
+          })
+          this.isLoading = false
+        }).catch(error => {
+          this.isLoading = false
         })
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-      })
+      } else {
+        this.get({
+          params: {
+            join: 'account_type',
+            fields: 'account.*',
+            limit: 1000,
+            filter_like: {
+              'account_type.alias': this.searchText,
+              'account.alias': this.searchText,
+              'account.number': this.searchText
+            },
+            includes: 'type',
+            sort_by: 'account.number;account.alias'
+          }
+        }).then(response => {
+          this.options = []
+          this.mutableLabel = null
+          response.data.map((key, value) => {
+            this.options.push({
+              'id': key['id'],
+              'alias': key['alias'],
+              'label': key['label']
+            })
+
+            if (this.value == key['id']) {
+              this.mutableLabel = key['number'] + ' - ' + key['alias']
+            }
+          })
+          this.isLoading = false
+        }).catch(error => {
+          this.isLoading = false
+        })
+      }
     },
     add () {
       //
     },
     choose (option) {
+      option.index = this.index
       this.mutableId = option.id
       this.mutableLabel = option.label
       this.$emit('input', option.id)
       this.$emit('choosen', option)
       this.close()
     },
-    open () {
+    open (index = null) {
+      this.index = index
       this.$refs.modal.open()
       this.search()
     },

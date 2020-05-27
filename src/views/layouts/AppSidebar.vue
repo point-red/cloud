@@ -326,7 +326,7 @@
                 </li> -->
               </ul>
             </li>
-            <!-- <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance')">
+            <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance')">
               <router-link to="/finance" class="nav-submenu" active-class="active">
                 <i class="si si-wallet"/>
                 <span class="sidebar-mini-hide">{{ $t("finance") | uppercase }}</span>
@@ -338,7 +338,7 @@
                     active-class="active">{{ $t('payment order') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cash')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cash')">
                   <router-link
                     to="/finance/cash"
                     active-class="active">{{ $t('cash') | uppercase }}
@@ -349,9 +349,9 @@
                     to="/finance/bank"
                     active-class="active">{{ $t('bank') | uppercase }}
                   </router-link>
-                </li>
+                </li> -->
               </ul>
-            </li> -->
+            </li>
             <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting')">
               <router-link to="/accounting" class="nav-submenu" active-class="active">
                 <i class="si si-folder-alt"/>
