@@ -90,7 +90,7 @@
             <span class="css-control-indicator"></span>
           </label>
           <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
+            <!-- <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
               {{ $t('request approval') | uppercase }}
             </button>
             <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkApprove()">
@@ -101,7 +101,7 @@
             </button>
             <button type="button" class="btn btn-sm btn-secondary" @click="bulkCancel()">
               {{ $t('archive') | uppercase }}
-            </button>
+            </button> -->
           </span>
         </div>
         <hr>
@@ -109,13 +109,13 @@
           <point-table>
             <tr slot="p-head">
               <th width="50px">Form</th>
-              <th width="50px"></th>
               <th>Date</th>
               <th>Item</th>
               <th>Notes</th>
               <th class="text-right">Quantity</th>
               <th class="text-center">Approval Status</th>
               <th class="text-center">Form Status</th>
+              <th width="50px"></th>
             </tr>
             <template v-for="(purchaseRequest, index) in purchaseRequests">
             <tr
@@ -127,15 +127,6 @@
                   {{ purchaseRequest.form.number }}
                 </router-link>
               </th>
-              <td>
-                <p-form-check-box
-                  :is-form="false"
-                  id="check-box"
-                  name="check-box"
-                  @click.native="toggleCheckRow(purchaseRequest.id)"
-                  :checked="isRowChecked(purchaseRequest.id)"
-                  class="text-center"/>
-              </td>
               <td>{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
               <td>{{ purchaseRequestItem.item_name }}</td>
               <td>{{ purchaseRequestItem.notes }}</td>
@@ -149,6 +140,15 @@
                 <div v-if="purchaseRequest.form.cancellation_status == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
                 <div v-else-if="purchaseRequest.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
                 <div v-else-if="purchaseRequest.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
+              </td>
+              <td>
+                <p-form-check-box
+                  :is-form="false"
+                  id="check-box"
+                  name="check-box"
+                  @click.native="toggleCheckRow(purchaseRequest.id)"
+                  :checked="isRowChecked(purchaseRequest.id)"
+                  class="text-center"/>
               </td>
             </tr>
             </template>

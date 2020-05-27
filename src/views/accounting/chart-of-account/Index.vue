@@ -7,6 +7,17 @@
 
     <div class="row">
       <p-block>
+        <div class="text-center" v-show="chartOfAccounts.length == 0 && !this.searchText && !isLoading">
+          <p-block-inner>
+            <p>
+              Anda tidak memiliki akun saat ini, klik tombol di bawah ini untuk generate default akun
+            </p>
+            <button type="submit" class="btn btn-sm btn-primary mb-15" :disabled="isSaving" @click="generate()">
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('generate account') | uppercase }}
+            </button>
+          </p-block-inner>
+          <hr>
+        </div>
         <div class="input-group block mb-5">
           <a
             href="javascript:void(0)"
@@ -78,6 +89,7 @@ export default {
   data () {
     return {
       isLoading: false,
+      isSaving: false,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1
     }
@@ -94,6 +106,16 @@ export default {
     ...mapActions('accountingChartOfAccount', {
       getChartOfAccounts: 'get'
     }),
+    ...mapActions('accountingChartOfAccountGenerator', ['create']),
+    generate () {
+      this.isSaving = true
+      this.create()
+        .then(response => {
+          this.search()
+        }).catch(error => {
+          this.isSaving = false
+        })
+    },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
