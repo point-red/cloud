@@ -129,7 +129,6 @@ export default {
         }
       }).then(response => {
         this.optionSuppliers = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.optionSuppliers.push({
             'id': key['id'],
@@ -157,7 +156,6 @@ export default {
         }
       }).then(response => {
         this.optionCustomers = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.optionCustomers.push({
             'id': key['id'],
@@ -185,7 +183,6 @@ export default {
         }
       }).then(response => {
         this.optionEmployees = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.optionEmployees.push({
             'id': key['id'],
@@ -223,6 +220,7 @@ export default {
     },
     show () {
       this.$refs['select-' + this.id].show()
+      this.search()
     },
     close () {
       this.$refs['select-' + this.id].close()

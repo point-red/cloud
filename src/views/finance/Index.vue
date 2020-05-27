@@ -10,12 +10,12 @@
         v-if="$permission.has('read payment order')"
         link="/finance/payment-order"
         icon="si si-doc"/>
-      <!-- <p-box
+      <p-box
         :name="$t('cash')"
         v-if="$permission.has('read cash')"
         link="/finance/cash"
         icon="si si-wallet"/>
-      <p-box
+      <!-- <p-box
         :name="$t('bank')"
         v-if="$permission.has('read bank')"
         link="/finance/bank"

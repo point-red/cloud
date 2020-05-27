@@ -3,7 +3,8 @@
     <breadcrumb>
       <breadcrumb-finance/>
       <router-link to="/finance/cash" class="breadcrumb-item">{{ $t('cash') | uppercase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('in') | uppercase }}</span>
+      <span class="breadcrumb-item">{{ $t('in') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ payment.form.number }}</span>
     </breadcrumb>
 
     <form class="row" @submit.prevent="onSubmit">
@@ -14,36 +15,33 @@
               <h4>{{ $t('cash in') | uppercase }}</h4>
               <table class="table table-sm table-bordered">
                 <tr>
+                  <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                  <td>
+                    {{ payment.form.number | uppercase }}
+                  </td>
+                </tr>
+                <tr>
                   <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
                   <td>
-                    <!-- <p-date-picker
-                      id="date"
-                      name="date"
-                      label="payment date"
-                      v-model="form.date"
-                      :errors="form.errors.get('date')"
-                      @errors="form.errors.set('date', null)"/> -->
-                      {{ form.date | dateFormat('DD MMMM YYYY') }}
+                    {{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
                   </td>
                 </tr>
                 <tr>
                   <td class="font-weight-bold">{{ $t('cash') | uppercase }}</td>
                   <td>
-                    <span @click="$refs.chartOfAccountCashRef.open()" class="select-link">
-                      {{ form.payment_account_name || $t('select') | uppercase }}
-                    </span>
+                    {{ payment.payment_account.label | uppercase }}
                   </td>
                 </tr>
               </table>
             </div>
             <div class="col-sm-6 text-right">
               <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
-              <template v-if="authUser.branch">
-                <br v-if="authUser.branch.address">{{ authUser.branch.address | uppercase }}
-                <br v-if="authUser.branch.phone">{{ authUser.branch.phone | uppercase }}
+              <template v-if="payment.form.branch">
+                <br v-if="payment.form.branch.address">{{ payment.form.branch.address | uppercase }}
+                <br v-if="payment.form.branch.phone">{{ payment.form.branch.phone | uppercase }}
               </template>
               <h6 class="mt-30 mb-5">{{ $t('to') | uppercase }} :</h6>
-              <m-paymentable id="paymentable" v-model="form.paymentable_id" @choosen="choosePaymentTo" :label="form.paymentable_name"/>
+              {{ payment.paymentable_name }}
             </div>
           </div>
 
@@ -54,88 +52,49 @@
               <th>#</th>
               <th style="min-width: 120px">Account</th>
               <th>Notes</th>
-              <th>Amount</th>
+              <th class="text-right">Amount</th>
               <th style="min-width: 120px">Allocation</th>
-              <th></th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.details" :key="index">
+            <tr slot="p-body" v-for="(row, index) in payment.details" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
-                <span @click="$refs.chartOfAccountRef.open(index)" class="select-link">
-                  {{ row.chart_of_account_name || $t('select') | uppercase }}
-                </span>
-                <m-chart-of-account
-                  :id="'item-' + index"
-                  :data-index="index"
-                  v-model="row.item_id"
-                  @choosen="chooseAccount($event, row)"
-                  :label="row.item_name"/>
+                {{ row.chart_of_account.label | uppercase }}
               </td>
               <td>
-                <p-form-input
-                  :id="'notes-' + index"
-                  :name="'notes-' + index"
-                  v-model="row.notes"/>
+                {{ row.notes }}
+              </td>
+              <td class="text-right">
+                {{ row.amount | numberFormat }}
               </td>
               <td>
-                <p-form-number
-                  :id="'amount-' + index"
-                  :name="'amount-' + index"
-                  v-model="row.amount"
-                  @keyup.native="calculate()"/>
-              </td>
-              <td>
-                <span @click="$refs.allocation.open(index)" class="select-link">
-                  {{ row.allocation_name || $t('select') | uppercase }}
-                </span>
-              </td>
-              <td>
-                <i class="btn btn-sm fa fa-times" @click="deleteRow(index)"></i>
+                {{ row.allocation.name }}
               </td>
             </tr>
             <tr slot="p-body">
               <th></th>
               <td></td>
               <td></td>
-              <td>
-                <p-form-number
-                  :id="'amount'"
-                  :name="'amount'"
-                  :readonly="true"
-                  v-model="form.amount"/>
-              </td>
+              <td class="text-right">{{ payment.amount | numberFormat }}</td>
               <td></td>
             </tr>
           </point-table>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addRow">
-            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-          </button>
 
           <div class="row mt-50">
-            <div class="col-sm-9">
-              <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
-              <div class="d-sm-block d-md-none mt-10"></div>
+            <div class="col-sm-6">
+              <h6>{{ $t('notes') | uppercase }}</h6>
+              <pre>{{ payment.form.notes }}</pre>
             </div>
+            <div class="col-sm-3"></div>
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('created by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+              <div class="mb-50" style="font-size:11px">{{ payment.form.created_at | dateFormat('DD MMMM YYYY') }}</div>
               {{ createdBy | uppercase }}
               <div class="d-sm-block d-md-none mt-10"></div>
-            </div>
-            <div class="col-sm-12">
-              <hr>
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
-              </button>
             </div>
           </div>
         </p-block-inner>
       </p-block>
     </form>
-    <m-chart-of-account ref="chartOfAccountRef" @choosen="onChoosenAccount" type="DIRECT EXPENSE"/>
-    <m-chart-of-account ref="chartOfAccountCashRef" @choosen="onChoosenAccountCash" type="CASH"/>
-    <m-user ref="approver" @choosen="chooseApprover($event)"/>
-    <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
   </div>
 </template>
 
@@ -156,6 +115,7 @@ export default {
   },
   data () {
     return {
+      id: this.$route.params.id,
       isSaving: false,
       isLoading: false,
       createdBy: localStorage.getItem('fullName'),
@@ -189,10 +149,25 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('financePayment', ['payment']),
     ...mapGetters('auth', ['authUser'])
   },
+  created () {
+    this.search()
+  },
   methods: {
-    ...mapActions('financePayment', ['create']),
+    ...mapActions('financePayment', ['find']),
+    search () {
+      this.find({
+        id: this.id,
+        params: {
+          includes: 'form;' +
+            'paymentAccount;' +
+            'details.chartOfAccount;' +
+            'details.allocation'
+        }
+      })
+    },
     addRow () {
       this.form.details.push({
         chart_of_account_id: null,
@@ -238,22 +213,7 @@ export default {
         totalAmount += parseFloat(element.amount)
       })
       this.form.amount = totalAmount
-    }, 300),
-    onSubmit () {
-      this.isSaving = true
-      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      this.create(this.form)
-        .then(response => {
-          this.isSaving = false
-          this.$notification.success('create success')
-          Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/finance/cash/in/' + response.data.id)
-        }).catch(error => {
-          this.isSaving = false
-          this.$notification.error(error.message)
-          this.form.errors.record(error.errors)
-        })
-    }
+    }, 300)
   }
 }
 </script>

@@ -2,51 +2,62 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance/>
-      <span class="breadcrumb-item active">{{ $t('cash') | titlecase }}</span>
+      <span class="breadcrumb-item active">{{ $t('cash') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
-
     <div class="row">
-      <p-block :title="$t('cash')" :header="true">
-        <div class="row mb-10">
-          <p-date-range-picker
-            id="date"
-            name="date"
-            class="col-sm-4"
-            v-model="date"/>
-        </div>
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
-        <hr>
+      <p-block>
         <p-block-inner :is-loading="isLoading">
+          <div class="input-group block">
+            <router-link
+              to="/finance/cash/in"
+              v-if="$permission.has('create cash')"
+              class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="fa fa-plus mr-5"></i> {{ $t('cash in') | uppercase }}
+              </span>
+            </router-link>
+            <router-link
+              to="/finance/cash/out"
+              v-if="$permission.has('create cash')"
+              class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="fa fa-plus mr-5"></i> {{ $t('cash out') | uppercase }}
+              </span>
+            </router-link>
+            <p-form-input
+              id="search-text"
+              name="search-text"
+              placeholder="Search"
+              ref="searchText"
+              class="btn-block"
+              :value="searchText"
+              @input="filterSearch"/>
+          </div>
+          <hr>
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th>Number</th>
               <th>Date</th>
               <th>Payment From / To</th>
-              <th>Number</th>
               <th>Account</th>
               <th>Notes</th>
+              <th>Allocation</th>
               <th class="text-right">Amount</th>
             </tr>
             <template v-for="(payment, index) in payments">
               <template v-for="(paymentDetail, index2) in payment.details">
               <tr :key="'payment-' + index + '-' + index2" slot="p-body">
-                <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
-                <td>{{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                <td>{{ payment.paymentable.name }}</td>
-                <td>
+                <th>
                   <router-link :to="{ name: 'finance.cash.show', params: { id: payment.id }}">
                     {{ payment.form.number }}
                   </router-link>
-                </td>
+                </th>
+                <td>{{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ payment.paymentable.name }}</td>
                 <td>{{ paymentDetail.chart_of_account.number }} - {{ paymentDetail.chart_of_account.alias }}</td>
                 <td>{{ paymentDetail.notes }}</td>
+                <td>{{ paymentDetail.allocation ? paymentDetail.allocation.name : '' }}</td>
                 <td class="text-right">{{ paymentDetail.amount | numberFormat }}</td>
               </tr>
               </template>
@@ -88,7 +99,17 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
-      limit: 10
+      limit: 3,
+      formStatus: {
+        id: null,
+        label: null,
+        value: 'notArchived'
+      },
+      formApprovalStatus: {
+        id: null,
+        label: null,
+        value: null
+      }
     }
   },
   watch: {
@@ -114,26 +135,41 @@ export default {
       this.currentPage = 1
       this.getPayments()
     }, 300),
+    chooseFormStatus (option) {
+      this.formStatus.label = option.label
+      this.formStatus.value = option.value
+      this.search()
+    },
+    chooseFormApprovalStatus (option) {
+      this.formApprovalStatus.label = option.label
+      this.formApprovalStatus.value = option.value
+      this.search()
+    },
     getPayments () {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form,paymentable',
-          sort_by: '-forms.number',
-          fields: 'payments.*',
-          filter_form: 'active',
+          join: 'form,payment_account,details,account,allocation',
+          sort_by: '-form.number',
+          fields: 'payment.*',
+          filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
           filter_like: {
             'form.number': this.searchText,
-            'paymentable_name': this.searchText
+            'payment_detail.notes': this.searchText,
+            'allocation.name': this.searchText,
+            'account.alias': this.searchText
           },
-          filter_min: {
+          filter_equal: {
+            'payment.payment_type': 'cash'
+          },
+          filter_date_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
           },
-          filter_max: {
+          filter_date_max: {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;details.chartOfAccount;paymentable',
+          includes: 'form;details.chartOfAccount;details.allocation;paymentable',
           page: this.currentPage
         }
       }).then(response => {
