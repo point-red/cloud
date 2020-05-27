@@ -157,7 +157,6 @@
 
 <script>
 import debounce from 'lodash/debounce'
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import Form from '@/utils/Form'
@@ -166,7 +165,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     PointTable,
     Breadcrumb,
     BreadcrumbFinance
@@ -180,14 +178,14 @@ export default {
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         due_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        payment_type: null,
+        payment_type: 'cash',
         paymentable_id: null,
         paymentable_type: null,
         paymentable_name: null,
         request_approval_to: null,
         approver_name: null,
         approver_email: null,
-        disbursed: true,
+        disbursed: false,
         notes: null,
         amount: 0,
         details: [{

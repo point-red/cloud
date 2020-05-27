@@ -190,7 +190,6 @@
 
 <script>
 import debounce from 'lodash/debounce'
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import Form from '@/utils/Form'
@@ -199,7 +198,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     PointTable,
     Breadcrumb,
     BreadcrumbFinance

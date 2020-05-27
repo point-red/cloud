@@ -132,7 +132,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import debounce from 'lodash/debounce'
@@ -141,7 +140,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     Breadcrumb,
     BreadcrumbFinance,
     PointTable
@@ -210,6 +208,7 @@ export default {
         params: {
           join: 'form,details,account',
           sort_by: '-form.number',
+          group_by: 'payment_order.id',
           fields: 'payment_order.*',
           filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
           filter_like: {
