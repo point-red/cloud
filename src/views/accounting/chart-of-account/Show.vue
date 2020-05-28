@@ -172,9 +172,9 @@ export default {
       this.get({
         params: {
           join: 'form',
-          fields: 'journals.*',
+          fields: 'journal.*',
           includes: 'form',
-          sort_by: '-forms.date',
+          sort_by: '-form.date',
           filter_equal: {
             chart_of_account_id: this.id
           },
