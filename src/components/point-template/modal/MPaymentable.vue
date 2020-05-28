@@ -223,6 +223,8 @@ export default {
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }

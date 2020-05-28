@@ -27,7 +27,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="font-weight-bold">{{ $t('cash') | uppercase }}</td>
+                  <td class="font-weight-bold">{{ $t('cash account') | uppercase }}</td>
                   <td>
                     <span @click="$refs.chartOfAccountCashRef.open()" class="select-link">
                       {{ form.payment_account_name || $t('select') | uppercase }}

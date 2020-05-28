@@ -6,11 +6,12 @@
   "purchase down payment" : "purchase down payment",
   "sales down payment" : "sales down payment",
   "generate account" : "generate account",
+  "position" : "posisi",
+  "sub ledger" : "sub ledger",
   "cash flow" : "arus kas",
   "cash flow position" : "posisi arus kas",
   "operation" : "operasional",
   "investation" : "investasi",
   "funding" : "pendanaan",
-  "position" : "posisi",
   "balance" : "balance"
 }

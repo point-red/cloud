@@ -47,6 +47,7 @@
               <th class="text-center">Sub Ledger</th>
               <th class="text-center">Debit</th>
               <th class="text-center">Credit</th>
+              <th class="text-center">Locked</th>
             </tr>
             <tr
               v-for="chartOfAccount in chartOfAccounts"
@@ -67,6 +68,9 @@
               </td>
               <td class="text-center">
                 <i class="fa fa-check" v-if="chartOfAccount.position == 'CREDIT'"></i>
+              </td>
+              <td class="text-center">
+                <i class="fa fa-check" v-if="chartOfAccount.is_locked"></i>
               </td>
             </tr>
           </point-table>

@@ -74,7 +74,7 @@
       </div>
     </div>
 
-    <form class="row" @submit.prevent="onSubmit">
+    <form class="row">
       <p-block :title="$t('payment order')">
         <p-block-inner :is-loading="isLoading">
           <div class="row">
@@ -87,8 +87,10 @@
                   {{ $t('edit') | uppercase }}
                 </router-link> -->
                 <button
-                  v-if="paymentOrder.form.cancellation_status == null"
-                  @click="$refs.formRequestDelete.open()" class="btn btn-sm btn-outline-secondary mr-5">
+                  type="button"
+                  v-if="paymentOrder.form.cancellation_status != 1"
+                  @click="$refs.formRequestDelete.open()"
+                  class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('delete') | uppercase }}
                 </button>
               </div>
@@ -237,6 +239,8 @@ export default {
       }).then(response => {
         this.$notification.success('cancel success')
         this.search()
+      }).catch(error => {
+        this.$notification.error(error.message)
       })
     },
     onApprove () {

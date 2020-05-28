@@ -27,7 +27,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="font-weight-bold">{{ $t('cash') | uppercase }}</td>
+                  <td class="font-weight-bold">{{ $t('cash account') | uppercase }}</td>
                   <td>
                     {{ payment.payment_account.label | uppercase }}
                   </td>
