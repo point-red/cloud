@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance/>
-      <router-link to="/purchase/payment-order" class="breadcrumb-item">{{ $t('payment order') | titlecase }}</router-link>
+      <router-link to="/finance/payment-order" class="breadcrumb-item">{{ $t('payment order') | titlecase }}</router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 

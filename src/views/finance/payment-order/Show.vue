@@ -28,7 +28,7 @@
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
-          {{ $t('pending cancellation warning', { form: 'purchase requisition', approvedBy: paymentOrder.form.request_approval_to.full_name }) | uppercase }}
+          {{ $t('pending cancellation warning', { form: 'payment order', approvedBy: paymentOrder.form.request_approval_to.full_name }) | uppercase }}
         </p>
         <p class="mb-0" style="font-size: 10px">
           <b>{{ $t('reason') | uppercase }}</b> : <pre>{{ paymentOrder.form.request_cancellation_reason | uppercase }}</pre>
@@ -83,7 +83,7 @@
                 <router-link :to="{ name: 'finance.payment-order.create' }" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <!-- <router-link :to="{ name: 'purchase.request.edit', params: { id: id }}" class="btn btn-sm btn-outline-secondary mr-5">
+                <!-- <router-link :to="{ name: 'finance.payment-order.edit', params: { id: id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
                 </router-link> -->
                 <button
