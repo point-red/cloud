@@ -8,7 +8,7 @@
 
     <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
-      v-if="paymentOrder.form.cancellation_status == null && paymentOrder.form.approval_status == 0 && isLoading == false">
+      v-if="paymentOrder.form.cancellation_status != 0 && paymentOrder.form.approval_status == 0 && isLoading == false">
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
