@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance/>
-      <span class="breadcrumb-item active">{{ $t('cash') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('bank') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
@@ -10,19 +10,19 @@
         <p-block-inner :is-loading="isLoading">
           <div class="input-group block">
             <router-link
-              to="/finance/cash/in"
-              v-if="$permission.has('create cash')"
+              to="/finance/bank/in"
+              v-if="$permission.has('create bank')"
               class="input-group-prepend">
               <span class="input-group-text">
-                <i class="fa fa-plus mr-5"></i> {{ $t('cash in') | uppercase }}
+                <i class="fa fa-plus mr-5"></i> {{ $t('bank in') | uppercase }}
               </span>
             </router-link>
             <router-link
-              to="/finance/cash/out"
-              v-if="$permission.has('create cash')"
+              to="/finance/bank/out"
+              v-if="$permission.has('create bank')"
               class="input-group-prepend">
               <span class="input-group-text">
-                <i class="fa fa-plus mr-5"></i> {{ $t('cash out') | uppercase }}
+                <i class="fa fa-plus mr-5"></i> {{ $t('bank out') | uppercase }}
               </span>
             </router-link>
             <p-form-input
@@ -49,10 +49,10 @@
               <template v-for="(paymentDetail, index2) in payment.details">
               <tr :key="'payment-' + index + '-' + index2" slot="p-body">
                 <th>
-                  <router-link v-if="payment.disbursed == false" :to="{ name: 'finance.cash.in.show', params: { id: payment.id }}">
+                  <router-link v-if="payment.disbursed == false" :to="{ name: 'finance.bank.in.show', params: { id: payment.id }}">
                     {{ payment.form.number }}
                   </router-link>
-                  <router-link v-if="payment.disbursed == true" :to="{ name: 'finance.cash.in.show', params: { id: payment.id }}">
+                  <router-link v-if="payment.disbursed == true" :to="{ name: 'finance.bank.out.show', params: { id: payment.id }}">
                     {{ payment.form.number }}
                   </router-link>
                 </th>
@@ -161,7 +161,7 @@ export default {
             'account.alias': this.searchText
           },
           filter_equal: {
-            'payment.payment_type': 'cash'
+            'payment.payment_type': 'bank'
           },
           filter_date_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))

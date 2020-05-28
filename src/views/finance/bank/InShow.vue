@@ -2,17 +2,17 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance/>
-      <router-link to="/finance/cash" class="breadcrumb-item">{{ $t('cash') | uppercase }}</router-link>
+      <router-link to="/finance/bank" class="breadcrumb-item">{{ $t('bank') | uppercase }}</router-link>
       <span class="breadcrumb-item">{{ $t('in') | uppercase }}</span>
       <span class="breadcrumb-item active">{{ payment.form.number }}</span>
     </breadcrumb>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('cash in')">
+      <p-block :title="$t('bank in')">
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-6">
-              <h4>{{ $t('cash in') | uppercase }}</h4>
+              <h4>{{ $t('bank in') | uppercase }}</h4>
               <table class="table table-sm table-bordered">
                 <tr>
                   <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
@@ -27,7 +27,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="font-weight-bold">{{ $t('cash') | uppercase }}</td>
+                  <td class="font-weight-bold">{{ $t('bank') | uppercase }}</td>
                   <td>
                     {{ payment.payment_account.label | uppercase }}
                   </td>
@@ -121,7 +121,7 @@ export default {
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         due_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        payment_type: 'cash',
+        payment_type: 'bank',
         payment_account_id: null,
         payment_account_name: null,
         paymentable_id: null,
@@ -199,7 +199,7 @@ export default {
       row.chart_of_account_id = account.id
       row.chart_of_account_name = account.label
     },
-    onChoosenAccountCash (account) {
+    onChoosenAccountBank (account) {
       this.form.payment_account_id = account.id
       this.form.payment_account_name = account.label
     },

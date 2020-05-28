@@ -3,7 +3,7 @@
     <breadcrumb>
       <breadcrumb-finance/>
       <span class="breadcrumb-item active">
-        <router-link to="/finance/cash">{{ $t('cash') | uppercase }}</router-link>
+        <router-link to="/finance/bank">{{ $t('bank') | uppercase }}</router-link>
       </span>
       <span class="breadcrumb-item active">{{ $t('out') | uppercase }}</span>
     </breadcrumb>
@@ -77,7 +77,7 @@
                 <td>{{ paymentOrderDetail.notes }}</td>
                 <td class="text-right">{{ paymentOrderDetail.amount | numberFormat }}</td>
                 <td class="text-center">
-                  <router-link class="btn btn-sm btn-primary" :to="{ name: 'finance.cash.out.create', params: { id: paymentOrder.id }}">
+                  <router-link class="btn btn-sm btn-primary" :to="{ name: 'finance.bank.out.create', params: { id: paymentOrder.id }}">
                     {{ $t('pay') | uppercase }}
                   </router-link>
                 </td>
@@ -163,7 +163,7 @@ export default {
           },
           filter_null: 'payment_order.payment_id',
           filter_equal: {
-            'payment_order.payment_type': 'cash',
+            'payment_order.payment_type': 'bank',
             'form.notes': this.searchText,
             'account.name': this.searchText
           },

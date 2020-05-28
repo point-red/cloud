@@ -338,7 +338,7 @@
                     active-class="active">{{ $t('payment order') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cash')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cash')">
                   <router-link
                     to="/finance/cash"
                     active-class="active">{{ $t('cash') | uppercase }}
@@ -349,7 +349,7 @@
                     to="/finance/bank"
                     active-class="active">{{ $t('bank') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
               </ul>
             </li>
             <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting')">

@@ -2,17 +2,17 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance/>
-      <router-link to="/finance/cash" class="breadcrumb-item">{{ $t('cash') | uppercase }}</router-link>
-      <span class="breadcrumb-item">{{ $t('in') | uppercase }}</span>
+      <router-link to="/finance/bank" class="breadcrumb-item">{{ $t('bank') | uppercase }}</router-link>
+      <span class="breadcrumb-item">{{ $t('out') | uppercase }}</span>
       <span class="breadcrumb-item active">{{ payment.form.number }}</span>
     </breadcrumb>
 
     <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('cash in')">
+      <p-block>
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-6">
-              <h4>{{ $t('cash in') | uppercase }}</h4>
+              <h4>{{ $t('bank out') | uppercase }}</h4>
               <table class="table table-sm table-bordered">
                 <tr>
                   <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
@@ -27,7 +27,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="font-weight-bold">{{ $t('cash') | uppercase }}</td>
+                  <td class="font-weight-bold">{{ $t('bank') | uppercase }}</td>
                   <td>
                     {{ payment.payment_account.label | uppercase }}
                   </td>
@@ -121,7 +121,7 @@ export default {
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         due_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        payment_type: 'cash',
+        payment_type: 'bank',
         payment_account_id: null,
         payment_account_name: null,
         paymentable_id: null,
@@ -170,43 +170,6 @@ export default {
       }).catch(error => {
         this.isLoading = false
       })
-    },
-    addRow () {
-      this.form.details.push({
-        chart_of_account_id: null,
-        chart_of_account_name: null,
-        amount: null,
-        allocation_id: null,
-        allocation_name: null,
-        notes: null
-      })
-    },
-    deleteRow (index) {
-      this.$delete(this.form.details, index)
-    },
-    chooseAllocation (allocation) {
-      let row = this.form.details[allocation.index]
-      row.allocation_id = allocation.id
-      row.allocation_name = allocation.name
-    },
-    chooseApprover (value) {
-      this.form.request_approval_to = value.id
-      this.form.approver_name = value.fullName
-      this.form.approver_email = value.email
-    },
-    onChoosenAccount (account) {
-      let row = this.form.details[account.index]
-      row.chart_of_account_id = account.id
-      row.chart_of_account_name = account.label
-    },
-    onChoosenAccountCash (account) {
-      this.form.payment_account_id = account.id
-      this.form.payment_account_name = account.label
-    },
-    choosePaymentTo (choosen) {
-      this.form.paymentable_id = choosen.id
-      this.form.paymentable_name = choosen.label
-      this.form.paymentable_type = choosen.type
     },
     calculate: debounce(function () {
       var totalAmount = 0
