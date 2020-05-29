@@ -1,39 +1,51 @@
 <template>
   <div>
     <div class="input-group">
-      <cleave
+      <p-form-number
+        ref="formDiscount"
+        v-if="isPercent"
         :readonly="readonly"
-        v-model="number"
+        :value="discountPercent"
         :options="options"
-        class="form-control form-number"
-        :class="{
-          'text-right' : isTextRight
-        }"></cleave>
-      <div class="input-group-append">
-        <span class="input-group-text">
-          <template v-if="mutableMode == 'percent'">
-            %
-          </template>
-          <template v-else>
-
-          </template>
-        </span>
+        :is-text-right="isTextRight"
+        :max="100"
+        @input="discountPercentChanged"
+      >
+      </p-form-number>
+      <p-form-number
+        ref="formDiscount"
+        v-else
+        :readonly="readonly"
+        :value="discountValue"
+        :options="options"
+        :is-text-right="isTextRight"
+        :max="baseValue"
+        @input="discountValueChanged"
+      >
+      </p-form-number>
+      <div @click="togglePercent" class="input-group-append">
+        <button class="btn btn-outline-dark py-0 px-5">
+          <div class="d-flex align-items-center">
+            <div class="mr-2">
+              <span :class="{'text-black-50': isPercent}">123</span><br>
+              <span :class="{'text-black-50': !isPercent}">%</span>
+            </div>
+            <div>
+              <i class="fa fa-sort-down"></i>
+            </div>
+          </div>
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Cleave from 'vue-cleave-component'
-
 export default {
-  components: {
-    Cleave
-  },
   data () {
     return {
       number: this.value,
-      mutableMode: this.mode,
+      isPercent: true,
       options: {
         numeral: true,
         numeralDecimalScale: 15,
@@ -42,9 +54,6 @@ export default {
     }
   },
   watch: {
-    value () {
-      this.number = this.value
-    },
     number () {
       if (this.number > 100) {
         this.number = 100
@@ -59,19 +68,38 @@ export default {
       type: Boolean,
       default: false
     },
-    unsigned: {
-      type: Boolean,
-      default: false
-    },
     isTextRight: {
       type: Boolean,
       default: true
     },
-    mode: {
-      type: String,
-      default: 'percent'
+    discountPercent: {
+      type: Number,
+      default: 0
     },
-    value: null
+    discountValue: {
+      type: Number,
+      default: 0
+    },
+    baseValue: {
+      type: Number,
+      required: true
+    }
+  },
+  methods: {
+    togglePercent () {
+      this.isPercent = !this.isPercent
+      this.discountPercentChanged(0)
+      this.$nextTick(() => {
+        this.$refs.formDiscount.setFocus()
+      })
+    },
+    discountPercentChanged (value) {
+      this.$emit('update:discountPercent', value * 1)
+      this.discountValueChanged(this.baseValue * value / 100)
+    },
+    discountValueChanged (value) {
+      this.$emit('update:discountValue', value * 1)
+    }
   }
 }
 </script>
