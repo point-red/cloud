@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="input-group">
+    <div class="input-group" style="width:100%">
       <p-form-number
         ref="formDiscount"
         v-if="isPercent"
@@ -19,19 +19,15 @@
         :is-text-right="isTextRight"
         :max="baseValue"
         @input="discountValueChanged"/>
-      <div class="input-group-append">
-        <button type="button" class="btn btn-outline-dark py-0 px-5" @click="togglePercent">
-          <div class="d-flex align-items-center">
-            <div class="mr-2">
-              <span :class="{'text-black-50': isPercent}">123</span><br>
-              <span :class="{'text-black-50': !isPercent}">%</span>
-            </div>
-            <div>
-              <i class="fa fa-sort-down"></i>
-            </div>
+      <k-pop placement="bottom" with-arrow theme="clean">
+        <template #trigger="{ show, hide }">
+          <div class="input-group-append" @click="togglePercent" @mouseenter="show" @mouseleave="hide">
+            <div v-if="isPercent" class="input-group-text">%</div>
+            <div v-else class="input-group-text"></div>
           </div>
-        </button>
-      </div>
+        </template>
+        Click this box to change discount based on percentage or value
+      </k-pop>
     </div>
   </div>
 </template>

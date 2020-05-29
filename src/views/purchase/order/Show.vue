@@ -78,7 +78,7 @@
                 <td>{{ row.notes }}</td>
                 <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
                 <td class="text-right">{{ row.price | numberFormat }}</td>
-                <td class="text-right">{{ row.discount_percent | numberFormat }}</td>
+                <td class="text-right">{{ row.discount_value | numberFormat }}</td>
                 <td class="text-right">{{ row.quantity * row.price - row.discount_value | numberFormat }}</td>
                 <td>
                   <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more">
