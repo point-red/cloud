@@ -172,7 +172,7 @@
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
+            <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase') && authUser.tenant_package_id > 1">
               <router-link to="/purchase" class="nav-submenu" active-class="active">
                 <i class="si si-basket"/>
                 <span class="sidebar-mini-hide">{{ $t("purchase") | uppercase }}</span>
@@ -190,7 +190,7 @@
                     active-class="active">{{ $t('purchase order') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
                   <router-link
                     to="/purchase/down-payment"
                     active-class="active">{{ $t('down payment') | uppercase }}
@@ -219,10 +219,10 @@
                     to="/purchase/payment-order"
                     active-class="active">{{ $t('payment order') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
               </ul>
             </li>
-            <!-- <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">
+            <!-- <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales') && authUser.tenant_package_id > 1">
               <router-link to="/sales" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>
                 <span class="sidebar-mini-hide">{{ $t("sales") | uppercase }}</span>
@@ -236,7 +236,7 @@
                 </li>
               </ul>
             </li> -->
-            <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
+            <!-- <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
               <router-link to="/pos" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>
                 <span class="sidebar-mini-hide">{{ $t("pos") | uppercase }}</span>
@@ -255,8 +255,8 @@
                   </router-link>
                 </li>
               </ul>
-            </li>
-            <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
+            </li> -->
+            <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory') && authUser.tenant_package_id > 1">
               <router-link to="/inventory" class="nav-submenu" active-class="active">
                 <i class="si si-tag"/>
                 <span class="sidebar-mini-hide">{{ $t("inventory") | uppercase }}</span>
@@ -294,7 +294,7 @@
                 </li> -->
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
+            <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture') && authUser.tenant_package_id > 1">
               <router-link to="/manufacture" class="nav-submenu" active-class="active">
                 <i class="si si-settings"/>
                 <span class="sidebar-mini-hide">{{ $t("manufacture") | uppercase }}</span>
@@ -326,7 +326,7 @@
                 </li> -->
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance')">
+            <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance') && authUser.tenant_package_id > 1">
               <router-link to="/finance" class="nav-submenu" active-class="active">
                 <i class="si si-wallet"/>
                 <span class="sidebar-mini-hide">{{ $t("finance") | uppercase }}</span>
@@ -352,7 +352,7 @@
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting')">
+            <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting') && authUser.tenant_package_id > 1">
               <router-link to="/accounting" class="nav-submenu" active-class="active">
                 <i class="si si-folder-alt"/>
                 <span class="sidebar-mini-hide">{{ $t("accounting") | uppercase }}</span>
@@ -444,9 +444,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('accountRewardToken', [
-      'balance'
-    ])
+    ...mapGetters('accountRewardToken', ['balance']),
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
     ...mapActions('auth', ['logout']),
