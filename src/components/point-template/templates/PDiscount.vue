@@ -9,9 +9,7 @@
         :options="options"
         :is-text-right="isTextRight"
         :max="100"
-        @input="discountPercentChanged"
-      >
-      </p-form-number>
+        @input="discountPercentChanged"/>
       <p-form-number
         ref="formDiscount"
         v-else
@@ -20,11 +18,9 @@
         :options="options"
         :is-text-right="isTextRight"
         :max="baseValue"
-        @input="discountValueChanged"
-      >
-      </p-form-number>
-      <div @click="togglePercent" class="input-group-append">
-        <button class="btn btn-outline-dark py-0 px-5">
+        @input="discountValueChanged"/>
+      <div class="input-group-append">
+        <button type="button" class="btn btn-outline-dark py-0 px-5" @click="togglePercent">
           <div class="d-flex align-items-center">
             <div class="mr-2">
               <span :class="{'text-black-50': isPercent}">123</span><br>
