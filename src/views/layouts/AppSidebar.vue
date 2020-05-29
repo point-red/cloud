@@ -184,12 +184,12 @@
                     active-class="active">{{ $t('purchase request') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
                   <router-link
                     to="/purchase/order"
                     active-class="active">{{ $t('purchase order') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
                 <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
                   <router-link
                     to="/purchase/down-payment"
@@ -236,7 +236,7 @@
                 </li>
               </ul>
             </li> -->
-            <!-- <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
+            <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
               <router-link to="/pos" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>
                 <span class="sidebar-mini-hide">{{ $t("pos") | uppercase }}</span>
@@ -255,7 +255,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li> -->
+            </li>
             <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
               <router-link to="/inventory" class="nav-submenu" active-class="active">
                 <i class="si si-tag"/>

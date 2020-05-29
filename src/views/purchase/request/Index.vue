@@ -167,7 +167,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
@@ -177,7 +176,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     PurchaseMenu,
     Breadcrumb,
     BreadcrumbPurchase,

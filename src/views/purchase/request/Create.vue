@@ -281,6 +281,14 @@ export default {
     },
     onSubmit () {
       this.isSaving = true
+      if (this.form.request_approval_to == null) {
+        this.$notification.error('approval cannot be null')
+        this.isSaving = false
+        this.form.errors.record({
+          request_approval_to: ['Approver should not empty']
+        })
+        return
+      }
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.items.length > 1) {
         this.form.items = this.form.items.filter(item => item.item_id !== null)
