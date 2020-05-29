@@ -64,6 +64,14 @@ export default {
     },
     number () {
       this.$emit('input', this.number)
+
+      this.$nextTick(() => {
+        if (this.number < this.min) {
+          this.$emit('input', this.min)
+        } else if (this.number > this.max) {
+          this.$emit('input', this.max)
+        }
+      })
     }
   },
   props: {
@@ -102,6 +110,14 @@ export default {
     showAddReduceButtons: {
       type: Boolean,
       default: false
+    },
+    min: {
+      type: Number,
+      default: 0
+    },
+    max: {
+      type: Number,
+      default: Number.MAX_SAFE_INTEGER
     }
   },
   methods: {

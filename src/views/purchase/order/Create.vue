@@ -123,24 +123,24 @@
                     <p-form-number
                       :id="'price' + index"
                       :name="'price' + index"
-                      v-model="row.price"
-                      :readonly="row.item_id == null"
-                      @keyup.native="calculate()"/>
+                      v-model.number="row.price"
+                      :readonly="row.item_id == null"/>
                   </td>
                   <td>
                     <p-discount
                       :id="'discount' + index"
                       :name="'discount' + index"
                       :readonly="row.item_id == null"
-                      v-model="row.discount_percent"
-                      @keyup.native="calculate()"/>
+                      :base-value="row.price"
+                      :discount-percent.sync="row.discount_percent"
+                      :discount-value.sync="row.discount_value"/>
                   </td>
                   <td>
                     <p-form-number
                       :id="'total-' + index"
                       :name="'total-' + index"
                       :readonly="true"
-                      v-model="row.total"/>
+                      :value="row.quantity * (row.price - row.discount_value)"/>
                   </td>
                   <td>
                     <button type="button"
@@ -187,7 +187,7 @@
                     :id="'subtotal'"
                     :name="'subtotal'"
                     :readonly="true"
-                    v-model="form.subtotal"/>
+                    :value="subtotal"/>
                 </td>
               </tr>
             </point-table>
@@ -206,7 +206,9 @@
                       id="discount"
                       name="discount"
                       v-model="form.discount_percent"
-                      @keyup.native="calculate()"/>
+                      :base-value="subtotal"
+                      :discount-percent.sync="form.discount_percent"
+                      :discount-value.sync="form.discount_value"/>
                   </div>
                 </p-form-row>
                 <p-form-row
@@ -229,7 +231,7 @@
                       :id="'total'"
                       :name="'total'"
                       :readonly="true"
-                      v-model="form.tax"/>
+                      :value="tax"/>
                   </div>
                 </p-form-row>
                 <p-form-row
@@ -241,7 +243,7 @@
                       :id="'total'"
                       :name="'total'"
                       :readonly="true"
-                      v-model="form.amount"/>
+                      :value="grandTotal"/>
                   </div>
                 </p-form-row>
               </div>
@@ -304,7 +306,6 @@ export default {
       isSaving: false,
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
-      totalPrice: 0,
       purchaseRequest: null,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
@@ -318,13 +319,10 @@ export default {
         need_down_payment: 0,
         cash_only: false,
         notes: null,
-        subtotal: 0,
         discount_percent: 0,
         discount_value: 0,
-        tax_base: 0,
         tax: 0,
         type_of_tax: 'exclude',
-        amount: 0,
         items: [],
         request_approval_to: null,
         approver_name: null,
@@ -335,7 +333,35 @@ export default {
   },
   computed: {
     ...mapGetters('purchaseOrder', ['purchaseOrder']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+
+    subtotal () {
+      return this.form.items.reduce((carry, item) => {
+        return carry + item.quantity * (item.price - item.discount_value)
+      }, 0)
+    },
+    tax () {
+      let taxBase = this.subtotal - this.form.discount_value
+
+      if (this.form.type_of_tax == 'include') {
+        taxBase = taxBase * 10 / 11
+      } else if (this.form.type_of_tax == 'exclude') {
+        taxBase /= 10
+      }
+
+      taxBase = Math.round((taxBase + Number.EPSILON) * 100) / 100
+
+      return taxBase
+    },
+    grandTotal () {
+      let grandTotal = this.subtotal - this.form.discount_value
+      if (this.form.type_of_tax == 'exclude') {
+        grandTotal *= 1.1
+      }
+      grandTotal = Math.round((grandTotal + Number.EPSILON) * 100) / 100
+
+      return grandTotal
+    }
   },
   methods: {
     ...mapActions('purchaseOrder', ['create']),
@@ -346,13 +372,12 @@ export default {
         more: false,
         unit: null,
         converter: null,
-        quantity: null,
-        price: null,
+        quantity: 0,
+        price: 0,
         discount_percent: 0,
         discount_value: 0,
-        total: null,
         allocation_id: null,
-        allocation_name: null,
+        allocation_name: '',
         notes: null
       })
     },
@@ -423,7 +448,6 @@ export default {
       } else {
         this.form.type_of_tax = taxType
       }
-      this.calculate()
     },
     choosePurchaseRequest (purchaseRequest) {
       this.purchaseRequest = purchaseRequest
@@ -442,38 +466,12 @@ export default {
           discount_value: 0,
           total: item.quantity * (item.price - item.discount_value),
           allocation_id: item.allocation_id,
-          allocation_name: null, // TODO get alocation name
+          allocation_name: '', // TODO get alocation name
           notes: item.notes
         }
       })
       this.addItemRow()
-      this.calculate()
     },
-    calculate: debounce(function () {
-      var subtotal = 0
-      this.form.items.forEach(function (element) {
-        element.allocation_name = ''
-        if (element.allocation) {
-          element.allocation_name = element.allocation.name
-        }
-        element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
-        element.discount_value = element.discount_percent * element.price / 100
-        subtotal += parseFloat(element.total)
-      })
-      this.form.subtotal = subtotal
-      this.form.discount_value = this.form.discount_percent * subtotal / 100
-      this.form.tax_base = this.form.subtotal - (this.form.subtotal * this.form.discount_percent / 100)
-      if (this.form.type_of_tax == 'include') {
-        this.form.tax = this.form.tax_base * 10 / 100
-        this.form.amount = this.form.tax_base
-      } else if (this.form.type_of_tax == 'exclude') {
-        this.form.tax = this.form.tax_base * 10 / 100
-        this.form.amount = this.form.tax_base + this.form.tax
-      } else {
-        this.form.tax = 0
-        this.form.amount = this.form.tax_base
-      }
-    }, 300),
     onSubmit () {
       this.isSaving = true
       if (this.form.request_approval_to == null) {
@@ -484,12 +482,7 @@ export default {
         })
         return
       }
-      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      if (this.form.items.length > 1) {
-        this.form.items = this.form.items.filter(item => item.item_id !== null)
-      }
-      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      this.form.items = this.form.items.filter(item => item.item_id !== null)
+      this.setFormBeforeSubmit()
       this.create(this.form)
         .then(response => {
           this.isSaving = false
@@ -501,6 +494,28 @@ export default {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
+    },
+    setFormBeforeSubmit () {
+      this.setIncrementGroup()
+      this.setFormTax()
+      this.setFormItemsExcludeNull()
+      this.setFormItemAllocationName()
+    },
+    setIncrementGroup () {
+      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
+    },
+    setFormTax () {
+      this.form.tax = this.tax
+    },
+    setFormItemsExcludeNull () {
+      this.form.items = this.form.items.filter(item => item.item_id)
+    },
+    setFormItemAllocationName () {
+      this.form.items.forEach(item => {
+        if (item.allocation) {
+          item.allocation_name = item.allocation.name
+        }
+      })
     }
   },
   created () {
@@ -520,12 +535,10 @@ export default {
         this.form.supplier_id = response.data.supplier_id
         this.form.supplier_name = response.data.supplier_name
         this.form.notes = response.data.form.notes
-        this.form.amount = response.data.amount
         this.form.items = response.data.items
         this.form.items.forEach(function (element) {
           element.purchase_request_item_id = element.id
         })
-        this.calculate()
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)

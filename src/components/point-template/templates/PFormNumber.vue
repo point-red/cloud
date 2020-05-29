@@ -1,6 +1,7 @@
 <template>
   <div>
     <cleave
+      ref="formNumber"
       :readonly="readonly"
       v-model="number"
       :options="options"
@@ -42,6 +43,14 @@ export default {
     },
     number () {
       this.$emit('input', this.number)
+
+      this.$nextTick(() => {
+        if (this.number < this.min) {
+          this.$emit('input', this.min)
+        } else if (this.number > this.max) {
+          this.$emit('input', this.max)
+        }
+      })
     }
   },
   props: {
@@ -71,6 +80,19 @@ export default {
     errors: {
       type: Array,
       default: null
+    },
+    min: {
+      type: Number,
+      default: 0
+    },
+    max: {
+      type: Number,
+      default: Number.MAX_SAFE_INTEGER
+    }
+  },
+  methods: {
+    setFocus () {
+      this.$refs.formNumber.$el.select()
     }
   }
 }
