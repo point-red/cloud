@@ -10,7 +10,7 @@
       v-if="$permission.has('menu human resource')"
       link="/human-resource"
       icon="si si-emoticon-smile"/>
-    <p-box
+    <!-- <p-box
       :name="$t('purchase')"
       v-if="$permission.has('menu purchase') && authUser.tenant_package_id > 1"
       link="/purchase"
@@ -24,7 +24,7 @@
       :name="$t('inventory')"
       v-if="$permission.has('menu inventory') && authUser.tenant_package_id > 1"
       link="/inventory"
-      icon="si si-tag"/>
+      icon="si si-tag"/> -->
     <p-box
       :name="$t('finance')"
       v-if="$permission.has('menu finance') && authUser.tenant_package_id > 1"
