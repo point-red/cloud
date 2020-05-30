@@ -319,7 +319,7 @@ export default {
         vat_id_number: null,
         timezone: null,
         package_id: 1,
-        package_notes: null,
+        package_notes: '',
         package_price: 0,
         package_total_price: 0,
         plugins: [],
