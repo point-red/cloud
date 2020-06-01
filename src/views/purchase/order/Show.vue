@@ -8,6 +8,23 @@
 
     <purchase-menu/>
 
+    <p-show-form-approval-status
+      :is-loading="isLoading"
+      :approved-by="purchaseOrder.form.request_approval_to.full_name"
+      :cancellation-status="purchaseOrder.form.cancellation_status"
+      :approval-status="purchaseOrder.form.approval_status"
+      :approval-reason="purchaseOrder.form.approval_reason"
+      @onApprove="onApprove"
+      @onReject="onReject"/>
+
+    <p-show-form-cancellation-status
+      :is-loading="isLoading"
+      :cancellation-status="purchaseOrder.form.cancellation_status"
+      :cancellation-approval-reason="purchaseOrder.form.cancellation_approval_reason"
+      :request-cancellation-reason="purchaseOrder.form.request_cancellation_reason"
+      @onCancellationApprove="onCancellationApprove"
+      @onCancellationReject="onCancellationReject"/>
+
     <div class="row" v-if="purchaseOrder">
       <p-block>
         <p-block-inner :is-loading="isLoading">
@@ -21,7 +38,7 @@
                   {{ $t('edit') | uppercase }}
                 </router-link>
                 <button
-                  v-if="purchaseOrder.form.cancellation_status == null"
+                  v-if="purchaseOrder.form.cancellation_status == null || purchaseOrder.form.cancellation_status == -1"
                   @click="$refs.formRequestDelete.open()" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('delete') | uppercase }}
                 </button>
@@ -198,6 +215,8 @@
         </p-block-inner>
       </p-block>
     </div>
+
+    <m-form-request-delete ref="formRequestDelete" @delete="onDelete($event)"></m-form-request-delete>
   </div>
 </template>
 
@@ -224,12 +243,7 @@ export default {
   },
   computed: {
     ...mapGetters('purchaseOrder', ['purchaseOrder']),
-    ...mapGetters('auth', ['authUser']),
-    totalPrice () {
-      return this.purchaseOrder.items.reduce((carry, item) => {
-        return carry + item.quantity * (item.price - item.discount_value)
-      }, 0)
-    }
+    ...mapGetters('auth', ['authUser'])
   },
   watch: {
     '$route' (to, from) {
@@ -240,7 +254,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions('purchaseOrder', ['find', 'delete', 'approve', 'reject']),
+    ...mapActions('purchaseOrder', {
+      find: 'find',
+      delete: 'delete',
+      approve: 'approve',
+      reject: 'reject',
+      cancellationApprove: 'cancellationApprove',
+      cancellationReject: 'cancellationReject'
+    }),
     toggleMore () {
       let isMoreActive = this.purchaseOrder.items.some(function (el, index) {
         return el.more === false
@@ -284,14 +305,17 @@ export default {
       })
       this.purchaseOrder.subtotal = subtotal
     },
-    onDelete () {
+    onDelete (reason) {
       this.isDeleting = true
       this.delete({
-        id: this.id
+        id: this.id,
+        data: {
+          reason: reason
+        }
       }).then(response => {
         this.isDeleting = false
         this.$notification.success('cancel success')
-        this.$router.push('/purchase/order')
+        this.purchaseOrderRequest()
       }).catch(error => {
         this.isDeleting = false
         this.$notification.error(error.message)
@@ -303,17 +327,35 @@ export default {
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
-        this.purchaseOrder.form.approval_status = response.data.form.approval_status
+        this.purchaseOrderRequest()
       })
     },
     onReject (reason) {
       this.reject({
         id: this.id,
-        approval_reason: reason
+        reason: reason
       }).then(response => {
         this.$notification.success('reject success')
-        this.purchaseOrder.form.approval_status = response.data.form.approval_status
-        this.purchaseOrder.form.approval_reason = response.data.form.approval_reason
+        this.purchaseOrderRequest()
+      })
+    },
+    onCancellationApprove () {
+      this.cancellationApprove({
+        id: this.id
+      }).then(response => {
+        this.$notification.success('cancellation approved')
+        this.$router.push('/purchase/order')
+      })
+    },
+    onCancellationReject (reason) {
+      this.cancellationReject({
+        id: this.id,
+        reason: reason
+      }).then(response => {
+        this.$notification.success('cancellation rejected')
+        this.purchaseOrderRequest()
+      }).catch(error => {
+        console.log(error.message)
       })
     }
   },

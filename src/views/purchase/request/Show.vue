@@ -45,7 +45,7 @@
                   {{ $t('edit') | uppercase }}
                 </router-link>
                 <button
-                  v-if="purchaseRequest.form.cancellation_status == null"
+                  v-if="purchaseRequest.form.cancellation_status == null || purchaseRequest.form.cancellation_status == -1"
                   @click="$refs.formRequestDelete.open()" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('delete') | uppercase }}
                 </button>
