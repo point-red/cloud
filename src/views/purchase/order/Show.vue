@@ -20,6 +20,12 @@
                 <router-link :to="{ name: 'purchase.order.edit', params: { id: purchaseOrder.id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
                 </router-link>
+                <button
+                  v-if="purchaseOrder.form.cancellation_status == null"
+                  @click="$refs.formRequestDelete.open()" class="btn btn-sm btn-outline-secondary mr-5">
+                  {{ $t('delete') | uppercase }}
+                </button>
+                <m-form-request-delete ref="formRequestDelete" @delete="onDelete($event)"></m-form-request-delete>
               </div>
             </div>
           </div>

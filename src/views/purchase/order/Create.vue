@@ -63,21 +63,6 @@
               </div>
             </div>
             <hr>
-            <p-form-row
-              id="date"
-              name="date"
-              :label="$t('date')">
-              <div slot="body" class="col-lg-9">
-                <p-date-picker
-                  id="date"
-                  name="date"
-                  label="date"
-                  v-model="form.date"
-                  :errors="form.errors.get('date')"
-                  @errors="form.errors.set('date', null)"/>
-              </div>
-            </p-form-row>
-            <hr>
             <point-table>
               <tr slot="p-head">
                 <th>#</th>
@@ -218,7 +203,7 @@
                 <p-form-row
                   id="tax_base"
                   name="tax_base"
-                  :label="$t('tax_base')">
+                  :label="$t('tax base')">
                   <div slot="body" class="col-lg-9 mt-5">
                     <p-form-number
                       :id="'tax_base'"
@@ -259,7 +244,7 @@
                       :id="'total'"
                       :name="'total'"
                       :readonly="true"
-                      :value="grandTotal"/>
+                      :value="total"/>
                   </div>
                 </p-form-row>
               </div>
@@ -369,7 +354,7 @@ export default {
       }
       return value
     },
-    grandTotal () {
+    total () {
       if (this.form.type_of_tax == 'include') {
         return this.subtotal - this.form.discount_value
       } else {
@@ -500,7 +485,12 @@ export default {
         })
         return
       }
-      this.setFormBeforeSubmit()
+      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
+      this.form.subtotal = this.subtotal
+      this.form.tax_base = this.tax_base
+      this.form.tax = this.tax
+      this.form.total = this.total
+      this.form.items = this.form.items.filter(item => item.item_id)
       this.create(this.form)
         .then(response => {
           this.isSaving = false
@@ -512,28 +502,6 @@ export default {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
-    },
-    setFormBeforeSubmit () {
-      this.setIncrementGroup()
-      this.setFormTax()
-      this.setFormItemsExcludeNull()
-      this.setFormItemAllocationName()
-    },
-    setIncrementGroup () {
-      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-    },
-    setFormTax () {
-      this.form.tax = this.tax
-    },
-    setFormItemsExcludeNull () {
-      this.form.items = this.form.items.filter(item => item.item_id)
-    },
-    setFormItemAllocationName () {
-      this.form.items.forEach(item => {
-        if (item.allocation) {
-          item.allocation_name = item.allocation.name
-        }
-      })
     }
   },
   created () {

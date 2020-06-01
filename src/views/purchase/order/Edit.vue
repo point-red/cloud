@@ -486,7 +486,12 @@ export default {
         })
         return
       }
-      this.setFormBeforeSubmit()
+      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
+      this.form.subtotal = this.subtotal
+      this.form.tax_base = this.tax_base
+      this.form.tax = this.tax
+      this.form.total = this.total
+      this.form.items = this.form.items.filter(item => item.item_id)
       this.update(this.form).then(response => {
         this.isSaving = false
         this.$notification.success('update success')
@@ -496,28 +501,6 @@ export default {
         this.isSaving = false
         this.$notification.error(error.message)
         this.form.errors.record(error.errors)
-      })
-    },
-    setFormBeforeSubmit () {
-      this.setIncrementGroup()
-      this.setFormTax()
-      this.setFormItemsExcludeNull()
-      this.setFormItemAllocationName()
-    },
-    setIncrementGroup () {
-      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-    },
-    setFormTax () {
-      this.form.tax = this.tax
-    },
-    setFormItemsExcludeNull () {
-      this.form.items = this.form.items.filter(item => item.item_id)
-    },
-    setFormItemAllocationName () {
-      this.form.items.forEach(item => {
-        if (item.allocation) {
-          item.allocation_name = item.allocation.name
-        }
       })
     }
   },
