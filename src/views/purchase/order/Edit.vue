@@ -18,15 +18,15 @@
                 <h4>{{ $t('purchase order') | uppercase }}</h4>
                 <table class="table table-sm table-bordered">
                   <tr>
+                    <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                    <td>
+                      {{ purchaseOrder.form.number }}
+                    </td>
+                  </tr>
+                  <tr>
                     <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
                     <td>
-                      <p-date-picker
-                        id="date"
-                        name="date"
-                        :label="$t('date')"
-                        v-model="form.date"
-                        :errors="form.errors.get('date')"
-                        @errors="form.errors.set('date', null)"/>
+                      {{ purchaseOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
                     </td>
                   </tr>
                   <tr>
@@ -63,21 +63,6 @@
                 </div>
               </div>
             </div>
-            <hr>
-            <p-form-row
-              id="date"
-              name="date"
-              :label="$t('date')">
-              <div slot="body" class="col-lg-9">
-                <p-date-picker
-                  id="date"
-                  name="date"
-                  label="date"
-                  v-model="form.date"
-                  :errors="form.errors.get('date')"
-                  @errors="form.errors.set('date', null)"/>
-              </div>
-            </p-form-row>
             <hr>
             <point-table>
               <tr slot="p-head">
@@ -199,7 +184,7 @@
 
             <div class="row">
               <div class="col-sm-6">
-                <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+                <textarea rows="14" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
               </div>
               <div class="col-sm-6">
                 <p-form-row
@@ -210,31 +195,42 @@
                     <p-discount
                       id="discount"
                       name="discount"
-                      v-model="form.discount_percent"
                       :base-value="subtotal"
                       :discount-percent.sync="form.discount_percent"
                       :discount-value.sync="form.discount_value"/>
                   </div>
                 </p-form-row>
                 <p-form-row
-                  name="need-down-payment"
+                  id="tax-base"
+                  name="tax-base"
+                  :label="$t('tax base')">
+                  <div slot="body" class="col-lg-9 mt-5">
+                    <p-form-number
+                      :id="'tax-base'"
+                      :name="'tax-base'"
+                      :readonly="true"
+                      :value="tax_base"/>
+                  </div>
+                </p-form-row>
+                <p-form-row
+                  name="tax"
                   :label="$t('tax')">
                   <div slot="body" class="col-lg-9">
                     <p-form-check-box
                       class="mb-0"
                       style="float:left"
-                      name="need-down-payment"
+                      name="tax"
                       @click.native="chooseTax('include')"
                       :checked="form.type_of_tax == 'include'"
                       :description="$t('include tax')"/>
                     <p-form-check-box
-                      name="need-down-payment"
+                      name="tax"
                       @click.native="chooseTax('exclude')"
                       :checked="form.type_of_tax == 'exclude'"
                       :description="$t('exclude tax')"/>
                     <p-form-number
-                      :id="'total'"
-                      :name="'total'"
+                      :id="'tax-value'"
+                      :name="'tax-value'"
                       :readonly="true"
                       :value="tax"/>
                   </div>
@@ -309,11 +305,14 @@ export default {
   },
   data () {
     return {
+      id: this.$route.params.id,
       isSaving: false,
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
       purchaseRequest: null,
       form: new Form({
+        id: this.$route.params.id,
+        purchase_request_id: null,
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         supplier_id: null,
@@ -333,8 +332,7 @@ export default {
         items: [],
         request_approval_to: null,
         approver_name: null,
-        approver_email: null,
-        purchase_request_id: null
+        approver_email: null
       })
     }
   },
@@ -367,7 +365,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('purchaseOrder', ['create']),
+    ...mapActions('purchaseOrder', ['find', 'update']),
     addItemRow () {
       this.form.items.push({
         item_id: null,
@@ -489,17 +487,16 @@ export default {
         return
       }
       this.setFormBeforeSubmit()
-      this.create(this.form)
-        .then(response => {
-          this.isSaving = false
-          this.$notification.success('create success')
-          Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/purchase/order/' + response.data.id)
-        }).catch(error => {
-          this.isSaving = false
-          this.$notification.error(error.message)
-          this.form.errors.record(error.errors)
-        })
+      this.update(this.form).then(response => {
+        this.isSaving = false
+        this.$notification.success('update success')
+        Object.assign(this.$data, this.$options.data.call(this))
+        this.$router.push('/purchase/order/' + response.data.id)
+      }).catch(error => {
+        this.isSaving = false
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
+      })
     },
     setFormBeforeSubmit () {
       this.setIncrementGroup()
@@ -525,31 +522,39 @@ export default {
     }
   },
   created () {
-    this.addItemRow()
-
-    if (this.$route.query.id) {
-      this.isLoading = true
-      this.find({
-        id: this.$route.query.id,
-        params: {
-          includes: 'form;supplier;items.item.units;items.allocation'
-        }
-      }).then(response => {
-        this.isLoading = false
-        this.form.purchase_request_id = response.data.id
-        this.form.date = response.data.form.date
-        this.form.supplier_id = response.data.supplier_id
-        this.form.supplier_name = response.data.supplier_name
-        this.form.notes = response.data.form.notes
-        this.form.items = response.data.items
-        this.form.items.forEach(function (element) {
-          element.purchase_request_item_id = element.id
-        })
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
+    this.isLoading = true
+    this.find({
+      id: this.$route.params.id,
+      params: {
+        includes: 'form.requestApprovalTo;supplier;items.item.units;items.allocation;purchaseRequest.form'
+      }
+    }).then(response => {
+      this.isLoading = false
+      this.form.purchase_request_id = response.data.purchase_request.id
+      this.form.date = response.data.form.date
+      this.form.supplier_id = response.data.supplier_id
+      this.form.supplier_name = response.data.supplier_name
+      this.form.supplier_label = response.data.supplier.label
+      this.form.discount_percent = response.data.discount_percent
+      this.form.discount_value = response.data.discount_value
+      this.form.notes = response.data.form.notes
+      this.form.type_of_tax = response.data.type_of_tax
+      this.form.amount = response.data.amount
+      this.form.discount_value = response.data.discount_value
+      this.form.discount_percent = response.data.discount_percent
+      this.form.items = response.data.items
+      this.form.request_approval_to = response.data.form.request_approval_to.id
+      this.form.approver_name = response.data.form.request_approval_to.full_name
+      this.form.approver_email = response.data.form.request_approval_to.email
+      this.form.items.forEach(el => {
+        el.item_label = el.item.label
       })
-    }
+      this.purchaseRequest = response.data.purchase_request
+      this.addItemRow()
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   }
 }
 </script>

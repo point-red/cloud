@@ -1,34 +1,36 @@
 <template>
-  <div>
-    <div class="input-group" style="width:100%">
-      <p-form-number
-        ref="formDiscount"
-        v-if="isPercent"
-        :readonly="readonly"
-        :value="discountPercent"
-        :options="options"
-        :is-text-right="isTextRight"
-        :max="100"
-        @input="discountPercentChanged"/>
-      <p-form-number
-        ref="formDiscount"
-        v-else
-        :readonly="readonly"
-        :value="discountValue"
-        :options="options"
-        :is-text-right="isTextRight"
-        :max="baseValue"
-        @input="discountValueChanged"/>
-      <k-pop placement="bottom" with-arrow theme="clean">
-        <template #trigger="{ show, hide }">
-          <div class="input-group-append" @click="togglePercent" @mouseenter="show" @mouseleave="hide">
-            <div v-if="isPercent" class="input-group-text">%</div>
-            <div v-else class="input-group-text"></div>
-          </div>
-        </template>
-        Click this box to change discount based on percentage or value
-      </k-pop>
-    </div>
+  <div class="input-group">
+    <p-form-number
+      width="100%"
+      style="width:100%"
+      ref="formDiscount"
+      v-if="isPercent"
+      :readonly="readonly"
+      :value="discountPercent"
+      :options="options"
+      :is-text-right="isTextRight"
+      :max="100"
+      @input="discountPercentChanged"/>
+    <p-form-number
+      width="100%"
+      style="width:100%"
+      ref="formDiscount"
+      v-else
+      :readonly="readonly"
+      :value="discountValue"
+      :options="options"
+      :is-text-right="isTextRight"
+      :max="baseValue"
+      @input="discountValueChanged"/>
+    <k-pop placement="bottom" with-arrow theme="clean">
+      <template #trigger="{ show, hide }">
+        <div class="input-group-append" @click="togglePercent" @mouseenter="show" @mouseleave="hide">
+          <div v-if="isPercent" class="input-group-text">%</div>
+          <div v-else class="input-group-text"></div>
+        </div>
+      </template>
+      Click this box to change discount based on percentage or value
+    </k-pop>
   </div>
 </template>
 
@@ -37,7 +39,7 @@ export default {
   data () {
     return {
       number: this.value,
-      isPercent: true,
+      isPercent: false,
       options: {
         numeral: true,
         numeralDecimalScale: 15,
@@ -53,6 +55,20 @@ export default {
         this.number = 0
       }
       this.$emit('input', this.number)
+    },
+    discountPercent () {
+      if (this.discountPercent != 0) {
+        this.isPercent = true
+      } else if (this.discountPercent == 0 && this.discountValue != 0) {
+        this.isPercent = false
+      }
+    },
+    discountValue () {
+      if (this.discountPercent != 0) {
+        this.isPercent = true
+      } else if (this.discountPercent == 0 && this.discountValue != 0) {
+        this.isPercent = false
+      }
     }
   },
   props: {

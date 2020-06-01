@@ -75,17 +75,11 @@
             <template v-for="(row, index) in purchaseOrder.items">
               <tr slot="p-body" :key="index">
                 <th class="text-center">{{ index + 1 }}</th>
-                <td>
-                  <router-link
-                    :to="'/master/item/' + row.item_id"
-                    v-if="$permission.has('read item')">
-                    {{ row.item.name }}
-                  </router-link>
-                </td>
+                <td>{{ row.item.label }}</td>
                 <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
                 <td class="text-right">{{ row.price | numberFormat }}</td>
                 <td class="text-right">{{ row.discount_value | numberFormat }}</td>
-                <td class="text-right">{{ row.quantity * row.price - row.discount_value | numberFormat }}</td>
+                <td class="text-right">{{ row.quantity * (row.price - row.discount_value) | numberFormat }}</td>
                 <td>
                   <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more">
                     <i class="fa fa-ellipsis-h"/>
@@ -139,6 +133,15 @@
               <td></td>
               <td class="text-right"><b>{{ $t('discount') | uppercase }}</b></td>
               <td class="text-right"><b>{{ purchaseOrder.discount_value | numberFormat }}</b></td>
+              <td></td>
+            </tr>
+            <tr slot="p-body">
+              <th></th>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="text-right"><b>{{ $t('tax base') | uppercase }}</b></td>
+              <td class="text-right"><b>{{ purchaseOrder.amount - purchaseOrder.tax | numberFormat }}</b></td>
               <td></td>
             </tr>
             <tr slot="p-body">
@@ -266,7 +269,11 @@ export default {
     calculate () {
       var subtotal = 0
       this.purchaseOrder.items.forEach(function (element) {
-        element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
+        if (element.discount_percent > 0) {
+          element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
+        } else if (element.discount_value > 0) {
+          element.total = element.quantity * (element.price - element.discount_value)
+        }
         subtotal += parseFloat(element.total)
       })
       this.purchaseOrder.subtotal = subtotal

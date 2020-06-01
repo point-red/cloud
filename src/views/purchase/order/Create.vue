@@ -198,7 +198,7 @@
 
             <div class="row">
               <div class="col-sm-6">
-                <textarea rows="10" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+                <textarea rows="14" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
               </div>
               <div class="col-sm-6">
                 <p-form-row
@@ -213,6 +213,18 @@
                       :base-value="subtotal"
                       :discount-percent.sync="form.discount_percent"
                       :discount-value.sync="form.discount_value"/>
+                  </div>
+                </p-form-row>
+                <p-form-row
+                  id="tax_base"
+                  name="tax_base"
+                  :label="$t('tax_base')">
+                  <div slot="body" class="col-lg-9 mt-5">
+                    <p-form-number
+                      :id="'tax_base'"
+                      :name="'tax_base'"
+                      :readonly="true"
+                      :value="tax_base"/>
                   </div>
                 </p-form-row>
                 <p-form-row
@@ -369,6 +381,7 @@ export default {
     ...mapActions('purchaseOrder', ['create']),
     addItemRow () {
       this.form.items.push({
+        purchase_request_item_id: null,
         item_id: null,
         item_name: null,
         more: false,
