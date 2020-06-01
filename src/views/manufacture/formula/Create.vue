@@ -12,13 +12,22 @@
       <p-block>
         <p-block-inner>
           <div class="row">
-            <div class="col-sm-12">
-              <h4 class="text-center m-0">{{ $t('formula') | uppercase }}</h4>
-            </div>
-          </div>
-          <hr>
-          <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-6">
+              <h4>{{ $t('formula') | uppercase }}</h4>
+              <p-form-row
+                id="date"
+                name="date"
+                :label="$t('date')">
+                <div slot="body" class="col-lg-9">
+                  <p-date-picker
+                    id="date"
+                    name="date"
+                    :label="$t('date')"
+                    v-model="form.date"
+                    :errors="form.errors.get('date')"
+                    @errors="form.errors.set('date', null)"/>
+                </div>
+              </p-form-row>
               <p-form-row
                 id="process"
                 name="process"
@@ -40,6 +49,15 @@
                 :errors="form.errors.get('name')"
                 @errors="form.errors.set('name', null)"/>
             </div>
+            <div class="col-sm-6 text-right">
+              <div class="mb-30">
+                <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                <template v-if="authUser.branch">
+                  {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
+                  {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
+                </template>
+              </div>
+            </div>
           </div>
           <hr>
           <point-table>
@@ -47,57 +65,58 @@
               <th>#</th>
               <th style="min-width: 120px">Item</th>
               <th class="text-right">Quantity</th>
-              <th style="width: 50px"></th>
             </tr>
             <tr slot="p-body">
               <th></th>
-              <td colspan="4" class="font-weight-bold">{{ $t('finished goods') | uppercase }}</td>
+              <td colspan="2" class="font-weight-bold">{{ $t('finished goods') | uppercase }}</td>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="index">
               <th>{{ index + 1 }}</th>
               <td>
-                <m-item
-                  :id="'item-finish-' + index"
-                  v-model="row.item_id"
-                  :label="row.item_name"
-                  @clear="clearItem(row)"
-                  @choosen="chooseFinishGood($event, row)"/>
+                <span @click="$refs.finishedGoods.open(index)" class="select-link">
+                  {{ row.item_label || $t('select') | uppercase }}
+                </span>
               </td>
               <td>
                 <p-quantity
-                  :id="'quantity' + index"
-                  :name="'quantity' + index"
+                  :id="'finished-goods-quantity' + index"
+                  :name="'finished-goods-quantity' + index"
                   :disabled="row.item_id == null"
                   v-model="row.quantity"
                   :item-id="row.item_id"
-                  :units="row.item.units"
-                  :unit="row.item.units[0]"
+                  :units="row.units"
+                  :unit="{
+                    name: row.unit,
+                    label: row.unit,
+                    converter: row.converter
+                  }"
                   @choosen="chooseUnit($event, row)"/>
               </td>
-              <td></td>
             </tr>
             <tr slot="p-body">
               <th></th>
-              <td colspan="4" class="font-weight-bold">{{ $t('raw materials') | uppercase }}</td>
+              <td colspan="2" class="font-weight-bold">{{ $t('raw materials') | uppercase }}</td>
             </tr>
             <tr slot="p-body" v-for="(row, index) in form.raw_materials" :key="'material-'+index">
               <th>{{ index + 1 }}</th>
               <td>
-                <m-item
-                  :id="'item-raw-' + index"
-                  :data-index="index"
-                  v-model="row.item_id"
-                  :label="row.item_name"
-                  @choosen="chooseRawMaterial($event, row)"/>
+                <span @click="$refs.rawMaterials.open(index)" class="select-link">
+                  {{ row.item_label || $t('select') | uppercase }}
+                </span>
               </td>
               <td>
                 <p-quantity
-                  :id="'quantity' + index"
-                  :name="'quantity' + index"
+                  :id="'raw-material-quantity' + index"
+                  :name="'raw-material-quantity' + index"
+                  :disabled="row.item_id == null"
                   v-model="row.quantity"
                   :item-id="row.item_id"
-                  :units="row.item.units"
-                  :unit="row.item.units[0]"
+                  :units="row.units"
+                  :unit="{
+                    name: row.unit,
+                    label: row.unit,
+                    converter: row.converter
+                  }"
                   @choosen="chooseUnit($event, row)"/>
               </td>
               <td>
@@ -116,19 +135,14 @@
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
               <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
-              {{ authUser.full_name | uppercase }}
+              {{ createdBy | uppercase }}
               <div class="d-sm-block d-md-none mt-10"></div>
             </div>
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
               <div class="mb-50" style="font-size:11px">_______________</div>
-              <m-user
-                :id="'user'"
-                v-model="form.request_approval_to"
-                :errors="form.errors.get('request_approval_to')"
-                @errors="form.errors.set('request_approval_to', null)"
-                @choosen="chooseApprover"/>
-                {{ form.approver_email }} <br v-if="form.approver_email">
+              <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+              <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
             </div>
           </div>
           <hr>
@@ -142,6 +156,9 @@
         </p-block-inner>
       </p-block>
     </form>
+    <m-user ref="approver" @choosen="chooseApprover"/>
+    <m-item ref="rawMaterials" @choosen="chooseRawMaterial"/>
+    <m-item ref="finishedGoods" @choosen="chooseFinishedGoods"/>
   </div>
 </template>
 
@@ -167,6 +184,7 @@ export default {
   data () {
     return {
       isSaving: false,
+      createdBy: localStorage.getItem('fullName'),
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -175,6 +193,8 @@ export default {
         name: null,
         notes: null,
         request_approval_to: null,
+        approver_name: null,
+        approver_email: null,
         raw_materials: [{
           item_id: null,
           item_name: null,
@@ -253,16 +273,19 @@ export default {
     chooseManufactureProcess (option) {
       this.form.manufacture_process_name = option.name
     },
-    chooseRawMaterial (item, row) {
-      row.quantity = 0
+    chooseRawMaterial (item) {
+      let row = this.form.raw_materials[item.index]
+      row.item_id = item.id
       row.item_name = item.name
-      row.item.units = item.units
-      row.item.units.forEach((unit, keyUnit) => {
-        if (unit.converter == 1) {
+      row.item_label = item.label
+      row.units = item.units
+      row.units.forEach((unit, keyUnit) => {
+        if (unit.id == item.unit_default_purchase) {
           row.unit = unit.label
           row.converter = unit.converter
         }
       })
+
       let isNeedNewRow = true
       this.form.raw_materials.forEach(element => {
         if (element.item_id == null) {
@@ -273,19 +296,22 @@ export default {
         this.addRawMaterialRow()
       }
     },
-    chooseFinishGood (item, row) {
-      row.quantity = 0
+    chooseFinishedGoods (item) {
+      let row = this.form.finished_goods[item.index]
+      row.item_id = item.id
       row.item_name = item.name
-      row.item.units = item.units
-      row.item.units.forEach((unit, keyUnit) => {
-        if (unit.converter == 1) {
+      row.item_label = item.label
+      row.units = item.units
+      row.units.forEach((unit, keyUnit) => {
+        if (unit.id == item.unit_default_purchase) {
           row.unit = unit.label
           row.converter = unit.converter
         }
       })
     },
     chooseApprover (value) {
-      this.form.approver_name = value.label
+      this.form.request_approval_to = value.id
+      this.form.approver_name = value.fullName
       this.form.approver_email = value.email
     },
     clearItem (row) {

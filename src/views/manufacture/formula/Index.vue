@@ -30,68 +30,65 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
-              <th>{{ $t('form') | titlecase }}</th>
-              <th>{{ $t('formula') | titlecase }}</th>
-              <th>{{ $t('finished goods') | titlecase }}</th>
-              <th>{{ $t('raw materials') | titlecase }}</th>
-              <th class="text-center">Approval Status</th>
+              <th></th>
+              <th></th>
+              <th colspan="2" class="text-center bg-gray-light">{{ $t('finished goods') }}</th>
+              <th colspan="2" class="text-center bg-success-light">{{ $t('raw materials') }}</th>
               <th></th>
             </tr>
+            <tr slot="p-head">
+              <th>{{ $t('formula') }}</th>
+              <th>{{ $t('notes') }}</th>
+              <th class="text-center bg-gray-light">{{ $t('name') }}</th>
+              <th class="text-center bg-gray-light">{{ $t('quantity') }}</th>
+              <th class="text-center bg-success-light">{{ $t('name') }}</th>
+              <th class="text-center bg-success-light">{{ $t('quantity') }}</th>
+              <th class="text-center">{{ $t('approval status') }}</th>
+            </tr>
             <template v-for="(formula, index) in formulas">
-              <tr
-                :key="'mm-' + index"
-                slot="p-body">
-                <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
-                <td>
-                  <router-link :to="{ name: 'manufacture.formula.show', params: { id: formula.id }}">
-                    {{ formula.form.number }}
-                  </router-link>
-                </td>
-                <td>
-                  {{ formula.name }}
-                </td>
-                <td>
-                  <span v-for="(finishGood, index2) in formula.finished_goods" :key="finishGood.id">
-                    {{ ++index2 }}.
-                    <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
-                        {{ finishGood.item.label }}
+              <template v-for="(rawMaterial, index2) in formula.raw_materials">
+                <tr :key="'mm-' + index + '-' + index2" slot="p-body">
+                  <th>
+                    <router-link :to="{ name: 'manufacture.formula.show', params: { id: formula.id }}" v-if="index2 == 0">
+                      {{ formula.name }}
                     </router-link>
-                    = {{ finishGood.quantity }} {{ finishGood.unit }}
-                    <br>
-                  </span>
-                </td>
-                <td>
-                  <span v-for="(rawMaterial, index2) in formula.raw_materials" :key="rawMaterial.id">
-                    {{ ++index2 }}.
+                  </th>
+                  <td>
+                    <template v-if="index2 == 0">{{ formula.form.notes }}</template>
+                  </td>
+                  <td class="text-center bg-gray-light">
+                    <template v-if="index2 == 0">
+                      <span v-for="(finishedGood) in formula.finished_goods" :key="finishedGood.id">
+                        <router-link :to="{ name: 'item.show', params: { id: finishedGood.item.id }}">
+                            {{ finishedGood.item.label }}
+                        </router-link>
+                      </span>
+                    </template>
+                  </td>
+                  <td class="text-center bg-gray-light">
+                    <template v-if="index2 == 0">
+                      <span v-for="(finishedGood) in formula.finished_goods" :key="finishedGood.id">
+                        {{ finishedGood.quantity }} {{ finishedGood.unit }}
+                      </span>
+                    </template>
+                  </td>
+                  <td class="text-center bg-success-light">
                     <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
                       {{ rawMaterial.item.label }}
                     </router-link>
-                    = {{ rawMaterial.quantity | numberFormat }} {{ rawMaterial.unit }}
-                    <br>
-                  </span>
-                </td>
-                <td class="text-center">
-                  <div v-if="formula.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                  <div v-if="formula.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
-                  <div v-if="formula.form.approval_status == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
-                </td>
-                <td class="text-right">
-                  <router-link
-                    v-if="formula.form.approval_status == 1"
-                    class="btn btn-sm btn-secondary"
-                    :to="{ name: 'manufacture.processing.input.create',
-                      params: {
-                        id: formula.manufacture_process_id
-                      },
-                      query: {
-                        formulaId: formula.id
-                      }
-                    }">
-                    <i class="fa fa-share-square-o"></i> {{ $t('start production') | uppercase }}
-                  </router-link>
-                </td>
-              </tr>
+                  </td>
+                  <td class="text-center bg-success-light">
+                    {{ rawMaterial.quantity | numberFormat }} {{ rawMaterial.unit }}
+                  </td>
+                  <td class="text-center">
+                    <template v-if="index2 == 0">
+                      <div v-if="formula.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
+                      <div v-if="formula.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
+                      <div v-if="formula.form.approval_status == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
+                    </template>
+                  </td>
+                </tr>
+              </template>
             </template>
           </point-table>
         </p-block-inner>
@@ -149,19 +146,20 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form',
-          sort_by: '-forms.number',
-          fields: 'manufacture_formulas.*',
-          filter_form: 'notArchived;notCanceled',
+          join: 'form,raw_materials,finished_goods,item',
+          fields: 'manufacture_formula.*',
+          sort_by: '-form.number',
+          group_by: 'manufacture_formula.id',
           filter_like: {
             'form.number': this.searchText,
-            'name': this.searchText,
-            'rawMaterials.item.code': this.searchText,
-            'rawMaterials.item.name': this.searchText,
-            'rawMaterials.quantity': this.searchText,
-            'finishedGoods.item.code': this.searchText,
-            'finishedGoods.item.name': this.searchText,
-            'finishedGoods.quantity': this.searchText
+            'form.notes': this.searchText,
+            'manufacture_formula.name': this.searchText,
+            'raw_material_item.code': this.searchText,
+            'raw_material_item.name': this.searchText,
+            'manufacture_formula_raw_material.quantity': this.searchText,
+            'finished_goods_item.code': this.searchText,
+            'finished_goods_item.name': this.searchText,
+            'manufacture_formula_finished_goods.quantity': this.searchText
           },
           limit: this.limit,
           includes: 'form;rawMaterials.item.units;finishedGoods.item.units',

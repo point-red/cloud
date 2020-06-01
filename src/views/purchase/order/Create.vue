@@ -147,7 +147,7 @@
                       class="btn btn-sm btn-outline-secondary"
                       @click="row.more = !row.more"
                       v-if="!isSaving">
-                      <i class="fa fa-ellipsis-h"/>
+                      <i class="fa fa-ellipsis-h"/> {{ row.more }} {{ row.item_id }}
                     </button>
                   </td>
                 </tr>
@@ -159,19 +159,14 @@
                         id="allocation"
                         name="allocation"
                         :label="$t('allocation')">
-                        <m-allocation
-                          slot="body"
-                          class="mt-5"
-                          :id="'allocation-' + index"
-                          v-model="row.allocation_id"/>
+                        <div slot="body" class="col-lg-9 mt-5">
+                          <span @click="$refs.allocation.open(index)" class="select-link">
+                            {{ row.allocation_name || $t('select') | uppercase }}
+                          </span>
+                        </div>
                       </p-form-row>
                     </td>
-                    <td>
-                      <p-form-input
-                        :id="'notes-' + index"
-                        :name="'notes-' + index"
-                        v-model="row.notes"/>
-                    </td>
+                    <td></td>
                     <td></td>
                   </tr>
                 </template>
@@ -251,26 +246,26 @@
             <hr>
             <div class="row">
               <div class="col-sm-6">
-                </div>
-                <div class="col-sm-3 text-center">
-                  <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-                  <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
-                  {{ requestedBy | uppercase }}
-                  <div class="d-sm-block d-md-none mt-10"></div>
-                </div>
-                <div class="col-sm-3 text-center">
-                  <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-                  <div class="mb-50" style="font-size:11px">_______________</div>
-                  <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
-                  <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
-                </div>
+              </div>
+              <div class="col-sm-3 text-center">
+                <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
+                <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+                {{ requestedBy | uppercase }}
+                <div class="d-sm-block d-md-none mt-10"></div>
+              </div>
+              <div class="col-sm-3 text-center">
+                <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
+                <div class="mb-50" style="font-size:11px">_______________</div>
+                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
+              </div>
 
-                <div class="col-sm-12">
-                  <hr>
-                  <button type="submit" class="btn btn-block btn-sm btn-primary" :disabled="isSaving">
-                    <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
-                  </button>
-                </div>
+              <div class="col-sm-12">
+                <hr>
+                <button type="submit" class="btn btn-block btn-sm btn-primary" :disabled="isSaving">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                </button>
+              </div>
             </div>
           </p-block-inner>
         </p-block>
@@ -279,6 +274,7 @@
     <m-supplier ref="supplier" @choosen="chooseSupplier"/>
     <m-item ref="item" @choosen="chooseItem"/>
     <m-user ref="approver" @choosen="chooseApprover"/>
+    <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
     <select-purchase-request ref="selectPurchaseRequest" @choosen="choosePurchaseRequest"></select-purchase-request>
   </div>
 </template>
@@ -439,8 +435,10 @@ export default {
       row.unit = unit.label
       row.converter = unit.converter
     },
-    chooseAllocation (allocation, row) {
-      row.allocation_name = allocation
+    chooseAllocation (allocation) {
+      let row = this.form.items[allocation.index]
+      row.allocation_id = allocation.id
+      row.allocation_name = allocation.name
     },
     chooseTax (taxType) {
       if (taxType == this.form.type_of_tax) {
@@ -454,6 +452,7 @@ export default {
       this.form.purchase_request_id = purchaseRequest.id
       this.form.items = purchaseRequest.items.map(item => {
         return {
+          purchase_request_item_id: item.id,
           item_id: item.item_id,
           item_name: item.item.name,
           item_label: item.item.name,

@@ -32,9 +32,6 @@
             <td class="w-1 text-right text-nowrap">
               {{ item.quantity }} {{ item.unit }}
             </td>
-            <td class="w-1 text-right text-nowrap pr-0">
-              {{ item.price | numberFormat }}
-            </td>
           </tr>
         </table>
       </a>
@@ -82,20 +79,24 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('purchaseRequest', ['get', 'create']),
+    ...mapActions('purchaseRequest', ['get']),
     search () {
       this.isLoading = true
-      let params = {
-        limit: 100,
-        includes: 'items.item.units;form.createdBy'
-      }
-      this.get({ params })
-        .then(response => {
-          this.options = response.data
-        })
-        .finally(() => {
-          this.isLoading = false
-        })
+      this.get({
+        params: {
+          join: 'form,items,item',
+          fields: 'purchase_request.*',
+          sort_by: '-form.number',
+          group_by: 'form.id',
+          filter_form: 'activePending;approvalApproved',
+          filter_not_null: 'form.number',
+          includes: 'items.item.units;form.createdBy'
+        }
+      }).then(response => {
+        this.options = response.data
+      }).finally(() => {
+        this.isLoading = false
+      })
     },
     clear (option) {
       this.$emit('choosen', {

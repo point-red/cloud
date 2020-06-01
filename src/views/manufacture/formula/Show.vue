@@ -20,10 +20,10 @@
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle"></i>
-          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: formula.form.request_approval_to.full_name }) | uppercase }}
+          {{ $t('pending approval warning', { form: 'manufacture formula', approvedBy: formula.form.request_approval_to.full_name }) | uppercase }}
         </p>
         <hr>
-        <div v-if="$permission.has('approve purchase request')" class="mt-10">
+        <div v-if="$permission.has('approve manufacture formula')" class="mt-10">
           <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
           <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
           <m-form-approval-reject id="form-reject" ref="formReject" @reject="onReject($event)"></m-form-approval-reject>
@@ -39,7 +39,7 @@
         </p>
         <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ formula.form.request_cancellation_reason }}</div>
         <hr>
-        <div v-if="$permission.has('approve purchase request')" class="mt-10">
+        <div v-if="$permission.has('approve manufacture formula')" class="mt-10">
           <button type="button" @click="onCancellationApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
           <button type="button" @click="$refs.formCancellationReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
           <m-form-approval-reject id="form-cancellation-reject" ref="formCancellationReject" @reject="onCancellationReject($event)"></m-form-approval-reject>
@@ -80,35 +80,31 @@
         <hr>
         <p-block-inner :is-loading="isLoading">
           <div class="row">
-            <div class="col-sm-12">
-              <h4 class="text-center m-0">{{ $t('formula') | uppercase }}</h4>
-              <p class="text-center m-0">{{ formula.form.number }}</p>
+            <div class="col-sm-6">
+              <h4>{{ $t('formula') | uppercase }}</h4>
+              <table class="table table-sm table-bordered">
+                <tr>
+                  <td width="150px" class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                  <td>{{ formula.form.number }}</td>
+                </tr>
+                <tr>
+                  <td width="150px" class="font-weight-bold">{{ $t('process') | uppercase }}</td>
+                  <td>{{ formula.manufacture_process.name }}</td>
+                </tr>
+                <tr>
+                  <td width="150px" class="font-weight-bold">{{ $t('name') | uppercase }}</td>
+                  <td>{{ formula.name }}</td>
+                </tr>
+              </table>
             </div>
-          </div>
-
-          <hr>
-
-          <p-form-row
-            id="process"
-            name="process"
-            class="m-0"
-            :label="$t('process')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <template v-if="formula.manufacture_process">
-                {{ formula.manufacture_process.name }}
+            <div class="col-sm-6 text-right">
+              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <template v-if="formula.form.branch">
+                {{ formula.form.branch.address | uppercase }}
+                <br v-if="formula.form.branch.phone">{{ formula.form.branch.phone | uppercase }}
               </template>
             </div>
-          </p-form-row>
-
-          <p-form-row
-            id="name"
-            name="name"
-            class="m-0"
-            :label="$t('name')">
-            <div slot="body" class="col-lg-9 mt-5">
-              {{ formula.name }}
-            </div>
-          </p-form-row>
+          </div>
 
           <hr>
 
@@ -208,6 +204,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('auth', ['authUser']),
     ...mapGetters('manufactureFormula', ['formula'])
   },
   watch: {
@@ -230,6 +227,7 @@ export default {
             'manufactureProcess;' +
             'rawMaterials.item.units;' +
             'finishedGoods.item.units;' +
+            'form.branch;' +
             'form.requestApprovalTo;' +
             'form.requestCancellationTo'
         }

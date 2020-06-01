@@ -44,6 +44,9 @@ const mutations = {
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
+    payload.data.items.forEach(element => {
+      element.more = false
+    })
     state.purchaseOrder = payload.data
   },
   'CREATE' (state, payload) {

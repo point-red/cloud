@@ -36,6 +36,10 @@
                   <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
                   <td>{{ purchaseOrder.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
+                <tr v-if="purchaseOrder.purchase_request">
+                  <td class="font-weight-bold">{{ $t('reference') | uppercase }}</td>
+                  <td>{{ purchaseOrder.purchase_request.form.number }}</td>
+                </tr>
               </table>
             </div>
             <div class="col-sm-6 text-right">
@@ -58,12 +62,15 @@
             <tr slot="p-head">
               <th class="text-center">#</th>
               <th>Item</th>
-              <th>Notes</th>
               <th class="text-right">Quantity</th>
               <th class="text-right">Price</th>
               <th class="text-right">Discount</th>
               <th class="text-right">Total</th>
-              <th width="50px"></th>
+              <th width="50px">
+                <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
+                  <i class="fa fa-ellipsis-h"/>
+                </button>
+              </th>
             </tr>
             <template v-for="(row, index) in purchaseOrder.items">
               <tr slot="p-body" :key="index">
@@ -75,7 +82,6 @@
                     {{ row.item.name }}
                   </router-link>
                 </td>
-                <td>{{ row.notes }}</td>
                 <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
                 <td class="text-right">{{ row.price | numberFormat }}</td>
                 <td class="text-right">{{ row.discount_value | numberFormat }}</td>
@@ -89,7 +95,7 @@
               <template v-if="row.more">
               <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
                 <th class="bg-gray-light"></th>
-                <td colspan="4">
+                <td colspan="6">
                   <p-form-row
                     id="allocation"
                     name="allocation"
@@ -107,14 +113,12 @@
               <td></td>
               <td></td>
               <td></td>
-              <td></td>
               <td class="text-right"><b>{{ $t('subtotal') | uppercase }}</b></td>
               <td class="text-right"><b>{{ purchaseOrder.subtotal | numberFormat }}</b></td>
               <td></td>
             </tr>
             <tr slot="p-body">
               <th></th>
-              <td></td>
               <td></td>
               <td></td>
               <td></td>
@@ -127,14 +131,12 @@
               <td></td>
               <td></td>
               <td></td>
-              <td></td>
               <td class="text-right"><b>{{ $t('tax') | uppercase }}</b></td>
               <td class="text-right"><b>{{ purchaseOrder.tax | numberFormat }}</b></td>
               <td></td>
             </tr>
             <tr slot="p-body">
               <th></th>
-              <td></td>
               <td></td>
               <td></td>
               <td></td>
@@ -215,6 +217,14 @@ export default {
   },
   methods: {
     ...mapActions('purchaseOrder', ['find', 'delete', 'approve', 'reject']),
+    toggleMore () {
+      let isMoreActive = this.purchaseOrder.items.some(function (el, index) {
+        return el.more === false
+      })
+      this.purchaseOrder.items.forEach(element => {
+        element.more = isMoreActive
+      })
+    },
     purchaseOrderRequest () {
       this.isLoading = true
       this.find({
@@ -225,6 +235,7 @@ export default {
           includes: 'supplier;' +
             'items.item;' +
             'items.allocation;' +
+            'purchaseRequest.form;' +
             'form.createdBy;' +
             'form.requestApprovalTo;' +
             'form.branch'
