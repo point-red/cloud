@@ -79,6 +79,7 @@
               </p-form-row>
             </div>
           </div>
+          <hr>
         </div>
         <div class="mt-10">
           <label class="css-control css-control-primary css-checkbox mr-10">

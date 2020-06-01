@@ -15,21 +15,20 @@
             <div class="row">
               <div class="col-sm-6">
                 <h4>{{ $t('purchase request') | uppercase }}</h4>
-                <p-form-row
-                  id="required-date"
-                  name="required-date"
-                  :is-horizontal="false"
-                  :label="$t('required date')">
-                  <div slot="body">
-                    <p-date-picker
-                      id="required-date"
-                      name="required-date"
-                      :label="$t('required date')"
-                      v-model="form.required_date"
-                      :errors="form.errors.get('required_date')"
-                      @errors="form.errors.set('required_date', null)"/>
-                  </div>
-                </p-form-row>
+                <table class="table table-sm table-bordered">
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('required date') | uppercase }}</td>
+                    <td>
+                      <p-date-picker
+                        id="required-date"
+                        name="required-date"
+                        :label="$t('required date')"
+                        v-model="form.required_date"
+                        :errors="form.errors.get('required_date')"
+                        @errors="form.errors.set('required_date', null)"/>
+                    </td>
+                  </tr>
+                </table>
               </div>
               <div class="col-sm-6 text-right">
                 <div class="mb-30">

@@ -46,7 +46,9 @@
           <div class="col-sm-3 text-center">
             <p-form-row id="item" name="item" :label="$t('item')" :is-horizontal="false">
               <div slot="body">
-                <m-item id="item" v-model="item.id" @choosen="chooseItem($event)"/>
+                <span @click="$refs.item.open(index)" class="select-link">
+                  {{ item_label || $t('select') | uppercase }}
+                </span>
               </div>
             </p-form-row>
           </div>
@@ -156,6 +158,7 @@
         </p-pagination>
       </p-block>
     </div>
+    <m-item ref="item" @choosen="chooseItem($event)"/>
   </div>
 </template>
 
@@ -180,6 +183,7 @@ export default {
       page: this.$route.query.page * 1 || 1,
       lastPage: 1,
       limit: 10,
+      item_label: null,
       warehouseId: this.$route.params.warehouseId,
       warehouseName: null,
       date: {
@@ -233,6 +237,8 @@ export default {
         params: {
           includes: 'account;units;groups'
         }
+      }).then(response => {
+        this.item_label = response.data.label
       })
     },
     getWarehouseRequest () {
@@ -258,6 +264,7 @@ export default {
         }
       })
       this.id = option.id
+      this.item_label = option.label
       this.find({ id: option.id })
       this.getInventoryRequest()
     },
@@ -284,7 +291,8 @@ export default {
         itemId: this.id,
         params: {
           includes: 'form;warehouse',
-          sort_by: 'forms.date',
+          sort_by: 'form.date',
+          fields: 'inventory.*',
           searchText: this.$route.query.search,
           page: parseInt(this.$route.query.page) || 1,
           limit: this.limit,

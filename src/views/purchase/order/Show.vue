@@ -97,11 +97,26 @@
                 <th class="bg-gray-light"></th>
                 <td colspan="6">
                   <p-form-row
-                    id="allocation"
-                    name="allocation"
+                    :id="'allocation-' + index"
+                    :name="'allocation-' + index"
+                    class="mb-0"
                     :label="$t('allocation')">
                     <div slot="body" class="mt-5">
                       <template v-if="row.allocation">{{ row.allocation.name }}</template>
+                    </div>
+                  </p-form-row>
+                </td>
+              </tr>
+              <tr slot="p-body" :key="'ext2-'+index" class="bg-gray-light">
+                <th class="bg-gray-light"></th>
+                <td colspan="6">
+                  <p-form-row
+                    :id="'notes-' + index"
+                    :name="'notes-' + index"
+                    class="mb-0"
+                    :label="$t('notes')">
+                    <div slot="body" class="mt-5">
+                      {{ row.notes }}
                     </div>
                   </p-form-row>
                 </td>
@@ -255,17 +270,6 @@ export default {
         subtotal += parseFloat(element.total)
       })
       this.purchaseOrder.subtotal = subtotal
-      this.purchaseOrder.tax_base = this.purchaseOrder.subtotal - (this.purchaseOrder.subtotal * this.purchaseOrder.discount_percent / 100)
-      if (this.purchaseOrder.type_of_tax == 'include') {
-        this.purchaseOrder.tax = this.purchaseOrder.tax_base * 10 / 100
-        this.purchaseOrder.amount = this.purchaseOrder.tax_base
-      } else if (this.purchaseOrder.type_of_tax == 'exclude') {
-        this.purchaseOrder.tax = this.purchaseOrder.tax_base * 10 / 100
-        this.purchaseOrder.amount = this.purchaseOrder.tax_base + this.purchaseOrder.tax
-      } else {
-        this.purchaseOrder.tax = 0
-        this.purchaseOrder.amount = this.purchaseOrder.tax_base
-      }
     },
     onDelete () {
       this.isDeleting = true

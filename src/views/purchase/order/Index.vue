@@ -59,27 +59,27 @@
             <div class="col-sm-6 text-center">
               <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('approval status')" :is-horizontal="false">
                 <div slot="body">
-                  <m-form-approval-status
-                    :id="'form-approval-status-id'"
-                    v-model="formApprovalStatus.id"
-                    :label="formApprovalStatus.label"
-                    @choosen="chooseFormApprovalStatus($event)"
-                    @clear="chooseFormApprovalStatus($event)"/>
+                  <span
+                    @click="$refs.formApprovalStatus.open()"
+                    class="select-link">
+                    {{ formApprovalStatus.label || $t('select') | uppercase }}
+                  </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-6 text-center">
               <p-form-row id="form-status" name="form-status" :label="$t('form status')" :is-horizontal="false">
                 <div slot="body">
-                  <m-form-status
-                    :id="'status-id'"
-                    :label="formStatus.label"
-                    @choosen="chooseFormStatus($event)"
-                    @clear="chooseFormStatus($event)"/>
+                  <span
+                    @click="$refs.formStatus.open()"
+                    class="select-link">
+                    {{ formStatus.label || $t('select') | uppercase }}
+                  </span>
                 </div>
               </p-form-row>
             </div>
           </div>
+          <hr>
         </div>
         <div class="mt-10">
           <label class="css-control css-control-primary css-checkbox mr-10">
@@ -91,7 +91,7 @@
             <span class="css-control-indicator"></span>
           </label>
           <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
+            <!-- <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
               {{ $t('request approval') | uppercase }}
             </button>
             <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkApprove()">
@@ -102,7 +102,7 @@
             </button>
             <button type="button" class="btn btn-sm btn-secondary" @click="bulkCancel()">
               {{ $t('archive') | uppercase }}
-            </button>
+            </button> -->
           </span>
         </div>
         <hr>
@@ -172,6 +172,8 @@
         </p-pagination>
       </p-block>
     </div>
+    <m-form-approval-status ref="formApprovalStatus" @choosen="chooseFormApprovalStatus($event)"/>
+    <m-form-status ref="formStatus" @choosen="chooseFormStatus($event)"/>
   </div>
 </template>
 

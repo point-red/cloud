@@ -15,37 +15,33 @@
             <div class="row">
               <div class="col-sm-6">
                 <h4>{{ $t('purchase order') | uppercase }}</h4>
-                <p-form-row
-                  id="date"
-                  name="date"
-                  :is-horizontal="false"
-                  :label="$t('date')">
-                  <div slot="body">
-                    <p-date-picker
-                      id="date"
-                      name="date"
-                      :label="$t('date')"
-                      v-model="form.date"
-                      :errors="form.errors.get('date')"
-                      @errors="form.errors.set('date', null)"/>
-                  </div>
-                </p-form-row>
-                <p-form-row
-                  id="purchase-request"
-                  name="purchase-request"
-                  :is-horizontal="false"
-                  :label="$t('purchase request')">
-                  <div slot="body">
-                    <span @click="$refs.selectPurchaseRequest.open()" class="select-link">
-                      <template v-if="purchaseRequest && purchaseRequest.form.number != null">
-                        {{ purchaseRequest.form.number }}
-                      </template>
-                      <template v-else>
-                        {{ $t('select') | uppercase }}
-                      </template>
-                    </span>
-                  </div>
-                </p-form-row>
+                <table class="table table-sm table-bordered">
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
+                    <td>
+                      <p-date-picker
+                        id="date"
+                        name="date"
+                        :label="$t('date')"
+                        v-model="form.date"
+                        :errors="form.errors.get('date')"
+                        @errors="form.errors.set('date', null)"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('purchase request') | uppercase }}</td>
+                    <td>
+                      <span @click="$refs.selectPurchaseRequest.open()" class="select-link">
+                        <template v-if="purchaseRequest && purchaseRequest.form.number != null">
+                          {{ purchaseRequest.form.number }}
+                        </template>
+                        <template v-else>
+                          {{ $t('select') | uppercase }}
+                        </template>
+                      </span>
+                    </td>
+                  </tr>
+                </table>
               </div>
               <div class="col-sm-6 text-right">
                 <div class="mb-30">
@@ -147,7 +143,7 @@
                       class="btn btn-sm btn-outline-secondary"
                       @click="row.more = !row.more"
                       v-if="!isSaving">
-                      <i class="fa fa-ellipsis-h"/> {{ row.more }} {{ row.item_id }}
+                      <i class="fa fa-ellipsis-h"/>
                     </button>
                   </td>
                 </tr>
@@ -164,6 +160,19 @@
                             {{ row.allocation_name || $t('select') | uppercase }}
                           </span>
                         </div>
+                      </p-form-row>
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
+                    <th class="bg-gray-light"></th>
+                    <td colspan="4">
+                      <p-form-row
+                        id="notes"
+                        name="notes"
+                        v-model="row.notes"
+                        :label="$t('notes')">
                       </p-form-row>
                     </td>
                     <td></td>
@@ -207,18 +216,18 @@
                   </div>
                 </p-form-row>
                 <p-form-row
-                  name="need-down-payment"
+                  name="tax"
                   :label="$t('tax')">
                   <div slot="body" class="col-lg-9">
                     <p-form-check-box
                       class="mb-0"
                       style="float:left"
-                      name="need-down-payment"
+                      name="tax"
                       @click.native="chooseTax('include')"
                       :checked="form.type_of_tax == 'include'"
                       :description="$t('include tax')"/>
                     <p-form-check-box
-                      name="need-down-payment"
+                      name="tax"
                       @click.native="chooseTax('exclude')"
                       :checked="form.type_of_tax == 'exclude'"
                       :description="$t('exclude tax')"/>
@@ -317,6 +326,7 @@ export default {
         notes: null,
         discount_percent: 0,
         discount_value: 0,
+        tax_base: 0,
         tax: 0,
         type_of_tax: 'exclude',
         items: [],
@@ -330,33 +340,29 @@ export default {
   computed: {
     ...mapGetters('purchaseOrder', ['purchaseOrder']),
     ...mapGetters('auth', ['authUser']),
-
     subtotal () {
       return this.form.items.reduce((carry, item) => {
         return carry + item.quantity * (item.price - item.discount_value)
       }, 0)
     },
+    tax_base () {
+      return this.subtotal - this.form.discount_value
+    },
     tax () {
-      let taxBase = this.subtotal - this.form.discount_value
-
+      let value = 0
       if (this.form.type_of_tax == 'include') {
-        taxBase = taxBase * 10 / 11
+        value = this.tax_base - (this.tax_base * 10 / 11)
       } else if (this.form.type_of_tax == 'exclude') {
-        taxBase /= 10
+        value = this.tax_base / 10
       }
-
-      taxBase = Math.round((taxBase + Number.EPSILON) * 100) / 100
-
-      return taxBase
+      return value
     },
     grandTotal () {
-      let grandTotal = this.subtotal - this.form.discount_value
-      if (this.form.type_of_tax == 'exclude') {
-        grandTotal *= 1.1
+      if (this.form.type_of_tax == 'include') {
+        return this.subtotal - this.form.discount_value
+      } else {
+        return this.subtotal - this.form.discount_value + this.tax
       }
-      grandTotal = Math.round((grandTotal + Number.EPSILON) * 100) / 100
-
-      return grandTotal
     }
   },
   methods: {
