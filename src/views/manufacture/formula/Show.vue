@@ -16,41 +16,22 @@
 
     <manufacture-menu/>
 
-    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert" v-if="formula.form.number != null && formula.form.approval_status == 0 && isLoading == false">
-      <div class="flex-fill mr-10">
-        <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle"></i>
-          {{ $t('pending approval warning', { form: 'manufacture formula', approvedBy: formula.form.request_approval_to.full_name }) | uppercase }}
-        </p>
-        <hr>
-        <div v-if="$permission.has('approve manufacture formula')" class="mt-10">
-          <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
-          <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
-          <m-form-approval-reject id="form-reject" ref="formReject" @reject="onReject($event)"></m-form-approval-reject>
-        </div>
-      </div>
-    </div>
+    <p-show-form-approval-status
+      :is-loading="isLoading"
+      :approved-by="formula.form.request_approval_to.full_name"
+      :cancellation-status="formula.form.cancellation_status"
+      :approval-status="formula.form.approval_status"
+      :approval-reason="formula.form.approval_reason"
+      @onApprove="onApprove"
+      @onReject="onReject"/>
 
-    <div v-if="formula.form.number != null && formula.form.cancellation_status == 0 && isLoading == false" class="alert alert-warning d-flex align-items-center justify-content-between mb-15" role="alert">
-      <div class="flex-fill mr-10">
-        <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle"></i>
-          {{ $t('pending cancellation warning', { form: 'manufacture', approvedBy: formula.form.request_approval_to.full_name }) | uppercase }}
-        </p>
-        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ formula.form.request_cancellation_reason }}</div>
-        <hr>
-        <div v-if="$permission.has('approve manufacture formula')" class="mt-10">
-          <button type="button" @click="onCancellationApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
-          <button type="button" @click="$refs.formCancellationReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
-          <m-form-approval-reject id="form-cancellation-reject" ref="formCancellationReject" @reject="onCancellationReject($event)"></m-form-approval-reject>
-        </div>
-      </div>
-    </div>
-
-    <p-info-form-rejected :reason="formula.form.approval_reason" v-if="formula.form.approval_status == -1 && isLoading == false"></p-info-form-rejected>
-    <p-info-form-cancellation-rejected :reason="formula.form.cancellation_reason" v-if="formula.form.cancellation_status == -1 && isLoading == false"></p-info-form-cancellation-rejected>
-    <p-info-form-archived v-if="formula.form.number == null && isLoading == false"></p-info-form-archived>
-    <p-info-form-deleted v-if="formula.form.cancellation_status == 1 && isLoading == false"></p-info-form-deleted>
+    <p-show-form-cancellation-status
+      :is-loading="isLoading"
+      :cancellation-status="formula.form.cancellation_status"
+      :cancellation-approval-reason="formula.form.cancellation_approval_reason"
+      :request-cancellation-reason="formula.form.request_cancellation_reason"
+      @onCancellationApprove="onCancellationApprove"
+      @onCancellationReject="onCancellationReject"/>
 
     <div class="row">
       <p-block>
@@ -70,12 +51,12 @@
           <button
             type="button"
             class="btn btn-sm btn-outline-secondary mr-5"
-            @click="$refs.formRequestDelete.show()"
-            v-if="formula.form.cancellation_status < 1"
+            @click="$refs.formRequestDelete.open()"
+            v-if="formula.form.cancellation_status == null || formula.form.cancellation_status == -1"
             :disabled="isDeleting">
             <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
           </button>
-          <m-form-request-delete id="form-delete" ref="formRequestDelete" @deleted="onRequestDelete($event)"></m-form-request-delete>
+          <m-form-request-delete ref="formRequestDelete" @delete="onRequestDelete($event)"></m-form-request-delete>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -243,17 +224,16 @@ export default {
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
-        this.formula.form.approval_status = response.data.form.approval_status
+        this.manufactureFormulaRequest()
       })
     },
     onReject (reason) {
       this.reject({
         id: this.id,
-        approval_reason: reason
+        reason: reason
       }).then(response => {
         this.$notification.success('reject success')
-        this.formula.form.approval_status = response.data.form.approval_status
-        this.formula.form.approval_reason = response.data.form.approval_reason
+        this.manufactureFormulaRequest()
       })
     },
     onCancellationApprove () {
@@ -261,31 +241,29 @@ export default {
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
-        this.formula.form.cancellation_status = response.data.form.cancellation_status
+        this.manufactureFormulaRequest()
       })
     },
     onCancellationReject (reason) {
       this.cancellationReject({
         id: this.id,
-        cancellation_reason: reason
+        reason: reason
       }).then(response => {
         this.$notification.success('reject success')
-        this.formula.form.cancellation_status = response.data.form.cancellation_status
-        this.formula.form.cancellation_reason = response.data.form.cancellation_reason
+        this.manufactureFormulaRequest()
       })
     },
     onRequestDelete (reason) {
       this.isDeleting = true
       this.delete({
         id: this.id,
-        params: {
-          request_cancellation_reason: reason
+        data: {
+          reason: reason
         }
       }).then(response => {
         this.isDeleting = false
-        this.formula.form.cancellation_status = 0
-        this.formula.form.request_cancellation_reason = response.data.form.request_cancellation_reason
         this.$router.push('/manufacture/formula/' + this.id)
+        this.manufactureFormulaRequest()
       }).catch(error => {
         this.isDeleting = false
         this.$notification.error(error.message)

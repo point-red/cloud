@@ -60,7 +60,7 @@
                     <template v-if="index2 == 0">
                       <span v-for="(finishedGood) in formula.finished_goods" :key="finishedGood.id">
                         <router-link :to="{ name: 'item.show', params: { id: finishedGood.item.id }}">
-                            {{ finishedGood.item.label }}
+                          {{ finishedGood.item.label }}
                         </router-link>
                       </span>
                     </template>
@@ -150,6 +150,7 @@ export default {
           fields: 'manufacture_formula.*',
           sort_by: '-form.number',
           group_by: 'manufacture_formula.id',
+          filter_form: 'active',
           filter_like: {
             'form.number': this.searchText,
             'form.notes': this.searchText,
