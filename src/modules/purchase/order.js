@@ -6,7 +6,6 @@ const state = {
   purchaseOrder: {
     date: null,
     supplier_id: null,
-    allocation_id: null,
     form: {
       number: null,
       notes: null,

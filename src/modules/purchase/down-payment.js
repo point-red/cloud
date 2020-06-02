@@ -4,9 +4,22 @@ const url = '/purchase/down-payments'
 
 const state = {
   downPayment: {
+    date: null,
+    supplier_id: null,
     form: {
-      approvals: []
-    }
+      number: null,
+      notes: null,
+      created_by: {
+        name: null
+      },
+      request_approval_to: {
+        full_name: null
+      }
+    },
+    supplier: {
+      name: null
+    },
+    items: []
   },
   downPayments: [],
   pagination: {}
@@ -30,6 +43,9 @@ const mutations = {
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
+    payload.data.items.forEach(element => {
+      element.more = false
+    })
     state.downPayment = payload.data
   },
   'CREATE' (state, payload) {
@@ -89,6 +105,46 @@ const actions = {
   delete (context, payload) {
     return new Promise((resolve, reject) => {
       api.delete(url + '/' + payload.id, payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  approve (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/approve', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  reject (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/reject', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationApprove (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-approve', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationReject (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-reject', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

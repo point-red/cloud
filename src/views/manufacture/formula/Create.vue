@@ -13,41 +13,48 @@
         <p-block-inner>
           <div class="row">
             <div class="col-sm-6">
-              <h4>{{ $t('formula') | uppercase }}</h4>
-              <p-form-row
-                id="date"
-                name="date"
-                :label="$t('date')">
-                <div slot="body" class="col-lg-9">
-                  <p-date-picker
-                    id="date"
-                    name="date"
-                    :label="$t('date')"
-                    v-model="form.date"
-                    :errors="form.errors.get('date')"
-                    @errors="form.errors.set('date', null)"/>
-                </div>
-              </p-form-row>
-              <p-form-row
-                id="process"
-                name="process"
-                :label="$t('process')">
-                <div slot="body" class="col-lg-9 mt-5">
-                  <m-process id="process"
-                    v-model="form.manufacture_process_id"
-                    @choosen="chooseManufactureProcess"
-                    :label="form.manufacture_process_name"/>
-                </div>
-              </p-form-row>
-              <p-form-row
-                id="name"
-                name="name"
-                :label="$t('name')"
-                :placeholder="$t('required') | uppercase"
-                v-model="form.name"
-                :disabled="isSaving"
-                :errors="form.errors.get('name')"
-                @errors="form.errors.set('name', null)"/>
+              <table class="table table-sm table-bordered">
+                <tr>
+                  <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
+                  <td>
+                    <p-date-picker
+                      id="date"
+                      name="date"
+                      :label="$t('date')"
+                      v-model="form.date"
+                      :errors="form.errors.get('date')"
+                      @errors="form.errors.set('date', null)"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="font-weight-bold">{{ $t('process') | uppercase }}</td>
+                  <td>
+                    <span @click="$refs.selectProcess.open()" class="select-link">
+                      <template v-if="form.manufacture_process_name">
+                        {{ form.manufacture_process_name }}
+                      </template>
+                      <template v-else>
+                        {{ $t('select') | uppercase }}
+                      </template>
+                    </span>
+                    <m-process id="process" ref="selectProcess" @choosen="chooseManufactureProcess"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="font-weight-bold">{{ $t('name') | uppercase }}</td>
+                  <td>
+                    <p-form-input
+                      id="name"
+                      name="name"
+                      :label="$t('name')"
+                      :placeholder="$t('required') | uppercase"
+                      v-model="form.name"
+                      :disabled="isSaving"
+                      :errors="form.errors.get('name')"
+                      @errors="form.errors.set('name', null)"/>
+                  </td>
+                </tr>
+              </table>
             </div>
             <div class="col-sm-6 text-right">
               <div class="mb-30">
@@ -271,6 +278,7 @@ export default {
       this.$delete(this.form.finished_goods, index)
     },
     chooseManufactureProcess (option) {
+      this.form.manufacture_process_id = option.id
       this.form.manufacture_process_name = option.name
     },
     chooseRawMaterial (item) {

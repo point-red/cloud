@@ -82,14 +82,14 @@
           <hr>
         </div>
         <div class="mt-10">
-          <label class="css-control css-control-primary css-checkbox mr-10">
+          <!-- <label class="css-control css-control-primary css-checkbox mr-10">
             <input
               type="checkbox"
               class="css-control-input"
               @click="toggleCheckRows()"
               :checked="isRowsChecked(purchaseRequests, checkedRow)">
             <span class="css-control-indicator"></span>
-          </label>
+          </label> -->
           <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
             <!-- <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
               {{ $t('request approval') | uppercase }}
@@ -143,13 +143,13 @@
                 <div v-else-if="purchaseRequest.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
               </td>
               <td>
-                <p-form-check-box
+                <!-- <p-form-check-box
                   :is-form="false"
                   id="check-box"
                   name="check-box"
                   @click.native="toggleCheckRow(purchaseRequest.id)"
                   :checked="isRowChecked(purchaseRequest.id)"
-                  class="text-center"/>
+                  class="text-center"/> -->
               </td>
             </tr>
             </template>

@@ -1,7 +1,7 @@
 <template>
   <sweet-modal
     ref="modal"
-    :title="'Select Purchase Request' | uppercase"
+    :title="'Select Purchase Order' | uppercase"
     overlay-theme="dark"
     @close="onClose()">
     <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
@@ -76,18 +76,18 @@ export default {
     }, 300)
   },
   methods: {
-    ...mapActions('purchaseRequest', ['get']),
+    ...mapActions('purchaseOrder', ['get']),
     search () {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form,items,item',
-          fields: 'purchase_request.*',
+          join: 'form,items,item,supplier',
+          fields: 'purchase_order.*',
           sort_by: '-form.number',
           group_by: 'form.id',
           filter_form: 'activePending;approvalApproved',
           filter_not_null: 'form.number',
-          includes: 'items.item.units;form.createdBy'
+          includes: 'items.item.units;supplier;form.createdBy'
         }
       }).then(response => {
         this.options = response.data
