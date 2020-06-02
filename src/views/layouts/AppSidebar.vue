@@ -256,7 +256,7 @@
                 </li>
               </ul>
             </li> -->
-            <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory') && authUser.tenant_package_id > 1">
+            <!-- <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory') && authUser.tenant_package_id > 1">
               <router-link to="/inventory" class="nav-submenu" active-class="active">
                 <i class="si si-tag"/>
                 <span class="sidebar-mini-hide">{{ $t("inventory") | uppercase }}</span>
@@ -293,7 +293,7 @@
                   </router-link>
                 </li>
               </ul>
-            </li>
+            </li> -->
             <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture') && authUser.tenant_package_id > 1">
               <router-link to="/manufacture" class="nav-submenu" active-class="active">
                 <i class="si si-settings"/>
@@ -318,12 +318,12 @@
                     active-class="active">{{ $t('formula') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture processing')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture processing')">
                   <router-link
                     to="/manufacture/processing"
                     active-class="active">{{ $t('processing') | uppercase }}
                   </router-link>
-                </li>
+                </li> -->
               </ul>
             </li>
             <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance') && authUser.tenant_package_id > 1">
