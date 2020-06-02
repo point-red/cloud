@@ -1,0 +1,421 @@
+<template>
+  <div>
+    <breadcrumb>
+      <breadcrumb-sales/>
+      <router-link :to="{ name: 'sales.quotation.index' }" class="breadcrumb-item">{{ $t('sales quotation') | uppercase }}</router-link>
+      <router-link :to="{ name: 'sales.quotation.show', params: { id: id }}" class="breadcrumb-item">{{ salesQuotation.form.number | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
+    </breadcrumb>
+
+    <sales-menu/>
+
+    <form @submit.prevent="onSubmit">
+      <div class="row">
+        <p-block>
+          <p-block-inner :is-loading="isLoading">
+            <div class="row">
+              <div class="col-sm-6">
+                <h4>{{ $t('sales quotation') | uppercase }}</h4>
+                <table class="table table-sm table-bordered">
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                    <td>
+                      {{ salesQuotation.form.number }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
+                    <td>
+                      {{ salesQuotation.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-sm-6 text-right">
+                <div class="mb-30">
+                  <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                  <template v-if="authUser.branch">
+                    {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
+                    {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
+                  </template>
+                </div>
+                <div>
+                  <h6 class="mb-0 ">{{ $t('to') | uppercase }}:</h6>
+                  <span @click="$refs.customer.open()" class="select-link">{{ form.customer_label || $t('select') | uppercase }}</span>
+                  <div style="font-size:12px" v-if="form.customer_phone">
+                    <br v-if="form.customer_address">{{ form.customer_address | uppercase }}
+                    <br v-if="form.customer_phone">{{ form.customer_phone }}
+                    <br v-if="form.customer_email">{{ form.customer_email | uppercase }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <point-table>
+              <tr slot="p-head">
+                <th>#</th>
+                <th style="min-width: 120px">Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
+                    <i class="fa fa-ellipsis-h"/>
+                  </button>
+                </th>
+              </tr>
+              <template v-for="(row, index) in form.items">
+                <tr slot="p-body" :key="index">
+                  <th>{{ index + 1 }}</th>
+                  <td>
+                    <span @click="$refs.item.open(index)" class="select-link">
+                      {{ row.item_label || $t('select') | uppercase }}
+                    </span>
+                  </td>
+                  <td>
+                    <p-quantity
+                      :id="'quantity' + index"
+                      :name="'quantity' + index"
+                      :disabled="row.item_id == null"
+                      v-model="row.quantity"
+                      :item-id="row.item_id"
+                      :units="row.units"
+                      :unit="{
+                        name: row.unit,
+                        label: row.unit,
+                        converter: row.converter
+                      }"
+                      @choosen="chooseUnit($event, row)"/>
+                  </td>
+                  <td>
+                    <p-form-number
+                      :id="'price' + index"
+                      :name="'price' + index"
+                      v-model.number="row.price"
+                      :readonly="row.item_id == null"/>
+                  </td>
+                  <td>
+                    <p-form-number
+                      :id="'total-' + index"
+                      :name="'total-' + index"
+                      :readonly="true"
+                      :value="row.quantity * row.price"/>
+                  </td>
+                  <td>
+                    <button type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      @click="row.more = !row.more"
+                      v-if="!isSaving">
+                      <i class="fa fa-ellipsis-h"/>
+                    </button>
+                  </td>
+                </tr>
+                <template v-if="row.more && row.item_id">
+                  <!-- <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
+                    <th class="bg-gray-light"></th>
+                    <td colspan="4">
+                      <p-form-row
+                        id="allocation"
+                        name="allocation"
+                        :label="$t('allocation')">
+                        <div slot="body" class="col-lg-9 mt-5">
+                          <span @click="$refs.allocation.open(index)" class="select-link">
+                            {{ row.allocation_name || $t('select') | uppercase }}
+                          </span>
+                        </div>
+                      </p-form-row>
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr> -->
+                  <tr slot="p-body" :key="'ext2-'+index" class="bg-gray-light">
+                    <th class="bg-gray-light"></th>
+                    <td colspan="4">
+                      <p-form-row
+                        id="notes"
+                        name="notes"
+                        v-model="row.notes"
+                        :label="$t('notes')">
+                      </p-form-row>
+                    </td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </template>
+              </template>
+              <tr slot="p-body">
+                <th></th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <p-form-number
+                    :id="'total'"
+                    :name="'total'"
+                    :readonly="true"
+                    :value="subtotal"/>
+                </td>
+              </tr>
+            </point-table>
+
+            <div class="row">
+              <div class="col-sm-6">
+                <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+              </div>
+              <div class="col-sm-3 text-center">
+                <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
+                <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+                {{ requestedBy | uppercase }}
+                <div class="d-sm-block d-md-none mt-10"></div>
+              </div>
+              <div class="col-sm-3 text-center">
+                <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
+                <div class="mb-50" style="font-size:11px">_______________</div>
+                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
+              </div>
+
+              <div class="col-sm-12">
+                <hr>
+                <button type="submit" class="btn btn-block btn-sm btn-primary" :disabled="isSaving">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+                </button>
+              </div>
+            </div>
+          </p-block-inner>
+        </p-block>
+      </div>
+    </form>
+    <m-customer ref="customer" @choosen="chooseCustomer"/>
+    <m-item ref="item" @choosen="chooseItem"/>
+    <m-user ref="approver" @choosen="chooseApprover"/>
+    <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
+  </div>
+</template>
+
+<script>
+import debounce from 'lodash/debounce'
+import SalesMenu from '../Menu'
+import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbSales from '@/views/sales/Breadcrumb'
+import Form from '@/utils/Form'
+import PointTable from 'point-table-vue'
+import { mapGetters, mapActions } from 'vuex'
+
+export default {
+  components: {
+    SalesMenu,
+    PointTable,
+    Breadcrumb,
+    BreadcrumbSales
+  },
+  data () {
+    return {
+      id: this.$route.params.id,
+      isSaving: false,
+      isLoading: false,
+      requestedBy: localStorage.getItem('fullName'),
+      form: new Form({
+        id: this.$route.params.id,
+        increment_group: this.$moment().format('YYYYMM'),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        customer_id: null,
+        customer_name: null,
+        customer_label: null,
+        customer_address: null,
+        customer_phone: null,
+        customer_email: null,
+        need_down_payment: 0,
+        cash_only: false,
+        notes: null,
+        discount_percent: 0,
+        discount_value: 0,
+        tax_base: 0,
+        tax: 0,
+        type_of_tax: 'exclude',
+        items: [],
+        request_approval_to: null,
+        approver_name: null,
+        approver_email: null
+      })
+    }
+  },
+  computed: {
+    ...mapGetters('salesQuotation', ['salesQuotation']),
+    ...mapGetters('auth', ['authUser']),
+    subtotal () {
+      return this.form.items.reduce((carry, item) => {
+        return carry + item.quantity * item.price
+      }, 0)
+    },
+    tax_base () {
+      return this.subtotal - this.form.discount_value
+    },
+    tax () {
+      let value = 0
+      if (this.form.type_of_tax == 'include') {
+        value = this.tax_base - (this.tax_base * 10 / 11)
+      } else if (this.form.type_of_tax == 'exclude') {
+        value = this.tax_base / 10
+      }
+      return value
+    },
+    grandTotal () {
+      if (this.form.type_of_tax == 'include') {
+        return this.subtotal - this.form.discount_value
+      } else {
+        return this.subtotal - this.form.discount_value + this.tax
+      }
+    }
+  },
+  methods: {
+    ...mapActions('salesQuotation', ['find', 'update']),
+    addItemRow () {
+      this.form.items.push({
+        item_id: null,
+        item_name: null,
+        more: false,
+        unit: null,
+        converter: null,
+        quantity: 0,
+        price: 0,
+        discount_percent: 0,
+        discount_value: 0,
+        allocation_id: null,
+        allocation_name: '',
+        notes: null
+      })
+    },
+    toggleMore () {
+      let isMoreActive = this.form.items.some(function (el, index) {
+        return el.more === false
+      })
+      this.form.items.forEach(element => {
+        element.more = isMoreActive
+      })
+    },
+    clearItem (index) {
+      this.form.items.splice(index, 1)
+      if (this.form.items.length === 0) {
+        this.addItemRow()
+      }
+    },
+    chooseApprover (value) {
+      this.form.request_approval_to = value.id
+      this.form.approver_name = value.fullName
+      this.form.approver_email = value.email
+    },
+    chooseCustomer (value) {
+      this.form.customer_id = value.id
+      this.form.customer_name = value.name
+      this.form.customer_label = value.label
+      this.form.customer_address = value.address
+      this.form.customer_phone = value.phone
+      this.form.customer_email = value.email
+    },
+    chooseItem (item) {
+      if (item.id == null) {
+        this.clearItem(item.index)
+        return
+      }
+
+      let row = this.form.items[item.index]
+      row.item_id = item.id
+      row.item_name = item.name
+      row.item_label = item.label
+      row.units = item.units
+      row.units.forEach((unit, keyUnit) => {
+        if (unit.id == item.unit_default_sales) {
+          row.unit = unit.label
+          row.converter = unit.converter
+        }
+      })
+      let isNeedNewRow = true
+      this.form.items.forEach(element => {
+        if (element.item_id == null) {
+          isNeedNewRow = false
+        }
+      })
+      if (isNeedNewRow) {
+        this.addItemRow()
+      }
+    },
+    chooseUnit (unit, row) {
+      row.unit = unit.label
+      row.converter = unit.converter
+    },
+    chooseAllocation (allocation) {
+      let row = this.form.items[allocation.index]
+      row.allocation_id = allocation.id
+      row.allocation_name = allocation.name
+    },
+    chooseTax (taxType) {
+      if (taxType == this.form.type_of_tax) {
+        this.form.type_of_tax = null
+      } else {
+        this.form.type_of_tax = taxType
+      }
+    },
+    onSubmit () {
+      this.isSaving = true
+      if (this.form.request_approval_to == null) {
+        this.$notification.error('approval cannot be null')
+        this.isSaving = false
+        this.form.errors.record({
+          request_approval_to: ['Approver should not empty']
+        })
+        return
+      }
+      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
+      this.form.subtotal = this.subtotal
+      this.form.tax_base = this.tax_base
+      this.form.tax = this.tax
+      this.form.total = this.total
+      this.form.items = this.form.items.filter(item => item.item_id)
+      this.update(this.form).then(response => {
+        this.isSaving = false
+        this.$notification.success('update success')
+        Object.assign(this.$data, this.$options.data.call(this))
+        this.$router.push('/sales/quotation/' + response.data.id)
+      }).catch(error => {
+        this.isSaving = false
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
+      })
+    }
+  },
+  created () {
+    this.isLoading = true
+    this.find({
+      id: this.$route.params.id,
+      params: {
+        includes: 'form.requestApprovalTo;customer;items.item.units;items.allocation'
+      }
+    }).then(response => {
+      this.isLoading = false
+      this.form.date = response.data.form.date
+      this.form.customer_id = response.data.customer_id
+      this.form.customer_name = response.data.customer_name
+      this.form.customer_label = response.data.customer.label
+      this.form.discount_percent = response.data.discount_percent
+      this.form.discount_value = response.data.discount_value
+      this.form.notes = response.data.form.notes
+      this.form.type_of_tax = response.data.type_of_tax
+      this.form.amount = response.data.amount
+      this.form.discount_value = response.data.discount_value
+      this.form.discount_percent = response.data.discount_percent
+      this.form.items = response.data.items
+      this.form.request_approval_to = response.data.form.request_approval_to.id
+      this.form.approver_name = response.data.form.request_approval_to.full_name
+      this.form.approver_email = response.data.form.request_approval_to.email
+      this.form.items.forEach(el => {
+        el.item_label = el.item.label
+      })
+      this.addItemRow()
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
+  }
+}
+</script>
