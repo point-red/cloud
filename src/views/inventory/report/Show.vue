@@ -34,10 +34,9 @@
           <div class="col-sm-3 text-center">
             <p-form-row id="item" name="item" :label="$t('item')" :is-horizontal="false">
               <div slot="body">
-                <m-item
-                  :id="'item'"
-                  v-model="item.id"
-                  @choosen="chooseItem($event)"/>
+                <span @click="$refs.item.open(index)" class="select-link">
+                  {{ item_label || $t('select') | uppercase }}
+                </span>
               </div>
             </p-form-row>
           </div>
@@ -113,6 +112,7 @@
         </p-pagination>
       </p-block>
     </div>
+    <m-item ref="item" @choosen="chooseItem($event)"/>
   </div>
 </template>
 
@@ -135,6 +135,7 @@ export default {
       isLoading: false,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
+      item_label: null,
       lastPage: 1,
       total: 0,
       date: {
@@ -166,6 +167,7 @@ export default {
     ...mapActions('masterItem', ['find']),
     ...mapActions('inventoryInventoryWarehouseRecapitulation', ['get']),
     chooseItem (option) {
+      this.item_label = option.label
       this.$router.push({
         params: { id: option.id },
         query: {
@@ -222,6 +224,8 @@ export default {
     this.getInventoryRequest()
     this.find({
       id: this.id
+    }).then(response => {
+      this.item_label = response.data.label
     })
   },
   updated () {

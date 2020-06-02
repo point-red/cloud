@@ -93,9 +93,9 @@
               <th width="50px">#</th>
               <th width="50px"></th>
               <th>Name</th>
+              <th>Email</th>
               <th>Address</th>
               <th>Phone</th>
-              <th>Email</th>
               <th>Group</th>
               <th>Pricing Group</th>
             </tr>
@@ -128,6 +128,11 @@
                 </router-link>
               </td>
               <td>
+                <template v-for="customerEmail in customer.emails">
+                  {{ customerEmail.email }}
+                </template>
+              </td>
+              <td>
                 <template v-for="customerAddress in customer.addresses">
                   {{ customerAddress.address }}
                 </template>
@@ -135,11 +140,6 @@
               <td>
                 <template v-for="customerPhone in customer.phones">
                   {{ customerPhone.number }}
-                </template>
-              </td>
-              <td>
-                <template v-for="customerEmail in customer.emails">
-                  {{ customerEmail.email }}
                 </template>
               </td>
               <td>

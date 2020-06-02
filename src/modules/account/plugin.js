@@ -91,6 +91,26 @@ const actions = {
           reject(error)
         })
     })
+  },
+  subscribe ({ context, commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/subscribe', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  unsubscribe ({ context, commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/unsubscribe', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 

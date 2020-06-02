@@ -6,7 +6,7 @@
     </breadcrumb>
 
     <div class="row">
-      <p-block title="Profit & Loss" :header="false">
+      <p-block>
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
@@ -32,7 +32,7 @@
               <p-table>
                 <tr slot="p-head">
                   <th></th>
-                  <th class="text-right">FEB 2020</th>
+                  <th class="text-right"></th>
                 </tr>
                 <tr slot="p-body">
                   <td colspan="2" class="font-w600">PENDAPATAN OPERATIONAL</td>

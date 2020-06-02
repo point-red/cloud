@@ -2,54 +2,83 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance/>
-      <span class="breadcrumb-item active">{{ $t('payment order') | titlecase }}</span>
+      <span class="breadcrumb-item active">
+        <router-link to="/finance/cash">{{ $t('cash') | uppercase }}</router-link>
+      </span>
+      <span class="breadcrumb-item active">{{ $t('out') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
-
     <div class="row">
-      <p-block :title="$t('payment order')" :header="true">
-        <div class="row mb-10">
-          <p-date-range-picker
-            id="date"
-            name="date"
-            class="col-sm-4"
-            v-model="date"/>
+      <p-block :title="$t('payment order')">
+        <div class="input-group block">
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            ref="searchText"
+            class="btn-block"
+            :value="searchText"
+            @input="filterSearch"/>
         </div>
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
+        <div class="text-center font-size-sm mb-10">
+          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          </a>
+        </div>
+        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+          <div class="row">
+            <div class="col-sm-6 text-center">
+              <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+                <div slot="body">
+                  <p-date-picker
+                    id="date"
+                    name="date"
+                    label="date"
+                    v-model="date.start"/>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-6 text-center">
+              <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+                <div slot="body">
+                  <p-date-picker
+                    id="date"
+                    name="date"
+                    label="date"
+                    v-model="date.end"/>
+                </div>
+              </p-form-row>
+            </div>
+          </div>
+        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
               <th>Number</th>
               <th>Date</th>
+              <th>To</th>
               <th>Account</th>
               <th>Notes</th>
               <th class="text-right">Amount</th>
-              <th></th>
+              <th class="text-center"></th>
             </tr>
             <template v-for="(paymentOrder, index) in paymentOrders">
               <template v-for="(paymentOrderDetail, index2) in paymentOrder.details">
               <tr :key="'payment-order-' + index + '-' + index2" slot="p-body">
-                <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
-                <td>
+                <th>
                   <router-link :to="{ name: 'finance.payment-order.show', params: { id: paymentOrder.id }}">
                     {{ paymentOrder.form.number }}
                   </router-link>
-                </td>
+                </th>
                 <td>{{ paymentOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ paymentOrder.paymentable.name }}</td>
                 <td>{{ paymentOrderDetail.account.number }} - {{ paymentOrderDetail.account.alias }}</td>
                 <td>{{ paymentOrderDetail.notes }}</td>
                 <td class="text-right">{{ paymentOrderDetail.amount | numberFormat }}</td>
-                <td>
-                  <router-link class="btn btn-sm btn-secondary mr-5" :to="{ name: 'finance.cash.out', query: { id: paymentOrder.id }}">
-                    <i class="fa fa-share-square-o"></i> Payment
+                <td class="text-center">
+                  <router-link class="btn btn-sm btn-primary" :to="{ name: 'finance.cash.out.create', params: { id: paymentOrder.id }}">
+                    {{ $t('pay') | uppercase }}
                   </router-link>
                 </td>
               </tr>
@@ -68,7 +97,6 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import debounce from 'lodash/debounce'
@@ -77,13 +105,14 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     Breadcrumb,
     BreadcrumbFinance,
     PointTable
   },
   data () {
     return {
+      isAdvanceFilter: false,
+      checkedRow: [],
       date: {
         start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
         end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
@@ -104,7 +133,7 @@ export default {
           date_to: this.date.end
         }
       })
-      this.getPaymentOrders()
+      this.search()
     }
   },
   computed: {
@@ -116,27 +145,36 @@ export default {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getPaymentOrders()
+      this.search()
     }, 300),
-    getPaymentOrders () {
+    search () {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form',
-          sort_by: '-forms.number',
-          fields: 'payment_orders.*',
-          filter_form: 'activePending',
+          join: 'form,details,account',
+          sort_by: '-form.number',
+          group_by: 'payment_order.id',
+          fields: 'payment_order.*',
+          filter_form: 'notArchived;pending;approvalApproved',
           filter_like: {
-            'form.number': this.searchText
+            'form.number': this.searchText,
+            'form.notes': this.searchText,
+            'account.name': this.searchText
           },
-          filter_min: {
+          filter_null: 'payment_order.payment_id',
+          filter_equal: {
+            'payment_order.payment_type': 'cash',
+            'form.notes': this.searchText,
+            'account.name': this.searchText
+          },
+          filter_date_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
           },
-          filter_max: {
+          filter_date_max: {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
-          includes: 'form;details.account;details.allocation',
+          includes: 'form;paymentable;details.account;details.allocation',
           page: this.currentPage
         }
       }).then(response => {
@@ -148,11 +186,11 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getPaymentOrders()
+      this.search()
     }
   },
   created () {
-    this.getPaymentOrders()
+    this.search()
   },
   updated () {
     this.lastPage = this.pagination.last_page

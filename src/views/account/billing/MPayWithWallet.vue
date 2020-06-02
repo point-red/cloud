@@ -1,7 +1,7 @@
 <template>
   <div>
     <p-loading-block message="please wait and do not close this page" v-show="isSaving"/>
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent>
       <sweet-modal
         ref="modal"
         :title="$t('pay invoice') | uppercase"
@@ -26,7 +26,7 @@
           </div>
         </div>
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary mr-5" :disabled="isSaving" v-if="invoice.total <= amount" @click="onSubmit">
+          <button type="submit" class="btn btn-sm btn-primary mr-5" :disabled="isSaving" v-if="invoice.total <= amount" @click="onSubmit()">
             <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('pay') | uppercase }}
           </button>
           <button type="button" class="btn btn-sm btn-danger mr-5" :disabled="isSaving" v-if="invoice.total > amount" @click="close()">

@@ -78,6 +78,7 @@ const actions = {
         localStorage.setItem('userId', apiData.id)
         localStorage.setItem('userName', apiData.name)
         localStorage.setItem('userEmail', apiData.email)
+        localStorage.setItem('fullName', apiData.full_name)
         localStorage.setItem('tenantCode', apiData.tenant_code)
         localStorage.setItem('tenantName', apiData.tenant_name)
         localStorage.setItem('tenantAddress', apiData.tenant_address)

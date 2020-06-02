@@ -22,13 +22,10 @@ export default {
     PointTable
   },
   computed: {
-    ...mapGetters('purchasePending', ['forms'])
   },
   methods: {
-    ...mapActions('purchasePending', ['get'])
   },
   created () {
-    this.get()
   }
 }
 </script>

@@ -5,7 +5,7 @@
       :title="$t('select item') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
-      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <input type="text" ref="searchText" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
       <hr>
       <div v-if="isLoading">
         <h3 class="text-center">Loading ...</h3>
@@ -29,7 +29,7 @@
         {{ $t('you don\'t have any') | capitalize }} {{ $t('item') | capitalize }}
       </div>
       <div class="pull-right">
-        <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('create') | uppercase }}</button>
+        <button type="button" @click="$refs.addItem.open()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('create') | uppercase }}</button>
         <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
       </div>
     </sweet-modal>
@@ -161,6 +161,9 @@ export default {
     open (index = null) {
       this.index = index
       this.$refs['select-' + this.id].open()
+      this.$nextTick(() => {
+        this.$refs.searchText.focus()
+      })
     },
     close () {
       this.$refs['select-' + this.id].close()

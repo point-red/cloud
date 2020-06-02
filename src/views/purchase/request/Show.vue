@@ -15,33 +15,22 @@
 
     <purchase-menu/>
 
-    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
-      role="alert"
-      v-if="purchaseRequest.form.approval_status == 0 && isLoading == false">
-      <div class="flex-fill mr-10">
-        <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle"></i>
-          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: purchaseRequest.form.request_approval_to.full_name }) | uppercase }}
-        </p>
-        <hr>
-        <div v-if="$permission.has('approve purchase request')">
-          <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
-          <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
-          <m-form-reject id="form-reject" ref="formReject" @reject="onReject($event)"></m-form-reject>
-        </div>
-      </div>
-    </div>
+    <p-show-form-approval-status
+      :is-loading="isLoading"
+      :approved-by="purchaseRequest.form.request_approval_to.full_name"
+      :cancellation-status="purchaseRequest.form.cancellation_status"
+      :approval-status="purchaseRequest.form.approval_status"
+      :approval-reason="purchaseRequest.form.approval_reason"
+      @onApprove="onApprove"
+      @onReject="onReject"/>
 
-    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
-      role="alert"
-      v-if="purchaseRequest.form.approval_status == -1 && isLoading == false">
-      <div class="flex-fill mr-10">
-        <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('rejected') | uppercase }}
-        </p>
-        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> {{ purchaseRequest.form.approval_reason }}</div>
-      </div>
-    </div>
+    <p-show-form-cancellation-status
+      :is-loading="isLoading"
+      :cancellation-status="purchaseRequest.form.cancellation_status"
+      :cancellation-approval-reason="purchaseRequest.form.cancellation_approval_reason"
+      :request-cancellation-reason="purchaseRequest.form.request_cancellation_reason"
+      @onCancellationApprove="onCancellationApprove"
+      @onCancellationReject="onCancellationReject"/>
 
     <div class="row" v-if="purchaseRequest">
       <p-block>
@@ -52,34 +41,40 @@
                 <router-link :to="{ name: 'purchase.request.create' }" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <router-link :to="{ name: 'purchase.request.edit', params: { id: purchaseRequest.id }}" class="btn btn-sm btn-outline-secondary mr-5">
+                <router-link :to="{ name: 'purchase.request.edit', params: { id: id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
                 </router-link>
-              </div>
-              <hr>
-              <h4 class="text-center">{{ $t('purchase request') | uppercase }}</h4>
-              <hr>
-              <div class="float-sm-right text-right">
-                <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
-                <template v-if="purchaseRequest.form.branch">
-                  {{ purchaseRequest.form.branch.address | uppercase }} <br v-if="purchaseRequest.form.branch.address">
-                  {{ purchaseRequest.form.branch.phone | uppercase }} <br v-if="purchaseRequest.form.branch.phone">
-                </template>
-              </div>
-              <div class="float-sm-left">
-                <h6 class="mb-0 ">{{ $t('supplier') | uppercase }}</h6>
-                {{ purchaseRequest.supplier_name | uppercase }}
-                <div style="font-size:12px">
-                  {{ purchaseRequest.supplier_address | uppercase }}
-                  <br v-if="purchaseRequest.supplier_phone">{{ purchaseRequest.supplier_phone }}
-                  <br v-if="purchaseRequest.supplier_email">{{ purchaseRequest.supplier_email | uppercase }}
-                </div>
+                <button
+                  v-if="purchaseRequest.form.cancellation_status == null || purchaseRequest.form.cancellation_status == -1"
+                  @click="$refs.formRequestDelete.open()" class="btn btn-sm btn-outline-secondary mr-5">
+                  {{ $t('delete') | uppercase }}
+                </button>
               </div>
             </div>
           </div>
           <hr>
-          <div><b>{{ $t('form number') | uppercase }} : </b>{{ purchaseRequest.form.number }}</div>
-          <div><b>{{ $t('required date') | uppercase }} : </b>{{ purchaseRequest.required_date | dateFormat('DD MMMM YYYY') }}</div>
+          <div class="row">
+            <div class="col-sm-6">
+              <h4>{{ $t('purchase request') | uppercase }}</h4>
+              <table class="table table-sm table-bordered">
+                <tr>
+                  <td width="150px" class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                  <td>{{ purchaseRequest.form.number }}</td>
+                </tr>
+                <tr>
+                  <td class="font-weight-bold">{{ $t('required date') | uppercase }}</td>
+                  <td>{{ purchaseRequest.required_date | dateFormat('DD MMMM YYYY') }}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-sm-6 text-right">
+              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <template v-if="purchaseRequest.form.branch">
+                {{ purchaseRequest.form.branch.address | uppercase }} <br v-if="purchaseRequest.form.branch.address">
+                {{ purchaseRequest.form.branch.phone | uppercase }} <br v-if="purchaseRequest.form.branch.phone">
+              </template>
+            </div>
+          </div>
           <hr>
           <point-table class="mt-20">
             <tr slot="p-head">
@@ -87,22 +82,18 @@
               <th>Item</th>
               <th>Notes</th>
               <th class="text-right">Quantity</th>
-              <th class="text-right">Estimated Price</th>
-              <th width="50px"></th>
+              <th width="50px">
+                <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
+                  <i class="fa fa-ellipsis-h"/>
+                </button>
+              </th>
             </tr>
             <template v-for="(row, index) in purchaseRequest.items">
               <tr slot="p-body" :key="index">
                 <th class="text-center">{{ index + 1 }}</th>
-                <td>
-                  <router-link
-                    :to="'/master/item/' + row.item_id"
-                    v-if="$permission.has('read item')">
-                    {{ row.item.name }}
-                  </router-link>
-                </td>
+                <td>{{ row.item.name }}</td>
                 <td>{{ row.notes }}</td>
                 <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
-                <td class="text-right">{{ row.price | numberFormat }}</td>
                 <td>
                   <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more">
                     <i class="fa fa-ellipsis-h"/>
@@ -117,7 +108,7 @@
                     id="allocation"
                     name="allocation"
                     :label="$t('allocation')">
-                    <div slot="body" class="mt-5">
+                    <div slot="body" class="col-lg-9 mt-5">
                       <template v-if="row.allocation">{{ row.allocation.name }}</template>
                     </div>
                   </p-form-row>
@@ -125,14 +116,6 @@
               </tr>
               </template>
             </template>
-            <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="text-right"><b>{{ totalPrice | numberFormat }}</b></td>
-              <td></td>
-            </tr>
           </point-table>
           <div class="row mt-50">
             <div class="col-sm-6">
@@ -156,13 +139,14 @@
                   _______________
                 </template>
               </div>
-              {{ purchaseRequest.form.request_approval_to.first_name | uppercase }}
-              <div style="font-size:11px">{{ purchaseRequest.form.request_approval_to.email | lowercase }}</div>
+              {{ purchaseRequest.form.request_approval_to.full_name | uppercase }}
+              <div style="font-size:9px">{{ purchaseRequest.form.request_approval_to.email | uppercase }}</div>
             </div>
           </div>
         </p-block-inner>
       </p-block>
     </div>
+    <m-form-request-delete ref="formRequestDelete" @delete="onDelete($event)"></m-form-request-delete>
   </div>
 </template>
 
@@ -183,8 +167,8 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      isLoading: false,
-      totalPrice: null
+      rows: [],
+      isLoading: false
     }
   },
   computed: {
@@ -200,7 +184,22 @@ export default {
     }
   },
   methods: {
-    ...mapActions('purchaseRequest', ['find', 'delete', 'approve', 'reject']),
+    ...mapActions('purchaseRequest', {
+      find: 'find',
+      delete: 'delete',
+      approve: 'approve',
+      reject: 'reject',
+      cancellationApprove: 'cancellationApprove',
+      cancellationReject: 'cancellationReject'
+    }),
+    toggleMore () {
+      let isMoreActive = this.purchaseRequest.items.some(function (el, index) {
+        return el.more === false
+      })
+      this.purchaseRequest.items.forEach(element => {
+        element.more = isMoreActive
+      })
+    },
     findPurchaseRequisition () {
       this.isLoading = true
       this.find({
@@ -208,55 +207,63 @@ export default {
         params: {
           with_archives: true,
           with_origin: true,
-          includes: 'supplier;' +
-            'items.item;' +
+          includes: 'items.item;' +
             'items.allocation;' +
-            'services.service;' +
-            'services.allocation;' +
             'form.requestApprovalTo;' +
             'form.branch'
         }
       }).then(response => {
         this.isLoading = false
-        this.purchaseRequest.items.forEach((element, index) => {
-          this.$set(this.purchaseRequest.items[index], 'more', false)
-          this.totalPrice += element.price
-        })
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
       })
     },
-    onDelete () {
-      this.isDeleting = true
+    onDelete (reason) {
       this.delete({
-        id: this.id
+        id: this.id,
+        data: {
+          reason: reason
+        }
       }).then(response => {
-        this.isDeleting = false
         this.$notification.success('cancel success')
-        this.$router.push('/purchase/request')
-      }).catch(error => {
-        this.isDeleting = false
-        this.$notification.error(error.message)
-        this.purchaseRequest.errors.record(error.errors)
+        this.findPurchaseRequisition()
       })
     },
     onApprove () {
       this.approve({
         id: this.id
       }).then(response => {
-        this.$notification.success('approve success')
-        this.purchaseRequest.form.approval_status = response.data.form.approval_status
+        this.$notification.success('approval approved')
+        this.findPurchaseRequisition()
       })
     },
     onReject (reason) {
       this.reject({
         id: this.id,
-        approval_reason: reason
+        reason: reason
       }).then(response => {
-        this.$notification.success('reject success')
-        this.purchaseRequest.form.approval_status = response.data.form.approval_status
-        this.purchaseRequest.form.approval_reason = response.data.form.approval_reason
+        this.$notification.success('approval rejected')
+        this.findPurchaseRequisition()
+      })
+    },
+    onCancellationApprove () {
+      this.cancellationApprove({
+        id: this.id
+      }).then(response => {
+        this.$notification.success('cancellation approved')
+        this.$router.push('/purchase/request')
+      })
+    },
+    onCancellationReject (reason) {
+      this.cancellationReject({
+        id: this.id,
+        reason: reason
+      }).then(response => {
+        this.$notification.success('cancellation rejected')
+        this.findPurchaseRequisition()
+      }).catch(error => {
+        console.log(error.message)
       })
     }
   },

@@ -13,6 +13,7 @@ import MainMenu from '@/views/MainMenu'
 import Master from '@/views/master/routes'
 import HumanResource from '@/views/human-resource/routes'
 import Purchase from '@/views/purchase/routes'
+import Sales from '@/views/sales/routes'
 import Inventory from '@/views/inventory/routes'
 import Manufacture from '@/views/manufacture/routes'
 import POS from '@/views/pos/routes'
@@ -82,6 +83,7 @@ export default new Router({
         ...Master,
         ...HumanResource,
         ...Purchase,
+        ...Sales,
         ...Inventory,
         ...Manufacture,
         ...POS,

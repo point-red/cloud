@@ -37,6 +37,7 @@
 <script>
 import Network from '@/network'
 import { mapGetters } from 'vuex'
+import '@ckienle/k-pop/themes/clean.css'
 import firebase from 'firebase/app'
 
 export default {

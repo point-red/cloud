@@ -25,7 +25,7 @@
         <div v-if="$permission.has('approve inventory usage')">
           <button type="button" @click="onApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
           <button type="button" @click="$refs.formReject.show()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
-          <m-form-reject id="form-reject" ref="formReject" @reject="onReject($event)"></m-form-reject>
+          <m-form-approval-reject id="form-reject" ref="formReject" @reject="onReject($event)"></m-form-approval-reject>
         </div>
       </div>
     </div> -->

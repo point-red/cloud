@@ -5,6 +5,9 @@ const url = '/manufacture/formulas'
 const state = {
   formula: {
     name: '',
+    manufacture_process: {
+      name: null
+    },
     form: {
       number: null,
       notes: null,

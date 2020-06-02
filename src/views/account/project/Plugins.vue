@@ -17,95 +17,26 @@
     <hr>
 
     <div class="row gutters-tiny">
-      <div class="col-md-6 col-xl-3">
-        <div class="block block-link-shadow">
-          <div class="block-content block-content-full clearfix">
-            <div class="font-size-h5 font-w600">
-              COMMUNITY EDITION
-            </div>
-            <hr>
-            <div class="font-size-sm" style="height:70px">
-              -
-            </div>
-            <hr>
-            <div class="font-size-sm">
-              <span class="font-size-lg">FREE</span>
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-primary">SUBSCRIBED</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6 col-xl-3">
-        <div class="block block-link-shadow">
-          <div class="block-content block-content-full clearfix">
-            <div class="font-size-h5 font-w600">
-              BASIC
-            </div>
-            <hr>
-            <div class="font-size-sm" style="height:70px">
-              1. Suitable for smaller businesses <br>
-              2. Basic resource management features <br>
-              3. Up to 10 users
-            </div>
-            <hr>
-            <div class="text-uppercase">
-              <span class="font-size-lg">IDR 1.000.000</span> <small>/ month</small>
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6 col-xl-3">
-        <div class="block block-link-shadow">
-          <div class="block-content block-content-full clearfix">
-            <div class="font-size-h5 font-w600">
-              PRO
-            </div>
-            <hr>
-            <div class="font-size-sm" style="height:70px">
-              1. Suitable for medium businesses <br>
-              2. Include all basic features and accounting forecast <br>
-              3. Up to 100 users
-            </div>
-            <hr>
-            <div class="text-uppercase">
-              <span class="font-size-lg">IDR 3.000.000</span> <small>/ month</small>
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6 col-xl-3">
-        <div class="block block-link-shadow">
-          <div class="block-content block-content-full clearfix">
-            <div class="font-size-h5 font-w600">
-              PREMIUM
-            </div>
-            <hr>
-            <div class="font-size-sm" style="height:70px">
-              1. Suitable for larger businesses <br>
-              2. Enterprise resource management features <br>
-              3. Unlimited users
-            </div>
-            <hr>
-            <div class="text-uppercase">
-              <span class="font-size-lg">IDR 9.000.000</span> <small>/ month</small>
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
+      <div class="row gutters-tiny">
+        <div class="col-md-6 col-xl-3" v-for="packageErp in packages" :key="packageErp.code">
+          <div class="block block-link-shadow">
+            <div class="block-content block-content-full clearfix">
+              <div class="font-size-h5 font-w600">
+                {{ packageErp.name }}
+              </div>
+              <hr>
+              <div class="font-size-sm plugin-description" style="height:70px">
+                <pre>{{ packageErp.description }}</pre>
+              </div>
+              <hr>
+              <div class="text-uppercase">
+                <span class="font-size-lg">IDR {{ packageErp.price | numberFormat }}</span> <small>/ month</small>
+              </div>
+              <hr>
+              <div class="font-size-sm font-w600 text-uppercase text-muted">
+                <button type="button" @click="choosePackage(packageErp, 'unsubscribe')" v-if="project.package_id == packageErp.id" class="btn btn-sm btn-primary">SUBSCRIBED</button>
+                <button type="button" @click="choosePackage(packageErp, 'subscribe')" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+              </div>
             </div>
           </div>
         </div>
@@ -127,7 +58,7 @@
                 {{ plugin.name }}
               </div>
               <hr>
-              <div class="font-size-sm">
+              <div class="font-size-sm plugin-description">
                 {{ plugin.description }}
               </div>
               <hr>
@@ -136,14 +67,18 @@
               </div>
               <hr>
               <div class="font-size-sm font-w600 text-uppercase text-muted">
-                <button type="button" @click="choosePlugin(plugin)" v-if="form.plugins.findIndex(element => element.id == plugin.id) >= 0" class="btn btn-sm btn-primary">SUBSCRIBED</button>
-                <button type="button" @click="choosePlugin(plugin)" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+                <button type="button" @click="choosePlugin(plugin, 'unsubscribe')" v-if="project.plugins.length > 0 && project.plugins.findIndex(element => element.id == plugin.id) >= 0" class="btn btn-sm btn-primary">SUBSCRIBED</button>
+                <button type="button" @click="choosePlugin(plugin, 'subscribe')" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
               </div>
             </div>
           </div>
         </div>
       </template>
     </div>
+
+    <sweet-modal ref="subscribed" icon="success">
+      Thankyou for subscribe, please click this <a href="javascript:void(0)" @click="redirectToPluginUrl()">LINK</a> to open the app
+    </sweet-modal>
   </div>
 </template>
 
@@ -165,7 +100,8 @@ export default {
         id: this.$route.params.id,
         project_id: this.$route.params.id,
         plugins: []
-      })
+      }),
+      plugin_url: ''
     }
   },
   components: {
@@ -176,7 +112,8 @@ export default {
   },
   computed: {
     ...mapGetters('accountProject', ['project']),
-    ...mapGetters('accountPlugin', ['plugins', 'pagination'])
+    ...mapGetters('accountPlugin', ['plugins', 'pagination']),
+    ...mapGetters('accountPackage', ['packages'])
   },
   created () {
     this.isLoading = true
@@ -198,14 +135,26 @@ export default {
     }).catch(error => {
       //
     })
+
+    this.getPackage()
   },
   methods: {
     ...mapActions('accountProject', {
       findProject: 'find'
     }),
     ...mapActions('accountPlugin', {
-      getPlugin: 'get'
+      getPlugin: 'get',
+      subscribe: 'subscribe',
+      unsubscribe: 'unsubscribe'
     }),
+    ...mapActions('accountPackage', {
+      getPackage: 'get',
+      subscribePackage: 'subscribe',
+      unsubscribePackage: 'unsubscribe'
+    }),
+    redirectToPluginUrl () {
+      window.open(this.plugin_url, '_self')
+    },
     calculate () {
       this.form.sub_total_price = 0
       this.form.vat = 0
@@ -216,19 +165,87 @@ export default {
       this.form.vat = this.form.sub_total_price * 10 / 100
       this.form.total_price = this.form.sub_total_price + this.form.vat
     },
-    choosePlugin (plugin) {
-      let dateNow = this.$moment(new Date()).format('DD')
-      let dateEnd = this.$moment(new Date()).endOf('month').format('DD')
-      plugin.price_proportional = (dateEnd - dateNow) / dateEnd * plugin.price
-      plugin.price_per_user_proportional = (dateEnd - dateNow) / dateEnd * plugin.price_per_user
-      plugin.notes = plugin.name + ' ( ' + this.$moment(new Date()).format('DD MMMM YYYY') + ' - ' + this.$moment(new Date()).endOf('month').format('DD MMMM YYYY') + ' )'
-      let index = this.form.plugins.findIndex(element => element.id == plugin.id)
-      if (index >= 0) {
-        this.form.plugins.splice(index, 1)
-      } else {
-        this.form.plugins.push(plugin)
+    choosePackage (packageErp, method) {
+      let self = this
+      if (method == 'subscribe') {
+        this.$alert.confirm(this.$t('subscribe'), 'will you update your package ?').then(response => {
+          this.subscribePackage({
+            id: packageErp.id,
+            project_id: this.project.id
+          }).then(response => {
+            this.isLoading = true
+            this.findProject({ id: this.id })
+              .then(response => {
+                this.isLoading = false
+              }).catch(error => {
+                this.isLoading = false
+                this.$notification.error(error.message)
+              })
+          })
+        })
+      } else if (method == 'unsubscribe') {
+        this.$alert.confirm(this.$t('unsubscribe'), 'are you sure to unsubscribe from this package ?').then(response => {
+          this.unsubscribePackage({
+            id: packageErp.id,
+            project_id: this.project.id
+          }).then(response => {
+            self.isLoading = true
+            self.findProject({ id: self.id })
+              .then(response => {
+                self.isLoading = false
+              }).catch(error => {
+                self.isLoading = false
+                self.$notification.error(error.message)
+              })
+          })
+        })
+      }
+    },
+    choosePlugin (plugin, method) {
+      if (method == 'subscribe') {
+        this.subscribe({
+          id: plugin.id,
+          project_id: this.project.id
+        }).then(response => {
+          this.isLoading = true
+          this.findProject({ id: this.id })
+            .then(response => {
+              this.isLoading = false
+              if (plugin.app_url) {
+                this.plugin_url = plugin.app_url
+                this.$refs.subscribed.open()
+              }
+            }).catch(error => {
+              this.isLoading = false
+              this.$notification.error(error.message)
+            })
+        })
+      } else if (method == 'unsubscribe') {
+        let self = this
+        this.$alert.confirm(this.$t('unsubscribe'), 'are you sure to unsubscribe this plugin ?').then(response => {
+          this.unsubscribe({
+            id: plugin.id,
+            project_id: this.project.id
+          }).then(response => {
+            self.isLoading = true
+            self.findProject({ id: self.id })
+              .then(response => {
+                self.isLoading = false
+              }).catch(error => {
+                self.isLoading = false
+                self.$notification.error(error.message)
+              })
+          })
+        })
       }
     }
   }
 }
 </script>
+
+<style scoped>
+  .plugin-description {
+    height: 80px;
+    overflow: auto;
+  }
+</style>

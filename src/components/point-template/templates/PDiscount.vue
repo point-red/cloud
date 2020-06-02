@@ -1,39 +1,45 @@
 <template>
-  <div>
-    <div class="input-group">
-      <cleave
-        :readonly="readonly"
-        v-model="number"
-        :options="options"
-        class="form-control form-number"
-        :class="{
-          'text-right' : isTextRight
-        }"></cleave>
-      <div class="input-group-append">
-        <span class="input-group-text">
-          <template v-if="mutableMode == 'percent'">
-            %
-          </template>
-          <template v-else>
-
-          </template>
-        </span>
-      </div>
-    </div>
+  <div class="input-group">
+    <p-form-number
+      width="100%"
+      style="width:100%"
+      ref="formDiscount"
+      v-if="isPercent"
+      :readonly="readonly"
+      :value="discountPercent"
+      :options="options"
+      :is-text-right="isTextRight"
+      :max="100"
+      @input="discountPercentChanged"/>
+    <p-form-number
+      width="100%"
+      style="width:100%"
+      ref="formDiscount"
+      v-else
+      :readonly="readonly"
+      :value="discountValue"
+      :options="options"
+      :is-text-right="isTextRight"
+      :max="baseValue"
+      @input="discountValueChanged"/>
+    <k-pop placement="bottom" with-arrow theme="clean">
+      <template #trigger="{ show, hide }">
+        <div class="input-group-append" @click="togglePercent" @mouseenter="show" @mouseleave="hide">
+          <div v-if="isPercent" class="input-group-text">%</div>
+          <div v-else class="input-group-text"></div>
+        </div>
+      </template>
+      Click this box to change discount based on percentage or value
+    </k-pop>
   </div>
 </template>
 
 <script>
-import Cleave from 'vue-cleave-component'
-
 export default {
-  components: {
-    Cleave
-  },
   data () {
     return {
       number: this.value,
-      mutableMode: this.mode,
+      isPercent: false,
       options: {
         numeral: true,
         numeralDecimalScale: 15,
@@ -42,9 +48,6 @@ export default {
     }
   },
   watch: {
-    value () {
-      this.number = this.value
-    },
     number () {
       if (this.number > 100) {
         this.number = 100
@@ -52,6 +55,20 @@ export default {
         this.number = 0
       }
       this.$emit('input', this.number)
+    },
+    discountPercent () {
+      if (this.discountPercent != 0) {
+        this.isPercent = true
+      } else if (this.discountPercent == 0 && this.discountValue != 0) {
+        this.isPercent = false
+      }
+    },
+    discountValue () {
+      if (this.discountPercent != 0) {
+        this.isPercent = true
+      } else if (this.discountPercent == 0 && this.discountValue != 0) {
+        this.isPercent = false
+      }
     }
   },
   props: {
@@ -59,19 +76,38 @@ export default {
       type: Boolean,
       default: false
     },
-    unsigned: {
-      type: Boolean,
-      default: false
-    },
     isTextRight: {
       type: Boolean,
       default: true
     },
-    mode: {
-      type: String,
-      default: 'percent'
+    discountPercent: {
+      type: Number,
+      default: 0
     },
-    value: null
+    discountValue: {
+      type: Number,
+      default: 0
+    },
+    baseValue: {
+      type: Number,
+      required: true
+    }
+  },
+  methods: {
+    togglePercent () {
+      this.isPercent = !this.isPercent
+      this.discountPercentChanged(0)
+      this.$nextTick(() => {
+        this.$refs.formDiscount.setFocus()
+      })
+    },
+    discountPercentChanged (value) {
+      this.$emit('update:discountPercent', value * 1)
+      this.discountValueChanged(this.baseValue * value / 100)
+    },
+    discountValueChanged (value) {
+      this.$emit('update:discountValue', value * 1)
+    }
   }
 }
 </script>

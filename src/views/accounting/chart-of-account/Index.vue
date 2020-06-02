@@ -7,6 +7,17 @@
 
     <div class="row">
       <p-block>
+        <div class="text-center" v-show="chartOfAccounts.length == 0 && !this.searchText && !isLoading">
+          <p-block-inner>
+            <p>
+              Anda tidak memiliki akun saat ini, klik tombol di bawah ini untuk generate default akun
+            </p>
+            <button type="submit" class="btn btn-sm btn-primary mb-15" :disabled="isSaving" @click="generate()">
+              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('generate account') | uppercase }}
+            </button>
+          </p-block-inner>
+          <hr>
+        </div>
         <div class="input-group block mb-5">
           <a
             href="javascript:void(0)"
@@ -36,14 +47,13 @@
               <th class="text-center">Sub Ledger</th>
               <th class="text-center">Debit</th>
               <th class="text-center">Credit</th>
-              <th class="text-center">Cash Flow</th>
-              <th class="text-center">Cash Flow Position</th>
+              <th class="text-center">Locked</th>
             </tr>
             <tr
               v-for="chartOfAccount in chartOfAccounts"
               :key="chartOfAccount.id"
               slot="p-body">
-              <td>{{ chartOfAccount.number }}</td>
+              <th>{{ chartOfAccount.number }}</th>
               <td>
                 <router-link :to="{ name: 'accounting.chart-of-account.show', params: { id: chartOfAccount.id }}">
                   {{ chartOfAccount.alias }}
@@ -60,10 +70,7 @@
                 <i class="fa fa-check" v-if="chartOfAccount.position == 'CREDIT'"></i>
               </td>
               <td class="text-center">
-                {{ chartOfAccount.cash_flow }}
-              </td>
-              <td class="text-center">
-                {{ chartOfAccount.cash_flow_position }}
+                <i class="fa fa-check" v-if="chartOfAccount.is_locked"></i>
               </td>
             </tr>
           </point-table>
@@ -86,6 +93,7 @@ export default {
   data () {
     return {
       isLoading: false,
+      isSaving: false,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1
     }
@@ -102,6 +110,16 @@ export default {
     ...mapActions('accountingChartOfAccount', {
       getChartOfAccounts: 'get'
     }),
+    ...mapActions('accountingChartOfAccountGenerator', ['create']),
+    generate () {
+      this.isSaving = true
+      this.create()
+        .then(response => {
+          this.search()
+        }).catch(error => {
+          this.isSaving = false
+        })
+    },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value

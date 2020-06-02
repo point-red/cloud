@@ -35,7 +35,7 @@
                   <th>Invoice Number</th>
                   <th>Due Date</th>
                   <th class="text-right">Total DUE</th>
-                  <th>Status</th>
+                  <th class="text-right">Status</th>
                 </tr>
                 <tr slot="p-body" v-for="(invoice, index) in invoices" :key="index">
                   <th>
@@ -45,9 +45,9 @@
                   </th>
                   <td>{{ invoice.due_date | dateFormat('DD MMMM YYYY')}}</td>
                   <td class="text-right">IDR {{ invoice.total | numberFormat }}</td>
-                  <td>
-                    <div v-if="invoice.total > 0 && invoice.paidable_id == null" style="float:right" class="badge badge-danger">UNPAID</div>
-                    <div v-else style="float:right" class="badge badge-success">PAID</div>
+                  <td class="text-right">
+                    <div v-if="invoice.total > 0 && invoice.paidable_id == null" class="badge badge-danger">UNPAID</div>
+                    <div v-else class="badge badge-success">PAID</div>
                   </td>
                 </tr>
               </point-table>
