@@ -85,6 +85,12 @@
             <td></td>
           </tr>
         </p-table>
+        <p-form-row
+          :label="$t('comment')">
+          <div slot="body" class="col-lg-9 col-form-label">
+            {{ assessment.comment }}
+          </div>
+        </p-form-row>
       </p-block>
     </form>
   </div>

@@ -136,6 +136,12 @@
               <td></td>
             </tr>
           </p-table>
+          <p-form-row
+            :label="$t('Comment')">
+            <div slot="body" class="col-lg-9 col-form-label">
+              <textarea class="form-control" v-model="form.template.comment" rows="3"></textarea>
+            </div>
+          </p-form-row>
 
           <div class="form-group row">
             <div class="col-md-12">
@@ -197,7 +203,8 @@ export default {
           end: this.$moment().format('YYYY-MM-DD HH:mm:ss')
         },
         template: {
-          groups: []
+          groups: [],
+          comment: null
         }
 
       }),
@@ -290,6 +297,7 @@ export default {
       this.$delete(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected')
     },
     addedScore ({ indicatorId, score, notes }) {
+      console.log('add score modal')
       // find index of template group
       let groupIndex = this.form.template.groups
         .findIndex(o => o.indicators
@@ -312,6 +320,7 @@ export default {
       this.$set(this.form.template, 'score_percentage', scorePercentage + (template.score_percentage || 0))
     },
     onSubmit () {
+      this.$set(this.form.template, 'comment', this.form.template.comment)
       if (!this.form.date.start || !this.form.date.end) {
         this.$notification.error('Please select a valid date range')
         return
@@ -319,6 +328,7 @@ export default {
       this.isSaving = true
       this.form.date.start = this.serverDateTime(this.$moment(this.form.date.start))
       this.form.date.end = this.serverDateTime(this.$moment(this.form.date.end))
+      console.log(this.form)
       this.createEmployeeAssessment({ employeeId: this.employee.id, form: this.form })
         .then(response => {
           this.isSaving = false

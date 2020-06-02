@@ -70,6 +70,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.get(url(payload.employeeId) + '/' + payload.kpiId)
         .then(response => {
+          console.log(response)
           commit('FETCH_ASSESSMENT', response)
           dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
           resolve(response)
@@ -101,6 +102,7 @@ const actions = {
     })
   },
   update (context, payload) {
+    console.log(payload.form.template.comment)
     return new Promise((resolve, reject) => {
       api.patch(url(payload.employeeId) + '/' + payload.kpiId, payload.form)
         .then(response => {
