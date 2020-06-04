@@ -59,9 +59,9 @@
                   <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
                   <td>{{ salesOrder.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
-                <tr v-if="salesOrder.sales_request">
+                <tr v-if="salesOrder.sales_quotation">
                   <td class="font-weight-bold">{{ $t('reference') | uppercase }}</td>
-                  <td>{{ salesOrder.sales_request.form.number }}</td>
+                  <td>{{ salesOrder.sales_quotation.form.number }}</td>
                 </tr>
               </table>
             </div>

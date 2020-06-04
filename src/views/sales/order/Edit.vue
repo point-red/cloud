@@ -312,7 +312,7 @@ export default {
       salesQuotation: null,
       form: new Form({
         id: this.$route.params.id,
-        sales_request_id: null,
+        sales_quotation_id: null,
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         customer_id: null,
@@ -454,10 +454,10 @@ export default {
     },
     chooseSalesQuotation (salesQuotation) {
       this.salesQuotation = salesQuotation
-      this.form.sales_request_id = salesQuotation.id
+      this.form.sales_quotation_id = salesQuotation.id
       this.form.items = salesQuotation.items.map(item => {
         return {
-          sales_request_item_id: item.id,
+          sales_quotation_item_id: item.id,
           item_id: item.item_id,
           item_name: item.item.name,
           item_label: item.item.name,
@@ -519,8 +519,8 @@ export default {
       }
     }).then(response => {
       this.isLoading = false
-      if (response.data.sales_request) {
-        this.form.sales_request_id = response.data.sales_request.id
+      if (response.data.sales_quotation) {
+        this.form.sales_quotation_id = response.data.sales_quotation.id
       }
       this.form.date = response.data.form.date
       this.form.customer_id = response.data.customer_id
@@ -540,7 +540,7 @@ export default {
       this.form.items.forEach(el => {
         el.item_label = el.item.label
       })
-      this.salesQuotation = response.data.sales_request
+      this.salesQuotation = response.data.sales_quotation
       this.addItemRow()
     }).catch(error => {
       this.isLoading = false
