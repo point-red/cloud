@@ -405,13 +405,13 @@
                 <span class="sidebar-mini-hide">{{ $t("plugin") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('menu scale weight')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$plugin.has('SCALE WEIGHT') && $permission.has('menu scale weight')">
                   <router-link
                     to="/plugin/scale-weight"
                     active-class="active">{{ $t('scale weight') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('menu pin point')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$plugin.has('PIN POINT') && $permission.has('menu pin point')">
                   <router-link
                     to="/plugin/pin-point"
                     active-class="active">{{'pin point' | uppercase }}

@@ -6,13 +6,13 @@
     <div class="row gutters-tiny">
       <p-box
         name="Scale Weight"
-        v-if="$permission.has('menu scale weight')"
+        v-if="$plugin.has('SCALE WEIGHT') && $permission.has('menu scale weight')"
         link="/plugin/scale-weight"
         icon="fa fa-balance-scale"/>
 
       <p-box
         name="Pin Point"
-        v-if="$permission.has('menu pin point')"
+        v-if="$plugin.has('PIN POINT') && $permission.has('menu pin point')"
         link="/plugin/pin-point"
         icon="fa fa-map-marker"/>
     </div>
