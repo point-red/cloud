@@ -17,26 +17,24 @@
     <hr>
 
     <div class="row gutters-tiny">
-      <div class="row gutters-tiny">
-        <div class="col-md-6 col-xl-3" v-for="packageErp in packages" :key="packageErp.code">
-          <div class="block block-link-shadow">
-            <div class="block-content block-content-full clearfix">
-              <div class="font-size-h5 font-w600">
-                {{ packageErp.name }}
-              </div>
-              <hr>
-              <div class="font-size-sm plugin-description" style="height:70px">
-                <pre>{{ packageErp.description }}</pre>
-              </div>
-              <hr>
-              <div class="text-uppercase">
-                <span class="font-size-lg">IDR {{ packageErp.price | numberFormat }}</span> <small>/ month</small>
-              </div>
-              <hr>
-              <div class="font-size-sm font-w600 text-uppercase text-muted">
-                <button type="button" @click="choosePackage(packageErp, 'unsubscribe')" v-if="project.package_id == packageErp.id" class="btn btn-sm btn-primary">SUBSCRIBED</button>
-                <button type="button" @click="choosePackage(packageErp, 'subscribe')" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
-              </div>
+      <div class="col-md-6 col-xl-3" v-for="packageErp in packages" :key="packageErp.code">
+        <div class="block block-link-shadow">
+          <div class="block-content block-content-full clearfix">
+            <div class="font-size-h5 font-w600">
+              {{ packageErp.name }}
+            </div>
+            <hr>
+            <div class="font-size-sm plugin-description" style="height:70px">
+              <pre>{{ packageErp.description }}</pre>
+            </div>
+            <hr>
+            <div class="text-uppercase">
+              <span class="font-size-lg">IDR {{ packageErp.price | numberFormat }}</span> <small>/ month</small>
+            </div>
+            <hr>
+            <div class="font-size-sm font-w600 text-uppercase text-muted">
+              <button type="button" @click="choosePackage(packageErp, 'unsubscribe')" v-if="project.package_id == packageErp.id" class="btn btn-sm btn-primary">SUBSCRIBED</button>
+              <button type="button" @click="choosePackage(packageErp, 'subscribe')" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
             </div>
           </div>
         </div>
@@ -64,8 +62,8 @@
               <hr>
               <div class="text-uppercase">
                 <span class="font-size-lg" v-if="plugin.price != 0">IDR {{ plugin.price | numberFormat }}</span> <small v-if="plugin.is_monthly_price">/ month</small>
-                      <span class="font-size-lg" v-if="plugin.price_per_user != 0">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
-                      <span class="font-size-lg" v-if="plugin.price == 0 && plugin.price_per_user == 0">FREE</span>
+                <span class="font-size-lg" v-if="plugin.price_per_user != 0">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
+                <span class="font-size-lg" v-if="plugin.price == 0 && plugin.price_per_user == 0">FREE</span>
               </div>
               <hr>
               <div class="font-size-sm font-w600 text-uppercase text-muted">
