@@ -95,11 +95,20 @@
                       :readonly="row.item_id == null"/>
                   </td>
                   <td>
+                    <p-discount
+                      :id="'discount' + index"
+                      :name="'discount' + index"
+                      :readonly="row.item_id == null"
+                      :base-value="row.price"
+                      :discount-percent.sync="row.discount_percent"
+                      :discount-value.sync="row.discount_value"/>
+                  </td>
+                  <td>
                     <p-form-number
                       :id="'total-' + index"
                       :name="'total-' + index"
                       :readonly="true"
-                      :value="row.quantity * row.price"/>
+                      :value="row.quantity * (row.price - row.discount_value)"/>
                   </td>
                   <td>
                     <button type="button"
@@ -145,6 +154,7 @@
               </template>
               <tr slot="p-body">
                 <th></th>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -245,7 +255,7 @@ export default {
     ...mapGetters('auth', ['authUser']),
     subtotal () {
       return this.form.items.reduce((carry, item) => {
-        return carry + item.quantity * item.price
+        return carry + item.quantity * (item.price - item.discount_value)
       }, 0)
     },
     tax_base () {

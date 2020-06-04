@@ -1,44 +1,44 @@
 <template>
   <div>
-    <breadcrumb v-if="salesQuotation">
+    <breadcrumb v-if="salesOrder">
       <breadcrumb-sales/>
-      <router-link to="/sales/quotation" class="breadcrumb-item">{{ $t('sales quotation') | uppercase }}</router-link>
-      <span class="breadcrumb-item active">{{ salesQuotation.form.number | uppercase }}</span>
+      <router-link to="/sales/order" class="breadcrumb-item">{{ $t('sales order') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ salesOrder.form.number | uppercase }}</span>
     </breadcrumb>
 
     <sales-menu/>
 
     <p-show-form-approval-status
       :is-loading="isLoading"
-      :approved-by="salesQuotation.form.request_approval_to.full_name"
-      :cancellation-status="salesQuotation.form.cancellation_status"
-      :approval-status="salesQuotation.form.approval_status"
-      :approval-reason="salesQuotation.form.approval_reason"
+      :approved-by="salesOrder.form.request_approval_to.full_name"
+      :cancellation-status="salesOrder.form.cancellation_status"
+      :approval-status="salesOrder.form.approval_status"
+      :approval-reason="salesOrder.form.approval_reason"
       @onApprove="onApprove"
       @onReject="onReject"/>
 
     <p-show-form-cancellation-status
       :is-loading="isLoading"
-      :cancellation-status="salesQuotation.form.cancellation_status"
-      :cancellation-approval-reason="salesQuotation.form.cancellation_approval_reason"
-      :request-cancellation-reason="salesQuotation.form.request_cancellation_reason"
+      :cancellation-status="salesOrder.form.cancellation_status"
+      :cancellation-approval-reason="salesOrder.form.cancellation_approval_reason"
+      :request-cancellation-reason="salesOrder.form.request_cancellation_reason"
       @onCancellationApprove="onCancellationApprove"
       @onCancellationReject="onCancellationReject"/>
 
-    <div class="row" v-if="salesQuotation">
+    <div class="row" v-if="salesOrder">
       <p-block>
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
               <div class="text-right">
-                <router-link :to="{ name: 'sales.quotation.create' }" class="btn btn-sm btn-outline-secondary mr-5">
+                <router-link :to="{ name: 'sales.order.create' }" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <router-link :to="{ name: 'sales.quotation.edit', params: { id: salesQuotation.id }}" class="btn btn-sm btn-outline-secondary mr-5">
+                <router-link :to="{ name: 'sales.order.edit', params: { id: salesOrder.id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
                 </router-link>
                 <button
-                  v-if="salesQuotation.form.cancellation_status == null || salesQuotation.form.cancellation_status == -1"
+                  v-if="salesOrder.form.cancellation_status == null || salesOrder.form.cancellation_status == -1"
                   @click="$refs.formRequestDelete.open()" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('delete') | uppercase }}
                 </button>
@@ -49,34 +49,34 @@
           <hr>
           <div class="row">
             <div class="col-sm-6">
-              <h4>{{ $t('sales quotation') | uppercase }}</h4>
+              <h4>{{ $t('sales order') | uppercase }}</h4>
               <table class="table table-sm table-bordered">
                 <tr>
                   <td width="150px" class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
-                  <td>{{ salesQuotation.form.number }}</td>
+                  <td>{{ salesOrder.form.number }}</td>
                 </tr>
                 <tr>
                   <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
-                  <td>{{ salesQuotation.date | dateFormat('DD MMMM YYYY') }}</td>
+                  <td>{{ salesOrder.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
-                <tr v-if="salesQuotation.sales_request">
+                <tr v-if="salesOrder.sales_request">
                   <td class="font-weight-bold">{{ $t('reference') | uppercase }}</td>
-                  <td>{{ salesQuotation.sales_request.form.number }}</td>
+                  <td>{{ salesOrder.sales_request.form.number }}</td>
                 </tr>
               </table>
             </div>
             <div class="col-sm-6 text-right">
               <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
-              <template v-if="salesQuotation.form.branch">
-                {{ salesQuotation.form.branch.address | uppercase }}
-                <br v-if="salesQuotation.form.branch.phone">{{ salesQuotation.form.branch.phone | uppercase }}
+              <template v-if="salesOrder.form.branch">
+                {{ salesOrder.form.branch.address | uppercase }}
+                <br v-if="salesOrder.form.branch.phone">{{ salesOrder.form.branch.phone | uppercase }}
               </template>
               <h6 class="mt-30 mb-5">{{ $t('customer') | uppercase }}</h6>
-              {{ salesQuotation.customer_name | uppercase }}
+              {{ salesOrder.customer_name | uppercase }}
               <div style="font-size:12px">
-                {{ salesQuotation.customer_address | uppercase }}
-                <br v-if="salesQuotation.customer_phone">{{ salesQuotation.customer_phone }}
-                <br v-if="salesQuotation.customer_email">{{ salesQuotation.customer_email | uppercase }}
+                {{ salesOrder.customer_address | uppercase }}
+                <br v-if="salesOrder.customer_phone">{{ salesOrder.customer_phone }}
+                <br v-if="salesOrder.customer_email">{{ salesOrder.customer_email | uppercase }}
               </div>
             </div>
           </div>
@@ -95,7 +95,7 @@
                 </button>
               </th>
             </tr>
-            <template v-for="(row, index) in salesQuotation.items">
+            <template v-for="(row, index) in salesOrder.items">
               <tr slot="p-body" :key="index">
                 <th class="text-center">{{ index + 1 }}</th>
                 <td>{{ row.item.label }}</td>
@@ -110,7 +110,7 @@
                 </td>
               </tr>
               <template v-if="row.more">
-              <!-- <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
+              <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
                 <th class="bg-gray-light"></th>
                 <td colspan="6">
                   <p-form-row
@@ -123,7 +123,7 @@
                     </div>
                   </p-form-row>
                 </td>
-              </tr> -->
+              </tr>
               <tr slot="p-body" :key="'ext2-'+index" class="bg-gray-light">
                 <th class="bg-gray-light"></th>
                 <td colspan="6">
@@ -145,35 +145,71 @@
               <td></td>
               <td></td>
               <td></td>
+              <td class="text-right"><b>{{ $t('subtotal') | uppercase }}</b></td>
+              <td class="text-right"><b>{{ salesOrder.subtotal | numberFormat }}</b></td>
+              <td></td>
+            </tr>
+            <tr slot="p-body">
+              <th></th>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="text-right"><b>{{ $t('discount') | uppercase }}</b></td>
+              <td class="text-right"><b>{{ salesOrder.discount_value | numberFormat }}</b></td>
+              <td></td>
+            </tr>
+            <tr slot="p-body">
+              <th></th>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="text-right"><b>{{ $t('tax base') | uppercase }}</b></td>
+              <td class="text-right"><b>{{ salesOrder.amount - salesOrder.tax | numberFormat }}</b></td>
+              <td></td>
+            </tr>
+            <tr slot="p-body">
+              <th></th>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td class="text-right"><b>{{ $t('tax') | uppercase }}</b></td>
+              <td class="text-right"><b>{{ salesOrder.tax | numberFormat }}</b></td>
+              <td></td>
+            </tr>
+            <tr slot="p-body">
+              <th></th>
+              <td></td>
+              <td></td>
+              <td></td>
               <td class="text-right"><b>{{ $t('total') | uppercase }}</b></td>
-              <td class="text-right"><b>{{ salesQuotation.subtotal | numberFormat }}</b></td>
+              <td class="text-right"><b>{{ salesOrder.amount | numberFormat }}</b></td>
               <td></td>
             </tr>
           </point-table>
           <div class="row mt-50">
             <div class="col-sm-6">
               <h6 class="mb-0">{{ $t('notes') | uppercase }}</h6>
-              <div style="white-space: pre-wrap;">{{ salesQuotation.form.notes }}</div>
+              <div style="white-space: pre-wrap;">{{ salesOrder.form.notes }}</div>
               <div class="d-sm-block d-md-none mt-10"></div>
             </div>
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">{{ salesQuotation.form.date | dateFormat('DD MMMM YYYY') }}</div>
-              {{ salesQuotation.form.created_by.full_name | uppercase }}
+              <div class="mb-50" style="font-size:11px">{{ salesOrder.form.date | dateFormat('DD MMMM YYYY') }}</div>
+              {{ salesOrder.form.created_by.full_name | uppercase }}
               <div class="d-sm-block d-md-none mt-10"></div>
             </div>
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
               <div class="mb-50" style="font-size:11px">
-                <template v-if="salesQuotation.form.approval_at">
-                  {{ salesQuotation.form.approval_at | dateFormat('DD MMMM YYYY') }}
+                <template v-if="salesOrder.form.approval_at">
+                  {{ salesOrder.form.approval_at | dateFormat('DD MMMM YYYY') }}
                 </template>
                 <template v-else>
                   _______________
                 </template>
               </div>
-              {{ salesQuotation.form.request_approval_to.full_name | uppercase }}
-              <div style="font-size:11px">{{ salesQuotation.form.request_approval_to.email | lowercase }}</div>
+              {{ salesOrder.form.request_approval_to.full_name | uppercase }}
+              <div style="font-size:11px">{{ salesOrder.form.request_approval_to.email | lowercase }}</div>
             </div>
           </div>
         </p-block-inner>
@@ -206,19 +242,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('salesQuotation', ['salesQuotation']),
+    ...mapGetters('salesOrder', ['salesOrder']),
     ...mapGetters('auth', ['authUser'])
   },
   watch: {
     '$route' (to, from) {
       if (to.params.id != from.params.id) {
         this.id = to.params.id
-        this.salesQuotationRequest()
+        this.salesOrderRequest()
       }
     }
   },
   methods: {
-    ...mapActions('salesQuotation', {
+    ...mapActions('salesOrder', {
       find: 'find',
       delete: 'delete',
       approve: 'approve',
@@ -227,14 +263,14 @@ export default {
       cancellationReject: 'cancellationReject'
     }),
     toggleMore () {
-      let isMoreActive = this.salesQuotation.items.some(function (el, index) {
+      let isMoreActive = this.salesOrder.items.some(function (el, index) {
         return el.more === false
       })
-      this.salesQuotation.items.forEach(element => {
+      this.salesOrder.items.forEach(element => {
         element.more = isMoreActive
       })
     },
-    salesQuotationRequest () {
+    salesOrderRequest () {
       this.isLoading = true
       this.find({
         id: this.id,
@@ -244,6 +280,7 @@ export default {
           includes: 'customer;' +
             'items.item;' +
             'items.allocation;' +
+            'salesQuotation.form;' +
             'form.createdBy;' +
             'form.requestApprovalTo;' +
             'form.branch'
@@ -258,11 +295,17 @@ export default {
     },
     calculate () {
       var subtotal = 0
-      this.salesQuotation.items.forEach(function (element) {
-        element.total = element.quantity * (element.price - element.discount_value)
+      this.salesOrder.items.forEach(function (element) {
+        if (element.discount_percent > 0) {
+          element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
+        } else if (element.discount_value > 0) {
+          element.total = element.quantity * (element.price - element.discount_value)
+        } else {
+          element.total = element.quantity * element.price
+        }
         subtotal += parseFloat(element.total)
       })
-      this.salesQuotation.subtotal = subtotal
+      this.salesOrder.subtotal = subtotal
     },
     onDelete (reason) {
       this.isDeleting = true
@@ -274,7 +317,7 @@ export default {
       }).then(response => {
         this.isDeleting = false
         this.$notification.success('cancel success')
-        this.salesQuotationRequest()
+        this.salesOrderRequest()
       }).catch(error => {
         this.isDeleting = false
         this.$notification.error(error.message)
@@ -286,7 +329,7 @@ export default {
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
-        this.salesQuotationRequest()
+        this.salesOrderRequest()
       })
     },
     onReject (reason) {
@@ -295,7 +338,7 @@ export default {
         reason: reason
       }).then(response => {
         this.$notification.success('reject success')
-        this.salesQuotationRequest()
+        this.salesOrderRequest()
       })
     },
     onCancellationApprove () {
@@ -303,7 +346,7 @@ export default {
         id: this.id
       }).then(response => {
         this.$notification.success('cancellation approved')
-        this.$router.push('/sales/quotation')
+        this.$router.push('/sales/order')
       })
     },
     onCancellationReject (reason) {
@@ -312,14 +355,14 @@ export default {
         reason: reason
       }).then(response => {
         this.$notification.success('cancellation rejected')
-        this.salesQuotationRequest()
+        this.salesOrderRequest()
       }).catch(error => {
         console.log(error.message)
       })
     }
   },
   created () {
-    this.salesQuotationRequest()
+    this.salesOrderRequest()
   }
 }
 </script>

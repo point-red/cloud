@@ -7,14 +7,14 @@
       active-class="btn-primary">
       <span>{{ $t('sales quotation') | uppercase }}</span>
     </router-link>
-    <!-- <router-link
+    <router-link
       to="/sales/order"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/sales/order')}"
       active-class="btn-primary">
       <span>{{ $t('sales order') | uppercase }}</span>
     </router-link>
-    <router-link
+    <!-- <router-link
       to="/sales/down-payment"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/sales/down-payment')}"

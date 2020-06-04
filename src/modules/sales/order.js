@@ -1,9 +1,9 @@
 import api from '@/api'
 
-const url = '/purchase/orders'
+const url = '/sales/orders'
 
 const state = {
-  purchaseOrder: {
+  salesOrder: {
     date: null,
     supplier_id: null,
     form: {
@@ -21,16 +21,16 @@ const state = {
     },
     items: []
   },
-  purchaseOrders: [],
+  salesOrders: [],
   pagination: {}
 }
 
 const getters = {
-  purchaseOrder: state => {
-    return state.purchaseOrder
+  salesOrder: state => {
+    return state.salesOrder
   },
-  purchaseOrders: state => {
-    return state.purchaseOrders
+  salesOrders: state => {
+    return state.salesOrders
   },
   pagination: state => {
     return state.pagination
@@ -39,23 +39,23 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.purchaseOrders = payload.data
+    state.salesOrders = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     payload.data.items.forEach(element => {
       element.more = false
     })
-    state.purchaseOrder = payload.data
+    state.salesOrder = payload.data
   },
   'CREATE' (state, payload) {
-    state.purchaseOrder = payload
+    state.salesOrder = payload
   },
   'UPDATE' (state, payload) {
-    state.purchaseOrder = payload
+    state.salesOrder = payload
   },
   'DELETE' (state, payload) {
-    state.purchaseOrder = {}
+    state.salesOrder = {}
   }
 }
 
