@@ -63,7 +63,9 @@
               </div>
               <hr>
               <div class="text-uppercase">
-                <span class="font-size-lg">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
+                <span class="font-size-lg" v-if="plugin.price != 0">IDR {{ plugin.price | numberFormat }}</span> <small v-if="plugin.is_monthly_price">/ month</small>
+                      <span class="font-size-lg" v-if="plugin.price_per_user != 0">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
+                      <span class="font-size-lg" v-if="plugin.price == 0 && plugin.price_per_user == 0">FREE</span>
               </div>
               <hr>
               <div class="font-size-sm font-w600 text-uppercase text-muted">
