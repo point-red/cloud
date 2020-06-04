@@ -513,7 +513,9 @@ export default {
       }
     }).then(response => {
       this.isLoading = false
-      this.form.purchase_request_id = response.data.purchase_request.id
+      if (response.data.purchase_request) {
+        this.form.purchase_request_id = response.data.purchase_request.id
+      }
       this.form.date = response.data.form.date
       this.form.supplier_id = response.data.supplier_id
       this.form.supplier_name = response.data.supplier_name

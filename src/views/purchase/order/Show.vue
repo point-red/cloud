@@ -300,6 +300,8 @@ export default {
           element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
         } else if (element.discount_value > 0) {
           element.total = element.quantity * (element.price - element.discount_value)
+        } else {
+          element.total = element.quantity * element.price
         }
         subtotal += parseFloat(element.total)
       })
