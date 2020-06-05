@@ -190,13 +190,13 @@
                     active-class="active">{{ $t('purchase order') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
                   <router-link
                     to="/purchase/down-payment"
                     active-class="active">{{ $t('down payment') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase receive')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase receive')">
                   <router-link
                     to="/purchase/receive"
                     active-class="active">{{ $t('purchase receive') | uppercase }}

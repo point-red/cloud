@@ -48,6 +48,7 @@
                         :id="'amount'"
                         :name="'amount'"
                         :is-text-right="false"
+                        :max="purchaseOrder.amount ? purchaseOrder.amount : 0"
                         v-model.number="form.amount"/>
                     </td>
                   </tr>
