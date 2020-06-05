@@ -133,7 +133,7 @@ export default {
       if (this.disableUnitSelection == true || this.disabled == true) {
         return
       }
-      this.$refs.quantityUnit.show(this.units)
+      this.$refs.quantityUnit.open(this.units)
     },
     chooseUnit (unit) {
       this.mutableUnit.label = unit.label
