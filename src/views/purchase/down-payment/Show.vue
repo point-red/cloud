@@ -31,10 +31,10 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="text-right">
-                <router-link :to="{ name: 'purchase.order.create' }" class="btn btn-sm btn-outline-secondary mr-5">
+                <router-link :to="{ name: 'purchase.down-payment.create' }" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <router-link :to="{ name: 'purchase.order.edit', params: { id: purchaseDownPayment.id }}" class="btn btn-sm btn-outline-secondary mr-5">
+                <router-link :to="{ name: 'purchase.down-payment.edit', params: { id: purchaseDownPayment.id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
                 </router-link>
                 <button
@@ -81,111 +81,7 @@
             </div>
           </div>
           <hr>
-          <point-table class="mt-20">
-            <tr slot="p-head">
-              <th class="text-center">#</th>
-              <th>Item</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">Discount</th>
-              <th class="text-right">Total</th>
-              <th width="50px">
-                <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
-                  <i class="fa fa-ellipsis-h"/>
-                </button>
-              </th>
-            </tr>
-            <template v-for="(row, index) in purchaseDownPayment.items">
-              <tr slot="p-body" :key="index">
-                <th class="text-center">{{ index + 1 }}</th>
-                <td>{{ row.item.label }}</td>
-                <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
-                <td class="text-right">{{ row.price | numberFormat }}</td>
-                <td class="text-right">{{ row.discount_value | numberFormat }}</td>
-                <td class="text-right">{{ row.quantity * (row.price - row.discount_value) | numberFormat }}</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more">
-                    <i class="fa fa-ellipsis-h"/>
-                  </button>
-                </td>
-              </tr>
-              <template v-if="row.more">
-              <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
-                <th class="bg-gray-light"></th>
-                <td colspan="6">
-                  <p-form-row
-                    :id="'allocation-' + index"
-                    :name="'allocation-' + index"
-                    class="mb-0"
-                    :label="$t('allocation')">
-                    <div slot="body" class="mt-5">
-                      <template v-if="row.allocation">{{ row.allocation.name }}</template>
-                    </div>
-                  </p-form-row>
-                </td>
-              </tr>
-              <tr slot="p-body" :key="'ext2-'+index" class="bg-gray-light">
-                <th class="bg-gray-light"></th>
-                <td colspan="6">
-                  <p-form-row
-                    :id="'notes-' + index"
-                    :name="'notes-' + index"
-                    class="mb-0"
-                    :label="$t('notes')">
-                    <div slot="body" class="mt-5">
-                      {{ row.notes }}
-                    </div>
-                  </p-form-row>
-                </td>
-              </tr>
-              </template>
-            </template>
-            <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="text-right"><b>{{ $t('subtotal') | uppercase }}</b></td>
-              <td class="text-right"><b>{{ purchaseDownPayment.subtotal | numberFormat }}</b></td>
-              <td></td>
-            </tr>
-            <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="text-right"><b>{{ $t('discount') | uppercase }}</b></td>
-              <td class="text-right"><b>{{ purchaseDownPayment.discount_value | numberFormat }}</b></td>
-              <td></td>
-            </tr>
-            <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="text-right"><b>{{ $t('tax base') | uppercase }}</b></td>
-              <td class="text-right"><b>{{ purchaseDownPayment.amount - purchaseDownPayment.tax | numberFormat }}</b></td>
-              <td></td>
-            </tr>
-            <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="text-right"><b>{{ $t('tax') | uppercase }}</b></td>
-              <td class="text-right"><b>{{ purchaseDownPayment.tax | numberFormat }}</b></td>
-              <td></td>
-            </tr>
-            <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="text-right"><b>{{ $t('total') | uppercase }}</b></td>
-              <td class="text-right"><b>{{ purchaseDownPayment.amount | numberFormat }}</b></td>
-              <td></td>
-            </tr>
-          </point-table>
+
           <div class="row mt-50">
             <div class="col-sm-6">
               <h6 class="mb-0">{{ $t('notes') | uppercase }}</h6>
@@ -242,7 +138,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchaseDownPayment', ['purchaseDownPayment']),
+    ...mapGetters('purchaseDownPayment', { purchaseDownPayment: 'downPayment' }),
     ...mapGetters('auth', ['authUser'])
   },
   watch: {
@@ -262,14 +158,6 @@ export default {
       cancellationApprove: 'cancellationApprove',
       cancellationReject: 'cancellationReject'
     }),
-    toggleMore () {
-      let isMoreActive = this.purchaseDownPayment.items.some(function (el, index) {
-        return el.more === false
-      })
-      this.purchaseDownPayment.items.forEach(element => {
-        element.more = isMoreActive
-      })
-    },
     purchaseDownPaymentRequest () {
       this.isLoading = true
       this.find({
@@ -278,32 +166,18 @@ export default {
           with_archives: true,
           with_origin: true,
           includes: 'supplier;' +
-            'items.item;' +
-            'items.allocation;' +
-            'purchaseRequest.form;' +
+            'downpaymentable.form;' +
             'form.createdBy;' +
             'form.requestApprovalTo;' +
             'form.branch'
         }
       }).then(response => {
-        this.calculate()
+        //
       }).catch(error => {
         this.$notification.error(error.message)
       }).finally(() => {
         this.isLoading = false
       })
-    },
-    calculate () {
-      var subtotal = 0
-      this.purchaseDownPayment.items.forEach(function (element) {
-        if (element.discount_percent > 0) {
-          element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
-        } else if (element.discount_value > 0) {
-          element.total = element.quantity * (element.price - element.discount_value)
-        }
-        subtotal += parseFloat(element.total)
-      })
-      this.purchaseDownPayment.subtotal = subtotal
     },
     onDelete (reason) {
       this.isDeleting = true
