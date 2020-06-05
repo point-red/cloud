@@ -533,6 +533,7 @@ export default {
       this.form.approver_email = response.data.form.request_approval_to.email
       this.form.items.forEach(el => {
         el.item_label = el.item.label
+        el.units = el.item.units
       })
       this.purchaseRequest = response.data.purchase_request
       this.addItemRow()
