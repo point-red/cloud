@@ -43,7 +43,9 @@
                 <br v-if="authUser.branch.phone">{{ authUser.branch.phone | uppercase }}
               </template>
               <h6 class="mt-30 mb-5">{{ $t('to') | uppercase }} :</h6>
-              <m-paymentable id="paymentable" v-model="form.paymentable_id" @choosen="choosePaymentTo" :label="form.paymentable_name"/>
+              <span @click="$refs.paymentable.open()" class="select-link">
+                {{ form.paymentable_name || $t('select') | uppercase }}
+              </span>
             </div>
           </div>
 
@@ -136,6 +138,7 @@
     <m-chart-of-account ref="chartOfAccountBankRef" @choosen="onChoosenAccountBank" type="BANK"/>
     <m-user ref="approver" @choosen="chooseApprover($event)"/>
     <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
+    <m-paymentable id="paymentable" ref="paymentable" @choosen="choosePaymentTo"/>
   </div>
 </template>
 

@@ -2,11 +2,14 @@
   <div>
     <breadcrumb>
       <breadcrumb-sales/>
-      <router-link to="/sales/quotation" class="breadcrumb-item">{{ $t('sales quotation') | uppercase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
+      <router-link to="/sales/order" class="breadcrumb-item">{{ $t('sales order') | titlecase }}</router-link>
+      <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
     <sales-menu/>
+    {{
+      this.form.customer_name
+    }}
 
     <form @submit.prevent="onSubmit">
       <div class="row">
@@ -14,7 +17,7 @@
           <p-block-inner :is-loading="isLoading">
             <div class="row">
               <div class="col-sm-6">
-                <h4>{{ $t('sales quotation') | uppercase }}</h4>
+                <h4>{{ $t('sales order') | uppercase }}</h4>
                 <table class="table table-sm table-bordered">
                   <tr>
                     <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
@@ -26,6 +29,19 @@
                         v-model="form.date"
                         :errors="form.errors.get('date')"
                         @errors="form.errors.set('date', null)"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('sales quotation') | uppercase }}</td>
+                    <td>
+                      <span @click="$refs.selectSalesQuotation.open()" class="select-link">
+                        <template v-if="salesQuotation && salesQuotation.form.number != null">
+                          {{ salesQuotation.form.number }}
+                        </template>
+                        <template v-else>
+                          {{ $t('select') | uppercase }}
+                        </template>
+                      </span>
                     </td>
                   </tr>
                 </table>
@@ -40,8 +56,8 @@
                 </div>
                 <div>
                   <h6 class="mb-0 ">{{ $t('to') | uppercase }}:</h6>
-                  <span @click="$refs.customer.open()" class="select-link">{{ form.customer_label || $t('select') | uppercase }}</span>
-                  <div style="font-size:12px" v-if="form.customer_phone">
+                  <span @click="$refs.customers.open()" class="select-link">{{ form.customer_label || $t('select') | uppercase }}</span>
+                  <div style="font-size:12px">
                     <br v-if="form.customer_address">{{ form.customer_address | uppercase }}
                     <br v-if="form.customer_phone">{{ form.customer_phone }}
                     <br v-if="form.customer_email">{{ form.customer_email | uppercase }}
@@ -120,7 +136,7 @@
                   </td>
                 </tr>
                 <template v-if="row.more && row.item_id">
-                  <!-- <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
+                  <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
                     <th class="bg-gray-light"></th>
                     <td colspan="4">
                       <p-form-row
@@ -136,8 +152,8 @@
                     </td>
                     <td></td>
                     <td></td>
-                  </tr> -->
-                  <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
+                  </tr>
+                  <tr slot="p-body" :key="'ext2-'+index" class="bg-gray-light">
                     <th class="bg-gray-light"></th>
                     <td colspan="4">
                       <p-form-row
@@ -170,7 +186,75 @@
 
             <div class="row">
               <div class="col-sm-6">
-                <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+                <textarea rows="14" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+              </div>
+              <div class="col-sm-6">
+                <p-form-row
+                  id="discount"
+                  name="discount"
+                  :label="$t('discount')">
+                  <div slot="body" class="col-lg-9 mt-5">
+                    <p-discount
+                      id="discount"
+                      name="discount"
+                      v-model="form.discount_percent"
+                      :base-value="subtotal"
+                      :discount-percent.sync="form.discount_percent"
+                      :discount-value.sync="form.discount_value"/>
+                  </div>
+                </p-form-row>
+                <p-form-row
+                  id="tax_base"
+                  name="tax_base"
+                  :label="$t('tax base')">
+                  <div slot="body" class="col-lg-9 mt-5">
+                    <p-form-number
+                      :id="'tax_base'"
+                      :name="'tax_base'"
+                      :readonly="true"
+                      :value="tax_base"/>
+                  </div>
+                </p-form-row>
+                <p-form-row
+                  name="tax"
+                  :label="$t('tax')">
+                  <div slot="body" class="col-lg-9">
+                    <p-form-check-box
+                      class="mb-0"
+                      style="float:left"
+                      name="tax"
+                      @click.native="chooseTax('include')"
+                      :checked="form.type_of_tax == 'include'"
+                      :description="$t('include tax')"/>
+                    <p-form-check-box
+                      name="tax"
+                      @click.native="chooseTax('exclude')"
+                      :checked="form.type_of_tax == 'exclude'"
+                      :description="$t('exclude tax')"/>
+                    <p-form-number
+                      :id="'total'"
+                      :name="'total'"
+                      :readonly="true"
+                      :value="tax"/>
+                  </div>
+                </p-form-row>
+                <p-form-row
+                  id="total"
+                  name="total"
+                  :label="$t('total')">
+                  <div slot="body" class="col-lg-9 mt-5">
+                    <p-form-number
+                      :id="'total'"
+                      :name="'total'"
+                      :readonly="true"
+                      :value="total"/>
+                  </div>
+                </p-form-row>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-6">
               </div>
               <div class="col-sm-3 text-center">
                 <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
@@ -196,10 +280,11 @@
         </p-block>
       </div>
     </form>
-    <m-customer ref="customer" @choosen="chooseCustomer"/>
+    <m-customer ref="customers" @choosen="chooseCustomer"/>
     <m-item ref="item" @choosen="chooseItem"/>
     <m-user ref="approver" @choosen="chooseApprover"/>
     <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
+    <select-sales-quotation ref="selectSalesQuotation" @choosen="chooseSalesQuotation"></select-sales-quotation>
   </div>
 </template>
 
@@ -210,6 +295,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSales from '@/views/sales/Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
+import SelectSalesQuotation from './SelectSalesQuotation'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -217,14 +303,15 @@ export default {
     SalesMenu,
     PointTable,
     Breadcrumb,
-    BreadcrumbSales
+    BreadcrumbSales,
+    SelectSalesQuotation
   },
   data () {
     return {
       isSaving: false,
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
-      salesRequest: null,
+      salesQuotation: null,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -246,12 +333,12 @@ export default {
         request_approval_to: null,
         approver_name: null,
         approver_email: null,
-        sales_request_id: null
+        sales_quotation_id: null
       })
     }
   },
   computed: {
-    ...mapGetters('salesQuotation', ['salesQuotation']),
+    ...mapGetters('salesOrder', ['salesOrder']),
     ...mapGetters('auth', ['authUser']),
     subtotal () {
       return this.form.items.reduce((carry, item) => {
@@ -279,10 +366,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions('salesQuotation', ['create']),
+    ...mapActions('salesOrder', ['create']),
     addItemRow () {
       this.form.items.push({
-        sales_request_item_id: null,
+        sales_quotation_item_id: null,
         item_id: null,
         item_name: null,
         more: false,
@@ -367,12 +454,15 @@ export default {
         this.form.type_of_tax = taxType
       }
     },
-    chooseSalesRequest (salesRequest) {
-      this.salesRequest = salesRequest
-      this.form.sales_request_id = salesRequest.id
-      this.form.items = salesRequest.items.map(item => {
+    chooseSalesQuotation (salesQuotation) {
+      this.salesQuotation = salesQuotation
+      this.form.sales_quotation_id = salesQuotation.id
+      this.form.customer_id = salesQuotation.customer.id
+      this.form.customer_name = salesQuotation.customer.name
+      this.form.customer_label = salesQuotation.customer.label
+      this.form.items = salesQuotation.items.map(item => {
         return {
-          sales_request_item_id: item.id,
+          sales_quotation_item_id: item.id,
           item_id: item.item_id,
           item_name: item.item.name,
           item_label: item.item.name,
@@ -385,7 +475,7 @@ export default {
           discount_value: 0,
           total: item.quantity * (item.price - item.discount_value),
           allocation_id: item.allocation_id,
-          allocation_name: '', // TODO get alocation name
+          allocation_name: item.allocation_name,
           notes: item.notes
         }
       })
@@ -412,7 +502,7 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/sales/quotation/' + response.data.id)
+          this.$router.push('/sales/order/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)
@@ -432,14 +522,14 @@ export default {
         }
       }).then(response => {
         this.isLoading = false
-        this.form.sales_request_id = response.data.id
+        this.form.sales_quotation_id = response.data.id
         this.form.date = response.data.form.date
         this.form.customer_id = response.data.customer_id
         this.form.customer_name = response.data.customer_name
         this.form.notes = response.data.form.notes
         this.form.items = response.data.items
         this.form.items.forEach(function (element) {
-          element.sales_request_item_id = element.id
+          element.sales_quotation_item_id = element.id
         })
       }).catch(error => {
         this.isLoading = false
