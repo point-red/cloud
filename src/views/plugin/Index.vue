@@ -15,6 +15,12 @@
         v-if="$plugin.has('PIN POINT') && $permission.has('menu pin point')"
         link="/plugin/pin-point"
         icon="fa fa-map-marker"/>
+
+      <p-box
+        name="Play Book"
+        v-if="$permission.has('menu play book')"
+        link="/plugin/play-book"
+        icon="fa fa-folder"/>
     </div>
   </div>
 </template>
