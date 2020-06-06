@@ -228,6 +228,7 @@ export default {
       (response) => {
         this.form.date = this.assessment.date
         this.form.template = this.assessment
+        this.form.comment = this.assessment.comment
         this.assignSelected()
         this.isLoading = false
       },

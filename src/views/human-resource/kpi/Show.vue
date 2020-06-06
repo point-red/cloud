@@ -58,6 +58,12 @@
                   @click="$refs.indicator.show(group)">
                   <i class="si si-note"></i> Indicator
                 </button>
+                <button
+                  class="btn btn-secondary btn-sm mr-5"
+                  v-if="$permission.has('create employee kpi') || $permission.has('update employee kpi')"
+                  @click="$refs.kpi.show(group)">
+                  <i class="si si-bagde"></i> Copy
+                </button>
               </td>
             </tr>
             <tr v-for="(indicator, index) in group.indicators" :key="'indicator' + indicator.id">
@@ -97,12 +103,17 @@
     <group-modal
       id="group"
       ref="group"/>
+    <kpis-modal
+      id="kpi-template"
+      :idKpi="id"
+      ref="kpi"/>
   </div>
 </template>
 
 <script>
 import Form from '@/utils/Form'
 import ScoreModal from './ScoreModal'
+import KpisModal from './KpisModal'
 import IndicatorModal from './IndicatorModal'
 import GroupModal from './GroupModal'
 import Breadcrumb from '@/views/Breadcrumb'
@@ -112,6 +123,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     ScoreModal,
+    KpisModal,
     GroupModal,
     IndicatorModal,
     Breadcrumb,
@@ -119,7 +131,7 @@ export default {
   },
   data () {
     return {
-      id: this.$route.params.id,
+      id: parseInt(this.$route.params.id),
       form: new Form(),
       isLoading: false
     }

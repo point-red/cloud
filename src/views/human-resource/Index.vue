@@ -14,6 +14,12 @@
         v-if="$plugin.has('KPI') && $permission.has('read employee kpi')"
         link="/human-resource/kpi"
         icon="si si-badge"/>
+      <p-box
+        name="Kpi Assessment"
+        v-if="$plugin.has('KPI') && $permission.has('read employee kpi')"
+        link="/human-resource/employee"
+        icon="si si-badge"/>
+      <p>{{ auth }}</p>
     </div>
   </div>
 </template>

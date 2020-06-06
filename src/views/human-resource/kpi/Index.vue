@@ -34,10 +34,50 @@
 
     <div class="row">
       <p-block :title="title" :header="true">
+        <hr>
+        <div class="text-center font-size-sm mb-10">
+          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          </a>
+        </div>
+        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+          <div class="row">
+            <div class="col-sm-3 text-center">
+              <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
+                <div slot="body">
+                  <span @click="$refs.status.open({ id: statusId, label: statusLabel })" class="select-link">
+                    {{ statusLabel || $t('select') | uppercase }}
+                  </span>
+                </div>
+              </p-form-row>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
+          <button type="button" class="btn btn-secondary mr-5" @click="bulkArchiveKpiTemplate()">
+            {{ $t('archive') | uppercase }}
+          </button>
+          <button type="button" class="btn btn-secondary mr-5" @click="bulkActivateKpiTemplate()">
+            {{ $t('activate') | uppercase }}
+          </button>
+          <button type="button" class="btn btn-secondary" @click="bulkDeleteKpiTemplate()">
+            {{ $t('delete') | uppercase }}
+          </button>
+        </div>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
               <th>#</th>
+              <th>
+                <p-form-check-box
+                  id="subscibe"
+                  name="subscibe"
+                  :is-form="false"
+                  @click.native="toggleCheckRows()"
+                  :checked="isRowsChecked(templates, checkedRow)"
+                  class="text-center"/>
+              </th>
               <th>Kpi Category</th>
               <th class="text-center">Total Weight</th>
               <th class="text-right"></th>
@@ -47,6 +87,14 @@
               slot="p-body"
               :key="template.id">
               <th>{{ ++index }}</th>
+              <td>
+                <p-form-check-box
+                  :is-form="false"
+                  id="subscibe"
+                   @click.native="toggleCheckRow(template.id)"
+                  :checked="isRowChecked(template.id)"
+                  name="subscibe"
+                  class="text-center"/></td>
               <td>
                 <router-link :to="{ name: 'KpiShow', params: { id: template.id }}">
                   {{ template.name }}
@@ -106,6 +154,7 @@
     <result-modal id="result" ref="result" :title="'KPI RESULT'"/>
     <create-modal id="create" ref="create" :title="'KPI CATEGORY'"/>
     <edit-modal id="edit" ref="edit" :title="'KPI CATEGORY'"/>
+    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
   </div>
 </template>
 
@@ -134,7 +183,12 @@ export default {
       isLoading: false,
       isDuplicating: false,
       isRemoving: false,
-      isExporting: []
+      isExporting: [],
+      checkedRow: [],
+      lastPage: 1,
+      isAdvanceFilter: false,
+      statusId: null,
+      statusLabel: null
     }
   },
   computed: {
@@ -145,8 +199,51 @@ export default {
       getKpiTemplates: 'get',
       export: 'export',
       duplicateKpiTemplate: 'duplicate',
-      deleteKpiTemplate: 'delete'
+      deleteKpiTemplate: 'delete',
+      bulkArchive: 'bulkArchive',
+      bulkActivate: 'bulkActivate',
+      bulkDelete: 'bulkDelete'
     }),
+    toggleCheckRow (id) {
+      if (!this.isRowChecked(id)) {
+        this.checkedRow.push({ id })
+      } else {
+        this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(id), 1)
+      }
+    },
+    toggleCheckRows () {
+      if (!this.isRowsChecked(this.employees, this.checkedRow)) {
+        this.employees.forEach(element => {
+          if (!this.isRowChecked(element.id)) {
+            let id = element.id
+            this.checkedRow.push({ id })
+          }
+        })
+      } else {
+        this.employees.forEach(element => {
+          this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(element.id), 1)
+        })
+      }
+    },
+    isRowChecked (id) {
+      return this.checkedRow.some(element => {
+        return element.id == id
+      })
+    },
+    isRowsChecked (haystack, needles) {
+      if (needles.length == 0) {
+        return false
+      }
+      for (let i = 0; i < haystack.length; i++) {
+        let found = needles.some(element => {
+          return element.id == haystack[i].id
+        })
+        if (!found) {
+          return false
+        }
+      }
+      return true
+    },
     duplicate (id) {
       console.log('duplicate kpi template')
       this.isDuplicating = true
@@ -250,13 +347,61 @@ export default {
       }).catch(errors => {
         console.log(errors.data)
       })
+    },
+    bulkArchiveKpiTemplate () {
+      this.bulkArchive({
+        templates: this.checkedRow
+      }).then(response => {
+        this.checkedRow = []
+        this.getKpiTemplatesRequest()
+      })
+    },
+    bulkActivateKpiTemplate () {
+      this.bulkActivate({
+        templates: this.checkedRow
+      }).then(response => {
+        this.checkedRow = []
+        this.getKpiTemplatesRequest()
+      })
+    },
+    bulkDeleteKpiTemplate () {
+      this.bulkDelete({
+        templates: this.checkedRow
+      }).then(response => {
+        this.checkedRow = []
+        this.getKpiTemplatesRequest()
+      })
+    },
+    onChoosenStatus (option) {
+      this.statusId = option.id
+      this.statusLabel = option.label
+      this.$router.push({
+        query: {
+          search: this.searchText,
+          statusId: this.statusId
+        }
+      })
+      this.getKpiTemplatesRequest()
+    },
+    getKpiTemplatesRequest () {
+      this.isLoading = true
+      this.getKpiTemplates({
+        is_archived: this.statusId
+      }).then((response) => {
+        this.isLoading = false
+      }, (errors) => {
+        this.isLoading = false
+        console.log(errors.data)
+      })
     }
   },
   created () {
     if (this.templates.length === 0) {
       this.isLoading = true
     }
-    this.getKpiTemplates().then((response) => {
+    this.getKpiTemplates({
+      is_archived: this.statusId
+    }).then((response) => {
       this.isLoading = false
     })
   }
