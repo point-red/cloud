@@ -17,6 +17,12 @@
                 <h4>{{ $t('down payment') | uppercase }}</h4>
                 <table class="table table-sm table-bordered">
                   <tr>
+                    <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                    <td>
+                      {{ downPayment.form.number }}
+                    </td>
+                  </tr>
+                  <tr>
                     <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
                     <td>
                       <p-date-picker
@@ -29,9 +35,9 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('purchase order') | uppercase }}</td>
+                    <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
                     <td>
-                      {{ downPayment.form.number }}
+                      {{ downPayment.downpaymentable.form.number }}
                     </td>
                   </tr>
                   <tr>
