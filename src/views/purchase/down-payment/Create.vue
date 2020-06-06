@@ -48,6 +48,7 @@
                         :id="'amount'"
                         :name="'amount'"
                         :is-text-right="false"
+                        :max="purchaseOrder.amount ? purchaseOrder.amount : 0"
                         v-model.number="form.amount"/>
                     </td>
                   </tr>
@@ -102,7 +103,7 @@
                     <td></td>
                     <td></td>
                     <td class="text-right"><b>{{ $t('subtotal') | uppercase }}</b></td>
-                    <td class="text-right"><b>{{ purchaseOrder.subtotal | numberFormat }}</b></td>
+                    <td class="text-right"><b>{{ subtotal | numberFormat }}</b></td>
                     <td></td>
                   </tr>
                   <tr slot="p-body">
@@ -227,28 +228,21 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    subtotal () {
+      return this.purchaseOrder.items.reduce((carry, item) => {
+        return carry + item.quantity * (item.price - item.discount_value)
+      }, 0)
+    }
   },
   methods: {
     ...mapActions('purchaseDownPayment', ['create']),
     choosePurchaseOrder (purchaseOrder) {
       this.purchaseOrder = purchaseOrder
       this.form.purchase_order_id = purchaseOrder.id
-      var subtotal = 0
-      this.purchaseOrder.items.forEach(function (element) {
-        if (element.discount_percent > 0) {
-          element.total = element.quantity * (element.price - (element.price * element.discount_percent / 100))
-        } else if (element.discount_value > 0) {
-          element.total = element.quantity * (element.price - element.discount_value)
-        } else {
-          element.total = element.quantity * element.price
-        }
-        subtotal += parseFloat(element.total)
-      })
       this.form.supplier_id = this.purchaseOrder.supplier_id
       this.form.supplier_name = this.purchaseOrder.supplier_name
       this.form.supplier_label = this.purchaseOrder.supplier_name
-      this.purchaseOrder.subtotal = subtotal
     },
     chooseApprover (value) {
       this.form.request_approval_to = value.id
