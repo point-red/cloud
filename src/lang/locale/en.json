@@ -406,6 +406,7 @@
 	"marital status": "marital status",
 	"married with": "married with",
 	"religion": "religion",
+	"content": "content",
 	"employee group": "company",
 	"job title": "job title",
 	"join date": "join date",
@@ -416,6 +417,10 @@
 	"salary date": "salary date",
 	"salary": "salary",
 	"notes": "notes",
+	"add procedure": "add procedure",
+	"edit procedure": "edit procedure",
+	"decline": "decline",
+	"glossary": "glossary",
 	"employee code": "employee code",
 	"status": "status",
 	"job location": "job location",
@@ -479,5 +484,11 @@
 	"wa daily report": "wa daily report",
 	"amount received difference": "amount received difference",
 	"if kpi 100%": "if kpi 100%",
-	"allowance": "allowance"
+	"allowance": "allowance",
+	"purpose": "purpose",
+	"play book": "play book",
+	"instruction": "instruction",
+	"note": "note",
+	"procedure": "procedure",
+	"select instruction number for this procedure": "select instruction number for this procedure"
 }
