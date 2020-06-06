@@ -29,7 +29,7 @@
         {{ $t('you don\'t have any') | capitalize }} {{ $t('item') | capitalize }}
       </div>
       <div class="pull-right">
-        <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('create') | uppercase }}</button>
+        <button type="button" @click="$refs.addItem.open()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('create') | uppercase }}</button>
         <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
       </div>
     </sweet-modal>

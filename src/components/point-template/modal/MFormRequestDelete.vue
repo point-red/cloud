@@ -1,18 +1,14 @@
 <template>
   <div>
-    <p-modal :ref="'form-request-delete-' + id" :id="'form-request-delete-' + id" title="form request delete">
-      <template slot="content">
-        <div class="row">
-          <p-block class="m-0 p-0">
-            <textarea rows="5" class="form-control" ref="reason" placeholder="reason" v-model="reason"></textarea>
-          </p-block>
-        </div>
-      </template>
-      <template slot="footer">
-        <button type="submit" @click="onDelete()" class="btn btn-sm btn-danger">{{ $t('delete') | uppercase }}</button>
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </template>
-    </p-modal>
+    <sweet-modal
+      :ref="'form-request-delete'"
+      :title="$t('form request delete') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()">
+      <textarea rows="5" class="form-control" ref="reason" placeholder="reason" v-model="reason"></textarea>
+      <hr>
+      <button type="button" @click="onDelete()" class="btn btn-block btn-sm btn-danger mr-5">{{ $t('delete') | uppercase }}</button>
+    </sweet-modal>
   </div>
 </template>
 
@@ -27,24 +23,23 @@ export default {
       reason: ''
     }
   },
-  props: {
-    id: {
-      type: String,
-      required: true
-    }
-  },
   methods: {
-    onDelete () {
-      this.$emit('deleted', this.reason)
-      this.close()
-    },
-    show () {
-      this.$refs['form-request-delete-' + this.id].show()
-      this.$refs.reason.focus()
+    open () {
+      this.$refs['form-request-delete'].open()
+      this.$nextTick(() => {
+        this.$refs.reason.focus()
+      })
     },
     close () {
-      this.$refs['form-request-delete-' + this.id].close()
+      this.$refs['form-request-delete'].close()
       this.$emit('close', true)
+    },
+    onDelete () {
+      this.$emit('delete', this.reason)
+      this.close()
+    },
+    onClose () {
+      this.reason = ''
     }
   }
 }

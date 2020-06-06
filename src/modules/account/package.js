@@ -1,23 +1,19 @@
 import api from '@/api'
 
-const url = '/purchase/down-payments'
+const url = '/packages'
 
 const state = {
-  downPayment: {
-    form: {
-      approvals: []
-    }
-  },
-  downPayments: [],
+  package: {},
+  packages: [],
   pagination: {}
 }
 
 const getters = {
-  downPayment: state => {
-    return state.downPayment
+  package: state => {
+    return state.package
   },
-  downPayments: state => {
-    return state.downPayments
+  packages: state => {
+    return state.packages
   },
   pagination: state => {
     return state.pagination
@@ -26,20 +22,20 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.downPayments = payload.data
+    state.packages = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.downPayment = payload.data
+    state.package = payload.data
   },
   'CREATE' (state, payload) {
-    state.downPayment = payload
+    state.package = payload
   },
   'UPDATE' (state, payload) {
-    state.downPayment = payload
+    state.package = payload
   },
   'DELETE' (state, payload) {
-    state.downPayment = {}
+    state.package = {}
   }
 }
 
@@ -76,7 +72,7 @@ const actions = {
         })
     })
   },
-  update (context, payload) {
+  update ({ context, commit }, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url + '/' + payload.id, payload)
         .then(response => {
@@ -89,6 +85,26 @@ const actions = {
   delete (context, payload) {
     return new Promise((resolve, reject) => {
       api.delete(url + '/' + payload.id, payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  subscribe ({ context, commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/subscribe', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  unsubscribe ({ context, commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/unsubscribe', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

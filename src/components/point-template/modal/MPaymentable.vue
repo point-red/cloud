@@ -1,58 +1,57 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select">
-      <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
-        <hr>
-        <div v-if="isLoadingSupplier || isLoadingCustomer || isLoadingEmployee">
-          <h3 class="text-center">Loading ...</h3>
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()">
+      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <hr>
+      <div v-if="isLoadingSupplier || isLoadingCustomer || isLoadingEmployee">
+        <h3 class="text-center">Loading ...</h3>
+      </div>
+      <template v-else>
+        <div class="list-group push" v-if="optionSuppliers">
+          <template v-for="(optionSupplier, index) in optionSuppliers">
+            <a
+              :key="'supplier-' + index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': optionSupplier.id == mutableId && type == 'supplier' }"
+              @click="choose(optionSupplier)"
+              href="javascript:void(0)">
+              [SUPPLIER] {{ optionSupplier.label | uppercase }}
+            </a>
+          </template>
+          <template v-for="(optionCustomer, index) in optionCustomers">
+            <a
+              :key="'customer-' + index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': optionCustomer.id == mutableId && type == 'customer' }"
+              @click="choose(optionCustomer)"
+              href="javascript:void(0)">
+              [CUSTOMER] {{ optionCustomer.label | uppercase }}
+            </a>
+          </template>
+          <template v-for="(optionEmployee, index) in optionEmployees">
+            <a
+              :key="'employee-' + index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': optionEmployee.id == mutableId && type == 'employee' }"
+              @click="choose(optionEmployee)"
+              href="javascript:void(0)">
+              [EMPLOYEE] {{ optionEmployee.label | uppercase }}
+            </a>
+          </template>
         </div>
-        <template v-else>
-          <div class="list-group push" v-if="optionSuppliers">
-            <template v-for="(optionSupplier, index) in optionSuppliers">
-              <a
-                :key="'supplier-' + index"
-                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                :class="{'active': optionSupplier.id == mutableId && type == 'supplier' }"
-                @click="choose(optionSupplier)"
-                href="javascript:void(0)">
-                [SUPPLIER] {{ optionSupplier.label | uppercase }}
-              </a>
-            </template>
-            <template v-for="(optionCustomer, index) in optionCustomers">
-              <a
-                :key="'customer-' + index"
-                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                :class="{'active': optionCustomer.id == mutableId && type == 'customer' }"
-                @click="choose(optionCustomer)"
-                href="javascript:void(0)">
-                [Customer] {{ optionCustomer.label | uppercase }}
-              </a>
-            </template>
-            <template v-for="(optionEmployee, index) in optionEmployees">
-              <a
-                :key="'employee-' + index"
-                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                :class="{'active': optionEmployee.id == mutableId && type == 'employee' }"
-                @click="choose(optionEmployee)"
-                href="javascript:void(0)">
-                [EMPLOYEE] {{ optionEmployee.label | uppercase }}
-              </a>
-            </template>
-          </div>
 
-          <div class="list-group push" v-if="searchText && !isLoadingEmployee && !isLoadingCustomer && !isLoadingSupplier && optionEmployees.length == 0 && optionCustomers.length == 0 && optionSuppliers.length == 0">
-            <div class="alert alert-info text-center">
-              {{ $t('searching not found', [searchText]) | capitalize }}
-            </div>
+        <div class="list-group push" v-if="searchText && !isLoadingEmployee && !isLoadingCustomer && !isLoadingSupplier && optionEmployees.length == 0 && optionCustomers.length == 0 && optionSuppliers.length == 0">
+          <div class="alert alert-info text-center">
+            {{ $t('searching not found', [searchText]) | capitalize }}
           </div>
-        </template>
+        </div>
       </template>
-      <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </template>
-    </p-modal>
+      <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+    </sweet-modal>
   </div>
 </template>
 
@@ -129,7 +128,6 @@ export default {
         }
       }).then(response => {
         this.optionSuppliers = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.optionSuppliers.push({
             'id': key['id'],
@@ -157,7 +155,6 @@ export default {
         }
       }).then(response => {
         this.optionCustomers = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.optionCustomers.push({
             'id': key['id'],
@@ -185,7 +182,6 @@ export default {
         }
       }).then(response => {
         this.optionEmployees = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.optionEmployees.push({
             'id': key['id'],
@@ -221,11 +217,14 @@ export default {
       this.$emit('choosen', option)
       this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    open () {
+      this.$refs['select-' + this.id].open()
+      this.search()
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }

@@ -2,11 +2,9 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance/>
-      <router-link to="/purchase/payment-order" class="breadcrumb-item">{{ $t('payment order') | titlecase }}</router-link>
+      <router-link to="/finance/payment-order" class="breadcrumb-item">{{ $t('payment order') | titlecase }}</router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
-
-    <tab-menu/>
 
     <form class="row" @submit.prevent="onSubmit">
       <p-block :title="$t('payment order')" :header="true">
@@ -165,7 +163,6 @@
 
 <script>
 import debounce from 'lodash/debounce'
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import Form from '@/utils/Form'
@@ -174,7 +171,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    TabMenu,
     PointTable,
     Breadcrumb,
     BreadcrumbFinance

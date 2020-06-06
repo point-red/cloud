@@ -172,7 +172,7 @@
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase')">
+            <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase') && authUser.tenant_package_id > 1">
               <router-link to="/purchase" class="nav-submenu" active-class="active">
                 <i class="si si-basket"/>
                 <span class="sidebar-mini-hide">{{ $t("purchase") | uppercase }}</span>
@@ -184,7 +184,7 @@
                     active-class="active">{{ $t('purchase request') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
                   <router-link
                     to="/purchase/order"
                     active-class="active">{{ $t('purchase order') | uppercase }}
@@ -196,7 +196,7 @@
                     active-class="active">{{ $t('down payment') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase receive')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase receive')">
                   <router-link
                     to="/purchase/receive"
                     active-class="active">{{ $t('purchase receive') | uppercase }}
@@ -222,7 +222,7 @@
                 </li> -->
               </ul>
             </li>
-            <!-- <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales')">
+            <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales') && authUser.tenant_package_id > 1">
               <router-link to="/sales" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>
                 <span class="sidebar-mini-hide">{{ $t("sales") | uppercase }}</span>
@@ -230,12 +230,18 @@
               <ul>
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read sales quotation')">
                   <router-link
-                    to="/sales/sales-quotation"
+                    to="/sales/quotation"
                     active-class="active">{{ $t('sales quotation') | uppercase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read sales order')">
+                  <router-link
+                    to="/sales/order"
+                    active-class="active">{{ $t('sales order') | uppercase }}
+                  </router-link>
+                </li>
               </ul>
-            </li> -->
+            </li>
             <!-- <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
               <router-link to="/pos" class="nav-submenu" active-class="active">
                 <i class="si si-basket-loaded"/>
@@ -256,7 +262,7 @@
                 </li>
               </ul>
             </li> -->
-            <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory')">
+            <!-- <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory') && authUser.tenant_package_id > 1">
               <router-link to="/inventory" class="nav-submenu" active-class="active">
                 <i class="si si-tag"/>
                 <span class="sidebar-mini-hide">{{ $t("inventory") | uppercase }}</span>
@@ -268,13 +274,13 @@
                     active-class="active">{{ $t('inventory report') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
                   <router-link
                     to="/inventory/usage"
                     active-class="active">{{ $t('inventory usage') | uppercase }}
                   </router-link>
-                </li> -->
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory audit')">
+                </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory audit')">
                   <router-link
                     to="/inventory/audit"
                     active-class="active">{{ $t('inventory audit') | uppercase }}
@@ -291,21 +297,15 @@
                     to="/inventory/transfer"
                     active-class="active">{{ $t('transfer item') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
               </ul>
-            </li>
-            <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture')">
+            </li> -->
+            <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture') && authUser.tenant_package_id > 1">
               <router-link to="/manufacture" class="nav-submenu" active-class="active">
                 <i class="si si-settings"/>
                 <span class="sidebar-mini-hide">{{ $t("manufacture") | uppercase }}</span>
               </router-link>
               <ul>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture processing')">
-                  <router-link
-                    to="/manufacture/processing"
-                    active-class="active">{{ $t('processing') | uppercase }}
-                  </router-link>
-                </li> -->
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture machine')">
                   <router-link
                     to="/manufacture/machine"
@@ -324,9 +324,15 @@
                     active-class="active">{{ $t('formula') | uppercase }}
                   </router-link>
                 </li>
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture processing')">
+                  <router-link
+                    to="/manufacture/processing"
+                    active-class="active">{{ $t('processing') | uppercase }}
+                  </router-link>
+                </li> -->
               </ul>
             </li>
-            <!-- <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance')">
+            <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance') && authUser.tenant_package_id > 1">
               <router-link to="/finance" class="nav-submenu" active-class="active">
                 <i class="si si-wallet"/>
                 <span class="sidebar-mini-hide">{{ $t("finance") | uppercase }}</span>
@@ -351,8 +357,8 @@
                   </router-link>
                 </li>
               </ul>
-            </li> -->
-            <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting')">
+            </li>
+            <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting') && authUser.tenant_package_id > 1">
               <router-link to="/accounting" class="nav-submenu" active-class="active">
                 <i class="si si-folder-alt"/>
                 <span class="sidebar-mini-hide">{{ $t("accounting") | uppercase }}</span>
@@ -399,13 +405,13 @@
                 <span class="sidebar-mini-hide">{{ $t("plugin") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('menu scale weight')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$plugin.has('SCALE WEIGHT') && $permission.has('menu scale weight')">
                   <router-link
                     to="/plugin/scale-weight"
                     active-class="active">{{ $t('scale weight') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('menu pin point')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$plugin.has('PIN POINT') && $permission.has('menu pin point')">
                   <router-link
                     to="/plugin/pin-point"
                     active-class="active">{{'pin point' | uppercase }}
@@ -444,9 +450,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('accountRewardToken', [
-      'balance'
-    ])
+    ...mapGetters('accountRewardToken', ['balance']),
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
     ...mapActions('auth', ['logout']),

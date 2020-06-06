@@ -17,95 +17,24 @@
     <hr>
 
     <div class="row gutters-tiny">
-      <div class="col-md-6 col-xl-3">
+      <div class="col-md-6 col-xl-3" v-for="packageErp in packages" :key="packageErp.code">
         <div class="block block-link-shadow">
           <div class="block-content block-content-full clearfix">
             <div class="font-size-h5 font-w600">
-              COMMUNITY EDITION
+              {{ packageErp.name }}
             </div>
             <hr>
-            <div class="font-size-sm" style="height:70px">
-              -
-            </div>
-            <hr>
-            <div class="font-size-sm">
-              <span class="font-size-lg">FREE</span>
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-primary">SUBSCRIBED</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6 col-xl-3">
-        <div class="block block-link-shadow">
-          <div class="block-content block-content-full clearfix">
-            <div class="font-size-h5 font-w600">
-              BASIC
-            </div>
-            <hr>
-            <div class="font-size-sm" style="height:70px">
-              1. Suitable for smaller businesses <br>
-              2. Basic resource management features <br>
-              3. Up to 10 users
+            <div class="font-size-sm plugin-description" style="height:70px">
+              <pre>{{ packageErp.description }}</pre>
             </div>
             <hr>
             <div class="text-uppercase">
-              <span class="font-size-lg">IDR 1.000.000</span> <small>/ month</small>
+              <span class="font-size-lg">IDR {{ packageErp.price | numberFormat }}</span> <small>/ month</small>
             </div>
             <hr>
             <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6 col-xl-3">
-        <div class="block block-link-shadow">
-          <div class="block-content block-content-full clearfix">
-            <div class="font-size-h5 font-w600">
-              PRO
-            </div>
-            <hr>
-            <div class="font-size-sm" style="height:70px">
-              1. Suitable for medium businesses <br>
-              2. Include all basic features and accounting forecast <br>
-              3. Up to 100 users
-            </div>
-            <hr>
-            <div class="text-uppercase">
-              <span class="font-size-lg">IDR 3.000.000</span> <small>/ month</small>
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-md-6 col-xl-3">
-        <div class="block block-link-shadow">
-          <div class="block-content block-content-full clearfix">
-            <div class="font-size-h5 font-w600">
-              PREMIUM
-            </div>
-            <hr>
-            <div class="font-size-sm" style="height:70px">
-              1. Suitable for larger businesses <br>
-              2. Enterprise resource management features <br>
-              3. Unlimited users
-            </div>
-            <hr>
-            <div class="text-uppercase">
-              <span class="font-size-lg">IDR 9.000.000</span> <small>/ month</small>
-            </div>
-            <hr>
-            <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
+              <button type="button" @click="choosePackage(packageErp, 'unsubscribe')" v-if="project.package_id == packageErp.id" class="btn btn-sm btn-primary">SUBSCRIBED</button>
+              <button type="button" @click="choosePackage(packageErp, 'subscribe')" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
             </div>
           </div>
         </div>
@@ -132,7 +61,9 @@
               </div>
               <hr>
               <div class="text-uppercase">
-                <span class="font-size-lg">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
+                <span class="font-size-lg" v-if="plugin.price != 0">IDR {{ plugin.price | numberFormat }}</span> <small v-if="plugin.is_monthly_price">/ month</small>
+                <span class="font-size-lg" v-if="plugin.price_per_user != 0">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
+                <span class="font-size-lg" v-if="plugin.price == 0 && plugin.price_per_user == 0">FREE</span>
               </div>
               <hr>
               <div class="font-size-sm font-w600 text-uppercase text-muted">
@@ -181,7 +112,8 @@ export default {
   },
   computed: {
     ...mapGetters('accountProject', ['project']),
-    ...mapGetters('accountPlugin', ['plugins', 'pagination'])
+    ...mapGetters('accountPlugin', ['plugins', 'pagination']),
+    ...mapGetters('accountPackage', ['packages'])
   },
   created () {
     this.isLoading = true
@@ -203,6 +135,8 @@ export default {
     }).catch(error => {
       //
     })
+
+    this.getPackage()
   },
   methods: {
     ...mapActions('accountProject', {
@@ -212,6 +146,11 @@ export default {
       getPlugin: 'get',
       subscribe: 'subscribe',
       unsubscribe: 'unsubscribe'
+    }),
+    ...mapActions('accountPackage', {
+      getPackage: 'get',
+      subscribePackage: 'subscribe',
+      unsubscribePackage: 'unsubscribe'
     }),
     redirectToPluginUrl () {
       window.open(this.plugin_url, '_self')
@@ -225,6 +164,42 @@ export default {
       })
       this.form.vat = this.form.sub_total_price * 10 / 100
       this.form.total_price = this.form.sub_total_price + this.form.vat
+    },
+    choosePackage (packageErp, method) {
+      let self = this
+      if (method == 'subscribe') {
+        this.$alert.confirm(this.$t('subscribe'), 'will you update your package ?').then(response => {
+          this.subscribePackage({
+            id: packageErp.id,
+            project_id: this.project.id
+          }).then(response => {
+            this.isLoading = true
+            this.findProject({ id: this.id })
+              .then(response => {
+                this.isLoading = false
+              }).catch(error => {
+                this.isLoading = false
+                this.$notification.error(error.message)
+              })
+          })
+        })
+      } else if (method == 'unsubscribe') {
+        this.$alert.confirm(this.$t('unsubscribe'), 'are you sure to unsubscribe from this package ?').then(response => {
+          this.unsubscribePackage({
+            id: packageErp.id,
+            project_id: this.project.id
+          }).then(response => {
+            self.isLoading = true
+            self.findProject({ id: self.id })
+              .then(response => {
+                self.isLoading = false
+              }).catch(error => {
+                self.isLoading = false
+                self.$notification.error(error.message)
+              })
+          })
+        })
+      }
     },
     choosePlugin (plugin, method) {
       if (method == 'subscribe') {

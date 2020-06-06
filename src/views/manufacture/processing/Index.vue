@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-manufacture/>
-      <span class="breadcrumb-item active">{{ $t('process') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('processing') | uppercase }}</span>
     </breadcrumb>
 
     <manufacture-menu></manufacture-menu>

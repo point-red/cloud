@@ -31,13 +31,7 @@ const getters = {
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.employees = payload.data
-    state.pagination.current_page = payload.meta.current_page
-    state.pagination.from = payload.meta.from
-    state.pagination.to = payload.meta.to
-    state.pagination.path = payload.meta.path
-    state.pagination.last_page = payload.meta.last_page
-    state.pagination.per_page = payload.meta.per_page
-    state.pagination.total = payload.meta.total
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     state.employee = payload.data
@@ -59,8 +53,6 @@ const actions = {
       api.get(url, payload)
         .then(response => {
           commit('FETCH_ARRAY', response)
-          commit('humanResourceEmployeeGroup/FETCH_ARRAY', response.additional.groups, { root: true })
-          commit('humanResourceEmployeeGroup/FETCH_SELECT_LIST', response.additional.groups, { root: true })
           resolve(response)
         }).catch(error => {
           reject(error)

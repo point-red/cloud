@@ -5,49 +5,49 @@
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/request')}"
       active-class="btn-primary">
-      <span><i class="si si-folder-alt"></i> {{ $t('purchase request') | uppercase }}</span>
+      <span>{{ $t('purchase request') | uppercase }}</span>
     </router-link>
-    <!-- <router-link
+    <router-link
       to="/purchase/order"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/order')}"
       active-class="btn-primary">
-      <span><i class="si si-folder-alt"></i> {{ $t('purchase order') | uppercase }}</span>
+      <span>{{ $t('purchase order') | uppercase }}</span>
     </router-link>
     <router-link
       to="/purchase/down-payment"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/down-payment')}"
       active-class="btn-primary">
-      <span><i class="si si-folder-alt"></i> {{ $t('down payment') | uppercase }}</span>
+      <span>{{ $t('down payment') | uppercase }}</span>
     </router-link>
-    <router-link
+    <!-- <router-link
       to="/purchase/receive"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/receive')}"
       active-class="btn-primary">
-      <span><i class="si si-folder-alt"></i> {{ $t('purchase receive') | uppercase }}</span>
+      <span>{{ $t('purchase receive') | uppercase }}</span>
     </router-link>
     <router-link
       to="/purchase/invoice"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/invoice')}"
       active-class="btn-primary">
-      <span><i class="si si-folder-alt"></i> {{ $t('invoice') | uppercase }}</span>
+      <span>{{ $t('invoice') | uppercase }}</span>
     </router-link>
     <router-link
       to="/purchase/return"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/return')}"
       active-class="btn-primary">
-      <span><i class="si si-folder-alt"></i> {{ $t('return') | uppercase }}</span>
+      <span>{{ $t('return') | uppercase }}</span>
     </router-link>
     <router-link
       to="/purchase/payment-order"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/payment-order')}"
       active-class="btn-primary">
-      <span><i class="si si-folder-alt"></i> {{ $t('payment order') | uppercase }}</span>
+      <span>{{ $t('payment order') | uppercase }}</span>
     </router-link> -->
   </div>
 </template>

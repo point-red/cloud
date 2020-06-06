@@ -139,95 +139,24 @@
           <hr>
 
           <div class="row gutters-tiny">
-            <div class="col-md-6 col-xl-3">
+            <div class="col-md-6 col-xl-3" v-for="packageErp in packages" :key="packageErp.code">
               <div class="block block-link-shadow">
                 <div class="block-content block-content-full clearfix">
                   <div class="font-size-h5 font-w600">
-                    COMMUNITY EDITION
+                    {{ packageErp.name }}
                   </div>
                   <hr>
-                  <div class="font-size-sm" style="height:70px">
-                    -
-                  </div>
-                  <hr>
-                  <div class="font-size-sm">
-                    <span class="font-size-lg">FREE</span>
-                  </div>
-                  <hr>
-                  <div class="font-size-sm font-w600 text-uppercase text-muted">
-                    <button type="button" class="btn btn-sm btn-primary">SUBSCRIBED</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-xl-3">
-              <div class="block block-link-shadow">
-                <div class="block-content block-content-full clearfix">
-                  <div class="font-size-h5 font-w600">
-                    BASIC
-                  </div>
-                  <hr>
-                  <div class="font-size-sm" style="height:70px">
-                    1. Suitable for smaller businesses <br>
-                    2. Basic resource management features <br>
-                    3. Up to 10 users
+                  <div class="font-size-sm plugin-description" style="height:70px">
+                    <pre>{{ packageErp.description }}</pre>
                   </div>
                   <hr>
                   <div class="text-uppercase">
-                    <span class="font-size-lg">IDR 1.000.000</span> <small>/ month</small>
+                    <span class="font-size-lg">IDR {{ packageErp.price | numberFormat }}</span> <small>/ month</small>
                   </div>
                   <hr>
                   <div class="font-size-sm font-w600 text-uppercase text-muted">
-                    <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-xl-3">
-              <div class="block block-link-shadow">
-                <div class="block-content block-content-full clearfix">
-                  <div class="font-size-h5 font-w600">
-                    PRO
-                  </div>
-                  <hr>
-                  <div class="font-size-sm" style="height:70px">
-                    1. Suitable for medium businesses <br>
-                    2. Include all basic features and accounting forecast <br>
-                    3. Up to 100 users
-                  </div>
-                  <hr>
-                  <div class="text-uppercase">
-                    <span class="font-size-lg">IDR 3.000.000</span> <small>/ month</small>
-                  </div>
-                  <hr>
-                  <div class="font-size-sm font-w600 text-uppercase text-muted">
-                    <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6 col-xl-3">
-              <div class="block block-link-shadow">
-                <div class="block-content block-content-full clearfix">
-                  <div class="font-size-h5 font-w600">
-                    PREMIUM
-                  </div>
-                  <hr>
-                  <div class="font-size-sm" style="height:70px">
-                    1. Suitable for larger businesses <br>
-                    2. Enterprise resource management features <br>
-                    3. Unlimited users
-                  </div>
-                  <hr>
-                  <div class="text-uppercase">
-                    <span class="font-size-lg">IDR 9.000.000</span> <small>/ month</small>
-                  </div>
-                  <hr>
-                  <div class="font-size-sm font-w600 text-uppercase text-muted">
-                    <button type="button" class="btn btn-sm btn-secondary">COMMING SOON</button>
+                    <button type="button" @click="choosePackage(packageErp)" v-if="form.package_id == packageErp.id" class="btn btn-sm btn-primary">SUBSCRIBED</button>
+                    <button type="button" @click="choosePackage(packageErp)" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
                   </div>
                 </div>
               </div>
@@ -254,7 +183,9 @@
                     </div>
                     <hr>
                     <div class="text-uppercase">
-                      <span class="font-size-lg">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
+                      <span class="font-size-lg" v-if="plugin.price != 0">IDR {{ plugin.price | numberFormat }}</span> <small v-if="plugin.is_monthly_price">/ month</small>
+                      <span class="font-size-lg" v-if="plugin.price_per_user != 0">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
+                      <span class="font-size-lg" v-if="plugin.price == 0 && plugin.price_per_user == 0">FREE</span>
                     </div>
                     <hr>
                     <div class="font-size-sm font-w600 text-uppercase text-muted">
@@ -303,39 +234,47 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr v-if="form.package_id > 1">
                             <td class="text-center">1</td>
-                            <td>
-                                ERP PACKAGE - COMMUNITY EDITION
-                            </td>
-                            <td class="text-center">
-                                -
-                            </td>
-                            <td class="text-right">0</td>
-                            <td class="text-right">0</td>
+                            <td>{{ form.package_notes }}</td>
+                            <td class="text-center">{{ form.total_user }}</td>
+                            <td class="text-right">{{ form.package_price | numberFormat }}</td>
+                            <td class="text-right">{{ form.package_total_price | numberFormat }}</td>
                         </tr>
                         <tr v-for="(plugin, index) in form.plugins" :key="index">
-                            <td class="text-center">2</td>
+                            <td class="text-center">
+                              <template v-if="form.package_id == 1">{{ 1 + index }}</template>
+                              <template v-if="form.package_id > 1">{{ 2 + index }}</template>
+                            </td>
                             <td>
                                 {{ plugin.notes | uppercase }}
                             </td>
                             <td class="text-center">
+                              <template v-if="plugin.price_per_user > 0">
                                 {{ form.total_user }}
+                              </template>
+                              <template v-else>
+                                1
+                              </template>
                             </td>
-                            <td class="text-right">{{ plugin.price_per_user_proportional | numberFormat }}</td>
-                            <td class="text-right">{{ plugin.price_per_user_proportional * form.total_user | numberFormat }}</td>
+                            <td class="text-right">
+                              {{ plugin.current_price | numberFormat }}
+                            </td>
+                            <td class="text-right">
+                              {{ plugin.current_total_price | numberFormat }}
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="4" class="font-w600 text-right">SUBTOTAL</td>
-                            <td class="text-right">{{ this.form.sub_total_price | numberFormat }}</td>
+                            <td class="text-right">{{ form.sub_total_price | numberFormat }}</td>
                         </tr>
                         <tr>
                             <td colspan="4" class="font-w600 text-right">PPN (10%)</td>
-                            <td class="text-right">{{ this.form.vat | numberFormat }}</td>
+                            <td class="text-right">{{ form.vat | numberFormat }}</td>
                         </tr>
                         <tr class="table-warning">
                             <td colspan="4" class="font-w700 text-uppercase text-right">Total Due</td>
-                            <td class="font-w700 text-right">{{ this.form.total_price | numberFormat }}</td>
+                            <td class="font-w700 text-right">{{ form.total_price | numberFormat }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -379,6 +318,10 @@ export default {
         marketplace_notes: null,
         vat_id_number: null,
         timezone: null,
+        package_id: 1,
+        package_notes: '',
+        package_price: 0,
+        package_total_price: 0,
         plugins: [],
         total_user: 1,
         sub_total_price: 0,
@@ -395,7 +338,8 @@ export default {
     TabMenu
   },
   computed: {
-    ...mapGetters('accountPlugin', ['plugins', 'pagination'])
+    ...mapGetters('accountPlugin', ['plugins', 'pagination']),
+    ...mapGetters('accountPackage', ['packages'])
   },
   watch: {
     'form.total_user' () {
@@ -411,12 +355,27 @@ export default {
   methods: {
     ...mapActions('accountProject', ['create']),
     ...mapActions('accountPlugin', ['get']),
+    ...mapActions('accountPackage', {
+      getPackages: 'get'
+    }),
     calculate () {
-      this.form.sub_total_price = 0
+      this.form.sub_total_price = this.form.package_total_price
       this.form.vat = 0
       this.form.total_price = 0
       this.form.plugins.forEach(el => {
-        this.form.sub_total_price += el.price_per_user_proportional * this.form.total_user
+        el.current_price = 0
+        el.current_total_price = 0
+        if (el.is_monthly_price) {
+          el.current_price = el.price_proportional
+          el.current_total_price = el.price_proportional
+        } else if (el.is_monthly_price_per_user) {
+          el.current_price = el.price_per_user_proportional
+          el.current_total_price = el.price_per_user_proportional * this.form.total_user
+        } else {
+          el.current_price = parseFloat(el.price) + parseFloat(el.price_per_user)
+          el.current_total_price = parseFloat(el.price) + parseFloat(el.price_per_user)
+        }
+        this.form.sub_total_price += el.current_total_price
       })
       this.form.vat = this.form.sub_total_price * 10 / 100
       this.form.total_price = this.form.sub_total_price + this.form.vat
@@ -432,18 +391,31 @@ export default {
         })
       }
     },
+    choosePackage (packageErp) {
+      let dateNow = this.$moment(new Date()).format('DD')
+      let dateEnd = this.$moment(new Date()).endOf('month').format('DD')
+      this.form.package_id = packageErp.id
+      this.form.package_price = (dateEnd - dateNow) / dateEnd * packageErp.price
+      this.form.package_total_price = this.form.package_price
+      this.form.package_notes = 'ERP ' + packageErp.name + ' ( ' + this.$moment(new Date()).format('DD MMMM YYYY') + ' - ' + this.$moment(new Date()).endOf('month').format('DD MMMM YYYY') + ' )'
+      this.calculate()
+    },
     choosePlugin (plugin) {
       let dateNow = this.$moment(new Date()).format('DD')
       let dateEnd = this.$moment(new Date()).endOf('month').format('DD')
       plugin.price_proportional = (dateEnd - dateNow) / dateEnd * plugin.price
       plugin.price_per_user_proportional = (dateEnd - dateNow) / dateEnd * plugin.price_per_user
-      plugin.notes = plugin.name + ' ( ' + this.$moment(new Date()).format('DD MMMM YYYY') + ' - ' + this.$moment(new Date()).endOf('month').format('DD MMMM YYYY') + ' )'
+      plugin.notes = plugin.name
+      if (plugin.is_monthly_price || plugin.is_monthly_price_per_user) {
+        plugin.notes += ' ( ' + this.$moment(new Date()).format('DD MMMM YYYY') + ' - ' + this.$moment(new Date()).endOf('month').format('DD MMMM YYYY') + ' )'
+      }
       let index = this.form.plugins.findIndex(element => element.id == plugin.id)
       if (index >= 0) {
         this.form.plugins.splice(index, 1)
       } else {
         this.form.plugins.push(plugin)
       }
+      this.calculate()
     },
     searchTimezone (value) {
       this.getAvailableTimezone()
@@ -470,7 +442,7 @@ export default {
           this.isSaving = false
           this.form.reset()
           this.$notification.success('create success')
-          this.$router.push('/account/project/' + response.data.id)
+          this.$router.push('/account/billing/' + response.data.invoice_id)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)
@@ -485,6 +457,7 @@ export default {
       this.form.timezone = this.localTimezone
     }
     this.get()
+    this.getPackages()
   }
 }
 </script>

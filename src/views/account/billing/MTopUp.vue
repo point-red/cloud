@@ -4,7 +4,7 @@
       <template slot="content">
         <div class="row gutters-tiny">
           <div class="col-sm-12 mb-10">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt nisi, doloremque voluptatibus nostrum officia sit obcaecati laudantium similique labore iste repudiandae corporis. Quod, asperiores dignissimos. Maxime hic dolore qui magni!</p>
+            <p>{{ 'select the top up value' | uppercase }}</p>
             <button @click="onClickTemplateButton(50000)" class="btn btn-sm btn-outline-secondary mr-5">{{ 50000 | numberFormat }}</button>
             <button @click="onClickTemplateButton(100000)" class="btn btn-sm btn-outline-secondary mr-5">{{ 100000 | numberFormat }}</button>
             <button @click="onClickTemplateButton(300000)" class="btn btn-sm btn-outline-secondary mr-5">{{ 300000 | numberFormat }}</button>

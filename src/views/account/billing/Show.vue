@@ -69,7 +69,14 @@
                   {{ item.quantity | numberFormat }}
                 </td>
                 <td class="text-right">{{ item.amount | numberFormat }}</td>
-                <td class="text-right">{{ item.amount * item.quantity | numberFormat }}</td>
+                <td class="text-right">
+                  <template v-if="item.description.substring(0, 3) == 'ERP'">
+                    {{ item.amount | numberFormat }}
+                  </template>
+                  <template v-else>
+                    {{ item.amount * item.quantity | numberFormat }}
+                  </template>
+                </td>
               </tr>
               <tr>
                 <td colspan="4" class="font-w600 text-right">SUBTOTAL</td>
