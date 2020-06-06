@@ -31,14 +31,7 @@
                   <tr>
                     <td class="font-weight-bold">{{ $t('purchase order') | uppercase }}</td>
                     <td>
-                      <span @click="$refs.selectPurchaseOrder.open()" class="select-link">
-                        <template v-if="purchaseOrder && purchaseOrder.form.number != null">
-                          {{ purchaseOrder.form.number }}
-                        </template>
-                        <template v-else>
-                          {{ $t('select') | uppercase }}
-                        </template>
-                      </span>
+                      {{ downPayment.form.number }}
                     </td>
                   </tr>
                   <tr>
@@ -48,7 +41,7 @@
                         :id="'amount'"
                         :name="'amount'"
                         :is-text-right="false"
-                        :max="purchaseOrder.amount ? purchaseOrder.amount : 0"
+                        :max="downPayment.amount ? downPayment.amount : 0"
                         v-model.number="form.amount"/>
                     </td>
                   </tr>
@@ -86,7 +79,7 @@
                     <th class="text-right">Total</th>
                     <th width="50px"></th>
                   </tr>
-                  <template v-for="(row, index) in purchaseOrder.items">
+                  <template v-for="(row, index) in downPayment.downpaymentable.items">
                     <tr slot="p-body" :key="index">
                       <th class="text-center">{{ index + 1 }}</th>
                       <td>{{ row.item.label }}</td>
@@ -112,7 +105,7 @@
                     <td></td>
                     <td></td>
                     <td class="text-right"><b>{{ $t('discount') | uppercase }}</b></td>
-                    <td class="text-right"><b>{{ purchaseOrder.discount_value | numberFormat }}</b></td>
+                    <td class="text-right"><b>{{ downPayment.downpaymentable.discount_value | numberFormat }}</b></td>
                     <td></td>
                   </tr>
                   <tr slot="p-body">
@@ -121,7 +114,7 @@
                     <td></td>
                     <td></td>
                     <td class="text-right"><b>{{ $t('tax base') | uppercase }}</b></td>
-                    <td class="text-right"><b>{{ purchaseOrder.amount - purchaseOrder.tax | numberFormat }}</b></td>
+                    <td class="text-right"><b>{{ downPayment.downpaymentable.amount - downPayment.downpaymentable.tax | numberFormat }}</b></td>
                     <td></td>
                   </tr>
                   <tr slot="p-body">
@@ -130,7 +123,7 @@
                     <td></td>
                     <td></td>
                     <td class="text-right"><b>{{ $t('tax') | uppercase }}</b></td>
-                    <td class="text-right"><b>{{ purchaseOrder.tax | numberFormat }}</b></td>
+                    <td class="text-right"><b>{{ downPayment.downpaymentable.tax | numberFormat }}</b></td>
                     <td></td>
                   </tr>
                   <tr slot="p-body">
@@ -139,7 +132,7 @@
                     <td></td>
                     <td></td>
                     <td class="text-right"><b>{{ $t('total') | uppercase }}</b></td>
-                    <td class="text-right"><b>{{ purchaseOrder.amount | numberFormat }}</b></td>
+                    <td class="text-right"><b>{{ downPayment.downpaymentable.amount | numberFormat }}</b></td>
                     <td></td>
                   </tr>
                 </point-table>
@@ -203,11 +196,8 @@ export default {
       isSaving: false,
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
-      purchaseOrder: {
-        form: { number: null },
-        items: []
-      },
       form: new Form({
+        id: this.$route.params.id,
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         purchase_order_id: null,
@@ -221,22 +211,21 @@ export default {
         amount: null,
         request_approval_to: null,
         approver_name: null,
-        approver_email: null,
-        purchase_request_id: null
+        approver_email: null
       })
     }
   },
   computed: {
-    ...mapGetters('purchaseDownPayment', { purchaseDownPayment: 'downPayment' }),
+    ...mapGetters('purchaseDownPayment', { downPayment: 'downPayment' }),
     ...mapGetters('auth', ['authUser']),
     subtotal () {
-      return this.purchaseOrder.items.reduce((carry, item) => {
+      return this.downPayment.downpaymentable.items.reduce((carry, item) => {
         return carry + item.quantity * (item.price - item.discount_value)
       }, 0)
     }
   },
   methods: {
-    ...mapActions('purchaseDownPayment', ['find', 'create']),
+    ...mapActions('purchaseDownPayment', ['find', 'update']),
     ...mapActions('purchaseOrder', { getPurchaseOrder: 'find' }),
     purchaseDownPaymentRequest () {
       this.isLoading = true
@@ -247,22 +236,22 @@ export default {
           with_origin: true,
           includes: 'supplier;' +
             'downpaymentable.form;' +
+            'downpaymentable.items.item;' +
             'form.createdBy;' +
             'form.requestApprovalTo;' +
             'form.branch'
         }
       }).then(response => {
-        this.form.purchase_request_id = null
-        this.form.purchase_order_id = this.purchaseDownPayment.downpaymentable_id
-        this.form.supplier_id = this.purchaseDownPayment.supplier_id
-        this.form.supplier_name = this.purchaseDownPayment.supplier_name
-        this.form.supplier_label = this.purchaseDownPayment.supplier_name
-        this.form.supplier_phone = this.purchaseDownPayment.supplier_phone
-        this.form.notes = this.purchaseDownPayment.notes
-        this.form.amount = this.purchaseDownPayment.amount
-        this.form.request_approval_to = this.purchaseDownPayment.form.request_approval_to.id
-        this.form.approver_name = this.purchaseDownPayment.form.request_approval_to.full_name
-        this.form.approver_email = this.purchaseDownPayment.form.request_approval_to.email
+        this.form.purchase_order_id = this.downPayment.downpaymentable_id
+        this.form.supplier_id = this.downPayment.supplier_id
+        this.form.supplier_name = this.downPayment.supplier_name
+        this.form.supplier_label = this.downPayment.supplier_name
+        this.form.supplier_phone = this.downPayment.supplier_phone
+        this.form.notes = this.downPayment.notes
+        this.form.amount = this.downPayment.amount
+        this.form.request_approval_to = this.downPayment.form.request_approval_to.id
+        this.form.approver_name = this.downPayment.form.request_approval_to.full_name
+        this.form.approver_email = this.downPayment.form.request_approval_to.email
 
         this.setPurchaseOrder()
       }).catch(error => {
@@ -314,10 +303,10 @@ export default {
         return
       }
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      this.create(this.form)
+      this.update(this.form)
         .then(response => {
           this.isSaving = false
-          this.$notification.success('create success')
+          this.$notification.success('update success')
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/purchase/down-payment/' + response.data.id)
         }).catch(error => {

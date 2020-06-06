@@ -19,7 +19,9 @@ const state = {
     supplier: {
       name: null
     },
-    items: []
+    downpaymentable: {
+      items: []
+    }
   },
   downPayments: [],
   pagination: {}
