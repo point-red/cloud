@@ -205,7 +205,7 @@
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase invoice')">
                   <router-link
                     to="/purchase/invoice"
-                    active-class="active">{{ $t('invoice') | uppercase }}
+                    active-class="active">{{ $t('purchase invoice') | uppercase }}
                   </router-link>
                 </li>
                 <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase return')">
