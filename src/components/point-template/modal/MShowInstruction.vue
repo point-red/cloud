@@ -23,7 +23,7 @@
                   :label="$t('number')"
                   :errors="errors && errors.number"
                   v-model="form.number"
-                  disabled="true" />
+                  :disabled="true" />
               </div>
             </p-form-row>
             <p-form-row
@@ -38,7 +38,7 @@
                   :label="$t('name')"
                   :errors="errors && errors.name"
                   v-model="form.name"
-                  disabled="true" />
+                  :disabled="true" />
               </div>
             </p-form-row>
           </form>

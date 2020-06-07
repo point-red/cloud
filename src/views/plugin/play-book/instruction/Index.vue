@@ -11,7 +11,7 @@
         <div class="input-group block mb-5">
           <button
             @click="$refs.modalAddInstruction.open()"
-            v-if="$permission.has('create play book instructions') || true"
+            v-if="$permission.has('create play book instructions')"
             class="btn btn-sm btn-light"
             :disabled="!!!form.procedure_id">
             ADD INSTRUCTION
@@ -19,7 +19,7 @@
           </button>
           <button
             @click="$refs.modalAddStep.open()"
-            v-if="$permission.has('create play book instructions') || true"
+            v-if="$permission.has('create play book instructions')"
             class="btn btn-sm btn-light ml-2"
             :disabled="!(form.procedure_id && form.instruction_id)">
             ADD STEP
@@ -52,35 +52,21 @@
                 :options="instructions"/>
 
               <div v-if="instruction">
-                <button class="btn btn-light ml-2" @click="$refs.modalEditInstruction.open()">
+                <button
+                  class="btn btn-light ml-2"
+                  v-if="$permission.has('edit play book instructions')"
+                  @click="$refs.modalEditInstruction.open()">
                   Edit
                 </button>
-                <button class="btn btn-light ml-2" @click="confirmDeleteInstruction">
+                <button
+                  class="btn btn-light ml-2"
+                  v-if="$permission.has('delete play book instructions')"
+                  @click="confirmDeleteInstruction">
                   Delete
                 </button>
               </div>
             </div>
           </p-form-row>
-        </div>
-        <div>
-          <div class="text-center font-size-sm mb-10">
-            <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
-              {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
-            </a>
-          </div>
-          <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
-            <div class="row justify-content-center">
-              <div class="col-sm-3 text-center">
-                <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
-                  <div slot="body">
-                    <span @click="$refs.status.open({ id: statusId, label: statusLabel })" class="select-link">
-                      {{ statusLabel || $t('select') | uppercase }}
-                    </span>
-                  </div>
-                </p-form-row>
-              </div>
-            </div>
-          </div>
         </div>
         <p-block-inner :is-loading="isLoading" v-if="instruction">
           <div class="text-right">
@@ -140,7 +126,6 @@
         </p-pagination>
       </p-block>
     </div>
-    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
     <m-add-instruction
       :procedure-id="form.procedure_id"
       ref="modalAddInstruction"
@@ -279,18 +264,6 @@ export default {
     window.removeEventListener('click', this.setStepActive)
   },
   methods: {
-    onChoosenStatus (option) {
-      this.statusId = option.id
-      this.$router.push({
-        query: {
-          statusId: this.statusId
-        }
-      })
-
-      if (this.instruction) {
-        this.getSteps()
-      }
-    },
     async getProcedures () {
       try {
         this.isLoading = true

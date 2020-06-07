@@ -16,7 +16,7 @@
             v-if="$permission.has('create play book instructions')"
             class="btn btn-outline-primary mr-3"
             to="/plugin/play-book/approval/instruction/send">
-            Send Request <i class="fa fa-paper-plane"></i>
+            Sent Request <i class="fa fa-paper-plane"></i>
           </router-link>
           <p-form-input
             id="search-text"
@@ -65,7 +65,7 @@
                   </span>
                 </td>
                 <td>
-                  <router-link :to="`/plugin/play-book/procedure/content/${instruction.procedure.id}`">
+                  <router-link :to="`/plugin/play-book/procedure/${instruction.procedure.id}`">
                     {{ instruction.procedure.code }} - {{ instruction.procedure.name }}
                   </router-link>
                 </td>

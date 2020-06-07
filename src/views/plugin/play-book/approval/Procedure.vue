@@ -16,7 +16,7 @@
             v-if="$permission.has('create play book procedures code')"
             class="btn btn-outline-primary mr-3"
             to="/plugin/play-book/approval/procedure/send">
-            Send Request <i class="fa fa-paper-plane"></i>
+            Sent Request <i class="fa fa-paper-plane"></i>
           </router-link>
           <p-form-input
             id="search-text"
@@ -48,7 +48,7 @@
               <th>{{ (++index) + ((page - 1) * limit) }}</th>
               <td>
                 <div>
-                  <router-link :to="`/plugin/play-book/procedure/content/${procedure.id}`">
+                  <router-link :to="`/plugin/play-book/procedure/${procedure.id}`">
                     {{ procedure.code }} - {{ procedure.name }}
                   </router-link>
                 </div>

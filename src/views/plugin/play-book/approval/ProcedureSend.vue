@@ -5,7 +5,7 @@
       <breadcrumb-play-book></breadcrumb-play-book>
       <span class="breadcrumb-item active">{{ 'Approval' | uppercase }}</span>
       <router-link to="/plugin/play-book/approval/procedure" class="breadcrumb-item">{{ 'Procedure' | uppercase }}</router-link>
-      <span class="breadcrumb-item active">{{ 'Send' | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ 'Sent' | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu></tab-menu>
@@ -22,7 +22,7 @@
             @click="$refs.modelSendProcedureRequest.open()"
             class="btn btn-primary mr-3"
             v-if="!!selectedIds.length">
-            Send {{ selectedIds.length }} {{ `Request${selectedIds.length > 1 ? 's' : ''}` }} <i class="fa fa-paper-plane"></i>
+            Sent {{ selectedIds.length }} {{ `Request${selectedIds.length > 1 ? 's' : ''}` }} <i class="fa fa-paper-plane"></i>
           </button>
           <p-form-input
             id="search-text"
@@ -43,6 +43,7 @@
               <th>Action</th>
               <th>Note</th>
               <th>Status</th>
+              <th class="text-center">Edit</th>
             </tr>
             <tr
               v-for="(procedure) in procedures"
@@ -51,10 +52,7 @@
               <td>
                 <input type="checkbox" v-model="form.ids[procedure.id]" style="min-width: auto">
               </td>
-              <td>
-                <!-- <router-link :to="`/plugin/play-book/procedure/content/${procedure.id}`">{{ procedure.code }}</router-link> -->
-                {{ procedure.code }}
-              </td>
+              <td>{{ procedure.code }}</td>
               <td>{{ procedure.name }}</td>
               <td>{{ procedure.approval_action | uppercase }}</td>
               <td>{{ procedure.note }}</td>
@@ -63,12 +61,19 @@
                   {{ procedure.approved_at ? 'APPROVED' : 'PENDING' }}
                 </span>
               </td>
+              <td class="text-center">
+                <button
+                  class="btn btn-sm btn-light"
+                  @click="procedureIdToEdit = procedure.id; $refs.modalEditProcedure.open()">
+                  <i class="fa fa-edit"></i>
+                </button>
+              </td>
             </tr>
             <tr
               slot="p-body"
               class="text-center"
               v-if="procedures.length < 1">
-              <td colspan="6" class="my-2 py-5">
+              <td colspan="7" class="my-2 py-5">
                 No data
               </td>
             </tr>
@@ -84,6 +89,10 @@
 
     <m-status ref="status" @choosen="onChoosenStatus"></m-status>
     <m-send-procedure-request @added="getProcedures" :ids="selectedIds" ref="modelSendProcedureRequest"></m-send-procedure-request>
+    <m-edit-procedure
+      ref="modalEditProcedure"
+      :procedure-id="procedureIdToEdit"
+      @added="getProcedures"></m-edit-procedure>
   </div>
 </template>
 
@@ -116,7 +125,8 @@ export default {
       statusLabel: null,
       form: {
         ids: {}
-      }
+      },
+      procedureIdToEdit: null
     }
   },
   computed: {
@@ -137,19 +147,6 @@ export default {
     ...mapActions('pluginPlayBookProcedureApproval', [
       'get'
     ]),
-    onChoosenStatus (option) {
-      this.statusId = option.id
-      this.statusLabel = option.label
-      this.$router.push({
-        query: {
-          search: this.searchText,
-          statusId: this.statusId,
-          groupId: this.groupId,
-          pricingGroupId: this.pricingGroupId
-        }
-      })
-      this.getProcedures()
-    },
     filterSearch: debounce(function (value) {
       this.$router.push({
         query: {

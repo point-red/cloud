@@ -11,7 +11,7 @@
         link="/plugin/play-book/instruction"
         icon="fa fa-briefcase"/>
       <p-box
-        v-if="$permission.has('read play book procedures code') || $permission.has('read play book procedures content')"
+        v-if="$permission.has('read play book procedures code')"
         name="Procedure"
         link="/plugin/play-book/procedure"
         icon="fa fa-list-ol"/>

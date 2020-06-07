@@ -12,18 +12,13 @@
           </div>
           <form @submit.prevent="onSubmit">
             <p-form-row
-              :id="`name`"
+              id="name"
               name="name"
               label="Step Name">
               <div slot="body" class="col-lg-9">
-                <p-form-input
-                  :id="`name`"
-                  name="name"
-                  placeholder="Step Name"
-                  :label="$t('name')"
-                  :errors="errors && errors.name"
-                  v-model="form.name"
-                  :disabled="true" />
+                <div class="form-control">
+                  {{ form.name }}
+                </div>
               </div>
             </p-form-row>
             <hr>
@@ -37,12 +32,16 @@
                   <h5># {{ (i + 1) }}</h5>
                 </div>
                 <p-form-row
+                  :id="`${i}-glossary`"
+                  :name="`${i}-glossary`"
                   :label="`${$t('glossary')}`">
                   <div slot="body" class="col-lg-9" v-if="form.contents[i] && form.contents[i].glossary">
                     {{ form.contents[i].glossary.code }} - {{ form.contents[i].glossary.name }}
                   </div>
                 </p-form-row>
                 <p-form-row
+                  :id="`${i}-content`"
+                  :name="`${i}-content`"
                   :label="`Content`">
                   <div slot="body" class="col-lg-9">
                     <div
@@ -50,11 +49,6 @@
                   </div>
                 </p-form-row>
               </div>
-            </div>
-            <div class="text-right mt-3" v-if="form.contents.length > 2">
-              <button class="btn btn-sm btn-light" type="button" @click="addContent">
-                Add <i class="fa fa-plus"></i>
-              </button>
             </div>
           </form>
         </div>

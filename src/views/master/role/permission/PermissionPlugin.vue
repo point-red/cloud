@@ -120,19 +120,11 @@
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create play book procedures code', 'read play book procedures code', 'update play book procedures code', 'delete play book procedures code'], permissions)" :checked="checkPermissionRow(['create play book procedures code', 'read play book procedures code', 'update play book procedures code', 'delete play book procedures code'], permissions)" :description="''"/></td>
-        <td><b>{{ $t('procedures code') | uppercase }}</b></td>
+        <td><b>{{ $t('procedures') | uppercase }}</b></td>
         <td><p-form-check-box :is-form="false" ref="create play book procedures code" @click.native="togglePermission('create play book procedures code')" :checked="$rolePermission.has('create play book procedures code', permissions)" :description="'create' | uppercase"/></td>
         <td><p-form-check-box :is-form="false" ref="read play book procedures code" @click.native="togglePermission('read play book procedures code')" :checked="$rolePermission.has('read play book procedures code', permissions)" :description="'read' | uppercase"/></td>
         <td><p-form-check-box :is-form="false" ref="update play book procedures code" @click.native="togglePermission('update play book procedures code')" :checked="$rolePermission.has('update play book procedures code', permissions)" :description="'update' | uppercase"/></td>
         <td><p-form-check-box :is-form="false" ref="delete play book procedures code" @click.native="togglePermission('delete play book procedures code')" :checked="$rolePermission.has('delete play book procedures code', permissions)" :description="'delete' | uppercase"/></td>
-      </tr>
-       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create play book procedures content', 'read play book procedures content', 'update play book procedures content', 'delete play book procedures content'], permissions)" :checked="checkPermissionRow(['create play book procedures content', 'read play book procedures content', 'update play book procedures content', 'delete play book procedures content'], permissions)" :description="''"/></td>
-        <td><b>{{ $t('procedures content') | uppercase }}</b></td>
-        <td><p-form-check-box :is-form="false" ref="create play book procedures content" @click.native="togglePermission('create play book procedures content')" :checked="$rolePermission.has('create play book procedures content', permissions)" :description="'create' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read play book procedures content" @click.native="togglePermission('read play book procedures content')" :checked="$rolePermission.has('read play book procedures content', permissions)" :description="'read' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="update play book procedures content" @click.native="togglePermission('update play book procedures content')" :checked="$rolePermission.has('update play book procedures content', permissions)" :description="'update' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete play book procedures content" @click.native="togglePermission('delete play book procedures content')" :checked="$rolePermission.has('delete play book procedures content', permissions)" :description="'delete' | uppercase"/></td>
       </tr>
       <tr slot="p-body">
         <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create play book instructions', 'read play book instructions', 'update play book instructions', 'delete play book instructions'], permissions)" :checked="checkPermissionRow(['create play book instructions', 'read play book instructions', 'update play book instructions', 'delete play book instructions'], permissions)" :description="''"/></td>

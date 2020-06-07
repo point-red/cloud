@@ -5,7 +5,7 @@
       <breadcrumb-play-book></breadcrumb-play-book>
       <span class="breadcrumb-item active">{{ 'Approval' | uppercase }}</span>
       <router-link to="/plugin/play-book/approval/instruction" class="breadcrumb-item">{{ 'Procedure' | uppercase }}</router-link>
-      <span class="breadcrumb-item active">{{ 'Send' | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ 'Sent' | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu></tab-menu>
@@ -22,7 +22,7 @@
             @click="$refs.modelSendInstructionRequest.open()"
             class="btn btn-primary mr-3"
             v-if="!!selectedIds.length || !!selectedStepIds.length">
-            Send {{ (selectedIds.length + selectedStepIds.length) }} {{ `Request${selectedIds.length > 1 ? 's' : ''}` }} <i class="fa fa-paper-plane"></i>
+            Sent {{ (selectedIds.length + selectedStepIds.length) }} {{ `Request${selectedIds.length > 1 ? 's' : ''}` }} <i class="fa fa-paper-plane"></i>
           </button>
           <p-form-input
             id="search-text"
@@ -41,6 +41,7 @@
               <th>Name</th>
               <th>Action</th>
               <th>Status</th>
+              <th class="text-center">Edit</th>
             </tr>
             <template
               v-for="(instruction, index) in instructions">
@@ -59,6 +60,14 @@
                   <span class="badge" :class="{ [instruction.approved_at ? 'badge-success' : 'badge-secondary']: true }">
                     {{ instruction.approved_at ? 'APPROVED' : 'PENDING' }}
                   </span>
+                </td>
+                <td class="text-center">
+                  <button
+                    @click="instructionToEdit = instruction; $refs.modalEditInstruction.open()"
+                    class="btn btn-sm btn-light"
+                    :disabled="instruction.approved_at">
+                    <i class="fa fa-edit"></i>
+                  </button>
                 </td>
               </tr>
               <tr
@@ -79,6 +88,14 @@
                   <span class="badge" :class="{ [step.approved_at ? 'badge-success' : 'badge-secondary']: true }">
                     {{ step.approved_at ? 'APPROVED' : 'PENDING' }}
                   </span>
+                </td>
+                <td class="text-center">
+                  <button
+                    @click="stepToEdit = step; $refs.modalEditStep.open()"
+                    class="btn btn-sm btn-light"
+                    :disabled="step.approved_at">
+                    <i class="fa fa-edit"></i>
+                  </button>
                 </td>
               </tr>
             </template>
@@ -106,6 +123,14 @@
       :ids="selectedIds"
       :stepIds="selectedStepIds"
       ref="modelSendInstructionRequest"></m-send-instruction-request>
+    <m-edit-instruction
+      :instruction="instructionToEdit"
+      ref="modalEditInstruction"
+      @added="getInstructions"></m-edit-instruction>
+    <m-edit-instruction-step
+      ref="modalEditStep"
+      :step="stepToEdit"
+      @added="getInstructions"></m-edit-instruction-step>
   </div>
 </template>
 
@@ -139,7 +164,9 @@ export default {
       form: {
         ids: {},
         stepIds: {}
-      }
+      },
+      instructionToEdit: null,
+      stepToEdit: null
     }
   },
   computed: {

@@ -27,24 +27,6 @@
             class="btn-block"
             @input="filterSearch"/>
         </div>
-        <div class="text-center font-size-sm mb-10">
-          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
-          </a>
-        </div>
-        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
-          <div class="row justify-content-center">
-            <div class="col-sm-3 text-center">
-              <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
-                <div slot="body">
-                  <span @click="$refs.status.open({ id: statusId, label: statusLabel })" class="select-link">
-                    {{ statusLabel || $t('select') | uppercase }}
-                  </span>
-                </div>
-              </p-form-row>
-            </div>
-          </div>
-        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
@@ -82,7 +64,6 @@
         </p-pagination>
       </p-block>
     </div>
-    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
     <m-add-glossary ref="modalAddGlossary" @added="getGlossaryRequest"></m-add-glossary>
   </div>
 </template>
@@ -121,19 +102,6 @@ export default {
     ...mapActions('pluginPlayBookGlossary', [
       'get'
     ]),
-    onChoosenStatus (option) {
-      this.statusId = option.id
-      this.statusLabel = option.label
-      this.$router.push({
-        query: {
-          search: this.searchText,
-          statusId: this.statusId,
-          groupId: this.groupId,
-          pricingGroupId: this.pricingGroupId
-        }
-      })
-      this.getGlossaryRequest()
-    },
     filterSearch: debounce(function (value) {
       this.$router.push({
         query: {

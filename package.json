@@ -73,8 +73,8 @@
     "gulp-uglify": "^3.0.2",
     "lint-staged": "^9.4.2",
     "node-sass": "^4.13.0",
-    "sass-loader": "^8.0.0",
     "rollup-plugin-vue": "^5.0.0",
+    "sass-loader": "^8.0.0",
     "vue-template-compiler": "^2.6.10"
   },
   "gitHooks": {

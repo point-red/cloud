@@ -44,6 +44,8 @@
                   </button>
                 </div>
                 <p-form-row
+                  :id="`${i}-glossary`"
+                  :name="`${i}-glossary`"
                   :label="`${$t('glossary')}`">
                   <div slot="body" class="col-lg-9">
                     <p-select
@@ -54,13 +56,10 @@
                   </div>
                 </p-form-row>
                 <p-form-row
+                  :id="`${i}-content`"
+                  :name="`${i}-content`"
                   :label="`Content`">
                   <div slot="body" class="col-lg-9">
-                    <!-- <textarea
-                      v-model="form.contents[i].content"
-                      placeholder="Content"
-                      class="form-control"
-                      rows="3"></textarea> -->
                     <vue-editor
                       :editorToolbar="customToolbar"
                       v-model="form.contents[i].content"></vue-editor>
