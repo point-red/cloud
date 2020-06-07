@@ -75,13 +75,6 @@ export default {
       this.form.approver_name = value.fullName
       this.form.approver_email = value.email
     },
-    async getUser () {
-      this.$store.dispatch('masterUser/get', {
-        params: {
-          permission: 'approve play book instruction'
-        }
-      })
-    },
     onClose () {
       this.isFailed = false
       Object.assign(this.$data, this.$options.data.call(this))
@@ -110,9 +103,6 @@ export default {
     },
     open () {
       this.$refs.modal.open()
-      this.$nextTick(() => {
-        this.getUser()
-      })
     },
     close () {
       this.$refs.modal.close()
