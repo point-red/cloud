@@ -79,9 +79,6 @@ export default {
       this.mutableId = this.value
     }
   },
-  created () {
-    this.search()
-  },
   methods: {
     ...mapActions('masterUser', ['get']),
     search () {
@@ -130,6 +127,7 @@ export default {
     },
     open () {
       this.$refs['select-' + this.id].open()
+      this.search()
     },
     close () {
       this.$refs['select-' + this.id].close()

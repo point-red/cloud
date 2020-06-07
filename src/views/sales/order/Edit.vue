@@ -279,7 +279,7 @@
     </form>
     <m-customer ref="customer" @choosen="chooseCustomer"/>
     <m-item ref="item" @choosen="chooseItem"/>
-    <m-user ref="approver" @choosen="chooseApprover"/>
+    <m-user ref="approver" @choosen="chooseApprover" permission="approve sales order"/>
     <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
     <select-sales-quotation ref="selectSalesQuotation" @choosen="chooseSalesQuotation"></select-sales-quotation>
   </div>

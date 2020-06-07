@@ -198,7 +198,7 @@
     </form>
     <m-customer ref="customer" @choosen="chooseCustomer"/>
     <m-item ref="item" @choosen="chooseItem"/>
-    <m-user ref="approver" @choosen="chooseApprover"/>
+    <m-user ref="approver" @choosen="chooseApprover" permission="approve sales quotation"/>
     <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
   </div>
 </template>
