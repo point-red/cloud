@@ -1,29 +1,28 @@
 <template>
   <div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select unit">
-      <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
-        <hr>
-        <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
-        </div>
-        <div v-else class="list-group push">
-          <template v-for="(unit, index) in units">
-          <a
-            :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{'active': unit.id == mutableId }"
-            @click="choose(unit)"
-            href="javascript:void(0)">
-            {{ unit.label | uppercase }}
-          </a>
-          </template>
-        </div>
-      </template>
-      <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </template>
-    </p-modal>
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select unit') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()">
+      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <hr>
+      <div v-if="isLoading">
+        <h3 class="text-center">Loading ...</h3>
+      </div>
+      <div v-else class="list-group push">
+        <template v-for="(unit, index) in units">
+        <a
+          :key="index"
+          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          :class="{'active': unit.id == mutableId }"
+          @click="choose(unit)"
+          href="javascript:void(0)">
+          {{ unit.label | uppercase }}
+        </a>
+        </template>
+      </div>
+    </sweet-modal>
   </div>
 </template>
 
@@ -88,12 +87,14 @@ export default {
       this.$emit('choosen', option)
       this.close()
     },
-    show (units) {
+    open (units) {
       this.units = units
-      this.$refs['select-' + this.id].show()
+      this.$refs['select-' + this.id].open()
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }

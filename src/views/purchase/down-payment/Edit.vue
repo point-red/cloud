@@ -2,9 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link :to="{ name: 'purchase.order.index' }" class="breadcrumb-item">{{ $t('down payment') | uppercase }}</router-link>
-      <router-link :to="{ name: 'purchase.order.show', params: { id: id }}" class="breadcrumb-item">{{ purchaseDownPayment.form.number | uppercase }}</router-link>
-      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
+      <router-link to="/purchase/down-payment" class="breadcrumb-item">{{ $t('down payment') | titlecase }}</router-link>
+      <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
     <purchase-menu/>
@@ -20,18 +19,37 @@
                   <tr>
                     <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
                     <td>
-                      {{ purchaseDownPayment.form.number }}
+                      {{ downPayment.form.number }}
                     </td>
                   </tr>
                   <tr>
                     <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
                     <td>
-                      {{ purchaseDownPayment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
+                      <p-date-picker
+                        id="date"
+                        name="date"
+                        :label="$t('date')"
+                        v-model="form.date"
+                        :errors="form.errors.get('date')"
+                        @errors="form.errors.set('date', null)"/>
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('purchase request') | uppercase }}</td>
-                    <td></td>
+                    <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                    <td>
+                      {{ downPayment.downpaymentable.form.number }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('amount') | uppercase }}</td>
+                    <td>
+                      <p-form-number
+                        :id="'amount'"
+                        :name="'amount'"
+                        :is-text-right="false"
+                        :max="downPayment.amount ? downPayment.amount : 0"
+                        v-model.number="form.amount"/>
+                    </td>
                   </tr>
                 </table>
               </div>
@@ -55,194 +73,80 @@
               </div>
             </div>
             <hr>
-            <point-table>
-              <tr slot="p-head">
-                <th>#</th>
-                <th style="min-width: 120px">Item</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Discount</th>
-                <th>Total</th>
-                <th>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
-                    <i class="fa fa-ellipsis-h"/>
-                  </button>
-                </th>
-              </tr>
-              <template v-for="(row, index) in form.items">
-                <tr slot="p-body" :key="index">
-                  <th>{{ index + 1 }}</th>
-                  <td>
-                    <span @click="$refs.item.open(index)" class="select-link">
-                      {{ row.item_label || $t('select') | uppercase }}
-                    </span>
-                  </td>
-                  <td>
-                    <p-quantity
-                      :id="'quantity' + index"
-                      :name="'quantity' + index"
-                      :disabled="row.item_id == null"
-                      v-model="row.quantity"
-                      :item-id="row.item_id"
-                      :units="row.units"
-                      :unit="{
-                        name: row.unit,
-                        label: row.unit,
-                        converter: row.converter
-                      }"
-                      @choosen="chooseUnit($event, row)"/>
-                  </td>
-                  <td>
-                    <p-form-number
-                      :id="'price' + index"
-                      :name="'price' + index"
-                      v-model.number="row.price"
-                      :readonly="row.item_id == null"/>
-                  </td>
-                  <td>
-                    <p-discount
-                      :id="'discount' + index"
-                      :name="'discount' + index"
-                      :readonly="row.item_id == null"
-                      :base-value="row.price"
-                      :discount-percent.sync="row.discount_percent"
-                      :discount-value.sync="row.discount_value"/>
-                  </td>
-                  <td>
-                    <p-form-number
-                      :id="'total-' + index"
-                      :name="'total-' + index"
-                      :readonly="true"
-                      :value="row.quantity * (row.price - row.discount_value)"/>
-                  </td>
-                  <td>
-                    <button type="button"
-                      class="btn btn-sm btn-outline-secondary"
-                      @click="row.more = !row.more"
-                      v-if="!isSaving">
-                      <i class="fa fa-ellipsis-h"/>
-                    </button>
-                  </td>
-                </tr>
-                <template v-if="row.more && row.item_id">
-                  <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
-                    <th class="bg-gray-light"></th>
-                    <td colspan="4">
-                      <p-form-row
-                        id="allocation"
-                        name="allocation"
-                        :label="$t('allocation')">
-                        <div slot="body" class="col-lg-9 mt-5">
-                          <span @click="$refs.allocation.open(index)" class="select-link">
-                            {{ row.allocation_name || $t('select') | uppercase }}
-                          </span>
-                        </div>
-                      </p-form-row>
-                    </td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                  <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
-                    <th class="bg-gray-light"></th>
-                    <td colspan="4">
-                      <p-form-row
-                        id="notes"
-                        name="notes"
-                        v-model="row.notes"
-                        :label="$t('notes')">
-                      </p-form-row>
-                    </td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                </template>
-              </template>
-              <tr slot="p-body">
-                <th></th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                  <p-form-number
-                    :id="'subtotal'"
-                    :name="'subtotal'"
-                    :readonly="true"
-                    :value="subtotal"/>
-                </td>
-              </tr>
-            </point-table>
-
             <div class="row">
-              <div class="col-sm-6">
-                <textarea rows="14" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
-              </div>
-              <div class="col-sm-6">
-                <p-form-row
-                  id="discount"
-                  name="discount"
-                  :label="$t('discount')">
-                  <div slot="body" class="col-lg-9 mt-5">
-                    <p-discount
-                      id="discount"
-                      name="discount"
-                      :base-value="subtotal"
-                      :discount-percent.sync="form.discount_percent"
-                      :discount-value.sync="form.discount_value"/>
-                  </div>
-                </p-form-row>
-                <p-form-row
-                  id="tax-base"
-                  name="tax-base"
-                  :label="$t('tax base')">
-                  <div slot="body" class="col-lg-9 mt-5">
-                    <p-form-number
-                      :id="'tax-base'"
-                      :name="'tax-base'"
-                      :readonly="true"
-                      :value="tax_base"/>
-                  </div>
-                </p-form-row>
-                <p-form-row
-                  name="tax"
-                  :label="$t('tax')">
-                  <div slot="body" class="col-lg-9">
-                    <p-form-check-box
-                      class="mb-0"
-                      style="float:left"
-                      name="tax"
-                      @click.native="chooseTax('include')"
-                      :checked="form.type_of_tax == 'include'"
-                      :description="$t('include tax')"/>
-                    <p-form-check-box
-                      name="tax"
-                      @click.native="chooseTax('exclude')"
-                      :checked="form.type_of_tax == 'exclude'"
-                      :description="$t('exclude tax')"/>
-                    <p-form-number
-                      :id="'tax-value'"
-                      :name="'tax-value'"
-                      :readonly="true"
-                      :value="tax"/>
-                  </div>
-                </p-form-row>
-                <p-form-row
-                  id="total"
-                  name="total"
-                  :label="$t('total')">
-                  <div slot="body" class="col-lg-9 mt-5">
-                    <p-form-number
-                      :id="'total'"
-                      :name="'total'"
-                      :readonly="true"
-                      :value="grandTotal"/>
-                  </div>
-                </p-form-row>
+              <div class="col-sm-12">
+                <point-table class="mt-20">
+                  <tr slot="p-head">
+                    <th class="text-center">#</th>
+                    <th>Item</th>
+                    <th class="text-right">Quantity</th>
+                    <th class="text-right">Price</th>
+                    <th class="text-right">Discount</th>
+                    <th class="text-right">Total</th>
+                    <th width="50px"></th>
+                  </tr>
+                  <template v-for="(row, index) in downPayment.downpaymentable.items">
+                    <tr slot="p-body" :key="index">
+                      <th class="text-center">{{ index + 1 }}</th>
+                      <td>{{ row.item.label }}</td>
+                      <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
+                      <td class="text-right">{{ row.price | numberFormat }}</td>
+                      <td class="text-right">{{ row.discount_value | numberFormat }}</td>
+                      <td class="text-right">{{ row.quantity * (row.price - row.discount_value) | numberFormat }}</td>
+                      <td></td>
+                    </tr>
+                  </template>
+                  <tr slot="p-body">
+                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right"><b>{{ $t('subtotal') | uppercase }}</b></td>
+                    <td class="text-right"><b>{{ subtotal | numberFormat }}</b></td>
+                    <td></td>
+                  </tr>
+                  <tr slot="p-body">
+                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right"><b>{{ $t('discount') | uppercase }}</b></td>
+                    <td class="text-right"><b>{{ downPayment.downpaymentable.discount_value | numberFormat }}</b></td>
+                    <td></td>
+                  </tr>
+                  <tr slot="p-body">
+                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right"><b>{{ $t('tax base') | uppercase }}</b></td>
+                    <td class="text-right"><b>{{ downPayment.downpaymentable.amount - downPayment.downpaymentable.tax | numberFormat }}</b></td>
+                    <td></td>
+                  </tr>
+                  <tr slot="p-body">
+                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right"><b>{{ $t('tax') | uppercase }}</b></td>
+                    <td class="text-right"><b>{{ downPayment.downpaymentable.tax | numberFormat }}</b></td>
+                    <td></td>
+                  </tr>
+                  <tr slot="p-body">
+                    <th></th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="text-right"><b>{{ $t('total') | uppercase }}</b></td>
+                    <td class="text-right"><b>{{ downPayment.downpaymentable.amount | numberFormat }}</b></td>
+                    <td></td>
+                  </tr>
+                </point-table>
               </div>
             </div>
-            <hr>
             <div class="row">
               <div class="col-sm-6">
+                <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
               </div>
               <div class="col-sm-3 text-center">
                 <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
@@ -260,7 +164,7 @@
               <div class="col-sm-12">
                 <hr>
                 <button type="submit" class="btn btn-block btn-sm btn-primary" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
                 </button>
               </div>
             </div>
@@ -269,9 +173,8 @@
       </div>
     </form>
     <m-supplier ref="supplier" @choosen="chooseSupplier"/>
-    <m-item ref="item" @choosen="chooseItem"/>
     <m-user ref="approver" @choosen="chooseApprover"/>
-    <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
+    <select-purchase-order ref="selectPurchaseOrder" @choosen="choosePurchaseOrder"></select-purchase-order>
   </div>
 </template>
 
@@ -282,6 +185,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
+import SelectPurchaseOrder from './SelectPurchaseOrder'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -289,7 +193,8 @@ export default {
     PurchaseMenu,
     PointTable,
     Breadcrumb,
-    BreadcrumbPurchase
+    BreadcrumbPurchase,
+    SelectPurchaseOrder
   },
   data () {
     return {
@@ -297,27 +202,19 @@ export default {
       isSaving: false,
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
-      purchaseRequest: null,
       form: new Form({
         id: this.$route.params.id,
-        purchase_request_id: null,
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        purchase_order_id: null,
         supplier_id: null,
         supplier_name: null,
         supplier_label: null,
         supplier_address: null,
         supplier_phone: null,
         supplier_email: null,
-        need_down_payment: 0,
-        cash_only: false,
         notes: null,
-        discount_percent: 0,
-        discount_value: 0,
-        tax_base: 0,
-        tax: 0,
-        type_of_tax: 'exclude',
-        items: [],
+        amount: null,
         request_approval_to: null,
         approver_name: null,
         approver_email: null
@@ -325,64 +222,68 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchaseDownPayment', ['purchaseDownPayment']),
+    ...mapGetters('purchaseDownPayment', { downPayment: 'downPayment' }),
     ...mapGetters('auth', ['authUser']),
     subtotal () {
-      return this.form.items.reduce((carry, item) => {
+      return this.downPayment.downpaymentable.items.reduce((carry, item) => {
         return carry + item.quantity * (item.price - item.discount_value)
       }, 0)
-    },
-    tax_base () {
-      return this.subtotal - this.form.discount_value
-    },
-    tax () {
-      let value = 0
-      if (this.form.type_of_tax == 'include') {
-        value = this.tax_base - (this.tax_base * 10 / 11)
-      } else if (this.form.type_of_tax == 'exclude') {
-        value = this.tax_base / 10
-      }
-      return value
-    },
-    grandTotal () {
-      if (this.form.type_of_tax == 'include') {
-        return this.subtotal - this.form.discount_value
-      } else {
-        return this.subtotal - this.form.discount_value + this.tax
-      }
     }
   },
   methods: {
     ...mapActions('purchaseDownPayment', ['find', 'update']),
-    addItemRow () {
-      this.form.items.push({
-        item_id: null,
-        item_name: null,
-        more: false,
-        unit: null,
-        converter: null,
-        quantity: 0,
-        price: 0,
-        discount_percent: 0,
-        discount_value: 0,
-        allocation_id: null,
-        allocation_name: '',
-        notes: null
+    ...mapActions('purchaseOrder', { getPurchaseOrder: 'find' }),
+    purchaseDownPaymentRequest () {
+      this.isLoading = true
+      this.find({
+        id: this.id,
+        params: {
+          with_archives: true,
+          with_origin: true,
+          includes: 'supplier;' +
+            'downpaymentable.form;' +
+            'downpaymentable.items.item;' +
+            'form.createdBy;' +
+            'form.requestApprovalTo;' +
+            'form.branch'
+        }
+      }).then(response => {
+        this.form.purchase_order_id = this.downPayment.downpaymentable_id
+        this.form.supplier_id = this.downPayment.supplier_id
+        this.form.supplier_name = this.downPayment.supplier_name
+        this.form.supplier_label = this.downPayment.supplier_name
+        this.form.supplier_phone = this.downPayment.supplier_phone
+        this.form.notes = this.downPayment.notes
+        this.form.amount = this.downPayment.amount
+        this.form.request_approval_to = this.downPayment.form.request_approval_to.id
+        this.form.approver_name = this.downPayment.form.request_approval_to.full_name
+        this.form.approver_email = this.downPayment.form.request_approval_to.email
+
+        this.setPurchaseOrder()
+      }).catch(error => {
+        this.$notification.error(error.message)
+      }).finally(() => {
+        this.isLoading = false
       })
     },
-    toggleMore () {
-      let isMoreActive = this.form.items.some(function (el, index) {
-        return el.more === false
-      })
-      this.form.items.forEach(element => {
-        element.more = isMoreActive
+    setPurchaseOrder () {
+      this.getPurchaseOrder({
+        id: this.form.purchase_order_id,
+        params: {
+          with_archives: true,
+          with_origin: true,
+          includes: 'form;items.item'
+        }
+      }).then(response => {
+        this.choosePurchaseOrder(response.data)
       })
     },
-    clearItem (index) {
-      this.form.items.splice(index, 1)
-      if (this.form.items.length === 0) {
-        this.addItemRow()
-      }
+    choosePurchaseOrder (purchaseOrder) {
+      this.purchaseOrder = purchaseOrder
+      this.form.purchase_order_id = purchaseOrder.id
+      this.form.supplier_id = this.purchaseOrder.supplier_id
+      this.form.supplier_name = this.purchaseOrder.supplier_name
+      this.form.supplier_label = this.purchaseOrder.supplier_name
     },
     chooseApprover (value) {
       this.form.request_approval_to = value.id
@@ -397,49 +298,6 @@ export default {
       this.form.supplier_phone = value.phone
       this.form.supplier_email = value.email
     },
-    chooseItem (item) {
-      if (item.id == null) {
-        this.clearItem(item.index)
-        return
-      }
-
-      let row = this.form.items[item.index]
-      row.item_id = item.id
-      row.item_name = item.name
-      row.item_label = item.label
-      row.units = item.units
-      row.units.forEach((unit, keyUnit) => {
-        if (unit.id == item.unit_default_purchase) {
-          row.unit = unit.label
-          row.converter = unit.converter
-        }
-      })
-      let isNeedNewRow = true
-      this.form.items.forEach(element => {
-        if (element.item_id == null) {
-          isNeedNewRow = false
-        }
-      })
-      if (isNeedNewRow) {
-        this.addItemRow()
-      }
-    },
-    chooseUnit (unit, row) {
-      row.unit = unit.label
-      row.converter = unit.converter
-    },
-    chooseAllocation (allocation) {
-      let row = this.form.items[allocation.index]
-      row.allocation_id = allocation.id
-      row.allocation_name = allocation.name
-    },
-    chooseTax (taxType) {
-      if (taxType == this.form.type_of_tax) {
-        this.form.type_of_tax = null
-      } else {
-        this.form.type_of_tax = taxType
-      }
-    },
     onSubmit () {
       this.isSaving = true
       if (this.form.request_approval_to == null) {
@@ -451,57 +309,21 @@ export default {
         return
       }
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      this.form.subtotal = this.subtotal
-      this.form.tax_base = this.tax_base
-      this.form.tax = this.tax
-      this.form.total = this.total
-      this.form.items = this.form.items.filter(item => item.item_id)
-      this.update(this.form).then(response => {
-        this.isSaving = false
-        this.$notification.success('update success')
-        Object.assign(this.$data, this.$options.data.call(this))
-        this.$router.push('/purchase/down-payment/' + response.data.id)
-      }).catch(error => {
-        this.isSaving = false
-        this.$notification.error(error.message)
-        this.form.errors.record(error.errors)
-      })
+      this.update(this.form)
+        .then(response => {
+          this.isSaving = false
+          this.$notification.success('update success')
+          Object.assign(this.$data, this.$options.data.call(this))
+          this.$router.push('/purchase/down-payment/' + response.data.id)
+        }).catch(error => {
+          this.isSaving = false
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        })
     }
   },
   created () {
-    this.isLoading = true
-    this.find({
-      id: this.$route.params.id,
-      params: {
-        includes: 'form.requestApprovalTo;supplier;items.item.units;items.allocation;purchaseRequest.form'
-      }
-    }).then(response => {
-      this.isLoading = false
-      this.form.purchase_request_id = response.data.purchase_request.id
-      this.form.date = response.data.form.date
-      this.form.supplier_id = response.data.supplier_id
-      this.form.supplier_name = response.data.supplier_name
-      this.form.supplier_label = response.data.supplier.label
-      this.form.discount_percent = response.data.discount_percent
-      this.form.discount_value = response.data.discount_value
-      this.form.notes = response.data.form.notes
-      this.form.type_of_tax = response.data.type_of_tax
-      this.form.amount = response.data.amount
-      this.form.discount_value = response.data.discount_value
-      this.form.discount_percent = response.data.discount_percent
-      this.form.items = response.data.items
-      this.form.request_approval_to = response.data.form.request_approval_to.id
-      this.form.approver_name = response.data.form.request_approval_to.full_name
-      this.form.approver_email = response.data.form.request_approval_to.email
-      this.form.items.forEach(el => {
-        el.item_label = el.item.label
-      })
-      this.purchaseRequest = response.data.purchase_request
-      this.addItemRow()
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    this.purchaseDownPaymentRequest()
   }
 }
 </script>

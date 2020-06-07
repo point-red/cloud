@@ -90,7 +90,7 @@ export default {
             code: this.searchText,
             name: this.searchText
           },
-          includes: 'units'
+          includes: 'units.prices'
         }
       }).then(response => {
         this.options = []

@@ -133,13 +133,14 @@ export default {
       if (this.disableUnitSelection == true || this.disabled == true) {
         return
       }
-      this.$refs.quantityUnit.show(this.units)
+      this.$refs.quantityUnit.open(this.units)
     },
     chooseUnit (unit) {
       this.mutableUnit.label = unit.label
       this.mutableUnit.name = unit.name
       this.mutableUnit.id = unit.id
       this.mutableUnit.converter = unit.converter
+      this.mutableUnit.prices = unit.prices
       this.$emit('choosen', this.mutableUnit)
     }
   }

@@ -12,7 +12,7 @@
         <div class="input-group block">
           <router-link
             to="/purchase/down-payment/create"
-            v-if="$permission.has('create down payment')"
+            v-if="$permission.has('create purchase down payment')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>
