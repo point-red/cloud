@@ -57,6 +57,7 @@
                 <th style="min-width: 120px">Item</th>
                 <th>Quantity</th>
                 <th>Price</th>
+                <th>Discount</th>
                 <th>Total</th>
                 <th>
                   <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
@@ -238,6 +239,7 @@ export default {
         need_down_payment: 0,
         cash_only: false,
         notes: null,
+        pricing_group_id: 1,
         discount_percent: 0,
         discount_value: 0,
         tax_base: 0,
@@ -322,6 +324,7 @@ export default {
       this.form.customer_address = value.address
       this.form.customer_phone = value.phone
       this.form.customer_email = value.email
+      this.form.pricing_group_id = value.pricing_group_id
     },
     chooseItem (item) {
       if (item.id == null) {
@@ -338,6 +341,12 @@ export default {
         if (unit.id == item.unit_default_sales) {
           row.unit = unit.label
           row.converter = unit.converter
+          if (unit.prices.length > 0) {
+            let index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
+            row.price = parseFloat(unit.prices[index].pivot.price)
+            row.discount_value = parseFloat(unit.prices[index].pivot.discount_value)
+            row.discount_percent = parseFloat(unit.prices[index].pivot.discount_percent)
+          }
         }
       })
       let isNeedNewRow = true
@@ -353,6 +362,12 @@ export default {
     chooseUnit (unit, row) {
       row.unit = unit.label
       row.converter = unit.converter
+      if (unit.prices && unit.prices.length > 0) {
+        let index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
+        row.price = parseFloat(unit.prices[index].pivot.price)
+        row.discount_value = parseFloat(unit.prices[index].pivot.discount_value)
+        row.discount_percent = parseFloat(unit.prices[index].pivot.discount_percent)
+      }
     },
     chooseAllocation (allocation) {
       let row = this.form.items[allocation.index]
@@ -399,7 +414,12 @@ export default {
     this.find({
       id: this.$route.params.id,
       params: {
-        includes: 'form.requestApprovalTo;customer;items.item.units;items.allocation'
+        includes: 'customer;' +
+          'items.item.units.prices;' +
+          'items.allocation;' +
+          'form.createdBy;' +
+          'form.requestApprovalTo;' +
+          'form.branch'
       }
     }).then(response => {
       this.isLoading = false
@@ -420,6 +440,7 @@ export default {
       this.form.approver_email = response.data.form.request_approval_to.email
       this.form.items.forEach(el => {
         el.item_label = el.item.label
+        el.units = el.item.units
       })
       this.addItemRow()
     }).catch(error => {

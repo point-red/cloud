@@ -98,7 +98,7 @@
             <template v-for="(row, index) in salesQuotation.items">
               <tr slot="p-body" :key="index">
                 <th class="text-center">{{ index + 1 }}</th>
-                <td>{{ row.item.label }}</td>
+                <td>{{ row.item ? row.item.label : '' }}</td>
                 <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
                 <td class="text-right">{{ row.price | numberFormat }}</td>
                 <td class="text-right">{{ row.discount_value | numberFormat }}</td>
