@@ -103,6 +103,7 @@ export default {
         response.data.map((key, value) => {
           let obj = {
             'id': key['id'],
+            'pricing_group_id': key['pricing_group_id'] || 1,
             'name': key['name'],
             'label': key['label']
           }

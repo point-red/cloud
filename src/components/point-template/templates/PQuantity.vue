@@ -140,6 +140,7 @@ export default {
       this.mutableUnit.name = unit.name
       this.mutableUnit.id = unit.id
       this.mutableUnit.converter = unit.converter
+      this.mutableUnit.prices = unit.prices
       this.$emit('choosen', this.mutableUnit)
     }
   }

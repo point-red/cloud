@@ -2,7 +2,7 @@
   <div>
     <sweet-modal
       :ref="'select-' + id"
-      :title="$t('select customer') | uppercase"
+      :title="$t('select unit') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
       <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
