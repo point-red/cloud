@@ -61,6 +61,9 @@ export default {
     label: {
       type: String
     },
+    permission: {
+      type: String
+    },
     help: {
       type: String
     }
@@ -89,7 +92,8 @@ export default {
           limit: 50,
           filter_like: {
             name: this.searchText
-          }
+          },
+          filter_permission: this.permission
         }
       }).then(response => {
         this.options = []
