@@ -17,6 +17,14 @@
             v-model="date"/>
         </div>
         <div class="input-group block">
+          <router-link
+            to="/pos/open-bill/create"
+            v-if="$permission.has('create pos')"
+            class="input-group-prepend">
+            <span class="input-group-text">
+              <i class="fa fa-plus"></i>
+            </span>
+          </router-link>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -24,14 +32,6 @@
             :value="searchText"
             class="btn-block"
             @input="filterSearch"/>
-          <router-link
-            to="/pos/open-bill/create"
-            v-if="$permission.has('create pos')"
-            class="input-group-append">
-            <span class="input-group-text">
-              <i class="fa fa-plus"></i>
-            </span>
-          </router-link>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -149,7 +149,7 @@ export default {
         params: {
           join: 'form,customer',
           sort_by: '-forms.number',
-          fields: 'pos_bills.*',
+          fields: 'pos_bill.*',
           filter_form: 'activePending',
           filter_equal: {
             'form.done': 0
@@ -158,10 +158,10 @@ export default {
             'form.number': this.searchText,
             'customer.name': this.searchText
           },
-          filter_min: {
+          filter_date_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
           },
-          filter_max: {
+          filter_date_max: {
             'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
           },
           limit: this.limit,
