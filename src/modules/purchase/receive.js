@@ -6,7 +6,16 @@ const state = {
   purchaseReceive: {
     date: null,
     supplier_id: null,
-    form: {},
+    form: {
+      number: null,
+      notes: null,
+      created_by: {
+        name: null
+      },
+      request_approval_to: {
+        full_name: null
+      }
+    },
     supplier: {},
     warehouse: {},
     items: [

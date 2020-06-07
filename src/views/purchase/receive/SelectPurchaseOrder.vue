@@ -1,9 +1,9 @@
 <template>
   <sweet-modal
     ref="modal"
-    :title="'Select Purchase Request' | uppercase"
+    :title="'Select Purchase Order' | uppercase"
     overlay-theme="dark"
-    @close="onClose()">
+    @close="onClose">
     <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
     <hr>
     <div v-if="isLoading">
@@ -48,7 +48,6 @@
 <script>
 import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
-
 export default {
   data () {
     return {
@@ -58,9 +57,6 @@ export default {
       selected: {},
       isLoading: false
     }
-  },
-  computed: {
-    ...mapGetters('masterItem', ['items', 'pagination'])
   },
   props: {
     id: {
@@ -76,13 +72,13 @@ export default {
     }, 300)
   },
   methods: {
-    ...mapActions('purchaseRequest', ['get']),
+    ...mapActions('purchaseOrder', ['get']),
     search () {
       this.isLoading = true
       this.get({
         params: {
           join: 'form,items,item',
-          fields: 'purchase_request.*',
+          fields: 'purchase_order.*',
           sort_by: '-form.number',
           group_by: 'form.id',
           filter_form: 'activePending;approvalApproved',
@@ -125,7 +121,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 input:readonly {
   background-color: white
 }
