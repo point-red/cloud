@@ -127,19 +127,13 @@
               </template>
             </point-table>
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-sm-9">
               </div>
               <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
+                <h6 class="mb-0">{{ $t('created by') | uppercase }}</h6>
                 <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
                 {{ requestedBy | uppercase }}
                 <div class="d-sm-block d-md-none mt-10"></div>
-              </div>
-              <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">_______________</div>
-                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
-                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
@@ -197,10 +191,7 @@ export default {
         supplier_email: null,
         driver: null,
         license_plate: null,
-        items: [],
-        request_approval_to: null,
-        approver_name: null,
-        approver_email: null
+        items: []
       })
     }
   },
@@ -220,11 +211,6 @@ export default {
         return true
       }
       return false
-    },
-    chooseApprover (value) {
-      this.form.request_approval_to = value.id
-      this.form.approver_name = value.fullName
-      this.form.approver_email = value.email
     },
     chooseUnit (unit, row) {
       row.unit = unit.label
@@ -261,13 +247,6 @@ export default {
       this.form.items[e.index].converter = e.converter
     },
     onSubmit () {
-      if (this.form.request_approval_to == null) {
-        this.$notification.error('approval cannot be null')
-        this.form.errors.record({
-          request_approval_to: ['Approver should not empty']
-        })
-        return
-      }
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       this.form.items = this.form.items.filter(item => item.quantity)

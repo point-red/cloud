@@ -117,7 +117,6 @@
               <th class="text-right">Quantity</th>
               <th class="text-right">Price</th>
               <th class="text-right">Value</th>
-              <th class="text-center">Approval Status</th>
               <th class="text-center">Form Status</th>
               <th width="50px"></th>
             </tr>
@@ -142,11 +141,6 @@
               <td class="text-right">{{ purchaseReceiveItem.quantity | numberFormat }} {{ purchaseReceiveItem.unit }}</td>
               <td class="text-right">{{ purchaseReceiveItem.price | numberFormat }}</td>
               <td class="text-right">{{ (purchaseReceiveItem.quantity * purchaseReceiveItem.price) | numberFormat }}</td>
-              <td class="text-center">
-                <div v-if="purchaseReceive.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-if="purchaseReceive.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
-                <div v-if="purchaseReceive.form.approval_status == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
-              </td>
               <td class="text-center">
                 <div v-if="purchaseReceive.form.cancellation_status == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
                 <div v-else-if="purchaseReceive.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>

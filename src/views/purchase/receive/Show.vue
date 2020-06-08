@@ -8,15 +8,6 @@
 
     <purchase-menu/>
 
-    <p-show-form-approval-status
-      :is-loading="isLoading"
-      :approved-by="purchaseReceive.form.request_approval_to.full_name"
-      :cancellation-status="purchaseReceive.form.cancellation_status"
-      :approval-status="purchaseReceive.form.approval_status"
-      :approval-reason="purchaseReceive.form.approval_reason"
-      @onApprove="onApprove"
-      @onReject="onReject"/>
-
     <p-show-form-cancellation-status
       :is-loading="isLoading"
       :cancellation-status="purchaseReceive.form.cancellation_status"
@@ -94,65 +85,28 @@
               <th class="text-center">#</th>
               <th>{{ $t('item') | uppercase }}</th>
               <th class="text-right">{{ $t('quantity') | uppercase }}</th>
-              <th width="50px">
-                <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
-                  <i class="fa fa-ellipsis-h"/>
-                </button>
-              </th>
+              <th width="50px"></th>
             </tr>
             <template v-for="(row, index) in purchaseReceive.items">
               <tr slot="p-body" :key="index">
                 <th class="text-center">{{ index + 1 }}</th>
                 <td>{{ row.item.label }}</td>
                 <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
-                <td>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more">
-                    <i class="fa fa-ellipsis-h"/>
-                  </button>
-                </td>
+                <td></td>
               </tr>
-              <template v-if="row.more">
-              <tr slot="p-body" :key="'ext2-'+index" class="bg-gray-light">
-                <th class="bg-gray-light"></th>
-                <td colspan="6">
-                  <p-form-row
-                    :id="'notes-' + index"
-                    :name="'notes-' + index"
-                    class="mb-0"
-                    :label="$t('notes')">
-                    <div slot="body" class="mt-5">
-                      {{ row.notes }}
-                    </div>
-                  </p-form-row>
-                </td>
-              </tr>
-              </template>
             </template>
           </point-table>
           <div class="row mt-50">
-            <div class="col-sm-6">
+            <div class="col-sm-9">
               <h6 class="mb-0">{{ $t('notes') | uppercase }}</h6>
               <div style="white-space: pre-wrap;">{{ purchaseReceive.form.notes }}</div>
               <div class="d-sm-block d-md-none mt-10"></div>
             </div>
             <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
+              <h6 class="mb-0">{{ $t('created by') | uppercase }}</h6>
               <div class="mb-50" style="font-size:11px">{{ purchaseReceive.form.date | dateFormat('DD MMMM YYYY') }}</div>
               {{ purchaseReceive.form.created_by.full_name | uppercase }}
               <div class="d-sm-block d-md-none mt-10"></div>
-            </div>
-            <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">
-                <template v-if="purchaseReceive.form.approval_at">
-                  {{ purchaseReceive.form.approval_at | dateFormat('DD MMMM YYYY') }}
-                </template>
-                <template v-else>
-                  _______________
-                </template>
-              </div>
-              {{ purchaseReceive.form.request_approval_to.full_name | uppercase }}
-              <div style="font-size:11px">{{ purchaseReceive.form.request_approval_to.email | lowercase }}</div>
             </div>
           </div>
         </p-block-inner>
@@ -201,19 +155,9 @@ export default {
     ...mapActions('purchaseReceive', {
       find: 'find',
       delete: 'delete',
-      approve: 'approve',
-      reject: 'reject',
       cancellationApprove: 'cancellationApprove',
       cancellationReject: 'cancellationReject'
     }),
-    toggleMore () {
-      let isMoreActive = this.purchaseReceive.items.some(function (el, index) {
-        return el.more === false
-      })
-      this.purchaseReceive.items.forEach(element => {
-        element.more = isMoreActive
-      })
-    },
     purchaseReceiveRequest () {
       this.isLoading = true
       this.find({
@@ -225,7 +169,6 @@ export default {
             'items.item.units;' +
             'purchaseOrder.form;' +
             'form.createdBy;' +
-            'form.requestApprovalTo;' +
             'form.branch'
         }
       }).then(response => {
@@ -235,39 +178,21 @@ export default {
         this.$notification.error(error.message)
       })
     },
-    onDelete () {
+    onDelete (reason) {
       this.isDeleting = true
       this.delete({
-        id: this.id
+        id: this.id,
+        data: {
+          reason: reason
+        }
       }).then(response => {
         this.isDeleting = false
         this.$notification.success('cancel success')
-        this.$router.push('/purchase/receive')
+        this.purchaseReceiveRequest()
       }).catch(error => {
         this.isDeleting = false
         this.$notification.error(error.message)
         this.form.errors.record(error.errors)
-      })
-    },
-    onApprove () {
-      this.approve({
-        id: this.id
-      }).then(response => {
-        this.$notification.success('approve success')
-        this.purchaseReceiveRequest()
-      }).catch(error => {
-        this.$notification.error(error.message)
-      })
-    },
-    onReject (reason) {
-      this.reject({
-        id: this.id,
-        reason: reason
-      }).then(response => {
-        this.$notification.success('reject success')
-        this.purchaseReceiveRequest()
-      }).catch(error => {
-        this.$notification.error(error.message)
       })
     },
     onCancellationApprove () {
