@@ -14,12 +14,13 @@
           <div class="list-group mb-20">
             <!-- <template v-for="(score, index) in options"> -->
             <template>
-              <a
-                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                v-for="template in templates" :key="template"
-                href="javascript:void(0)"
-                @click="id_template = template.id"
-              >{{ template.name }}</a>
+              <div v-for="template in templates" :key="template" style="list-style: none; padding-left: 0;" class="list-group">
+                <button type="button" v-if="template.id != idKpi" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                  href="javascript:void(0)"
+                  @click="id_template = template.id"
+                >{{ template.name }}
+                </button>
+              </div>
             </template>
           </div>
         </template>
