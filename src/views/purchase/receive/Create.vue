@@ -44,19 +44,7 @@
                   <tr>
                     <td class="font-weight-bold">{{ $t('warehouse') | uppercase }}</td>
                     <td>
-                      <!-- <span @click="$refs.warehouse.show()" class="select-link">
-                        <template v-if="warehouse">
-                          {{ warehouse.label }}
-                        </template>
-                        <template v-else>
-                          {{ $t('select') | uppercase }}
-                        </template>
-                      </span> -->
-                      <m-warehouse
-                        id="warehouse"
-                        name="warehouse"
-                        ref="warehouse"
-                        @choosen="chooseWarehouse"/>
+                      <span @click="$refs.warehouse.open()" class="select-link">{{ form.warehouse_name || $t('select') | uppercase }}</span>
                     </td>
                   </tr>
                   <tr>
@@ -192,7 +180,8 @@
         </p-block>
       </div>
     </form>
-
+    <m-inventory-out ref="inventory" :id="'inventory'" @updated="updateDna($event)"/>
+    <m-warehouse id="warehouse" name="warehouse" ref="warehouse" @choosen="chooseWarehouse"/>
     <m-user ref="approver" @choosen="chooseApprover"/>
     <select-purchase-order ref="selectPurchaseOrder" @choosen="choosePurchaseOrder"></select-purchase-order>
   </div>

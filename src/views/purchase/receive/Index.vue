@@ -172,6 +172,8 @@
         </p-pagination>
       </p-block>
     </div>
+    <m-form-approval-status ref="formApprovalStatus" @choosen="chooseFormApprovalStatus($event)"/>
+    <m-form-status ref="formStatus" @choosen="chooseFormStatus($event)"/>
   </div>
 </template>
 

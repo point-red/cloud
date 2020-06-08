@@ -30,12 +30,7 @@
                   <td class="font-weight-bold">{{ $t('process') | uppercase }}</td>
                   <td>
                     <span @click="$refs.selectProcess.open()" class="select-link">
-                      <template v-if="form.manufacture_process_name">
-                        {{ form.manufacture_process_name }}
-                      </template>
-                      <template v-else>
-                        {{ $t('select') | uppercase }}
-                      </template>
+                      {{ form.manufacture_process_name || $t('select') | uppercase  }}
                     </span>
                     <m-process id="process" ref="selectProcess" @choosen="chooseManufactureProcess"/>
                   </td>
