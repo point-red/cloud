@@ -99,17 +99,12 @@
                 <th style="min-width: 120px">{{ $t('item') | uppercase }}</th>
                 <th>{{ $t('quantity remaining') | uppercase }}</th>
                 <th>{{ $t('quantity received') | uppercase }}</th>
-                <th>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
-                    <i class="fa fa-ellipsis-h"/>
-                  </button>
-                </th>
               </tr>
               <template v-for="(row, index) in form.items">
                 <tr slot="p-body" :key="'item-'+index">
                   <th>{{ index + 1 }}</th>
                   <td>{{ row.item_label }}</td>
-                  <td>{{ row.quantity_remaining | numberFormat }} {{ row.unit }}</td>
+                  <td>{{ row.quantity | numberFormat }} {{ row.unit }}</td>
                   <td>
                     <p-quantity
                       :id="'quantity' + index"
@@ -123,36 +118,14 @@
                         converter: row.converter
                       }"
                       :max="row.quantity * 1"
-                      @choosen="chooseUnit($event, row)"/>
-                  </td>
-                  <td>
-                    <button type="button"
-                      class="btn btn-sm btn-outline-secondary"
-                      @click="row.more = !row.more"
-                      v-if="!isSaving">
-                      <i class="fa fa-ellipsis-h"/>
-                    </button>
+                      @choosen="chooseUnit($event, row)"
+                      @click.native="onClickQuantity(row, index)"
+                      :disable-unit-selection="onClickUnit(row)"
+                      :readonly="onClickUnit(row)"/>
                   </td>
                 </tr>
-                <template v-if="row.more">
-                  <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
-                    <th class="bg-gray-light"></th>
-                    <td colspan="4">
-                      <p-form-row
-                        id="notes"
-                        name="notes"
-                        v-model="row.notes"
-                        :label="$t('notes')">
-                      </p-form-row>
-                    </td>
-                    <td></td>
-                    <td></td>
-                  </tr>
-                </template>
               </template>
             </point-table>
-            <!-- <div class="row"></div> -->
-            <!-- <hr> -->
             <div class="row">
               <div class="col-sm-6">
               </div>
@@ -180,7 +153,7 @@
         </p-block>
       </div>
     </form>
-    <m-inventory-out ref="inventory" :id="'inventory'" @updated="updateDna($event)"/>
+    <m-inventory-in ref="inventory" :id="'inventory'" @submit="updateDna($event)"/>
     <m-warehouse id="warehouse" name="warehouse" ref="warehouse" @choosen="chooseWarehouse"/>
     <m-user ref="approver" @choosen="chooseApprover"/>
     <select-purchase-order ref="selectPurchaseOrder" @choosen="choosePurchaseOrder"></select-purchase-order>
@@ -236,13 +209,17 @@ export default {
   },
   methods: {
     ...mapActions('purchaseReceive', ['create']),
-    toggleMore () {
-      let isMoreActive = this.form.items.some(function (el, index) {
-        return el.more === false
-      })
-      this.form.items.forEach(element => {
-        element.more = isMoreActive
-      })
+    onClickQuantity (row, index) {
+      if (row.item.require_expiry_date == 1 || row.item.require_production_number == 1) {
+        row.index = index
+        this.$refs.inventory.open(row)
+      }
+    },
+    onClickUnit (row) {
+      if (row.item_id == null || row.item.require_expiry_date === 1 || row.item.require_production_number === 1) {
+        return true
+      }
+      return false
     },
     chooseApprover (value) {
       this.form.request_approval_to = value.id
@@ -256,30 +233,32 @@ export default {
     chooseWarehouse (warehouse) {
       this.form.warehouse_id = warehouse.id
       this.form.warehouse_name = warehouse.name
+      this.form.items.forEach(element => {
+        element.warehouse_id = this.form.warehouse_id
+        element.warehouse_name = this.form.warehouse_name
+      })
     },
     choosePurchaseOrder (purchaseOrder) {
       this.purchaseOrder = purchaseOrder
       this.form.purchase_order_id = purchaseOrder.id
-      this.form.items = purchaseOrder.items.map(item => {
-        return {
-          purchase_order_item_id: item.id,
-          item_id: item.item_id,
-          item_name: item.item_name,
-          item_label: item.item_name,
-          unit: item.unit,
-          units: item.item.units,
-          quantity_remaining: item.quantity,
-          quantity: item.quantity,
-          converter: item.converter,
-          notes: ''
-        }
-      })
       this.form.supplier_id = purchaseOrder.supplier_id
       this.form.supplier_name = purchaseOrder.supplier_name
       this.form.supplier_label = purchaseOrder.supplier_name
       this.form.supplier_address = purchaseOrder.supplier_address
       this.form.supplier_phone = purchaseOrder.supplier_phone
       this.form.supplier_email = purchaseOrder.supplier_email
+      this.form.items = purchaseOrder.items
+      this.form.items.forEach(element => {
+        element.purchase_order_item_id = element.id
+        element.item_name = element.item.name
+        element.item_label = element.item.label
+      })
+    },
+    updateDna (e) {
+      this.form.items[e.index].dna = e.dna
+      this.form.items[e.index].quantity = e.quantity
+      this.form.items[e.index].unit = e.unit
+      this.form.items[e.index].converter = e.converter
     },
     onSubmit () {
       if (this.form.request_approval_to == null) {

@@ -59,7 +59,7 @@
               :label="$t('warehouse')"
               :is-horizontal="false">
               <div slot="body">
-                <m-warehouse id="warehouse_id" v-model="warehouseId" @choosen="chooseWarehouse($event)"/>
+                <span @click="$refs.warehouse.open()" class="select-link">{{ warehouseName || $t('select') | uppercase }}</span>
               </div>
             </p-form-row>
           </div>
@@ -159,6 +159,7 @@
       </p-block>
     </div>
     <m-item ref="item" @choosen="chooseItem($event)"/>
+    <m-warehouse id="warehouse_id" ref="warehouse" @choosen="chooseWarehouse($event)"/>
   </div>
 </template>
 
@@ -242,7 +243,9 @@ export default {
       })
     },
     getWarehouseRequest () {
-      this.findWarehouse({ id: this.warehouseId })
+      this.findWarehouse({ id: this.warehouseId }).then(response => {
+        this.warehouseName = response.data.name
+      })
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value, dateFrom: this.date_from, dateTo: this.date_to } })
@@ -282,7 +285,8 @@ export default {
         }
       })
       this.warehouseId = option.id
-      this.findWarehouse({ id: option.id })
+      this.warehouseName = option.name
+      this.getWarehouseRequest()
       this.getInventoryRequest()
     },
     getInventoryRequest () {
