@@ -21,7 +21,7 @@
       active-class="btn-primary">
       <span>{{ $t('down payment') | uppercase }}</span>
     </router-link>
-    <router-link
+    <!-- <router-link
       to="/purchase/receive"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/receive')}"
@@ -34,7 +34,7 @@
       :class="{'btn-secondary': !isMatch('/purchase/invoice')}"
       active-class="btn-primary">
       <span>{{ $t('purchase invoice') | uppercase }}</span>
-    </router-link>
+    </router-link> -->
     <!-- <router-link
       to="/purchase/return"
       class="btn mr-5 mb-15"
