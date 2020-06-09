@@ -381,30 +381,6 @@ export default {
         this.form.type_of_tax = taxType
       }
     },
-    chooseSalesRequest (salesRequest) {
-      this.salesRequest = salesRequest
-      this.form.sales_request_id = salesRequest.id
-      this.form.items = salesRequest.items.map(item => {
-        return {
-          sales_request_item_id: item.id,
-          item_id: item.item_id,
-          item_name: item.item.name,
-          item_label: item.item.name,
-          more: false,
-          unit: item.unit,
-          converter: item.converter,
-          quantity: item.quantity,
-          price: item.price,
-          discount_percent: 0,
-          discount_value: 0,
-          total: item.quantity * (item.price - item.discount_value),
-          allocation_id: item.allocation_id,
-          allocation_name: '', // TODO get alocation name
-          notes: item.notes
-        }
-      })
-      this.addItemRow()
-    },
     onSubmit () {
       this.isSaving = true
       if (this.form.request_approval_to == null) {

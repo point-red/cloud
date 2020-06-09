@@ -7,9 +7,6 @@
     </breadcrumb>
 
     <sales-menu/>
-    {{
-      this.form.customer_name
-    }}
 
     <form @submit.prevent="onSubmit">
       <div class="row">
@@ -321,6 +318,7 @@ export default {
         customer_address: null,
         customer_phone: null,
         customer_email: null,
+        pricing_group_id: 1,
         need_down_payment: 0,
         cash_only: false,
         notes: null,
@@ -410,6 +408,7 @@ export default {
       this.form.customer_address = value.address
       this.form.customer_phone = value.phone
       this.form.customer_email = value.email
+      this.form.pricing_group_id = value.pricing_group_id
     },
     chooseItem (item) {
       if (item.id == null) {
@@ -426,6 +425,12 @@ export default {
         if (unit.id == item.unit_default_sales) {
           row.unit = unit.label
           row.converter = unit.converter
+          if (unit.prices.length > 0) {
+            let index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
+            row.price = parseFloat(unit.prices[index].pivot.price)
+            row.discount_value = parseFloat(unit.prices[index].pivot.discount_value)
+            row.discount_percent = parseFloat(unit.prices[index].pivot.discount_percent)
+          }
         }
       })
       let isNeedNewRow = true
@@ -441,6 +446,12 @@ export default {
     chooseUnit (unit, row) {
       row.unit = unit.label
       row.converter = unit.converter
+      if (unit.prices && unit.prices.length > 0) {
+        let index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
+        row.price = parseFloat(unit.prices[index].pivot.price)
+        row.discount_value = parseFloat(unit.prices[index].pivot.discount_value)
+        row.discount_percent = parseFloat(unit.prices[index].pivot.discount_percent)
+      }
     },
     chooseAllocation (allocation) {
       let row = this.form.items[allocation.index]
@@ -518,7 +529,7 @@ export default {
       this.find({
         id: this.$route.query.id,
         params: {
-          includes: 'form;customer;items.item.units;items.allocation'
+          includes: 'form;customer;items.item.units.prices;items.allocation'
         }
       }).then(response => {
         this.isLoading = false
