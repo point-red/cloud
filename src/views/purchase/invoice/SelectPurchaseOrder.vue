@@ -17,10 +17,10 @@
         @click="choose(option)">
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <strong>{{ option.form.number }}</strong>
+            <strong>{{ option.form.number }}</strong><br>
           </div>
           <div style="font-size: 0.8em;" class="text-black-50 text-right">
-            Created by {{ option.form.created_by.name }}<br>
+            <span style="font-size: 0.8em">SUPPLIER : {{ option.supplier.name | uppercase }}</span><br>
             {{ option.form.created_at | dateFormat('DD MMMM YYYY HH:mm') }}
           </div>
         </div>
@@ -77,13 +77,17 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form,items,item',
+          remaining_info: true,
+          join: 'form,supplier,items,item',
           fields: 'purchase_order.*',
           sort_by: '-form.number',
           group_by: 'form.id',
           filter_form: 'activePending;approvalApproved',
           filter_not_null: 'form.number',
-          includes: 'items.item.units;form.createdBy'
+          filter_like: {
+            'supplier.name': this.searchText
+          },
+          includes: 'supplier;items.item.units;form.createdBy;purchaseReceives.items;purchaseReceives.form'
         }
       }).then(response => {
         this.options = response.data

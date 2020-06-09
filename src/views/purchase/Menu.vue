@@ -28,13 +28,13 @@
       active-class="btn-primary">
       <span>{{ $t('purchase receive') | uppercase }}</span>
     </router-link>
-    <!-- <router-link
+    <router-link
       to="/purchase/invoice"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/invoice')}"
       active-class="btn-primary">
       <span>{{ $t('purchase invoice') | uppercase }}</span>
-    </router-link> -->
+    </router-link>
     <!-- <router-link
       to="/purchase/return"
       class="btn mr-5 mb-15"

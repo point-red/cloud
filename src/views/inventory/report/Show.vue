@@ -54,22 +54,22 @@
             <tr slot="p-head">
               <th></th>
               <th></th>
-              <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">opening</th>
-              <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">in</th>
-              <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">out</th>
-              <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">ending</th>
+              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">opening</th>
+              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">in</th>
+              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">out</th>
+              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">ending</th>
             </tr>
             <tr slot="p-head">
               <th>#</th>
               <th>Warehouse</th>
-              <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th>
-              <th style="border: 1px solid #e4e7ed" class="text-center">Value</th>
-              <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th>
-              <th style="border: 1px solid #e4e7ed" class="text-center">Value</th>
-              <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th>
-              <th style="border: 1px solid #e4e7ed" class="text-center">Value</th>
-              <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th>
-              <th style="border: 1px solid #e4e7ed" class="text-center">Value</th>
+              <!-- <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th> -->
+              <!-- <th style="border: 1px solid #e4e7ed" class="text-center">Value</th> -->
+              <!-- <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th> -->
+              <!-- <th style="border: 1px solid #e4e7ed" class="text-center">Value</th> -->
+              <!-- <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th> -->
+              <!-- <th style="border: 1px solid #e4e7ed" class="text-center">Value</th> -->
+              <!-- <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th> -->
+              <!-- <th style="border: 1px solid #e4e7ed" class="text-center">Value</th> -->
             </tr>
             <tr slot="p-body" v-for="(inventory, index) in warehouses" :key="index">
               <th>{{ index + 1 }}</th>
@@ -89,19 +89,19 @@
                 </router-link>
               </td>
               <td class="text-right">{{ inventory.opening_balance | numberFormat }}</td>
-              <td class="text-right">{{ 0 | numberFormat }}</td>
+              <!-- <td class="text-right">{{ 0 | numberFormat }}</td> -->
               <td class="text-right">{{ inventory.stock_in | numberFormat }}</td>
-              <td class="text-right">{{ 0 | numberFormat }}</td>
+              <!-- <td class="text-right">{{ 0 | numberFormat }}</td> -->
               <td class="text-right">{{ inventory.stock_out | numberFormat }}</td>
-              <td class="text-right">{{ 0 | numberFormat }}</td>
+              <!-- <td class="text-right">{{ 0 | numberFormat }}</td> -->
               <td class="text-right">{{ inventory.ending_balance | numberFormat }}</td>
-              <td class="text-right">{{ 0 }}</td>
+              <!-- <td class="text-right">{{ 0 }}</td> -->
             </tr>
             <tr slot="p-body">
               <th></th>
-              <td class="text-right font-weight-bold" colspan="7">{{ $t('total') | uppercase }}</td>
+              <td class="text-right font-weight-bold" colspan="4">{{ $t('total') | uppercase }}</td>
               <td class="text-right font-weight-bold">{{ total | numberFormat }}</td>
-              <td class="text-right font-weight-bold">{{ 0 }}</td>
+              <!-- <td class="text-right font-weight-bold">{{ 0 }}</td> -->
             </tr>
           </point-table>
         </p-block-inner>

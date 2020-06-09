@@ -244,7 +244,6 @@ export default {
         purchaseOrder.purchase_receives.forEach(purchaseReceive => {
           purchaseReceive.items.forEach(purchaseReceiveItem => {
             if (purchaseReceiveItem.purchase_order_item_id == purchaseOrderItem.id) {
-              console.log(purchaseOrderItem.id + ': sum = ' + purchaseReceiveItem.quantity)
               quantityPending += purchaseReceiveItem.quantity
             }
           })
