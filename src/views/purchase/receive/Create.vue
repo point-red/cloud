@@ -101,10 +101,10 @@
                 <th>{{ $t('quantity received') | uppercase }}</th>
               </tr>
               <template v-for="(row, index) in form.items">
-                <tr slot="p-body" :key="'item-'+index">
+                <tr slot="p-body" :key="'item-'+index" v-if="row.quantity_pending > 0">
                   <th>{{ index + 1 }}</th>
                   <td>{{ row.item_label }}</td>
-                  <td>{{ row.quantity | numberFormat }} {{ row.unit }}</td>
+                  <td>{{ row.quantity_pending }} {{ row.unit }}</td>
                   <td>
                     <p-quantity
                       :id="'quantity' + index"
@@ -117,10 +117,10 @@
                         label: row.unit,
                         converter: row.converter
                       }"
-                      :max="row.quantity * 1"
+                      :max="row.quantity_pending * 1"
                       @choosen="chooseUnit($event, row)"
                       @click.native="onClickQuantity(row, index)"
-                      :disable-unit-selection="onClickUnit(row)"
+                      :disable-unit-selection="true"
                       :readonly="onClickUnit(row)"/>
                   </td>
                 </tr>
@@ -147,9 +147,8 @@
         </p-block>
       </div>
     </form>
-    <m-inventory-in ref="inventory" :id="'inventory'" @submit="updateDna($event)"/>
+    <m-inventory-in ref="inventory" :id="'inventory'" @submit="updateDna($event)" :disable-unit-selection="true"/>
     <m-warehouse id="warehouse" name="warehouse" ref="warehouse" @choosen="chooseWarehouse"/>
-    <m-user ref="approver" @choosen="chooseApprover"/>
     <select-purchase-order ref="selectPurchaseOrder" @choosen="choosePurchaseOrder"></select-purchase-order>
   </div>
 </template>
@@ -177,7 +176,12 @@ export default {
       isSaving: false,
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
-      purchaseOrder: null,
+      purchaseOrder: {
+        form: {
+          number: null
+        },
+        purchase_receives: []
+      },
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -203,7 +207,7 @@ export default {
     onClickQuantity (row, index) {
       if (row.item.require_expiry_date == 1 || row.item.require_production_number == 1) {
         row.index = index
-        this.$refs.inventory.open(row)
+        this.$refs.inventory.open(row, row.quantity_pending)
       }
     },
     onClickUnit (row) {
@@ -234,10 +238,22 @@ export default {
       this.form.supplier_phone = purchaseOrder.supplier_phone
       this.form.supplier_email = purchaseOrder.supplier_email
       this.form.items = purchaseOrder.items
-      this.form.items.forEach(element => {
-        element.purchase_order_item_id = element.id
-        element.item_name = element.item.name
-        element.item_label = element.item.label
+      this.form.items.forEach(purchaseOrderItem => {
+        let quantityPending = 0
+        let quantity = purchaseOrderItem.quantity
+        purchaseOrder.purchase_receives.forEach(purchaseReceive => {
+          purchaseReceive.items.forEach(purchaseReceiveItem => {
+            if (purchaseReceiveItem.purchase_order_item_id == purchaseOrderItem.id) {
+              console.log(purchaseOrderItem.id + ': sum = ' + purchaseReceiveItem.quantity)
+              quantityPending += purchaseReceiveItem.quantity
+            }
+          })
+        })
+        purchaseOrderItem.purchase_order_item_id = purchaseOrderItem.id
+        purchaseOrderItem.item_name = purchaseOrderItem.item.name
+        purchaseOrderItem.item_label = purchaseOrderItem.item.label
+        purchaseOrderItem.quantity_pending = quantity - quantityPending
+        purchaseOrderItem.quantity = 0
       })
     },
     updateDna (e) {

@@ -77,13 +77,14 @@ export default {
       this.isLoading = true
       this.get({
         params: {
+          remaining_info: true,
           join: 'form,items,item',
           fields: 'purchase_order.*',
           sort_by: '-form.number',
           group_by: 'form.id',
           filter_form: 'activePending;approvalApproved',
           filter_not_null: 'form.number',
-          includes: 'items.item.units;form.createdBy'
+          includes: 'items.item.units;form.createdBy;purchaseReceives.items'
         }
       }).then(response => {
         this.options = response.data

@@ -38,11 +38,29 @@
                   :units="units"
                   :unit="unit"
                   @choosen="chooseUnit($event)"
-                  @input="quantityChange"/>
+                  @input="updateTotalQuantity()"
+                  :max="max ? max : Number.MAX_SAFE_INTEGER"
+                  :disable-unit-selection="disableUnitSelection"/>
               </td>
               <td>
                 <button class="btn btn-sm btn-secondary" @click="deleteDna(index)"><i class=" fa fa-times"></i></button>
               </td>
+            </tr>
+            <tr slot="p-body">
+              <td></td>
+              <td></td>
+              <td>
+                <p-quantity
+                  :id="'quantity' + index"
+                  :name="'quantity' + index"
+                  v-model="totalQuantity"
+                  :units="units"
+                  :unit="unit"
+                  @choosen="chooseUnit($event)"
+                  :disabled="true"
+                  :disable-unit-selection="disableUnitSelection"/>
+              </td>
+              <td></td>
             </tr>
           </p-table>
         </div>
@@ -71,6 +89,7 @@ export default {
   data () {
     return {
       index: null,
+      max: null,
       options: [],
       dna: [],
       totalQuantity: 0,
@@ -88,6 +107,10 @@ export default {
     id: {
       type: String,
       required: false
+    },
+    disableUnitSelection: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -107,7 +130,7 @@ export default {
         this.$delete(this.options, index)
       }
     },
-    quantityChange () {
+    updateTotalQuantity () {
       this.totalQuantity = null
       this.options.map((key, value) => {
         this.totalQuantity += parseFloat(key['quantity'] || 0)
@@ -123,8 +146,11 @@ export default {
       })
       this.$refs['select-' + this.id].close()
     },
-    open (row) {
+    open (row, max = null) {
       this.index = row.index
+      if (max != null) {
+        this.max = max
+      }
       this.options = []
       this.requireExpiryDate = row.item.require_expiry_date
       this.requireProductionNumber = row.item.require_production_number

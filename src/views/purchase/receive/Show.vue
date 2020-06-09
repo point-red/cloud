@@ -2,7 +2,7 @@
   <div>
      <breadcrumb v-if="purchaseReceive">
       <breadcrumb-purchase/>
-      <router-link to="/purchase/receive" class="breadcrumb-item">{{ $t('purchase order') | uppercase }}</router-link>
+      <router-link to="/purchase/receive" class="breadcrumb-item">{{ $t('purchase receive') | uppercase }}</router-link>
       <span class="breadcrumb-item active">{{ purchaseReceive.form.number | uppercase }}</span>
     </breadcrumb>
 
@@ -25,9 +25,9 @@
                 <router-link :to="{ name: 'purchase.receive.create' }" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <router-link :to="{ name: 'purchase.receive.edit', params: { id: purchaseReceive.id }}" class="btn btn-sm btn-outline-secondary mr-5">
+                <!-- <router-link :to="{ name: 'purchase.receive.edit', params: { id: purchaseReceive.id }}" class="btn btn-sm btn-outline-secondary mr-5">
                   {{ $t('edit') | uppercase }}
-                </router-link>
+                </router-link> -->
                 <button
                   v-if="purchaseReceive.form.cancellation_status == null || purchaseReceive.form.cancellation_status == -1"
                   @click="$refs.formRequestDelete.open()" class="btn btn-sm btn-outline-secondary mr-5">

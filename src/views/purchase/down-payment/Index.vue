@@ -114,6 +114,7 @@
               <th>Supplier</th>
               <th>Notes</th>
               <th class="text-right">Amount</th>
+              <th class="text-right">Remaining</th>
               <th class="text-center">Approval Status</th>
               <th class="text-center">Form Status</th>
               <th width="50px"></th>
@@ -133,6 +134,7 @@
               </td>
               <td>{{ purchaseDownPayment.form.notes }}</td>
               <td class="text-right">{{ purchaseDownPayment.amount | numberFormat }}</td>
+              <td class="text-right">{{ purchaseDownPayment.remaining | numberFormat }}</td>
               <td class="text-center">
                 <div v-if="purchaseDownPayment.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
                 <div v-if="purchaseDownPayment.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
