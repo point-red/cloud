@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance/>
-      <span class="breadcrumb-item active">
+      <span class="breadcrumb-item">
         <router-link to="/finance/bank">{{ $t('bank') | uppercase }}</router-link>
       </span>
       <span class="breadcrumb-item active">{{ $t('out') | uppercase }}</span>
@@ -77,12 +77,27 @@
                 <td>{{ paymentOrderDetail.notes }}</td>
                 <td class="text-right">{{ paymentOrderDetail.amount | numberFormat }}</td>
                 <td class="text-center">
-                  <router-link class="btn btn-sm btn-primary" :to="{ name: 'finance.bank.out.create', params: { id: paymentOrder.id }}">
-                    {{ $t('pay') | uppercase }}
-                  </router-link>
+                  <button type="button" class="btn btn-sm btn-primary" @click="payPaymentOrder(paymentOrder)">{{ $t('pay') | uppercase }}</button>
                 </td>
               </tr>
               </template>
+            </template>
+            <template v-for="(downPayment, index) in downPayments">
+              <tr :key="'purchase-down-payment-' + index" slot="p-body">
+                <th>
+                  <router-link :to="{ name: 'purchase.down-payment.show', params: { id: downPayment.id }}">
+                    {{ downPayment.form.number }}
+                  </router-link>
+                </th>
+                <td>{{ downPayment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ downPayment.supplier.name }}</td>
+                <td>{{ downPaymentAccountLabel }}</td>
+                <td>{{ downPayment.form.notes }}</td>
+                <td class="text-right">{{ downPayment.amount | numberFormat }}</td>
+                <td class="text-center">
+                  <button type="button" class="btn btn-sm btn-primary" @click="payDownPayment(downPayment)">{{ $t('pay') | uppercase }}</button>
+                </td>
+              </tr>
             </template>
           </point-table>
         </p-block-inner>
@@ -112,6 +127,8 @@ export default {
   data () {
     return {
       isAdvanceFilter: false,
+      downPaymentAccountId: null,
+      downPaymentAccountLabel: null,
       checkedRow: [],
       date: {
         start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
@@ -137,10 +154,69 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('financePaymentOrder', ['paymentOrders', 'pagination'])
+    ...mapGetters('financePaymentOrder', ['paymentOrders', 'pagination']),
+    ...mapGetters('purchaseDownPayment', ['downPayments'])
   },
   methods: {
-    ...mapActions('financePaymentOrder', ['get']),
+    ...mapActions('financePaymentOrder', {
+      getPaymentOrder: 'get'
+    }),
+    ...mapActions('purchaseDownPayment', {
+      getPurchaseDownPayment: 'get'
+    }),
+    ...mapActions('accountingSettingJournal', {
+      findAccount: 'find'
+    }),
+    payPaymentOrder (paymentOrder) {
+      let details = []
+      paymentOrder.details.forEach(el => {
+        details.push({
+          chart_of_account_id: el.account.id,
+          chart_of_account_label: el.account.label,
+          allocation_id: el.allocation ? el.allocation.id : null,
+          allocation_name: el.allocation ? el.allocation.name : null,
+          notes: el.notes,
+          amount: el.amount
+        })
+      })
+      this.$store.commit('financePayment/FETCH_OBJECT', {
+        data: {
+          reference_form_id: paymentOrder.form.id,
+          reference_id: paymentOrder.id,
+          reference_type: 'PaymentOrder',
+          reference_number: paymentOrder.form.number,
+          paymentable_name: paymentOrder.paymentable.name,
+          paymentable_type: paymentOrder.paymentable_type,
+          paymentable_id: paymentOrder.paymentable_id,
+          amount: paymentOrder.amount,
+          details: details
+        }
+      })
+      this.$router.push({ name: 'finance.bank.out.create' })
+    },
+    payDownPayment (downPayment) {
+      let details = []
+      details.push({
+        chart_of_account_id: this.downPaymentAccountId,
+        chart_of_account_label: this.downPaymentAccountLabel,
+        notes: downPayment.form.notes,
+        amount: downPayment.amount
+      })
+      this.$store.commit('financePayment/FETCH_OBJECT', {
+        data: {
+          reference_form_id: downPayment.form.id,
+          reference_id: downPayment.id,
+          reference_type: 'PurchaseDownPayment',
+          reference_number: downPayment.form.number,
+          paymentable_name: downPayment.supplier.name,
+          paymentable_type: 'Supplier',
+          paymentable_id: downPayment.supplier_id,
+          amount: downPayment.amount,
+          details: details
+        }
+      })
+      this.$router.push({ name: 'finance.bank.out.create' })
+    },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
@@ -149,7 +225,15 @@ export default {
     }, 300),
     search () {
       this.isLoading = true
-      this.get({
+      this.isLoading = true
+      this.findAccount({
+        feature: 'purchase',
+        name: 'down payment'
+      }).then(response => {
+        this.downPaymentAccountId = response.data.id
+        this.downPaymentAccountLabel = response.data.label
+      })
+      this.getPaymentOrder({
         params: {
           join: 'form,details,account',
           sort_by: '-form.number',
@@ -175,6 +259,33 @@ export default {
           },
           limit: this.limit,
           includes: 'form;paymentable;details.account;details.allocation',
+          page: this.currentPage
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+      this.getPurchaseDownPayment({
+        params: {
+          join: 'form',
+          sort_by: '-form.number',
+          group_by: 'purchase_down_payment.id',
+          fields: 'purchase_down_payment.*',
+          filter_form: 'notArchived;pending;approvalApproved',
+          filter_like: {
+            'form.number': this.searchText,
+            'form.notes': this.searchText
+          },
+          filter_date_min: {
+            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
+          },
+          filter_date_max: {
+            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+          },
+          limit: this.limit,
+          includes: 'form;supplier',
           page: this.currentPage
         }
       }).then(response => {

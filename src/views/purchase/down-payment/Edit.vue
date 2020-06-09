@@ -63,7 +63,7 @@
                 </div>
                 <div>
                   <h6 class="mb-0 ">{{ $t('to') | uppercase }}:</h6>
-                  <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span>
+                  {{ form.supplier_label || $t('select') | uppercase }}
                   <div style="font-size:12px" v-if="form.supplier_phone">
                     <br v-if="form.supplier_address">{{ form.supplier_address | uppercase }}
                     <br v-if="form.supplier_phone">{{ form.supplier_phone }}
@@ -172,7 +172,6 @@
         </p-block>
       </div>
     </form>
-    <m-supplier ref="supplier" @choosen="chooseSupplier"/>
     <m-user ref="approver" @choosen="chooseApprover"/>
     <select-purchase-order ref="selectPurchaseOrder" @choosen="choosePurchaseOrder"></select-purchase-order>
   </div>
@@ -289,14 +288,6 @@ export default {
       this.form.request_approval_to = value.id
       this.form.approver_name = value.fullName
       this.form.approver_email = value.email
-    },
-    chooseSupplier (value) {
-      this.form.supplier_id = value.id
-      this.form.supplier_name = value.name
-      this.form.supplier_label = value.label
-      this.form.supplier_address = value.address
-      this.form.supplier_phone = value.phone
-      this.form.supplier_email = value.email
     },
     onSubmit () {
       this.isSaving = true

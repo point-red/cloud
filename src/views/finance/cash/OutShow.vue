@@ -3,7 +3,9 @@
     <breadcrumb>
       <breadcrumb-finance/>
       <router-link to="/finance/cash" class="breadcrumb-item">{{ $t('cash') | uppercase }}</router-link>
-      <span class="breadcrumb-item">{{ $t('out') | uppercase }}</span>
+      <span class="breadcrumb-item">
+        <router-link to="/finance/cash/out">{{ $t('out') | uppercase }}</router-link>
+      </span>
       <span class="breadcrumb-item active">{{ payment.form.number }}</span>
     </breadcrumb>
 

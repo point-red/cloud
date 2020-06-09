@@ -7,7 +7,7 @@ import OutShow from '@/views/finance/bank/OutShow'
 
 export default [
   { path: '/finance/bank', name: 'finance.bank.index', component: Index },
-  { path: '/finance/bank/out/:id/create', name: 'finance.bank.out.create', component: OutCreate },
+  { path: '/finance/bank/out/create', name: 'finance.bank.out.create', component: OutCreate },
   { path: '/finance/bank/out/:id', name: 'finance.bank.out.show', component: OutShow },
   { path: '/finance/bank/out', name: 'finance.bank.out', component: Out },
   { path: '/finance/bank/in', name: 'finance.bank.in', component: In },
