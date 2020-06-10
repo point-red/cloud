@@ -48,6 +48,16 @@ const mutations = {
 }
 
 const actions = {
+  copyGroup ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/copy-group', payload)
+        .then((response) => {
+          resolve(response)
+        }, (error) => {
+          reject(error)
+        })
+    })
+  },
   duplicate ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/duplicate', payload)

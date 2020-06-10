@@ -19,14 +19,14 @@
               class="btn btn-sm btn-outline-secondary mr-5">
               {{ $t('edit') | uppercase }}
             </a>
-            <button
+            <!-- <button
               type="button"
               @click="onDelete()"
               v-if="$permission.has('delete user')"
               :disabled="isDeleting"
               class="btn btn-sm btn-outline-secondary">
               <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
-            </button>
+            </button> -->
           </template>
         </div>
         <hr>

@@ -13,19 +13,11 @@
             to=""
             @click.native="$refs.create.show()"
             class="nav-link">
-            <span><i class="si si-plus"></i> {{ $t('add') | uppercase }}</span>
-          </router-link>
-        </li>
-        <li class="nav-item" v-if="$permission.has('create employee kpi') || $permission.has('update employee kpi')">
-          <router-link
-            to=""
-            @click.native="$refs.result.show()"
-            class="nav-link">
-            <span><i class="si si-magic-wand"></i> KPI Result</span>
+            <span>{{ $t('add') | uppercase }}</span>
           </router-link>
         </li>
         <li class="nav-item" v-if="$permission.has('create employee kpi')">
-          <a href="javascript:void(0)" class="nav-link" @click="addFiles()"><i class="si si-cloud-upload"></i> Import</a>
+          <a href="javascript:void(0)" class="nav-link" @click="addFiles()"><i class="si si-cloud-upload"></i> {{ $t('import') | uppercase }}</a>
           <input type="file" id="file" ref="file" v-on:change="onFileChange" style="display:none" />
         </li>
         <slot name="right"></slot>
