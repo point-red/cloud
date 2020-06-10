@@ -61,9 +61,6 @@
           <button type="button" class="btn btn-secondary mr-5" @click="bulkActivateKpiTemplate()">
             {{ $t('activate') | uppercase }}
           </button>
-          <button type="button" class="btn btn-secondary" @click="bulkDeleteKpiTemplate()">
-            {{ $t('delete') | uppercase }}
-          </button>
         </div>
         <p-block-inner :is-loading="isLoading">
           <point-table>
@@ -192,15 +189,15 @@ export default {
       }
     },
     toggleCheckRows () {
-      if (!this.isRowsChecked(this.employees, this.checkedRow)) {
-        this.employees.forEach(element => {
+      if (!this.isRowsChecked(this.templates, this.checkedRow)) {
+        this.templates.forEach(element => {
           if (!this.isRowChecked(element.id)) {
             let id = element.id
             this.checkedRow.push({ id })
           }
         })
       } else {
-        this.employees.forEach(element => {
+        this.templates.forEach(element => {
           this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(element.id), 1)
         })
       }
