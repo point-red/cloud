@@ -31,13 +31,7 @@ const getters = {
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.templates = payload.data
-    state.pagination.current_page = payload.meta.current_page
-    state.pagination.from = payload.meta.from
-    state.pagination.to = payload.meta.to
-    state.pagination.path = payload.meta.path
-    state.pagination.last_page = payload.meta.last_page
-    state.pagination.per_page = payload.meta.per_page
-    state.pagination.total = payload.meta.total
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     state.template = payload
@@ -135,6 +129,48 @@ const actions = {
           (error) => {
             reject(error)
           })
+    })
+  },
+  archive ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/' + payload.id + '/archive', payload)
+        .then(response => {
+          commit('FETCH_OBJECT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  bulkArchive ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/bulk-archive', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  activate ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/' + payload.id + '/activate', payload)
+        .then(response => {
+          commit('FETCH_OBJECT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  bulkActivate ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(url + '/bulk-activate', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   }
 }

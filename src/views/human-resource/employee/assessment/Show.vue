@@ -85,6 +85,13 @@
             <td></td>
           </tr>
         </p-table>
+        <p-form-row
+          :is-horizontal="false"
+          :label="$t('comment')">
+          <div slot="body" class="col-lg-9 col-form-label">
+            <pre>{{ assessment.comment }}</pre>
+          </div>
+        </p-form-row>
       </p-block>
     </form>
   </div>

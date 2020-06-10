@@ -135,6 +135,12 @@
               <td></td>
             </tr>
           </p-table>
+          <p-form-row
+            :label="$t('comment')">
+            <div slot="body" class="col-lg-9 col-form-label">
+              <textarea class="form-control" v-model="form.comment" rows="3"></textarea>
+            </div>
+          </p-form-row>
 
           <div class="form-group row">
             <div class="col-md-12">
@@ -189,6 +195,7 @@ export default {
       kpiId: this.$route.params.kpiId,
       form: new Form({
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        comment: null,
         template: {
           groups: []
         }
@@ -221,6 +228,7 @@ export default {
       (response) => {
         this.form.date = this.assessment.date
         this.form.template = this.assessment
+        this.form.comment = this.assessment.comment
         this.assignSelected()
         this.isLoading = false
       },
