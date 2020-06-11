@@ -32,7 +32,7 @@
 
 <script>
 import Form from '@/utils/Form'
-import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   props: {

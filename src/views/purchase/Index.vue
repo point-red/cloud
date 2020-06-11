@@ -13,7 +13,6 @@
 import PurchaseMenu from './Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import PointTable from 'point-table-vue'
-import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {

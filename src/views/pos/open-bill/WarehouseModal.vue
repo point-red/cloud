@@ -61,7 +61,6 @@ export default {
   methods: {
     ...mapActions('masterUser', ['find']),
     show () {
-      const defaultWarehouse = localStorage.getItem('defaultWarehouse')
       this.isLoading = true
       this.$refs.warehouseModal.show()
       this.find({

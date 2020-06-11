@@ -99,7 +99,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import Form from '@/utils/Form'

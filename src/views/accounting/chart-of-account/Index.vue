@@ -84,7 +84,6 @@
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
-import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'

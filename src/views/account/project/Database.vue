@@ -44,7 +44,6 @@
 import Breadcrumb from '@/views/account/Breadcrumb'
 import TabMenu from './TabMenu'
 import ProjectWidget from './Widget'
-import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import DatabaseStorage from './DatabaseStorage'
 import DatabaseBackup from './DatabaseBackup'

@@ -165,7 +165,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
 import ManufactureMenu from '../../Menu'
 import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'

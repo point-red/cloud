@@ -286,7 +286,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
 import SalesMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSales from '@/views/sales/Breadcrumb'
@@ -294,7 +293,6 @@ import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import SelectSalesQuotation from './SelectSalesQuotation'
 import { mapGetters, mapActions } from 'vuex'
-
 export default {
   components: {
     SalesMenu,

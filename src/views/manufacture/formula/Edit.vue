@@ -181,7 +181,6 @@ import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
 import Form from '@/utils/Form'
 import ManufactureMenu from '../Menu'
 import PointTable from 'point-table-vue'
-import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {

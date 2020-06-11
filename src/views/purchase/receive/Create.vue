@@ -154,7 +154,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
 import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
