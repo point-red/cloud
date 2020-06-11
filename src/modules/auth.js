@@ -84,7 +84,7 @@ const actions = {
         localStorage.setItem('tenantAddress', apiData.tenant_address)
         localStorage.setItem('tenantPhone', apiData.tenant_phone)
         commit('storeUser', apiData)
-        axios.defaults.headers.common['Authorization'] = apiData.token_type + ' ' + apiData.access_token
+        axios.defaults.headers.common.Authorization = apiData.token_type + ' ' + apiData.access_token
         resolve(response)
       }).catch(error => {
         reject(error)
@@ -135,7 +135,7 @@ const actions = {
         expirationDate: Vue.cookie.get('TED')
       })
 
-      axios.defaults.headers.common['Authorization'] = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
+      axios.defaults.headers.common.Authorization = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
       axios.post('/auth/fetch', {
         access_token: accessToken
       }).then((response) => {

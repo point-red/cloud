@@ -106,13 +106,13 @@ export default {
           this.mutableLabel = null
           response.data.map((key, value) => {
             this.options.push({
-              'id': key['id'],
-              'alias': key['alias'],
-              'label': key['label']
+              id: key.id,
+              alias: key.alias,
+              label: key.label
             })
 
-            if (this.value == key['id']) {
-              this.mutableLabel = key['number'] + ' - ' + key['alias']
+            if (this.value == key.id) {
+              this.mutableLabel = key.number + ' - ' + key.alias
             }
           })
           this.isLoading = false
@@ -138,13 +138,13 @@ export default {
           this.mutableLabel = null
           response.data.map((key, value) => {
             this.options.push({
-              'id': key['id'],
-              'alias': key['alias'],
-              'label': key['label']
+              id: key.id,
+              alias: key.alias,
+              label: key.label
             })
 
-            if (this.value == key['id']) {
-              this.mutableLabel = key['number'] + ' - ' + key['alias']
+            if (this.value == key.id) {
+              this.mutableLabel = key.number + ' - ' + key.alias
             }
           })
           this.isLoading = false

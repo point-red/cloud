@@ -130,13 +130,13 @@ export default {
         this.optionSuppliers = []
         response.data.map((key, value) => {
           this.optionSuppliers.push({
-            'id': key['id'],
-            'label': key['name'],
-            'type': 'Supplier'
+            id: key.id,
+            label: key.name,
+            type: 'Supplier'
           })
 
-          if (this.value == key['id'] && this.type == 'Supplier') {
-            this.mutableLabel = key['name']
+          if (this.value == key.id && this.type == 'Supplier') {
+            this.mutableLabel = key.name
           }
         })
         this.isLoadingSupplier = false
@@ -157,13 +157,13 @@ export default {
         this.optionCustomers = []
         response.data.map((key, value) => {
           this.optionCustomers.push({
-            'id': key['id'],
-            'label': key['name'],
-            'type': 'Customer'
+            id: key.id,
+            label: key.name,
+            type: 'Customer'
           })
 
-          if (this.value == key['id'] && this.type == 'Customer') {
-            this.mutableLabel = key['name']
+          if (this.value == key.id && this.type == 'Customer') {
+            this.mutableLabel = key.name
           }
         })
         this.isLoadingCustomer = false
@@ -184,13 +184,13 @@ export default {
         this.optionEmployees = []
         response.data.map((key, value) => {
           this.optionEmployees.push({
-            'id': key['id'],
-            'label': key['name'],
-            'type': 'Employee'
+            id: key.id,
+            label: key.name,
+            type: 'Employee'
           })
 
-          if (this.value == key['id'] && this.type == 'Employee') {
-            this.mutableLabel = key['name']
+          if (this.value == key.id && this.type == 'Employee') {
+            this.mutableLabel = key.name
           }
         })
         this.isLoadingEmployee = false

@@ -120,7 +120,7 @@ export default {
           fields: 'supplier.*',
           sort_by: 'name',
           filter_like: {
-            'name': this.searchText,
+            name: this.searchText,
             'address.address': this.searchText,
             'phone.number': this.searchText,
             'email.email': this.searchText

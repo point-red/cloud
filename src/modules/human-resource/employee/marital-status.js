@@ -25,7 +25,7 @@ const mutations = {
     state.maritalStatuses = payload
   },
   'FETCH_SELECT_LIST' (state, payload) {
-    let array = []
+    const array = []
     payload.forEach(element => {
       array.push({
         id: element.id,

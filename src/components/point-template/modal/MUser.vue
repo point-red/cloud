@@ -96,16 +96,16 @@ export default {
         this.options = []
         response.data.map((key, value) => {
           this.options.push({
-            'id': key['id'],
-            'label': key['first_name'] + ' ' + key['last_name'],
-            'email': key['email'],
-            'firstName': key['first_name'],
-            'lastName': key['last_name'],
-            'fullName': key['first_name'] + ' ' + key['last_name']
+            id: key.id,
+            label: key.first_name + ' ' + key.last_name,
+            email: key.email,
+            firstName: key.first_name,
+            lastName: key.last_name,
+            fullName: key.first_name + ' ' + key.last_name
           })
 
-          if (this.value == key['id']) {
-            this.mutableLabel = key['first_name'] + ' ' + key['last_name']
+          if (this.value == key.id) {
+            this.mutableLabel = key.first_name + ' ' + key.last_name
           }
         })
         this.isLoading = false

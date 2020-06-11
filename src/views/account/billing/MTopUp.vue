@@ -80,10 +80,10 @@ export default {
       })
     },
     show () {
-      this.$refs['topUpModal'].show()
+      this.$refs.topUpModal.show()
     },
     close () {
-      this.$refs['topUpModal'].close()
+      this.$refs.topUpModal.close()
       this.$emit('close', true)
     }
   }

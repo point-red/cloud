@@ -316,7 +316,7 @@ export default {
       row.converter = unit.converter
     },
     chooseRawMaterial (item) {
-      let row = this.form.raw_materials[item.index]
+      const row = this.form.raw_materials[item.index]
       row.item_name = item.name
       row.item_label = item.label
       row.item.units = item.units
@@ -337,7 +337,7 @@ export default {
       }
     },
     chooseFinishedGood (item) {
-      let row = this.form.finished_goods[item.index]
+      const row = this.form.finished_goods[item.index]
       row.item_name = item.name
       row.item_label = item.label
       row.item.units = item.units

@@ -102,8 +102,8 @@ export default {
           limit: this.limit,
           page: this.page,
           filter_like: {
-            'code': this.searchText,
-            'name': this.searchText
+            code: this.searchText,
+            name: this.searchText
           }
         }
       }).then(response => {

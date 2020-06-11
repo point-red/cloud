@@ -259,7 +259,7 @@ export default {
       })
     },
     chooseAllocation (value) {
-      let row = this.form.items[value.index]
+      const row = this.form.items[value.index]
       row.allocation_id = value.id
       row.allocation_name = value.name
     },
@@ -268,7 +268,7 @@ export default {
       this.form.approver_email = value.email
     },
     chooseItem (item) {
-      let row = this.form.items[item.index]
+      const row = this.form.items[item.index]
       if (item.id == null) {
         this.clearItem(row)
       } else {
@@ -297,7 +297,7 @@ export default {
       row.converter = unit.converter
     },
     toggleMore () {
-      let isMoreActive = this.form.items.some(function (el, index) {
+      const isMoreActive = this.form.items.some(function (el, index) {
         return el.more === false
       })
       this.form.items.forEach(element => {

@@ -542,7 +542,7 @@ export default {
       this.salary.active_days_in_month = this.salary.active_days_in_month || 0
 
       if (Number(this.salary.active_days_in_month) != 0) {
-        let baseSalaryPerWeek = (this.salary.base_salary || 0) / Number(this.salary.active_days_in_month || 0)
+        const baseSalaryPerWeek = (this.salary.base_salary || 0) / Number(this.salary.active_days_in_month || 0)
 
         if (this.additionalData.score_percentages_assessments.length != 0) {
           this.base_salary_week_1 = baseSalaryPerWeek * Number(this.salary.active_days_week1 || 0) * ((Number(this.additionalData.score_percentages_assessments[0].week1 || 0)) / 100)

@@ -207,7 +207,7 @@ export default {
       }
     },
     edit (indicator) {
-      for (let field in indicator) {
+      for (const field in indicator) {
         this.$set(this.form, field, indicator[field])
       }
 

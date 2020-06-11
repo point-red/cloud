@@ -344,9 +344,9 @@ export default {
       this.getAttachment({
         params: {
           filter_equal: {
-            'is_user_protected': false,
-            'feature': 'employee',
-            'feature_id': this.id
+            is_user_protected: false,
+            feature: 'employee',
+            feature_id: this.id
           },
           is_project_protected: true,
           sort_by: '-id'

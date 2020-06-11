@@ -383,7 +383,7 @@ export default {
       })
     },
     toggleMore () {
-      let isMoreActive = this.form.items.some(function (el, index) {
+      const isMoreActive = this.form.items.some(function (el, index) {
         return el.more === false
       })
       this.form.items.forEach(element => {
@@ -416,7 +416,7 @@ export default {
         return
       }
 
-      let row = this.form.items[item.index]
+      const row = this.form.items[item.index]
       row.item_id = item.id
       row.item_name = item.name
       row.item_label = item.label
@@ -426,7 +426,7 @@ export default {
           row.unit = unit.label
           row.converter = unit.converter
           if (unit.prices.length > 0) {
-            let index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
+            const index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
             row.price = parseFloat(unit.prices[index].pivot.price)
             row.discount_value = parseFloat(unit.prices[index].pivot.discount_value)
             row.discount_percent = parseFloat(unit.prices[index].pivot.discount_percent)
@@ -447,14 +447,14 @@ export default {
       row.unit = unit.label
       row.converter = unit.converter
       if (unit.prices && unit.prices.length > 0) {
-        let index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
+        const index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
         row.price = parseFloat(unit.prices[index].pivot.price)
         row.discount_value = parseFloat(unit.prices[index].pivot.discount_value)
         row.discount_percent = parseFloat(unit.prices[index].pivot.discount_percent)
       }
     },
     chooseAllocation (allocation) {
-      let row = this.form.items[allocation.index]
+      const row = this.form.items[allocation.index]
       row.allocation_id = allocation.id
       row.allocation_name = allocation.name
     },

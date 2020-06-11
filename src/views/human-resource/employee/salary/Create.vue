@@ -1317,7 +1317,7 @@ export default {
       this.form.active_days_in_month = this.form.active_days_in_month || 0
 
       if (Number(this.form.active_days_in_month) != 0) {
-        let baseSalaryPerWeek = (this.form.base_salary || 0) / Number(this.form.active_days_in_month || 0)
+        const baseSalaryPerWeek = (this.form.base_salary || 0) / Number(this.form.active_days_in_month || 0)
 
         if (this.form.salary_assessment.indicators.length != 0) {
           this.base_salary_week_1 = baseSalaryPerWeek * Number(this.form.active_days_week_1 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week1 || 0)) / 100)

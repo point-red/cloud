@@ -101,7 +101,7 @@ export default {
           fields: 'service.*',
           sort_by: 'name',
           filter_like: {
-            'name': this.searchText
+            name: this.searchText
           },
           limit: this.limit,
           page: this.currentPage

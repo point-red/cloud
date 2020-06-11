@@ -194,7 +194,7 @@ export default {
     }
   },
   watch: {
-    'date': {
+    date: {
       handler: function () {
         this.$router.replace({
           query: {

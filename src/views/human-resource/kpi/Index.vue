@@ -184,7 +184,7 @@ export default {
       if (!this.isRowsChecked(this.templates, this.checkedRow)) {
         this.templates.forEach(element => {
           if (!this.isRowChecked(element.id)) {
-            let id = element.id
+            const id = element.id
             this.checkedRow.push({ id })
           }
         })
@@ -204,7 +204,7 @@ export default {
         return false
       }
       for (let i = 0; i < haystack.length; i++) {
-        let found = needles.some(element => {
+        const found = needles.some(element => {
           return element.id == haystack[i].id
         })
         if (!found) {
@@ -254,12 +254,12 @@ export default {
       this.$refs.file.click()
     },
     onFileChange (e) {
-      let files = e.target.files || e.dataTransfer.files
+      const files = e.target.files || e.dataTransfer.files
       if (!files.length) {
         console.log('no files')
       }
 
-      let data = new FormData()
+      const data = new FormData()
       data.append('file', files[0])
       var self = this
       self.isLoading = true
@@ -270,7 +270,7 @@ export default {
       }).then(function (response, data) {
         if (response.data.message == 'exist') {
           if (confirm('Data KPI ' + response.data.name + ' exist, do you want replace ?')) {
-            let data = new FormData()
+            const data = new FormData()
             data.append('file', files[0])
             data.append('replace', response.data.replace)
             axios.post('/human-resource/kpi/templates/import', data, {

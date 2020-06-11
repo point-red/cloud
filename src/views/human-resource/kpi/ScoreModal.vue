@@ -112,6 +112,7 @@ export default {
     }),
     compareValues (key, order = 'asc') {
       return function innerSort (a, b) {
+        // if (!Object.prototype.hasOwnProperty.call(a, key) || !Object.prototype.hasOwnProperty.call(b, key)) {
         if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
           // property doesn't exist on either object
           return 0
@@ -178,7 +179,7 @@ export default {
       }
     },
     edit (score) {
-      for (let field in score) {
+      for (const field in score) {
         this.$set(this.form, field, score[field])
       }
       this.isCreateMode = false

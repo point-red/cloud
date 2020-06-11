@@ -178,7 +178,7 @@ export default {
       if (!this.isRowsChecked(this.employees, this.checkedRow)) {
         this.employees.forEach(element => {
           if (!this.isRowChecked(element.id)) {
-            let id = element.id
+            const id = element.id
             this.checkedRow.push({ id })
           }
         })
@@ -198,7 +198,7 @@ export default {
         return false
       }
       for (let i = 0; i < haystack.length; i++) {
-        let found = needles.some(element => {
+        const found = needles.some(element => {
           return element.id == haystack[i].id
         })
         if (!found) {
@@ -262,8 +262,8 @@ export default {
       this.getEmployees({
         params: {
           filter_like: {
-            'name': this.searchText,
-            'job_title': this.searchText
+            name: this.searchText,
+            job_title: this.searchText
           },
           limit: 10,
           page: this.page,

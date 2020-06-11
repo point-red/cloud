@@ -99,32 +99,32 @@ export default {
           limit: 10,
           includes: 'addresses;phones;emails',
           filter_like: {
-            'name': this.searchText
+            name: this.searchText
           }
         }
       }).then(response => {
         this.options = []
         response.data.map((key, value) => {
-          let obj = {
-            'id': key['id'],
-            'name': key['name'],
-            'label': key['label']
+          const obj = {
+            id: key.id,
+            name: key.name,
+            label: key.label
           }
-          if (key['addresses'].length > 0) {
-            obj.address = key['addresses'][0]['address']
+          if (key.addresses.length > 0) {
+            obj.address = key.addresses[0].address
           }
-          if (key['emails'].length > 0) {
-            obj.email = key['emails'][0]['email']
+          if (key.emails.length > 0) {
+            obj.email = key.emails[0].email
           }
-          if (key['phones'].length > 0) {
-            obj.phone = key['phones'][0]['number']
+          if (key.phones.length > 0) {
+            obj.phone = key.phones[0].number
           }
           this.options.push({
             ...obj
           })
 
-          if (this.value == key['id']) {
-            this.mutableLabel = key['name']
+          if (this.value == key.id) {
+            this.mutableLabel = key.name
           }
         })
         this.isLoading = false

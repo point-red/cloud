@@ -133,7 +133,7 @@ export default {
     updateTotalQuantity () {
       this.totalQuantity = null
       this.options.map((key, value) => {
-        this.totalQuantity += parseFloat(key['quantity'] || 0)
+        this.totalQuantity += parseFloat(key.quantity || 0)
       })
     },
     onSubmit () {

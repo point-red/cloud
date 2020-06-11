@@ -205,7 +205,7 @@ export default {
       })
     },
     toggleMore () {
-      let isMoreActive = this.inventoryUsage.items.some(function (el, index) {
+      const isMoreActive = this.inventoryUsage.items.some(function (el, index) {
         return el.more === false
       })
       this.inventoryUsage.items.forEach(element => {

@@ -210,7 +210,7 @@ export default {
         this.form.manufacture_process_name = this.formula.manufacture_process_name
         this.form.manufacture_formula_id = this.formula.id
         this.form.manufacture_formula_name = this.formula.name
-        for (let index in this.formula.raw_materials) {
+        for (const index in this.formula.raw_materials) {
           var rawMaterials = this.formula.raw_materials[index]
           rawMaterials.original_quantity = rawMaterials.quantity
           rawMaterials.item.units.forEach((unit, keyUnit) => {
@@ -221,7 +221,7 @@ export default {
           rawMaterials.inventories = []
           this.form.raw_materials_temporary.push(rawMaterials)
         }
-        for (let index in this.formula.finished_goods) {
+        for (const index in this.formula.finished_goods) {
           var finishedGoods = this.formula.finished_goods[index]
           finishedGoods.original_quantity = finishedGoods.quantity
           finishedGoods.item.units.forEach((unit, keyUnit) => {
@@ -241,7 +241,7 @@ export default {
       this.form.manufacture_machine_name = value
     },
     quantityChange (quantity, row) {
-      for (let index in this.form.raw_materials_temporary) {
+      for (const index in this.form.raw_materials_temporary) {
         this.form.raw_materials_temporary[index].quantity = this.form.raw_materials_temporary[index].original_quantity * (row.quantity / row.original_quantity)
         this.form.raw_materials_temporary[index].inventories = []
       }
@@ -252,16 +252,16 @@ export default {
     },
     setRawMaterials () {
       this.form.raw_materials = []
-      for (let index in this.form.raw_materials_temporary) {
-        let rawMaterial = this.form.raw_materials_temporary[index]
-        if (rawMaterial['inventories'].length > 0) {
-          for (let indexInventory in rawMaterial['inventories']) {
-            let inventory = rawMaterial['inventories'][indexInventory]
-            if (inventory['quantity']) {
+      for (const index in this.form.raw_materials_temporary) {
+        const rawMaterial = this.form.raw_materials_temporary[index]
+        if (rawMaterial.inventories.length > 0) {
+          for (const indexInventory in rawMaterial.inventories) {
+            const inventory = rawMaterial.inventories[indexInventory]
+            if (inventory.quantity) {
               var inputRawMaterial = Object.assign({}, rawMaterial)
-              inputRawMaterial.quantity = inventory['quantity']
-              inputRawMaterial.expiry_date = inventory['expiry_date']
-              inputRawMaterial.production_number = inventory['production_number']
+              inputRawMaterial.quantity = inventory.quantity
+              inputRawMaterial.expiry_date = inventory.expiry_date
+              inputRawMaterial.production_number = inventory.production_number
               this.form.raw_materials.push(inputRawMaterial)
             }
           }

@@ -206,7 +206,7 @@ export default {
       })
     },
     toggleMore () {
-      let isMoreActive = this.form.items.some(function (el, index) {
+      const isMoreActive = this.form.items.some(function (el, index) {
         return el.more === false
       })
       this.form.items.forEach(element => {
@@ -244,12 +244,12 @@ export default {
       }
     },
     chooseAllocation (value) {
-      let row = this.form.items[value.index]
+      const row = this.form.items[value.index]
       row.allocation_id = value.id
       row.allocation_name = value.name
     },
     chooseItem (item) {
-      let row = this.form.items[item.index]
+      const row = this.form.items[item.index]
       if (item.id == null) {
         this.clearItem(row)
       } else {

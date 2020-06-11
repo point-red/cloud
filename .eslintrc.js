@@ -3,7 +3,7 @@ module.exports = {
   env: {
     node: true
   },
-  'extends': [
+  extends: [
     'plugin:vue/essential',
     '@vue/standard'
   ],
@@ -15,7 +15,8 @@ module.exports = {
     'vue/no-use-v-if-with-v-for': 'off',
     'no-undef': 'off',
     'handle-callback-err': 'off',
-    'eqeqeq': 'off'
+    'no-prototype-builtins': 'off',
+    eqeqeq: 'off'
   },
   parserOptions: {
     parser: 'babel-eslint'

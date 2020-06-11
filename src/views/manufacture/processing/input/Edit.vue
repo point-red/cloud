@@ -270,7 +270,7 @@ export default {
         }
 
         if (rawMaterial.item.require_expiry_date || rawMaterial.item.require_production_number) {
-          let foundIndex = this.materials.findIndex(o =>
+          const foundIndex = this.materials.findIndex(o =>
             o.item_id === rawMaterial.item_id &&
             o.warehouse_id === rawMaterial.warehouse_id
           )
@@ -453,7 +453,7 @@ export default {
       this.materials.forEach(material => {
         if (material.dna && material.dna.length > 0) {
           material.dna.forEach(dna => {
-            let newMaterial = JSON.parse(JSON.stringify(material))
+            const newMaterial = JSON.parse(JSON.stringify(material))
             newMaterial.expiry_date = dna.expiry_date
             newMaterial.production_number = dna.production_number
             newMaterial.quantity = dna.quantity

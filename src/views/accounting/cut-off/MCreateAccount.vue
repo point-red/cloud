@@ -361,7 +361,7 @@ export default {
       this.isRestrictedToEditBalance()
     },
     isRestrictedToEditBalance () {
-      let restrictedType = ['SALES INCOME', 'OTHER INCOME', 'COST OF SALES', 'DIRECT EXPENSE', 'OTHER EXPENSE', 'FACTORY OVERHEAD COST']
+      const restrictedType = ['SALES INCOME', 'OTHER INCOME', 'COST OF SALES', 'DIRECT EXPENSE', 'OTHER EXPENSE', 'FACTORY OVERHEAD COST']
       this.isRestricted = restrictedType.some(el => {
         return el == this.form.type.name
       })

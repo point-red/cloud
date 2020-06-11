@@ -94,23 +94,23 @@ export default {
           sort_by: 'name',
           limit: 10,
           filter_like: {
-            'name': this.searchText
+            name: this.searchText
           }
         }
       }).then(response => {
         this.options = []
         response.data.map((key, value) => {
-          let obj = {
-            'id': key['id'],
-            'name': key['name'],
-            'label': key['label']
+          const obj = {
+            id: key.id,
+            name: key.name,
+            label: key.label
           }
           this.options.push({
             ...obj
           })
 
-          if (this.value == key['id']) {
-            this.mutableLabel = key['name']
+          if (this.value == key.id) {
+            this.mutableLabel = key.name
           }
         })
         this.isLoading = false

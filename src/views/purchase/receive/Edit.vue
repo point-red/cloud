@@ -250,7 +250,7 @@ export default {
   methods: {
     ...mapActions('purchaseReceive', ['create', 'find']),
     toggleMore () {
-      let isMoreActive = this.form.items.some(function (el, index) {
+      const isMoreActive = this.form.items.some(function (el, index) {
         return el.more === false
       })
       this.form.items.forEach(element => {

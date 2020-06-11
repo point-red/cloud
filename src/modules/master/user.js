@@ -36,7 +36,7 @@ const mutations = {
     state.pagination = payload.meta
   },
   'FETCH_SELECT_LIST' (state, payload) {
-    let array = []
+    const array = []
     payload.forEach(element => {
       array.push({
         id: element.id,

@@ -85,8 +85,8 @@ export default {
     },
     onSubmit () {
       this.assignAssessment({
-        'employee_id': this.employeeId,
-        'kpi_template_id': this.template.id
+        employee_id: this.employeeId,
+        kpi_template_id: this.template.id
       }).then((response) => {
         this.template = null
         this.$emit('assigned', response.data.kpi_template_id)
@@ -96,8 +96,8 @@ export default {
     chooseAndSubmit (template, index) {
       this.choose(template, index)
       this.assignAssessment({
-        'employee_id': this.employeeId,
-        'kpi_template_id': this.template.id
+        employee_id: this.employeeId,
+        kpi_template_id: this.template.id
       }).then((response) => {
         this.template = null
         this.$emit('assigned', response.data.kpi_template_id)

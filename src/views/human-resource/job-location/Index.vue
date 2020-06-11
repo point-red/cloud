@@ -105,7 +105,7 @@ export default {
       this.getJobLocations({
         params: {
           filter_like: {
-            'name': this.searchText
+            name: this.searchText
           },
           limit: 10,
           page: this.currentPage,

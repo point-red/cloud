@@ -240,7 +240,7 @@ export default {
       this.form.items = purchaseOrder.items
       this.form.items.forEach(purchaseOrderItem => {
         let quantityPending = 0
-        let quantity = purchaseOrderItem.quantity
+        const quantity = purchaseOrderItem.quantity
         purchaseOrder.purchase_receives.forEach(purchaseReceive => {
           purchaseReceive.items.forEach(purchaseReceiveItem => {
             if (purchaseReceiveItem.purchase_order_item_id == purchaseOrderItem.id) {

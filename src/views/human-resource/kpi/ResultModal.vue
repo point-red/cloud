@@ -197,7 +197,7 @@ export default {
           })
     },
     edit (result) {
-      for (let field in result) {
+      for (const field in result) {
         this.$set(this.form, field, result[field])
       }
       this.isCreateMode = false

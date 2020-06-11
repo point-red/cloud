@@ -25,7 +25,7 @@ const mutations = {
     state.chartOfAccountSubLedgers = payload.data
   },
   'FETCH_SELECT_LIST' (state, payload) {
-    let array = []
+    const array = []
     payload.data.forEach(element => {
       array.push({
         id: element.id,

@@ -145,7 +145,7 @@ export default {
     }
   },
   watch: {
-    'date': {
+    date: {
       handler: function () {
         this.$router.push({
           query: {
@@ -200,8 +200,8 @@ export default {
           date_from: this.date.start,
           date_to: this.date.end,
           filter_like: {
-            'code': this.searchText,
-            'name': this.searchText
+            code: this.searchText,
+            name: this.searchText
           }
         }
       }).then(response => {

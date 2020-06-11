@@ -687,8 +687,8 @@ export default {
       this.getCloudStorage({
         params: {
           filter_equal: {
-            'feature': 'employee',
-            'feature_id': this.form.id
+            feature: 'employee',
+            feature_id: this.form.id
           },
           is_project_protected: true,
           sort_by: '-id'

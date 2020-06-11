@@ -2,7 +2,7 @@ import momentjs from 'moment-timezone'
 
 export default {
   install: (Vue) => {
-    let moment = momentjs
+    const moment = momentjs
     Vue.prototype.$moment = moment
     Vue.moment = moment
 

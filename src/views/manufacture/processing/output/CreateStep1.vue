@@ -167,7 +167,7 @@ export default {
           filter_form: 'active',
           filter_like: {
             'form.number': this.searchText,
-            'name': this.searchText,
+            name: this.searchText,
             'rawMaterials.item.name': this.searchText,
             'rawMaterials.quantity': this.searchText,
             'finishedGoods.item.name': this.searchText,

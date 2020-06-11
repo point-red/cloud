@@ -232,33 +232,33 @@ export default {
         }
       }).then(response => {
         this.finished_goods_temporary = []
-        for (let index in this.output.finished_goods) {
-          let finishGood = this.output.finished_goods[index]
-          let finishGoodTemporaryIndex = this.finished_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
+        for (const index in this.output.finished_goods) {
+          const finishGood = this.output.finished_goods[index]
+          const finishGoodTemporaryIndex = this.finished_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
           var finishGoodTemporary
           if (finishGoodTemporaryIndex < 0) {
             finishGoodTemporary = Object.assign({}, finishGood)
             finishGoodTemporary.inventories = []
             finishGoodTemporary.inventories.push({
-              'quantity': finishGood.quantity,
-              'expiry_date': finishGood.expiry_date,
-              'production_number': finishGood.production_number
+              quantity: finishGood.quantity,
+              expiry_date: finishGood.expiry_date,
+              production_number: finishGood.production_number
             })
             this.finished_goods_temporary.push(finishGoodTemporary)
           } else {
             finishGoodTemporary = this.finished_goods_temporary[finishGoodTemporaryIndex]
             finishGoodTemporary.quantity += finishGood.quantity
             finishGoodTemporary.inventories.push({
-              'quantity': finishGood.quantity,
-              'expiry_date': finishGood.expiry_date,
-              'production_number': finishGood.production_number
+              quantity: finishGood.quantity,
+              expiry_date: finishGood.expiry_date,
+              production_number: finishGood.production_number
             })
             this.finished_goods_temporary[finishGoodTemporaryIndex] = finishGoodTemporary
           }
         }
-        for (let index in this.finished_goods_temporary) {
-          let finishGood = this.finished_goods_temporary[index]
-          let inputFinishGoodIndex = this.output.manufacture_input.finished_goods.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
+        for (const index in this.finished_goods_temporary) {
+          const finishGood = this.finished_goods_temporary[index]
+          const inputFinishGoodIndex = this.output.manufacture_input.finished_goods.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
           if (inputFinishGoodIndex >= 0) {
             this.finished_goods_temporary[index].estimation_quantity = this.output.manufacture_input.finished_goods[inputFinishGoodIndex].quantity
           } else {

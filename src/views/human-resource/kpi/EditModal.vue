@@ -84,7 +84,7 @@ export default {
     }),
     show (template) {
       this.fetchKpiTemplate(template)
-      for (let field in template) {
+      for (const field in template) {
         this.$set(this.form, field, template[field])
       }
       this.$refs.templateModal.show()

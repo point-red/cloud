@@ -279,12 +279,12 @@ export default {
     },
     removeScore (groupId, indicatorId) {
       // find index of template group
-      let groupIndex = this.form.template.groups
+      const groupIndex = this.form.template.groups
         .findIndex(o => o.indicators
           .find(o => o.id === indicatorId)
         )
       // find index of template indicator
-      let indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
+      const indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
       var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected
       var group = this.form.template.groups[groupIndex]
       var template = this.form.template
@@ -298,12 +298,12 @@ export default {
     },
     addedScore ({ indicatorId, score, notes }) {
       // find index of template group
-      let groupIndex = this.form.template.groups
+      const groupIndex = this.form.template.groups
         .findIndex(o => o.indicators
           .find(o => o.id === indicatorId)
         )
       // find index of template indicator
-      let indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
+      const indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
       // add selected score to template indicator
       var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex]
       var group = this.form.template.groups[groupIndex]
@@ -373,13 +373,13 @@ export default {
               var groupScorePercentage = 0
 
               group.indicators.forEach((indicator, indicatorIndex) => {
-                var target = this.form.template.groups[groupIndex].indicators[indicatorIndex]['target'] || 0
+                var target = this.form.template.groups[groupIndex].indicators[indicatorIndex].target || 0
                 var score = 0
                 var scorePercentage = 0
 
                 if (response[indicator.automated_code]) {
-                  target = response[indicator.automated_code]['target'] || 0
-                  score = response[indicator.automated_code]['score'] || 0
+                  target = response[indicator.automated_code].target || 0
+                  score = response[indicator.automated_code].score || 0
 
                   scorePercentage = score / target * indicator.weight || 0
 
@@ -389,7 +389,7 @@ export default {
 
                   this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'automated_code', indicator.automated_code)
                 } else if (indicator.selected) {
-                  score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected['score'] || 0
+                  score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected.score || 0
                   scorePercentage = score / target * indicator.weight || 0
                 }
 

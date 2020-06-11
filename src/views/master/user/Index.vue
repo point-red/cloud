@@ -157,12 +157,12 @@ export default {
           sort_by: 'name',
           includes: 'roles;branches;warehouses',
           filter_like: {
-            'name': this.searchText,
-            'first_name': this.searchText,
-            'last_name': this.searchText,
-            'address': this.searchText,
-            'phone': this.searchText,
-            'email': this.searchText
+            name: this.searchText,
+            first_name: this.searchText,
+            last_name: this.searchText,
+            address: this.searchText,
+            phone: this.searchText,
+            email: this.searchText
           },
           page: this.page
         }

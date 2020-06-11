@@ -103,8 +103,8 @@ export default {
         params: {
           sort_by: 'name',
           filter_like: {
-            'code': this.searchText,
-            'name': this.searchText
+            code: this.searchText,
+            name: this.searchText
           },
           limit: this.limit,
           page: this.currentPage

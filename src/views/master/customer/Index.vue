@@ -215,7 +215,7 @@ export default {
       if (!this.isRowsChecked(this.customers, this.checkedRow)) {
         this.customers.forEach(element => {
           if (!this.isRowChecked(element.id)) {
-            let id = element.id
+            const id = element.id
             this.checkedRow.push({ id })
           }
         })
@@ -235,7 +235,7 @@ export default {
         return false
       }
       for (let i = 0; i < haystack.length; i++) {
-        let found = needles.some(element => {
+        const found = needles.some(element => {
           return element.id == haystack[i].id
         })
         if (!found) {
@@ -331,7 +331,7 @@ export default {
             'phone.number': this.searchText
           },
           filter_equal: {
-            'pricing_group_id': this.pricingGroupId,
+            pricing_group_id: this.pricingGroupId,
             'customer_group.id': this.groupId
           },
           is_archived: this.statusId,

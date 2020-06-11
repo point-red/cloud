@@ -105,7 +105,7 @@ export default {
         params: {
           sort_by: 'name',
           filter_like: {
-            'name': this.searchText
+            name: this.searchText
           },
           limit: this.limit,
           page: this.page

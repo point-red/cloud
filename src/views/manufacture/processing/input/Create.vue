@@ -364,7 +364,7 @@ export default {
       row.converter = unit.converter
     },
     chooseFinishedGood (item) {
-      let row = this.form.finished_goods[item.index]
+      const row = this.form.finished_goods[item.index]
       if (item.id == null) {
         this.clearItem(row)
       } else {
@@ -393,7 +393,7 @@ export default {
       }
     },
     chooseRawMaterial (item) {
-      let row = this.materials[item.index]
+      const row = this.materials[item.index]
       if (item.id == null) {
         this.clearItem(row)
       } else {
@@ -422,13 +422,13 @@ export default {
       }
     },
     chooseWarehouseFinishedGood (option) {
-      let row = this.form.finished_goods[option.index]
+      const row = this.form.finished_goods[option.index]
       row.warehouse_id = option.id
       row.warehouse_name = option.name
       row.quantity = 0
     },
     chooseWarehouseRawMaterial (option) {
-      let row = this.materials[option.index]
+      const row = this.materials[option.index]
       row.warehouse_id = option.id
       row.warehouse_name = option.name
       row.quantity = 0
@@ -450,7 +450,7 @@ export default {
       this.materials.forEach(material => {
         if (material.dna && material.dna.length > 0) {
           material.dna.forEach(dna => {
-            let newMaterial = JSON.parse(JSON.stringify(material))
+            const newMaterial = JSON.parse(JSON.stringify(material))
             newMaterial.expiry_date = dna.expiry_date
             newMaterial.production_number = dna.production_number
             newMaterial.quantity = dna.quantity

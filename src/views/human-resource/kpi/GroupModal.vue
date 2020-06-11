@@ -128,7 +128,7 @@ export default {
       }
     },
     edit (group) {
-      for (let field in group) {
+      for (const field in group) {
         this.$set(this.form, field, group[field])
       }
       this.isCreateMode = false

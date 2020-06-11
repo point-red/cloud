@@ -61,7 +61,7 @@ export default {
   methods: {
     ...mapActions('masterUser', ['find']),
     show () {
-      let defaultWarehouse = localStorage.getItem('defaultWarehouse')
+      const defaultWarehouse = localStorage.getItem('defaultWarehouse')
       this.isLoading = true
       this.$refs.warehouseModal.show()
       this.find({
@@ -70,7 +70,7 @@ export default {
           includes: 'warehouses'
         }
       }).then((response) => {
-        let warehouseIndex = this.user.warehouses.findIndex(o => o.id === parseInt(localStorage.getItem('defaultWarehouse')))
+        const warehouseIndex = this.user.warehouses.findIndex(o => o.id === parseInt(localStorage.getItem('defaultWarehouse')))
         if (warehouseIndex >= 0) {
           this.onSubmitWarehouse(this.user.warehouses[warehouseIndex])
         }

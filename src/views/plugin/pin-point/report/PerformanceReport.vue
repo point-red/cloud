@@ -127,11 +127,11 @@ export default {
   methods: {
     ...mapActions('pluginPinPointReportPerformance', ['get', 'export']),
     percentage: function (actual, target) {
-      let result = actual / target * 100
+      const result = actual / target * 100
       return result >= 100 ? 100 : result
     },
     getItemSoldQty (itemId, reportItems) {
-      let item = reportItems.find(o => o.item_id === itemId)
+      const item = reportItems.find(o => o.item_id === itemId)
       return item ? item.quantity : 0
     },
     toggleColor () {

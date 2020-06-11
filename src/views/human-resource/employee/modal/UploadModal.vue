@@ -73,7 +73,7 @@ export default {
       this.$emit('close')
     },
     onSubmitFile () {
-      let formData = new FormData()
+      const formData = new FormData()
       formData.append('file', this.file)
       formData.append('feature', this.feature)
       formData.append('feature_id', this.featureId)

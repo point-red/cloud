@@ -89,9 +89,9 @@ export default {
       }).then((response) => {
         this.user = user
         this.warehouseList = []
-        for (let warehouseIndex in this.warehouses) {
-          let warehouse = this.warehouses[warehouseIndex]
-          let userWarehouseIndex = this.user.warehouses.findIndex(o => o.id === warehouse.id)
+        for (const warehouseIndex in this.warehouses) {
+          const warehouse = this.warehouses[warehouseIndex]
+          const userWarehouseIndex = this.user.warehouses.findIndex(o => o.id === warehouse.id)
           if (userWarehouseIndex < 0) {
             this.warehouseList.push(warehouse)
           }

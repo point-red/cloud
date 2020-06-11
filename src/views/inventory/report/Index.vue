@@ -124,7 +124,7 @@ export default {
     }
   },
   watch: {
-    'date': {
+    date: {
       handler: function () {
         this.$router.replace({
           query: {
@@ -160,8 +160,8 @@ export default {
           date_from: this.$route.query.date_from,
           date_to: this.$route.query.date_to,
           filter_like: {
-            'code': this.searchText,
-            'name': this.searchText
+            code: this.searchText,
+            name: this.searchText
           }
         }
       }).then(response => {

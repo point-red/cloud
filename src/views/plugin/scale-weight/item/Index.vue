@@ -181,18 +181,18 @@ export default {
           fields: 'scale_weight_items.*',
           sort_by: 'time',
           filter_like: {
-            'form_number': this.searchText,
-            'machine_code': this.searchText,
-            'vendor': this.searchText,
-            'driver': this.searchText,
-            'license_number': this.searchText,
-            'item': this.searchText
+            form_number: this.searchText,
+            machine_code: this.searchText,
+            vendor: this.searchText,
+            driver: this.searchText,
+            license_number: this.searchText,
+            item: this.searchText
           },
           filter_min: {
-            'time': this.serverDateTime(this.date_from, 'start')
+            time: this.serverDateTime(this.date_from, 'start')
           },
           filter_max: {
-            'time': this.serverDateTime(this.date_to, 'end')
+            time: this.serverDateTime(this.date_to, 'end')
           },
           limit: 10,
           page: this.currentPage

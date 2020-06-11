@@ -205,7 +205,7 @@ export default {
         this.form.manufacture_machine_id = this.input.manufacture_machine_id
         this.form.manufacture_machine_name = this.input.manufacture_machine_name
         this.form.finished_goods_temporary = this.input.finished_goods
-        for (let index in this.form.finished_goods_temporary) {
+        for (const index in this.form.finished_goods_temporary) {
           this.form.finished_goods_temporary[index].input_finish_good_id = this.input.finished_goods[index].id
           this.form.finished_goods_temporary[index].estimation_quantity = this.form.finished_goods_temporary[index].quantity
           this.form.finished_goods_temporary[index].inventories = []
@@ -225,16 +225,16 @@ export default {
     },
     setFinishedGoods () {
       this.form.finished_goods = []
-      for (let index in this.form.finished_goods_temporary) {
-        let finishGood = this.form.finished_goods_temporary[index]
-        if (finishGood['inventories'].length > 0) {
-          for (let indexInventory in finishGood['inventories']) {
-            let inventory = finishGood['inventories'][indexInventory]
-            if (inventory['quantity']) {
+      for (const index in this.form.finished_goods_temporary) {
+        const finishGood = this.form.finished_goods_temporary[index]
+        if (finishGood.inventories.length > 0) {
+          for (const indexInventory in finishGood.inventories) {
+            const inventory = finishGood.inventories[indexInventory]
+            if (inventory.quantity) {
               var inputFinishGood = Object.assign({}, finishGood)
-              inputFinishGood.quantity = inventory['quantity']
-              inputFinishGood.expiry_date = inventory['expiry_date']
-              inputFinishGood.production_number = inventory['production_number']
+              inputFinishGood.quantity = inventory.quantity
+              inputFinishGood.expiry_date = inventory.expiry_date
+              inputFinishGood.production_number = inventory.production_number
               this.form.finished_goods.push(inputFinishGood)
             }
           }

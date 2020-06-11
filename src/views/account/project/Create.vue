@@ -384,7 +384,7 @@ export default {
       var tzNames = this.$moment.tz.names()
       this.timezoneOptions = []
       for (var i in tzNames) {
-        let tz = '(GMT' + this.$moment.tz(tzNames[i]).format('Z') + ') ' + tzNames[i]
+        const tz = '(GMT' + this.$moment.tz(tzNames[i]).format('Z') + ') ' + tzNames[i]
         this.timezoneOptions.push({
           id: tzNames[i],
           label: tz
@@ -392,8 +392,8 @@ export default {
       }
     },
     choosePackage (packageErp) {
-      let dateNow = this.$moment(new Date()).format('DD')
-      let dateEnd = this.$moment(new Date()).endOf('month').format('DD')
+      const dateNow = this.$moment(new Date()).format('DD')
+      const dateEnd = this.$moment(new Date()).endOf('month').format('DD')
       this.form.package_id = packageErp.id
       this.form.package_price = (dateEnd - dateNow) / dateEnd * packageErp.price
       this.form.package_total_price = this.form.package_price
@@ -401,15 +401,15 @@ export default {
       this.calculate()
     },
     choosePlugin (plugin) {
-      let dateNow = this.$moment(new Date()).format('DD')
-      let dateEnd = this.$moment(new Date()).endOf('month').format('DD')
+      const dateNow = this.$moment(new Date()).format('DD')
+      const dateEnd = this.$moment(new Date()).endOf('month').format('DD')
       plugin.price_proportional = (dateEnd - dateNow) / dateEnd * plugin.price
       plugin.price_per_user_proportional = (dateEnd - dateNow) / dateEnd * plugin.price_per_user
       plugin.notes = plugin.name
       if (plugin.is_monthly_price || plugin.is_monthly_price_per_user) {
         plugin.notes += ' ( ' + this.$moment(new Date()).format('DD MMMM YYYY') + ' - ' + this.$moment(new Date()).endOf('month').format('DD MMMM YYYY') + ' )'
       }
-      let index = this.form.plugins.findIndex(element => element.id == plugin.id)
+      const index = this.form.plugins.findIndex(element => element.id == plugin.id)
       if (index >= 0) {
         this.form.plugins.splice(index, 1)
       } else {

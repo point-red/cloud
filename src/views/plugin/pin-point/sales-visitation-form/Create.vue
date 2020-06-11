@@ -478,7 +478,7 @@ export default {
     getLocation () {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
-          let pos = {
+          const pos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           }
@@ -539,7 +539,7 @@ export default {
     },
     geocodeLatLng (geocoder, map, infowindow) {
       var self = this
-      geocoder.geocode({ 'location': this.center }, function (results, status) {
+      geocoder.geocode({ location: this.center }, function (results, status) {
         if (status == 'OK') {
           self.addressComponent = results[0]
           self.setDescription(self.addressComponent.formatted_address)
@@ -579,7 +579,7 @@ export default {
       })
     },
     chooseItem (item) {
-      let row = this.form.items[item.index]
+      const row = this.form.items[item.index]
       if (item.id == null) {
         this.clearItem(row)
       } else {
@@ -658,7 +658,7 @@ export default {
     }
   },
   created () {
-    let self = this
+    const self = this
     this.addItemRow()
     navigator.permissions.query({ name: 'camera' })
       .then(function (result) {

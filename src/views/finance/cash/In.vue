@@ -209,7 +209,7 @@ export default {
       this.$delete(this.form.details, index)
     },
     chooseAllocation (allocation) {
-      let row = this.form.details[allocation.index]
+      const row = this.form.details[allocation.index]
       row.allocation_id = allocation.id
       row.allocation_name = allocation.name
     },
@@ -219,7 +219,7 @@ export default {
       this.form.approver_email = value.email
     },
     onChoosenAccount (account) {
-      let row = this.form.details[account.index]
+      const row = this.form.details[account.index]
       row.chart_of_account_id = account.id
       row.chart_of_account_name = account.label
     },

@@ -166,7 +166,7 @@ export default {
       this.form.total_price = this.form.sub_total_price + this.form.vat
     },
     choosePackage (packageErp, method) {
-      let self = this
+      const self = this
       if (method == 'subscribe') {
         this.$alert.confirm(this.$t('subscribe'), 'will you update your package ?').then(response => {
           this.subscribePackage({
@@ -221,7 +221,7 @@ export default {
             })
         })
       } else if (method == 'unsubscribe') {
-        let self = this
+        const self = this
         this.$alert.confirm(this.$t('unsubscribe'), 'are you sure to unsubscribe this plugin ?').then(response => {
           this.unsubscribe({
             id: plugin.id,

@@ -168,7 +168,7 @@ export default {
       findAccount: 'find'
     }),
     payPaymentOrder (paymentOrder) {
-      let details = []
+      const details = []
       paymentOrder.details.forEach(el => {
         details.push({
           chart_of_account_id: el.account.id,
@@ -195,7 +195,7 @@ export default {
       this.$router.push({ name: 'finance.cash.out.create' })
     },
     payDownPayment (downPayment) {
-      let details = []
+      const details = []
       details.push({
         chart_of_account_id: this.downPaymentAccountId,
         chart_of_account_label: this.downPaymentAccountLabel,

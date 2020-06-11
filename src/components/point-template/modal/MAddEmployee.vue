@@ -635,8 +635,8 @@ export default {
       this.getCloudStorage({
         params: {
           filter_equal: {
-            'is_user_protected': true,
-            'feature': 'employee'
+            is_user_protected: true,
+            feature: 'employee'
           },
           is_project_protected: true,
           sort_by: '-id',

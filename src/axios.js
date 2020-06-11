@@ -9,14 +9,14 @@ const instance = axios.create({
   baseURL: process.env.VUE_APP_API_ENDPOINT,
   timeout: 600 * 2 * 1000, // 2 minutes
   headers: {
-    'Accept': 'application/json',
+    Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Tenant': window.location.host.split('.')[0]
+    Tenant: window.location.host.split('.')[0]
   }
 })
 
-instance.defaults.headers.common['Authorization'] = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
-instance.defaults.headers.common['Timezone'] = Intl.DateTimeFormat().resolvedOptions().timeZone
+instance.defaults.headers.common.Authorization = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
+instance.defaults.headers.common.Timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 instance.interceptors.request.use((config) => {
   if (process.env.NODE_ENV !== 'production') {

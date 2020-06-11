@@ -122,7 +122,7 @@ export default {
       id: this.id
     }).then((response) => {
       this.isLoading = false
-      for (let field in this.form) {
+      for (const field in this.form) {
         console.log(JSON.stringify(field))
         if (response.data[field]) this.form[field] = response.data[field]
       }

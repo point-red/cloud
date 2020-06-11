@@ -263,7 +263,7 @@ export default {
       cancellationReject: 'cancellationReject'
     }),
     toggleMore () {
-      let isMoreActive = this.purchaseOrder.items.some(function (el, index) {
+      const isMoreActive = this.purchaseOrder.items.some(function (el, index) {
         return el.more === false
       })
       this.purchaseOrder.items.forEach(element => {

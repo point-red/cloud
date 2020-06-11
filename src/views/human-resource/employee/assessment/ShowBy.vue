@@ -160,15 +160,15 @@ export default {
       findEmployeeAssessment: 'findBy'
     }),
     isScoreColumn (col) {
-      let FIRST_SCORER_INDEX = 3
+      const FIRST_SCORER_INDEX = 3
       return (col >= FIRST_SCORER_INDEX && (col % 2) != 0)
     },
     formatIndicator (indicators, isGroup) {
-      let fomatedIndicator = []
-      let TOLERANCE = 2
+      const fomatedIndicator = []
+      const TOLERANCE = 2
       let showHighlight = false
       if (this.isHighlight) {
-        let scoreList = []
+        const scoreList = []
         indicators.forEach((el, j) => {
           if (this.isScoreColumn(j)) {
             scoreList.push(el)

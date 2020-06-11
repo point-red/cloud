@@ -216,33 +216,33 @@ export default {
           converter: item.converter
         })
       })
-      for (let index in this.output.manufacture_input.finished_goods) {
-        let inputFinishGood = this.output.manufacture_input.finished_goods[index]
-        let finishGoodIndex = this.form.finished_goods.findIndex(o => o.item_id === inputFinishGood.item_id && o.warehouse_id === inputFinishGood.warehouse_id)
+      for (const index in this.output.manufacture_input.finished_goods) {
+        const inputFinishGood = this.output.manufacture_input.finished_goods[index]
+        const finishGoodIndex = this.form.finished_goods.findIndex(o => o.item_id === inputFinishGood.item_id && o.warehouse_id === inputFinishGood.warehouse_id)
         if (finishGoodIndex >= 0) {
           this.form.finished_goods[finishGoodIndex].estimation_quantity = inputFinishGood.quantity
           this.form.finished_goods[finishGoodIndex].input_finish_good_id = inputFinishGood.id
         }
       }
-      for (let index in this.form.finished_goods) {
-        let finishGood = this.form.finished_goods[index]
-        let finishGoodTemporaryIndex = this.form.finished_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
+      for (const index in this.form.finished_goods) {
+        const finishGood = this.form.finished_goods[index]
+        const finishGoodTemporaryIndex = this.form.finished_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
         if (finishGoodTemporaryIndex < 0) {
           var newItem = Object.assign({}, finishGood)
           newItem.inventories = []
           newItem.inventories.push({
-            'quantity': finishGood.quantity,
-            'expiry_date': finishGood.expiry_date,
-            'production_number': finishGood.production_number
+            quantity: finishGood.quantity,
+            expiry_date: finishGood.expiry_date,
+            production_number: finishGood.production_number
           })
           this.form.finished_goods_temporary.push(newItem)
         } else {
           var existing = this.form.finished_goods_temporary[finishGoodTemporaryIndex]
           existing.quantity += finishGood.quantity
           existing.inventories.push({
-            'quantity': finishGood.quantity,
-            'expiry_date': finishGood.expiry_date,
-            'production_number': finishGood.production_number
+            quantity: finishGood.quantity,
+            expiry_date: finishGood.expiry_date,
+            production_number: finishGood.production_number
           })
           this.form.finished_goods_temporary[finishGoodTemporaryIndex] = existing
         }
@@ -263,16 +263,16 @@ export default {
     },
     setFinishedGoods () {
       this.form.finished_goods = []
-      for (let index in this.form.finished_goods_temporary) {
-        let finishGood = this.form.finished_goods_temporary[index]
-        if (finishGood['inventories'].length > 0) {
-          for (let indexInventory in finishGood['inventories']) {
-            let inventory = finishGood['inventories'][indexInventory]
-            if (inventory['quantity']) {
+      for (const index in this.form.finished_goods_temporary) {
+        const finishGood = this.form.finished_goods_temporary[index]
+        if (finishGood.inventories.length > 0) {
+          for (const indexInventory in finishGood.inventories) {
+            const inventory = finishGood.inventories[indexInventory]
+            if (inventory.quantity) {
               var outputFinishGood = Object.assign({}, finishGood)
-              outputFinishGood.quantity = inventory['quantity']
-              outputFinishGood.expiry_date = inventory['expiry_date']
-              outputFinishGood.production_number = inventory['production_number']
+              outputFinishGood.quantity = inventory.quantity
+              outputFinishGood.expiry_date = inventory.expiry_date
+              outputFinishGood.production_number = inventory.production_number
               this.form.finished_goods.push(outputFinishGood)
             }
           }

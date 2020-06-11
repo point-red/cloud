@@ -277,7 +277,7 @@ export default {
       this.form.manufacture_process_name = option.name
     },
     chooseRawMaterial (item) {
-      let row = this.form.raw_materials[item.index]
+      const row = this.form.raw_materials[item.index]
       row.item_id = item.id
       row.item_name = item.name
       row.item_label = item.label
@@ -300,7 +300,7 @@ export default {
       }
     },
     chooseFinishedGoods (item) {
-      let row = this.form.finished_goods[item.index]
+      const row = this.form.finished_goods[item.index]
       row.item_id = item.id
       row.item_name = item.name
       row.item_label = item.label

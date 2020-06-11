@@ -215,7 +215,7 @@ export default {
     ...mapGetters('purchaseReceive', ['purchaseReceives', 'pagination'])
   },
   watch: {
-    'date': {
+    date: {
       handler: function () {
         this.$router.push({
           query: {
@@ -242,7 +242,7 @@ export default {
       if (!this.isRowsChecked(this.purchaseReceives, this.checkedRow)) {
         this.purchaseReceives.forEach(element => {
           if (!this.isRowChecked(element.id)) {
-            let id = element.id
+            const id = element.id
             this.checkedRow.push({ id })
           }
         })
@@ -262,7 +262,7 @@ export default {
         return false
       }
       for (let i = 0; i < haystack.length; i++) {
-        let found = needles.some(element => {
+        const found = needles.some(element => {
           return element.id == haystack[i].id
         })
         if (!found) {
