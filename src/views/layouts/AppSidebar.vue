@@ -73,12 +73,6 @@
                   {{ userName }}
                 </a>
               </li>
-              <li class="list-inline-item">
-                |
-                <a :href="accountPage + '/reward'" class="link-effect text-dual-primary-dark">
-                  {{ balance || 0 }} <i class="si si-disc"></i>
-                </a>
-              </li>
             </ul>
           </div>
           <!-- END Visible only in normal mode -->
@@ -450,7 +444,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('accountRewardToken', ['balance']),
     ...mapGetters('auth', ['authUser'])
   },
   methods: {
