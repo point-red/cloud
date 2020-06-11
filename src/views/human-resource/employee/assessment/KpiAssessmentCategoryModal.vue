@@ -8,8 +8,8 @@
         ref="kpiAssessmentCategory"
         title="Assessment Category">
         <template slot="content">
-          <div class="list-group mb-20">
-            <template v-for="(template, index) in templates" v-if="templates.length > 0">
+          <div class="list-group mb-20" v-if="templates.length > 0">
+            <template v-for="(template, index) in templates">
               <a
                 :key="index"
                 @click="choose(index)"
@@ -22,9 +22,9 @@
                   <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ template }}</span>
               </a>
             </template>
-            <template v-if="templates.length === 0">
-              <h5 class="text-center">Assessment Category not found</h5>
-            </template>
+          </div>
+          <div class="list-group mb-20" v-else>
+            <h5 class="text-center">Assessment Category not found</h5>
           </div>
         </template>
         <template slot="footer">

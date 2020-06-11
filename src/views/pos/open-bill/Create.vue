@@ -52,26 +52,30 @@
 
               <p-block-inner :is-loading="isLoading">
                 <div class="row gutters-tiny">
-                  <template v-if="currentGroupType === 'item'" v-for="(item, index) in itemList">
-                    <p-box-item
-                      v-if="groupItemList.includes(item.item_id)"
-                      :id="'item-' + index"
-                      :key="'item-' + index"
-                      :item="item"
-                      :itemName="item.item_name"
-                      :itemPrice="item.price"
-                      :itemUnit="item.item_unit"
-                      :clicked="chooseItem"/>
+                  <template v-for="(item, index) in itemList">
+                    <template v-if="currentGroupType === 'item'">
+                      <p-box-item
+                        v-if="groupItemList.includes(item.item_id)"
+                        :id="'item-' + index"
+                        :key="'item-' + index"
+                        :item="item"
+                        :itemName="item.item_name"
+                        :itemPrice="item.price"
+                        :itemUnit="item.item_unit"
+                        :clicked="chooseItem"/>
+                    </template>
                   </template>
-                  <template v-if="currentGroupType === 'service'" v-for="(service, index) in serviceList">
-                    <p-box-item
-                      v-if="groupServiceList.includes(service.service_id)"
-                      :id="'service-' + index"
-                      :key="'service-' + index"
-                      :item="service"
-                      :itemName="service.service_name"
-                      :itemPrice="service.price"
-                      :clicked="chooseService"/>
+                  <template v-for="(service, index) in serviceList">
+                    <template v-if="currentGroupType === 'service'">
+                      <p-box-item
+                        v-if="groupServiceList.includes(service.service_id)"
+                        :id="'service-' + index"
+                        :key="'service-' + index"
+                        :item="service"
+                        :itemName="service.service_name"
+                        :itemPrice="service.price"
+                        :clicked="chooseService"/>
+                    </template>
                   </template>
                 </div>
                 <p-pagination

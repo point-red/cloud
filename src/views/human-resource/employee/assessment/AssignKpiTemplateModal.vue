@@ -8,8 +8,8 @@
         ref="assignKpiTemplate"
         title="Assign Kpi Template">
         <template slot="content">
-          <div class="list-group mb-20">
-            <template v-for="(template, index) in templates" v-if="templates.length > 0">
+          <div class="list-group mb-20" v-if="templates.length > 0">
+            <template v-for="(template, index) in templates">
               <a
                 :key="index"
                 @click="choose(template, index)"
@@ -22,13 +22,13 @@
                   <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ template.name }}</span>
               </a>
             </template>
-            <template v-if="templates.length === 0">
-              <h5 class="text-center">KPI Template not found</h5>
-              <router-link
-                to="/human-resource/kpi"
-                class="btn btn-primary">Create new KPI Template
-              </router-link>
-            </template>
+          </div>
+          <div v-else>
+            <h5 class="text-center">KPI Template not found</h5>
+            <router-link
+              to="/human-resource/kpi"
+              class="btn btn-primary">Create new KPI Template
+            </router-link>
           </div>
         </template>
         <template slot="footer">
