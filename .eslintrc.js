@@ -10,9 +10,7 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'off' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-undef': 'off',
     'handle-callback-err': 'off',
-    'no-prototype-builtins': 'off',
     eqeqeq: 'off'
   },
   parserOptions: {

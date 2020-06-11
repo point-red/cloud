@@ -66,7 +66,7 @@
                 </span>
               </td>
               <td>
-                <span v-if="user.warehouses.length > 0">
+                <span v-if="user.warehouses && user.warehouses.length > 0">
                   <span v-for="warehouse in user.warehouses" :key="'warehouse-'+warehouse.id">
                     <i class="si si-home"></i> {{ warehouse.name }} <br/>
                   </span>

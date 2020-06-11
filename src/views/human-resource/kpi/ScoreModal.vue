@@ -112,7 +112,7 @@ export default {
     }),
     compareValues (key, order = 'asc') {
       return function innerSort (a, b) {
-        // if (!Object.prototype.hasOwnProperty.call(a, key) || !Object.prototype.hasOwnProperty.call(b, key)) {
+        // eslint-disable-next-line no-prototype-builtins
         if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
           // property doesn't exist on either object
           return 0

@@ -488,6 +488,7 @@ export default {
           this.markers[0].position.lng = pos.lng
           this.$refs.map.$mapPromise.then(() => {
             this.isLoading = false
+            // eslint-disable-next-line no-undef
             this.geocodeLatLng(new google.maps.Geocoder(), pos, google.maps.InfoWindow)
           }).catch(error => {
             this.isLoading = false
