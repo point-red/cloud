@@ -12,13 +12,11 @@
 <script>
 import PurchaseMenu from './Menu'
 import Breadcrumb from '@/views/Breadcrumb'
-import PointTable from 'point-table-vue'
 
 export default {
   components: {
     PurchaseMenu,
-    Breadcrumb,
-    PointTable
+    Breadcrumb
   },
   computed: {
   },

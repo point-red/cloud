@@ -117,7 +117,6 @@
 
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
 import TabMenu from '../TabMenu'
@@ -126,7 +125,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     Breadcrumb,
-    BreadcrumbPlugin,
     PointTable,
     TabMenu
   },

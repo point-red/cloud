@@ -178,7 +178,6 @@ import AssignScoreModal from './AssignScoreModal'
 import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
-import EmployeeWidget from '../EmployeeWidget'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -186,8 +185,7 @@ export default {
     AssignScoreModal,
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource,
-    EmployeeWidget
+    BreadcrumbHumanResource
   },
   data () {
     return {

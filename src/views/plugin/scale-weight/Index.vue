@@ -27,12 +27,10 @@
 
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
-import TabMenu from './TabMenu'
 
 export default {
   components: {
-    Breadcrumb,
-    TabMenu
+    Breadcrumb
   }
 }
 </script>

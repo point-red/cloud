@@ -35,9 +35,6 @@ import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  components: {
-    Form
-  },
   data () {
     return {
       form: new Form({

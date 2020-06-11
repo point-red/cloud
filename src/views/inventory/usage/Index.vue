@@ -168,7 +168,6 @@
 </template>
 
 <script>
-import Menu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbInventory from '@/views/inventory/Breadcrumb'
 import debounce from 'lodash/debounce'
@@ -177,7 +176,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    Menu,
     Breadcrumb,
     BreadcrumbInventory,
     PointTable
