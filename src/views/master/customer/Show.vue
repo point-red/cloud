@@ -79,8 +79,15 @@
 
           <p-separator></p-separator>
 
+          <h5>{{ $t('credit limit') | uppercase }}</h5>
+          <p>{{ $t('create customer helper - credit limit') }}</p>
+
+          {{ data.credit_limit | numberFormat }}
+
+          <p-separator></p-separator>
+
           <h5>{{ $t('pricing group') | uppercase }}</h5>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus reiciendis ipsam praesentium aliquam quo, aperiam, autem consectetur animi veritatis fugiat velit magni earum ad ullam, hic beatae cum. Dicta, molestiae!</p>
+          <p>{{ $t('create customer helper - pricing group') }}</p>
 
           <ul v-if="data.pricing_group.label != null">
             <li>{{ data.pricing_group.label }}</li>
@@ -89,7 +96,7 @@
           <p-separator></p-separator>
 
           <h5>{{ $t('group') | uppercase }}</h5>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Delectus reiciendis ipsam praesentium aliquam quo, aperiam, autem consectetur animi veritatis fugiat velit magni earum ad ullam, hic beatae cum. Dicta, molestiae!</p>
+          <p>{{ $t('create customer helper - group') }}</p>
           <ul v-for="(group, index) in customer.groups" :key="index">
             <li>{{ group.name }}</li>
           </ul>
@@ -243,17 +250,12 @@ export default {
       }).then(response => {
         this.isLoading = false
         this.data.name = response.data.name
+        this.data.email = response.data.email
+        this.data.address = response.data.address
+        this.data.phone = response.data.phone
+        this.data.credit_limit = response.data.credit_limit
         if (response.data.pricing_group) {
           this.data.pricing_group.label = response.data.pricing_group.label
-        }
-        if (response.data.emails.length > 0) {
-          this.data.email = response.data.emails[0].email
-        }
-        if (response.data.addresses.length > 0) {
-          this.data.address = response.data.addresses[0].address
-        }
-        if (response.data.phones.length > 0) {
-          this.data.phone = response.data.phones[0].number
         }
       }).catch(error => {
         this.isLoading = false

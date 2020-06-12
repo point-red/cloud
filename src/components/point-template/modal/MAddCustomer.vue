@@ -20,7 +20,7 @@
 
             <p-form-row
               id="email"
-              v-model="form.emails[0].email"
+              v-model="form.email"
               :disabled="isSaving"
               :label="$t('email')"
               name="email"
@@ -29,7 +29,7 @@
 
             <p-form-row
               id="address"
-              v-model="form.addresses[0].address"
+              v-model="form.address"
               :disabled="isSaving"
               :label="$t('address')"
               name="address"
@@ -38,12 +38,24 @@
 
             <p-form-row
               id="phone"
-              v-model="form.phones[0].number"
+              v-model="form.phone"
               :disabled="isSaving"
               :label="$t('phone')"
               name="phone"
               :errors="form.errors.get('phone')"
               @errors="form.errors.set('phone', null)"/>
+
+            <p-separator></p-separator>
+
+            <h5>{{ $t('credit limit') | uppercase }}</h5>
+            <p>{{ $t('create customer helper - credit limit') }}</p>
+
+            <p-form-number
+              v-model="form.credit_limit"
+              :disabled="isSaving"
+              :is-text-right="false"
+              :errors="form.errors.get('credit_limit')"
+              @errors="form.errors.set('credit_limit', null)"/>
 
             <p-separator></p-separator>
 
@@ -99,15 +111,10 @@ export default {
       isFailed: false,
       form: new Form({
         name: null,
-        emails: [{
-          email: null
-        }],
-        addresses: [{
-          address: null
-        }],
-        phones: [{
-          number: null
-        }],
+        email: null,
+        address: null,
+        phone: null,
+        credit_limit: null,
         pricing_group_id: null,
         pricing_group_label: null,
         groups: []

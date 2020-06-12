@@ -24,7 +24,7 @@
 
             <p-form-row
               id="email"
-              v-model="form.emails[0].email"
+              v-model="form.email"
               :disabled="isSaving"
               :label="$t('email')"
               name="email"
@@ -33,7 +33,7 @@
 
             <p-form-row
               id="address"
-              v-model="form.addresses[0].address"
+              v-model="form.address"
               :disabled="isSaving"
               :label="$t('address')"
               name="address"
@@ -42,12 +42,24 @@
 
             <p-form-row
               id="phone"
-              v-model="form.phones[0].number"
+              v-model="form.phone"
               :disabled="isSaving"
               :label="$t('phone')"
               name="phone"
               :errors="form.errors.get('phone')"
               @errors="form.errors.set('phone', null)"/>
+
+            <p-separator></p-separator>
+
+            <h5>{{ $t('credit limit') | uppercase }}</h5>
+            <p>{{ $t('create customer helper - credit limit') }}</p>
+
+            <p-form-number
+              v-model="form.credit_limit"
+              :disabled="isSaving"
+              :is-text-right="false"
+              :errors="form.errors.get('credit_limit')"
+              @errors="form.errors.set('credit_limit', null)"/>
 
             <p-separator></p-separator>
 
@@ -140,6 +152,10 @@ export default {
       }).then(response => {
         this.isLoading = false
         this.form.name = this.customer.name
+        this.form.address = this.customer.address
+        this.form.phone = this.customer.phone
+        this.form.email = this.customer.email
+        this.form.credit_limit = this.customer.credit_limit
         if (this.customer.pricing_group) {
           this.form.pricing_group_id = this.customer.pricing_group.id
           this.form.pricing_group_label = this.customer.pricing_group.label
@@ -147,12 +163,6 @@ export default {
         this.form.groups = this.customer.groups
         if (this.customer.emails.length > 0) {
           this.form.emails[0].email = this.customer.emails[0].email
-        }
-        if (this.customer.addresses.length > 0) {
-          this.form.addresses[0].address = this.customer.addresses[0].address
-        }
-        if (this.customer.phones.length > 0) {
-          this.form.phones[0].number = this.customer.phones[0].number
         }
         this.$nextTick(() => {
           this.$refs.name.setFocus()

@@ -127,21 +127,9 @@
                   {{ customer.name }}
                 </router-link>
               </td>
-              <td>
-                <template v-for="customerEmail in customer.emails">
-                  {{ customerEmail.email }}
-                </template>
-              </td>
-              <td>
-                <template v-for="customerAddress in customer.addresses">
-                  {{ customerAddress.address }}
-                </template>
-              </td>
-              <td>
-                <template v-for="customerPhone in customer.phones">
-                  {{ customerPhone.number }}
-                </template>
-              </td>
+              <td>{{ customer.email }}</td>
+              <td>{{ customer.address }}</td>
+              <td>{{ customer.phone }}</td>
               <td>
                 <template v-for="(group, index) in customer.groups">
                   {{ group.name }}<template v-if="customer.groups.length != index + 1">,</template>
@@ -326,16 +314,16 @@ export default {
           sort_by: 'customer.name',
           filter_like: {
             'customer.name': this.searchText,
-            'address.address': this.searchText,
-            'email.email': this.searchText,
-            'phone.number': this.searchText
+            'customer.address': this.searchText,
+            'customer.email': this.searchText,
+            'customer.phone': this.searchText
           },
           filter_equal: {
             pricing_group_id: this.pricingGroupId,
             'customer_group.id': this.groupId
           },
           is_archived: this.statusId,
-          includes: 'addresses;phones;emails;groups;pricingGroup',
+          includes: 'groups;pricingGroup',
           limit: this.limit,
           page: this.page
         }
