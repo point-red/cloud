@@ -22,7 +22,7 @@
       :is-text-right="isTextRight"
       :max="baseValue"
       @input="discountValueChanged"/>
-    <div class="input-group-append" @click="togglePercent" @mouseenter="show" @mouseleave="hide">
+    <div class="input-group-append" @click="togglePercent">
       <div v-if="isPercent" class="input-group-text">%</div>
       <div v-else class="input-group-text"></div>
     </div>
@@ -90,11 +90,13 @@ export default {
   },
   methods: {
     togglePercent () {
-      this.isPercent = !this.isPercent
-      this.discountPercentChanged(0)
-      this.$nextTick(() => {
-        this.$refs.formDiscount.setFocus()
-      })
+      if (!this.readonly) {
+        this.isPercent = !this.isPercent
+        this.discountPercentChanged(0)
+        this.$nextTick(() => {
+          this.$refs.formDiscount.setFocus()
+        })
+      }
     },
     discountPercentChanged (value) {
       this.$emit('update:discountPercent', value * 1)
