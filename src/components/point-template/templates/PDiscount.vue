@@ -22,15 +22,10 @@
       :is-text-right="isTextRight"
       :max="baseValue"
       @input="discountValueChanged"/>
-    <k-pop placement="bottom" with-arrow theme="clean">
-      <template #trigger="{ show, hide }">
-        <div class="input-group-append" @click="togglePercent" @mouseenter="show" @mouseleave="hide">
-          <div v-if="isPercent" class="input-group-text">%</div>
-          <div v-else class="input-group-text"></div>
-        </div>
-      </template>
-      Click this box to change discount based on percentage or value
-    </k-pop>
+    <div class="input-group-append" @click="togglePercent" @mouseenter="show" @mouseleave="hide">
+      <div v-if="isPercent" class="input-group-text">%</div>
+      <div v-else class="input-group-text"></div>
+    </div>
   </div>
 </template>
 
