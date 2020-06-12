@@ -31,13 +31,11 @@
                 </table>
               </div>
               <div class="col-sm-6 text-right">
-                <div class="mb-30">
-                  <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
-                  <template v-if="authUser.branch">
-                    {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
-                    {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
-                  </template>
-                </div>
+                <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                <template v-if="authUser.branch">
+                  {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
+                  {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
+                </template>
               </div>
             </div>
             <hr>

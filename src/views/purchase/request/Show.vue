@@ -68,10 +68,10 @@
               </table>
             </div>
             <div class="col-sm-6 text-right">
-              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
               <template v-if="purchaseRequest.form.branch">
-                {{ purchaseRequest.form.branch.address | uppercase }} <br v-if="purchaseRequest.form.branch.address">
-                {{ purchaseRequest.form.branch.phone | uppercase }} <br v-if="purchaseRequest.form.branch.phone">
+                {{ purchaseRequest.form.branch.address | uppercase }}<br v-if="purchaseRequest.form.branch.address">
+                {{ purchaseRequest.form.branch.phone | uppercase }}<br v-if="purchaseRequest.form.branch.phone">
               </template>
             </div>
           </div>

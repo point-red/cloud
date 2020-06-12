@@ -38,8 +38,8 @@
               <div class="col-sm-6 text-right">
                 <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
                 <template v-if="form.branch">
-                  <br v-if="form.branch.address">{{ form.branch.address | uppercase }}
-                  <br v-if="form.branch.phone">{{ form.branch.phone | uppercase }}
+                  {{ form.branch.address | uppercase }}<br v-if="form.branch.address">
+                  {{ form.branch.phone | uppercase }}<br v-if="form.branch.phone">
                 </template>
               </div>
             </div>

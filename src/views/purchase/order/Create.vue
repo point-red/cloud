@@ -47,18 +47,15 @@
                 <div class="mb-30">
                   <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
                   <template v-if="authUser.branch">
-                    {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
-                    {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
+                    {{ authUser.branch.address | uppercase }}<br v-if="authUser.branch.address">
+                    {{ authUser.branch.phone | uppercase }}<br v-if="authUser.branch.phone">
                   </template>
                 </div>
                 <div>
-                  <h6 class="mb-0 ">{{ $t('to') | uppercase }}:</h6>
-                  <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span>
-                  <div style="font-size:12px" v-if="form.supplier_phone">
-                    <br v-if="form.supplier_address">{{ form.supplier_address | uppercase }}
-                    <br v-if="form.supplier_phone">{{ form.supplier_phone }}
-                    <br v-if="form.supplier_email">{{ form.supplier_email | uppercase }}
-                  </div>
+                  <h6 class="mb-0">{{ $t('to') | uppercase }}: <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span></h6>
+                  {{ form.supplier_address | uppercase }}<br v-if="form.supplier_address">
+                  {{ form.supplier_phone }}<br v-if="form.supplier_phone">
+                  {{ form.supplier_email | uppercase }}<br v-if="form.supplier_email">
                 </div>
               </div>
             </div>
