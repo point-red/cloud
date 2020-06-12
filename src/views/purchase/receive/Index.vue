@@ -27,14 +27,14 @@
             :value="searchText"
             @input="filterSearch"/>
         </div>
-        <div class="text-center font-size-sm mb-10">
+        <div class="text-center font-size-sm">
           <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
             {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
           </a>
         </div>
-        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div class="card m-5 pt-10" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
           <div class="row">
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-3 text-center">
               <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
@@ -45,7 +45,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-3 text-center">
               <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
@@ -56,18 +56,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-6 text-center">
-              <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('approval status')" :is-horizontal="false">
-                <div slot="body">
-                  <span
-                    @click="$refs.formApprovalStatus.open()"
-                    class="select-link">
-                    {{ formApprovalStatus.label || $t('select') | uppercase }}
-                  </span>
-                </div>
-              </p-form-row>
-            </div>
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-3 text-center">
               <p-form-row id="form-status" name="form-status" :label="$t('form status')" :is-horizontal="false">
                 <div slot="body">
                   <span
@@ -91,9 +80,7 @@
             <span class="css-control-indicator"></span>
           </label> -->
           <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-            <!-- <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
-              {{ $t('request approval') | uppercase }}
-            </button>
+            <!--
             <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkApprove()">
               {{ $t('approve') | uppercase }}
             </button>
@@ -166,7 +153,6 @@
         </p-pagination>
       </p-block>
     </div>
-    <m-form-approval-status ref="formApprovalStatus" @choosen="chooseFormApprovalStatus($event)"/>
     <m-form-status ref="formStatus" @choosen="chooseFormStatus($event)"/>
   </div>
 </template>
@@ -284,11 +270,6 @@ export default {
       this.formStatus.value = option.value
       this.getPurchaseReceive()
     },
-    chooseFormApprovalStatus (option) {
-      this.formApprovalStatus.label = option.label
-      this.formApprovalStatus.value = option.value
-      this.getPurchaseReceive()
-    },
     filterSearch: debounce(function (value) {
       this.$router.push({
         query: {
@@ -354,7 +335,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-
-</style>
