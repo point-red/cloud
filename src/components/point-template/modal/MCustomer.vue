@@ -5,7 +5,7 @@
       :title="$t('select customer') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
-      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <input type="text" class="form-control" ref="searchText" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
       <hr>
       <div v-if="isLoading">
         <h3 class="text-center">Loading ...</h3>
@@ -14,14 +14,13 @@
         <template v-for="(option, index) in options">
         <a
           :key="index"
-          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+          class="list-group-item list-group-item-action justify-content-between align-items-center"
           :class="{'active': option.id == mutableId }"
           @click="choose(option)"
           href="javascript:void(0)">
-          {{ option.label | uppercase }}<br v-if="option.address">
-          {{ option.address | uppercase }}<br v-if="option.email">
-          {{ option.email | uppercase }}<br v-if="option.phone">
-          {{ option.phone | uppercase }}
+          {{ option.label | uppercase }}
+          <div v-if="option.address" style="font-size:11px"><i class="fa fa-home fa-fw"></i> {{ option.address | uppercase }}</div>
+          <div v-if="option.phone" style="font-size:11px"><i class="fa fa-phone fa-fw"></i> {{ option.phone | uppercase }}</div>
         </a>
         </template>
       </div>

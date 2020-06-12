@@ -35,7 +35,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                    <td class="font-weight-bold">{{ $t('reference') | uppercase }}</td>
                     <td>
                       {{ downPayment.downpaymentable.form.number }}
                     </td>
@@ -62,13 +62,9 @@
                   </template>
                 </div>
                 <div>
-                  <h6 class="mb-0 ">{{ $t('to') | uppercase }}:</h6>
-                  {{ form.supplier_label || $t('select') | uppercase }}
-                  <div style="font-size:12px" v-if="form.supplier_phone">
-                    <br v-if="form.supplier_address">{{ form.supplier_address | uppercase }}
-                    <br v-if="form.supplier_phone">{{ form.supplier_phone }}
-                    <br v-if="form.supplier_email">{{ form.supplier_email | uppercase }}
-                  </div>
+                  <h6 class="mb-0">{{ $t('to') | uppercase }}: {{ form.supplier_label | uppercase }}</h6>
+                  <div v-if="form.supplier_address"><i class="fa fa-home fa-fw"></i> {{ form.supplier_address | uppercase }}</div>
+                  <div v-if="form.supplier_phone"><i class="fa fa-phone fa-fw"></i> {{ form.supplier_phone | uppercase }}</div>
                 </div>
               </div>
             </div>

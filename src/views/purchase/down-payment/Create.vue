@@ -2,8 +2,8 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link to="/purchase/down-payment" class="breadcrumb-item">{{ $t('down payment') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Create</span>
+      <router-link to="/purchase/down-payment" class="breadcrumb-item">{{ $t('down payment') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
     <purchase-menu/>
@@ -29,7 +29,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('purchase order') | uppercase }}</td>
+                    <td class="font-weight-bold">{{ $t('reference') | uppercase }}</td>
                     <td>
                       <span @click="$refs.selectPurchaseOrder.open()" class="select-link">
                         <template v-if="purchaseOrder && purchaseOrder.form.number != null">
@@ -63,13 +63,13 @@
                   </template>
                 </div>
                 <div>
-                  <h6 class="mb-0 ">{{ $t('to') | uppercase }}:</h6>
-                  {{ form.supplier_label | uppercase }}
-                  <div style="font-size:12px" v-if="form.supplier_phone">
-                    <br v-if="form.supplier_address">{{ form.supplier_address | uppercase }}
-                    <br v-if="form.supplier_phone">{{ form.supplier_phone }}
-                    <br v-if="form.supplier_email">{{ form.supplier_email | uppercase }}
-                  </div>
+                  <h6 class="mb-0">
+                    {{ $t('to') | uppercase }}:
+                    <template v-if="form.supplier_code">[{{ form.supplier_code | uppercase }}]</template>
+                    {{ form.supplier_name | uppercase }}
+                  </h6>
+                  <div v-if="form.supplier_address"><i class="fa fa-home fa-fw"></i> {{ form.supplier_address | uppercase }}</div>
+                  <div v-if="form.supplier_phone"><i class="fa fa-phone fa-fw"></i> {{ form.supplier_phone | uppercase }}</div>
                 </div>
               </div>
             </div>
@@ -211,8 +211,8 @@ export default {
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         purchase_order_id: null,
         supplier_id: null,
+        supplier_code: null,
         supplier_name: null,
-        supplier_label: null,
         supplier_address: null,
         supplier_phone: null,
         supplier_email: null,
@@ -239,8 +239,8 @@ export default {
       this.purchaseOrder = purchaseOrder
       this.form.purchase_order_id = purchaseOrder.id
       this.form.supplier_id = this.purchaseOrder.supplier_id
+      this.form.supplier_code = this.purchaseOrder.supplier_code
       this.form.supplier_name = this.purchaseOrder.supplier_name
-      this.form.supplier_label = this.purchaseOrder.supplier_name
     },
     chooseApprover (value) {
       this.form.request_approval_to = value.id

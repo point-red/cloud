@@ -70,18 +70,14 @@
               </table>
             </div>
             <div class="col-sm-6 text-right">
-              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
               <template v-if="downPayment.form.branch">
-                {{ downPayment.form.branch.address | uppercase }}
-                <br v-if="downPayment.form.branch.phone">{{ downPayment.form.branch.phone | uppercase }}
+                {{ downPayment.form.branch.address | uppercase }} <br v-if="downPayment.form.branch.address">
+                {{ downPayment.form.branch.phone | uppercase }} <br v-if="downPayment.form.branch.phone">
               </template>
-              <h6 class="mt-30 mb-5">{{ $t('supplier') | uppercase }}</h6>
-              {{ downPayment.supplier_name | uppercase }}
-              <div style="font-size:12px">
-                {{ downPayment.supplier_address | uppercase }}
-                <br v-if="downPayment.supplier_phone">{{ downPayment.supplier_phone }}
-                <br v-if="downPayment.supplier_email">{{ downPayment.supplier_email | uppercase }}
-              </div>
+              <h6 class="mt-30 mb-0">{{ $t('to') | uppercase }}: {{ downPayment.supplier_label | uppercase }}</h6>
+              <div v-if="downPayment.supplier_address"><i class="fa fa-home fa-fw"></i> {{ downPayment.supplier_address | uppercase }}</div>
+              <div v-if="downPayment.supplier_phone"><i class="fa fa-phone fa-fw"></i> {{ downPayment.supplier_phone | uppercase }}</div>
             </div>
           </div>
 

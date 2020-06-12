@@ -52,13 +52,9 @@
                   </template>
                 </div>
                 <div>
-                  <h6 class="mb-0 ">{{ $t('to') | uppercase }}:</h6>
-                  <span @click="$refs.customers.open()" class="select-link">{{ form.customer_label || $t('select') | uppercase }}</span>
-                  <div style="font-size:12px">
-                    <br v-if="form.customer_address">{{ form.customer_address | uppercase }}
-                    <br v-if="form.customer_phone">{{ form.customer_phone }}
-                    <br v-if="form.customer_email">{{ form.customer_email | uppercase }}
-                  </div>
+                  <h6 class="mb-0 ">{{ $t('to') | uppercase }}: <span @click="$refs.customers.open()" class="select-link">{{ form.customer_label || $t('select') | uppercase }}</span></h6>
+                  {{ form.customer_address | uppercase }} <br v-if="form.customer_address">
+                  {{ form.customer_phone }} <br v-if="form.customer_phone">
                 </div>
               </div>
             </div>

@@ -68,16 +68,12 @@
             <div class="col-sm-6 text-right">
               <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
               <template v-if="purchaseOrder.form.branch">
-                {{ purchaseOrder.form.branch.address | uppercase }}
-                <br v-if="purchaseOrder.form.branch.phone">{{ purchaseOrder.form.branch.phone | uppercase }}
+                {{ purchaseOrder.form.branch.address | uppercase }} <br v-if="purchaseOrder.form.branch.address">
+                {{ purchaseOrder.form.branch.phone | uppercase }} <br v-if="purchaseOrder.form.branch.phone">
               </template>
-              <h6 class="mt-30 mb-5">{{ $t('supplier') | uppercase }}</h6>
-              {{ purchaseOrder.supplier_name | uppercase }}
-              <div style="font-size:12px">
-                {{ purchaseOrder.supplier_address | uppercase }}
-                <br v-if="purchaseOrder.supplier_phone">{{ purchaseOrder.supplier_phone }}
-                <br v-if="purchaseOrder.supplier_email">{{ purchaseOrder.supplier_email | uppercase }}
-              </div>
+              <h6 class="mt-30 mb-0">{{ $t('to') | uppercase }}: {{ purchaseOrder.supplier_name | uppercase }}</h6>
+              <div v-if="purchaseOrder.form.supplier_address"><i class="fa fa-home fa-fw"></i> {{ purchaseOrder.form.supplier_address | uppercase }}</div>
+              <div v-if="purchaseOrder.form.supplier_phone"><i class="fa fa-phone fa-fw"></i> {{ purchaseOrder.form.supplier_phone | uppercase }}</div>
             </div>
           </div>
           <hr>

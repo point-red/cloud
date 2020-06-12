@@ -25,20 +25,23 @@
           @click="choose(option)"
           href="javascript:void(0)">
           {{ option.label | uppercase }}
-          <span style="font-size: 10px">
-            <br v-if="option.address">{{ option.address | uppercase }}
-            <br v-if="option.email">{{ option.email | uppercase }}
-            <br v-if="option.phone">{{ option.phone | uppercase }}
-          </span>
+          <div v-if="option.address" style="font-size:11px"><i class="fa fa-home fa-fw"></i> {{ option.address | uppercase }}</div>
+          <div v-if="option.phone" style="font-size:11px"><i class="fa fa-phone fa-fw"></i> {{ option.phone | uppercase }}</div>
         </div>
         </template>
       </div>
       <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
+      <div class="pull-left">
+        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="$refs.addSupplier.open()">
+          {{ $t('create new') | uppercase }}
+        </button>
+      </div>
       <div class="pull-right">
-        <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
-        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">
+          {{ $t('clear') | uppercase }}
+        </button>
       </div>
     </sweet-modal>
 
@@ -131,9 +134,6 @@ export default {
       }).catch(error => {
         this.isLoading = false
       })
-    },
-    add () {
-      this.$refs.addSupplier.open()
     },
     onAdded () {
       this.search()
