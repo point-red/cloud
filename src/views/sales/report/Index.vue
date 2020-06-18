@@ -9,32 +9,18 @@
 
     <div class="row">
       <p-block>
-        <div class="input-group block">
-          <router-link
-            to="/sales/order/create"
-            v-if="$permission.has('create sales order')"
-            class="input-group-prepend">
-            <span class="input-group-text">
-              <i class="fa fa-plus"></i>
-            </span>
-          </router-link>
-          <p-form-input
-            id="search-text"
-            name="search-text"
-            placeholder="Search"
-            ref="searchText"
-            class="btn-block"
-            :value="searchText"
-            @input="filterSearch"/>
-        </div>
-        <div class="text-center font-size-sm">
-          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
-          </a>
-        </div>
-        <div class="card m-5 pt-10" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div class="card m-5 pt-10">
           <div class="row">
-            <div class="col-sm-3 offset-3 text-center">
+            <div class="col-sm-4 text-center">
+              <p-form-row id="date-start" name="date-start" :label="$t('item')" :is-horizontal="false">
+                <div slot="body">
+                  <span @click="$refs.item.open()" class="select-link font-size-md">
+                    {{ item_label || $t('select') | uppercase }}
+                  </span>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-4 text-center">
               <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
@@ -45,7 +31,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-3 text-center">
+            <div class="col-sm-4 text-center">
               <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
@@ -99,8 +85,9 @@
             <template v-for="(salesOrder, index) in salesOrders">
             <tr
               v-for="(salesOrderItem, index2) in salesOrder.items"
-              :key="'pr-' + index + '-i-' + index2"
+              :key="'sales-order-' + index + '-i-' + index2"
               slot="p-body">
+              <template v-if="item_id == null || item_id == salesOrderItem.item_id">
               <th>
                 <router-link :to="{ name: 'sales.order.show', params: { id: salesOrder.id }}">
                   {{ salesOrder.form.number }}
@@ -125,6 +112,7 @@
                   :checked="isRowChecked(salesOrder.id)"
                   class="text-center"/> -->
               </td>
+              </template>
             </tr>
             </template>
             <tr slot="p-body">
@@ -148,6 +136,7 @@
     </div>
     <m-form-approval-status ref="formApprovalStatus" @choosen="chooseFormApprovalStatus($event)"/>
     <m-form-status ref="formStatus" @choosen="chooseFormStatus($event)"/>
+    <m-item ref="item" @choosen="chooseItem"/>
   </div>
 </template>
 
@@ -168,10 +157,11 @@ export default {
   data () {
     return {
       isLoading: true,
-      searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
       limit: 1000,
+      item_id: null,
+      item_label: null,
       isAdvanceFilter: false,
       checkedRow: [],
       formStatus: {
@@ -211,6 +201,11 @@ export default {
   },
   methods: {
     ...mapActions('salesOrder', ['get']),
+    chooseItem (item) {
+      this.item_id = item.id
+      this.item_label = item.label
+      this.getSalesOrder()
+    },
     toggleCheckRow (id) {
       if (!this.isRowChecked(id)) {
         this.checkedRow.push({ id })
@@ -276,7 +271,6 @@ export default {
           search: value
         }
       })
-      this.searchText = value
       this.currentPage = 1
       this.getSalesOrder()
     }, 300),
@@ -289,22 +283,16 @@ export default {
           sort_by: '-form.number',
           group_by: 'form.id',
           filter_form: 'active;approvalApproved',
-          filter_like: {
-            'form.number': this.searchText,
-            'customer.name': this.searchText,
-            'item.code': this.searchText,
-            'item.name': this.searchText,
-            'sales_order_item.notes': this.searchText,
-            'sales_order_item.quantity': this.searchText,
-            'sales_order_item.price': this.searchText
-          },
+          // filter_equal: {
+          //   'item.id': this.item_id
+          // },
           filter_date_min: {
             'form.date': this.serverDateTime(this.date.start, 'start')
           },
           filter_date_max: {
             'form.date': this.serverDateTime(this.date.end, 'end')
           },
-          limit: 10,
+          limit: this.limit,
           includes: 'form;customer;items.item;items.allocation',
           page: this.currentPage
         }
@@ -312,7 +300,9 @@ export default {
         this.total = 0
         this.salesOrders.forEach(salesOrder => {
           salesOrder.items.forEach(item => {
-            this.total += parseFloat(item.quantity * (item.price - item.discount_value))
+            if (this.item_id == null || this.item_id == item.item_id) {
+              this.total += parseFloat(item.quantity * (item.price - item.discount_value))
+            }
           })
         })
       }).catch(error => {

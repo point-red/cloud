@@ -234,6 +234,12 @@
                     active-class="active">{{ $t('sales order') | uppercase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read sales order')">
+                  <router-link
+                    to="/sales/report"
+                    active-class="active">{{ $t('sales report') | uppercase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <!-- <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
