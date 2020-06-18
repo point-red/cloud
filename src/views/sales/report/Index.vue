@@ -309,6 +309,7 @@ export default {
           page: this.currentPage
         }
       }).then(response => {
+        this.total = 0
         this.salesOrders.forEach(salesOrder => {
           salesOrder.items.forEach(item => {
             this.total += parseFloat(item.quantity * (item.price - item.discount_value))
