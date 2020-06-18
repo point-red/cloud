@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <!-- <div class="col-sm-6 col-xl-3" v-if="$permission.has('create employee salary') || $permission.has('read employee salary')">
+    <div class="col-sm-6 col-xl-3" v-if="$permission.has('create employee salary') || $permission.has('read employee salary')">
       <div class="block block-themed text-center">
         <div class="block-content block-content-full block-content-sm bg-gray-lighter">
           <div class="font-w600">SALARY</div>
@@ -60,7 +60,7 @@
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
   </div>
 </template>
 
