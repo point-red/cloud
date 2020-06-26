@@ -172,8 +172,6 @@ import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPlayBook from '@/views/plugin/play-book/Breadcrumb'
 import BreadcrumbProcedure from '@/views/plugin/play-book/procedure/components/Breadcrumb'
 import ProcedureCodeItem from './components/ProcedureCodeItem'
-import debounce from 'lodash/debounce'
-import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -215,7 +213,7 @@ export default {
         const id = this.$route.params.id
         this.isLoading = true
 
-        let procedure = await this.show(id)
+        const procedure = await this.show(id)
         this.form = { ...procedure }
       } catch (error) {
       } finally {
@@ -224,10 +222,7 @@ export default {
     },
     async approve () {
       try {
-        const id = this.$route.params.id
         this.isLoading = true
-
-        let data = await this.$store.dispatch('pluginPlayBookProcedureApproval/approve', id)
 
         if (this.form.approval_action === 'update') {
           this.$router.replace(
