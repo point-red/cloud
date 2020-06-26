@@ -10,7 +10,6 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@ckienle/k-pop": "^0.7.0",
     "axios": "^0.19.2",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "bugsnag-js": "^4.7.3",
