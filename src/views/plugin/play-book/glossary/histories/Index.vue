@@ -1,9 +1,14 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
-      <router-link class="breadcrumb-item" to="/plugin/play-book/glossary">{{ 'Glossary' | uppercase }}</router-link>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
+      <router-link
+        class="breadcrumb-item"
+        to="/plugin/play-book/glossary"
+      >
+        {{ 'Glossary' | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ glossary && glossary.code || 'Loading' | uppercase }}</span>
       <span class="breadcrumb-item active">{{ 'Histories' | uppercase }}</span>
     </breadcrumb>
@@ -14,7 +19,9 @@
           <h4>{{ 'histories' | uppercase }}</h4>
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Code</th>
               <th>Name</th>
               <th>Abbreviation</th>
@@ -23,7 +30,8 @@
             <tr
               v-for="(history, index) in histories"
               :key="history.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ (++index) + ((page - 1) * limit) }}</th>
               <td>{{ history.code }}</td>
               <td>{{ history.name }}</td>
@@ -35,8 +43,8 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>

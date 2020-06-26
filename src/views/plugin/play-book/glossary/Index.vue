@@ -1,8 +1,8 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
       <span class="breadcrumb-item active">{{ 'Glossary' | uppercase }}</span>
     </breadcrumb>
 
@@ -10,47 +10,59 @@
       <p-block>
         <div class="input-group block mb-5">
           <a
-            href="javascript:void(0)"
-            @click="$refs.modalAddGlossary.open()"
             v-if="$permission.has('create play book glossary')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.modalAddGlossary.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Code</th>
               <th>Name</th>
               <th>Abbreviation</th>
               <th>Note</th>
-              <th class="text-center">History</th>
+              <th class="text-center">
+                History
+              </th>
             </tr>
             <tr
               v-for="(glossary, index) in glossaries"
               :key="glossary.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ (++index) + ((page - 1) * limit) }}</th>
               <td>
-                <router-link :to="`/plugin/play-book/glossary/${glossary.id}`">{{ glossary.code }}</router-link>
+                <router-link :to="`/plugin/play-book/glossary/${glossary.id}`">
+                  {{ glossary.code }}
+                </router-link>
               </td>
               <td>{{ glossary.name }}</td>
               <td>{{ glossary.abbreviation | uppercase }}</td>
               <td>{{ glossary.note }}</td>
               <td class="text-center">
-                <router-link class="btn btn-sm btn-light" :to="`/plugin/play-book/glossary/${glossary.id}/histories`">
+                <router-link
+                  class="btn btn-sm btn-light"
+                  :to="`/plugin/play-book/glossary/${glossary.id}/histories`"
+                >
                   SEE HISTORY
                 </router-link>
               </td>
@@ -60,11 +72,14 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
-    <m-add-glossary ref="modalAddGlossary" @added="getGlossaryRequest"></m-add-glossary>
+    <m-add-glossary
+      ref="modalAddGlossary"
+      @added="getGlossaryRequest"
+    />
   </div>
 </template>
 

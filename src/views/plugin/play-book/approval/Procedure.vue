@@ -1,13 +1,13 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
       <span class="breadcrumb-item active">{{ 'Approval' | uppercase }}</span>
       <span class="breadcrumb-item active">{{ 'Procedure' | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
     <div class="row">
       <p-block>
@@ -15,26 +15,33 @@
           <router-link
             v-if="$permission.has('create play book procedure')"
             class="btn btn-outline-primary mr-3"
-            to="/plugin/play-book/approval/procedure/send">
-            Sent Request <i class="fa fa-paper-plane"></i>
+            to="/plugin/play-book/approval/procedure/send"
+          >
+            Sent Request <i class="fa fa-paper-plane" />
           </router-link>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
-          <div class="alert alert-danger" v-if="!$permission.has('approve play book procedure')">
+          <div
+            v-if="!$permission.has('approve play book procedure')"
+            class="alert alert-danger"
+          >
             <span>You don't have permission to see this page</span>
           </div>
           <point-table v-else>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Code</th>
               <th>To</th>
               <th>Action</th>
@@ -44,7 +51,8 @@
             <tr
               v-for="(procedure, index) in procedures"
               :key="procedure.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ (++index) + ((page - 1) * limit) }}</th>
               <td>
                 <div>
@@ -60,16 +68,23 @@
               <td>{{ procedure.approval_action | uppercase }}</td>
               <td>{{ procedure.approval_note || '-' }}</td>
               <td>
-                <span class="badge" :class="getClasses(procedure)">
+                <span
+                  class="badge"
+                  :class="getClasses(procedure)"
+                >
                   {{ getStatus(procedure) | uppercase }}
                 </span>
               </td>
             </tr>
             <tr
+              v-if="procedures.length < 1"
               slot="p-body"
               class="text-center"
-              v-if="procedures.length < 1">
-              <td colspan="6" class="my-2 py-5">
+            >
+              <td
+                colspan="6"
+                class="my-2 py-5"
+              >
                 No data
               </td>
             </tr>
@@ -78,12 +93,15 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
+    <m-status
+      ref="status"
+      @choosen="onChoosenStatus"
+    />
   </div>
 </template>
 

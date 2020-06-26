@@ -1,37 +1,45 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
       <span class="breadcrumb-item active">{{ 'Approval' | uppercase }}</span>
-      <router-link to="/plugin/play-book/approval/procedure" class="breadcrumb-item">{{ 'Procedure' | uppercase }}</router-link>
+      <router-link
+        to="/plugin/play-book/approval/procedure"
+        class="breadcrumb-item"
+      >
+        {{ 'Procedure' | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ 'Sent' | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block mb-5">
           <router-link
             class="btn btn-outline-primary mr-3"
-            to="/plugin/play-book/approval/procedure">
-            <i class="fa fa-arrow-left mr-2"></i> List
+            to="/plugin/play-book/approval/procedure"
+          >
+            <i class="fa fa-arrow-left mr-2" /> List
           </router-link>
           <button
-            @click="$refs.modelSendProcedureRequest.open()"
+            v-if="!!selectedIds.length"
             class="btn btn-primary mr-3"
-            v-if="!!selectedIds.length">
-            Sent {{ selectedIds.length }} {{ `Request${selectedIds.length > 1 ? 's' : ''}` }} <i class="fa fa-paper-plane"></i>
+            @click="$refs.modelSendProcedureRequest.open()"
+          >
+            Sent {{ selectedIds.length }} {{ `Request${selectedIds.length > 1 ? 's' : ''}` }} <i class="fa fa-paper-plane" />
           </button>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -43,37 +51,52 @@
               <th>Action</th>
               <th>Note</th>
               <th>Status</th>
-              <th class="text-center">Edit</th>
+              <th class="text-center">
+                Edit
+              </th>
             </tr>
             <tr
               v-for="(procedure) in procedures"
               :key="procedure.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <td>
-                <input type="checkbox" v-model="form.ids[procedure.id]" style="min-width: auto">
+                <input
+                  v-model="form.ids[procedure.id]"
+                  type="checkbox"
+                  style="min-width: auto"
+                >
               </td>
               <td>{{ procedure.code }}</td>
               <td>{{ procedure.name }}</td>
               <td>{{ procedure.approval_action | uppercase }}</td>
               <td>{{ procedure.note }}</td>
               <td>
-                <span class="badge" :class="{ [procedure.approved_at ? 'badge-success' : 'badge-secondary']: true }">
+                <span
+                  class="badge"
+                  :class="{ [procedure.approved_at ? 'badge-success' : 'badge-secondary']: true }"
+                >
                   {{ procedure.approved_at ? 'APPROVED' : 'PENDING' }}
                 </span>
               </td>
               <td class="text-center">
                 <button
                   class="btn btn-sm btn-light"
-                  @click="procedureIdToEdit = procedure.id; $refs.modalEditProcedure.open()">
-                  <i class="fa fa-edit"></i>
+                  @click="procedureIdToEdit = procedure.id; $refs.modalEditProcedure.open()"
+                >
+                  <i class="fa fa-edit" />
                 </button>
               </td>
             </tr>
             <tr
+              v-if="procedures.length < 1"
               slot="p-body"
               class="text-center"
-              v-if="procedures.length < 1">
-              <td colspan="7" class="my-2 py-5">
+            >
+              <td
+                colspan="7"
+                class="my-2 py-5"
+              >
                 No data
               </td>
             </tr>
@@ -82,16 +105,21 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <m-send-procedure-request @added="getProcedures" :ids="selectedIds" ref="modelSendProcedureRequest"></m-send-procedure-request>
+    <m-send-procedure-request
+      ref="modelSendProcedureRequest"
+      :ids="selectedIds"
+      @added="getProcedures"
+    />
     <m-edit-procedure
       ref="modalEditProcedure"
       :procedure-id="procedureIdToEdit"
-      @added="getProcedures"></m-edit-procedure>
+      @added="getProcedures"
+    />
   </div>
 </template>
 

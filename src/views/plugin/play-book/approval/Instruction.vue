@@ -1,13 +1,13 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
       <span class="breadcrumb-item active">{{ 'Approval' | uppercase }}</span>
       <span class="breadcrumb-item active">{{ 'Instruction' | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
     <div class="row">
       <p-block>
@@ -15,26 +15,33 @@
           <router-link
             v-if="$permission.has('create play book instruction')"
             class="btn btn-outline-primary mr-3"
-            to="/plugin/play-book/approval/instruction/send">
-            Sent Request <i class="fa fa-paper-plane"></i>
+            to="/plugin/play-book/approval/instruction/send"
+          >
+            Sent Request <i class="fa fa-paper-plane" />
           </router-link>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
-          <div class="alert alert-danger" v-if="!$permission.has('approve play book instruction')">
+          <div
+            v-if="!$permission.has('approve play book instruction')"
+            class="alert alert-danger"
+          >
             <span>You don't have permission to see this page</span>
           </div>
           <point-table v-else>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Number</th>
               <th>Procedure</th>
               <th>To</th>
@@ -43,17 +50,20 @@
               <th>Status</th>
             </tr>
             <template
-              v-for="(instruction, index) in instructions">
+              v-for="(instruction, index) in instructions"
+            >
               <tr
                 :key="instruction.id"
-                slot="p-body">
+                slot="p-body"
+              >
                 <th>{{ (++index) + ((page - 1) * limit) }}</th>
                 <td>
                   <div>
                     <a
                       v-if="!instruction.approved_at"
                       :href="`#${instruction.id}`"
-                      @click.stop="showInstructionModal(instruction.id)">
+                      @click.stop="showInstructionModal(instruction.id)"
+                    >
                       {{ instruction.number }} - {{ instruction.name }}
                     </a>
                     <span v-else>
@@ -73,7 +83,10 @@
                 <td>{{ instruction.approval_action | uppercase }}</td>
                 <td>{{ instruction.approval_note || '-' }}</td>
                 <td>
-                  <span class="badge" :class="getClasses(instruction)">
+                  <span
+                    class="badge"
+                    :class="getClasses(instruction)"
+                  >
                     {{ getStatus(instruction) | uppercase }}
                   </span>
                 </td>
@@ -81,17 +94,19 @@
               <tr
                 v-for="step in instruction.steps"
                 :key="step.id"
-                slot="p-body">
-                <td></td>
+                slot="p-body"
+              >
+                <td />
                 <td colspan="2">
                   <div class="d-flex align-items-center">
-                    <i class="fa fa-long-arrow-right mr-3"></i>
+                    <i class="fa fa-long-arrow-right mr-3" />
                     <div>
                       <div>
                         <a
                           v-if="!step.approved_at"
                           :href="`#step-${step.id}`"
-                          @click.stop="showInstructionStepModal(step)">
+                          @click.stop="showInstructionStepModal(step)"
+                        >
                           {{ step.name }}
                         </a>
                         <span v-else>{{ step.name }}</span>
@@ -110,17 +125,24 @@
                   {{ step.approval_note || '-' }}
                 </td>
                 <td>
-                  <span class="badge" :class="getClasses(step)">
+                  <span
+                    class="badge"
+                    :class="getClasses(step)"
+                  >
                     {{ getStatus(step) | uppercase }}
                   </span>
                 </td>
               </tr>
             </template>
             <tr
+              v-if="instructions.length < 1"
               slot="p-body"
               class="text-center"
-              v-if="instructions.length < 1">
-              <td colspan="6" class="my-2 py-5">
+            >
+              <td
+                colspan="6"
+                class="my-2 py-5"
+              >
                 No data
               </td>
             </tr>
@@ -129,20 +151,25 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
+    <m-status
+      ref="status"
+      @choosen="onChoosenStatus"
+    />
     <m-show-instruction
       ref="modalShowInstruction"
       :instruction-id="selectedInstructionId"
-      @added="getInstructions"></m-show-instruction>
+      @added="getInstructions"
+    />
     <m-show-instruction-step
       ref="modalShowInstructionStep"
       :step="selectedStep"
-      @added="getInstructions"></m-show-instruction-step>
+      @added="getInstructions"
+    />
   </div>
 </template>
 

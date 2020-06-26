@@ -1,9 +1,14 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
-      <router-link to="/plugin/play-book/instruction" class="breadcrumb-item">{{ 'Instruction' | uppercase }}</router-link>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
+      <router-link
+        to="/plugin/play-book/instruction"
+        class="breadcrumb-item"
+      >
+        {{ 'Instruction' | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ 'Histories' | uppercase }}</span>
     </breadcrumb>
 
@@ -13,35 +18,51 @@
           <p-form-row
             id="procedure"
             name="procedure"
-            :label="$t('procedure')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('procedure')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               {{ `${instruction.procedure.code} - ${instruction.procedure.name}` }}
             </div>
           </p-form-row>
           <p-form-row
             id="instruction"
             name="instruction"
-            :label="$t('instruction')">
-            <div slot="body" class="col-lg-9">
-              <div v-for="(history, i) in instructionHistory" class="form-group" :key="i">
+            :label="$t('instruction')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
+              <div
+                v-for="(history, i) in instructionHistory"
+                :key="i"
+                class="form-group"
+              >
                 {{ `${history.number} - ${history.name}` }}
               </div>
             </div>
           </p-form-row>
           <point-table class="mt-5">
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Step</th>
               <th
                 v-for="glossary in glossaries"
-                :key="glossary.id">
+                :key="glossary.id"
+              >
                 {{ glossary.name }}
               </th>
             </tr>
             <tr
               v-for="(step, i) in steps"
               :key="i"
-              slot="p-body">
+              slot="p-body"
+            >
               <td>
                 <strong>{{ (++i) }}</strong>
               </td>
@@ -51,8 +72,8 @@
               <td
                 v-for="glossary in glossaries"
                 :key="glossary.id"
-                v-html="step.contentsForView[`${glossary.id}`] || '-'">
-              </td>
+                v-html="step.contentsForView[`${glossary.id}`] || '-'"
+              />
             </tr>
           </point-table>
         </p-block-inner>

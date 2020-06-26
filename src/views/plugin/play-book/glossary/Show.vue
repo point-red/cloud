@@ -1,9 +1,9 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
-      <breadcrumb-glossary></breadcrumb-glossary>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
+      <breadcrumb-glossary />
       <span class="breadcrumb-item active">{{ form.code || $t('SHOW') | uppercase }}</span>
     </breadcrumb>
 
@@ -12,113 +12,171 @@
         <p-block-inner :is-loading="isLoading">
           <div class="text-right">
             <button
-              type="button"
-              @click="$refs.modalAddGlossary.open()"
               v-if="$permission.has('create play book glossary')"
-              class="btn btn-sm btn-outline-secondary mr-5">
+              type="button"
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="$refs.modalAddGlossary.open()"
+            >
               {{ $t('create') | uppercase }}
             </button>
             <button
-              type="button"
-              @click="$refs.modalEditGlossary.open()"
               v-if="$permission.has('update play book glossary')"
-              class="btn btn-sm btn-outline-secondary mr-5">
+              type="button"
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="$refs.modalEditGlossary.open()"
+            >
               {{ $t('edit') | uppercase }}
             </button>
             <button
-              type="button"
-              @click="confirmDelete"
               v-if="$permission.has('delete play book glossary')"
+              type="button"
               :disabled="isDeleting"
-              class="btn btn-sm btn-outline-secondary mr-5">
-              <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="confirmDelete"
+            >
+              <i
+                v-show="isDeleting"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('delete') | uppercase }}
             </button>
             <router-link
               class="btn btn-sm btn-outline-secondary"
-              :to="`/plugin/play-book/glossary/${form.id}/histories`">
+              :to="`/plugin/play-book/glossary/${form.id}/histories`"
+            >
               SEE HISTORY
             </router-link>
           </div>
           <hr>
-          <div class="alert alert-success" v-if="updateSucess">
+          <div
+            v-if="updateSucess"
+            class="alert alert-success"
+          >
             Glossary updated
           </div>
-          <div class="alert alert-danger" v-if="errors">
+          <div
+            v-if="errors"
+            class="alert alert-danger"
+          >
             <strong>{{ errors.message }}</strong>
           </div>
-          <form @submit.prevent="submit" class="col-lg-6">
+          <form
+            class="col-lg-6"
+            @submit.prevent="submit"
+          >
             <p-form-row
               id="code"
               name="code"
-              :label="$t('code')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('code')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-input
                   id="code"
+                  v-model="form.code"
                   name="code"
                   :placeholder="$t('code') | capitalize"
                   :label="$t('code')"
                   :disabled="!isEditMode"
                   :errors="errors && errors.code"
-                  v-model="form.code" />
+                />
               </div>
             </p-form-row>
             <p-form-row
               id="name"
               name="name"
-              :label="$t('name')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('name')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-input
                   id="name"
+                  v-model="form.name"
                   name="name"
                   :placeholder="$t('name') | capitalize"
                   :label="$t('name')"
                   :disabled="!isEditMode"
                   :errors="errors && errors.name"
-                  v-model="form.name" />
+                />
               </div>
             </p-form-row>
             <p-form-row
               id="abbreviation"
               name="abbreviation"
-              :label="$t('abbreviation')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('abbreviation')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-input
                   id="abbreviation"
+                  v-model="form.abbreviation"
                   name="abbreviation"
                   :placeholder="$t('abbreviation') | capitalize"
                   :label="$t('abbreviation')"
                   :disabled="!isEditMode"
                   :errors="errors && errors.abbreviation"
-                  v-model="form.abbreviation" />
+                />
               </div>
             </p-form-row>
             <p-form-row
               id="note"
               name="note"
-              :label="$t('note')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('note')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <textarea
                   id="note"
+                  v-model="form.note"
                   name="note"
                   :placeholder="$t('note') | capitalize"
                   class="form-control"
                   :label="$t('note')"
                   :disabled="!isEditMode"
-                  v-model="form.note"></textarea>
+                />
               </div>
             </p-form-row>
-            <div class="mt-4" v-if="isEditMode">
-              <button type="button" class="btn btn-sm btn-light mr-2" @click="isEditMode = false">Cancel</button>
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+            <div
+              v-if="isEditMode"
+              class="mt-4"
+            >
+              <button
+                type="button"
+                class="btn btn-sm btn-light mr-2"
+                @click="isEditMode = false"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                :disabled="isSaving"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('update') | uppercase }}
               </button>
             </div>
           </form>
         </p-block-inner>
       </p-block>
     </div>
-    <m-add-glossary ref="modalAddGlossary" @added="$router.push('/plugin/play-book/glossary')"></m-add-glossary>
-    <m-edit-glossary ref="modalEditGlossary" @added="getData"></m-edit-glossary>
+    <m-add-glossary
+      ref="modalAddGlossary"
+      @added="$router.push('/plugin/play-book/glossary')"
+    />
+    <m-edit-glossary
+      ref="modalEditGlossary"
+      @added="getData"
+    />
   </div>
 </template>
 

@@ -1,37 +1,45 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
       <span class="breadcrumb-item active">{{ 'Approval' | uppercase }}</span>
-      <router-link to="/plugin/play-book/approval/instruction" class="breadcrumb-item">{{ 'Procedure' | uppercase }}</router-link>
+      <router-link
+        to="/plugin/play-book/approval/instruction"
+        class="breadcrumb-item"
+      >
+        {{ 'Procedure' | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ 'Sent' | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block mb-5">
           <router-link
             class="btn btn-outline-primary mr-3"
-            to="/plugin/play-book/approval/instruction">
-            <i class="fa fa-arrow-left mr-2"></i> List
+            to="/plugin/play-book/approval/instruction"
+          >
+            <i class="fa fa-arrow-left mr-2" /> List
           </router-link>
           <button
-            @click="$refs.modelSendInstructionRequest.open()"
+            v-if="!!selectedIds.length || !!selectedStepIds.length"
             class="btn btn-primary mr-3"
-            v-if="!!selectedIds.length || !!selectedStepIds.length">
-            Sent {{ (selectedIds.length + selectedStepIds.length) }} {{ `Request${selectedIds.length > 1 ? 's' : ''}` }} <i class="fa fa-paper-plane"></i>
+            @click="$refs.modelSendInstructionRequest.open()"
+          >
+            Sent {{ (selectedIds.length + selectedStepIds.length) }} {{ `Request${selectedIds.length > 1 ? 's' : ''}` }} <i class="fa fa-paper-plane" />
           </button>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -41,15 +49,24 @@
               <th>Name</th>
               <th>Action</th>
               <th>Status</th>
-              <th class="text-center">Edit</th>
+              <th class="text-center">
+                Edit
+              </th>
             </tr>
             <template
-              v-for="(instruction, index) in instructions">
+              v-for="(instruction, index) in instructions"
+            >
               <tr
                 :key="instruction.id"
-                slot="p-body">
+                slot="p-body"
+              >
                 <td>
-                  <input v-if="!instruction.approved_at" type="checkbox" v-model="form.ids[instruction.id]" style="min-width: auto">
+                  <input
+                    v-if="!instruction.approved_at"
+                    v-model="form.ids[instruction.id]"
+                    type="checkbox"
+                    style="min-width: auto"
+                  >
                   <span v-else>{{ (++index) + ((page - 1) * limit) }}</span>
                 </td>
                 <td>
@@ -57,53 +74,70 @@
                 </td>
                 <td>{{ instruction.approval_action | uppercase }}</td>
                 <td>
-                  <span class="badge" :class="{ [instruction.approved_at ? 'badge-success' : 'badge-secondary']: true }">
+                  <span
+                    class="badge"
+                    :class="{ [instruction.approved_at ? 'badge-success' : 'badge-secondary']: true }"
+                  >
                     {{ instruction.approved_at ? 'APPROVED' : 'PENDING' }}
                   </span>
                 </td>
                 <td class="text-center">
                   <button
-                    @click="instructionToEdit = instruction; $refs.modalEditInstruction.open()"
                     class="btn btn-sm btn-light"
-                    :disabled="instruction.approved_at">
-                    <i class="fa fa-edit"></i>
+                    :disabled="instruction.approved_at"
+                    @click="instructionToEdit = instruction; $refs.modalEditInstruction.open()"
+                  >
+                    <i class="fa fa-edit" />
                   </button>
                 </td>
               </tr>
               <tr
                 v-for="step in instruction.steps"
                 :key="step.id"
-                slot="p-body">
+                slot="p-body"
+              >
                 <td>
-                  <input type="checkbox" v-model="form.stepIds[step.id]" style="min-width: auto">
+                  <input
+                    v-model="form.stepIds[step.id]"
+                    type="checkbox"
+                    style="min-width: auto"
+                  >
                 </td>
                 <td>
-                  <i class="fa fa-long-arrow-right mr-2"></i>
+                  <i class="fa fa-long-arrow-right mr-2" />
                   {{ step.name }}
                 </td>
                 <td>
                   {{ step.approval_action | uppercase }}
                 </td>
                 <td>
-                  <span class="badge" :class="{ [step.approved_at ? 'badge-success' : 'badge-secondary']: true }">
+                  <span
+                    class="badge"
+                    :class="{ [step.approved_at ? 'badge-success' : 'badge-secondary']: true }"
+                  >
                     {{ step.approved_at ? 'APPROVED' : 'PENDING' }}
                   </span>
                 </td>
                 <td class="text-center">
                   <button
-                    @click="stepToEdit = step; $refs.modalEditStep.open()"
                     class="btn btn-sm btn-light"
-                    :disabled="step.approved_at">
-                    <i class="fa fa-edit"></i>
+                    :disabled="step.approved_at"
+                    @click="stepToEdit = step; $refs.modalEditStep.open()"
+                  >
+                    <i class="fa fa-edit" />
                   </button>
                 </td>
               </tr>
             </template>
             <tr
+              v-if="instructions.length < 1"
               slot="p-body"
               class="text-center"
-              v-if="instructions.length < 1">
-              <td colspan="6" class="my-2 py-5">
+            >
+              <td
+                colspan="6"
+                class="my-2 py-5"
+              >
                 No data
               </td>
             </tr>
@@ -112,25 +146,31 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
+    <m-status
+      ref="status"
+      @choosen="onChoosenStatus"
+    />
     <m-send-instruction-request
-      @added="getInstructions"
+      ref="modelSendInstructionRequest"
       :ids="selectedIds"
-      :stepIds="selectedStepIds"
-      ref="modelSendInstructionRequest"></m-send-instruction-request>
+      :step-ids="selectedStepIds"
+      @added="getInstructions"
+    />
     <m-edit-instruction
-      :instruction="instructionToEdit"
       ref="modalEditInstruction"
-      @added="getInstructions"></m-edit-instruction>
+      :instruction="instructionToEdit"
+      @added="getInstructions"
+    />
     <m-edit-instruction-step
       ref="modalEditStep"
       :step="stepToEdit"
-      @added="getInstructions"></m-edit-instruction-step>
+      @added="getInstructions"
+    />
   </div>
 </template>
 

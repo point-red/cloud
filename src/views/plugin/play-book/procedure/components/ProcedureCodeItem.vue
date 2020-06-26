@@ -1,12 +1,22 @@
 <template>
   <div :class="{ parent: !procedure.procedure_id || isParent }">
-    <div class="d-flex procedure" :class="{ 'ml-3': !i }">
-      <div class="no ml-2" v-if="i">{{ i }}</div>
+    <div
+      class="d-flex procedure"
+      :class="{ 'ml-3': !i }"
+    >
+      <div
+        v-if="i"
+        class="no ml-2"
+      >
+        {{ i }}
+      </div>
       <div class="code">
         <div>
           <small class="text-mode">Code</small>
         </div>
-        <router-link :to="`/plugin/play-book/procedure/${procedure.id}`">{{ procedure.code }}</router-link>
+        <router-link :to="`/plugin/play-book/procedure/${procedure.id}`">
+          {{ procedure.code }}
+        </router-link>
       </div>
       <div class="name">
         <div>
@@ -20,7 +30,10 @@
         </div>
         {{ procedure.purpose || '-' | capitalize }}
       </div>
-      <div class="purpose" v-if="procedure.procedure_id">
+      <div
+        v-if="procedure.procedure_id"
+        class="purpose"
+      >
         <div>
           <small class="text-mode">Content</small>
         </div>
@@ -34,41 +47,46 @@
       </div>
       <div class="action d-flex">
         <button
-          class="btn btn-sm btn-light mr-2"
           v-if="withAddButton && $permission.has('create play book procedure')"
-          @click="$refs.modalAddProcedure.open()">
-          <i class="fa fa-plus"></i>
+          class="btn btn-sm btn-light mr-2"
+          @click="$refs.modalAddProcedure.open()"
+        >
+          <i class="fa fa-plus" />
         </button>
         <router-link
           class="btn btn-sm btn-light"
           title="SEE HISTORY"
           :to="`/plugin/play-book/procedure/${procedure.id}/histories`"
-        ><i class="fa fa-history"></i></router-link>
+        >
+          <i class="fa fa-history" />
+        </router-link>
       </div>
     </div>
     <div
+      v-if="procedure.procedures && procedure.procedures.length && !noChilds"
       class="procedures pl-4"
-      v-if="procedure.procedures && procedure.procedures.length && !noChilds">
+    >
       <procedure-code-item
         v-for="sub of procedure.procedures"
         :key="sub.id"
         :procedure="sub"
         :with-add-button="!!withAddButton"
         @added="$emit('added')"
-        ></procedure-code-item>
+      />
     </div>
 
     <m-add-procedure
       ref="modalAddProcedure"
       :parent-id="procedure.id"
-      @added="$emit('added')"></m-add-procedure>
+      @added="$emit('added')"
+    />
   </div>
 </template>
 
 <script>
 export default {
-  props: ['i', 'procedure', 'noChilds', 'withAddButton', 'isParent'],
-  name: 'procedure-code-item'
+  name: 'ProcedureCodeItem',
+  props: ['i', 'procedure', 'noChilds', 'withAddButton', 'isParent']
 }
 </script>
 
