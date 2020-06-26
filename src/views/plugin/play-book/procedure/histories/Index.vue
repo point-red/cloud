@@ -73,6 +73,15 @@ export default {
   computed: {
     ...mapGetters('pluginPlayBookProcedureHistories', ['procedure', 'histories', 'pagination'])
   },
+  mounted () {
+    this.getHistories()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('pluginPlayBookProcedureHistories', [
       'get'
@@ -122,15 +131,6 @@ export default {
       this.page = value
       this.getHistories()
     }
-  },
-  mounted () {
-    this.getHistories()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

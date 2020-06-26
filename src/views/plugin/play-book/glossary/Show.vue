@@ -222,7 +222,7 @@ export default {
         const id = this.$route.params.id
         this.isLoading = true
 
-        let glossary = await this.show(id)
+        const glossary = await this.show(id)
         this.form = { ...glossary }
       } catch (error) {
       } finally {
@@ -233,7 +233,7 @@ export default {
       try {
         this.errors = null
         this.isSaving = true
-        let { data } = await this.update(this.form)
+        const { data } = await this.update(this.form)
         this.isEditMode = false
         this.updateSucess = true
 

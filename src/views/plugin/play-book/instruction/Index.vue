@@ -143,8 +143,9 @@
               <td
                 v-for="glossary in glossaries"
                 :key="glossary.id"
-                v-html="step.contentsForView[`${glossary.id}`] || '-'"
-              />
+              >
+                {{ step.contentsForView[`${glossary.id}`] || '-' }}
+              </td>
             </tr>
           </point-table>
         </p-block-inner>
@@ -292,7 +293,7 @@ export default {
       })
     },
     'form.instruction_id' (newValue) {
-      let query = {
+      const query = {
         ...this.$route.query,
         instruction: newValue
       }

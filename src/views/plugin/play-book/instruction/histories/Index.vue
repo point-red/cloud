@@ -72,8 +72,9 @@
               <td
                 v-for="glossary in glossaries"
                 :key="glossary.id"
-                v-html="step.contentsForView[`${glossary.id}`] || '-'"
-              />
+              >
+                {{ step.contentsForView[`${glossary.id}`] || '-' }}
+              </td>
             </tr>
           </point-table>
         </p-block-inner>
@@ -86,9 +87,8 @@
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPlayBook from '@/views/plugin/play-book/Breadcrumb'
-import debounce from 'lodash/debounce'
 import PointTable from 'point-table-vue'
-import { mapGetters, mapActions, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
