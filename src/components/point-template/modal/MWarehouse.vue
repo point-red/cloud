@@ -23,9 +23,9 @@
         v-else
         class="list-group push"
       >
-        <template v-for="(option, index) in options">
+        <template v-for="(option, warehouseIndex) in options">
           <a
-            :key="index"
+            :key="warehouseIndex"
             class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
             :class="{'active': option.id == mutableId }"
             href="javascript:void(0)"

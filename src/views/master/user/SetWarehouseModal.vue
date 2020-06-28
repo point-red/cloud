@@ -21,14 +21,14 @@
               </th>
             </tr>
             <tr
-              v-for="(user, index) in users"
-              :key="index"
+              v-for="(user, userIndex) in users"
+              :key="userIndex"
               slot="p-body"
             >
               <th>{{ user.name }}</th>
               <td
-                v-for="(warehouse, index) in warehouses"
-                :key="index"
+                v-for="(warehouse, warehouseIndex) in warehouses"
+                :key="warehouseIndex"
                 class="text-center"
               >
                 <p-form-check-box

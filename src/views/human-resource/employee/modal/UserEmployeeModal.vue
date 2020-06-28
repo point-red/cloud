@@ -8,14 +8,14 @@
       >
         <template slot="content">
           <div class="list-group mb-20">
-            <template v-for="(user_employee, index) in user_employees">
+            <template v-for="(userEmployee, index) in user_employees">
               <a
                 :key="index"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 href="javascript:void(0)"
-                @click="onSubmitUserEmployee(user_employee, index)"
+                @click="onSubmitUserEmployee(userEmployee, index)"
               >
-                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ user_employee.first_name + ' ' + user_employee.last_name }}</span>
+                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ userEmployee.first_name + ' ' + userEmployee.last_name }}</span>
               </a>
             </template>
           </div>

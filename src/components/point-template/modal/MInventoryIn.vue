@@ -19,13 +19,13 @@
               </th>
               <th>Quantity</th>
               <th width="50px">
-&nbsp;
+                &nbsp;
               </th>
             </tr>
             <tr
-              v-for="(option, index) in options"
+              v-for="(option, optionIndex) in options"
               slot="p-body"
-              :key="index"
+              :key="optionIndex"
             >
               <td width="100px">
                 <p-date-picker

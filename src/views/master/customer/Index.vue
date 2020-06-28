@@ -151,8 +151,8 @@
               <th>Pricing Group</th>
             </tr>
             <tr
-              v-for="(customer, index) in customers"
-              :key="index"
+              v-for="(customer, customerIndex) in customers"
+              :key="customerIndex"
               slot="p-body"
               :class="{
                 'bg-gray': customer.archived_at != null,

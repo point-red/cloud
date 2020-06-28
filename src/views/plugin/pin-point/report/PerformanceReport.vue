@@ -277,8 +277,8 @@
                   {{ report.value / report.target_value * 100 | numberFormat }}%
                 </td>
                 <td
-                  v-for="(item, index) in items"
-                  :key="index"
+                  v-for="(item, itemIndex) in items"
+                  :key="itemIndex"
                   class="text-center"
                 >
                   {{ getItemSoldQty(item.id, report.items) | numberFormat }}

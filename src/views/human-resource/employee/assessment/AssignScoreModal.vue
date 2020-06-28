@@ -11,7 +11,7 @@
       >
         <template slot="content">
           <div class="list-group mb-20">
-            <template v-for="(score, index) in options">
+            <template v-for="(scoreAssessment, index) in options">
               <a
                 :key="index"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
@@ -19,11 +19,11 @@
                   'active': selectedScoreIndex === index
                 }"
                 href="javascript:void(0)"
-                @click="chooseScore(score, index)"
-                @dblclick="onChooseAndSubmitEmployeeAssessment(score, index)"
+                @click="chooseScore(scoreAssessment, index)"
+                @dblclick="onChooseAndSubmitEmployeeAssessment(scoreAssessment, index)"
               >
-                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ score.description }}</span>
-                <span class="badge badge-pill badge-secondary">{{ score.score }}</span>
+                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ scoreAssessment.description }}</span>
+                <span class="badge badge-pill badge-secondary">{{ scoreAssessment.score }}</span>
               </a>
             </template>
           </div>

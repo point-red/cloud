@@ -14,18 +14,18 @@
             v-if="templates.length > 0"
             class="list-group mb-20"
           >
-            <template v-for="(template, index) in templates">
+            <template v-for="(templateKpi, templateIndex) in templates">
               <a
-                :key="index"
+                :key="templateIndex"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 :class="{
-                  'active': selectedIndex === index
+                  'active': selectedIndex === templateIndex
                 }"
                 href="javascript:void(0)"
-                @click="choose(template, index)"
-                @dblclick="chooseAndSubmit(template, index)"
+                @click="choose(templateKpi, templateIndex)"
+                @dblclick="chooseAndSubmit(templateKpi, templateIndex)"
               >
-                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ template.name }}</span>
+                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ templateKpi.name }}</span>
               </a>
             </template>
           </div>

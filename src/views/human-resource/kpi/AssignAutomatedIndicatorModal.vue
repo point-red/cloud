@@ -11,7 +11,7 @@
       >
         <template slot="content">
           <div class="list-group mb-20">
-            <template v-for="(automated_indicator, index) in automatedIndicators">
+            <template v-for="(automatedIndicator, index) in automatedIndicators">
               <a
                 :key="index"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
@@ -19,10 +19,10 @@
                   'active': selectedIndex === index
                 }"
                 href="javascript:void(0)"
-                @click="choose(automated_indicator, index)"
-                @dblclick="chooseAndSubmit(automated_indicator, index)"
+                @click="choose(automatedIndicator, index)"
+                @dblclick="chooseAndSubmit(automatedIndicator, index)"
               >
-                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ automated_indicator.label }}</span>
+                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ automatedIndicator.label }}</span>
               </a>
             </template>
           </div>

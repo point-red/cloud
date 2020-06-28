@@ -204,9 +204,9 @@
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>
                     <template v-if="form.interest_reasons">
-                      <template v-for="(interestReason, index) in form.interest_reasons">
+                      <template v-for="(interestReason, interestIndex) in form.interest_reasons">
                         <p
-                          :key="index"
+                          :key="interestIndex"
                           class="mb-0"
                         >
                           - {{ interestReason.name }}
@@ -214,9 +214,9 @@
                       </template>
                     </template>
                     <template v-else>
-                      <template v-for="(noInterestReason, index) in form.no_interest_reasons">
+                      <template v-for="(noInterestReason, noInterestIndex) in form.no_interest_reasons">
                         <p
-                          :key="index"
+                          :key="noInterestIndex"
                           class="mb-0"
                         >
                           - {{ noInterestReason.name }}
@@ -225,9 +225,9 @@
                     </template>
                   </td>
                   <td>
-                    <template v-for="(similarProduct, index) in form.similar_products">
+                    <template v-for="(similarProduct, similarProductIndex) in form.similar_products">
                       <p
-                        :key="index"
+                        :key="similarProductIndex"
                         class="mb-0"
                       >
                         - {{ similarProduct.name }}
@@ -255,9 +255,9 @@
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>
                     <template v-if="form.interest_reasons">
-                      <template v-for="(interestReason, index) in form.interest_reasons">
+                      <template v-for="(interestReason, interestIndex) in form.interest_reasons">
                         <p
-                          :key="index"
+                          :key="interestIndex"
                           class="mb-0"
                         >
                           - {{ interestReason.name }}
@@ -265,9 +265,9 @@
                       </template>
                     </template>
                     <template v-else>
-                      <template v-for="(noInterestReason, index) in form.no_interest_reasons">
+                      <template v-for="(noInterestReason, interestIndex) in form.no_interest_reasons">
                         <p
-                          :key="index"
+                          :key="interestIndex"
                           class="mb-0"
                         >
                           - {{ noInterestReason.name }}
@@ -276,9 +276,9 @@
                     </template>
                   </td>
                   <td>
-                    <template v-for="(similarProduct, index) in form.similar_products">
+                    <template v-for="(similarProduct, similarProductIndex) in form.similar_products">
                       <p
-                        :key="index"
+                        :key="similarProductIndex"
                         class="mb-0"
                       >
                         - {{ similarProduct.name }}
