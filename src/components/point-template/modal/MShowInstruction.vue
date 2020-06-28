@@ -110,8 +110,7 @@
 </template>
 
 <script>
-import Form from '@/utils/Form'
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   props: [
@@ -148,7 +147,6 @@ export default {
       try {
         this.isSaving = true
         this.errors = null
-        const payload = this.form
 
         await this.$store.dispatch('pluginPlayBookInstructionApproval/approve', this.instructionId)
 

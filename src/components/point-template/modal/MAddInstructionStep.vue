@@ -129,8 +129,7 @@
 </template>
 
 <script>
-import Form from '@/utils/Form'
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 import { VueEditor } from 'vue2-editor'
 
 export default {

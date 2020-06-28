@@ -185,7 +185,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPlayBook from '@/views/plugin/play-book/Breadcrumb'
 import BreadcrumbGlossary from '@/views/plugin/play-book/glossary/components/Breadcrumb'
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   components: {
@@ -238,7 +238,6 @@ export default {
       try {
         this.errors = null
         this.isSaving = true
-        const { data } = await this.update(this.form)
         this.isEditMode = false
         this.updateSucess = true
 

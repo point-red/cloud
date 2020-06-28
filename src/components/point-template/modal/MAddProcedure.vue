@@ -133,8 +133,7 @@
 </template>
 
 <script>
-import Form from '@/utils/Form'
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   props: [
