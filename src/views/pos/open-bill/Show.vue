@@ -1,8 +1,13 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-pos/>
-      <router-link to="/pos/open-bill" class="breadcrumb-item">{{ $t('open bill') | uppercase }}</router-link>
+      <breadcrumb-pos />
+      <router-link
+        to="/pos/open-bill"
+        class="breadcrumb-item"
+      >
+        {{ $t('open bill') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ id }}</span>
     </breadcrumb>
 
@@ -12,26 +17,30 @@
       :is-fullscreen="true"
       :show-fullscreen-button="false"
       :show-hidden-button="false"
-      column="col-sm-12">
-
+      column="col-sm-12"
+    >
       <template v-slot:header>
         |<router-link
           v-if="$permission.has('create pos')"
           to="/pos/open-bill/create"
-          exact>
+          exact
+        >
           <button
             type="button"
-            class="btn-block-option">
+            class="btn-block-option"
+          >
             Add
           </button>
         </router-link>|
         <router-link
           v-if="$permission.has('read pos')"
           to="/pos/open-bill"
-          exact>
+          exact
+        >
           <button
             type="button"
-            class="btn-block-option">
+            class="btn-block-option"
+          >
             List
           </button>
         </router-link>|
@@ -39,110 +48,163 @@
 
       <p-block-inner :is-loading="isLoading">
         <div class="row">
-          <div class="col-md-3 col-lg-3"/>
-          <div class="col-sm-12 col-md-6 col-lg6" style="background-color:LightGray;">
+          <div class="col-md-3 col-lg-3" />
+          <div
+            class="col-sm-12 col-md-6 col-lg6"
+            style="background-color:LightGray;"
+          >
             <p-table style="margin-top:30px;margin-bottom:10px;">
               <tr slot="p-body">
-                <td style="border:0px;" width="50%">
+                <td
+                  style="border:0px;"
+                  width="50%"
+                >
                   <b>{{ bill.form.number }}</b>
                 </td>
-                <td style="border:0px;text-align:right;" width="50%">
+                <td
+                  style="border:0px;text-align:right;"
+                  width="50%"
+                >
                   <b>{{ bill.date | dateFormat('DD MMMM YYYY HH:mm') }}</b>
                 </td>
               </tr>
-              <tr slot="p-body" v-if="bill.customer">
-                <td style="border:0px;" colspan="2">
+              <tr
+                v-if="bill.customer"
+                slot="p-body"
+              >
+                <td
+                  style="border:0px;"
+                  colspan="2"
+                >
                   Customer: <b>{{ bill.customer.name }}</b>
                 </td>
               </tr>
               <tr slot="p-body">
-                <td style="border:0px;" colspan="2">
-                  <br/>
+                <td
+                  style="border:0px;"
+                  colspan="2"
+                >
+                  <br>
                 </td>
               </tr>
               <template v-for="(row, index) in items_temporary">
-                <tr slot="p-body" v-if="row.require_expiry_date === 1 || row.require_production_number === 1" :key="'item-' + index" @click="showItem(index, row)" style="cursor:pointer;">
-                  <td style="border:0px;text-align:left;" width="75%">
+                <tr
+                  v-if="row.require_expiry_date === 1 || row.require_production_number === 1"
+                  slot="p-body"
+                  :key="'item-' + index"
+                  style="cursor:pointer;"
+                  @click="showItem(index, row)"
+                >
+                  <td
+                    style="border:0px;text-align:left;"
+                    width="75%"
+                  >
                     <template>
                       <label style="color:blue;">{{ row.quantity | numberFormat }}x</label>
                       {{ row.price | numberFormat }}
                     </template>
-                    <br/>
+                    <br>
                     <b>{{ row.item_name }} ({{ row.unit }})</b>
                     <template v-if="row.discount_percent > 0">
-                      <br/>
+                      <br>
                       <label style="color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
                     </template>
                     <template v-if="row.error">
-                      <br/>
+                      <br>
                       <label style="color:red;">{{ row.error }}</label>
                     </template>
                     <template v-if="row.notes">
-                      <br/>
-                      <br/>
+                      <br>
+                      <br>
                       <label>Note: {{ row.notes }}</label>
                     </template>
                   </td>
-                  <td style="border:0px;text-align:right;" width="25%">
+                  <td
+                    style="border:0px;text-align:right;"
+                    width="25%"
+                  >
                     <b>{{ row.total | numberFormat }}</b>
                   </td>
                 </tr>
-                <tr slot="p-body" v-else :key="'item-' + index">
-                  <td style="border:0px;text-align:left;" width="75%">
+                <tr
+                  v-else
+                  slot="p-body"
+                  :key="'item-' + index"
+                >
+                  <td
+                    style="border:0px;text-align:left;"
+                    width="75%"
+                  >
                     <template>
                       <label style="color:blue;">{{ row.quantity | numberFormat }}x</label>
                       {{ row.price | numberFormat }}
                     </template>
-                    <br/>
+                    <br>
                     <b>{{ row.item_name }} ({{ row.unit }})</b>
                     <template v-if="row.discount_percent > 0">
-                      <br/>
+                      <br>
                       <label style="color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
                     </template>
                     <template v-if="row.error">
-                      <br/>
+                      <br>
                       <label style="color:red;">{{ row.error }}</label>
                     </template>
                     <template v-if="row.notes">
-                      <br/>
-                      <br/>
+                      <br>
+                      <br>
                       <label>Note: {{ row.notes }}</label>
                     </template>
                   </td>
-                  <td style="border:0px;text-align:right;" width="25%">
+                  <td
+                    style="border:0px;text-align:right;"
+                    width="25%"
+                  >
                     <b>{{ row.total | numberFormat }}</b>
                   </td>
                 </tr>
               </template>
-              <tr slot="p-body" v-for="(row, index) in bill.services" :key="'service-' + index">
-                <td style="border:0px;text-align:left;" width="75%">
+              <tr
+                v-for="(row, index) in bill.services"
+                slot="p-body"
+                :key="'service-' + index"
+              >
+                <td
+                  style="border:0px;text-align:left;"
+                  width="75%"
+                >
                   <template>
                     <label style="color:blue;">{{ row.quantity | numberFormat }}x</label>
                     {{ row.price | numberFormat }}
                   </template>
-                  <br/>
+                  <br>
                   <b>{{ row.service_name }}</b>
                   <template v-if="row.discount_percent > 0">
-                    <br/>
+                    <br>
                     <label style="color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
                   </template>
                   <template v-if="row.error">
-                    <br/>
+                    <br>
                     <label style="color:red;">{{ row.error }}</label>
                   </template>
                   <template v-if="row.notes">
-                    <br/>
-                    <br/>
+                    <br>
+                    <br>
                     <label>Note: {{ row.notes }}</label>
                   </template>
                 </td>
-                <td style="border:0px;text-align:right;" width="25%">
+                <td
+                  style="border:0px;text-align:right;"
+                  width="25%"
+                >
                   <b>{{ row.total | numberFormat }}</b>
                 </td>
               </tr>
               <tr slot="p-body">
-                <td style="border:0px;" colspan="2">
-                  <br/>
+                <td
+                  style="border:0px;"
+                  colspan="2"
+                >
+                  <br>
                 </td>
               </tr>
               <tr slot="p-body">
@@ -161,7 +223,10 @@
                   <b>{{ bill.subtotal | numberFormat }}</b>
                 </td>
               </tr>
-              <tr slot="p-body" v-if="bill.discount_percent">
+              <tr
+                v-if="bill.discount_percent"
+                slot="p-body"
+              >
                 <td style="border:0px;">
                   <b>{{ $t('discount') | titlecase }}</b>
                 </td>
@@ -177,7 +242,10 @@
                   <b>{{ bill.amount | numberFormat }}</b>
                 </td>
               </tr>
-              <tr slot="p-body" v-if="bill.paid">
+              <tr
+                v-if="bill.paid"
+                slot="p-body"
+              >
                 <td style="border:0px;">
                   <b>{{ $t('money received') | titlecase }}</b>
                 </td>
@@ -190,34 +258,61 @@
                   <b>{{ $t('money change') | titlecase }}</b>
                 </td>
                 <td style="border:0px;text-align:right;">
-                  <b style="color:red;" v-if="bill.change < 0">{{ bill.change | numberFormat }}</b>
-                  <b style="color:green;" v-else>{{ bill.change | numberFormat }}</b>
+                  <b
+                    v-if="bill.change < 0"
+                    style="color:red;"
+                  >{{ bill.change | numberFormat }}</b>
+                  <b
+                    v-else
+                    style="color:green;"
+                  >{{ bill.change | numberFormat }}</b>
                 </td>
               </tr>
-              <tr slot="p-body" v-if="bill.notes">
-                <td style="border:0px;" colspan="2">
+              <tr
+                v-if="bill.notes"
+                slot="p-body"
+              >
+                <td
+                  style="border:0px;"
+                  colspan="2"
+                >
                   <b>{{ $t('notes') | titlecase }}:</b>
-                  <br/>
+                  <br>
                   {{ bill.notes }}
                 </td>
               </tr>
               <tr slot="p-body">
-                <td style="border:0px;" colspan="2" v-if="bill.form.created_by">
+                <td
+                  v-if="bill.form.created_by"
+                  style="border:0px;"
+                  colspan="2"
+                >
                   Billed by <b>{{ bill.form.created_by.name }}</b>
                 </td>
               </tr>
             </p-table>
             <router-link
+              v-if="$permission.has('update pos')"
               :disabled="isDeleting"
               :to="{ name: 'pos.open-bill.edit', params: { id: bill.id }}"
-              v-if="$permission.has('update pos')"
-              class="btn btn-block btn-secondary">
+              class="btn btn-block btn-secondary"
+            >
               Edit
             </router-link>
-            <br/>
-            <br/>
-            <button type="button" class="btn btn-block btn-danger" :disabled="isDeleting" @click="onDelete" v-if="$permission.has('delete pos')" style="margin-bottom:30px;">
-              <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            <br>
+            <br>
+            <button
+              v-if="$permission.has('delete pos')"
+              type="button"
+              class="btn btn-block btn-danger"
+              :disabled="isDeleting"
+              style="margin-bottom:30px;"
+              @click="onDelete"
+            >
+              <i
+                v-show="isDeleting"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('delete') | uppercase }}
             </button>
           </div>
         </div>
@@ -225,15 +320,15 @@
     </p-block>
 
     <m-inventory
-      ref="inventory"
       :id="'inventory'"
+      ref="inventory"
       :key="'inventory'"
-      :isPos="true"
-      :itemUnit="selectedItem.unit"
+      :is-pos="true"
+      :item-unit="selectedItem.unit"
       :inventories="selectedItem.inventories"
-      :requireExpiryDate="selectedItem.require_expiry_date"
-      :requireProductionNumber="selectedItem.require_production_number">
-    </m-inventory>
+      :require-expiry-date="selectedItem.require_expiry_date"
+      :require-production-number="selectedItem.require_production_number"
+    />
   </div>
 </template>
 

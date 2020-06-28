@@ -1,33 +1,64 @@
 <template>
   <div>
-    <span @click="clickInput" class="link"><i class="fa fa-list mr-5"></i>{{ mutableChoosen || 'SELECT' || uppercase }}</span>
-    <p-modal :ref="'select' + id" :id="'select' + id" :title="title">
+    <span
+      class="link"
+      @click="clickInput"
+    ><i class="fa fa-list mr-5" />{{ mutableChoosen || 'SELECT' || uppercase }}</span>
+    <p-modal
+      :id="'select' + id"
+      :ref="'select' + id"
+      :title="title"
+    >
       <template slot="content">
-        <input type="text" class="form-control" v-model="search" placeholder="Search..." @keydown.enter.prevent="">
+        <input
+          v-model="search"
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          @keydown.enter.prevent=""
+        >
         <hr>
         <div class="list-group push">
           <template v-for="(option, index) in mutableOptions">
-          <a
-            :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{'active': isActive(option.id)}"
-            @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label }}
-          </a>
+            <a
+              :key="index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': isActive(option.id)}"
+              href="javascript:void(0)"
+              @click="choose(option)"
+            >
+              {{ option.label }}
+            </a>
           </template>
         </div>
-        <div class="alert alert-info text-center" v-if="search && mutableOptions.length == 0">
+        <div
+          v-if="search && mutableOptions.length == 0"
+          class="alert alert-info text-center"
+        >
           Pencarian "{{ search }}" tidak ditemukan! <br>
-          klik <span class="link" @click="addData"><i class="fa fa-xs" :class="{
-            'fa-refresh fa-spin': isLoadingAddButton,
-            'fa-plus': !isLoadingAddButton
-          }"></i> Add</span> untuk menambahkan data
+          klik <span
+            class="link"
+            @click="addData"
+          ><i
+            class="fa fa-xs"
+            :class="{
+              'fa-refresh fa-spin': isLoadingAddButton,
+              'fa-plus': !isLoadingAddButton
+            }"
+          /> Add</span> untuk menambahkan data
         </div>
       </template>
       <template slot="footer">
-        <button class="btn btn-primary">Add</button>
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button class="btn btn-primary">
+          Add
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('close') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>
@@ -51,17 +82,20 @@ export default {
       required: true
     },
     options: {
-      type: Array
+      type: Array,
+      default: null
     },
     title: {
       type: String,
       default: 'select'
     },
     value: {
-      type: String
+      type: String,
+      default: ''
     },
     choosen: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   watch: {

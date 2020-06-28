@@ -1,28 +1,50 @@
 <template>
   <div>
-    <div class="input-group" style="min-width: 180px">
+    <div
+      class="input-group"
+      style="min-width: 180px"
+    >
       <cleave
-        :readonly="readonly || disabled"
         v-model="number"
+        :readonly="readonly || disabled"
         :options="options"
         class="form-control form-number"
         :class="{
           'text-right' : isTextRight,
           'bg-gray-light' : disabled,
           'bg-white' : !disabled
-        }"/>
-      <div class="input-group-append" @click="onClickUnit">
+        }"
+      />
+      <div
+        class="input-group-append"
+        @click="onClickUnit"
+      >
         <span class="input-group-text">
           {{ mutableUnit.label | uppercase }}
         </span>
-        <button v-show="showAddReduceButtons" class="btn btn-sm btn-outline-secondary" type="button" @click="add">+</button>
-        <button v-show="showAddReduceButtons" class="btn btn-sm btn-outline-secondary" type="button" @click="reduce">-</button>
+        <button
+          v-show="showAddReduceButtons"
+          class="btn btn-sm btn-outline-secondary"
+          type="button"
+          @click="add"
+        >
+          +
+        </button>
+        <button
+          v-show="showAddReduceButtons"
+          class="btn btn-sm btn-outline-secondary"
+          type="button"
+          @click="reduce"
+        >
+          -
+        </button>
       </div>
     </div>
     <m-quantity-unit
       :id="'quantity-unit-'+itemId+'-'+Math.random()"
       ref="quantityUnit"
-      @choosen="chooseUnit($event)"/>
+      @choosen="chooseUnit($event)"
+    />
   </div>
 </template>
 
@@ -96,16 +118,20 @@ export default {
       default: true
     },
     unit: {
-      type: Object
+      type: Object,
+      default: null
     },
     value: {
-      type: [Number, String]
+      type: [Number, String],
+      default: null
     },
     itemId: {
-      type: Number
+      type: Number,
+      default: null
     },
     units: {
-      type: Array
+      type: Array,
+      default: null
     },
     showAddReduceButtons: {
       type: Boolean,

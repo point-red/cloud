@@ -1,53 +1,71 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <router-link to="/master/item-group" class="breadcrumb-item">{{ $t('item group') | uppercase }}</router-link>
+      <breadcrumb-master />
+      <router-link
+        to="/master/item-group"
+        class="breadcrumb-item"
+      >
+        {{ $t('item group') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ group.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <button
-            type="button"
-            @click="$refs.addItemGroup.open()"
             v-if="$permission.has('create item')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addItemGroup.open()"
+          >
             <span>{{ $t('create') | uppercase }}</span>
           </button>
           <button
-            type="button"
-            @click="$refs.editItemGroup.open(group)"
             v-if="$permission.has('update item')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editItemGroup.open(group)"
+          >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete item')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="data.name"
             label="Name"
             name="name"
-            v-model="data.name"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-item-group ref="addItemGroup" @added="onAddedItemGroup($event)"></m-add-item-group>
-    <m-edit-item-group ref="editItemGroup" @updated="onUpdatedItemGroup($event)"></m-edit-item-group>
+    <m-add-item-group
+      ref="addItemGroup"
+      @added="onAddedItemGroup($event)"
+    />
+    <m-edit-item-group
+      ref="editItemGroup"
+      @updated="onUpdatedItemGroup($event)"
+    />
   </div>
 </template>
 

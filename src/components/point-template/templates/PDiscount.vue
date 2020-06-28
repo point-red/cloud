@@ -1,30 +1,43 @@
 <template>
   <div class="input-group">
     <p-form-number
+      v-if="isPercent"
+      ref="formDiscount"
       width="100%"
       style="width:100%"
-      ref="formDiscount"
-      v-if="isPercent"
       :readonly="readonly"
       :value="discountPercent"
       :options="options"
       :is-text-right="isTextRight"
       :max="100"
-      @input="discountPercentChanged"/>
+      @input="discountPercentChanged"
+    />
     <p-form-number
+      v-else
+      ref="formDiscount"
       width="100%"
       style="width:100%"
-      ref="formDiscount"
-      v-else
       :readonly="readonly"
       :value="discountValue"
       :options="options"
       :is-text-right="isTextRight"
       :max="baseValue"
-      @input="discountValueChanged"/>
-    <div class="input-group-append" @click="togglePercent">
-      <div v-if="isPercent" class="input-group-text">%</div>
-      <div v-else class="input-group-text"></div>
+      @input="discountValueChanged"
+    />
+    <div
+      class="input-group-append"
+      @click="togglePercent"
+    >
+      <div
+        v-if="isPercent"
+        class="input-group-text"
+      >
+        %
+      </div>
+      <div
+        v-else
+        class="input-group-text"
+      />
     </div>
   </div>
 </template>

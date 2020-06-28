@@ -1,7 +1,10 @@
 <template>
   <nav id="sidebar">
     <!-- Sidebar Scroll Container -->
-    <div id="sidebar-scroll" :v-scroll-lock="true">
+    <div
+      id="sidebar-scroll"
+      :v-scroll-lock="true"
+    >
       <!-- Sidebar Content -->
       <div class="sidebar-content">
         <!-- Side Header -->
@@ -23,8 +26,9 @@
             <button
               type="button"
               class="btn btn-circle btn-dual-secondary d-lg-none align-v-r"
-              @click="toggleLeftSidebar">
-              <i class="fa fa-times text-danger"/>
+              @click="toggleLeftSidebar"
+            >
+              <i class="fa fa-times text-danger" />
             </button>
             <!-- END Close Sidebar -->
 
@@ -32,8 +36,9 @@
             <div class="content-header-item">
               <a
                 class="link-effect font-w700"
-                href="javascript:void(0)">
-                <span class="font-size-xl text-dual-primary-dark">POINT.</span><span class="font-size-xl text-primary"/>
+                href="javascript:void(0)"
+              >
+                <span class="font-size-xl text-dual-primary-dark">POINT.</span><span class="font-size-xl text-primary" />
               </a>
             </div>
             <!-- END Logo -->
@@ -49,7 +54,8 @@
             <img
               class="img-avatar img-avatar32"
               src="/assets/img/avatars/avatar0.jpg"
-              alt="">
+              alt=""
+            >
           </div>
           <!-- END Visible only in mini mode -->
 
@@ -57,17 +63,20 @@
           <div class="sidebar-mini-hidden-b text-center">
             <router-link
               to="/account"
-              class="img-link">
+              class="img-link"
+            >
               <img
                 class="img-avatar"
                 src="/assets/img/avatars/avatar0.jpg"
-                alt="">
+                alt=""
+              >
             </router-link>
             <ul class="list-inline mt-3 mb-0">
               <li class="list-inline-item">
                 <a
                   :href="accountPage + '/profile'"
-                  class="link-effect text-dual-primary-dark font-size-xs font-w600 text-uppercase">
+                  class="link-effect text-dual-primary-dark font-size-xs font-w600 text-uppercase"
+                >
                   {{ userName }}
                 </a>
               </li>
@@ -84,19 +93,28 @@
               <router-link
                 to="/account/profile"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-user"/> {{ $t("profile") | uppercase }}</router-link>
+                class="sidebar-mini-hide"
+              >
+                <i class="si si-user" /> {{ $t("profile") | uppercase }}
+              </router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/project"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-notebook"/> {{ $t("project") | uppercase }}</router-link>
+                class="sidebar-mini-hide"
+              >
+                <i class="si si-notebook" /> {{ $t("project") | uppercase }}
+              </router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/billing"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-doc"/> {{ $t("billing") | uppercase }}</router-link>
+                class="sidebar-mini-hide"
+              >
+                <i class="si si-doc" /> {{ $t("billing") | uppercase }}
+              </router-link>
             </li>
             <!-- <li @click="toggleLeftSidebar('close-xs')">
               <router-link

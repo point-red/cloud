@@ -1,78 +1,111 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-purchase/>
+      <breadcrumb-purchase />
       <span class="breadcrumb-item active">{{ $t('down payment') | uppercase }}</span>
     </breadcrumb>
 
-    <purchase-menu/>
+    <purchase-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <router-link
-            to="/purchase/down-payment/create"
             v-if="$permission.has('create purchase down payment')"
-            class="input-group-prepend">
+            to="/purchase/down-payment/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             class="btn-block"
             :value="searchText"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <div class="text-center font-size-sm">
-          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          <a
+            href="javascript:void(0)"
+            @click="isAdvanceFilter = !isAdvanceFilter"
+          >
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div class="card m-5 pt-10" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div
+          v-show="isAdvanceFilter"
+          class="card m-5 pt-10"
+          :class="{ 'fadeIn': isAdvanceFilter }"
+        >
           <div class="row">
             <div class="col-sm-3 text-center">
-              <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+              <p-form-row
+                id="date-start"
+                name="date-start"
+                :label="$t('date start')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.start"
                     name="date"
                     label="date"
-                    v-model="date.start"/>
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
-              <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+              <p-form-row
+                id="date-end"
+                name="date-end"
+                :label="$t('date end')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.end"
                     name="date"
                     label="date"
-                    v-model="date.end"/>
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
-              <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('approval status')" :is-horizontal="false">
+              <p-form-row
+                id="form-approval-status"
+                name="form-approval-status"
+                :label="$t('approval status')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <span
+                    class="select-link"
                     @click="$refs.formApprovalStatus.open()"
-                    class="select-link">
+                  >
                     {{ formApprovalStatus.label || $t('select') | uppercase }}
                   </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
-              <p-form-row id="form-status" name="form-status" :label="$t('form status')" :is-horizontal="false">
+              <p-form-row
+                id="form-status"
+                name="form-status"
+                :label="$t('form status')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <span
+                    class="select-link"
                     @click="$refs.formStatus.open()"
-                    class="select-link">
+                  >
                     {{ formStatus.label || $t('select') | uppercase }}
                   </span>
                 </div>
@@ -90,7 +123,10 @@
               :checked="isRowsChecked(downPayments, checkedRow)">
             <span class="css-control-indicator"></span>
           </label> -->
-          <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
+          <span
+            v-show="checkedRow.length > 0"
+            class="mr-15 animated fadeIn"
+          >
             <!-- <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
               {{ $t('request approval') | uppercase }}
             </button>
@@ -113,39 +149,84 @@
               <th>Date</th>
               <th>Supplier</th>
               <th>Notes</th>
-              <th class="text-right">Amount</th>
-              <th class="text-right">Remaining</th>
-              <th class="text-center">Approval Status</th>
-              <th class="text-center">Form Status</th>
-              <th width="50px"></th>
+              <th class="text-right">
+                Amount
+              </th>
+              <th class="text-right">
+                Remaining
+              </th>
+              <th class="text-center">
+                Approval Status
+              </th>
+              <th class="text-center">
+                Form Status
+              </th>
+              <th width="50px" />
             </tr>
             <template v-for="(purchaseDownPayment, index) in downPayments">
-            <tr :key="'downpayment-' + index" slot="p-body">
-              <th>
-                <router-link :to="{ name: 'purchase.down-payment.show', params: { id: purchaseDownPayment.id }}">
-                  {{ purchaseDownPayment.form.number }}
-                </router-link>
-              </th>
-              <td>{{ purchaseDownPayment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-              <td>
-                <template v-if="purchaseDownPayment.supplier">
-                  {{ purchaseDownPayment.supplier.name }}
-                </template>
-              </td>
-              <td>{{ purchaseDownPayment.form.notes }}</td>
-              <td class="text-right">{{ purchaseDownPayment.amount | numberFormat }}</td>
-              <td class="text-right">{{ purchaseDownPayment.remaining | numberFormat }}</td>
-              <td class="text-center">
-                <div v-if="purchaseDownPayment.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-if="purchaseDownPayment.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
-                <div v-if="purchaseDownPayment.form.approval_status == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
-              </td>
-              <td class="text-center">
-                <div v-if="purchaseDownPayment.form.cancellation_status == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
-                <div v-else-if="purchaseDownPayment.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-else-if="purchaseDownPayment.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
-              </td>
-              <td>
+              <tr
+                :key="'downpayment-' + index"
+                slot="p-body"
+              >
+                <th>
+                  <router-link :to="{ name: 'purchase.down-payment.show', params: { id: purchaseDownPayment.id }}">
+                    {{ purchaseDownPayment.form.number }}
+                  </router-link>
+                </th>
+                <td>{{ purchaseDownPayment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>
+                  <template v-if="purchaseDownPayment.supplier">
+                    {{ purchaseDownPayment.supplier.name }}
+                  </template>
+                </td>
+                <td>{{ purchaseDownPayment.form.notes }}</td>
+                <td class="text-right">
+                  {{ purchaseDownPayment.amount | numberFormat }}
+                </td>
+                <td class="text-right">
+                  {{ purchaseDownPayment.remaining | numberFormat }}
+                </td>
+                <td class="text-center">
+                  <div
+                    v-if="purchaseDownPayment.form.approval_status == 0"
+                    class="badge badge-primary"
+                  >
+                    {{ $t('pending') | uppercase }}
+                  </div>
+                  <div
+                    v-if="purchaseDownPayment.form.approval_status == -1"
+                    class="badge badge-danger"
+                  >
+                    {{ $t('rejected') | uppercase }}
+                  </div>
+                  <div
+                    v-if="purchaseDownPayment.form.approval_status == 1"
+                    class="badge badge-success"
+                  >
+                    {{ $t('approved') | uppercase }}
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div
+                    v-if="purchaseDownPayment.form.cancellation_status == 1"
+                    class="badge badge-danger"
+                  >
+                    {{ $t('canceled') | uppercase }}
+                  </div>
+                  <div
+                    v-else-if="purchaseDownPayment.form.done == 0"
+                    class="badge badge-primary"
+                  >
+                    {{ $t('pending') | uppercase }}
+                  </div>
+                  <div
+                    v-else-if="purchaseDownPayment.form.done == 1"
+                    class="badge badge-success"
+                  >
+                    {{ $t('done') | uppercase }}
+                  </div>
+                </td>
+                <td>
                 <!-- <p-form-check-box
                   :is-form="false"
                   id="check-box"
@@ -153,20 +234,26 @@
                   @click.native="toggleCheckRow(purchaseDownPayment.id)"
                   :checked="isRowChecked(purchaseDownPayment.id)"
                   class="text-center"/> -->
-              </td>
-            </tr>
+                </td>
+              </tr>
             </template>
           </point-table>
         </p-block-inner>
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
-    <m-form-approval-status ref="formApprovalStatus" @choosen="chooseFormApprovalStatus($event)"/>
-    <m-form-status ref="formStatus" @choosen="chooseFormStatus($event)"/>
+    <m-form-approval-status
+      ref="formApprovalStatus"
+      @choosen="chooseFormApprovalStatus($event)"
+    />
+    <m-form-status
+      ref="formStatus"
+      @choosen="chooseFormStatus($event)"
+    />
   </div>
 </template>
 

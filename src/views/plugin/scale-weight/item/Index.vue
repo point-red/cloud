@@ -1,26 +1,44 @@
 <template>
   <div>
     <breadcrumb>
-      <router-link to="/plugin" class="breadcrumb-item">{{ $t('plugin') | uppercase }}</router-link>
-      <router-link to="/plugin/scale-weight" class="breadcrumb-item">{{ $t('scale weight') | uppercase }}</router-link>
+      <router-link
+        to="/plugin"
+        class="breadcrumb-item"
+      >
+        {{ $t('plugin') | uppercase }}
+      </router-link>
+      <router-link
+        to="/plugin/scale-weight"
+        class="breadcrumb-item"
+      >
+        {{ $t('scale weight') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('item') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="'Scale Weight - Item'" :header="true">
+      <p-block
+        :title="'Scale Weight - Item'"
+        :header="true"
+      >
         <div class="row">
           <div class="col-sm-6">
             <p-form-row
               id="date"
               name="date"
-              :label="$t('date from')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('date from')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-date-picker
                   id="date-from"
+                  v-model="date_from"
                   name="date_from"
-                  v-model="date_from"/>
+                />
               </div>
             </p-form-row>
           </div>
@@ -28,23 +46,29 @@
             <p-form-row
               id="date"
               name="date"
-              :label="$t('date to')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('date to')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-date-picker
                   id="date-to"
+                  v-model="date_to"
                   name="date_to"
-                  v-model="date_to"/>
+                />
               </div>
             </p-form-row>
           </div>
         </div>
         <div class="block input-group">
           <router-link
-            to="/plugin/scale-weight/item/create"
             v-if="$permission.has('create scale weight item')"
-            class="input-group-prepend">
+            to="/plugin/scale-weight/item/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
@@ -53,19 +77,39 @@
             placeholder="Search"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
-        <p-form-row id="export" name="export">
-          <div slot="body" class="col-lg-12">
-            <button :disabled="isExporting" type="submit" class="btn btn-sm btn-primary" @click="exportData">
-              <i v-show="isExporting" class="fa fa-asterisk fa-spin"/> Export
+        <p-form-row
+          id="export"
+          name="export"
+        >
+          <div
+            slot="body"
+            class="col-lg-12"
+          >
+            <button
+              :disabled="isExporting"
+              type="submit"
+              class="btn btn-sm btn-primary"
+              @click="exportData"
+            >
+              <i
+                v-show="isExporting"
+                class="fa fa-asterisk fa-spin"
+              /> Export
             </button>
             <ul v-show="downloadLink">
-              <li><a :href="downloadLink" download>{{ downloadLink }}</a> (expired in 24 hour)</li>
+              <li>
+                <a
+                  :href="downloadLink"
+                  download
+                >{{ downloadLink }}</a> (expired in 24 hour)
+              </li>
             </ul>
           </div>
         </p-form-row>
-        <hr/>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
@@ -77,14 +121,21 @@
               <th>Driver</th>
               <th>License Number</th>
               <th>Item</th>
-              <th class="text-right">Gross</th>
-              <th class="text-right">Tare</th>
-              <th class="text-right">Net</th>
+              <th class="text-right">
+                Gross
+              </th>
+              <th class="text-right">
+                Tare
+              </th>
+              <th class="text-right">
+                Net
+              </th>
             </tr>
             <tr
               v-for="(scaleWeight, index) in scaleWeights"
               :key="scaleWeight.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ ++index }}</th>
               <td>{{ scaleWeight.machine_code }}</td>
               <td>
@@ -97,17 +148,23 @@
               <td>{{ scaleWeight.driver }}</td>
               <td>{{ scaleWeight.license_number }}</td>
               <td>{{ scaleWeight.item }}</td>
-              <td class="text-right">{{ scaleWeight.gross_weight | numberFormat }}</td>
-              <td class="text-right">{{ scaleWeight.tare_weight | numberFormat }}</td>
-              <td class="text-right">{{ scaleWeight.net_weight | numberFormat }}</td>
+              <td class="text-right">
+                {{ scaleWeight.gross_weight | numberFormat }}
+              </td>
+              <td class="text-right">
+                {{ scaleWeight.tare_weight | numberFormat }}
+              </td>
+              <td class="text-right">
+                {{ scaleWeight.net_weight | numberFormat }}
+              </td>
             </tr>
           </point-table>
         </p-block-inner>
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>

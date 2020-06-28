@@ -1,9 +1,12 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-accounting/>
+      <breadcrumb-accounting />
       <span class="breadcrumb-item">
-        <router-link to="/accounting/cut-off" class="breadcrumb-item">{{ $t('cut off') | uppercase }}</router-link>
+        <router-link
+          to="/accounting/cut-off"
+          class="breadcrumb-item"
+        >{{ $t('cut off') | uppercase }}</router-link>
       </span>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
@@ -12,7 +15,10 @@
       <div class="col-sm-12">
         <div class="row">
           <p-block class="text-center">
-            <nav class="breadcrumb bg-white text-center" style="display:block !important">
+            <nav
+              class="breadcrumb bg-white text-center"
+              style="display:block !important"
+            >
               <span class="breadcrumb-item active">{{ $t('start') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('account') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('inventory') | uppercase }}</span>
@@ -29,29 +35,45 @@
                 <form @submit.prevent="onSubmit">
                   <p>{{ $t('cut off helper - info') }}</p>
                   <p-form-row
+                    v-if="!isLoading"
                     id="date"
                     name="date"
-                    v-if="!isLoading"
-                    :label="$t('date')">
-                    <div slot="body" class="col-lg-9">
+                    :label="$t('date')"
+                  >
+                    <div
+                      slot="body"
+                      class="col-lg-9"
+                    >
                       <p-date-picker
                         id="date"
+                        v-model="form.date"
                         name="date"
                         :label="$t('date')"
-                        v-model="form.date"
                         :errors="form.errors.get('date')"
-                        @errors="form.errors.set('date', null)"/>
+                        @errors="form.errors.set('date', null)"
+                      />
                     </div>
                   </p-form-row>
                   <hr>
                   <p-form-row
+                    v-if="!isLoading"
                     id="start"
                     name="start"
-                    v-if="!isLoading"
-                    label="">
-                    <div slot="body" class="col-lg-9">
-                      <button type="submit" class="btn btn-sm btn-primary mb-15" :disabled="isSaving">
-                        <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('start') | uppercase }}
+                    label=""
+                  >
+                    <div
+                      slot="body"
+                      class="col-lg-9"
+                    >
+                      <button
+                        type="submit"
+                        class="btn btn-sm btn-primary mb-15"
+                        :disabled="isSaving"
+                      >
+                        <i
+                          v-show="isSaving"
+                          class="fa fa-asterisk fa-spin"
+                        /> {{ $t('start') | uppercase }}
                       </button>
                     </div>
                   </p-form-row>

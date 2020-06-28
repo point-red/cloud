@@ -1,21 +1,22 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
+      <breadcrumb-manufacture />
       <span class="breadcrumb-item active">{{ $t('formula') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <router-link
-            to="/manufacture/formula/create"
             v-if="$permission.has('create manufacture formula')"
-            class="input-group-prepend">
+            to="/manufacture/formula/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
@@ -24,41 +25,73 @@
             placeholder="Search"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th></th>
-              <th></th>
-              <th colspan="2" class="text-center bg-gray-light">{{ $t('finished goods') }}</th>
-              <th colspan="2" class="text-center bg-success-light">{{ $t('raw materials') }}</th>
-              <th></th>
+              <th />
+              <th />
+              <th
+                colspan="2"
+                class="text-center bg-gray-light"
+              >
+                {{ $t('finished goods') }}
+              </th>
+              <th
+                colspan="2"
+                class="text-center bg-success-light"
+              >
+                {{ $t('raw materials') }}
+              </th>
+              <th />
             </tr>
             <tr slot="p-head">
               <th>{{ $t('formula') }}</th>
               <th>{{ $t('notes') }}</th>
-              <th class="text-center bg-gray-light">{{ $t('name') }}</th>
-              <th class="text-center bg-gray-light">{{ $t('quantity') }}</th>
-              <th class="text-center bg-success-light">{{ $t('name') }}</th>
-              <th class="text-center bg-success-light">{{ $t('quantity') }}</th>
-              <th class="text-center">{{ $t('approval status') }}</th>
+              <th class="text-center bg-gray-light">
+                {{ $t('name') }}
+              </th>
+              <th class="text-center bg-gray-light">
+                {{ $t('quantity') }}
+              </th>
+              <th class="text-center bg-success-light">
+                {{ $t('name') }}
+              </th>
+              <th class="text-center bg-success-light">
+                {{ $t('quantity') }}
+              </th>
+              <th class="text-center">
+                {{ $t('approval status') }}
+              </th>
             </tr>
             <template v-for="(formula, index) in formulas">
               <template v-for="(rawMaterial, index2) in formula.raw_materials">
-                <tr :key="'mm-' + index + '-' + index2" slot="p-body">
+                <tr
+                  :key="'mm-' + index + '-' + index2"
+                  slot="p-body"
+                >
                   <th>
-                    <router-link :to="{ name: 'manufacture.formula.show', params: { id: formula.id }}" v-if="index2 == 0">
+                    <router-link
+                      v-if="index2 == 0"
+                      :to="{ name: 'manufacture.formula.show', params: { id: formula.id }}"
+                    >
                       {{ formula.name }}
                     </router-link>
                   </th>
                   <td>
-                    <template v-if="index2 == 0">{{ formula.form.notes }}</template>
+                    <template v-if="index2 == 0">
+                      {{ formula.form.notes }}
+                    </template>
                   </td>
                   <td class="text-center bg-gray-light">
                     <template v-if="index2 == 0">
-                      <span v-for="(finishedGood) in formula.finished_goods" :key="finishedGood.id">
+                      <span
+                        v-for="(finishedGood) in formula.finished_goods"
+                        :key="finishedGood.id"
+                      >
                         <router-link :to="{ name: 'item.show', params: { id: finishedGood.item.id }}">
                           {{ finishedGood.item.label }}
                         </router-link>
@@ -67,7 +100,10 @@
                   </td>
                   <td class="text-center bg-gray-light">
                     <template v-if="index2 == 0">
-                      <span v-for="(finishedGood) in formula.finished_goods" :key="finishedGood.id">
+                      <span
+                        v-for="(finishedGood) in formula.finished_goods"
+                        :key="finishedGood.id"
+                      >
                         {{ finishedGood.quantity }} {{ finishedGood.unit }}
                       </span>
                     </template>
@@ -82,9 +118,24 @@
                   </td>
                   <td class="text-center">
                     <template v-if="index2 == 0">
-                      <div v-if="formula.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                      <div v-if="formula.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
-                      <div v-if="formula.form.approval_status == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
+                      <div
+                        v-if="formula.form.approval_status == 0"
+                        class="badge badge-primary"
+                      >
+                        {{ $t('pending') | uppercase }}
+                      </div>
+                      <div
+                        v-if="formula.form.approval_status == -1"
+                        class="badge badge-danger"
+                      >
+                        {{ $t('rejected') | uppercase }}
+                      </div>
+                      <div
+                        v-if="formula.form.approval_status == 1"
+                        class="badge badge-success"
+                      >
+                        {{ $t('approved') | uppercase }}
+                      </div>
                     </template>
                   </td>
                 </tr>
@@ -95,8 +146,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>

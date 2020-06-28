@@ -4,24 +4,37 @@
       :ref="'select-' + id"
       :title="$t('select') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
-      <div v-else class="list-group push">
+      <div
+        v-else
+        class="list-group push"
+      >
         <template v-for="(option, index) in options">
-        <a
-          :key="index"
-          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-          :class="{'active': option.id == mutableId }"
-          @click="choose(option)"
-          href="javascript:void(0)">
-          {{ option.label | uppercase }}
-        </a>
+          <a
+            :key="index"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            :class="{'active': option.id == mutableId }"
+            href="javascript:void(0)"
+            @click="choose(option)"
+          >
+            {{ option.label | uppercase }}
+          </a>
         </template>
       </div>
       <div class="pull-right">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('close') | uppercase }}
+        </button>
       </div>
     </sweet-modal>
   </div>
@@ -46,13 +59,16 @@ export default {
   },
   props: {
     id: {
-      type: String
+      type: String,
+      default: ''
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: ''
     },
     label: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   watch: {

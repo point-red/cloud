@@ -2,43 +2,59 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmit">
+      @submit.prevent="onSubmit"
+    >
       <p-modal
         id="assign-assessment-modal"
         ref="assignKpiTemplate"
-        title="Assign Kpi Template">
+        title="Assign Kpi Template"
+      >
         <template slot="content">
-          <div class="list-group mb-20" v-if="templates.length > 0">
+          <div
+            v-if="templates.length > 0"
+            class="list-group mb-20"
+          >
             <template v-for="(template, index) in templates">
               <a
                 :key="index"
-                @click="choose(template, index)"
-                @dblclick="chooseAndSubmit(template, index)"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 :class="{
                   'active': selectedIndex === index
                 }"
-                href="javascript:void(0)">
-                  <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ template.name }}</span>
+                href="javascript:void(0)"
+                @click="choose(template, index)"
+                @dblclick="chooseAndSubmit(template, index)"
+              >
+                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ template.name }}</span>
               </a>
             </template>
           </div>
           <div v-else>
-            <h5 class="text-center">KPI Template not found</h5>
+            <h5 class="text-center">
+              KPI Template not found
+            </h5>
             <router-link
               to="/human-resource/kpi"
-              class="btn btn-primary">Create new KPI Template
+              class="btn btn-primary"
+            >
+              Create new KPI Template
             </router-link>
           </div>
         </template>
         <template slot="footer">
           <div v-if="templates.length > 0 && !isLoading">
-            <button type="submit" class="btn btn-sm btn-primary">Add</button>
+            <button
+              type="submit"
+              class="btn btn-sm btn-primary"
+            >
+              Add
+            </button>
           </div>
           <button
             type="button"
             class="btn btn-sm btn-outline-danger"
-            @click="$refs.assignKpiTemplate.close()">
+            @click="$refs.assignKpiTemplate.close()"
+          >
             {{ $t('close') | uppercase }}
           </button>
         </template>

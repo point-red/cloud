@@ -24,8 +24,9 @@
         <button
           type="button"
           class="btn btn-circle btn-dual-secondary"
-          @click="toggleLeftSidebar">
-          <i class="fa fa-navicon"/>
+          @click="toggleLeftSidebar"
+        >
+          <i class="fa fa-navicon" />
         </button>
         <!-- END Toggle Sidebar -->
       </div>
@@ -33,8 +34,8 @@
 
       <!-- Right Section -->
       <div class="content-header-section">
-        <notification-dropdown/>
-        <header-dropdown/>
+        <notification-dropdown />
+        <header-dropdown />
       </div>
       <!-- END Right Section -->
     </div>

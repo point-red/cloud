@@ -1,70 +1,91 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <router-link to="/master/supplier" class="breadcrumb-item">{{ $t('supplier') | uppercase }}</router-link>
+      <breadcrumb-master />
+      <router-link
+        to="/master/supplier"
+        class="breadcrumb-item"
+      >
+        {{ $t('supplier') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ supplier.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <button
-            type="button"
-            @click="$refs.addSupplier.open()"
             v-if="$permission.has('create supplier')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addSupplier.open()"
+          >
             {{ $t('create') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="$refs.editSupplier.open(supplier.id)"
             v-if="$permission.has('update supplier')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editSupplier.open(supplier.id)"
+          >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete supplier')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="data.name"
             label="Name"
             name="name"
-            v-model="data.name"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="email"
+            v-model="data.email"
             label="Email"
             name="email"
-            v-model="data.email"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="address"
+            v-model="data.address"
             label="Address"
             name="address"
-            v-model="data.address"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="phone"
+            v-model="data.phone"
             label="Phone"
             name="phone"
-            v-model="data.phone"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
-    <m-add-supplier ref="addSupplier" @added="onAddedSupplier($event)"></m-add-supplier>
-    <m-edit-supplier ref="editSupplier" @updated="onUpdatedSupplier($event)"></m-edit-supplier>
+    <m-add-supplier
+      ref="addSupplier"
+      @added="onAddedSupplier($event)"
+    />
+    <m-edit-supplier
+      ref="editSupplier"
+      @updated="onUpdatedSupplier($event)"
+    />
   </div>
 </template>
 

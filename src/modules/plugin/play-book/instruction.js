@@ -65,14 +65,14 @@ const actions = {
     commit('SET_STEPS', [])
     commit('SET_PAGINATION', {})
 
-    let { instructions } = await api.get(url, {
+    const { instructions } = await api.get(url, {
       params: payload
     })
 
     commit('SET_INSTRUCTIONS', instructions)
   },
   async getSteps ({ commit, state }, payload) {
-    let { data, meta } = await api.get(`${url}/${payload.instruction_id}/steps`, {
+    const { data, meta } = await api.get(`${url}/${payload.instruction_id}/steps`, {
       params: payload
     })
 
@@ -80,7 +80,7 @@ const actions = {
     commit('SET_PAGINATION', meta)
   },
   async show ({ commit }, id) {
-    let { instruction } = await api.get(`${url}/${id}`)
+    const { instruction } = await api.get(`${url}/${id}`)
 
     return instruction
   },

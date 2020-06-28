@@ -1,44 +1,64 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-sales/>
+      <breadcrumb-sales />
       <span class="breadcrumb-item active">{{ $t('sales order') | uppercase }}</span>
     </breadcrumb>
 
-    <sales-menu/>
+    <sales-menu />
 
     <div class="row">
       <p-block>
         <div class="card m-5 pt-10">
           <div class="row">
             <div class="col-sm-4 text-center">
-              <p-form-row id="date-start" name="date-start" :label="$t('item')" :is-horizontal="false">
+              <p-form-row
+                id="date-start"
+                name="date-start"
+                :label="$t('item')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <span @click="$refs.item.open()" class="select-link font-size-md">
+                  <span
+                    class="select-link font-size-md"
+                    @click="$refs.item.open()"
+                  >
                     {{ item_label || $t('select') | uppercase }}
                   </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-4 text-center">
-              <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+              <p-form-row
+                id="date-start"
+                name="date-start"
+                :label="$t('date start')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.start"
                     name="date"
                     label="date"
-                    v-model="date.start"/>
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-4 text-center">
-              <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+              <p-form-row
+                id="date-end"
+                name="date-end"
+                :label="$t('date end')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.end"
                     name="date"
                     label="date"
-                    v-model="date.end"/>
+                  />
                 </div>
               </p-form-row>
             </div>
@@ -54,7 +74,10 @@
               :checked="isRowsChecked(salesOrders, checkedRow)">
             <span class="css-control-indicator"></span>
           </label> -->
-          <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
+          <span
+            v-show="checkedRow.length > 0"
+            class="mr-15 animated fadeIn"
+          >
             <!-- <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
               {{ $t('request approval') | uppercase }}
             </button>
@@ -77,66 +100,92 @@
               <th>Date</th>
               <th>Customer</th>
               <th>Item</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-right">Price</th>
-              <th class="text-right">Amount</th>
-              <th width="50px"></th>
+              <th class="text-right">
+                Quantity
+              </th>
+              <th class="text-right">
+                Price
+              </th>
+              <th class="text-right">
+                Amount
+              </th>
+              <th width="50px" />
             </tr>
             <template v-for="(salesOrder, index) in salesOrders">
-            <tr
-              v-for="(salesOrderItem, index2) in salesOrder.items"
-              :key="'sales-order-' + index + '-i-' + index2"
-              slot="p-body">
-              <template v-if="item_id == null || item_id == salesOrderItem.item_id">
-              <th>
-                <router-link :to="{ name: 'sales.order.show', params: { id: salesOrder.id }}">
-                  {{ salesOrder.form.number }}
-                </router-link>
-              </th>
-              <td>{{ salesOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-              <td>
-                <template v-if="salesOrder.customer">
-                  {{ salesOrder.customer.name }}
-                </template>
-              </td>
-              <td>{{ salesOrderItem.item.name }}</td>
-              <td class="text-right">{{ salesOrderItem.quantity | numberFormat }} {{ salesOrderItem.unit }}</td>
-              <td class="text-right">{{ salesOrderItem.price - salesOrderItem.discount_value | numberFormat }}</td>
-              <td class="text-right">{{ (salesOrderItem.quantity * (salesOrderItem.price - salesOrderItem.discount_value)) | numberFormat }}</td>
-              <td>
-                <!-- <p-form-check-box
+              <tr
+                v-for="(salesOrderItem, index2) in salesOrder.items"
+                :key="'sales-order-' + index + '-i-' + index2"
+                slot="p-body"
+              >
+                <template v-if="item_id == null || item_id == salesOrderItem.item_id">
+                  <th>
+                    <router-link :to="{ name: 'sales.order.show', params: { id: salesOrder.id }}">
+                      {{ salesOrder.form.number }}
+                    </router-link>
+                  </th>
+                  <td>{{ salesOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                  <td>
+                    <template v-if="salesOrder.customer">
+                      {{ salesOrder.customer.name }}
+                    </template>
+                  </td>
+                  <td>{{ salesOrderItem.item.name }}</td>
+                  <td class="text-right">
+                    {{ salesOrderItem.quantity | numberFormat }} {{ salesOrderItem.unit }}
+                  </td>
+                  <td class="text-right">
+                    {{ salesOrderItem.price - salesOrderItem.discount_value | numberFormat }}
+                  </td>
+                  <td class="text-right">
+                    {{ (salesOrderItem.quantity * (salesOrderItem.price - salesOrderItem.discount_value)) | numberFormat }}
+                  </td>
+                  <td>
+                    <!-- <p-form-check-box
                   :is-form="false"
                   id="check-box"
                   name="check-box"
                   @click.native="toggleCheckRow(salesOrder.id)"
                   :checked="isRowChecked(salesOrder.id)"
                   class="text-center"/> -->
-              </td>
-              </template>
-            </tr>
+                  </td>
+                </template>
+              </tr>
             </template>
             <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="text-right"></td>
-              <td class="text-right"><b>TOTAL</b></td>
-              <td class="text-right">{{ total | numberFormat }}</td>
-              <td width="50px"></td>
+              <th />
+              <td />
+              <td />
+              <td />
+              <td class="text-right" />
+              <td class="text-right">
+                <b>TOTAL</b>
+              </td>
+              <td class="text-right">
+                {{ total | numberFormat }}
+              </td>
+              <td width="50px" />
             </tr>
           </point-table>
         </p-block-inner>
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
-    <m-form-approval-status ref="formApprovalStatus" @choosen="chooseFormApprovalStatus($event)"/>
-    <m-form-status ref="formStatus" @choosen="chooseFormStatus($event)"/>
-    <m-item ref="item" @choosen="chooseItem"/>
+    <m-form-approval-status
+      ref="formApprovalStatus"
+      @choosen="chooseFormApprovalStatus($event)"
+    />
+    <m-form-status
+      ref="formStatus"
+      @choosen="chooseFormStatus($event)"
+    />
+    <m-item
+      ref="item"
+      @choosen="chooseItem"
+    />
   </div>
 </template>
 

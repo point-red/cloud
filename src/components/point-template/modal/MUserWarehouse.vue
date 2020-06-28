@@ -1,41 +1,78 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
+    <span
+      class="link"
+      @click="show"
+    >{{ mutableLabel || 'SELECT' | uppercase }}</span>
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
+      class="invalid-input"
+    >
+      <i class="fa fa-warning" /> {{ error }}
+    </div>
     <div
       v-show="help"
-      class="form-text text-muted">{{ help }}</div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select user">
+      class="form-text text-muted"
+    >
+      {{ help }}
+    </div>
+    <p-modal
+      :id="'select-' + id"
+      :ref="'select-' + id"
+      title="select user"
+    >
       <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+        <input
+          v-model="searchText"
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          @keydown.enter.prevent=""
+        >
         <hr>
         <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
+          <h3 class="text-center">
+            Loading ...
+          </h3>
         </div>
-        <div v-else class="list-group push">
+        <div
+          v-else
+          class="list-group push"
+        >
           <template v-for="(option, index) in options">
-          <a
-            :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{'active': option.id == mutableId }"
-            @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label | uppercase }}
-          </a>
+            <a
+              :key="index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': option.id == mutableId }"
+              href="javascript:void(0)"
+              @click="choose(option)"
+            >
+              {{ option.label | uppercase }}
+            </a>
           </template>
         </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+        <div
+          v-if="searchText && options.length == 0 && !isLoading"
+          class="alert alert-info text-center"
+        >
           {{ $t('searching not found', [searchText]) | capitalize }} <br>
         </div>
-        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
+        <div
+          v-if="!searchText && options.length == 0 && !isLoading"
+          class="alert alert-info text-center"
+        >
           {{ $t('you don\'t have any') | capitalize }} {{ $t('allocation') | capitalize }}
         </div>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('close') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>
@@ -65,13 +102,16 @@ export default {
       required: true
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: null
     },
     label: {
-      type: String
+      type: String,
+      default: null
     },
     help: {
-      type: String
+      type: String,
+      default: null
     },
     errors: {
       type: Array,

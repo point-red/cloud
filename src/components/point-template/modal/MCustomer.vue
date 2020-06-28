@@ -4,40 +4,77 @@
       :ref="'select-' + id"
       :title="$t('select customer') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
-      <input type="text" class="form-control" ref="searchText" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      @close="onClose()"
+    >
+      <input
+        ref="searchText"
+        v-model="searchText"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        @keydown.enter.prevent=""
+      >
       <hr>
       <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
-      <div v-else class="list-group push">
+      <div
+        v-else
+        class="list-group push"
+      >
         <template v-for="(option, index) in options">
-        <a
-          :key="index"
-          class="list-group-item list-group-item-action justify-content-between align-items-center"
-          :class="{'active': option.id == mutableId }"
-          @click="choose(option)"
-          href="javascript:void(0)">
-          {{ option.label | uppercase }}
-          <div v-if="option.address" style="font-size:11px"><i class="fa fa-home fa-fw"></i> {{ option.address | uppercase }}</div>
-          <div v-if="option.phone" style="font-size:11px"><i class="fa fa-phone fa-fw"></i> {{ option.phone | uppercase }}</div>
-        </a>
+          <a
+            :key="index"
+            class="list-group-item list-group-item-action justify-content-between align-items-center"
+            :class="{'active': option.id == mutableId }"
+            href="javascript:void(0)"
+            @click="choose(option)"
+          >
+            {{ option.label | uppercase }}
+            <div
+              v-if="option.address"
+              style="font-size:11px"
+            ><i class="fa fa-home fa-fw" /> {{ option.address | uppercase }}</div>
+            <div
+              v-if="option.phone"
+              style="font-size:11px"
+            ><i class="fa fa-phone fa-fw" /> {{ option.phone | uppercase }}</div>
+          </a>
         </template>
       </div>
-      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+      <div
+        v-if="searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
       <div class="pull-left">
-        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="$refs.addCustomer.open()">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary mr-5"
+          @click="$refs.addCustomer.open()"
+        >
           {{ $t('create new') | uppercase }}
         </button>
       </div>
       <div class="pull-right">
-        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="clear()"
+        >
+          {{ $t('clear') | uppercase }}
+        </button>
       </div>
     </sweet-modal>
 
-    <m-add-customer id="add-customer" ref="addCustomer" @added="onAdded()"></m-add-customer>
+    <m-add-customer
+      id="add-customer"
+      ref="addCustomer"
+      @added="onAdded()"
+    />
   </div>
 </template>
 
@@ -61,13 +98,16 @@ export default {
   },
   props: {
     id: {
-      type: String
+      type: String,
+      default: ''
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: ''
     },
     label: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   watch: {

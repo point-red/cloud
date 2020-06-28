@@ -1,45 +1,54 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <span class="breadcrumb-item active">{{ 'job location' | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block :title="$t('job location')">
         <div class="input-group block mb-5">
           <router-link
-            to="/human-resource/job-location/create"
             v-if="$permission.has('create employee')"
-            class="input-group-prepend">
+            to="/human-resource/job-location/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
             class="btn-block"
-            ref="searchText"
             :value="searchText"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="33%">{{ $t('name') }}</th>
-              <th width="33%">{{ $t('base salary') }}</th>
-              <th width="33%">{{ $t('multiplier kpi') }}</th>
+              <th width="33%">
+                {{ $t('name') }}
+              </th>
+              <th width="33%">
+                {{ $t('base salary') }}
+              </th>
+              <th width="33%">
+                {{ $t('multiplier kpi') }}
+              </th>
             </tr>
             <template v-if="$permission.has('read employee')">
               <tr
                 v-for="jobLocation in jobLocations"
                 :key="jobLocation.id"
-                slot="p-body">
+                slot="p-body"
+              >
                 <td>
                   <router-link :to="{ name: 'JobLocationShow', params: { id: jobLocation.id }}">
                     {{ jobLocation.name }}
@@ -54,8 +63,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>

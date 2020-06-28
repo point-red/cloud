@@ -2,39 +2,56 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmit">
+      @submit.prevent="onSubmit"
+    >
       <p-modal
         id="kpi-assessment-category-modal"
         ref="kpiAssessmentCategory"
-        title="Assessment Category">
+        title="Assessment Category"
+      >
         <template slot="content">
-          <div class="list-group mb-20" v-if="templates.length > 0">
+          <div
+            v-if="templates.length > 0"
+            class="list-group mb-20"
+          >
             <template v-for="(template, index) in templates">
               <a
                 :key="index"
-                @click="choose(index)"
-                @dblclick="chooseAndSubmit(index)"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 :class="{
                   'active': selectedIndex === index
                 }"
-                href="javascript:void(0)">
-                  <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ template }}</span>
+                href="javascript:void(0)"
+                @click="choose(index)"
+                @dblclick="chooseAndSubmit(index)"
+              >
+                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ template }}</span>
               </a>
             </template>
           </div>
-          <div class="list-group mb-20" v-else>
-            <h5 class="text-center">Assessment Category not found</h5>
+          <div
+            v-else
+            class="list-group mb-20"
+          >
+            <h5 class="text-center">
+              Assessment Category not found
+            </h5>
           </div>
         </template>
         <template slot="footer">
           <div v-if="templates.length > 0">
-            <button type="submit" class="btn btn-sm btn-primary">Change</button>
+            <button
+              type="submit"
+              class="btn btn-sm btn-primary"
+            >
+              Change
+            </button>
           </div>
           <button
             type="button"
             class="btn btn-sm btn-outline-danger"
-            @click="$refs.kpiAssessmentCategory.close()">
+            @click="$refs.kpiAssessmentCategory.close()"
+          >
             {{ $t('close') | uppercase }}
           </button>
         </template>
@@ -53,10 +70,12 @@ export default {
   },
   props: {
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: ''
     },
     templates: {
-      type: [Array]
+      type: Array,
+      default: null
     }
   },
   methods: {

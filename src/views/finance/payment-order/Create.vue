@@ -1,12 +1,20 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-finance/>
-      <router-link to="/finance/payment-order" class="breadcrumb-item">{{ $t('payment order') | uppercase }}</router-link>
+      <breadcrumb-finance />
+      <router-link
+        to="/finance/payment-order"
+        class="breadcrumb-item"
+      >
+        {{ $t('payment order') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <form class="row" @submit.prevent="onSubmit">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
       <p-block :title="$t('payment order')">
         <p-block-inner :is-loading="isLoading">
           <div class="row">
@@ -14,47 +22,61 @@
               <h4>{{ $t('payment order') | uppercase }}</h4>
               <table class="table table-sm table-bordered">
                 <tr>
-                  <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
+                  <td class="font-weight-bold">
+                    {{ $t('date') | uppercase }}
+                  </td>
                   <td>
                     <p-date-picker
                       id="date"
+                      v-model="form.date"
                       name="date"
                       label="payment date"
-                      v-model="form.date"
                       :errors="form.errors.get('date')"
-                      @errors="form.errors.set('date', null)"/>
+                      @errors="form.errors.set('date', null)"
+                    />
                   </td>
                 </tr>
                 <tr>
-                  <td class="font-weight-bold">{{ $t('payment type') | uppercase }}</td>
+                  <td class="font-weight-bold">
+                    {{ $t('payment type') | uppercase }}
+                  </td>
                   <td>
                     <p-form-check-box
+                      id="payment-type"
                       class="mb-0"
                       style="float:left"
-                      id="payment-type"
                       name="payment-type"
-                      @click.native="choosePaymentType('cash')"
                       :checked="form.payment_type == 'cash'"
-                      :description="$t('cash') | uppercase"/>
+                      :description="$t('cash') | uppercase"
+                      @click.native="choosePaymentType('cash')"
+                    />
                     <p-form-check-box
                       id="payment-type"
                       name="payment-type"
                       class="mb-0"
-                      @click.native="choosePaymentType('bank')"
                       :checked="form.payment_type == 'bank'"
-                      :description="$t('bank') | uppercase"/>
+                      :description="$t('bank') | uppercase"
+                      @click.native="choosePaymentType('bank')"
+                    />
                   </td>
                 </tr>
               </table>
             </div>
             <div class="col-sm-6 text-right">
-              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <h6 class="mb-5">
+                {{ authUser.tenant_name | uppercase }}
+              </h6>
               <template v-if="authUser.branch">
                 <br v-if="authUser.branch.address">{{ authUser.branch.address | uppercase }}
                 <br v-if="authUser.branch.phone">{{ authUser.branch.phone | uppercase }}
               </template>
-              <h6 class="mt-30 mb-5">{{ $t('to') | uppercase }} :</h6>
-              <span @click="$refs.paymentable.open()" class="select-link">
+              <h6 class="mt-30 mb-5">
+                {{ $t('to') | uppercase }} :
+              </h6>
+              <span
+                class="select-link"
+                @click="$refs.paymentable.open()"
+              >
                 {{ form.paymentable_name || $t('select') | uppercase }}
               </span>
             </div>
@@ -65,96 +87,164 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Account</th>
+              <th style="min-width: 120px">
+                Account
+              </th>
               <th>Notes</th>
               <th>Amount</th>
-              <th style="min-width: 120px">Allocation</th>
-              <th></th>
+              <th style="min-width: 120px">
+                Allocation
+              </th>
+              <th />
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.details" :key="index">
+            <tr
+              v-for="(row, index) in form.details"
+              slot="p-body"
+              :key="index"
+            >
               <th>{{ index + 1 }}</th>
               <td>
-                <span @click="$refs.chartOfAccountRef.open(index)" class="select-link">
+                <span
+                  class="select-link"
+                  @click="$refs.chartOfAccountRef.open(index)"
+                >
                   {{ row.chart_of_account_name || $t('select') | uppercase }}
                 </span>
                 <m-chart-of-account
                   :id="'item-' + index"
-                  :data-index="index"
                   v-model="row.item_id"
+                  :data-index="index"
+                  :label="row.item_name"
                   @choosen="chooseAccount($event, row)"
-                  :label="row.item_name"/>
+                />
               </td>
               <td>
                 <p-form-input
                   :id="'notes-' + index"
+                  v-model="row.notes"
                   :name="'notes-' + index"
-                  v-model="row.notes"/>
+                />
               </td>
               <td>
                 <p-form-number
                   :id="'amount-' + index"
-                  :name="'amount-' + index"
                   v-model="row.amount"
-                  @keyup.native="calculate()"/>
+                  :name="'amount-' + index"
+                  @keyup.native="calculate()"
+                />
               </td>
               <td>
-                <span @click="$refs.allocation.open(index)" class="select-link">
+                <span
+                  class="select-link"
+                  @click="$refs.allocation.open(index)"
+                >
                   {{ row.allocation_name || $t('select') | uppercase }}
                 </span>
               </td>
               <td>
-                <i class="btn btn-sm fa fa-times" @click="deleteRow(index)"></i>
+                <i
+                  class="btn btn-sm fa fa-times"
+                  @click="deleteRow(index)"
+                />
               </td>
             </tr>
             <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
+              <th />
+              <td />
+              <td />
               <td>
                 <p-form-number
                   :id="'amount'"
+                  v-model="form.amount"
                   :name="'amount'"
                   :readonly="true"
-                  v-model="form.amount"/>
+                />
               </td>
-              <td></td>
+              <td />
             </tr>
           </point-table>
-          <button type="button" class="btn btn-sm btn-secondary" @click="addRow">
-            <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            @click="addRow"
+          >
+            <i class="fa fa-plus" /> {{ $t('add') | uppercase }}
           </button>
 
           <div class="row mt-50">
             <div class="col-sm-6">
-              <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
-              <div class="d-sm-block d-md-none mt-10"></div>
+              <textarea
+                v-model="form.notes"
+                rows="5"
+                class="form-control"
+                placeholder="Notes"
+              />
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
             <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+              <h6 class="mb-0">
+                {{ $t('requested by') | uppercase }}
+              </h6>
+              <div
+                class="mb-50"
+                style="font-size:11px"
+              >
+                {{ Date.now() | dateFormat('DD MMMM YYYY') }}
+              </div>
               {{ requestedBy | uppercase }}
-              <div class="d-sm-block d-md-none mt-10"></div>
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
             <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">_______________</div>
-              <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+              <h6 class="mb-0">
+                {{ $t('approved by') | uppercase }}
+              </h6>
+              <div
+                class="mb-50"
+                style="font-size:11px"
+              >
+                _______________
+              </div>
+              <span
+                class="select-link"
+                @click="$refs.approver.open()"
+              >{{ form.approver_name || $t('select') | uppercase }}</span><br>
               <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
             </div>
             <div class="col-sm-12">
               <hr>
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                :disabled="isSaving"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
               </button>
             </div>
           </div>
         </p-block-inner>
       </p-block>
     </form>
-    <m-chart-of-account ref="chartOfAccountRef" @choosen="onChoosenAccount" type="DIRECT EXPENSE"/>
-    <m-user ref="approver" @choosen="chooseApprover($event)"/>
-    <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
-    <m-paymentable id="paymentable" ref="paymentable" @choosen="choosePaymentTo"/>
+    <m-chart-of-account
+      ref="chartOfAccountRef"
+      type="DIRECT EXPENSE"
+      @choosen="onChoosenAccount"
+    />
+    <m-user
+      ref="approver"
+      @choosen="chooseApprover($event)"
+    />
+    <m-allocation
+      ref="allocation"
+      @choosen="chooseAllocation($event)"
+    />
+    <m-paymentable
+      id="paymentable"
+      ref="paymentable"
+      @choosen="choosePaymentTo"
+    />
   </div>
 </template>
 

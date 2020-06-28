@@ -2,21 +2,28 @@
   <div>
     <cleave
       ref="formNumber"
-      :readonly="readonly"
       v-model="number"
+      :readonly="readonly"
       :options="options"
       :disabled="disabled"
       class="form-control form-number"
       :class="{
         'text-right' : isTextRight
-      }"></cleave>
+      }"
+    />
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
+      class="invalid-input"
+    >
+      <i class="fa fa-warning" /> {{ error }}
+    </div>
     <div
       v-show="help"
-      class="form-text text-muted">{{ help }}</div>
+      class="form-text text-muted"
+    >
+      {{ help }}
+    </div>
   </div>
 </template>
 
@@ -75,7 +82,8 @@ export default {
       default: 0
     },
     help: {
-      type: String
+      type: String,
+      default: null
     },
     errors: {
       type: Array,

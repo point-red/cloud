@@ -1,19 +1,34 @@
 <template>
   <div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="edit purchase down payment">
+    <p-modal
+      :id="'select-' + id"
+      :ref="'select-' + id"
+      title="edit purchase down payment"
+    >
       <template slot="content">
-        <form class="row" @submit.prevent="onSubmit">
+        <form
+          class="row"
+          @submit.prevent="onSubmit"
+        >
           <p-block>
             <p-form-row
               id="supplier"
+              v-model="form.supplier"
               name="supplier"
               :label="$t('supplier')"
-              v-model="form.supplier"
               :disabled="isSaving"
               :errors="form.errors.get('supplier')"
-              @errors="form.errors.set('supplier', null)">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-supplier id="edit-supplier" v-model="form.supplier_id" :label="form.supplier_name"/>
+              @errors="form.errors.set('supplier', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
+                <m-supplier
+                  id="edit-supplier"
+                  v-model="form.supplier_id"
+                  :label="form.supplier_name"
+                />
               </div>
             </p-form-row>
 
@@ -23,24 +38,30 @@
               :label="$t('account')"
               :disabled="isSaving"
               :errors="form.errors.get('account')"
-              @errors="form.errors.set('account', null)">
-              <div slot="body" class="col-lg-9 mt-5">
+              @errors="form.errors.set('account', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
                 <m-chart-of-account
                   id="edit-chart-of-account"
                   v-model="form.chart_of_account_id"
                   :label="form.chart_of_account_name"
-                  sub-ledger="account payable"/>
+                  sub-ledger="account payable"
+                />
               </div>
             </p-form-row>
 
             <p-form-row
               id="notes"
+              v-model="form.notes"
               name="notes"
               :label="$t('notes')"
-              v-model="form.notes"
               :disabled="isSaving"
               :errors="form.errors.get('notes')"
-              @errors="form.errors.set('notes', null)"/>
+              @errors="form.errors.set('notes', null)"
+            />
 
             <p-form-row
               id="amount"
@@ -48,24 +69,44 @@
               :label="$t('amount')"
               :disabled="isSaving"
               :errors="form.errors.get('amount')"
-              @errors="form.errors.set('amount', null)">
-              <div slot="body" class="col-lg-9 mt-5">
+              @errors="form.errors.set('amount', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
                 <p-form-number
                   :id="'amount'"
+                  v-model="form.amount"
                   :name="'amount'"
                   :is-text-right="false"
-                  v-model="form.amount"/>
+                />
               </div>
             </p-form-row>
 
             <div class="form-group row">
-              <div class="col-md-3"></div>
+              <div class="col-md-3" />
               <div class="col-md-9">
-                <button type="submit" class="btn btn-sm btn-primary mr-5" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-primary mr-5"
+                  :disabled="isSaving"
+                >
+                  <i
+                    v-show="isSaving"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('save') | uppercase }}
                 </button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="isSaving" @click="deletePurchaseDownPayment()">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  :disabled="isSaving"
+                  @click="deletePurchaseDownPayment()"
+                >
+                  <i
+                    v-show="isSaving"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('delete') | uppercase }}
                 </button>
               </div>
             </div>
@@ -73,7 +114,13 @@
         </form>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('close') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>
@@ -105,10 +152,12 @@ export default {
       required: true
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: ''
     },
     label: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   watch: {

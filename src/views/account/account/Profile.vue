@@ -5,58 +5,66 @@
     </breadcrumb>
     <div class="row">
       <div class="col-xl-3">
-        <side-menu/>
+        <side-menu />
       </div>
       <p-block
         :header="true"
         title="Profile"
         :is-loading="isLoading"
-        column="col-xl-9">
+        column="col-xl-9"
+      >
         <form @submit.prevent="onSubmit">
           <p-form-row
             id="name"
+            v-model="form.name"
             name="name"
             :label="$t('name')"
             :disabled="isSaving"
-            v-model="form.name"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)">
-          </p-form-row>
+            @errors="form.errors.set('name', null)"
+          />
 
           <p-form-row
             id="email"
+            v-model="form.email"
             name="email"
             :label="$t('email')"
             :disabled="isSaving"
-            v-model="form.email"
             :errors="form.errors.get('email')"
-            @errors="form.errors.set('email', null)">
-          </p-form-row>
+            @errors="form.errors.set('email', null)"
+          />
 
           <p-form-row
             id="address"
+            v-model="form.address"
             name="address"
             :label="$t('address')"
             :disabled="isSaving"
-            v-model="form.address"
             :errors="form.errors.get('address')"
-            @errors="form.errors.set('address', null)">
-          </p-form-row>
+            @errors="form.errors.set('address', null)"
+          />
 
           <p-form-row
             id="phone"
+            v-model="form.phone"
             name="phone"
             :label="$t('phone')"
             :disabled="isSaving"
-            v-model="form.phone"
             :errors="form.errors.get('phone')"
-            @errors="form.errors.set('phone', null)">
-          </p-form-row>
+            @errors="form.errors.set('phone', null)"
+          />
 
           <div class="form-group row">
             <div class="col-md-9 offset-3">
-              <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+              <button
+                :disabled="isSaving"
+                type="submit"
+                class="btn btn-sm btn-primary"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
               </button>
             </div>
           </div>

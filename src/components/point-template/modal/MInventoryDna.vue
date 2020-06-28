@@ -1,22 +1,44 @@
 <template>
   <div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="dna">
+    <p-modal
+      :id="'select-' + id"
+      :ref="'select-' + id"
+      title="dna"
+    >
       <template slot="content">
         <p-table>
           <tr slot="p-head">
-            <th v-if="mutableRequireExpiryDate">Expiry Date</th>
-            <th v-if="mutableRequireProductionNumber">Production No.</th>
+            <th v-if="mutableRequireExpiryDate">
+              Expiry Date
+            </th>
+            <th v-if="mutableRequireProductionNumber">
+              Production No.
+            </th>
             <th>Quantity</th>
           </tr>
-          <tr slot="p-body" v-for="(inventory, index) in mutableInventories" :key="index">
-            <td v-if="mutableRequireExpiryDate">{{ inventory.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
-            <td v-if="mutableRequireProductionNumber">{{ inventory.production_number }}</td>
+          <tr
+            v-for="(inventory, index) in mutableInventories"
+            slot="p-body"
+            :key="index"
+          >
+            <td v-if="mutableRequireExpiryDate">
+              {{ inventory.expiry_date | dateFormat('DD MMMM YYYY') }}
+            </td>
+            <td v-if="mutableRequireProductionNumber">
+              {{ inventory.production_number }}
+            </td>
             <td>{{ inventory.quantity }} {{ mutableItemUnit }}</td>
           </tr>
         </p-table>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('close') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>

@@ -1,13 +1,21 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-finance/>
-      <router-link to="/finance/cash" class="breadcrumb-item">{{ $t('cash') | uppercase }}</router-link>
+      <breadcrumb-finance />
+      <router-link
+        to="/finance/cash"
+        class="breadcrumb-item"
+      >
+        {{ $t('cash') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item">{{ $t('in') | uppercase }}</span>
       <span class="breadcrumb-item active">{{ payment.form.number }}</span>
     </breadcrumb>
 
-    <form class="row" @submit.prevent="onSubmit">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
       <p-block :title="$t('cash in')">
         <p-block-inner :is-loading="isLoading">
           <div class="row">
@@ -15,19 +23,25 @@
               <h4>{{ $t('cash in') | uppercase }}</h4>
               <table class="table table-sm table-bordered">
                 <tr>
-                  <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                  <td class="font-weight-bold">
+                    {{ $t('form number') | uppercase }}
+                  </td>
                   <td>
                     {{ payment.form.number | uppercase }}
                   </td>
                 </tr>
                 <tr>
-                  <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
+                  <td class="font-weight-bold">
+                    {{ $t('date') | uppercase }}
+                  </td>
                   <td>
                     {{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
                   </td>
                 </tr>
                 <tr>
-                  <td class="font-weight-bold">{{ $t('cash account') | uppercase }}</td>
+                  <td class="font-weight-bold">
+                    {{ $t('cash account') | uppercase }}
+                  </td>
                   <td>
                     {{ payment.payment_account.label | uppercase }}
                   </td>
@@ -35,12 +49,16 @@
               </table>
             </div>
             <div class="col-sm-6 text-right">
-              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <h6 class="mb-5">
+                {{ authUser.tenant_name | uppercase }}
+              </h6>
               <template v-if="payment.form.branch">
                 {{ payment.form.branch.address | uppercase }}
                 <br v-if="payment.form.branch.phone">{{ payment.form.branch.phone | uppercase }}
               </template>
-              <h6 class="mt-30 mb-5">{{ $t('to') | uppercase }} :</h6>
+              <h6 class="mt-30 mb-5">
+                {{ $t('to') | uppercase }} :
+              </h6>
               {{ payment.paymentable_name }}
             </div>
           </div>
@@ -50,12 +68,20 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Account</th>
+              <th style="min-width: 120px">
+                Account
+              </th>
               <th>Notes</th>
               <th>Allocation</th>
-              <th class="text-right">Amount</th>
+              <th class="text-right">
+                Amount
+              </th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in payment.details" :key="index">
+            <tr
+              v-for="(row, index) in payment.details"
+              slot="p-body"
+              :key="index"
+            >
               <th>{{ index + 1 }}</th>
               <td>
                 {{ row.chart_of_account.label | uppercase }}
@@ -71,11 +97,13 @@
               </td>
             </tr>
             <tr slot="p-body">
-              <th></th>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td class="text-right">{{ payment.amount | numberFormat }}</td>
+              <th />
+              <td />
+              <td />
+              <td />
+              <td class="text-right">
+                {{ payment.amount | numberFormat }}
+              </td>
             </tr>
           </point-table>
 
@@ -85,10 +113,17 @@
               <pre>{{ payment.form.notes }}</pre>
             </div>
             <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('created by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">{{ payment.form.created_at | dateFormat('DD MMMM YYYY') }}</div>
+              <h6 class="mb-0">
+                {{ $t('created by') | uppercase }}
+              </h6>
+              <div
+                class="mb-50"
+                style="font-size:11px"
+              >
+                {{ payment.form.created_at | dateFormat('DD MMMM YYYY') }}
+              </div>
               {{ createdBy | uppercase }}
-              <div class="d-sm-block d-md-none mt-10"></div>
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
           </div>
         </p-block-inner>

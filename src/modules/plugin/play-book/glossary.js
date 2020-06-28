@@ -39,7 +39,7 @@ const actions = {
     return api.put(`${url}/${glossary.id}`, glossary)
   },
   async get ({ commit }, payload) {
-    let { data, meta } = await api.get(url, {
+    const { data, meta } = await api.get(url, {
       params: payload
     })
 
@@ -47,7 +47,7 @@ const actions = {
     commit('SET_PAGINATION', meta)
   },
   async show ({ commit }, id) {
-    let { glossary } = await api.get(`${url}/${id}`)
+    const { glossary } = await api.get(`${url}/${id}`)
 
     return glossary
   },

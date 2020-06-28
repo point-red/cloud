@@ -4,29 +4,41 @@
       ref="modal"
       :title="$t('edit allocation') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <template v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </template>
       <template v-else>
-      <div class="row">
-        <div class="col-sm-12">
-          <p-form-row
-            id="name"
-            v-model="form.name"
-            :disabled="isSaving"
-            :label="$t('name')"
-            name="name"
-            ref="name"
-            :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)"/>
+        <div class="row">
+          <div class="col-sm-12">
+            <p-form-row
+              id="name"
+              ref="name"
+              v-model="form.name"
+              :disabled="isSaving"
+              :label="$t('name')"
+              name="name"
+              :errors="form.errors.get('name')"
+              @errors="form.errors.set('name', null)"
+            />
+          </div>
         </div>
-      </div>
-      <div class="pull-right">
-        <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
-        </button>
-      </div>
+        <div class="pull-right">
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+            :disabled="isSaving"
+            @click="onSubmit"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('update') | uppercase }}
+          </button>
+        </div>
       </template>
     </sweet-modal>
   </form>

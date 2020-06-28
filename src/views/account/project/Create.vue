@@ -1,126 +1,142 @@
 <template>
   <div>
-    <p-loading-block message="generate new database, this may take a while, please wait and do not close this page" v-show="isSaving"/>
+    <p-loading-block
+      v-show="isSaving"
+      message="generate new database, this may take a while, please wait and do not close this page"
+    />
 
     <breadcrumb>
-      <router-link to="/account/project" class="breadcrumb-item">{{ $t('project') | uppercase }}</router-link>
+      <router-link
+        to="/account/project"
+        class="breadcrumb-item"
+      >
+        {{ $t('project') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <form @submit.prevent="onSubmit">
           <p-form-row
             id="code"
-            name="code"
             v-model="form.code"
+            name="code"
             :disabled="isSaving"
             :label="$t('company identifier')"
             :help="'WEBSITE URL : ' + form.code + '.cloud.point.red'"
             :errors="form.errors.get('code')"
-            @errors="form.errors.set('code', null)">
-          </p-form-row>
+            @errors="form.errors.set('code', null)"
+          />
 
           <p-form-row
             id="name"
-            name="name"
             v-model="form.name"
+            name="name"
             :disabled="isSaving"
             :label="$t('company name')"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)">
-          </p-form-row>
+            @errors="form.errors.set('name', null)"
+          />
 
           <p-form-row
             id="total_user"
+            v-model="form.total_user"
             name="total_user"
             :is-text-right="false"
-            v-model="form.total_user"
             :disabled="isSaving"
             :label="$t('total user')"
             :errors="form.errors.get('total_user')"
-            @errors="form.errors.set('total_user', null)">
-            <div slot="body" class="col-lg-9">
+            @errors="form.errors.set('total_user', null)"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <p-form-number
                 id="total_user"
+                v-model="form.total_user"
                 name="total_user"
                 :is-text-right="false"
-                v-model="form.total_user"
                 :disabled="isSaving"
                 :label="$t('total user')"
                 :errors="form.errors.get('total_user')"
-                @errors="form.errors.set('total_user', null)">
-              </p-form-number>
+                @errors="form.errors.set('total_user', null)"
+              />
             </div>
           </p-form-row>
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <p-form-row
             id="group"
-            name="group"
             v-model="form.group"
+            name="group"
             :disabled="isSaving"
             :label="$t('company group')"
             :errors="form.errors.get('group')"
-            @errors="form.errors.set('group', null)">
-          </p-form-row>
+            @errors="form.errors.set('group', null)"
+          />
 
           <p-form-row
             id="address"
-            name="address"
             v-model="form.address"
+            name="address"
             :disabled="isSaving"
-            :label="$t('company address')">
-          </p-form-row>
+            :label="$t('company address')"
+          />
 
           <p-form-row
             id="phone"
-            name="phone"
             v-model="form.phone"
+            name="phone"
             :disabled="isSaving"
-            :label="$t('company phone')">
-          </p-form-row>
+            :label="$t('company phone')"
+          />
 
           <p-form-row
             id="whatsapp"
-            name="whatsapp"
             v-model="form.whatsapp"
+            name="whatsapp"
             :disabled="isSaving"
-            :label="$t('company whatsapp')">
-          </p-form-row>
+            :label="$t('company whatsapp')"
+          />
 
           <p-form-row
             id="website"
-            name="website"
             v-model="form.website"
+            name="website"
             :disabled="isSaving"
-            :label="$t('company website')">
-          </p-form-row>
+            :label="$t('company website')"
+          />
 
           <p-form-row
             id="marketplace-notes"
-            name="marketplace-notes"
             v-model="form.marketplace_notes"
+            name="marketplace-notes"
             :disabled="isSaving"
-            :label="$t('marketplace notes')">
-          </p-form-row>
+            :label="$t('marketplace notes')"
+          />
 
           <p-form-row
             id="vat-id-number"
-            name="vat_id_number"
             v-model="form.vat_id_number"
+            name="vat_id_number"
             :disabled="isSaving"
-            :label="$t('vat identification number')">
-          </p-form-row>
+            :label="$t('vat identification number')"
+          />
 
           <p-form-row
             id="timezone"
             name="timezone"
-            :label="$t('timezone')">
-            <div slot="body" class="col-form-label col-lg-9">
+            :label="$t('timezone')"
+          >
+            <div
+              slot="body"
+              class="col-form-label col-lg-9"
+            >
               <p-select-modal
                 id="timezone"
                 :title="'select timezone'"
@@ -128,25 +144,33 @@
                 :choosen="form.timezone"
                 :options="timezoneOptions"
                 @choosen="chooseTimezone"
-                @search="searchTimezone"/>
+                @search="searchTimezone"
+              />
             </div>
           </p-form-row>
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <h5>{{ $t('choose package') | uppercase }}</h5>
 
           <hr>
 
           <div class="row gutters-tiny">
-            <div class="col-md-6 col-xl-3" v-for="packageErp in packages" :key="packageErp.code">
+            <div
+              v-for="packageErp in packages"
+              :key="packageErp.code"
+              class="col-md-6 col-xl-3"
+            >
               <div class="block block-link-shadow">
                 <div class="block-content block-content-full clearfix">
                   <div class="font-size-h5 font-w600">
                     {{ packageErp.name }}
                   </div>
                   <hr>
-                  <div class="font-size-sm plugin-description" style="height:70px">
+                  <div
+                    class="font-size-sm plugin-description"
+                    style="height:70px"
+                  >
                     <pre>{{ packageErp.description }}</pre>
                   </div>
                   <hr>
@@ -155,15 +179,29 @@
                   </div>
                   <hr>
                   <div class="font-size-sm font-w600 text-uppercase text-muted">
-                    <button type="button" @click="choosePackage(packageErp)" v-if="form.package_id == packageErp.id" class="btn btn-sm btn-primary">SUBSCRIBED</button>
-                    <button type="button" @click="choosePackage(packageErp)" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+                    <button
+                      v-if="form.package_id == packageErp.id"
+                      type="button"
+                      class="btn btn-sm btn-primary"
+                      @click="choosePackage(packageErp)"
+                    >
+                      SUBSCRIBED
+                    </button>
+                    <button
+                      v-else
+                      type="button"
+                      class="btn btn-sm btn-secondary"
+                      @click="choosePackage(packageErp)"
+                    >
+                      SUBSCRIBE
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <h5>{{ $t('choose plugin') | uppercase }}</h5>
 
@@ -171,7 +209,11 @@
 
           <div class="row gutters-tiny">
             <template v-for="(plugin, index) in plugins">
-              <div class="col-md-6 col-xl-3" :key="index" v-if="plugin.is_active">
+              <div
+                v-if="plugin.is_active"
+                :key="index"
+                class="col-md-6 col-xl-3"
+              >
                 <div class="block block-link-shadow">
                   <div class="block-content block-content-full clearfix">
                     <div class="font-size-h5 font-w600">
@@ -183,14 +225,37 @@
                     </div>
                     <hr>
                     <div class="text-uppercase">
-                      <span class="font-size-lg" v-if="plugin.price != 0">IDR {{ plugin.price | numberFormat }}</span> <small v-if="plugin.is_monthly_price">/ month</small>
-                      <span class="font-size-lg" v-if="plugin.price_per_user != 0">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
-                      <span class="font-size-lg" v-if="plugin.price == 0 && plugin.price_per_user == 0">FREE</span>
+                      <span
+                        v-if="plugin.price != 0"
+                        class="font-size-lg"
+                      >IDR {{ plugin.price | numberFormat }}</span> <small v-if="plugin.is_monthly_price">/ month</small>
+                      <span
+                        v-if="plugin.price_per_user != 0"
+                        class="font-size-lg"
+                      >IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
+                      <span
+                        v-if="plugin.price == 0 && plugin.price_per_user == 0"
+                        class="font-size-lg"
+                      >FREE</span>
                     </div>
                     <hr>
                     <div class="font-size-sm font-w600 text-uppercase text-muted">
-                      <button type="button" @click="choosePlugin(plugin)" v-if="form.plugins.findIndex(element => element.id == plugin.id) >= 0" class="btn btn-sm btn-primary">SUBSCRIBED</button>
-                      <button type="button" @click="choosePlugin(plugin)" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+                      <button
+                        v-if="form.plugins.findIndex(element => element.id == plugin.id) >= 0"
+                        type="button"
+                        class="btn btn-sm btn-primary"
+                        @click="choosePlugin(plugin)"
+                      >
+                        SUBSCRIBED
+                      </button>
+                      <button
+                        v-else
+                        type="button"
+                        class="btn btn-sm btn-secondary"
+                        @click="choosePlugin(plugin)"
+                      >
+                        SUBSCRIBE
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -198,7 +263,7 @@
             </template>
           </div>
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <h5>{{ $t('invoice') | uppercase }}</h5>
 
@@ -206,80 +271,140 @@
 
           <div class="block-content">
             <div class="row my-20">
-                <div class="col-6">
-                  <p class="h3">POINT</p>
-                  <address>
-                    Jl Musi no 21<br>
-                    Jawa Timur, Surabaya<br>
-                    billing@point.red<br>
-                  </address>
-                </div>
-                <div class="col-6 text-right">
-                  <p class="h3">{{ form.name }}</p>
-                  <address>
-                    {{ form.address }}<br>
-                    {{ form.phone }}<br>
-                  </address>
-                </div>
+              <div class="col-6">
+                <p class="h3">
+                  POINT
+                </p>
+                <address>
+                  Jl Musi no 21<br>
+                  Jawa Timur, Surabaya<br>
+                  billing@point.red<br>
+                </address>
+              </div>
+              <div class="col-6 text-right">
+                <p class="h3">
+                  {{ form.name }}
+                </p>
+                <address>
+                  {{ form.address }}<br>
+                  {{ form.phone }}<br>
+                </address>
+              </div>
             </div>
             <div class="table-responsive push">
-                <table class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th class="text-center" style="width: 60px;"></th>
-                            <th>Product</th>
-                            <th class="text-center" style="width: 90px;">Qnt</th>
-                            <th class="text-right" style="width: 120px;">Price</th>
-                            <th class="text-right" style="width: 120px;">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-if="form.package_id > 1">
-                            <td class="text-center">1</td>
-                            <td>{{ form.package_notes }}</td>
-                            <td class="text-center">{{ form.total_user }}</td>
-                            <td class="text-right">{{ form.package_price | numberFormat }}</td>
-                            <td class="text-right">{{ form.package_total_price | numberFormat }}</td>
-                        </tr>
-                        <tr v-for="(plugin, index) in form.plugins" :key="index">
-                            <td class="text-center">
-                              <template v-if="form.package_id == 1">{{ 1 + index }}</template>
-                              <template v-if="form.package_id > 1">{{ 2 + index }}</template>
-                            </td>
-                            <td>
-                                {{ plugin.notes | uppercase }}
-                            </td>
-                            <td class="text-center">
-                              <template v-if="plugin.price_per_user > 0">
-                                {{ form.total_user }}
-                              </template>
-                              <template v-else>
-                                1
-                              </template>
-                            </td>
-                            <td class="text-right">
-                              {{ plugin.current_price | numberFormat }}
-                            </td>
-                            <td class="text-right">
-                              {{ plugin.current_total_price | numberFormat }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="font-w600 text-right">SUBTOTAL</td>
-                            <td class="text-right">{{ form.sub_total_price | numberFormat }}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="4" class="font-w600 text-right">PPN (10%)</td>
-                            <td class="text-right">{{ form.vat | numberFormat }}</td>
-                        </tr>
-                        <tr class="table-warning">
-                            <td colspan="4" class="font-w700 text-uppercase text-right">Total Due</td>
-                            <td class="font-w700 text-right">{{ form.total_price | numberFormat }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th
+                      class="text-center"
+                      style="width: 60px;"
+                    />
+                    <th>Product</th>
+                    <th
+                      class="text-center"
+                      style="width: 90px;"
+                    >
+                      Qnt
+                    </th>
+                    <th
+                      class="text-right"
+                      style="width: 120px;"
+                    >
+                      Price
+                    </th>
+                    <th
+                      class="text-right"
+                      style="width: 120px;"
+                    >
+                      Amount
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-if="form.package_id > 1">
+                    <td class="text-center">
+                      1
+                    </td>
+                    <td>{{ form.package_notes }}</td>
+                    <td class="text-center">
+                      {{ form.total_user }}
+                    </td>
+                    <td class="text-right">
+                      {{ form.package_price | numberFormat }}
+                    </td>
+                    <td class="text-right">
+                      {{ form.package_total_price | numberFormat }}
+                    </td>
+                  </tr>
+                  <tr
+                    v-for="(plugin, index) in form.plugins"
+                    :key="index"
+                  >
+                    <td class="text-center">
+                      <template v-if="form.package_id == 1">
+                        {{ 1 + index }}
+                      </template>
+                      <template v-if="form.package_id > 1">
+                        {{ 2 + index }}
+                      </template>
+                    </td>
+                    <td>
+                      {{ plugin.notes | uppercase }}
+                    </td>
+                    <td class="text-center">
+                      <template v-if="plugin.price_per_user > 0">
+                        {{ form.total_user }}
+                      </template>
+                      <template v-else>
+                        1
+                      </template>
+                    </td>
+                    <td class="text-right">
+                      {{ plugin.current_price | numberFormat }}
+                    </td>
+                    <td class="text-right">
+                      {{ plugin.current_total_price | numberFormat }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colspan="4"
+                      class="font-w600 text-right"
+                    >
+                      SUBTOTAL
+                    </td>
+                    <td class="text-right">
+                      {{ form.sub_total_price | numberFormat }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      colspan="4"
+                      class="font-w600 text-right"
+                    >
+                      PPN (10%)
+                    </td>
+                    <td class="text-right">
+                      {{ form.vat | numberFormat }}
+                    </td>
+                  </tr>
+                  <tr class="table-warning">
+                    <td
+                      colspan="4"
+                      class="font-w700 text-uppercase text-right"
+                    >
+                      Total Due
+                    </td>
+                    <td class="font-w700 text-right">
+                      {{ form.total_price | numberFormat }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <p class="text-muted text-center">Thank you very much for doing business with us. We look forward to working with you again!</p>
+            <p class="text-muted text-center">
+              Thank you very much for doing business with us. We look forward to working with you again!
+            </p>
           </div>
 
           <div class="form-group row">
@@ -287,8 +412,12 @@
               <button
                 :disabled="isSaving"
                 type="submit"
-                class="btn btn-sm btn-primary">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('create project') | uppercase }}
+                class="btn btn-sm btn-primary"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('create project') | uppercase }}
               </button>
             </div>
           </div>

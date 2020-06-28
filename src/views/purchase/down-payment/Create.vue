@@ -1,12 +1,17 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-purchase/>
-      <router-link to="/purchase/down-payment" class="breadcrumb-item">{{ $t('down payment') | uppercase }}</router-link>
+      <breadcrumb-purchase />
+      <router-link
+        to="/purchase/down-payment"
+        class="breadcrumb-item"
+      >
+        {{ $t('down payment') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <purchase-menu/>
+    <purchase-menu />
 
     <form @submit.prevent="onSubmit">
       <div class="row">
@@ -17,21 +22,29 @@
                 <h4>{{ $t('down payment') | uppercase }}</h4>
                 <table class="table table-sm table-bordered">
                   <tr>
-                    <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('date') | uppercase }}
+                    </td>
                     <td>
                       <p-date-picker
                         id="date"
+                        v-model="form.date"
                         name="date"
                         :label="$t('date')"
-                        v-model="form.date"
                         :errors="form.errors.get('date')"
-                        @errors="form.errors.set('date', null)"/>
+                        @errors="form.errors.set('date', null)"
+                      />
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('reference') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('reference') | uppercase }}
+                    </td>
                     <td>
-                      <span @click="$refs.selectPurchaseOrder.open()" class="select-link">
+                      <span
+                        class="select-link"
+                        @click="$refs.selectPurchaseOrder.open()"
+                      >
                         <template v-if="purchaseOrder && purchaseOrder.form.number != null">
                           {{ purchaseOrder.form.number }}
                         </template>
@@ -42,21 +55,26 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('amount') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('amount') | uppercase }}
+                    </td>
                     <td>
                       <p-form-number
                         :id="'amount'"
+                        v-model.number="form.amount"
                         :name="'amount'"
                         :is-text-right="false"
                         :max="purchaseOrder.amount ? purchaseOrder.amount : 0"
-                        v-model.number="form.amount"/>
+                      />
                     </td>
                   </tr>
                 </table>
               </div>
               <div class="col-sm-6 text-right">
                 <div class="mb-30">
-                  <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                  <h6 class="mb-0">
+                    {{ authUser.tenant_name | uppercase }}
+                  </h6>
                   <template v-if="authUser.branch">
                     {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
                     {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
@@ -65,11 +83,17 @@
                 <div>
                   <h6 class="mb-0">
                     {{ $t('to') | uppercase }}:
-                    <template v-if="form.supplier_code">[{{ form.supplier_code | uppercase }}]</template>
+                    <template v-if="form.supplier_code">
+                      [{{ form.supplier_code | uppercase }}]
+                    </template>
                     {{ form.supplier_name | uppercase }}
                   </h6>
-                  <div v-if="form.supplier_address"><i class="fa fa-home fa-fw"></i> {{ form.supplier_address | uppercase }}</div>
-                  <div v-if="form.supplier_phone"><i class="fa fa-phone fa-fw"></i> {{ form.supplier_phone | uppercase }}</div>
+                  <div v-if="form.supplier_address">
+                    <i class="fa fa-home fa-fw" /> {{ form.supplier_address | uppercase }}
+                  </div>
+                  <div v-if="form.supplier_phone">
+                    <i class="fa fa-phone fa-fw" /> {{ form.supplier_phone | uppercase }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -78,94 +102,166 @@
               <div class="col-sm-12">
                 <point-table class="mt-20">
                   <tr slot="p-head">
-                    <th class="text-center">#</th>
+                    <th class="text-center">
+                      #
+                    </th>
                     <th>Item</th>
-                    <th class="text-right">Quantity</th>
-                    <th class="text-right">Price</th>
-                    <th class="text-right">Discount</th>
-                    <th class="text-right">Total</th>
-                    <th width="50px"></th>
+                    <th class="text-right">
+                      Quantity
+                    </th>
+                    <th class="text-right">
+                      Price
+                    </th>
+                    <th class="text-right">
+                      Discount
+                    </th>
+                    <th class="text-right">
+                      Total
+                    </th>
+                    <th width="50px" />
                   </tr>
                   <template v-for="(row, index) in purchaseOrder.items">
-                    <tr slot="p-body" :key="index">
-                      <th class="text-center">{{ index + 1 }}</th>
+                    <tr
+                      slot="p-body"
+                      :key="index"
+                    >
+                      <th class="text-center">
+                        {{ index + 1 }}
+                      </th>
                       <td>{{ row.item.label }}</td>
-                      <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
-                      <td class="text-right">{{ row.price | numberFormat }}</td>
-                      <td class="text-right">{{ row.discount_value | numberFormat }}</td>
-                      <td class="text-right">{{ row.quantity * (row.price - row.discount_value) | numberFormat }}</td>
-                      <td></td>
+                      <td class="text-right">
+                        {{ row.quantity | numberFormat }} {{ row.unit }}
+                      </td>
+                      <td class="text-right">
+                        {{ row.price | numberFormat }}
+                      </td>
+                      <td class="text-right">
+                        {{ row.discount_value | numberFormat }}
+                      </td>
+                      <td class="text-right">
+                        {{ row.quantity * (row.price - row.discount_value) | numberFormat }}
+                      </td>
+                      <td />
                     </tr>
                   </template>
                   <tr slot="p-body">
-                    <th></th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="text-right"><b>{{ $t('subtotal') | uppercase }}</b></td>
-                    <td class="text-right"><b>{{ subtotal | numberFormat }}</b></td>
-                    <td></td>
+                    <th />
+                    <td />
+                    <td />
+                    <td />
+                    <td class="text-right">
+                      <b>{{ $t('subtotal') | uppercase }}</b>
+                    </td>
+                    <td class="text-right">
+                      <b>{{ subtotal | numberFormat }}</b>
+                    </td>
+                    <td />
                   </tr>
                   <tr slot="p-body">
-                    <th></th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="text-right"><b>{{ $t('discount') | uppercase }}</b></td>
-                    <td class="text-right"><b>{{ purchaseOrder.discount_value | numberFormat }}</b></td>
-                    <td></td>
+                    <th />
+                    <td />
+                    <td />
+                    <td />
+                    <td class="text-right">
+                      <b>{{ $t('discount') | uppercase }}</b>
+                    </td>
+                    <td class="text-right">
+                      <b>{{ purchaseOrder.discount_value | numberFormat }}</b>
+                    </td>
+                    <td />
                   </tr>
                   <tr slot="p-body">
-                    <th></th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="text-right"><b>{{ $t('tax base') | uppercase }}</b></td>
-                    <td class="text-right"><b>{{ purchaseOrder.amount - purchaseOrder.tax | numberFormat }}</b></td>
-                    <td></td>
+                    <th />
+                    <td />
+                    <td />
+                    <td />
+                    <td class="text-right">
+                      <b>{{ $t('tax base') | uppercase }}</b>
+                    </td>
+                    <td class="text-right">
+                      <b>{{ purchaseOrder.amount - purchaseOrder.tax | numberFormat }}</b>
+                    </td>
+                    <td />
                   </tr>
                   <tr slot="p-body">
-                    <th></th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="text-right"><b>{{ $t('tax') | uppercase }}</b></td>
-                    <td class="text-right"><b>{{ purchaseOrder.tax | numberFormat }}</b></td>
-                    <td></td>
+                    <th />
+                    <td />
+                    <td />
+                    <td />
+                    <td class="text-right">
+                      <b>{{ $t('tax') | uppercase }}</b>
+                    </td>
+                    <td class="text-right">
+                      <b>{{ purchaseOrder.tax | numberFormat }}</b>
+                    </td>
+                    <td />
                   </tr>
                   <tr slot="p-body">
-                    <th></th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="text-right"><b>{{ $t('total') | uppercase }}</b></td>
-                    <td class="text-right"><b>{{ purchaseOrder.amount | numberFormat }}</b></td>
-                    <td></td>
+                    <th />
+                    <td />
+                    <td />
+                    <td />
+                    <td class="text-right">
+                      <b>{{ $t('total') | uppercase }}</b>
+                    </td>
+                    <td class="text-right">
+                      <b>{{ purchaseOrder.amount | numberFormat }}</b>
+                    </td>
+                    <td />
                   </tr>
                 </point-table>
               </div>
             </div>
             <div class="row">
               <div class="col-sm-6">
-                <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+                <textarea
+                  v-model="form.notes"
+                  rows="5"
+                  class="form-control"
+                  placeholder="Notes"
+                />
               </div>
               <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+                <h6 class="mb-0">
+                  {{ $t('requested by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  {{ Date.now() | dateFormat('DD MMMM YYYY') }}
+                </div>
                 {{ requestedBy | uppercase }}
-                <div class="d-sm-block d-md-none mt-10"></div>
+                <div class="d-sm-block d-md-none mt-10" />
               </div>
               <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">_______________</div>
-                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <h6 class="mb-0">
+                  {{ $t('approved by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  _______________
+                </div>
+                <span
+                  class="select-link"
+                  @click="$refs.approver.open()"
+                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
                 <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
                 <hr>
-                <button type="submit" class="btn btn-block btn-sm btn-primary" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                <button
+                  type="submit"
+                  class="btn btn-block btn-sm btn-primary"
+                  :disabled="isSaving"
+                >
+                  <i
+                    v-show="isSaving"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('save') | uppercase }}
                 </button>
               </div>
             </div>
@@ -173,8 +269,14 @@
         </p-block>
       </div>
     </form>
-    <m-user ref="approver" @choosen="chooseApprover"/>
-    <select-purchase-order ref="selectPurchaseOrder" @choosen="choosePurchaseOrder"></select-purchase-order>
+    <m-user
+      ref="approver"
+      @choosen="chooseApprover"
+    />
+    <select-purchase-order
+      ref="selectPurchaseOrder"
+      @choosen="choosePurchaseOrder"
+    />
   </div>
 </template>
 

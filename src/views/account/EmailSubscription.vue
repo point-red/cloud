@@ -9,7 +9,7 @@
         <div class="font-size-h5 font-w300 text-center">
           Email Subscription
         </div>
-        <hr/>
+        <hr>
         <div class="text-center">
           By subscribing to our email newsletter,
           you will be opting to receive updates about new feature releases,
@@ -19,12 +19,13 @@
           If you're not interested in receiving this content,
           please uncheck the box below to unsubscribe.
         </div>
-        <hr/>
+        <hr>
         <p-form-check-box
           id="subscibe"
           name="subscibe"
           class="text-center"
-          description="Subscribe to newsletters"/>
+          description="Subscribe to newsletters"
+        />
       </p-block>
     </div>
   </div>

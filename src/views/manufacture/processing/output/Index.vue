@@ -1,23 +1,32 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        :to="'/manufacture/processing/' + id"
+        class="breadcrumb-item"
+      >
+        {{ $t('process') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('output') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('output')" :header="true">
+      <p-block
+        :title="$t('output')"
+        :header="true"
+      >
         <div class="row mb-10">
           <p-date-range-picker
             id="date"
+            v-model="date"
             name="date"
             class="col-sm-4"
-            v-model="date"/>
+          />
         </div>
         <div class="input-group block">
           <p-form-input
@@ -26,13 +35,15 @@
             placeholder="Search"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
           <router-link
-            :to="'/manufacture/processing/' + id + '/output/create-step-1'"
             v-if="$permission.has('create manufacture')"
-            class="input-group-append">
+            :to="'/manufacture/processing/' + id + '/output/create-step-1'"
+            class="input-group-append"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
         </div>
@@ -50,7 +61,8 @@
             <template v-for="(output, index) in outputs">
               <tr
                 :key="'mi-' + index"
-                slot="p-body">
+                slot="p-body"
+              >
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>{{ output.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>
@@ -62,14 +74,21 @@
                 <td>{{ output.manufacture_machine_name }}</td>
                 <td>{{ output.notes }}</td>
               </tr>
-              <tr :key="'moa-' + index" slot="p-body">
+              <tr
+                :key="'moa-' + index"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td><b>{{ $t('finished goods') | titlecase }}</b></td>
                 <td><b>{{ $t('quantity produced') | titlecase }}</b></td>
                 <td><b>{{ $t('warehouse') | titlecase }}</b></td>
               </tr>
-              <tr v-for="finishGood in output.finished_goods_temporary" :key="'fg-' + finishGood.id" slot="p-body">
+              <tr
+                v-for="finishGood in output.finished_goods_temporary"
+                :key="'fg-' + finishGood.id"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
@@ -86,7 +105,10 @@
                   </router-link>
                 </td>
               </tr>
-              <tr :key="'mob-' + index" slot="p-body">
+              <tr
+                :key="'mob-' + index"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -99,8 +121,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>

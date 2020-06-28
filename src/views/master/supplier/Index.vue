@@ -1,38 +1,42 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
+      <breadcrumb-master />
       <span class="breadcrumb-item active">{{ $t('supplier') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addSupplier.open()"
             v-if="$permission.has('create supplier')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addSupplier.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
-        <hr/>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Name</th>
               <th>Email</th>
               <th>Address</th>
@@ -41,7 +45,8 @@
             <tr
               v-for="(supplier, index) in suppliers"
               :key="supplier.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ (page - 1) * 10 + index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'supplier.show', params: { id: supplier.id }}">
@@ -57,12 +62,15 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <m-add-supplier ref="addSupplier" @added="onAdded"></m-add-supplier>
+    <m-add-supplier
+      ref="addSupplier"
+      @added="onAdded"
+    />
   </div>
 </template>
 

@@ -1,24 +1,44 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/processing/' + id + '/output'" class="breadcrumb-item">{{ $t('output') | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        :to="'/manufacture/processing/' + id"
+        class="breadcrumb-item"
+      >
+        {{ $t('process') | uppercase }}
+      </router-link>
+      <router-link
+        :to="'/manufacture/processing/' + id + '/output'"
+        class="breadcrumb-item"
+      >
+        {{ $t('output') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
-    <tab-menu/>
+    <tab-menu />
 
-    <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('input')" :header="true">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
+      <p-block
+        :title="$t('input')"
+        :header="true"
+      >
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="date"
             name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('date')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               {{ input.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
             </div>
           </p-form-row>
@@ -26,8 +46,12 @@
           <p-form-row
             id="number"
             name="number"
-            :label="$t('number')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('number')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <template v-if="input.form.number">
                 {{ input.form.number }}
               </template>
@@ -40,78 +64,96 @@
         </p-block-inner>
       </p-block>
 
-      <p-block :title="$t('output')" :header="true">
+      <p-block
+        :title="$t('output')"
+        :header="true"
+      >
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="machine"
             name="machine"
-            :label="$t('machine')">
-            <div slot="body" class="col-lg-9 mt-5">
+            :label="$t('machine')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 mt-5"
+            >
               {{ form.manufacture_machine_name }}
             </div>
           </p-form-row>
 
           <p-form-row
             id="notes"
+            v-model="form.notes"
             name="notes"
             :label="$t('notes')"
-            v-model="form.notes"
             :disabled="isSaving"
             :errors="form.errors.get('notes')"
-            @errors="form.errors.set('notes', null)"/>
+            @errors="form.errors.set('notes', null)"
+          />
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <h5>{{ $t('finished goods') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Item</th>
-              <th style="min-width: 120px">Warehouse</th>
+              <th style="min-width: 120px">
+                Item
+              </th>
+              <th style="min-width: 120px">
+                Warehouse
+              </th>
               <th>Estimation</th>
               <th>&nbsp;</th>
               <th>Output</th>
-              <th></th>
+              <th />
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finished_goods_temporary" :key="index">
+            <tr
+              v-for="(row, index) in form.finished_goods_temporary"
+              slot="p-body"
+              :key="index"
+            >
               <th>{{ index + 1 }}</th>
               <td>
-                  <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
-                    {{ row.item.label }}
-                  </router-link>
-                </td>
-                <td>
-                  <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
-                    {{ row.warehouse.name }}
-                  </router-link>
-                </td>
-                <td>
-                  {{ row.estimation_quantity | numberFormat }} {{ row.unit }}
-                </td>
-                <td>
-                  <m-inventory-in
-                    :id="'inventory-' + index"
-                    :itemId="row.item_id"
-                    :requireExpiryDate="row.item.require_expiry_date"
-                    :requireProductionNumber="row.item.require_production_number"
-                    :unit="row.unit"
-                    :value="row.quantity"
-                    @add="addInventory($event, row)"
-                    v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
-                </td>
-                <td>
-                  <p-quantity
-                    :id="'quantity' + index"
-                    :name="'quantity' + index"
-                    v-model="row.quantity"
-                    :unit="row.item.units[0].label"
-                    :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
-                </td>
+                <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
+                  {{ row.item.label }}
+                </router-link>
+              </td>
+              <td>
+                <router-link :to="{ name: 'warehouse.show', params: { id: row.warehouse.id }}">
+                  {{ row.warehouse.name }}
+                </router-link>
+              </td>
+              <td>
+                {{ row.estimation_quantity | numberFormat }} {{ row.unit }}
+              </td>
+              <td>
+                <m-inventory-in
+                  v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"
+                  :id="'inventory-' + index"
+                  :item-id="row.item_id"
+                  :require-expiry-date="row.item.require_expiry_date"
+                  :require-production-number="row.item.require_production_number"
+                  :unit="row.unit"
+                  :value="row.quantity"
+                  @add="addInventory($event, row)"
+                />
+              </td>
+              <td>
+                <p-quantity
+                  :id="'quantity' + index"
+                  v-model="row.quantity"
+                  :name="'quantity' + index"
+                  :unit="row.item.units[0].label"
+                  :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"
+                />
+              </td>
             </tr>
           </point-table>
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <div class="row">
             <div class="col-sm-12">
@@ -120,13 +162,18 @@
               <p-form-row
                 id="approver"
                 name="approver"
-                :label="$t('approver')">
-                <div slot="body" class="col-lg-9 mt-5">
+                :label="$t('approver')"
+              >
+                <div
+                  slot="body"
+                  class="col-lg-9 mt-5"
+                >
                   <m-user
                     :id="'user'"
                     v-model="form.approver_id"
                     :errors="form.errors.get('approver_id')"
-                    @errors="form.errors.set('approver_id', null)"/>
+                    @errors="form.errors.set('approver_id', null)"
+                  />
                 </div>
               </p-form-row>
             </div>
@@ -134,8 +181,15 @@
 
           <div class="form-group row">
             <div class="col-md-12">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                :disabled="isSaving"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
               </button>
             </div>
           </div>

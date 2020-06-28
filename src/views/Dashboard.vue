@@ -3,12 +3,13 @@
     <p-box
       :name="$t('main menu')"
       link="/menu"
-      icon="si si-layers"/>
+      icon="si si-layers"
+    />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'dashboard'
+  name: 'Dashboard'
 }
 </script>

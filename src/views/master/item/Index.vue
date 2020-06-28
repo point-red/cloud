@@ -1,38 +1,42 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
+      <breadcrumb-master />
       <span class="breadcrumb-item active">{{ $t('item') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addItem.open()"
             v-if="$permission.has('create item')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addItem.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Name</th>
               <th>Account</th>
               <th>Stock</th>
@@ -40,7 +44,8 @@
             <tr
               v-for="(item, index) in items"
               :key="item.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: item.id }}">
@@ -63,11 +68,14 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
-    <m-add-item ref="addItem" @added="onAdded"></m-add-item>
+    <m-add-item
+      ref="addItem"
+      @added="onAdded"
+    />
   </div>
 </template>
 

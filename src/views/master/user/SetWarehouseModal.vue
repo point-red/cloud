@@ -1,30 +1,53 @@
 <template>
   <div>
     <div class="row">
-      <p-modal ref="modal" id="modal" :title="$t('set warehouse')">
+      <p-modal
+        id="modal"
+        ref="modal"
+        :title="$t('set warehouse')"
+      >
         <template slot="content">
           {{ $t('set warehouse helper') }}
           <hr>
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th v-for="(warehouse, index) in warehouses" :key="index" class="text-center">
+              <th
+                v-for="(warehouse, index) in warehouses"
+                :key="index"
+                class="text-center"
+              >
                 {{ warehouse.name | uppercase }}
               </th>
             </tr>
             <tr
               v-for="(user, index) in users"
               :key="index"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ user.name }}</th>
-              <td v-for="(warehouse, index) in warehouses" :key="index" class="text-center">
-                <p-form-check-box :is-form="false" @click.native="toggle(user.id, warehouse.id)" :checked="isChecked(user.id, warehouse.id)"/>
+              <td
+                v-for="(warehouse, index) in warehouses"
+                :key="index"
+                class="text-center"
+              >
+                <p-form-check-box
+                  :is-form="false"
+                  :checked="isChecked(user.id, warehouse.id)"
+                  @click.native="toggle(user.id, warehouse.id)"
+                />
               </td>
             </tr>
           </point-table>
         </template>
         <template slot="footer">
-          <button type="button" class="btn btn-sm btn-outline-secondary" @click="$refs.modal.close()">{{ $t('close') | uppercase }}</button>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            @click="$refs.modal.close()"
+          >
+            {{ $t('close') | uppercase }}
+          </button>
         </template>
       </p-modal>
     </div>

@@ -5,15 +5,17 @@
         ref="modal"
         :title="$t('add scorer') | uppercase"
         overlay-theme="dark"
-        @close="onClose()">
+        @close="onClose()"
+      >
         <div class="list-group mb-20">
           <template v-for="(user, index) in users">
             <a
               :key="index"
-              @click="onSubmitScorer(user, index)"
               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-              href="javascript:void(0)">
-                <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ user.first_name + ' ' + user.last_name }}</span>
+              href="javascript:void(0)"
+              @click="onSubmitScorer(user, index)"
+            >
+              <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ user.first_name + ' ' + user.last_name }}</span>
             </a>
           </template>
         </div>
@@ -28,10 +30,12 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   data () {

@@ -1,52 +1,70 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <router-link to="/master/allocation-group" class="breadcrumb-item">{{ $t('allocation group') | uppercase }}</router-link>
+      <breadcrumb-master />
+      <router-link
+        to="/master/allocation-group"
+        class="breadcrumb-item"
+      >
+        {{ $t('allocation group') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ group.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addAllocationGroup.open()"
             v-if="$permission.has('create allocation')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addAllocationGroup.open()"
+          >
             {{ $t('create') | uppercase }}
           </a>
           <a
-            href="javascript:void(0)"
-            @click="$refs.editAllocationGroup.open(group)"
             v-if="$permission.has('update allocation')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editAllocationGroup.open(group)"
+          >
             {{ $t('edit') | uppercase }}
           </a>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete allocation')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="data.name"
             label="Name"
             name="name"
-            v-model="data.name"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
-    <m-add-allocation-group ref="addAllocationGroup" @added="onAddedAllocationGroup($event)"></m-add-allocation-group>
-    <m-edit-allocation-group ref="editAllocationGroup" @updated="onUpdatedAllocationGroup($event)"></m-edit-allocation-group>
+    <m-add-allocation-group
+      ref="addAllocationGroup"
+      @added="onAddedAllocationGroup($event)"
+    />
+    <m-edit-allocation-group
+      ref="editAllocationGroup"
+      @updated="onUpdatedAllocationGroup($event)"
+    />
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-finance/>
+      <breadcrumb-finance />
       <span class="breadcrumb-item active">{{ $t('cash') | uppercase }}</span>
     </breadcrumb>
 
@@ -10,29 +10,32 @@
         <p-block-inner :is-loading="isLoading">
           <div class="input-group block">
             <router-link
-              to="/finance/cash/in"
               v-if="$permission.has('create cash')"
-              class="input-group-prepend">
+              to="/finance/cash/in"
+              class="input-group-prepend"
+            >
               <span class="input-group-text">
-                <i class="fa fa-plus mr-5"></i> {{ $t('cash in') | uppercase }}
+                <i class="fa fa-plus mr-5" /> {{ $t('cash in') | uppercase }}
               </span>
             </router-link>
             <router-link
-              to="/finance/cash/out"
               v-if="$permission.has('create cash')"
-              class="input-group-prepend">
+              to="/finance/cash/out"
+              class="input-group-prepend"
+            >
               <span class="input-group-text">
-                <i class="fa fa-plus mr-5"></i> {{ $t('cash out') | uppercase }}
+                <i class="fa fa-plus mr-5" /> {{ $t('cash out') | uppercase }}
               </span>
             </router-link>
             <p-form-input
               id="search-text"
+              ref="searchText"
               name="search-text"
               placeholder="Search"
-              ref="searchText"
               class="btn-block"
               :value="searchText"
-              @input="filterSearch"/>
+              @input="filterSearch"
+            />
           </div>
           <hr>
           <point-table>
@@ -43,26 +46,39 @@
               <th>Account</th>
               <th>Notes</th>
               <th>Allocation</th>
-              <th class="text-right">Amount</th>
+              <th class="text-right">
+                Amount
+              </th>
             </tr>
             <template v-for="(payment, index) in payments">
               <template v-for="(paymentDetail, index2) in payment.details">
-              <tr :key="'payment-' + index + '-' + index2" slot="p-body">
-                <th>
-                  <router-link v-if="payment.disbursed == false" :to="{ name: 'finance.cash.in.show', params: { id: payment.id }}">
-                    {{ payment.form.number }}
-                  </router-link>
-                  <router-link v-if="payment.disbursed == true" :to="{ name: 'finance.cash.out.show', params: { id: payment.id }}">
-                    {{ payment.form.number }}
-                  </router-link>
-                </th>
-                <td>{{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                <td>{{ payment.paymentable.name }}</td>
-                <td>{{ paymentDetail.chart_of_account.number }} - {{ paymentDetail.chart_of_account.alias }}</td>
-                <td>{{ paymentDetail.notes }}</td>
-                <td>{{ paymentDetail.allocation ? paymentDetail.allocation.name : '' }}</td>
-                <td class="text-right">{{ paymentDetail.amount | numberFormat }}</td>
-              </tr>
+                <tr
+                  :key="'payment-' + index + '-' + index2"
+                  slot="p-body"
+                >
+                  <th>
+                    <router-link
+                      v-if="payment.disbursed == false"
+                      :to="{ name: 'finance.cash.in.show', params: { id: payment.id }}"
+                    >
+                      {{ payment.form.number }}
+                    </router-link>
+                    <router-link
+                      v-if="payment.disbursed == true"
+                      :to="{ name: 'finance.cash.out.show', params: { id: payment.id }}"
+                    >
+                      {{ payment.form.number }}
+                    </router-link>
+                  </th>
+                  <td>{{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                  <td>{{ payment.paymentable.name }}</td>
+                  <td>{{ paymentDetail.chart_of_account.number }} - {{ paymentDetail.chart_of_account.alias }}</td>
+                  <td>{{ paymentDetail.notes }}</td>
+                  <td>{{ paymentDetail.allocation ? paymentDetail.allocation.name : '' }}</td>
+                  <td class="text-right">
+                    {{ paymentDetail.amount | numberFormat }}
+                  </td>
+                </tr>
               </template>
             </template>
           </point-table>
@@ -70,8 +86,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>

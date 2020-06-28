@@ -43,7 +43,7 @@ const actions = {
     commit('SET_GLOSSARY', null)
     commit('SET_HISTORIES', [])
 
-    let { glossary, histories } = await api.get(url(glossaryId), {
+    const { glossary, histories } = await api.get(url(glossaryId), {
       params
     })
 
@@ -54,7 +54,7 @@ const actions = {
     commit('SET_PAGINATION', pagination)
   },
   async show ({ commit }, id) {
-    let { glossary } = await api.get(`${url}/${id}`)
+    const { glossary } = await api.get(`${url}/${id}`)
 
     return glossary
   },

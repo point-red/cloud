@@ -5,42 +5,47 @@
     </breadcrumb>
     <div class="row">
       <div class="col-xl-3">
-        <side-menu/>
+        <side-menu />
       </div>
       <p-block
         :header="true"
         :is-loading="isLoading"
         title="Change Password"
-        column="col-xl-9">
+        column="col-xl-9"
+      >
         <form @submit.prevent="onSubmit">
           <p-form-row
             id="password"
+            v-model="form.password"
             name="password"
             type="password"
             :label="$t('password')"
-            v-model="form.password"
             :errors="form.errors.get('password')"
-            @errors="form.errors.set('password', null)">
-          </p-form-row>
+            @errors="form.errors.set('password', null)"
+          />
 
           <p-form-row
             id="password-confirmation"
+            v-model="form.password_confirmation"
             name="password-confirmation"
             type="password"
             :label="$t('password confirmation')"
-            v-model="form.password_confirmation"
             :errors="form.errors.get('password_confirmation')"
-            @errors="form.errors.set('password_confirmation', null)">
-          </p-form-row>
+            @errors="form.errors.set('password_confirmation', null)"
+          />
 
           <div class="form-group row">
             <div class="col-md-9 offset-3">
               <button
                 :disabled="isSaving"
                 type="submit"
-                class="btn btn-sm btn-primary"><i
+                class="btn btn-sm btn-primary"
+              >
+                <i
                   v-show="isSaving"
-                  class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}</button>
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
+              </button>
             </div>
           </div>
         </form>

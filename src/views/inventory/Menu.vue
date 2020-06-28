@@ -1,11 +1,15 @@
 <template>
-  <div class="d-flex flex-nowrap" style="overflow-x:auto">
+  <div
+    class="d-flex flex-nowrap"
+    style="overflow-x:auto"
+  >
     <router-link
       to="/purchase/request"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/request')}"
-      active-class="btn-primary">
-      <span><i class="si si-folder-alt"></i> {{ $t('purchase request') | uppercase }}</span>
+      active-class="btn-primary"
+    >
+      <span><i class="si si-folder-alt" /> {{ $t('purchase request') | uppercase }}</span>
     </router-link>
     <!-- <router-link
       to="/purchase/order"

@@ -1,11 +1,16 @@
 <template>
   <div>
     <breadcrumb>
-      <router-link to="/account/project" class="breadcrumb-item">{{ $t('project') | uppercase }}
+      <router-link
+        to="/account/project"
+        class="breadcrumb-item"
+      >
+        {{ $t('project') | uppercase }}
       </router-link>
       <router-link
         :to="{ path: '/account/project/' + project.id, params: { id: project.id }}"
-        class="breadcrumb-item">
+        class="breadcrumb-item"
+      >
         {{ project.code | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
@@ -16,111 +21,123 @@
         <form @submit.prevent="onSubmit">
           <p-form-row
             id="code"
-            name="code"
             v-model="form.code"
+            name="code"
             :disabled="true"
             :label="$t('company identifier')"
             :errors="form.errors.get('code')"
-            @errors="form.errors.set('code', null)">
-          </p-form-row>
+            @errors="form.errors.set('code', null)"
+          />
 
           <p-form-row
             id="name"
-            name="name"
             v-model="form.name"
+            name="name"
             :disabled="isSaving"
             :label="$t('company name')"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)">
-          </p-form-row>
+            @errors="form.errors.set('name', null)"
+          />
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <p-form-row
             id="group"
-            name="group"
             v-model="form.group"
+            name="group"
             :disabled="isSaving"
             :label="$t('company group')"
             :errors="form.errors.get('group')"
-            @errors="form.errors.set('group', null)">
-          </p-form-row>
+            @errors="form.errors.set('group', null)"
+          />
 
           <p-form-row
             id="address"
-            name="address"
             v-model="form.address"
+            name="address"
             :disabled="isSaving"
-            :label="$t('company address')">
-          </p-form-row>
+            :label="$t('company address')"
+          />
 
           <p-form-row
             id="phone"
-            name="phone"
             v-model="form.phone"
+            name="phone"
             :disabled="isSaving"
-            :label="$t('company phone')">
-          </p-form-row>
+            :label="$t('company phone')"
+          />
 
           <p-form-row
             id="whatsapp"
-            name="whatsapp"
             v-model="form.whatsapp"
+            name="whatsapp"
             :disabled="isSaving"
-            :label="$t('company whatsapp')">
-          </p-form-row>
+            :label="$t('company whatsapp')"
+          />
 
           <p-form-row
             id="website"
-            name="website"
             v-model="form.website"
+            name="website"
             :disabled="isSaving"
-            :label="$t('company website')">
-          </p-form-row>
+            :label="$t('company website')"
+          />
 
           <p-form-row
             id="marketplace-notes"
-            name="marketplace-notes"
             v-model="form.marketplace_notes"
+            name="marketplace-notes"
             :disabled="isSaving"
-            :label="$t('marketplace notes')">
-          </p-form-row>
+            :label="$t('marketplace notes')"
+          />
 
           <p-form-row
             id="vat-id-number"
-            name="vat_id_number"
             v-model="form.vat_id_number"
+            name="vat_id_number"
             :disabled="isSaving"
-            :label="$t('vat identification number')">
-          </p-form-row>
+            :label="$t('vat identification number')"
+          />
 
           <p-form-row
             id="timezone"
             name="timezone"
-            :label="$t('timezone')">
-            <div slot="body" class="col-lg-9 mt-5">
+            :label="$t('timezone')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 mt-5"
+            >
               <p-select-modal
                 id="timezone"
                 :title="'select timezone'"
                 :value="form.timezone"
                 :options="timezoneOptions"
                 @choosen="chooseTimezone"
-                @search="searchTimezone"/>
+                @search="searchTimezone"
+              />
             </div>
           </p-form-row>
 
           <hr>
 
           <div class="form-group row">
-            <div class="col md-3"></div>
+            <div class="col md-3" />
             <div class="col-md-9">
               <button
                 :disabled="isSaving"
                 type="submit"
-                class="btn btn-sm btn-primary mr-5">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+                class="btn btn-sm btn-primary mr-5"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('update') | uppercase }}
               </button>
-              <router-link :to="{path: '/account/project/' + this.id}" class="btn btn-sm btn-danger">
+              <router-link
+                :to="{path: '/account/project/' + id}"
+                class="btn btn-sm btn-danger"
+              >
                 {{ $t('cancel') | uppercase }}
               </router-link>
             </div>

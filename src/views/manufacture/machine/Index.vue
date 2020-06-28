@@ -1,21 +1,22 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
+      <breadcrumb-manufacture />
       <span class="breadcrumb-item active">{{ $t('machine') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <router-link
-            to="/manufacture/machine/create"
             v-if="$permission.has('create manufacture machine')"
-            class="input-group-prepend">
+            to="/manufacture/machine/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
@@ -24,21 +25,30 @@
             placeholder="Search"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>{{ $t('name') | titlecase }}</th>
               <th>{{ $t('notes') | titlecase }}</th>
             </tr>
             <template v-for="(machine, index) in machines">
-              <tr :key="'mm-' + index" slot="p-body">
+              <tr
+                :key="'mm-' + index"
+                slot="p-body"
+              >
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>
-                  <router-link :to="{ name: 'manufacture.machine.show', params: { id: machine.id }}" v-if="$permission.has('read manufacture machine')">
+                  <router-link
+                    v-if="$permission.has('read manufacture machine')"
+                    :to="{ name: 'manufacture.machine.show', params: { id: machine.id }}"
+                  >
                     {{ machine.label }}
                   </router-link>
                 </td>
@@ -50,8 +60,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>

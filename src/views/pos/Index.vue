@@ -4,8 +4,7 @@
       <span class="breadcrumb-item active">POS</span>
     </breadcrumb>
 
-    <pos-menu></pos-menu>
-
+    <pos-menu />
   </div>
 </template>
 

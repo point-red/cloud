@@ -1,54 +1,95 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/processing/'" class="breadcrumb-item">{{ $t('processing') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/processing/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        :to="'/manufacture/processing/'"
+        class="breadcrumb-item"
+      >
+        {{ $t('processing') | uppercase }}
+      </router-link>
+      <router-link
+        :to="'/manufacture/processing/input'"
+        class="breadcrumb-item"
+      >
+        {{ $t('input') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
-    <tab-menu/>
+    <tab-menu />
 
-    <form class="row" @submit.prevent="onSubmit">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
       <p-block>
         <div class="row">
           <div class="col-sm-12">
-            <h4 class="text-center m-0">{{ $t('processing input') | uppercase }}</h4>
+            <h4 class="text-center m-0">
+              {{ $t('processing input') | uppercase }}
+            </h4>
           </div>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
+            v-if="formulaId"
             id="formula"
             name="formula"
-            v-if="formulaId"
-            :label="$t('formula')">
-            <div slot="body" class="col-lg-9 mt-5">
+            :label="$t('formula')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 mt-5"
+            >
               {{ formula.name }}
             </div>
           </p-form-row>
           <p-form-row
             id="process"
             name="process"
-            :label="$t('process')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <span @click="$refs.selectProcess.open()" class="select-link">
-                {{ form.manufacture_process_name || $t('select') | uppercase  }}
+            :label="$t('process')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 mt-5"
+            >
+              <span
+                class="select-link"
+                @click="$refs.selectProcess.open()"
+              >
+                {{ form.manufacture_process_name || $t('select') | uppercase }}
               </span>
-              <m-process id="process" ref="selectProcess" @choosen="chooseManufactureProcess"/>
+              <m-process
+                id="process"
+                ref="selectProcess"
+                @choosen="chooseManufactureProcess"
+              />
             </div>
           </p-form-row>
           <p-form-row
             id="machine"
             name="machine"
-            :label="$t('machine')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <span @click="$refs.selectMachine.open()" class="select-link">
-                {{ form.manufacture_machine_name || $t('select') | uppercase  }}
+            :label="$t('machine')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 mt-5"
+            >
+              <span
+                class="select-link"
+                @click="$refs.selectMachine.open()"
+              >
+                {{ form.manufacture_machine_name || $t('select') | uppercase }}
               </span>
-              <m-machine id="machine" ref="selectMachine" @choosen="chooseManufactureMachine"/>
+              <m-machine
+                id="machine"
+                ref="selectMachine"
+                @choosen="chooseManufactureMachine"
+              />
             </div>
           </p-form-row>
 
@@ -57,70 +98,114 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Item</th>
-              <th style="min-width: 120px">Warehouse</th>
+              <th style="min-width: 120px">
+                Item
+              </th>
+              <th style="min-width: 120px">
+                Warehouse
+              </th>
               <th>Quantity</th>
-              <th></th>
+              <th />
             </tr>
             <tr slot="p-body">
-              <th></th>
-              <td colspan="4" class="font-weight-bold">{{ $t('finished goods') | uppercase }}</td>
+              <th />
+              <td
+                colspan="4"
+                class="font-weight-bold"
+              >
+                {{ $t('finished goods') | uppercase }}
+              </td>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="'finished-goods-' + index">
+            <tr
+              v-for="(row, index) in form.finished_goods"
+              slot="p-body"
+              :key="'finished-goods-' + index"
+            >
               <th>{{ index + 1 }}</th>
               <td>
-                <span @click="$refs.itemFinishedGoods.open(index)" class="select-link">
+                <span
+                  class="select-link"
+                  @click="$refs.itemFinishedGoods.open(index)"
+                >
                   {{ row.item_label || $t('select') | uppercase }}
                 </span>
               </td>
               <td>
-                <span @click="$refs.warehouseFinishedGoods.open(index)" class="select-link">
+                <span
+                  class="select-link"
+                  @click="$refs.warehouseFinishedGoods.open(index)"
+                >
                   {{ row.warehouse_name || $t('select') | uppercase }}
                 </span>
               </td>
               <td>
                 <p-quantity
                   :id="'quantity-finish-goods-' + index"
-                  :name="'quantity-finish-goods-' + index"
                   v-model="row.quantity"
+                  :name="'quantity-finish-goods-' + index"
                   :units="row.item.units"
                   :unit="row.item.units[0]"
-                  @choosen="chooseUnit($event, row)"/>
+                  @choosen="chooseUnit($event, row)"
+                />
               </td>
               <td>&nbsp;</td>
             </tr>
             <tr slot="p-body">
-              <th></th>
-              <td colspan="4" class="font-weight-bold">{{ $t('raw materials') | uppercase }}</td>
+              <th />
+              <td
+                colspan="4"
+                class="font-weight-bold"
+              >
+                {{ $t('raw materials') | uppercase }}
+              </td>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in materials" :key="'raw-materials-' + index">
+            <tr
+              v-for="(row, index) in materials"
+              slot="p-body"
+              :key="'raw-materials-' + index"
+            >
               <th>{{ index + 1 }}</th>
               <td>
-                <span @click="$refs.itemRawMaterial.open(index)" class="select-link">
-                  <i class="fa fa-barcode" v-if="row.require_production_number || row.require_expiry_date"></i>
+                <span
+                  class="select-link"
+                  @click="$refs.itemRawMaterial.open(index)"
+                >
+                  <i
+                    v-if="row.require_production_number || row.require_expiry_date"
+                    class="fa fa-barcode"
+                  />
                   {{ row.item_label || $t('select') | uppercase }}
                 </span>
               </td>
               <td>
-                <span @click="$refs.warehouseRawMaterials.open(index)" class="select-link">
+                <span
+                  class="select-link"
+                  @click="$refs.warehouseRawMaterials.open(index)"
+                >
                   {{ row.warehouse_name || $t('select') | uppercase }}
                 </span>
               </td>
               <td>
                 <p-quantity
                   :id="'quantity-raw-material-' + index"
-                  :name="'quantity-raw-material-' + index"
                   v-model="row.quantity"
+                  :name="'quantity-raw-material-' + index"
                   :units="row.item.units"
                   :unit="row.item.unit"
+                  :disable-unit-selection="onClickUnit(row)"
+                  :readonly="onClickUnit(row)"
                   @choosen="chooseUnit($event, row)"
                   @click.native="onClickQuantity(row)"
-                  :disable-unit-selection="onClickUnit(row)"
-                  :readonly="onClickUnit(row)"/>
+                />
               </td>
               <td>
-                <button type="button" class="btn btn-sm btn-outline-danger" v-if="row.item_id != null" @click="deleteMaterialRow(index)">
-                  <i class="fa fa-times"></i>
+                <button
+                  v-if="row.item_id != null"
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  @click="deleteMaterialRow(index)"
+                >
+                  <i class="fa fa-times" />
                 </button>
               </td>
             </tr>
@@ -128,39 +213,91 @@
 
           <div class="row mt-50">
             <div class="col-sm-6">
-              <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
-              <div class="d-sm-block d-md-none mt-10"></div>
+              <textarea
+                v-model="form.notes"
+                rows="5"
+                class="form-control"
+                placeholder="Notes"
+              />
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
             <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+              <h6 class="mb-0">
+                {{ $t('requested by') | uppercase }}
+              </h6>
+              <div
+                class="mb-50"
+                style="font-size:11px"
+              >
+                {{ Date.now() | dateFormat('DD MMMM YYYY') }}
+              </div>
               {{ authUser.full_name | uppercase }}
-              <div class="d-sm-block d-md-none mt-10"></div>
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
             <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">_______________</div>
-              <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+              <h6 class="mb-0">
+                {{ $t('approved by') | uppercase }}
+              </h6>
+              <div
+                class="mb-50"
+                style="font-size:11px"
+              >
+                _______________
+              </div>
+              <span
+                class="select-link"
+                @click="$refs.approver.open()"
+              >{{ form.approver_name || $t('select') | uppercase }}</span><br>
               <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
             </div>
           </div>
           <hr>
           <div class="form-group row">
             <div class="col-md-12">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                :disabled="isSaving"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
               </button>
             </div>
           </div>
         </p-block-inner>
       </p-block>
     </form>
-    <m-user ref="approver" @choosen="chooseApprover"/>
-    <m-warehouse id="warehouse-finished-goods" name="warehouse-finished-goods" ref="warehouseFinishedGoods" @choosen="chooseWarehouseFinishedGood"/>
-    <m-warehouse id="warehouse-raw-materials" name="warehouse-raw-materials" ref="warehouseRawMaterials" @choosen="chooseWarehouseRawMaterial"/>
-    <m-item ref="itemFinishedGoods" @choosen="chooseFinishedGood($event)"/>
-    <m-item ref="itemRawMaterial" @choosen="chooseRawMaterial($event)"/>
-    <m-inventory-out ref="inventory" :id="'inventory'" @updated="updateDna($event)"/>
+    <m-user
+      ref="approver"
+      @choosen="chooseApprover"
+    />
+    <m-warehouse
+      id="warehouse-finished-goods"
+      ref="warehouseFinishedGoods"
+      name="warehouse-finished-goods"
+      @choosen="chooseWarehouseFinishedGood"
+    />
+    <m-warehouse
+      id="warehouse-raw-materials"
+      ref="warehouseRawMaterials"
+      name="warehouse-raw-materials"
+      @choosen="chooseWarehouseRawMaterial"
+    />
+    <m-item
+      ref="itemFinishedGoods"
+      @choosen="chooseFinishedGood($event)"
+    />
+    <m-item
+      ref="itemRawMaterial"
+      @choosen="chooseRawMaterial($event)"
+    />
+    <m-inventory-out
+      :id="'inventory'"
+      ref="inventory"
+      @updated="updateDna($event)"
+    />
   </div>
 </template>
 

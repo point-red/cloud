@@ -1,7 +1,10 @@
 <template>
   <div>
     <input
+      v-if="mask"
       :id="id"
+      v-focus="isFocus"
+      v-mask="mask"
       :name="name"
       :type="type"
       :disabled="disabled"
@@ -12,18 +15,19 @@
       }"
       :placeholder="placeholder"
       :readonly="readonly"
-      v-focus="isFocus"
-      v-mask="mask"
-      v-if="mask"
       autocomplete="off"
       class="form-control"
-      @input="updateValue($event.target.value)"/>
+      @input="updateValue($event.target.value)"
+    >
     <!--
       Duplicated input with condition if statement because mask directive
       cannot receive empty param https://github.com/vuejs-tips/vue-the-mask
     -->
     <input
+      v-if="!mask"
       :id="id"
+      ref="input"
+      v-focus="isFocus"
       :name="name"
       :type="type"
       :disabled="disabled"
@@ -34,19 +38,23 @@
       }"
       :placeholder="placeholder"
       :readonly="readonly"
-      v-focus="isFocus"
-      v-if="!mask"
       autocomplete="off"
       class="form-control"
-      ref="input"
-      @input="updateValue($event.target.value)"/>
+      @input="updateValue($event.target.value)"
+    >
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
+      class="invalid-input"
+    >
+      <i class="fa fa-warning" /> {{ error }}
+    </div>
     <div
       v-show="help"
-      class="form-text text-muted">{{ help }}</div>
+      class="form-text text-muted"
+    >
+      {{ help }}
+    </div>
   </div>
 </template>
 
@@ -62,10 +70,12 @@ export default {
       required: true
     },
     value: {
-      type: [String, Number, Boolean]
+      type: [String, Number, Boolean],
+      default: ''
     },
     placeholder: {
-      type: String
+      type: String,
+      default: ''
     },
     type: {
       type: String,
@@ -84,7 +94,8 @@ export default {
       default: false
     },
     mask: {
-      type: String
+      type: String,
+      default: ''
     },
     isFocus: {
       type: Boolean,
@@ -95,7 +106,8 @@ export default {
       default: false
     },
     help: {
-      type: String
+      type: String,
+      default: ''
     },
     errors: {
       type: Array,

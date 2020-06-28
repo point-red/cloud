@@ -1,24 +1,30 @@
 <template>
-  <div class="d-flex flex-nowrap" style="overflow-x:auto">
+  <div
+    class="d-flex flex-nowrap"
+    style="overflow-x:auto"
+  >
     <router-link
       to="/sales/quotation"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/sales/quotation')}"
-      active-class="btn-primary">
+      active-class="btn-primary"
+    >
       <span>{{ $t('sales quotation') | uppercase }}</span>
     </router-link>
     <router-link
       to="/sales/order"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/sales/order')}"
-      active-class="btn-primary">
+      active-class="btn-primary"
+    >
       <span>{{ $t('sales order') | uppercase }}</span>
     </router-link>
     <router-link
       to="/sales/report"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/sales/report')}"
-      active-class="btn-primary">
+      active-class="btn-primary"
+    >
       <span>{{ $t('sales report') | uppercase }}</span>
     </router-link>
     <!-- <router-link

@@ -1,92 +1,122 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
+      <breadcrumb-master />
       <span class="breadcrumb-item active">{{ $t('item price list') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addPricingGroup.open()"
             v-if="$permission.has('create supplier')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addPricingGroup.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Item</th>
-              <th class="text-center">Unit</th>
-              <th class="text-right" v-for="(group, index) in groups" :key="index">
+              <th class="text-center">
+                Unit
+              </th>
+              <th
+                v-for="(group, index) in groups"
+                :key="index"
+                class="text-right"
+              >
                 <a
+                  v-if="$permission.has('create item')"
                   href="javascript:void(0)"
                   @click="$refs.editPricingGroup.open(group)"
-                  v-if="$permission.has('create item')">
+                >
                   {{ group.label }}
                 </a>
               </th>
-              <th></th>
+              <th />
             </tr>
             <template v-for="(item, index) in items">
-            <tr
-              v-for="(itemUnit, index2) in item.units"
-              :key="itemUnit.id"
-              slot="p-body">
-              <th>{{ index + 1 }}</th>
-              <td>
-                <router-link :to="{ name: 'item.show', params: { id: item.id }}">
-                  {{ item.label }}
-                </router-link>
-              </td>
-              <td class="text-center">
-                {{ itemUnit.name | uppercase }}
-                <span v-if="itemUnit.converter > 1" style="font-size: 10px;">
-                ({{ itemUnit.converter }} {{ item.units[0].label }})
-                </span>
-              </td>
-              <td class="text-right" v-for="(group, index3) in itemUnit.prices" :key="index3">
-                <a href="javascript:void(0)" @click="editPrice(index + '-' + index2 + '-' + index3, group.id)" v-if="editPriceIndex != index + '-' + index2 + '-' + index3">
-                  {{ itemUnit.prices[index3].price | numberFormat }}
-                </a>
-                <p-form-number
-                  v-else
-                  id="price"
-                  name="price"
-                  v-model="itemUnit.prices[index3].price"
-                  @keyup.native.enter="savePrice(itemUnit.id, itemUnit.prices[index3].price)"/>
-              </td>
-              <td></td>
-            </tr>
+              <tr
+                v-for="(itemUnit, index2) in item.units"
+                :key="itemUnit.id"
+                slot="p-body"
+              >
+                <th>{{ index + 1 }}</th>
+                <td>
+                  <router-link :to="{ name: 'item.show', params: { id: item.id }}">
+                    {{ item.label }}
+                  </router-link>
+                </td>
+                <td class="text-center">
+                  {{ itemUnit.name | uppercase }}
+                  <span
+                    v-if="itemUnit.converter > 1"
+                    style="font-size: 10px;"
+                  >
+                    ({{ itemUnit.converter }} {{ item.units[0].label }})
+                  </span>
+                </td>
+                <td
+                  v-for="(group, index3) in itemUnit.prices"
+                  :key="index3"
+                  class="text-right"
+                >
+                  <a
+                    v-if="editPriceIndex != index + '-' + index2 + '-' + index3"
+                    href="javascript:void(0)"
+                    @click="editPrice(index + '-' + index2 + '-' + index3, group.id)"
+                  >
+                    {{ itemUnit.prices[index3].price | numberFormat }}
+                  </a>
+                  <p-form-number
+                    v-else
+                    id="price"
+                    v-model="itemUnit.prices[index3].price"
+                    name="price"
+                    @keyup.native.enter="savePrice(itemUnit.id, itemUnit.prices[index3].price)"
+                  />
+                </td>
+                <td />
+              </tr>
             </template>
           </point-table>
         </p-block-inner>
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <m-add-pricing-group ref="addPricingGroup" @added="onAddedPricingGroup($event)"></m-add-pricing-group>
-    <m-edit-pricing-group ref="editPricingGroup" @updated="onUpdatedPricingGroup($event)"></m-edit-pricing-group>
+    <m-add-pricing-group
+      ref="addPricingGroup"
+      @added="onAddedPricingGroup($event)"
+    />
+    <m-edit-pricing-group
+      ref="editPricingGroup"
+      @updated="onUpdatedPricingGroup($event)"
+    />
   </div>
 </template>
 

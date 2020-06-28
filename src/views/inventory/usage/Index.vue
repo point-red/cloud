@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-inventory/>
+      <breadcrumb-inventory />
       <span class="breadcrumb-item active">{{ $t('inventory usage') | uppercase }}</span>
     </breadcrumb>
 
@@ -9,71 +9,104 @@
       <p-block>
         <div class="input-group block">
           <router-link
-            to="/inventory/usage/create"
             v-if="$permission.has('create inventory usage')"
-            class="input-group-prepend">
+            to="/inventory/usage/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             class="btn-block"
             :value="searchText"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <div class="text-center font-size-sm mb-10">
-          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          <a
+            href="javascript:void(0)"
+            @click="isAdvanceFilter = !isAdvanceFilter"
+          >
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div
+          v-show="isAdvanceFilter"
+          class="card"
+          :class="{ 'fadeIn': isAdvanceFilter }"
+        >
           <div class="row">
             <div class="col-sm-6 text-center">
-              <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+              <p-form-row
+                id="date-start"
+                name="date-start"
+                :label="$t('date start')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.start"
                     name="date"
                     label="date"
-                    v-model="date.start"/>
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-6 text-center">
-              <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+              <p-form-row
+                id="date-end"
+                name="date-end"
+                :label="$t('date end')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.end"
                     name="date"
                     label="date"
-                    v-model="date.end"/>
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-6 text-center">
-              <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('approval status')" :is-horizontal="false">
+              <p-form-row
+                id="form-approval-status"
+                name="form-approval-status"
+                :label="$t('approval status')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <m-form-approval-status
                     :id="'form-approval-status-id'"
                     v-model="formApprovalStatus.id"
                     :label="formApprovalStatus.label"
                     @choosen="chooseFormApprovalStatus($event)"
-                    @clear="chooseFormApprovalStatus($event)"/>
+                    @clear="chooseFormApprovalStatus($event)"
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-6 text-center">
-              <p-form-row id="form-status" name="form-status" :label="$t('form status')" :is-horizontal="false">
+              <p-form-row
+                id="form-status"
+                name="form-status"
+                :label="$t('form status')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <m-form-status
                     :id="'status-id'"
                     :label="formStatus.label"
                     @choosen="chooseFormStatus($event)"
-                    @clear="chooseFormStatus($event)"/>
+                    @clear="chooseFormStatus($event)"
+                  />
                 </div>
               </p-form-row>
             </div>
@@ -84,21 +117,41 @@
             <input
               type="checkbox"
               class="css-control-input"
+              :checked="isRowsChecked(inventoryUsages, checkedRow)"
               @click="toggleCheckRows()"
-              :checked="isRowsChecked(inventoryUsages, checkedRow)">
-            <span class="css-control-indicator"></span>
+            >
+            <span class="css-control-indicator" />
           </label>
-          <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
+          <span
+            v-show="checkedRow.length > 0"
+            class="mr-15 animated fadeIn"
+          >
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary mr-5"
+              @click="bulkCancel()"
+            >
               {{ $t('request approval') | uppercase }}
             </button>
-            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkApprove()">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary mr-5"
+              @click="bulkApprove()"
+            >
               {{ $t('approve') | uppercase }}
             </button>
-            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkReject()">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary mr-5"
+              @click="bulkReject()"
+            >
               {{ $t('reject') | uppercase }}
             </button>
-            <button type="button" class="btn btn-sm btn-secondary" @click="bulkCancel()">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary"
+              @click="bulkCancel()"
+            >
               {{ $t('archive') | uppercase }}
             </button>
           </span>
@@ -107,61 +160,105 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
-              <th width="50px"></th>
+              <th width="50px">
+                #
+              </th>
+              <th width="50px" />
               <th>Form</th>
               <th>Date</th>
               <th>Item</th>
               <th>Notes</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-center">Approval Status</th>
-              <th class="text-center">Form Status</th>
+              <th class="text-right">
+                Quantity
+              </th>
+              <th class="text-center">
+                Approval Status
+              </th>
+              <th class="text-center">
+                Form Status
+              </th>
             </tr>
             <template v-for="(inventoryUsage, index) in inventoryUsages">
-            <tr
-              v-for="(inventoryUsageItem, index2) in inventoryUsage.items"
-              :key="'pr-' + index + '-i-' + index2"
-              slot="p-body">
-              <th>
-                {{ ((currentPage - 1) * limit) + index + 1 }}<template v-if="inventoryUsage.items.length > 1">.{{ index2 + 1 }}</template>
-              </th>
-              <td>
-                <p-form-check-box
-                  :is-form="false"
-                  id="check-box"
-                  name="check-box"
-                  @click.native="toggleCheckRow(inventoryUsage.id)"
-                  :checked="isRowChecked(inventoryUsage.id)"
-                  class="text-center"/>
-              </td>
-              <td>
-                <router-link :to="{ name: 'inventory.usage.show', params: { id: inventoryUsage.id }}">
-                  {{ inventoryUsage.form.number }}
-                </router-link>
-              </td>
-              <td>{{ inventoryUsage.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-              <td>{{ inventoryUsageItem.item.name }}</td>
-              <td>{{ inventoryUsageItem.notes }}</td>
-              <td class="text-right">{{ inventoryUsageItem.quantity | numberFormat }}</td>
-              <td class="text-center">
-                <div v-if="inventoryUsage.form.approved == null" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-if="inventoryUsage.form.approved == 0" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
-                <div v-if="inventoryUsage.form.approved == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
-              </td>
-              <td class="text-center">
-                <div v-if="inventoryUsage.form.canceled == null && inventoryUsage.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-if="inventoryUsage.form.canceled == null && inventoryUsage.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
-                <div v-if="inventoryUsage.form.canceled == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
-              </td>
-            </tr>
+              <tr
+                v-for="(inventoryUsageItem, index2) in inventoryUsage.items"
+                :key="'pr-' + index + '-i-' + index2"
+                slot="p-body"
+              >
+                <th>
+                  {{ ((currentPage - 1) * limit) + index + 1 }}<template v-if="inventoryUsage.items.length > 1">
+                    .{{ index2 + 1 }}
+                  </template>
+                </th>
+                <td>
+                  <p-form-check-box
+                    id="check-box"
+                    :is-form="false"
+                    name="check-box"
+                    :checked="isRowChecked(inventoryUsage.id)"
+                    class="text-center"
+                    @click.native="toggleCheckRow(inventoryUsage.id)"
+                  />
+                </td>
+                <td>
+                  <router-link :to="{ name: 'inventory.usage.show', params: { id: inventoryUsage.id }}">
+                    {{ inventoryUsage.form.number }}
+                  </router-link>
+                </td>
+                <td>{{ inventoryUsage.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ inventoryUsageItem.item.name }}</td>
+                <td>{{ inventoryUsageItem.notes }}</td>
+                <td class="text-right">
+                  {{ inventoryUsageItem.quantity | numberFormat }}
+                </td>
+                <td class="text-center">
+                  <div
+                    v-if="inventoryUsage.form.approved == null"
+                    class="badge badge-primary"
+                  >
+                    {{ $t('pending') | uppercase }}
+                  </div>
+                  <div
+                    v-if="inventoryUsage.form.approved == 0"
+                    class="badge badge-danger"
+                  >
+                    {{ $t('rejected') | uppercase }}
+                  </div>
+                  <div
+                    v-if="inventoryUsage.form.approved == 1"
+                    class="badge badge-success"
+                  >
+                    {{ $t('approved') | uppercase }}
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div
+                    v-if="inventoryUsage.form.canceled == null && inventoryUsage.form.done == 0"
+                    class="badge badge-primary"
+                  >
+                    {{ $t('pending') | uppercase }}
+                  </div>
+                  <div
+                    v-if="inventoryUsage.form.canceled == null && inventoryUsage.form.done == 1"
+                    class="badge badge-success"
+                  >
+                    {{ $t('done') | uppercase }}
+                  </div>
+                  <div
+                    v-if="inventoryUsage.form.canceled == 1"
+                    class="badge badge-danger"
+                  >
+                    {{ $t('canceled') | uppercase }}
+                  </div>
+                </td>
+              </tr>
             </template>
           </point-table>
         </p-block-inner>
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>

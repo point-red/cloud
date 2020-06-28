@@ -1,9 +1,12 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-accounting/>
+      <breadcrumb-accounting />
       <span class="breadcrumb-item active">
-        <router-link to="/accounting/cut-off" class="breadcrumb-item">{{ $t('cut off') | uppercase }}</router-link>
+        <router-link
+          to="/accounting/cut-off"
+          class="breadcrumb-item"
+        >{{ $t('cut off') | uppercase }}</router-link>
       </span>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
@@ -12,9 +15,22 @@
       <div class="col-sm-12">
         <div class="row">
           <p-block>
-            <nav class="breadcrumb bg-white text-center" style="display:block !important">
-              <router-link to="/accounting/cut-off/create" class="breadcrumb-item">{{ $t('start') | uppercase }}</router-link>
-              <router-link to="/accounting/cut-off/create/account" class="breadcrumb-item">{{ $t('account') | uppercase }}</router-link>
+            <nav
+              class="breadcrumb bg-white text-center"
+              style="display:block !important"
+            >
+              <router-link
+                to="/accounting/cut-off/create"
+                class="breadcrumb-item"
+              >
+                {{ $t('start') | uppercase }}
+              </router-link>
+              <router-link
+                to="/accounting/cut-off/create/account"
+                class="breadcrumb-item"
+              >
+                {{ $t('account') | uppercase }}
+              </router-link>
               <span class="breadcrumb-item active">{{ $t('inventory') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('account payable') | uppercase }}</span>
               <span class="breadcrumb-item">{{ $t('purchase down payment') | uppercase }}</span>
@@ -23,29 +39,36 @@
               <span class="breadcrumb-item">{{ $t('review') | uppercase }}</span>
             </nav>
             <hr>
-            <h5 class="text-center">ITEM</h5>
-            <div class="text-center mb-15" v-if="inventories.length == 0">
+            <h5 class="text-center">
+              ITEM
+            </h5>
+            <div
+              v-if="inventories.length == 0"
+              class="text-center mb-15"
+            >
               Anda tidak memiliki item saat ini, klik tombol "+" untuk menambahkan item
             </div>
             <template>
               <div class="input-group block mb-5">
                 <a
-                  href="javascript:void(0)"
-                  @click="() => $refs.createInventory.show()"
                   v-if="$permission.has('create cut off')"
-                  class="input-group-prepend">
+                  href="javascript:void(0)"
+                  class="input-group-prepend"
+                  @click="() => $refs.createInventory.show()"
+                >
                   <span class="input-group-text">
-                    <i class="fa fa-plus"></i>
+                    <i class="fa fa-plus" />
                   </span>
                 </a>
                 <p-form-input
                   id="search-text"
+                  ref="searchText"
                   name="search-text"
                   placeholder="Search"
                   class="btn-block"
-                  ref="searchText"
                   :value="searchText"
-                  @input="filterSearch"/>
+                  @input="filterSearch"
+                />
               </div>
               <hr>
               <p-block-inner :is-loading="isLoading">
@@ -55,19 +78,29 @@
                     <th>Name</th>
                     <th>Account</th>
                     <th>Warehouse</th>
-                    <th class="text-right">Quantity</th>
-                    <th class="text-right">Price</th>
-                    <th class="text-right">Total</th>
+                    <th class="text-right">
+                      Quantity
+                    </th>
+                    <th class="text-right">
+                      Price
+                    </th>
+                    <th class="text-right">
+                      Total
+                    </th>
                     <th>Production Number</th>
                     <th>Expiry Date</th>
                   </tr>
                   <tr
                     v-for="inventory in inventories"
                     :key="inventory.id"
-                    slot="p-body">
+                    slot="p-body"
+                  >
                     <td>{{ inventory.item.code }}</td>
                     <td>
-                      <a href="javascript:void(0)" @click="$refs.editInventory.show(inventory)">
+                      <a
+                        href="javascript:void(0)"
+                        @click="$refs.editInventory.show(inventory)"
+                      >
                         {{ inventory.item.name }}
                       </a>
                     </td>
@@ -77,9 +110,15 @@
                       </template>
                     </td>
                     <td>{{ inventory.warehouse.name }}</td>
-                    <td class="text-right">{{ inventory.quantity | numberFormat }} {{ inventory.unit | lowercase }}</td>
-                    <td class="text-right">{{ inventory.price | numberFormat }}</td>
-                    <td class="text-right">{{ inventory.total | numberFormat }}</td>
+                    <td class="text-right">
+                      {{ inventory.quantity | numberFormat }} {{ inventory.unit | lowercase }}
+                    </td>
+                    <td class="text-right">
+                      {{ inventory.price | numberFormat }}
+                    </td>
+                    <td class="text-right">
+                      {{ inventory.total | numberFormat }}
+                    </td>
                     <td>
                       <template v-if="inventory.production_number">
                         {{ inventory.production_number }}
@@ -92,24 +131,33 @@
                     </td>
                   </tr>
                   <tr slot="p-body">
-                    <th></th>
-                    <td colspan="4" class="text-right"><b>TOTAL</b></td>
-                    <td class="text-right">{{ total | numberFormat }}</td>
-                    <td></td>
-                    <td></td>
+                    <th />
+                    <td
+                      colspan="4"
+                      class="text-right"
+                    >
+                      <b>TOTAL</b>
+                    </td>
+                    <td class="text-right">
+                      {{ total | numberFormat }}
+                    </td>
+                    <td />
+                    <td />
                   </tr>
                 </point-table>
               </p-block-inner>
               <router-link
                 tag="button"
                 to="/accounting/cut-off/create/account-payable"
-                class="btn btn-sm btn-primary min-width-100 float-right">
+                class="btn btn-sm btn-primary min-width-100 float-right"
+              >
                 {{ $t('next') | uppercase }}
               </router-link>
               <router-link
                 tag="button"
                 to="/accounting/cut-off/create/account"
-                class="btn btn-sm btn-primary min-width-100 float-left">
+                class="btn btn-sm btn-primary min-width-100 float-left"
+              >
                 {{ $t('prev') | uppercase }}
               </router-link>
               <br><br><br>
@@ -118,8 +166,16 @@
         </div>
       </div>
     </div>
-    <m-create-inventory id="create-inventory" ref="createInventory" @updated="getInventoryRequest()"/>
-    <m-edit-inventory id="edit-inventory" ref="editInventory" @updated="getInventoryRequest()"/>
+    <m-create-inventory
+      id="create-inventory"
+      ref="createInventory"
+      @updated="getInventoryRequest()"
+    />
+    <m-edit-inventory
+      id="edit-inventory"
+      ref="editInventory"
+      @updated="getInventoryRequest()"
+    />
   </div>
 </template>
 

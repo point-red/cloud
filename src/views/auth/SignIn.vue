@@ -2,46 +2,68 @@
   <div>
     <!-- Header -->
     <div class="px-30 py-10 text-center">
-      <div class="link-effect font-w700"><img
-        src="/assets/img/guest/logo.svg"
-        alt=""></div>
-      <h1 class="h3 font-w700 mt-30 mb-10">Welcome to Point.RED</h1>
+      <div class="link-effect font-w700">
+        <img
+          src="/assets/img/guest/logo.svg"
+          alt=""
+        >
+      </div>
+      <h1 class="h3 font-w700 mt-30 mb-10">
+        Welcome to Point.RED
+      </h1>
     </div>
     <!-- END Header -->
 
     <div class="mb-30">
-      <a class="btn btn-block btn-social btn-google text-white" href="javascript:void(0)" @click="loginWithGoogle()">
-        <span class="fa fa-google"></span> Sign in with Google
+      <a
+        class="btn btn-block btn-social btn-google text-white"
+        href="javascript:void(0)"
+        @click="loginWithGoogle()"
+      >
+        <span class="fa fa-google" /> Sign in with Google
       </a>
-      <a class="btn btn-block btn-social btn-github text-white" href="javascript:void(0)" @click="loginWithGithub()">
-        <span class="fa fa-github"></span> Sign in with Github
+      <a
+        class="btn btn-block btn-social btn-github text-white"
+        href="javascript:void(0)"
+        @click="loginWithGithub()"
+      >
+        <span class="fa fa-github" /> Sign in with Github
       </a>
     </div>
     <hr>
-    <h2 class="h5 font-w400 text-muted mx-30 text-center">OR</h2>
+    <h2 class="h5 font-w400 text-muted mx-30 text-center">
+      OR
+    </h2>
     <!-- Sign In Form -->
     <form
       class="px-30"
-      @submit.prevent="onSubmit">
+      @submit.prevent="onSubmit"
+    >
       <p-form-input-material
         id="username"
         v-model="username"
         label="Username"
-        name="username"/>
+        name="username"
+      />
       <p-form-input-material
         id="password"
         v-model="password"
         label="Password"
         type="password"
-        name="password"/>
+        name="password"
+      />
       <!-- <p-form-check-box id="remember-me" name="remember-me" description="Remember me"></p-form-check-box> -->
 
       <div class="form-group text-center">
         <button
           :disabled="isLoading"
           type="submit"
-          class="btn btn-sm btn-hero btn-outline-dark mb-10">
-          <i v-show="isLoading" class="fa fa-asterisk fa-spin"/> Sign In
+          class="btn btn-sm btn-hero btn-outline-dark mb-10"
+        >
+          <i
+            v-show="isLoading"
+            class="fa fa-asterisk fa-spin"
+          /> Sign In
         </button>
       </div>
     </form>

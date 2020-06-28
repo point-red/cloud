@@ -1,8 +1,13 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-inventory/>
-      <router-link to="/inventory/report" class="breadcrumb-item">{{ $t('report') | uppercase }}</router-link>
+      <breadcrumb-inventory />
+      <router-link
+        to="/inventory/report"
+        class="breadcrumb-item"
+      >
+        {{ $t('report') | uppercase }}
+      </router-link>
       <router-link
         :to="{
           name: 'inventory.report.show',
@@ -13,7 +18,9 @@
             date_from: date.start,
             date_to: date.end
           }}"
-        class="breadcrumb-item">{{ item.label | uppercase }}
+        class="breadcrumb-item"
+      >
+        {{ item.label | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ warehouse.name | uppercase }}</span>
     </breadcrumb>
@@ -22,31 +29,51 @@
       <p-block>
         <div class="row">
           <div class="col-sm-3 text-center">
-            <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+            <p-form-row
+              id="date-start"
+              name="date-start"
+              :label="$t('date start')"
+              :is-horizontal="false"
+            >
               <div slot="body">
                 <p-date-picker
                   id="date"
+                  v-model="date.start"
                   name="date"
                   label="date"
-                  v-model="date.start"/>
+                />
               </div>
             </p-form-row>
           </div>
           <div class="col-sm-3 text-center">
-            <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+            <p-form-row
+              id="date-end"
+              name="date-end"
+              :label="$t('date end')"
+              :is-horizontal="false"
+            >
               <div slot="body">
                 <p-date-picker
                   id="date"
+                  v-model="date.end"
                   name="date"
                   label="date"
-                  v-model="date.end"/>
+                />
               </div>
             </p-form-row>
           </div>
           <div class="col-sm-3 text-center">
-            <p-form-row id="item" name="item" :label="$t('item')" :is-horizontal="false">
+            <p-form-row
+              id="item"
+              name="item"
+              :label="$t('item')"
+              :is-horizontal="false"
+            >
               <div slot="body">
-                <span @click="$refs.item.open(index)" class="select-link">
+                <span
+                  class="select-link"
+                  @click="$refs.item.open(index)"
+                >
                   {{ item_label || $t('select') | uppercase }}
                 </span>
               </div>
@@ -57,9 +84,13 @@
               id="warehouse"
               name="warehouse"
               :label="$t('warehouse')"
-              :is-horizontal="false">
+              :is-horizontal="false"
+            >
               <div slot="body">
-                <span @click="$refs.warehouse.open()" class="select-link">{{ warehouseName || $t('select') | uppercase }}</span>
+                <span
+                  class="select-link"
+                  @click="$refs.warehouse.open()"
+                >{{ warehouseName || $t('select') | uppercase }}</span>
               </div>
             </p-form-row>
           </div>
@@ -71,7 +102,8 @@
           placeholder="Search"
           :value="searchText"
           class="btn-block"
-          @input="filterSearch"/>
+          @input="filterSearch"
+        />
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
@@ -80,23 +112,44 @@
               <th>Date</th>
               <th>Form</th>
               <th>Warehouse</th>
-              <th v-if="item.require_production_number">Production Number</th>
-              <th v-if="item.require_expiry_date">Expiry Date</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-right">Total Quantity</th>
+              <th v-if="item.require_production_number">
+                Production Number
+              </th>
+              <th v-if="item.require_expiry_date">
+                Expiry Date
+              </th>
+              <th class="text-right">
+                Quantity
+              </th>
+              <th class="text-right">
+                Total Quantity
+              </th>
             </tr>
             <tr slot="p-body">
-              <th></th>
-              <td v-if="item.require_production_number"></td>
-              <td v-if="item.require_expiry_date"></td>
-              <td colspan="4" class="text-right font-weight-bold">{{ $t('opening') | uppercase }}</td>
-              <td class="text-right font-weight-bold">{{ openingBalance | numberFormat }}</td>
+              <th />
+              <td v-if="item.require_production_number" />
+              <td v-if="item.require_expiry_date" />
+              <td
+                colspan="4"
+                class="text-right font-weight-bold"
+              >
+                {{ $t('opening') | uppercase }}
+              </td>
+              <td class="text-right font-weight-bold">
+                {{ openingBalance | numberFormat }}
+              </td>
             </tr>
-            <tr slot="p-body" v-if="parseInt($route.query.page) != 1 && inventories.length > 0">
-              <th></th>
-              <td v-if="item.require_production_number"></td>
-              <td v-if="item.require_expiry_date"></td>
-              <td colspan="4" class="text-right font-weight-bold">
+            <tr
+              v-if="parseInt($route.query.page) != 1 && inventories.length > 0"
+              slot="p-body"
+            >
+              <th />
+              <td v-if="item.require_production_number" />
+              <td v-if="item.require_expiry_date" />
+              <td
+                colspan="4"
+                class="text-right font-weight-bold"
+              >
                 <router-link
                   :to="{
                     name: 'inventory.report.detail',
@@ -108,25 +161,48 @@
                       date_from: date.start,
                       date_to: date.end,
                       page: $route.query.page - 1
-                    }}">[...]</router-link>
+                    }}"
+                >
+                  [...]
+                </router-link>
               </td>
-              <td class="text-right font-weight-bold">{{ openingBalanceCurrentPage | numberFormat }}</td>
+              <td class="text-right font-weight-bold">
+                {{ openingBalanceCurrentPage | numberFormat }}
+              </td>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in inventories" :key="index">
+            <tr
+              v-for="(row, index) in inventories"
+              slot="p-body"
+              :key="index"
+            >
               <th>{{ ((parseInt($route.query.page) - 1) * limit) + index + 1 }}</th>
               <td>{{ row.form.date | dateFormat('DD MMMM YYYY HH:mm:ss') }}</td>
               <td>{{ row.form.number }}</td>
               <td>{{ row.warehouse.name }}</td>
-              <td v-if="item.require_production_number">{{ row.production_number | uppercase }}</td>
-              <td v-if="item.require_expiry_date">{{ row.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
-              <td class="text-right">{{ row.quantity | numberFormat }}</td>
-              <td class="text-right">{{ row.total_quantity | numberFormat }}</td>
+              <td v-if="item.require_production_number">
+                {{ row.production_number | uppercase }}
+              </td>
+              <td v-if="item.require_expiry_date">
+                {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
+              </td>
+              <td class="text-right">
+                {{ row.quantity | numberFormat }}
+              </td>
+              <td class="text-right">
+                {{ row.total_quantity | numberFormat }}
+              </td>
             </tr>
-            <tr slot="p-body" v-if="parseInt($route.query.page) != lastPage && inventories.length > 0">
-              <th></th>
-              <td v-if="item.require_production_number"></td>
-              <td v-if="item.require_expiry_date"></td>
-              <td colspan="4" class="text-right font-weight-bold">
+            <tr
+              v-if="parseInt($route.query.page) != lastPage && inventories.length > 0"
+              slot="p-body"
+            >
+              <th />
+              <td v-if="item.require_production_number" />
+              <td v-if="item.require_expiry_date" />
+              <td
+                colspan="4"
+                class="text-right font-weight-bold"
+              >
                 <router-link
                   :to="{
                     name: 'inventory.report.detail',
@@ -138,28 +214,45 @@
                       date_from: date.start,
                       date_to: date.end,
                       page: parseInt($route.query.page) + 1
-                    }}">[...]</router-link>
+                    }}"
+                >
+                  [...]
+                </router-link>
               </td>
-              <td></td>
+              <td />
             </tr>
             <tr slot="p-body">
-              <th></th>
-              <td v-if="item.require_production_number"></td>
-              <td v-if="item.require_expiry_date"></td>
-              <td colspan="4" class="text-right font-weight-bold">{{ $t('ending') | uppercase }}</td>
-              <td class="text-right font-weight-bold">{{ endingBalance | numberFormat }}</td>
+              <th />
+              <td v-if="item.require_production_number" />
+              <td v-if="item.require_expiry_date" />
+              <td
+                colspan="4"
+                class="text-right font-weight-bold"
+              >
+                {{ $t('ending') | uppercase }}
+              </td>
+              <td class="text-right font-weight-bold">
+                {{ endingBalance | numberFormat }}
+              </td>
             </tr>
           </point-table>
         </p-block-inner>
         <p-pagination
           :current-page="parseInt(this.$route.query.page)"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
-    <m-item ref="item" @choosen="chooseItem($event)"/>
-    <m-warehouse id="warehouse_id" ref="warehouse" @choosen="chooseWarehouse($event)"/>
+    <m-item
+      ref="item"
+      @choosen="chooseItem($event)"
+    />
+    <m-warehouse
+      id="warehouse_id"
+      ref="warehouse"
+      @choosen="chooseWarehouse($event)"
+    />
   </div>
 </template>
 

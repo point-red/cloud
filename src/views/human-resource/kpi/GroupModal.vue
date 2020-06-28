@@ -2,26 +2,41 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmit">
+      @submit.prevent="onSubmit"
+    >
       <p-modal
-        ref="group"
         :id="id"
-        :isLoading="isLoading"
-        :title="'Kpi Template Group' | uppercase">
+        ref="group"
+        :is-loading="isLoading"
+        :title="'Kpi Template Group' | uppercase"
+      >
         <template slot="content">
           <p-table>
-            <tr slot="p-head" v-show="groups.length > 0" class="bg-info-light">
+            <tr
+              v-show="groups.length > 0"
+              slot="p-head"
+              class="bg-info-light"
+            >
               <th>Name</th>
-              <th style="width:100px"></th>
+              <th style="width:100px" />
             </tr>
             <tr
               v-for="group in groups"
               slot="p-body"
-              :key="group.id">
+              :key="group.id"
+            >
               <td>{{ group.name }}</td>
               <td>
-                <a href="javascript:void(0)" class="badge badge-primary mr-5" @click="edit(group)"><i class="fa fa-pencil"></i></a>
-                <a href="javascript:void(0)" class="badge badge-danger" @click="remove(group.id)"><i class="fa fa-close"></i></a>
+                <a
+                  href="javascript:void(0)"
+                  class="badge badge-primary mr-5"
+                  @click="edit(group)"
+                ><i class="fa fa-pencil" /></a>
+                <a
+                  href="javascript:void(0)"
+                  class="badge badge-danger"
+                  @click="remove(group.id)"
+                ><i class="fa fa-close" /></a>
               </td>
             </tr>
           </p-table>
@@ -30,21 +45,40 @@
 
           <p-form-row
             id="name"
+            v-model="form.name"
             name="name"
             label="name"
             :disabled="isSaving"
-            v-model="form.name">
-          </p-form-row>
+          />
         </template>
         <template slot="footer">
-          <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>
-            <template v-if="isCreateMode">{{ $t('add') | uppercase }}</template>
-            <template v-if="!isCreateMode">{{ $t('update') | uppercase }}</template>
+          <button
+            :disabled="isSaving"
+            type="submit"
+            class="btn btn-sm btn-primary"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            />
+            <template v-if="isCreateMode">
+              {{ $t('add') | uppercase }}
+            </template>
+            <template v-if="!isCreateMode">
+              {{ $t('update') | uppercase }}
+            </template>
           </button>
-          <button type="button" class="btn btn-sm btn-outline-danger" @click="cancel">
-            <template v-if="isCreateMode">{{ $t('close') | uppercase }}</template>
-            <template v-if="!isCreateMode">{{ $t('cancel') | uppercase }}</template>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="cancel"
+          >
+            <template v-if="isCreateMode">
+              {{ $t('close') | uppercase }}
+            </template>
+            <template v-if="!isCreateMode">
+              {{ $t('cancel') | uppercase }}
+            </template>
           </button>
         </template>
       </p-modal>

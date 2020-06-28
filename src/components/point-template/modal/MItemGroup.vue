@@ -4,32 +4,57 @@
       ref="modal"
       :title="$t('select item group') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
-      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      @close="onClose()"
+    >
+      <input
+        v-model="searchText"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        @keydown.enter.prevent=""
+      >
       <hr>
       <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
-      <div v-else class="list-group push">
+      <div
+        v-else
+        class="list-group push"
+      >
         <template v-for="(option, index) in options">
-        <a
-          :key="index"
-          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-          :class="{'active': option.id == mutableId }"
-          @click="choose(option)"
-          href="javascript:void(0)">
-          {{ option.label | uppercase }}
-        </a>
+          <a
+            :key="index"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            :class="{'active': option.id == mutableId }"
+            href="javascript:void(0)"
+            @click="choose(option)"
+          >
+            {{ option.label | uppercase }}
+          </a>
         </template>
       </div>
-      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+      <div
+        v-if="searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
       <div class="pull-right">
-        <button type="button" @click="$refs.addItemGroup.open()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary mr-5"
+          @click="$refs.addItemGroup.open()"
+        >
+          {{ $t('add') | uppercase }}
+        </button>
       </div>
     </sweet-modal>
-    <m-add-item-group ref="addItemGroup" @added="onAdded"></m-add-item-group>
+    <m-add-item-group
+      ref="addItemGroup"
+      @added="onAdded"
+    />
   </div>
 </template>
 
@@ -53,16 +78,20 @@ export default {
   },
   props: {
     id: {
-      type: String
+      type: String,
+      default: ''
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: ''
     },
     label: {
-      type: String
+      type: String,
+      default: ''
     },
     type: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   watch: {

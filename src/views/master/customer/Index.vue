@@ -1,62 +1,95 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
+      <breadcrumb-master />
       <span class="breadcrumb-item active">{{ $t('customer') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block mb-5">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addCustomer.open()"
             v-if="$permission.has('create customer')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addCustomer.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <div class="text-center font-size-sm mb-10">
-          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          <a
+            href="javascript:void(0)"
+            @click="isAdvanceFilter = !isAdvanceFilter"
+          >
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div
+          v-show="isAdvanceFilter"
+          class="card"
+          :class="{ 'fadeIn': isAdvanceFilter }"
+        >
           <div class="row">
             <div class="col-sm-3 text-center">
-              <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
+              <p-form-row
+                id="status"
+                name="status"
+                :label="$t('status')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <span @click="$refs.status.open({ id: statusId, label: statusLabel })" class="select-link">
+                  <span
+                    class="select-link"
+                    @click="$refs.status.open({ id: statusId, label: statusLabel })"
+                  >
                     {{ statusLabel || $t('select') | uppercase }}
                   </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
-              <p-form-row id="pricing-group" name="pricing-group" :label="$t('pricing group')" :is-horizontal="false">
+              <p-form-row
+                id="pricing-group"
+                name="pricing-group"
+                :label="$t('pricing group')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <span @click="$refs.pricingGroup.open()" class="select-link">
+                  <span
+                    class="select-link"
+                    @click="$refs.pricingGroup.open()"
+                  >
                     {{ pricingGroupLabel || $t('select') | uppercase }}
                   </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
-              <p-form-row id="group" name="group" :label="$t('group')" :is-horizontal="false">
+              <p-form-row
+                id="group"
+                name="group"
+                :label="$t('group')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <span @click="$refs.customerGroup.open()" class="select-link">
+                  <span
+                    class="select-link"
+                    @click="$refs.customerGroup.open()"
+                  >
                     {{ groupLabel || $t('select') | uppercase }}
                   </span>
                 </div>
@@ -70,18 +103,34 @@
             <input
               type="checkbox"
               class="css-control-input"
+              :checked="isRowsChecked(customers, checkedRow)"
               @click="toggleCheckRows()"
-              :checked="isRowsChecked(customers, checkedRow)">
-            <span class="css-control-indicator"></span>
+            >
+            <span class="css-control-indicator" />
           </label>
-          <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-            <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="bulkArchiveCustomer()">
+          <span
+            v-show="checkedRow.length > 0"
+            class="mr-15 animated fadeIn"
+          >
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="bulkArchiveCustomer()"
+            >
               {{ $t('archive') | uppercase }}
             </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="bulkActivateCustomer()">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="bulkActivateCustomer()"
+            >
               {{ $t('activate') | uppercase }}
             </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary" @click="bulkDeleteCustomer()">
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary"
+              @click="bulkDeleteCustomer()"
+            >
               {{ $t('delete') | uppercase }}
             </button>
           </span>
@@ -90,8 +139,10 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
-              <th width="50px"></th>
+              <th width="50px">
+                #
+              </th>
+              <th width="50px" />
               <th>Name</th>
               <th>Email</th>
               <th>Address</th>
@@ -102,25 +153,29 @@
             <tr
               v-for="(customer, index) in customers"
               :key="index"
+              slot="p-body"
               :class="{
                 'bg-gray': customer.archived_at != null,
                 'bg-primary-lighter': isRowChecked(customer.id)
               }"
-              slot="p-body">
-              <th :class="{
-                'bg-gray': customer.archived_at != null,
-                'bg-primary-lighter': isRowChecked(customer.id)
-              }">
-                {{ index + 1}}
+            >
+              <th
+                :class="{
+                  'bg-gray': customer.archived_at != null,
+                  'bg-primary-lighter': isRowChecked(customer.id)
+                }"
+              >
+                {{ index + 1 }}
               </th>
               <td>
                 <p-form-check-box
-                  :is-form="false"
                   id="subscibe"
+                  :is-form="false"
                   name="subscibe"
-                  @click.native="toggleCheckRow(customer.id)"
                   :checked="isRowChecked(customer.id)"
-                  class="text-center"/>
+                  class="text-center"
+                  @click.native="toggleCheckRow(customer.id)"
+                />
               </td>
               <td>
                 <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">
@@ -132,7 +187,9 @@
               <td>{{ customer.phone }}</td>
               <td>
                 <template v-for="(group, index) in customer.groups">
-                  {{ group.name }}<template v-if="customer.groups.length != index + 1">,</template>
+                  {{ group.name }}<template v-if="customer.groups.length != index + 1">
+                    ,
+                  </template>
                 </template>
               </td>
               <td>
@@ -144,14 +201,26 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
-    <m-add-customer ref="addCustomer" @added="onAdded"></m-add-customer>
-    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
-    <m-pricing-group ref="pricingGroup" @choosen="onChoosenPricingGroup"></m-pricing-group>
-    <m-customer-group ref="customerGroup" @choosen="onChoosenGroup"></m-customer-group>
+    <m-add-customer
+      ref="addCustomer"
+      @added="onAdded"
+    />
+    <m-status
+      ref="status"
+      @choosen="onChoosenStatus"
+    />
+    <m-pricing-group
+      ref="pricingGroup"
+      @choosen="onChoosenPricingGroup"
+    />
+    <m-customer-group
+      ref="customerGroup"
+      @choosen="onChoosenGroup"
+    />
   </div>
 </template>
 

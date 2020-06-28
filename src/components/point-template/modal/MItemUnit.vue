@@ -4,75 +4,112 @@
       ref="modal"
       :title="$t('select chart of account') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       {{ $t('create item helper - unit') }}
       <div class="row">
-      <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
-      </div>
-      <div v-else class="list-group push">
-        <p-table>
-          <tr slot="p-head">
-            <th class="text-center">Unit</th>
-            <th>Convert To</th>
-            <th>Quantity</th>
-            <th class="text-center">Default (Purchase)</th>
-            <th class="text-center">Default (Sales)</th>
-            <th></th>
-          </tr>
-          <tr slot="p-body" v-for="(unit, index) in units" :key="index">
-            <th>
-              <template v-if="index == 0">
-                1 {{ units[index].name | uppercase }}
-              </template>
-              <template v-else>
-                1 {{ units[index].name | uppercase }} = {{ units[index].converter }} {{ units[0].name | uppercase }}
-              </template>
-            </th>
-            <td class="text-center">
-              <p-form-input
-                :id="'id' + index"
-                name="name[]"
-                v-model="unit['name']"
-                :placeholder="$t('convert to') | uppercase"/>
-            </td>
-            <td class="text-center">
-              <p-form-number
-                :id="'converter-' + index"
-                name="converter[]"
-                :readonly="index == 0"
-                v-model="unit['converter']"
-                :is-text-right="true"/>
-            </td>
-            <td class="text-center">
-              <p-form-check-box
-                :id="'default-purchase-' + index"
-                :is-form="false"
-                @click.native="togglePurchase(index)"
-                :checked="units[index].default_purchase">
-              </p-form-check-box>
-            </td>
-            <td class="text-center">
-              <p-form-check-box
-                :id="'default-sales-' + index"
-                :is-form="false"
-                @click.native="toggleSales(index)"
-                :checked="units[index].default_sales">
-              </p-form-check-box>
-            </td>
-            <td>
-              <i class="clickable fa fa-close" @click="clear(index)"></i>
-            </td>
-          </tr>
-        </p-table>
-        <button type="button" class="btn btn-sm btn-secondary" @click="addRow">
-          <i class="fa fa-plus"/> {{ $t('add') | uppercase }}
-        </button>
-      </div>
-      <div class="pull-right">
-        <button type="button" @click="update()" class="btn btn-sm btn-primary mr-5">{{ $t('update') | uppercase }}</button>
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
-      </div>
+        <div v-if="isLoading">
+          <h3 class="text-center">
+            Loading ...
+          </h3>
+        </div>
+        <div
+          v-else
+          class="list-group push"
+        >
+          <p-table>
+            <tr slot="p-head">
+              <th class="text-center">
+                Unit
+              </th>
+              <th>Convert To</th>
+              <th>Quantity</th>
+              <th class="text-center">
+                Default (Purchase)
+              </th>
+              <th class="text-center">
+                Default (Sales)
+              </th>
+              <th />
+            </tr>
+            <tr
+              v-for="(unit, index) in units"
+              slot="p-body"
+              :key="index"
+            >
+              <th>
+                <template v-if="index == 0">
+                  1 {{ units[index].name | uppercase }}
+                </template>
+                <template v-else>
+                  1 {{ units[index].name | uppercase }} = {{ units[index].converter }} {{ units[0].name | uppercase }}
+                </template>
+              </th>
+              <td class="text-center">
+                <p-form-input
+                  :id="'id' + index"
+                  v-model="unit['name']"
+                  name="name[]"
+                  :placeholder="$t('convert to') | uppercase"
+                />
+              </td>
+              <td class="text-center">
+                <p-form-number
+                  :id="'converter-' + index"
+                  v-model="unit['converter']"
+                  name="converter[]"
+                  :readonly="index == 0"
+                  :is-text-right="true"
+                />
+              </td>
+              <td class="text-center">
+                <p-form-check-box
+                  :id="'default-purchase-' + index"
+                  :is-form="false"
+                  :checked="units[index].default_purchase"
+                  @click.native="togglePurchase(index)"
+                />
+              </td>
+              <td class="text-center">
+                <p-form-check-box
+                  :id="'default-sales-' + index"
+                  :is-form="false"
+                  :checked="units[index].default_sales"
+                  @click.native="toggleSales(index)"
+                />
+              </td>
+              <td>
+                <i
+                  class="clickable fa fa-close"
+                  @click="clear(index)"
+                />
+              </td>
+            </tr>
+          </p-table>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            @click="addRow"
+          >
+            <i class="fa fa-plus" /> {{ $t('add') | uppercase }}
+          </button>
+        </div>
+        <div class="pull-right">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary mr-5"
+            @click="update()"
+          >
+            {{ $t('update') | uppercase }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="close()"
+          >
+            {{ $t('close') | uppercase }}
+          </button>
+        </div>
       </div>
     </sweet-modal>
   </div>
@@ -96,7 +133,8 @@ export default {
   },
   props: {
     id: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   watch: {

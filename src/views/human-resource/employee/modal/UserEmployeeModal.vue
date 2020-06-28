@@ -2,18 +2,20 @@
   <div>
     <form class="row">
       <p-modal
-        ref="userEmployeeModal"
         :id="id"
-        :title="title">
+        ref="userEmployeeModal"
+        :title="title"
+      >
         <template slot="content">
           <div class="list-group mb-20">
             <template v-for="(user_employee, index) in user_employees">
               <a
                 :key="index"
-                @click="onSubmitUserEmployee(user_employee, index)"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                href="javascript:void(0)">
-                  <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ user_employee.first_name + ' ' + user_employee.last_name }}</span>
+                href="javascript:void(0)"
+                @click="onSubmitUserEmployee(user_employee, index)"
+              >
+                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ user_employee.first_name + ' ' + user_employee.last_name }}</span>
               </a>
             </template>
           </div>
@@ -29,7 +31,8 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
       type: String,

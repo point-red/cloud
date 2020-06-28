@@ -1,19 +1,26 @@
 <template>
   <div>
     <date-picker
+      v-model="time"
+      v-mask="mask"
       format="HH:mm"
       type="time"
-      v-model="time"
       value-type="HH:mm"
-      v-mask="mask"/>
+    />
 
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-feedback">{{ error }}</div>
+      class="invalid-feedback"
+    >
+      {{ error }}
+    </div>
     <div
       v-show="help"
-      class="form-text text-muted">{{ help }}</div>
+      class="form-text text-muted"
+    >
+      {{ help }}
+    </div>
   </div>
 </template>
 
@@ -28,17 +35,19 @@ export default {
   props: {
     name: {
       type: String,
-      required: false
+      default: ''
     },
     value: {
       type: [Date, String],
       default: new Date()
     },
     help: {
-      type: String
+      type: String,
+      default: ''
     },
     errors: {
-      type: Array
+      type: Array,
+      default: null
     }
   },
   data () {

@@ -6,10 +6,11 @@
 
     <div class="row gutters-tiny">
       <p-box
-        :name="$t('inventory report')"
         v-if="$permission.has('read inventory report')"
+        :name="$t('inventory report')"
         link="/inventory/report"
-        icon="si si-docs"/>
+        icon="si si-docs"
+      />
       <!-- <p-box
         :name="$t('inventory usage')"
         v-if="$permission.has('read inventory usage')"

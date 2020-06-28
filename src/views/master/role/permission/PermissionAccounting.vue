@@ -2,52 +2,229 @@
   <div>
     <p-table>
       <tr slot="p-head">
-        <th width="5px"></th>
+        <th width="5px" />
         <th>Feature</th>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" ref="menu accounting" @click.native="togglePermission('menu accounting')" :checked="$rolePermission.has('menu accounting', permissions)"/></td>
+        <td>
+          <p-form-check-box
+            ref="menu accounting"
+            :is-form="false"
+            :checked="$rolePermission.has('menu accounting', permissions)"
+            @click.native="togglePermission('menu accounting')"
+          />
+        </td>
         <td><b>{{ $t('accounting') | uppercase }}</b></td>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create chart of account', 'read chart of account', 'update chart of account', 'delete chart of account'], permissions)" :checked="checkPermissionRow(['create chart of account', 'read chart of account', 'update chart of account', 'delete chart of account'], permissions)" :description="''"/></td>
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create chart of account', 'read chart of account', 'update chart of account', 'delete chart of account'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['create chart of account', 'read chart of account', 'update chart of account', 'delete chart of account'], permissions)"
+          />
+        </td>
         <td><b>{{ $t('chart of account') | uppercase }}</b></td>
-        <td><p-form-check-box :is-form="false" ref="create chart of account" @click.native="togglePermission('create chart of account')" :checked="$rolePermission.has('create chart of account', permissions)" :description="'create' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read chart of account" @click.native="togglePermission('read chart of account')" :checked="$rolePermission.has('read chart of account', permissions)" :description="'read' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="update chart of account" @click.native="togglePermission('update chart of account')" :checked="$rolePermission.has('update chart of account', permissions)" :description="'update' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete chart of account" @click.native="togglePermission('delete chart of account')" :checked="$rolePermission.has('delete chart of account', permissions)" :description="'delete' | uppercase"/></td>
+        <td>
+          <p-form-check-box
+            ref="create chart of account"
+            :is-form="false"
+            :checked="$rolePermission.has('create chart of account', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create chart of account')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read chart of account"
+            :is-form="false"
+            :checked="$rolePermission.has('read chart of account', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read chart of account')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update chart of account"
+            :is-form="false"
+            :checked="$rolePermission.has('update chart of account', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update chart of account')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete chart of account"
+            :is-form="false"
+            :checked="$rolePermission.has('delete chart of account', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete chart of account')"
+          />
+        </td>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create cut off', 'read cut off', 'update cut off', 'delete cut off'], permissions)" :checked="checkPermissionRow(['create cut off', 'read cut off', 'update cut off', 'delete cut off'], permissions)" :description="''"/></td>
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create cut off', 'read cut off', 'update cut off', 'delete cut off'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['create cut off', 'read cut off', 'update cut off', 'delete cut off'], permissions)"
+          />
+        </td>
         <td><b>{{ $t('cut off') | uppercase }}</b></td>
-        <td><p-form-check-box :is-form="false" ref="create cut off" @click.native="togglePermission('create cut off')" :checked="$rolePermission.has('create cut off', permissions)" :description="'create' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read cut off" @click.native="togglePermission('read cut off')" :checked="$rolePermission.has('read cut off', permissions)" :description="'read' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="update cut off" @click.native="togglePermission('update cut off')" :checked="$rolePermission.has('update cut off', permissions)" :description="'update' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete cut off" @click.native="togglePermission('delete cut off')" :checked="$rolePermission.has('delete cut off', permissions)" :description="'delete' | uppercase"/></td>
+        <td>
+          <p-form-check-box
+            ref="create cut off"
+            :is-form="false"
+            :checked="$rolePermission.has('create cut off', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create cut off')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read cut off"
+            :is-form="false"
+            :checked="$rolePermission.has('read cut off', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read cut off')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update cut off"
+            :is-form="false"
+            :checked="$rolePermission.has('update cut off', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update cut off')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete cut off"
+            :is-form="false"
+            :checked="$rolePermission.has('delete cut off', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete cut off')"
+          />
+        </td>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create memo journal', 'read memo journal', 'update memo journal', 'delete memo journal'], permissions)" :checked="checkPermissionRow(['create memo journal', 'read memo journal', 'update memo journal', 'delete memo journal'], permissions)" :description="''"/></td>
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create memo journal', 'read memo journal', 'update memo journal', 'delete memo journal'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['create memo journal', 'read memo journal', 'update memo journal', 'delete memo journal'], permissions)"
+          />
+        </td>
         <td><b>{{ $t('memo journal') | uppercase }}</b></td>
-        <td><p-form-check-box :is-form="false" ref="create memo journal" @click.native="togglePermission('create memo journal')" :checked="$rolePermission.has('create memo journal', permissions)" :description="'create' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read memo journal" @click.native="togglePermission('read memo journal')" :checked="$rolePermission.has('read memo journal', permissions)" :description="'read' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="update memo journal" @click.native="togglePermission('update memo journal')" :checked="$rolePermission.has('update memo journal', permissions)" :description="'update' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete memo journal" @click.native="togglePermission('delete memo journal')" :checked="$rolePermission.has('delete memo journal', permissions)" :description="'delete' | uppercase"/></td>
+        <td>
+          <p-form-check-box
+            ref="create memo journal"
+            :is-form="false"
+            :checked="$rolePermission.has('create memo journal', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create memo journal')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read memo journal"
+            :is-form="false"
+            :checked="$rolePermission.has('read memo journal', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read memo journal')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update memo journal"
+            :is-form="false"
+            :checked="$rolePermission.has('update memo journal', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update memo journal')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete memo journal"
+            :is-form="false"
+            :checked="$rolePermission.has('delete memo journal', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete memo journal')"
+          />
+        </td>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false"
-          @click.native="togglePermissionRow(['read balance sheet', 'read profit and loss', 'read general ledger', 'read sub ledger', 'read trial balance', 'read ratio report'], permissions)"
-          :checked="checkPermissionRow(['read balance sheet', 'read profit and loss', 'read general ledger', 'read sub ledger', 'read trial balance', 'read ratio report'], permissions)" :description="''"/></td>
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['read balance sheet', 'read profit and loss', 'read general ledger', 'read sub ledger', 'read trial balance', 'read ratio report'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['read balance sheet', 'read profit and loss', 'read general ledger', 'read sub ledger', 'read trial balance', 'read ratio report'], permissions)"
+          />
+        </td>
         <td><b>{{ $t('report') | uppercase }}</b></td>
-        <td><p-form-check-box :is-form="false" ref="read balance sheet" @click.native="togglePermission('read balance sheet')" :checked="$rolePermission.has('read balance sheet', permissions)" :description="'balance sheet' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read profit and loss" @click.native="togglePermission('read profit and loss')" :checked="$rolePermission.has('read profit and loss', permissions)" :description="'profit & loss' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read general ledger" @click.native="togglePermission('read general ledger')" :checked="$rolePermission.has('read general ledger', permissions)" :description="'general ledger' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read sub ledger" @click.native="togglePermission('read sub ledger')" :checked="$rolePermission.has('read sub ledger', permissions)" :description="'sub ledger' | uppercase"/></td>
+        <td>
+          <p-form-check-box
+            ref="read balance sheet"
+            :is-form="false"
+            :checked="$rolePermission.has('read balance sheet', permissions)"
+            :description="'balance sheet' | uppercase"
+            @click.native="togglePermission('read balance sheet')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read profit and loss"
+            :is-form="false"
+            :checked="$rolePermission.has('read profit and loss', permissions)"
+            :description="'profit & loss' | uppercase"
+            @click.native="togglePermission('read profit and loss')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read general ledger"
+            :is-form="false"
+            :checked="$rolePermission.has('read general ledger', permissions)"
+            :description="'general ledger' | uppercase"
+            @click.native="togglePermission('read general ledger')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read sub ledger"
+            :is-form="false"
+            :checked="$rolePermission.has('read sub ledger', permissions)"
+            :description="'sub ledger' | uppercase"
+            @click.native="togglePermission('read sub ledger')"
+          />
+        </td>
       </tr>
       <tr slot="p-body">
-        <td></td>
-        <td></td>
-        <td><p-form-check-box :is-form="false" ref="read trial balance" @click.native="togglePermission('read trial balance')" :checked="$rolePermission.has('read trial balance', permissions)" :description="'trial balance' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read ratio report" @click.native="togglePermission('read ratio report')" :checked="$rolePermission.has('read ratio report', permissions)" :description="'ratio report' | uppercase"/></td>
+        <td />
+        <td />
+        <td>
+          <p-form-check-box
+            ref="read trial balance"
+            :is-form="false"
+            :checked="$rolePermission.has('read trial balance', permissions)"
+            :description="'trial balance' | uppercase"
+            @click.native="togglePermission('read trial balance')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read ratio report"
+            :is-form="false"
+            :checked="$rolePermission.has('read ratio report', permissions)"
+            :description="'ratio report' | uppercase"
+            @click.native="togglePermission('read ratio report')"
+          />
+        </td>
       </tr>
     </p-table>
   </div>

@@ -2,52 +2,215 @@
   <div>
     <p-table>
       <tr slot="p-head">
-        <th width="5px"></th>
+        <th width="5px" />
         <th>Feature</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
+        <th />
+        <th />
+        <th />
+        <th />
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" ref="menu manufacture" @click.native="togglePermission('menu manufacture')" :checked="$rolePermission.has('menu manufacture', permissions)"/></td>
+        <td>
+          <p-form-check-box
+            ref="menu manufacture"
+            :is-form="false"
+            :checked="$rolePermission.has('menu manufacture', permissions)"
+            @click.native="togglePermission('menu manufacture')"
+          />
+        </td>
         <td><b>{{ $t('manufacture') | uppercase }}</b></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td />
+        <td />
+        <td />
+        <td />
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create manufacture processing', 'read manufacture processing', 'update manufacture processing', 'delete manufacture processing'], permissions)" :checked="checkPermissionRow(['create manufacture processing', 'read manufacture processing', 'update manufacture processing', 'delete manufacture processing'], permissions)" :description="''"/></td>
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create manufacture processing', 'read manufacture processing', 'update manufacture processing', 'delete manufacture processing'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['create manufacture processing', 'read manufacture processing', 'update manufacture processing', 'delete manufacture processing'], permissions)"
+          />
+        </td>
         <td><b>{{ $t('processing') | uppercase }}</b></td>
-        <td><p-form-check-box :is-form="false" ref="create manufacture processing" @click.native="togglePermission('create manufacture processing')" :checked="$rolePermission.has('create manufacture processing', permissions)" :description="'create' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read manufacture processing" @click.native="togglePermission('read manufacture processing')" :checked="$rolePermission.has('read manufacture processing', permissions)" :description="'read' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="update manufacture processing" @click.native="togglePermission('update manufacture processing')" :checked="$rolePermission.has('update manufacture processing', permissions)" :description="'update' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete manufacture processing" @click.native="togglePermission('delete manufacture processing')" :checked="$rolePermission.has('delete manufacture processing', permissions)" :description="'delete' | uppercase"/></td>
+        <td>
+          <p-form-check-box
+            ref="create manufacture processing"
+            :is-form="false"
+            :checked="$rolePermission.has('create manufacture processing', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create manufacture processing')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read manufacture processing"
+            :is-form="false"
+            :checked="$rolePermission.has('read manufacture processing', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read manufacture processing')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update manufacture processing"
+            :is-form="false"
+            :checked="$rolePermission.has('update manufacture processing', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update manufacture processing')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete manufacture processing"
+            :is-form="false"
+            :checked="$rolePermission.has('delete manufacture processing', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete manufacture processing')"
+          />
+        </td>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create manufacture machine', 'read manufacture machine', 'update manufacture machine', 'delete manufacture machine'], permissions)" :checked="checkPermissionRow(['create manufacture machine', 'read manufacture machine', 'update manufacture machine', 'delete manufacture machine'], permissions)" :description="''"/></td>
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create manufacture machine', 'read manufacture machine', 'update manufacture machine', 'delete manufacture machine'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['create manufacture machine', 'read manufacture machine', 'update manufacture machine', 'delete manufacture machine'], permissions)"
+          />
+        </td>
         <td><b>{{ $t('machine') | uppercase }}</b></td>
-        <td><p-form-check-box :is-form="false" ref="create manufacture machine" @click.native="togglePermission('create manufacture machine')" :checked="$rolePermission.has('create manufacture machine', permissions)" :description="'create' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read manufacture machine" @click.native="togglePermission('read manufacture machine')" :checked="$rolePermission.has('read manufacture machine', permissions)" :description="'read' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="update manufacture machine" @click.native="togglePermission('update manufacture machine')" :checked="$rolePermission.has('update manufacture machine', permissions)" :description="'update' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete manufacture machine" @click.native="togglePermission('delete manufacture machine')" :checked="$rolePermission.has('delete manufacture machine', permissions)" :description="'delete' | uppercase"/></td>
+        <td>
+          <p-form-check-box
+            ref="create manufacture machine"
+            :is-form="false"
+            :checked="$rolePermission.has('create manufacture machine', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create manufacture machine')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read manufacture machine"
+            :is-form="false"
+            :checked="$rolePermission.has('read manufacture machine', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read manufacture machine')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update manufacture machine"
+            :is-form="false"
+            :checked="$rolePermission.has('update manufacture machine', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update manufacture machine')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete manufacture machine"
+            :is-form="false"
+            :checked="$rolePermission.has('delete manufacture machine', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete manufacture machine')"
+          />
+        </td>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create manufacture process', 'read manufacture process', 'update manufacture process', 'delete manufacture process'], permissions)" :checked="checkPermissionRow(['create manufacture process', 'read manufacture process', 'update manufacture process', 'delete manufacture process'], permissions)" :description="''"/></td>
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create manufacture process', 'read manufacture process', 'update manufacture process', 'delete manufacture process'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['create manufacture process', 'read manufacture process', 'update manufacture process', 'delete manufacture process'], permissions)"
+          />
+        </td>
         <td><b>{{ $t('process') | uppercase }}</b></td>
-        <td><p-form-check-box :is-form="false" ref="create manufacture process" @click.native="togglePermission('create manufacture process')" :checked="$rolePermission.has('create manufacture process', permissions)" :description="'create' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read manufacture process" @click.native="togglePermission('read manufacture process')" :checked="$rolePermission.has('read manufacture process', permissions)" :description="'read' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="update manufacture process" @click.native="togglePermission('update manufacture process')" :checked="$rolePermission.has('update manufacture process', permissions)" :description="'update' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete manufacture process" @click.native="togglePermission('delete manufacture process')" :checked="$rolePermission.has('delete manufacture process', permissions)" :description="'delete' | uppercase"/></td>
+        <td>
+          <p-form-check-box
+            ref="create manufacture process"
+            :is-form="false"
+            :checked="$rolePermission.has('create manufacture process', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create manufacture process')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read manufacture process"
+            :is-form="false"
+            :checked="$rolePermission.has('read manufacture process', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read manufacture process')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update manufacture process"
+            :is-form="false"
+            :checked="$rolePermission.has('update manufacture process', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update manufacture process')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete manufacture process"
+            :is-form="false"
+            :checked="$rolePermission.has('delete manufacture process', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete manufacture process')"
+          />
+        </td>
       </tr>
       <tr slot="p-body">
-        <td><p-form-check-box :is-form="false" @click.native="togglePermissionRow(['create manufacture formula', 'read manufacture formula', 'update manufacture formula', 'delete manufacture formula'], permissions)" :checked="checkPermissionRow(['create manufacture formula', 'read manufacture formula', 'update manufacture formula', 'delete manufacture formula'], permissions)" :description="''"/></td>
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create manufacture formula', 'read manufacture formula', 'update manufacture formula', 'delete manufacture formula'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['create manufacture formula', 'read manufacture formula', 'update manufacture formula', 'delete manufacture formula'], permissions)"
+          />
+        </td>
         <td><b>{{ $t('formula') | uppercase }}</b></td>
-        <td><p-form-check-box :is-form="false" ref="create manufacture formula" @click.native="togglePermission('create manufacture formula')" :checked="$rolePermission.has('create manufacture formula', permissions)" :description="'create' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="read manufacture formula" @click.native="togglePermission('read manufacture formula')" :checked="$rolePermission.has('read manufacture formula', permissions)" :description="'read' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="update manufacture formula" @click.native="togglePermission('update manufacture formula')" :checked="$rolePermission.has('update manufacture formula', permissions)" :description="'update' | uppercase"/></td>
-        <td><p-form-check-box :is-form="false" ref="delete manufacture formula" @click.native="togglePermission('delete manufacture formula')" :checked="$rolePermission.has('delete manufacture formula', permissions)" :description="'delete' | uppercase"/></td>
+        <td>
+          <p-form-check-box
+            ref="create manufacture formula"
+            :is-form="false"
+            :checked="$rolePermission.has('create manufacture formula', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create manufacture formula')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read manufacture formula"
+            :is-form="false"
+            :checked="$rolePermission.has('read manufacture formula', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read manufacture formula')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update manufacture formula"
+            :is-form="false"
+            :checked="$rolePermission.has('update manufacture formula', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update manufacture formula')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete manufacture formula"
+            :is-form="false"
+            :checked="$rolePermission.has('delete manufacture formula', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete manufacture formula')"
+          />
+        </td>
       </tr>
     </p-table>
   </div>

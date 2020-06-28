@@ -4,22 +4,35 @@
       ref="modal"
       :title="$t('select chart of account') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
-      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      @close="onClose()"
+    >
+      <input
+        v-model="searchText"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        @keydown.enter.prevent=""
+      >
       <hr>
       <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
-      <div v-else class="list-group push">
+      <div
+        v-else
+        class="list-group push"
+      >
         <template v-for="(option, index) in options">
-        <a
-          :key="index"
-          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-          :class="{'active': option.id == mutableId }"
-          @click="choose(option)"
-          href="javascript:void(0)">
-          {{ option.label | uppercase }}
-        </a>
+          <a
+            :key="index"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            :class="{'active': option.id == mutableId }"
+            href="javascript:void(0)"
+            @click="choose(option)"
+          >
+            {{ option.label | uppercase }}
+          </a>
         </template>
       </div>
     </sweet-modal>
@@ -46,13 +59,16 @@ export default {
   },
   props: {
     id: {
-      type: String
+      type: String,
+      default: ''
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: ''
     },
     label: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   watch: {

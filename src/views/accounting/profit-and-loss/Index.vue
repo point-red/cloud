@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-accounting/>
+      <breadcrumb-accounting />
       <span class="breadcrumb-item active">{{ $t('profit & loss') | uppercase }}</span>
     </breadcrumb>
 
@@ -12,153 +12,247 @@
             <div class="col-sm-12">
               <p-form-row
                 id="date-from"
-                :label="$t('date from')">
-                <div slot="body" class="col-lg-9">
+                :label="$t('date from')"
+              >
+                <div
+                  slot="body"
+                  class="col-lg-9"
+                >
                   <p-month-picker
+                    v-model="date.start"
                     name="date_from"
-                    v-model="date.start"/>
+                  />
                 </div>
               </p-form-row>
               <p-form-row
                 id="date-to"
-                :label="$t('date to')">
-                <div slot="body" class="col-lg-9">
+                :label="$t('date to')"
+              >
+                <div
+                  slot="body"
+                  class="col-lg-9"
+                >
                   <p-month-picker
+                    v-model="date.end"
                     name="date_to"
-                    v-model="date.end"/>
+                  />
                 </div>
               </p-form-row>
               <hr>
               <p-table>
                 <tr slot="p-head">
-                  <th></th>
-                  <th class="text-right"></th>
+                  <th />
+                  <th class="text-right" />
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2" class="font-w600">PENDAPATAN OPERATIONAL</td>
+                  <td
+                    colspan="2"
+                    class="font-w600"
+                  >
+                    PENDAPATAN OPERATIONAL
+                  </td>
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
-                <tr
-                  v-if="chartOfAccount.type.name === 'SALES INCOME'"
-                  :key="index"
-                  slot="p-body">
-                  <td>{{ chartOfAccount.alias }}</td>
-                  <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
-                </tr>
+                  <tr
+                    v-if="chartOfAccount.type.name === 'SALES INCOME'"
+                    :key="index"
+                    slot="p-body"
+                  >
+                    <td>{{ chartOfAccount.alias }}</td>
+                    <td class="text-right">
+                      {{ chartOfAccount.total | numberFormat }}
+                    </td>
+                  </tr>
                 </template>
                 <tr slot="p-body">
-                  <td></td>
-                  <td class="text-right font-w600">{{ totalSalesIncome | numberFormat }}</td>
+                  <td />
+                  <td class="text-right font-w600">
+                    {{ totalSalesIncome | numberFormat }}
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2" class="font-w600">BEBAN POKOK PENJUALAN</td>
+                  <td
+                    colspan="2"
+                    class="font-w600"
+                  >
+                    BEBAN POKOK PENJUALAN
+                  </td>
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
-                <tr
-                  v-if="chartOfAccount.type.name === 'COST OF SALES'"
-                  :key="index"
-                  slot="p-body">
-                  <td>{{ chartOfAccount.alias }}</td>
-                  <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
-                </tr>
+                  <tr
+                    v-if="chartOfAccount.type.name === 'COST OF SALES'"
+                    :key="index"
+                    slot="p-body"
+                  >
+                    <td>{{ chartOfAccount.alias }}</td>
+                    <td class="text-right">
+                      {{ chartOfAccount.total | numberFormat }}
+                    </td>
+                  </tr>
                 </template>
                 <tr slot="p-body">
-                  <td></td>
-                  <td class="text-right font-w600">{{ totalCostOfSales | numberFormat }}</td>
+                  <td />
+                  <td class="text-right font-w600">
+                    {{ totalCostOfSales | numberFormat }}
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2">&nbsp;</td>
+                  <td colspan="2">
+&nbsp;
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2" class="font-w600">FACTORY OVERHEAD COST</td>
+                  <td
+                    colspan="2"
+                    class="font-w600"
+                  >
+                    FACTORY OVERHEAD COST
+                  </td>
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
-                <tr
-                  v-if="chartOfAccount.type.name === 'FACTORY OVERHEAD COST'"
-                  :key="index"
-                  slot="p-body">
-                  <td>{{ chartOfAccount.alias }}</td>
-                  <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
-                </tr>
+                  <tr
+                    v-if="chartOfAccount.type.name === 'FACTORY OVERHEAD COST'"
+                    :key="index"
+                    slot="p-body"
+                  >
+                    <td>{{ chartOfAccount.alias }}</td>
+                    <td class="text-right">
+                      {{ chartOfAccount.total | numberFormat }}
+                    </td>
+                  </tr>
                 </template>
                 <tr slot="p-body">
-                  <td></td>
-                  <td class="text-right font-w600">{{ totalFactoryOverheadCost | numberFormat }}</td>
+                  <td />
+                  <td class="text-right font-w600">
+                    {{ totalFactoryOverheadCost | numberFormat }}
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2">&nbsp;</td>
+                  <td colspan="2">
+&nbsp;
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td class="font-w600">LABA (RUGI) KOTOR</td>
-                  <td class="text-right font-w600">{{ totalProfitAndLossGross | numberFormat }}</td>
+                  <td class="font-w600">
+                    LABA (RUGI) KOTOR
+                  </td>
+                  <td class="text-right font-w600">
+                    {{ totalProfitAndLossGross | numberFormat }}
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2">&nbsp;</td>
+                  <td colspan="2">
+&nbsp;
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2" class="font-w600">BEBAN OPERASIONAL</td>
+                  <td
+                    colspan="2"
+                    class="font-w600"
+                  >
+                    BEBAN OPERASIONAL
+                  </td>
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
                   <tr
                     v-if="chartOfAccount.type.name === 'DIRECT EXPENSE'"
                     :key="index"
-                    slot="p-body">
+                    slot="p-body"
+                  >
                     <td>{{ chartOfAccount.alias }}</td>
-                    <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
+                    <td class="text-right">
+                      {{ chartOfAccount.total | numberFormat }}
+                    </td>
                   </tr>
                 </template>
                 <tr slot="p-body">
-                  <td></td>
-                  <td class="text-right font-w600">{{ totalDirectExpense | numberFormat }}</td>
+                  <td />
+                  <td class="text-right font-w600">
+                    {{ totalDirectExpense | numberFormat }}
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2">&nbsp;</td>
+                  <td colspan="2">
+&nbsp;
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td class="font-w600">LABA (RUGI) OPERATIONAL</td>
-                  <td class="text-right font-w600">{{ totalProfitAndLossOperation | numberFormat }}</td>
+                  <td class="font-w600">
+                    LABA (RUGI) OPERATIONAL
+                  </td>
+                  <td class="text-right font-w600">
+                    {{ totalProfitAndLossOperation | numberFormat }}
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2">&nbsp;</td>
+                  <td colspan="2">
+&nbsp;
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2" class="font-w600">PENDAPATAN NON OPERATIONAL</td>
+                  <td
+                    colspan="2"
+                    class="font-w600"
+                  >
+                    PENDAPATAN NON OPERATIONAL
+                  </td>
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
-                <tr
-                  v-if="chartOfAccount.type.name === 'OTHER INCOME'"
-                  :key="index"
-                  slot="p-body">
-                  <td>{{ chartOfAccount.alias }}</td>
-                  <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
-                </tr>
+                  <tr
+                    v-if="chartOfAccount.type.name === 'OTHER INCOME'"
+                    :key="index"
+                    slot="p-body"
+                  >
+                    <td>{{ chartOfAccount.alias }}</td>
+                    <td class="text-right">
+                      {{ chartOfAccount.total | numberFormat }}
+                    </td>
+                  </tr>
                 </template>
                 <tr slot="p-body">
-                  <td></td>
-                  <td class="text-right font-w600">{{ totalOtherIncome | numberFormat }}</td>
+                  <td />
+                  <td class="text-right font-w600">
+                    {{ totalOtherIncome | numberFormat }}
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2" class="font-w600">BEBAN NON OPERATIONAL</td>
+                  <td
+                    colspan="2"
+                    class="font-w600"
+                  >
+                    BEBAN NON OPERATIONAL
+                  </td>
                 </tr>
                 <template v-for="(chartOfAccount, index) in chartOfAccounts">
-                <tr
-                  v-if="chartOfAccount.type.name === 'OTHER EXPENSE'"
-                  :key="index"
-                  slot="p-body">
-                  <td>{{ chartOfAccount.alias }}</td>
-                  <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
-                </tr>
+                  <tr
+                    v-if="chartOfAccount.type.name === 'OTHER EXPENSE'"
+                    :key="index"
+                    slot="p-body"
+                  >
+                    <td>{{ chartOfAccount.alias }}</td>
+                    <td class="text-right">
+                      {{ chartOfAccount.total | numberFormat }}
+                    </td>
+                  </tr>
                 </template>
                 <tr slot="p-body">
-                  <td></td>
-                  <td class="text-right font-w600">{{ totalOtherExpense | numberFormat }}</td>
+                  <td />
+                  <td class="text-right font-w600">
+                    {{ totalOtherExpense | numberFormat }}
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td colspan="2">&nbsp;</td>
+                  <td colspan="2">
+&nbsp;
+                  </td>
                 </tr>
                 <tr slot="p-body">
-                  <td class="font-w600">LABA (RUGI) BERSIH</td>
-                  <td class="text-right font-w600">{{ totalProfitAndLossNet | numberFormat }}</td>
+                  <td class="font-w600">
+                    LABA (RUGI) BERSIH
+                  </td>
+                  <td class="text-right font-w600">
+                    {{ totalProfitAndLossNet | numberFormat }}
+                  </td>
                 </tr>
               </p-table>
             </div>

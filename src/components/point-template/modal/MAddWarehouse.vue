@@ -4,35 +4,45 @@
       ref="modal"
       :title="$t('add warehouse') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <div class="row">
         <div class="col-sm-12">
           <p-form-row
             id="branch"
             name="branch"
-            :label="$t('branch')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <span @click="$refs.branch.open()" class="select-link">
+            :label="$t('branch')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 mt-5"
+            >
+              <span
+                class="select-link"
+                @click="$refs.branch.open()"
+              >
                 {{ form.branch_name || $t('select') | uppercase }}
               </span>
               <div
                 v-for="(error, index) in form.errors.get('branch_id')"
                 :key="index"
-                class="invalid-input">
-                <i class="fa fa-warning"></i> {{ error }}
+                class="invalid-input"
+              >
+                <i class="fa fa-warning" /> {{ error }}
               </div>
             </div>
           </p-form-row>
 
           <p-form-row
             id="name"
+            ref="name"
             v-model="form.name"
             :disabled="isSaving"
             :label="$t('name')"
             name="name"
-            ref="name"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)"/>
+            @errors="form.errors.set('name', null)"
+          />
 
           <p-form-row
             id="address"
@@ -41,7 +51,8 @@
             :label="$t('address')"
             name="address"
             :errors="form.errors.get('address')"
-            @errors="form.errors.set('address', null)"/>
+            @errors="form.errors.set('address', null)"
+          />
 
           <p-form-row
             id="phone"
@@ -50,16 +61,28 @@
             :label="$t('phone')"
             name="phone"
             :errors="form.errors.get('phone')"
-            @errors="form.errors.set('phone', null)"/>
+            @errors="form.errors.set('phone', null)"
+          />
         </div>
       </div>
       <div class="pull-right">
-        <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+        <button
+          type="submit"
+          class="btn btn-sm btn-primary"
+          :disabled="isSaving"
+          @click="onSubmit"
+        >
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          /> {{ $t('save') | uppercase }}
         </button>
       </div>
     </sweet-modal>
-    <m-branch ref="branch" @choosen="onChoosenBranch"></m-branch>
+    <m-branch
+      ref="branch"
+      @choosen="onChoosenBranch"
+    />
   </form>
 </template>
 

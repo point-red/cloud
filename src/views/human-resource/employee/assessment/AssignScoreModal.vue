@@ -1,30 +1,40 @@
 <template>
   <div>
-    <form class="row" @submit.prevent="onSubmitEmployeeAssessment">
+    <form
+      class="row"
+      @submit.prevent="onSubmitEmployeeAssessment"
+    >
       <p-modal
-        ref="employeeAssessment"
         id="assign-score"
-        :title="$t('employee assessment')">
+        ref="employeeAssessment"
+        :title="$t('employee assessment')"
+      >
         <template slot="content">
           <div class="list-group mb-20">
             <template v-for="(score, index) in options">
               <a
                 :key="index"
-                @click="chooseScore(score, index)"
-                @dblclick="onChooseAndSubmitEmployeeAssessment(score, index)"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 :class="{
                   'active': selectedScoreIndex === index
                 }"
-                href="javascript:void(0)">
-                  <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ score.description }}</span>
-                  <span class="badge badge-pill badge-secondary">{{ score.score }}</span>
+                href="javascript:void(0)"
+                @click="chooseScore(score, index)"
+                @dblclick="onChooseAndSubmitEmployeeAssessment(score, index)"
+              >
+                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ score.description }}</span>
+                <span class="badge badge-pill badge-secondary">{{ score.score }}</span>
               </a>
             </template>
           </div>
         </template>
         <template slot="footer">
-          <button type="submit" class="btn btn-sm btn-primary">Add</button>
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+          >
+            Add
+          </button>
         </template>
       </p-modal>
     </form>

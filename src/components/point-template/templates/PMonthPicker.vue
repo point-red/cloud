@@ -1,23 +1,33 @@
 <template>
   <div>
     <date-picker
+      v-model="time"
       :lang="lang"
       :name="name"
       format="YYYY-MM"
       type="month"
       value-type="YYYY-MM"
       :editable="false"
-      v-model="time">
-      <i class="fa fa-calendar" slot="calendar-icon"></i>
+    >
+      <i
+        slot="calendar-icon"
+        class="fa fa-calendar"
+      />
     </date-picker>
 
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-feedback">{{ error }}</div>
+      class="invalid-feedback"
+    >
+      {{ error }}
+    </div>
     <div
       v-show="help"
-      class="form-text text-muted">{{ help }}</div>
+      class="form-text text-muted"
+    >
+      {{ help }}
+    </div>
   </div>
 </template>
 
@@ -34,20 +44,24 @@ export default {
       required: true
     },
     value: {
-      type: [Date, String]
+      type: [Date, String],
+      default: null
     },
     placeholder: {
-      type: String
+      type: String,
+      default: null
     },
     readonly: {
       type: Boolean,
       default: false
     },
     help: {
-      type: String
+      type: String,
+      default: null
     },
     errors: {
-      type: Array
+      type: Array,
+      default: null
     }
   },
   data () {

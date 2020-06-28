@@ -2,7 +2,8 @@
   <div
     id="page-loader"
     :class="{ 'show' : isPageLoaderOpened}"
-    class="bg-gd-cherry"/>
+    class="bg-gd-cherry"
+  />
 </template>
 
 <script>

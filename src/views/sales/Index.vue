@@ -4,8 +4,7 @@
       <span class="breadcrumb-item active">{{ $t('sales') | uppercase }}</span>
     </breadcrumb>
 
-    <sales-menu></sales-menu>
-
+    <sales-menu />
   </div>
 </template>
 

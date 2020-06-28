@@ -1,61 +1,111 @@
 <template>
   <div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select inventory">
+    <p-modal
+      :id="'select-' + id"
+      :ref="'select-' + id"
+      title="select inventory"
+    >
       <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+        <input
+          v-model="searchText"
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          @keydown.enter.prevent=""
+        >
         <hr>
         <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
+          <h3 class="text-center">
+            Loading ...
+          </h3>
         </div>
         <div v-else>
           <p-table>
             <tr slot="p-head">
-              <th v-if="mutableRequireExpiryDate">Expiry Date</th>
-              <th v-if="mutableRequireProductionNumber">Production No.</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-right">Stock</th>
+              <th v-if="mutableRequireExpiryDate">
+                Expiry Date
+              </th>
+              <th v-if="mutableRequireProductionNumber">
+                Production No.
+              </th>
+              <th class="text-right">
+                Quantity
+              </th>
+              <th class="text-right">
+                Stock
+              </th>
             </tr>
-            <tr slot="p-body" v-for="(option, index) in inventories" :key="index">
-              <td v-if="mutableRequireExpiryDate">{{ option.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
-              <td v-if="mutableRequireProductionNumber">{{ option.production_number }}</td>
+            <tr
+              v-for="(option, index) in inventories"
+              slot="p-body"
+              :key="index"
+            >
+              <td v-if="mutableRequireExpiryDate">
+                {{ option.expiry_date | dateFormat('DD MMMM YYYY') }}
+              </td>
+              <td v-if="mutableRequireProductionNumber">
+                {{ option.production_number }}
+              </td>
               <td class="text-right">
                 <p-form-number
                   :id="'quantity' + index"
-                  :name="'quantity' + index"
                   v-model="option.quantity"
-                  @input="calculate"/>
+                  :name="'quantity' + index"
+                  @input="calculate"
+                />
               </td>
-              <td class="text-right">{{ option.remaining | numberFormat }}</td>
+              <td class="text-right">
+                {{ option.remaining | numberFormat }}
+              </td>
             </tr>
             <tr slot="p-body">
-              <td></td>
-              <td></td>
+              <td />
+              <td />
               <td class="text-right">
                 <p-form-number
                   id="total-quantity"
-                  name="total-quantity"
                   v-model="mutableTotalQuantity"
-                  :readonly="true"/>
+                  name="total-quantity"
+                  :readonly="true"
+                />
               </td>
-              <td class="text-right"></td>
+              <td class="text-right" />
             </tr>
           </p-table>
-          <hr/>
+          <hr>
           <p-form-row
             id="notes"
             name="notes"
-            :label="$t('notes')">
-            <div slot="body" class="col-lg-12 mt-5">
-              <textarea rows="5" class="form-control" placeholder="Notes" v-model="mutableNotes"></textarea>
+            :label="$t('notes')"
+          >
+            <div
+              slot="body"
+              class="col-lg-12 mt-5"
+            >
+              <textarea
+                v-model="mutableNotes"
+                rows="5"
+                class="form-control"
+                placeholder="Notes"
+              />
             </div>
           </p-form-row>
         </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+        <div
+          v-if="searchText && options.length == 0 && !isLoading"
+          class="alert alert-info text-center"
+        >
           {{ $t('searching not found', [searchText]) | capitalize }}
         </div>
       </template>
       <template slot="footer">
-        <button type="button" @click="update()" class="btn btn-sm btn-outline-primary">{{ $t('update') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-primary"
+          @click="update()"
+        >
+          {{ $t('update') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>

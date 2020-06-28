@@ -1,12 +1,17 @@
 <template>
   <div>
-     <breadcrumb v-if="purchaseReceive">
-      <breadcrumb-purchase/>
-      <router-link to="/purchase/receive" class="breadcrumb-item">{{ $t('purchase receive') | uppercase }}</router-link>
+    <breadcrumb v-if="purchaseReceive">
+      <breadcrumb-purchase />
+      <router-link
+        to="/purchase/receive"
+        class="breadcrumb-item"
+      >
+        {{ $t('purchase receive') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ purchaseReceive.form.number | uppercase }}</span>
     </breadcrumb>
 
-    <purchase-menu/>
+    <purchase-menu />
 
     <p-show-form-cancellation-status
       :is-loading="isLoading"
@@ -14,15 +19,22 @@
       :cancellation-approval-reason="purchaseReceive.form.cancellation_approval_reason"
       :request-cancellation-reason="purchaseReceive.form.request_cancellation_reason"
       @onCancellationApprove="onCancellationApprove"
-      @onCancellationReject="onCancellationReject"/>
+      @onCancellationReject="onCancellationReject"
+    />
 
-    <div class="row" v-if="purchaseReceive">
+    <div
+      v-if="purchaseReceive"
+      class="row"
+    >
       <p-block>
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
               <div class="text-right">
-                <router-link :to="{ name: 'purchase.receive.create' }" class="btn btn-sm btn-outline-secondary mr-5">
+                <router-link
+                  :to="{ name: 'purchase.receive.create' }"
+                  class="btn btn-sm btn-outline-secondary mr-5"
+                >
                   {{ $t('create') | uppercase }}
                 </router-link>
                 <!-- <router-link :to="{ name: 'purchase.receive.edit', params: { id: purchaseReceive.id }}" class="btn btn-sm btn-outline-secondary mr-5">
@@ -30,10 +42,15 @@
                 </router-link> -->
                 <button
                   v-if="purchaseReceive.form.cancellation_status == null || purchaseReceive.form.cancellation_status == -1"
-                  @click="$refs.formRequestDelete.open()" class="btn btn-sm btn-outline-secondary mr-5">
+                  class="btn btn-sm btn-outline-secondary mr-5"
+                  @click="$refs.formRequestDelete.open()"
+                >
                   {{ $t('delete') | uppercase }}
                 </button>
-                <m-form-request-delete ref="formRequestDelete" @delete="onDelete($event)"></m-form-request-delete>
+                <m-form-request-delete
+                  ref="formRequestDelete"
+                  @delete="onDelete($event)"
+                />
               </div>
             </div>
           </div>
@@ -43,34 +60,51 @@
               <h4>{{ $t('purchase receive') | uppercase }}</h4>
               <table class="table table-sm table-bordered">
                 <tr>
-                  <td width="150px" class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                  <td
+                    width="150px"
+                    class="font-weight-bold"
+                  >
+                    {{ $t('form number') | uppercase }}
+                  </td>
                   <td>{{ purchaseReceive.form.number }}</td>
                 </tr>
                 <tr>
-                  <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
+                  <td class="font-weight-bold">
+                    {{ $t('date') | uppercase }}
+                  </td>
                   <td>{{ purchaseReceive.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
                 <tr v-if="purchaseReceive.purchase_order">
-                  <td class="font-weight-bold">{{ $t('reference') | uppercase }}</td>
+                  <td class="font-weight-bold">
+                    {{ $t('reference') | uppercase }}
+                  </td>
                   <td>{{ purchaseReceive.purchase_order.form.number }}</td>
                 </tr>
                 <tr v-if="purchaseReceive.driver">
-                  <td class="font-weight-bold">{{ $t('driver') | uppercase }}</td>
+                  <td class="font-weight-bold">
+                    {{ $t('driver') | uppercase }}
+                  </td>
                   <td>{{ purchaseReceive.driver }}</td>
                 </tr>
                 <tr v-if="purchaseReceive.license_plate">
-                  <td class="font-weight-bold">{{ $t('license plate') | uppercase }}</td>
+                  <td class="font-weight-bold">
+                    {{ $t('license plate') | uppercase }}
+                  </td>
                   <td>{{ purchaseReceive.license_plate }}</td>
                 </tr>
               </table>
             </div>
             <div class="col-sm-6 text-right">
-              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <h6 class="mb-5">
+                {{ authUser.tenant_name | uppercase }}
+              </h6>
               <template v-if="purchaseReceive.form.branch">
                 {{ purchaseReceive.form.branch.address | uppercase }}
                 <br v-if="purchaseReceive.form.branch.phone">{{ purchaseReceive.form.branch.phone | uppercase }}
               </template>
-              <h6 class="mt-30 mb-5">{{ $t('supplier') | uppercase }}</h6>
+              <h6 class="mt-30 mb-5">
+                {{ $t('supplier') | uppercase }}
+              </h6>
               {{ purchaseReceive.supplier_name | uppercase }}
               <div style="font-size:12px">
                 {{ purchaseReceive.supplier_address | uppercase }}
@@ -82,38 +116,63 @@
           <hr>
           <point-table class="mt-20">
             <tr slot="p-head">
-              <th class="text-center">#</th>
+              <th class="text-center">
+                #
+              </th>
               <th>{{ $t('item') | uppercase }}</th>
-              <th class="text-right">{{ $t('quantity') | uppercase }}</th>
-              <th width="50px"></th>
+              <th class="text-right">
+                {{ $t('quantity') | uppercase }}
+              </th>
+              <th width="50px" />
             </tr>
             <template v-for="(row, index) in purchaseReceive.items">
-              <tr slot="p-body" :key="index">
-                <th class="text-center">{{ index + 1 }}</th>
+              <tr
+                slot="p-body"
+                :key="index"
+              >
+                <th class="text-center">
+                  {{ index + 1 }}
+                </th>
                 <td>{{ row.item.label }}</td>
-                <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
-                <td></td>
+                <td class="text-right">
+                  {{ row.quantity | numberFormat }} {{ row.unit }}
+                </td>
+                <td />
               </tr>
             </template>
           </point-table>
           <div class="row mt-50">
             <div class="col-sm-9">
-              <h6 class="mb-0">{{ $t('notes') | uppercase }}</h6>
-              <div style="white-space: pre-wrap;">{{ purchaseReceive.form.notes }}</div>
-              <div class="d-sm-block d-md-none mt-10"></div>
+              <h6 class="mb-0">
+                {{ $t('notes') | uppercase }}
+              </h6>
+              <div style="white-space: pre-wrap;">
+                {{ purchaseReceive.form.notes }}
+              </div>
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
             <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('created by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">{{ purchaseReceive.form.date | dateFormat('DD MMMM YYYY') }}</div>
+              <h6 class="mb-0">
+                {{ $t('created by') | uppercase }}
+              </h6>
+              <div
+                class="mb-50"
+                style="font-size:11px"
+              >
+                {{ purchaseReceive.form.date | dateFormat('DD MMMM YYYY') }}
+              </div>
               {{ purchaseReceive.form.created_by.full_name | uppercase }}
-              <div class="d-sm-block d-md-none mt-10"></div>
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
           </div>
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-form-request-delete ref="formRequestDelete" @delete="onDelete($event)"></m-form-request-delete>
+    <m-form-request-delete
+      ref="formRequestDelete"
+      @delete="onDelete($event)"
+    />
   </div>
 </template>
 

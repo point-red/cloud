@@ -1,22 +1,42 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/processing'" class="breadcrumb-item">{{ $t('processing') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/processing/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
-      <router-link :to="{ name: 'manufacture.processing.input.show', params: { id: id }}" class="breadcrumb-item">{{ input.form.number | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        :to="'/manufacture/processing'"
+        class="breadcrumb-item"
+      >
+        {{ $t('processing') | uppercase }}
+      </router-link>
+      <router-link
+        :to="'/manufacture/processing/input'"
+        class="breadcrumb-item"
+      >
+        {{ $t('input') | uppercase }}
+      </router-link>
+      <router-link
+        :to="{ name: 'manufacture.processing.input.show', params: { id: id }}"
+        class="breadcrumb-item"
+      >
+        {{ input.form.number | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
-    <tab-menu/>
+    <tab-menu />
 
-    <form class="row" @submit.prevent="onSubmit">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
       <p-block>
         <div class="row">
           <div class="col-sm-12">
-            <h4 class="text-center m-0">{{ $t('processing input') | uppercase }}</h4>
+            <h4 class="text-center m-0">
+              {{ $t('processing input') | uppercase }}
+            </h4>
           </div>
         </div>
         <hr>
@@ -24,18 +44,36 @@
           <p-form-row
             id="process"
             name="process"
-            :label="$t('process')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <m-process id="process" v-model="form.manufacture_process_id" @choosen="chooseManufactureProcess" :label="form.manufacture_process_name"/>
+            :label="$t('process')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 mt-5"
+            >
+              <m-process
+                id="process"
+                v-model="form.manufacture_process_id"
+                :label="form.manufacture_process_name"
+                @choosen="chooseManufactureProcess"
+              />
             </div>
           </p-form-row>
 
           <p-form-row
             id="machine"
             name="machine"
-            :label="$t('machine')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <m-machine id="machine" v-model="form.manufacture_machine_id" @choosen="chooseManufactureMachine" :label="form.manufacture_machine_name"/>
+            :label="$t('machine')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 mt-5"
+            >
+              <m-machine
+                id="machine"
+                v-model="form.manufacture_machine_id"
+                :label="form.manufacture_machine_name"
+                @choosen="chooseManufactureMachine"
+              />
             </div>
           </p-form-row>
 
@@ -44,75 +82,53 @@
           <point-table>
             <tr slot="p-head">
               <th>#</th>
-              <th style="min-width: 120px">Item</th>
-              <th style="min-width: 120px">Warehouse</th>
+              <th style="min-width: 120px">
+                Item
+              </th>
+              <th style="min-width: 120px">
+                Warehouse
+              </th>
               <th>Quantity</th>
-              <th></th>
+              <th />
             </tr>
             <tr slot="p-body">
-              <th></th>
-              <td colspan="4" class="font-weight-bold">{{ $t('finished goods') | uppercase }}</td>
+              <th />
+              <td
+                colspan="4"
+                class="font-weight-bold"
+              >
+                {{ $t('finished goods') | uppercase }}
+              </td>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="'finished-goods-' + index">
+            <tr
+              v-for="(row, index) in form.finished_goods"
+              slot="p-body"
+              :key="'finished-goods-' + index"
+            >
               <th>{{ index + 1 }}</th>
               <td>
                 <m-item
                   :id="'item-finished-' + index"
-                  :data-index="index"
                   v-model="row.item_id"
+                  :data-index="index"
                   :label="row.item_name"
-                  @choosen="chooseFinishedGood($event, row)"/>
+                  @choosen="chooseFinishedGood($event, row)"
+                />
               </td>
               <td>
                 <m-warehouse
                   :id="'warehouse-finished-' + index"
-                  :data-index="index"
                   v-model="row.warehouse_id"
+                  :data-index="index"
                   :label="row.warehouse_name"
-                  @choosen="chooseWarehouse($event, row)"/>
+                  @choosen="chooseWarehouse($event, row)"
+                />
               </td>
               <td>
                 <p-quantity
                   :id="'quantity-finished-goods-' + index"
+                  v-model="row.quantity"
                   :name="'quantity-finished-goods-' + index"
-                  v-model="row.quantity"
-                  :units="row.item.units"
-                  :unit="{
-                    label: row.unit,
-                    name: row.unit,
-                    converter: row.converter
-                  }"
-                  @choosen="chooseUnit($event, row)"/>
-              </td>
-              <td>&nbsp;</td>
-            </tr>
-            <tr slot="p-body">
-              <th></th>
-              <td colspan="4" class="font-weight-bold">{{ $t('raw materials') | uppercase }}</td>
-            </tr>
-            <tr slot="p-body" v-for="(row, index) in materials" :key="'raw-materials-' + index">
-              <th>{{ index + 1 }}</th>
-              <td>
-                <m-item
-                  :id="'item-raw-' + index"
-                  :data-index="index"
-                  v-model="row.item_id"
-                  :label="row.item_name"
-                  @clear=clearMaterial(row)
-                  @choosen="chooseMaterial($event, row)"/>
-              </td>
-              <td>
-                <m-warehouse
-                  :id="'warehouse-raw-' + index"
-                  v-model="row.warehouse_id"
-                  :label="row.warehouse_name"
-                  @choosen="chooseWarehouse($event, row)"/>
-              </td>
-              <td>
-                <p-quantity
-                  :id="'quantity-raw-material-' + index"
-                  :name="'quantity-raw-material-' + index"
-                  v-model="row.quantity"
                   :units="row.item.units"
                   :unit="{
                     label: row.unit,
@@ -120,13 +136,68 @@
                     converter: row.converter
                   }"
                   @choosen="chooseUnit($event, row)"
-                  @click.native="onClickQuantity(row)"
-                  :disable-unit-selection="onClickUnit(row)"
-                  :readonly="onClickUnit(row)"/>
+                />
+              </td>
+              <td>&nbsp;</td>
+            </tr>
+            <tr slot="p-body">
+              <th />
+              <td
+                colspan="4"
+                class="font-weight-bold"
+              >
+                {{ $t('raw materials') | uppercase }}
+              </td>
+            </tr>
+            <tr
+              v-for="(row, index) in materials"
+              slot="p-body"
+              :key="'raw-materials-' + index"
+            >
+              <th>{{ index + 1 }}</th>
+              <td>
+                <m-item
+                  :id="'item-raw-' + index"
+                  v-model="row.item_id"
+                  :data-index="index"
+                  :label="row.item_name"
+                  @clear="clearMaterial(row)"
+                  @choosen="chooseMaterial($event, row)"
+                />
               </td>
               <td>
-                <button type="button" class="btn btn-sm btn-outline-danger" v-if="index > 0" @click="deleteMaterialRow(index)">
-                  <i class="fa fa-times"></i>
+                <m-warehouse
+                  :id="'warehouse-raw-' + index"
+                  v-model="row.warehouse_id"
+                  :label="row.warehouse_name"
+                  @choosen="chooseWarehouse($event, row)"
+                />
+              </td>
+              <td>
+                <p-quantity
+                  :id="'quantity-raw-material-' + index"
+                  v-model="row.quantity"
+                  :name="'quantity-raw-material-' + index"
+                  :units="row.item.units"
+                  :unit="{
+                    label: row.unit,
+                    name: row.unit,
+                    converter: row.converter
+                  }"
+                  :disable-unit-selection="onClickUnit(row)"
+                  :readonly="onClickUnit(row)"
+                  @choosen="chooseUnit($event, row)"
+                  @click.native="onClickQuantity(row)"
+                />
+              </td>
+              <td>
+                <button
+                  v-if="index > 0"
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  @click="deleteMaterialRow(index)"
+                >
+                  <i class="fa fa-times" />
                 </button>
               </td>
             </tr>
@@ -134,40 +205,71 @@
 
           <div class="row mt-50">
             <div class="col-sm-6">
-              <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
-              <div class="d-sm-block d-md-none mt-10"></div>
+              <textarea
+                v-model="form.notes"
+                rows="5"
+                class="form-control"
+                placeholder="Notes"
+              />
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
             <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+              <h6 class="mb-0">
+                {{ $t('requested by') | uppercase }}
+              </h6>
+              <div
+                class="mb-50"
+                style="font-size:11px"
+              >
+                {{ Date.now() | dateFormat('DD MMMM YYYY') }}
+              </div>
               {{ authUser.full_name | uppercase }}
-              <div class="d-sm-block d-md-none mt-10"></div>
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
             <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">_______________</div>
+              <h6 class="mb-0">
+                {{ $t('approved by') | uppercase }}
+              </h6>
+              <div
+                class="mb-50"
+                style="font-size:11px"
+              >
+                _______________
+              </div>
               <m-user
                 :id="'user'"
                 v-model="form.request_approval_to"
                 :label="form.approver_name"
                 :errors="form.errors.get('request_approval_to')"
                 @errors="form.errors.set('request_approval_to', null)"
-                @choosen="chooseApprover"/>
-                {{ form.approver_email }} <br v-if="form.approver_email">
+                @choosen="chooseApprover"
+              />
+              {{ form.approver_email }} <br v-if="form.approver_email">
             </div>
           </div>
           <hr>
           <div class="form-group row">
             <div class="col-md-12">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                :disabled="isSaving"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
               </button>
             </div>
           </div>
         </p-block-inner>
       </p-block>
     </form>
-    <m-inventory-out ref="inventory" :id="'inventory'" @updated="updateDna($event)"/>
+    <m-inventory-out
+      :id="'inventory'"
+      ref="inventory"
+      @updated="updateDna($event)"
+    />
   </div>
 </template>
 

@@ -5,15 +5,23 @@
         ref="modal"
         :title="$t('add chart of account') | uppercase"
         overlay-theme="dark"
-        @close="onClose()">
+        @close="onClose()"
+      >
         <div class="row">
           <div class="col-sm-12">
             <p-form-row
               id="account-type"
               name="account-type"
-              :label="$t('account type')">
-              <div slot="body" class="col-lg-9 mt-5">
-                <span @click="$refs.chartOfAccountTypeRef.open()" class="select-link">{{ form.type_alias || $t('select') | uppercase }}</span>
+              :label="$t('account type')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
+                <span
+                  class="select-link"
+                  @click="$refs.chartOfAccountTypeRef.open()"
+                >{{ form.type_alias || $t('select') | uppercase }}</span>
               </div>
             </p-form-row>
 
@@ -23,16 +31,18 @@
               :label="$t('number')"
               name="number"
               :errors="form.errors.get('number')"
-              @errors="form.errors.set('number', null)"/>
+              @errors="form.errors.set('number', null)"
+            />
 
             <p-form-row
               id="name"
+              ref="name"
               v-model="form.name"
               :label="$t('name')"
-              ref="name"
               name="name"
               :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"/>
+              @errors="form.errors.set('name', null)"
+            />
 
             <p-form-row
               id="position"
@@ -40,8 +50,12 @@
               :label="$t('position')"
               name="position"
               :errors="form.errors.get('position')"
-              @errors="form.errors.set('position', null)">
-              <div slot="body" class="col-lg-9">
+              @errors="form.errors.set('position', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <button
                   type="button"
                   class="btn btn-sm mr-5"
@@ -49,7 +63,8 @@
                     'btn-success' : form.position == 'DEBIT',
                     'btn-outline-success' : form.position != 'DEBIT'
                   }"
-                  @click="form.position = 'DEBIT'">
+                  @click="form.position = 'DEBIT'"
+                >
                   DEBIT
                 </button>
                 <button
@@ -59,36 +74,45 @@
                     'btn-success' : form.position == 'CREDIT',
                     'btn-outline-success' : form.position != 'CREDIT'
                   }"
-                  @click="form.position = 'CREDIT'">
+                  @click="form.position = 'CREDIT'"
+                >
                   CREDIT
                 </button>
               </div>
             </p-form-row>
 
-            <p-separator></p-separator>
+            <p-separator />
 
             <p-form-row
               id="sub-ledger"
               name="sub-ledger"
-              :label="$t('set sub ledger')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('set sub ledger')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-check-box
                   id="is-sub-ledger"
                   name="is-sub-ledger"
+                  :checked="form.is_sub_ledger"
                   @click.native="toggleSubLedger"
-                  :checked="form.is_sub_ledger">
-                </p-form-check-box>
+                />
               </div>
             </p-form-row>
 
             <p-form-row
+              v-if="form.is_sub_ledger"
               id="sub_ledger"
               :label="$t('sub ledger')"
               name="sub_ledger"
-              v-if="form.is_sub_ledger"
               :errors="form.errors.get('sub_ledger')"
-              @errors="form.errors.set('sub_ledger', null)">
-              <div slot="body" class="col-lg-9">
+              @errors="form.errors.set('sub_ledger', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <button
                   type="button"
                   class="btn btn-sm mr-5 mb-5"
@@ -96,7 +120,8 @@
                     'btn-success' : form.sub_ledger == 'CUSTOMER',
                     'btn-outline-success' : form.sub_ledger != 'CUSTOMER'
                   }"
-                  @click="form.sub_ledger = 'CUSTOMER'">
+                  @click="form.sub_ledger = 'CUSTOMER'"
+                >
                   CUSTOMER
                 </button>
                 <button
@@ -106,7 +131,8 @@
                     'btn-success' : form.sub_ledger == 'SUPPLIER',
                     'btn-outline-success' : form.sub_ledger != 'SUPPLIER'
                   }"
-                  @click="form.sub_ledger = 'SUPPLIER'">
+                  @click="form.sub_ledger = 'SUPPLIER'"
+                >
                   SUPPLIER
                 </button>
                 <button
@@ -116,7 +142,8 @@
                     'btn-success' : form.sub_ledger == 'EMPLOYEE',
                     'btn-outline-success' : form.sub_ledger != 'EMPLOYEE'
                   }"
-                  @click="form.sub_ledger = 'EMPLOYEE'">
+                  @click="form.sub_ledger = 'EMPLOYEE'"
+                >
                   EMPLOYEE
                 </button>
                 <button
@@ -126,7 +153,8 @@
                     'btn-success' : form.sub_ledger == 'EXPEDITION',
                     'btn-outline-success' : form.sub_ledger != 'EXPEDITION'
                   }"
-                  @click="form.sub_ledger = 'EXPEDITION'">
+                  @click="form.sub_ledger = 'EXPEDITION'"
+                >
                   EXPEDITION
                 </button>
                 <button
@@ -136,7 +164,8 @@
                     'btn-success' : form.sub_ledger == 'ITEM',
                     'btn-outline-success' : form.sub_ledger != 'ITEM'
                   }"
-                  @click="form.sub_ledger = 'ITEM'">
+                  @click="form.sub_ledger = 'ITEM'"
+                >
                   ITEM
                 </button>
                 <button
@@ -146,7 +175,8 @@
                     'btn-success' : form.sub_ledger == 'FIXED ASSET',
                     'btn-outline-success' : form.sub_ledger != 'FIXED ASSET'
                   }"
-                  @click="form.sub_ledger = 'FIXED ASSET'">
+                  @click="form.sub_ledger = 'FIXED ASSET'"
+                >
                   FIXED ASSET
                 </button>
               </div>
@@ -154,13 +184,24 @@
           </div>
         </div>
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+            :disabled="isSaving"
+            @click="onSubmit"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('save') | uppercase }}
           </button>
         </div>
       </sweet-modal>
     </form>
-    <m-chart-of-account-type ref="chartOfAccountTypeRef" @choosen="updateAccountType($event)"/>
+    <m-chart-of-account-type
+      ref="chartOfAccountTypeRef"
+      @choosen="updateAccountType($event)"
+    />
   </div>
 </template>
 

@@ -1,6 +1,7 @@
 <template>
   <div>
     <date-picker
+      v-model="time"
       :name="name"
       :range="true"
       :overlay="true"
@@ -11,16 +12,21 @@
       :max-date="maxDate"
       color="#343A40"
       button-color="#343A40"
-      v-model="time">
-    </date-picker>
+    />
 
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-feedback">{{ error }}</div>
+      class="invalid-feedback"
+    >
+      {{ error }}
+    </div>
     <div
       v-show="help"
-      class="form-text text-muted">{{ help }}</div>
+      class="form-text text-muted"
+    >
+      {{ help }}
+    </div>
   </div>
 </template>
 
@@ -35,10 +41,11 @@ export default {
   props: {
     name: {
       type: String,
-      required: false
+      default: null
     },
     value: {
-      type: [Object, String]
+      type: [Object, String],
+      default: null
     },
     readonly: {
       type: Boolean,
@@ -53,10 +60,12 @@ export default {
       default: null
     },
     help: {
-      type: String
+      type: String,
+      default: null
     },
     errors: {
-      type: Array
+      type: Array,
+      default: null
     }
   },
   data () {

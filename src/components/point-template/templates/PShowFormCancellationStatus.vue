@@ -1,44 +1,72 @@
 <template>
   <div>
-    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
+    <div
+      v-if="cancellationStatus == -1 && isLoading == false"
+      class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
       role="alert"
-      v-if="cancellationStatus == -1 && isLoading == false">
+    >
       <div class="flex-fill mr-10">
         <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('cancellation request rejected') | uppercase }}
+          <i class="fa fa-fw fa-exclamation-triangle" /> {{ $t('cancellation request rejected') | uppercase }}
         </p>
-        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> <pre>{{ cancellationApprovalReason }}</pre></div>
+        <div style="white-space: pre-wrap;">
+          <b>{{ $t('reason') | uppercase }}:</b> <pre>{{ cancellationApprovalReason }}</pre>
+        </div>
       </div>
     </div>
-    <div class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
+    <div
+      v-if="cancellationStatus == 1 && isLoading == false"
+      class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
       role="alert"
-      v-if="cancellationStatus == 1 && isLoading == false">
+    >
       <div class="flex-fill mr-10">
         <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle"></i> {{ $t('canceled') | uppercase }}
+          <i class="fa fa-fw fa-exclamation-triangle" /> {{ $t('canceled') | uppercase }}
         </p>
-        <div style="white-space: pre-wrap;"><b>{{ $t('reason') | uppercase }}:</b> <pre>{{ requestCancellationReason }}</pre></div>
+        <div style="white-space: pre-wrap;">
+          <b>{{ $t('reason') | uppercase }}:</b> <pre>{{ requestCancellationReason }}</pre>
+        </div>
       </div>
     </div>
-    <div class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
+    <div
+      v-if="cancellationStatus == 0 && isLoading == false"
+      class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
-      v-if="cancellationStatus == 0 && isLoading == false">
+    >
       <div class="flex-fill mr-10">
         <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle"></i>
+          <i class="fa fa-fw fa-exclamation-triangle" />
           {{ $t('pending cancellation warning', { form: 'purchase requisition', approvedBy: approvedBy }) | uppercase }}
         </p>
-        <p class="mb-0" style="font-size: 10px">
+        <p
+          class="mb-0"
+          style="font-size: 10px"
+        >
           <b>{{ $t('reason') | uppercase }}</b> : <pre>{{ requestCancellationReason | uppercase }}</pre>
         </p>
         <hr>
         <div v-if="$permission.has('approve purchase request')">
-          <button type="button" @click="onCancellationApprove" class="btn btn-sm btn-primary mr-5">{{ $t('approve') | uppercase }}</button>
-          <button type="button" @click="$refs.formCancellationReject.open()" class="btn btn-sm btn-danger">{{ $t('reject') | uppercase }}</button>
+          <button
+            type="button"
+            class="btn btn-sm btn-primary mr-5"
+            @click="onCancellationApprove"
+          >
+            {{ $t('approve') | uppercase }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-danger"
+            @click="$refs.formCancellationReject.open()"
+          >
+            {{ $t('reject') | uppercase }}
+          </button>
         </div>
       </div>
     </div>
-    <m-form-cancellation-reject ref="formCancellationReject" @reject="onCancellationReject($event)"></m-form-cancellation-reject>
+    <m-form-cancellation-reject
+      ref="formCancellationReject"
+      @reject="onCancellationReject($event)"
+    />
   </div>
 </template>
 

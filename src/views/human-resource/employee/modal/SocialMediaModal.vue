@@ -2,33 +2,43 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmitSocialMedia">
+      @submit.prevent="onSubmitSocialMedia"
+    >
       <sweet-modal
         ref="modal"
         :title="$t('add social media') | uppercase"
         overlay-theme="dark"
-        @close="onClose()">
+        @close="onClose()"
+      >
         <p-form-row
           id="social-media"
           name="social-media"
-          :label="$t('social media')">
-          <div slot="body" class="col-lg-9">
+          :label="$t('social media')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <p-select
               id="social-media-type"
-              name="social-media-type"
               v-model="socialMediaType"
-              :options="options"/>
+              name="social-media-type"
+              :options="options"
+            />
           </div>
         </p-form-row>
         <p-form-row
           id="social-media-account"
+          ref="account"
+          v-model="socialMediaAccount"
           name="social-media-account"
           label="account"
-          ref="account"
-          v-model="socialMediaAccount">
-        </p-form-row>
+        />
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary">
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+          >
             {{ $t('add') | uppercase }}
           </button>
         </div>
@@ -41,10 +51,12 @@
 export default {
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   data () {

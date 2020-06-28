@@ -1,20 +1,29 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link to="/manufacture/formula" class="breadcrumb-item">{{ $t('formula') | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        to="/manufacture/formula"
+        class="breadcrumb-item"
+      >
+        {{ $t('formula') | uppercase }}
+      </router-link>
       <template v-if="formula.form.number">
         <span class="breadcrumb-item active">{{ formula.form.number | uppercase }}</span>
       </template>
       <template v-else>
-        <router-link v-if="formula.origin" :to="{ name: 'manufacture.formula.show', params: { id: formula.origin.id }}" class="breadcrumb-item">
+        <router-link
+          v-if="formula.origin"
+          :to="{ name: 'manufacture.formula.show', params: { id: formula.origin.id }}"
+          class="breadcrumb-item"
+        >
           {{ formula.form.edited_number | uppercase }}
         </router-link>
         <span class="breadcrumb-item active">{{ $t('archived') | uppercase }}</span>
       </template>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
     <p-show-form-approval-status
       :is-loading="isLoading"
@@ -23,7 +32,8 @@
       :approval-status="formula.form.approval_status"
       :approval-reason="formula.form.approval_reason"
       @onApprove="onApprove"
-      @onReject="onReject"/>
+      @onReject="onReject"
+    />
 
     <p-show-form-cancellation-status
       :is-loading="isLoading"
@@ -31,32 +41,42 @@
       :cancellation-approval-reason="formula.form.cancellation_approval_reason"
       :request-cancellation-reason="formula.form.request_cancellation_reason"
       @onCancellationApprove="onCancellationApprove"
-      @onCancellationReject="onCancellationReject"/>
+      @onCancellationReject="onCancellationReject"
+    />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <router-link
-            :to="{ path: '/manufacture/formula/create' }"
             v-if="$permission.has('create manufacture formula')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            :to="{ path: '/manufacture/formula/create' }"
+            class="btn btn-sm btn-outline-secondary mr-5"
+          >
             {{ $t('create') | uppercase }}
           </router-link>
           <router-link
-            :to="{ path: '/manufacture/formula/' + formula.id + '/edit', params: { id: formula.id }}"
             v-if="$permission.has('update manufacture formula') && $formRules.allowedToUpdate(formula.form)"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            :to="{ path: '/manufacture/formula/' + formula.id + '/edit', params: { id: formula.id }}"
+            class="btn btn-sm btn-outline-secondary mr-5"
+          >
             {{ $t('edit') | uppercase }}
           </router-link>
           <button
+            v-if="formula.form.cancellation_status == null || formula.form.cancellation_status == -1"
             type="button"
             class="btn btn-sm btn-outline-secondary mr-5"
+            :disabled="isDeleting"
             @click="$refs.formRequestDelete.open()"
-            v-if="formula.form.cancellation_status == null || formula.form.cancellation_status == -1"
-            :disabled="isDeleting">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
-          <m-form-request-delete ref="formRequestDelete" @delete="onRequestDelete($event)"></m-form-request-delete>
+          <m-form-request-delete
+            ref="formRequestDelete"
+            @delete="onRequestDelete($event)"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -65,21 +85,38 @@
               <h4>{{ $t('formula') | uppercase }}</h4>
               <table class="table table-sm table-bordered">
                 <tr>
-                  <td width="150px" class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                  <td
+                    width="150px"
+                    class="font-weight-bold"
+                  >
+                    {{ $t('form number') | uppercase }}
+                  </td>
                   <td>{{ formula.form.number }}</td>
                 </tr>
                 <tr>
-                  <td width="150px" class="font-weight-bold">{{ $t('process') | uppercase }}</td>
+                  <td
+                    width="150px"
+                    class="font-weight-bold"
+                  >
+                    {{ $t('process') | uppercase }}
+                  </td>
                   <td>{{ formula.manufacture_process.name }}</td>
                 </tr>
                 <tr>
-                  <td width="150px" class="font-weight-bold">{{ $t('name') | uppercase }}</td>
+                  <td
+                    width="150px"
+                    class="font-weight-bold"
+                  >
+                    {{ $t('name') | uppercase }}
+                  </td>
                   <td>{{ formula.name }}</td>
                 </tr>
               </table>
             </div>
             <div class="col-sm-6 text-right">
-              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <h6 class="mb-5">
+                {{ authUser.tenant_name | uppercase }}
+              </h6>
               <template v-if="formula.form.branch">
                 {{ formula.form.branch.address | uppercase }}
                 <br v-if="formula.form.branch.phone">{{ formula.form.branch.phone | uppercase }}
@@ -92,11 +129,21 @@
           <p-block-inner>
             <point-table>
               <tr slot="p-head">
-                <th style="width: 50px">#</th>
-                <th style="min-width: 120px">Finished Goods</th>
-                <th class="text-right">Quantity</th>
+                <th style="width: 50px">
+                  #
+                </th>
+                <th style="min-width: 120px">
+                  Finished Goods
+                </th>
+                <th class="text-right">
+                  Quantity
+                </th>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in formula.finished_goods" :key="index">
+              <tr
+                v-for="(row, index) in formula.finished_goods"
+                slot="p-body"
+                :key="index"
+              >
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -113,11 +160,21 @@
           <p-block-inner>
             <point-table>
               <tr slot="p-head">
-                <th style="width: 50px">#</th>
-                <th style="min-width: 120px">Raw Material</th>
-                <th class="text-right">Quantity</th>
+                <th style="width: 50px">
+                  #
+                </th>
+                <th style="min-width: 120px">
+                  Raw Material
+                </th>
+                <th class="text-right">
+                  Quantity
+                </th>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in formula.raw_materials" :key="index">
+              <tr
+                v-for="(row, index) in formula.raw_materials"
+                slot="p-body"
+                :key="index"
+              >
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -133,19 +190,35 @@
 
           <div class="row mt-50">
             <div class="col-sm-6">
-              <h6 class="mb-0">{{ $t('notes') | uppercase }}</h6>
-              <div style="white-space: pre-wrap;">{{ formula.form.notes }}</div>
-              <div class="d-sm-block d-md-none mt-10"></div>
+              <h6 class="mb-0">
+                {{ $t('notes') | uppercase }}
+              </h6>
+              <div style="white-space: pre-wrap;">
+                {{ formula.form.notes }}
+              </div>
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
             <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">{{ formula.form.date | dateFormat('DD MMMM YYYY') }}</div>
+              <h6 class="mb-0">
+                {{ $t('requested by') | uppercase }}
+              </h6>
+              <div
+                class="mb-50"
+                style="font-size:11px"
+              >
+                {{ formula.form.date | dateFormat('DD MMMM YYYY') }}
+              </div>
               {{ formula.form.created_by.first_name | uppercase }} {{ formula.form.created_by.last_name | uppercase }}
-              <div class="d-sm-block d-md-none mt-10"></div>
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
             <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">
+              <h6 class="mb-0">
+                {{ $t('approved by') | uppercase }}
+              </h6>
+              <div
+                class="mb-50"
+                style="font-size:11px"
+              >
                 <template v-if="formula.form.approval_at">
                   {{ formula.form.approval_at | dateFormat('DD MMMM YYYY') }}
                 </template>
@@ -154,7 +227,9 @@
                 </template>
               </div>
               {{ formula.form.request_approval_to.full_name | uppercase }}
-              <div style="font-size:11px">{{ formula.form.request_approval_to.email | lowercase }}</div>
+              <div style="font-size:11px">
+                {{ formula.form.request_approval_to.email | lowercase }}
+              </div>
             </div>
           </div>
         </p-block-inner>

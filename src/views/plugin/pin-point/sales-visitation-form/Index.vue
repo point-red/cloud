@@ -1,58 +1,79 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin/>
-      <breadcrumb-pin-point></breadcrumb-pin-point>
+      <breadcrumb-plugin />
+      <breadcrumb-pin-point />
       <span class="breadcrumb-item active">{{ $t('sales visitation') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <router-link
             to="/plugin/pin-point/sales-visitation-form/create"
-            class="input-group-prepend">
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <div class="text-center font-size-sm mb-10">
-          <a href="javascript:void(0)" @click="isFilterOpen = !isFilterOpen">
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          <a
+            href="javascript:void(0)"
+            @click="isFilterOpen = !isFilterOpen"
+          >
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div class="card" :class="{ 'fadeIn': isFilterOpen }" v-show="isFilterOpen">
+        <div
+          v-show="isFilterOpen"
+          class="card"
+          :class="{ 'fadeIn': isFilterOpen }"
+        >
           <div class="row">
             <div class="col-sm-6 text-center">
-              <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+              <p-form-row
+                id="date-start"
+                name="date-start"
+                :label="$t('date start')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.start"
                     name="date"
                     label="date"
-                    v-model="date.start"/>
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-6 text-center">
-              <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+              <p-form-row
+                id="date-end"
+                name="date-end"
+                :label="$t('date end')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.end"
                     name="date"
                     label="date"
-                    v-model="date.end"/>
+                  />
                 </div>
               </p-form-row>
             </div>
@@ -60,52 +81,133 @@
           <hr>
           <div class="row">
             <div class="col-sm-12 ml-10 mb-10">
-              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5" @click="exportData('SalesVisitationReport')">
-                <i v-show="isExporting" class="fa fa-asterisk fa-spin"></i> {{ $t('export report') | uppercase }}
+              <button
+                type="button"
+                :disabled="isExporting"
+                class="btn btn-sm btn-secondary mr-5"
+                @click="exportData('SalesVisitationReport')"
+              >
+                <i
+                  v-show="isExporting"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('export report') | uppercase }}
               </button>
-              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5" @click="exportData('ChartInterestReason')">
-                <i v-show="isExporting" class="fa fa-asterisk fa-spin"></i> {{ $t('export interest reason') | uppercase }}
+              <button
+                type="button"
+                :disabled="isExporting"
+                class="btn btn-sm btn-secondary mr-5"
+                @click="exportData('ChartInterestReason')"
+              >
+                <i
+                  v-show="isExporting"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('export interest reason') | uppercase }}
               </button>
-              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5" @click="exportData('ChartNoInterestReason')">
-                <i v-show="isExporting" class="fa fa-asterisk fa-spin"></i> {{ $t('export no interest reason') | uppercase }}
+              <button
+                type="button"
+                :disabled="isExporting"
+                class="btn btn-sm btn-secondary mr-5"
+                @click="exportData('ChartNoInterestReason')"
+              >
+                <i
+                  v-show="isExporting"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('export no interest reason') | uppercase }}
               </button>
-              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5" @click="exportData('ChartSimilarProduct')">
-                <i v-show="isExporting" class="fa fa-asterisk fa-spin"></i> {{ $t('export similar product') | uppercase }}
+              <button
+                type="button"
+                :disabled="isExporting"
+                class="btn btn-sm btn-secondary mr-5"
+                @click="exportData('ChartSimilarProduct')"
+              >
+                <i
+                  v-show="isExporting"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('export similar product') | uppercase }}
               </button>
               <hr v-show="downloadLink">
-              <a v-show="downloadLink" :href="downloadLink">{{ downloadLink }}</a> <span v-show="downloadLink">(expired in 24 hour)</span>
+              <a
+                v-show="downloadLink"
+                :href="downloadLink"
+              >{{ downloadLink }}</a> <span v-show="downloadLink">(expired in 24 hour)</span>
             </div>
           </div>
         </div>
-        <hr/>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th style="min-width: 50px">#</th>
-              <th style="min-width: 150px">{{ $t('photo') }}</th>
-              <th style="min-width: 100px">{{ $t('date') }}</th>
-              <th style="min-width: 150px">{{ $t('sales') }}</th>
-              <th style="min-width: 150px">{{ $t('group') }}</th>
-              <th style="min-width: 150px">{{ $t('customer') }}</th>
-              <th style="min-width: 250px">{{ $t('address') }}</th>
-              <th style="min-width: 100px">{{ $t('phone') }}</th>
-              <th style="min-width: 150px">{{ $t('interest reason') }}</th>
-              <th style="min-width: 150px">{{ $t('no interest reason') }}</th>
-              <th style="min-width: 150px">{{ $t('similar product') }}</th>
-              <th style="min-width: 150px">{{ $t('notes') }}</th>
-              <th style="min-width: 150px">{{ $t('item') }}</th>
-              <th class="text-right" style="min-width: 100px">{{ $t('quantity') }}</th>
-              <th class="text-right" style="min-width: 100px">{{ $t('price') }}</th>
+              <th style="min-width: 50px">
+                #
+              </th>
+              <th style="min-width: 150px">
+                {{ $t('photo') }}
+              </th>
+              <th style="min-width: 100px">
+                {{ $t('date') }}
+              </th>
+              <th style="min-width: 150px">
+                {{ $t('sales') }}
+              </th>
+              <th style="min-width: 150px">
+                {{ $t('group') }}
+              </th>
+              <th style="min-width: 150px">
+                {{ $t('customer') }}
+              </th>
+              <th style="min-width: 250px">
+                {{ $t('address') }}
+              </th>
+              <th style="min-width: 100px">
+                {{ $t('phone') }}
+              </th>
+              <th style="min-width: 150px">
+                {{ $t('interest reason') }}
+              </th>
+              <th style="min-width: 150px">
+                {{ $t('no interest reason') }}
+              </th>
+              <th style="min-width: 150px">
+                {{ $t('similar product') }}
+              </th>
+              <th style="min-width: 150px">
+                {{ $t('notes') }}
+              </th>
+              <th style="min-width: 150px">
+                {{ $t('item') }}
+              </th>
+              <th
+                class="text-right"
+                style="min-width: 100px"
+              >
+                {{ $t('quantity') }}
+              </th>
+              <th
+                class="text-right"
+                style="min-width: 100px"
+              >
+                {{ $t('price') }}
+              </th>
             </tr>
             <template v-for="(form, index) in forms">
               <template v-if="form.details && form.details.length > 0">
-                <tr slot="p-body" v-for="(detail, index2) in form.details" :key="index + '-' + index2">
+                <tr
+                  v-for="(detail, index2) in form.details"
+                  slot="p-body"
+                  :key="index + '-' + index2"
+                >
                   <th>
-                    {{ index + 1 }}<template v-if="form.details.length > 1">.{{ ++index2 }}</template>
+                    {{ index + 1 }}<template v-if="form.details.length > 1">
+                      .{{ ++index2 }}
+                    </template>
                   </th>
                   <td>
                     <template v-if="form.photo">
-                      <img :src="form.photo" alt="" width="150px">
+                      <img
+                        :src="form.photo"
+                        alt=""
+                        width="150px"
+                      >
                     </template>
                   </td>
                   <td>
@@ -117,18 +219,33 @@
                   <td>{{ form.address }}</td>
                   <td>{{ form.phone }}</td>
                   <td>
-                    <template v-for="(interestReason, index) in form.interest_reasons">
-                      <p :key="index" class="mb-0">- {{ interestReason.name }}</p>
+                    <template v-for="(interestReason, interestIndex) in form.interest_reasons">
+                      <p
+                        :key="interestIndex"
+                        class="mb-0"
+                      >
+                        - {{ interestReason.name }}
+                      </p>
                     </template>
                   </td>
                   <td>
-                    <template v-for="(noInterestReason, index) in form.no_interest_reasons">
-                      <p :key="index" class="mb-0">- {{ noInterestReason.name }}</p>
+                    <template v-for="(noInterestReason, noInterestIndex) in form.no_interest_reasons">
+                      <p
+                        :key="noInterestIndex"
+                        class="mb-0"
+                      >
+                        - {{ noInterestReason.name }}
+                      </p>
                     </template>
                   </td>
                   <td>
-                    <template v-for="(similarProduct, index) in form.similar_products">
-                      <p :key="index" class="mb-0">- {{ similarProduct.name }}</p>
+                    <template v-for="(similarProduct, similarProductIndex) in form.similar_products">
+                      <p
+                        :key="similarProductIndex"
+                        class="mb-0"
+                      >
+                        - {{ similarProduct.name }}
+                      </p>
                     </template>
                   </td>
                   <td>
@@ -146,11 +263,18 @@
                 </tr>
               </template>
               <template v-else>
-                <tr slot="p-body" :key="index">
+                <tr
+                  slot="p-body"
+                  :key="index"
+                >
                   <th>{{ index + 1 }}</th>
                   <td>
                     <template v-if="form.photo">
-                      <img :src="form.photo" alt="" width="150px">
+                      <img
+                        :src="form.photo"
+                        alt=""
+                        width="150px"
+                      >
                     </template>
                   </td>
                   <td>{{ form.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
@@ -160,23 +284,38 @@
                   <td>{{ form.address }}</td>
                   <td>{{ form.phone }}</td>
                   <td>
-                    <template v-for="(interestReason, index) in form.interest_reasons">
-                      <p :key="index" class="mb-0">- {{ interestReason.name }}</p>
+                    <template v-for="(interestReason, interestIndex) in form.interest_reasons">
+                      <p
+                        :key="interestIndex"
+                        class="mb-0"
+                      >
+                        - {{ interestReason.name }}
+                      </p>
                     </template>
                   </td>
                   <td>
-                    <template v-for="(noInterestReason, index) in form.no_interest_reasons">
-                      <p :key="index" class="mb-0">- {{ noInterestReason.name }}</p>
+                    <template v-for="(noInterestReason, noInterestIndex) in form.no_interest_reasons">
+                      <p
+                        :key="noInterestIndex"
+                        class="mb-0"
+                      >
+                        - {{ noInterestReason.name }}
+                      </p>
                     </template>
                   </td>
                   <td>
-                    <template v-for="(similarProduct, index) in form.similar_products">
-                      <p :key="index" class="mb-0">- {{ similarProduct.name }}</p>
+                    <template v-for="(similarProduct, similarProductIndex) in form.similar_products">
+                      <p
+                        :key="similarProductIndex"
+                        class="mb-0"
+                      >
+                        - {{ similarProduct.name }}
+                      </p>
                     </template>
                   </td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td />
+                  <td />
+                  <td />
                 </tr>
               </template>
             </template>
@@ -184,8 +323,8 @@
           <p-pagination
             :current-page="page"
             :last-page="lastPage"
-            @updatePage="updatePage">
-          </p-pagination>
+            @updatePage="updatePage"
+          />
         </p-block-inner>
       </p-block>
     </div>

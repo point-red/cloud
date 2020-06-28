@@ -15,11 +15,11 @@ const getters = {
     let results = []
 
     procedures.forEach(procedure => {
-      const subs = [ ...procedure.procedures ]
+      const subs = [...procedure.procedures]
       delete procedure.procedures
 
       results.push(procedure)
-      results = results.concat(getters['allProcedures'](subs))
+      results = results.concat(getters.allProcedures(subs))
     })
 
     return results
@@ -43,7 +43,7 @@ const actions = {
     return api.post(`${url}/send`, payload)
   },
   async get ({ commit, state }, payload) {
-    let { data, meta } = await api.get(url, {
+    const { data, meta } = await api.get(url, {
       params: payload
     })
 

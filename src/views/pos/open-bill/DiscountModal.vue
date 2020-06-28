@@ -1,29 +1,42 @@
 <template>
   <div>
     <form
-      class="row">
+      class="row"
+    >
       <p-modal
-        ref="discountModal"
         :id="id"
-        :isLoading="isLoading"
-        :title="title | uppercase">
+        ref="discountModal"
+        :is-loading="isLoading"
+        :title="title | uppercase"
+      >
         <template slot="content">
           <p-form-row
             id="discount"
             name="discount"
-            :label="$t('discount')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('discount')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <p-form-number
                 v-model="discount_percent"
-                :is-text-right="false"/>
+                :is-text-right="false"
+              />
             </div>
           </p-form-row>
         </template>
         <template slot="footer">
-          <button :disabled="isSaving" type="button" class="btn btn-sm btn-outline-danger" @click="close">
+          <button
+            :disabled="isSaving"
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="close"
+          >
             <i
               v-show="isSaving"
-              class="fa fa-asterisk fa-spin"/> {{ $t('close') | uppercase }}
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>

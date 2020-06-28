@@ -5,30 +5,33 @@
         ref="modal"
         :title="$t('add item') | uppercase"
         overlay-theme="dark"
-        @close="onClose()">
+        @close="onClose()"
+      >
         <div class="row">
           <div class="col-sm-12">
             <p-form-row
               id="code"
+              v-model="form.code"
               name="code"
               :label="$t('code')"
-              v-model="form.code"
               :disabled="isSaving"
               :errors="form.errors.get('code')"
-              @errors="form.errors.set('code', null)"/>
+              @errors="form.errors.set('code', null)"
+            />
 
             <p-form-row
               id="name"
-              name="name"
               ref="name"
+              v-model="form.name"
+              name="name"
               :label="$t('name')"
               :placeholder="$t('required') | uppercase"
-              v-model="form.name"
               :disabled="isSaving"
               :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"/>
+              @errors="form.errors.set('name', null)"
+            />
 
-            <p-separator></p-separator>
+            <p-separator />
 
             <h5>{{ $t('chart of account') | uppercase }}</h5>
 
@@ -36,11 +39,14 @@
 
             <hr>
 
-            <span @click="$refs.chartOfAccountRef.open()" class="select-link">
+            <span
+              class="select-link"
+              @click="$refs.chartOfAccountRef.open()"
+            >
               {{ form.chart_of_account_label || $t('select') | uppercase }}
             </span>
 
-            <p-separator></p-separator>
+            <p-separator />
 
             <h5>{{ $t('unit') | uppercase }}</h5>
 
@@ -50,12 +56,21 @@
 
             <table class="table">
               <tr>
-                <th width="50px">#</th>
+                <th width="50px">
+                  #
+                </th>
                 <th>Unit Converter</th>
-                <th class="text-center">Default Unit Purchasing</th>
-                <th class="text-center">Default Unit Sales</th>
+                <th class="text-center">
+                  Default Unit Purchasing
+                </th>
+                <th class="text-center">
+                  Default Unit Sales
+                </th>
               </tr>
-              <tr v-for="(row, index) in form.units" :key="index">
+              <tr
+                v-for="(row, index) in form.units"
+                :key="index"
+              >
                 <th>{{ ++index }}</th>
                 <td>
                   <template v-if="index == 1">
@@ -65,16 +80,30 @@
                     1 {{ row.name | uppercase }} = {{ row.converter }} {{ form.units[0].name | uppercase }}
                   </template>
                 </td>
-                <td class="text-center"><i class="fa fa-check" v-if="row.default_purchase"></i></td>
-                <td class="text-center"><i class="fa fa-check" v-if="row.default_sales"></i></td>
+                <td class="text-center">
+                  <i
+                    v-if="row.default_purchase"
+                    class="fa fa-check"
+                  />
+                </td>
+                <td class="text-center">
+                  <i
+                    v-if="row.default_sales"
+                    class="fa fa-check"
+                  />
+                </td>
               </tr>
             </table>
 
-            <button type="button" class="btn btn-sm btn-secondary" @click="$refs.itemUnitRef.open()">
-              <i class="fa fa-plus"/> Add Unit Converter
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary"
+              @click="$refs.itemUnitRef.open()"
+            >
+              <i class="fa fa-plus" /> Add Unit Converter
             </button>
 
-            <p-separator></p-separator>
+            <p-separator />
 
             <h5>{{ $t('group') | uppercase }}</h5>
 
@@ -82,11 +111,14 @@
 
             <hr>
 
-            <span @click="$refs.itemGroupRef.open()" class="select-link">
+            <span
+              class="select-link"
+              @click="$refs.itemGroupRef.open()"
+            >
               {{ form.groups[0].name || $t('select') | uppercase }}
             </span>
 
-            <p-separator></p-separator>
+            <p-separator />
 
             <h5>{{ $t('stock dna') | uppercase }}</h5>
 
@@ -97,42 +129,71 @@
             <p-form-row
               id="require-production-number"
               name="require-production-number"
-              :label="$t('production number')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('production number')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-check-box
+                  id="require-production-number"
                   class="mb-0"
                   style="float:left"
-                  id="require-production-number"
                   name="require-production-number"
+                  :checked="form.require_production_number"
                   @click.native="chooseProductionNumber()"
-                  :checked="form.require_production_number"/>
+                />
               </div>
             </p-form-row>
 
             <p-form-row
               id="require-expiry-date"
               name="require-expiry-date"
-              :label="$t('expiry date')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('expiry date')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-check-box
                   id="require-expiry-date"
                   name="require-expiry-date"
+                  :checked="form.require_expiry_date"
                   @click.native="chooseExpiryDate()"
-                  :checked="form.require_expiry_date"/>
+                />
               </div>
             </p-form-row>
           </div>
         </div>
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+            :disabled="isSaving"
+            @click="onSubmit"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('save') | uppercase }}
           </button>
         </div>
       </sweet-modal>
     </form>
-    <m-item-unit ref="itemUnitRef" @updated="onUpdateItemUnit"></m-item-unit>
-    <m-item-group ref="itemGroupRef" @choosen="onChoosenItemGroup"></m-item-group>
-    <m-chart-of-account ref="chartOfAccountRef" @choosen="onChoosenAccount" v-model="form.chart_of_account_id" type="inventory"/>
+    <m-item-unit
+      ref="itemUnitRef"
+      @updated="onUpdateItemUnit"
+    />
+    <m-item-group
+      ref="itemGroupRef"
+      @choosen="onChoosenItemGroup"
+    />
+    <m-chart-of-account
+      ref="chartOfAccountRef"
+      v-model="form.chart_of_account_id"
+      type="inventory"
+      @choosen="onChoosenAccount"
+    />
   </div>
 </template>
 

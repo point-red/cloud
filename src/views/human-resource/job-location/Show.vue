@@ -1,15 +1,23 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
-      <router-link to="/human-resource/job-location" class="breadcrumb-item">{{ $t('job location') | uppercase }}</router-link>
+      <breadcrumb-human-resource />
+      <router-link
+        to="/human-resource/job-location"
+        class="breadcrumb-item"
+      >
+        {{ $t('job location') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ jobLocation.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('job location')" :header="true">
+      <p-block
+        :title="$t('job location')"
+        :header="true"
+      >
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-6">
@@ -33,18 +41,23 @@
             <div class="col-sm-12 mb-20">
               <hr>
               <router-link
-                :to="{ path: '/human-resource/job-location/' + jobLocation.id + '/edit', params: { id: jobLocation.id }}"
                 v-if="$permission.has('update employee')"
-                class="btn btn-sm btn-primary mr-5">
+                :to="{ path: '/human-resource/job-location/' + jobLocation.id + '/edit', params: { id: jobLocation.id }}"
+                class="btn btn-sm btn-primary mr-5"
+              >
                 {{ $t('edit') | uppercase }}
               </router-link>
               <button
-                type="button"
-                @click="onDelete()"
                 v-if="$permission.has('delete employee')"
+                type="button"
                 :disabled="isSaving"
-                class="btn btn-sm btn-danger">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+                class="btn btn-sm btn-danger"
+                @click="onDelete()"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('delete') | uppercase }}
               </button>
             </div>
           </div>

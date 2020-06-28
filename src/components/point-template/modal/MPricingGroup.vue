@@ -4,31 +4,55 @@
       :ref="'select-' + id"
       :title="$t('select pricing group') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
-      <div v-else class="list-group push">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <div
+        v-else
+        class="list-group push"
+      >
+        <input
+          v-model="searchText"
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          @keydown.enter.prevent=""
+        >
         <hr>
         <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
+          <h3 class="text-center">
+            Loading ...
+          </h3>
         </div>
-        <div v-else class="list-group push">
+        <div
+          v-else
+          class="list-group push"
+        >
           <template v-for="(option, index) in options">
-          <a
-            :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{'active': option.id == mutableId }"
-            @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label | uppercase }}
-          </a>
+            <a
+              :key="index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': option.id == mutableId }"
+              href="javascript:void(0)"
+              @click="choose(option)"
+            >
+              {{ option.label | uppercase }}
+            </a>
           </template>
         </div>
       </div>
       <div class="pull-right">
-        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="clear()"
+        >
+          {{ $t('clear') | uppercase }}
+        </button>
       </div>
     </sweet-modal>
   </div>
@@ -55,13 +79,16 @@ export default {
   },
   props: {
     id: {
-      type: String
+      type: String,
+      default: ''
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: ''
     },
     label: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   watch: {

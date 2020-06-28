@@ -4,76 +4,93 @@
       ref="modal"
       :title="$t('edit user') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <template v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </template>
       <template v-else>
-      <div class="row">
-        <div class="col-sm-12">
-          <p-form-row
-            id="name"
-            v-model="form.name"
-            :disabled="true"
-            :label="$t('name')"
-            name="name"
-            ref="name"
-            :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)"/>
+        <div class="row">
+          <div class="col-sm-12">
+            <p-form-row
+              id="name"
+              ref="name"
+              v-model="form.name"
+              :disabled="true"
+              :label="$t('name')"
+              name="name"
+              :errors="form.errors.get('name')"
+              @errors="form.errors.set('name', null)"
+            />
 
-          <p-form-row
-            id="email"
-            v-model="form.email"
-            :disabled="true"
-            :label="$t('email')"
-            name="email"
-            :errors="form.errors.get('email')"
-            @errors="form.errors.set('email', null)"/>
+            <p-form-row
+              id="email"
+              v-model="form.email"
+              :disabled="true"
+              :label="$t('email')"
+              name="email"
+              :errors="form.errors.get('email')"
+              @errors="form.errors.set('email', null)"
+            />
 
-          <p-form-row
-            id="first_name"
-            v-model="form.first_name"
-            :disabled="isSaving"
-            :label="$t('first name')"
-            name="first_name"
-            ref="first_name"
-            :errors="form.errors.get('first_name')"
-            @errors="form.errors.set('first_name', null)"/>
+            <p-form-row
+              id="first_name"
+              ref="first_name"
+              v-model="form.first_name"
+              :disabled="isSaving"
+              :label="$t('first name')"
+              name="first_name"
+              :errors="form.errors.get('first_name')"
+              @errors="form.errors.set('first_name', null)"
+            />
 
-          <p-form-row
-            id="last_name"
-            v-model="form.last_name"
-            :disabled="isSaving"
-            :label="$t('last name')"
-            name="last_name"
-            ref="last_name"
-            :errors="form.errors.get('last_name')"
-            @errors="form.errors.set('last_name', null)"/>
+            <p-form-row
+              id="last_name"
+              ref="last_name"
+              v-model="form.last_name"
+              :disabled="isSaving"
+              :label="$t('last name')"
+              name="last_name"
+              :errors="form.errors.get('last_name')"
+              @errors="form.errors.set('last_name', null)"
+            />
 
-          <p-form-row
-            id="address"
-            v-model="form.address"
-            :disabled="isSaving"
-            :label="$t('address')"
-            name="address"
-            :errors="form.errors.get('address')"
-            @errors="form.errors.set('address', null)"/>
+            <p-form-row
+              id="address"
+              v-model="form.address"
+              :disabled="isSaving"
+              :label="$t('address')"
+              name="address"
+              :errors="form.errors.get('address')"
+              @errors="form.errors.set('address', null)"
+            />
 
-          <p-form-row
-            id="phone"
-            v-model="form.phone"
-            :disabled="isSaving"
-            :label="$t('phone')"
-            name="phone"
-            :errors="form.errors.get('phone')"
-            @errors="form.errors.set('phone', null)"/>
+            <p-form-row
+              id="phone"
+              v-model="form.phone"
+              :disabled="isSaving"
+              :label="$t('phone')"
+              name="phone"
+              :errors="form.errors.get('phone')"
+              @errors="form.errors.set('phone', null)"
+            />
+          </div>
         </div>
-      </div>
-      <div class="pull-right">
-        <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
-        </button>
-      </div>
+        <div class="pull-right">
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+            :disabled="isSaving"
+            @click="onSubmit"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('update') | uppercase }}
+          </button>
+        </div>
       </template>
     </sweet-modal>
   </form>

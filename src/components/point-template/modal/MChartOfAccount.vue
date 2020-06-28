@@ -4,33 +4,64 @@
       ref="modal"
       :title="$t('select chart of account') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
-      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      @close="onClose()"
+    >
+      <input
+        v-model="searchText"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        @keydown.enter.prevent=""
+      >
       <hr>
       <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
-      <div v-else class="list-group push">
-        <template v-for="(option, index) in options">
-        <a
-          :key="index"
-          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-          :class="{'active': option.id == mutableId }"
-          @click="choose(option)"
-          href="javascript:void(0)">
-          {{ option.label | uppercase }}
-        </a>
+      <div
+        v-else
+        class="list-group push"
+      >
+        <template v-for="(option, optionIndex) in options">
+          <a
+            :key="optionIndex"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            :class="{'active': option.id == mutableId }"
+            href="javascript:void(0)"
+            @click="choose(option)"
+          >
+            {{ option.label | uppercase }}
+          </a>
         </template>
       </div>
-      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+      <div
+        v-if="searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
-      <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-        {{ $t('you don\'t have any') | capitalize }} {{ $t('chart of account') | capitalize }}, <br/> {{ $t('you can create') }}
+      <div
+        v-if="!searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
+        {{ $t('you don\'t have any') | capitalize }} {{ $t('chart of account') | capitalize }}, <br> {{ $t('you can create') }}
       </div>
       <div class="pull-right">
-        <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
-        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary mr-5"
+          @click="add()"
+        >
+          {{ $t('add') | uppercase }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="clear()"
+        >
+          {{ $t('clear') | uppercase }}
+        </button>
       </div>
     </sweet-modal>
   </div>
@@ -57,16 +88,20 @@ export default {
   },
   props: {
     id: {
-      type: String
+      type: String,
+      default: ''
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: ''
     },
     label: {
-      type: String
+      type: String,
+      default: ''
     },
     type: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   watch: {

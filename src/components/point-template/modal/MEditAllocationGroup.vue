@@ -4,9 +4,12 @@
       ref="modal"
       :title="$t('edit allocation group') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <template v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </template>
       <template v-else>
         <div class="row">
@@ -19,12 +22,21 @@
               :label="$t('name')"
               name="name"
               :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"/>
+              @errors="form.errors.set('name', null)"
+            />
           </div>
         </div>
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+            :disabled="isSaving"
+            @click="onSubmit"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('save') | uppercase }}
           </button>
         </div>
       </template>

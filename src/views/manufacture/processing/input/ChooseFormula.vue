@@ -1,24 +1,38 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/processing/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        :to="'/manufacture/processing/' + id"
+        class="breadcrumb-item"
+      >
+        {{ $t('process') | uppercase }}
+      </router-link>
+      <router-link
+        :to="'/manufacture/processing/' + id + '/input'"
+        class="breadcrumb-item"
+      >
+        {{ $t('input') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('choose formula') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('formula')" :header="true">
+      <p-block
+        :title="$t('formula')"
+        :header="true"
+      >
         <div class="row mb-10">
           <p-date-range-picker
             id="date"
+            v-model="date"
             name="date"
             class="col-sm-4"
-            v-model="date"/>
+          />
         </div>
         <div class="input-group block">
           <p-form-input
@@ -27,13 +41,15 @@
             placeholder="Search"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
           <router-link
-            to="/manufacture/formula/create"
             v-if="$permission.has('create manufacture formula')"
-            class="input-group-append">
+            to="/manufacture/formula/create"
+            class="input-group-append"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
         </div>
@@ -50,36 +66,46 @@
             <template v-for="(formula, index) in formulas">
               <tr
                 :key="'mm-' + index"
-                slot="p-body">
+                slot="p-body"
+              >
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>
-                <router-link :to="{ name: 'manufacture.formula.show', params: { id: formula.id }}">
-                  {{ formula.form.number }}
-                </router-link>
-              </td>
-              <td>
+                  <router-link :to="{ name: 'manufacture.formula.show', params: { id: formula.id }}">
+                    {{ formula.form.number }}
+                  </router-link>
+                </td>
+                <td>
                   <ol>
-                    <li v-for="finishGood in formula.finished_goods" :key="finishGood.id">
+                    <li
+                      v-for="finishGood in formula.finished_goods"
+                      :key="finishGood.id"
+                    >
                       <router-link :to="{ name: 'item.show', params: { id: finishGood.item.id }}">
                         {{ finishGood.item.label }}
                       </router-link>
-                       = {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
+                      = {{ finishGood.quantity }} {{ finishGood.item.units[0].name }}
                     </li>
                   </ol>
                 </td>
                 <td>
                   <ol>
-                    <li v-for="rawMaterial in formula.raw_materials" :key="rawMaterial.id">
+                    <li
+                      v-for="rawMaterial in formula.raw_materials"
+                      :key="rawMaterial.id"
+                    >
                       <router-link :to="{ name: 'item.show', params: { id: rawMaterial.item.id }}">
                         {{ rawMaterial.item.label }}
                       </router-link>
-                       = {{ rawMaterial.quantity }} {{ rawMaterial.item.units[0].name }}
+                      = {{ rawMaterial.quantity }} {{ rawMaterial.item.units[0].name }}
                     </li>
                   </ol>
                 </td>
                 <td>
-                  <router-link :to="{ name: 'manufacture.process.io.input.use.formula', params: { id: id, formulaId: formula.id }}" class="btn btn-primary mr-5">
-                    <span><i class="si si-share-alt"></i> {{ $t('use') | titlecase }}</span>
+                  <router-link
+                    :to="{ name: 'manufacture.process.io.input.use.formula', params: { id: id, formulaId: formula.id }}"
+                    class="btn btn-primary mr-5"
+                  >
+                    <span><i class="si si-share-alt" /> {{ $t('use') | titlecase }}</span>
                   </router-link>
                 </td>
               </tr>
@@ -89,8 +115,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>

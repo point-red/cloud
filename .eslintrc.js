@@ -14,6 +14,7 @@ module.exports = {
     eqeqeq: 'off',
     'vue/require-prop-types': 'off',
     'vue/order-in-components': 'off',
+    'vue/no-template-shadow': 'off',
     'no-unused-vars': 'off'
   },
   parserOptions: {

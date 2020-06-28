@@ -1,8 +1,13 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-purchase/>
-      <router-link to="/inventory/usage" class="breadcrumb-item">{{ $t('inventory usage') | uppercase }}</router-link>
+      <breadcrumb-purchase />
+      <router-link
+        to="/inventory/usage"
+        class="breadcrumb-item"
+      >
+        {{ $t('inventory usage') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
@@ -12,10 +17,14 @@
           <p-block-inner>
             <div class="row">
               <div class="col-sm-12">
-                <h4 class="text-center">{{ $t('inventory usage') | uppercase }}</h4>
+                <h4 class="text-center">
+                  {{ $t('inventory usage') | uppercase }}
+                </h4>
                 <hr>
                 <div class="float-sm-right text-right">
-                  <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                  <h6 class="mb-0">
+                    {{ authUser.tenant_name | uppercase }}
+                  </h6>
                   {{ authUser.tenant_address | uppercase }} <br v-if="authUser.tenant_address">
                   {{ authUser.tenant_phone | uppercase }} <br v-if="authUser.tenant_phone">
                 </div>
@@ -39,53 +48,71 @@
               id="warehouse"
               name="warehouse"
               :label="$t('warehouse')"
-              :is-horizontal="false">
+              :is-horizontal="false"
+            >
               <div slot="body">
-                <m-warehouse id="warehouse_id" v-model="form.warehouse_id"/>
+                <m-warehouse
+                  id="warehouse_id"
+                  v-model="form.warehouse_id"
+                />
               </div>
             </p-form-row>
             <hr>
             <point-table class="mt-20">
               <tr slot="p-head">
-                <th class="text-center">#</th>
+                <th class="text-center">
+                  #
+                </th>
                 <th>Item</th>
                 <th>Account</th>
                 <th>Notes</th>
                 <th>Quantity Usage</th>
                 <th>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
-                    <i class="fa fa-ellipsis-h"/>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    @click="toggleMore()"
+                  >
+                    <i class="fa fa-ellipsis-h" />
                   </button>
                 </th>
               </tr>
               <template v-for="(row, index) in form.items">
-                <tr slot="p-body" :key="index">
-                  <th class="text-center">{{ index + 1 }}</th>
+                <tr
+                  slot="p-body"
+                  :key="index"
+                >
+                  <th class="text-center">
+                    {{ index + 1 }}
+                  </th>
                   <td>
                     <m-item
                       :id="'item-' + index"
                       v-model="row.item_id"
-                      @choosen="chooseItem($event, row)"/>
+                      @choosen="chooseItem($event, row)"
+                    />
                   </td>
                   <td>
                     <m-chart-of-account
                       :id="'chart-of-account-' + index"
                       v-model="row.chart_of_account_id"
-                      type="direct expense;other expense;factory overhead cost"/>
+                      type="direct expense;other expense;factory overhead cost"
+                    />
                   </td>
                   <td>
                     <p-form-input
                       :id="'notes-' + index"
+                      v-model="row.notes"
                       :name="'item-' + index"
                       :disabled="row.item_id == null"
-                      v-model="row.notes"/>
+                    />
                   </td>
                   <td>
                     <p-quantity
                       :id="'quantity' + index"
+                      v-model="row.quantity"
                       :name="'quantity' + index"
                       :disabled="row.item_id == null"
-                      v-model="row.quantity"
                       :item-id="row.item_id"
                       :units="row.units"
                       :unit="{
@@ -93,62 +120,101 @@
                         label: row.unit,
                         converter: row.converter
                       }"
-                      @choosen="chooseUnit($event, row)"/>
+                      @choosen="chooseUnit($event, row)"
+                    />
                   </td>
                   <td>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" @click="row.more = !row.more" v-if="!isSaving">
-                      <i class="fa fa-ellipsis-h"/>
+                    <button
+                      v-if="!isSaving"
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      @click="row.more = !row.more"
+                    >
+                      <i class="fa fa-ellipsis-h" />
                     </button>
                   </td>
                 </tr>
                 <template v-if="row.more">
-                <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
-                  <th class="bg-gray-light"></th>
-                  <td colspan="3">
-                    <p-form-row
-                      id="allocation"
-                      name="allocation"
-                      :label="$t('allocation')">
-                      <m-allocation
-                        slot="body"
-                        class="mt-5"
-                        :v-if="row.item_id == null"
-                        :id="'allocation-' + index"
-                        v-model="row.allocation_id"/>
-                    </p-form-row>
-                  </td>
-                  <td></td>
-                </tr>
+                  <tr
+                    slot="p-body"
+                    :key="'ext-'+index"
+                    class="bg-gray-light"
+                  >
+                    <th class="bg-gray-light" />
+                    <td colspan="3">
+                      <p-form-row
+                        id="allocation"
+                        name="allocation"
+                        :label="$t('allocation')"
+                      >
+                        <m-allocation
+                          :id="'allocation-' + index"
+                          slot="body"
+                          v-model="row.allocation_id"
+                          class="mt-5"
+                          :v-if="row.item_id == null"
+                        />
+                      </p-form-row>
+                    </td>
+                    <td />
+                  </tr>
                 </template>
               </template>
             </point-table>
             <div class="row mt-50">
               <div class="col-sm-6">
-                <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
-                <div class="d-sm-block d-md-none mt-10"></div>
+                <textarea
+                  v-model="form.notes"
+                  rows="5"
+                  class="form-control"
+                  placeholder="Notes"
+                />
+                <div class="d-sm-block d-md-none mt-10" />
               </div>
               <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+                <h6 class="mb-0">
+                  {{ $t('requested by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  {{ Date.now() | dateFormat('DD MMMM YYYY') }}
+                </div>
                 {{ requestedBy | uppercase }}
-                <div class="d-sm-block d-md-none mt-10"></div>
+                <div class="d-sm-block d-md-none mt-10" />
               </div>
               <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">_______________</div>
+                <h6 class="mb-0">
+                  {{ $t('approved by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  _______________
+                </div>
                 <m-user
                   :id="'user'"
                   v-model="form.request_approval_to"
                   :errors="form.errors.get('request_approval_to')"
                   @errors="form.errors.set('request_approval_to', null)"
-                  @choosen="chooseApprover"/>
-                  {{ form.approver_email }} <br v-if="form.approver_email">
+                  @choosen="chooseApprover"
+                />
+                {{ form.approver_email }} <br v-if="form.approver_email">
               </div>
 
               <div class="col-sm-12">
                 <hr>
-                <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-primary"
+                  :disabled="isSaving"
+                >
+                  <i
+                    v-show="isSaving"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('save') | uppercase }}
                 </button>
               </div>
             </div>

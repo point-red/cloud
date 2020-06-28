@@ -1,34 +1,49 @@
 <template>
   <div>
     <h5>Database Backup</h5>
-      <p-block-inner>
-        <template v-if="backups && backups.length > 0">
-          <point-table>
-            <tr slot="p-head">
-              <th>#</th>
-              <th>File Name</th>
-              <th>Created At</th>
-              <th>Download URL</th>
-            </tr>
-            <tr
-              v-for="(row, index) in backups"
-              :key="index"
-              slot="p-body">
-              <th>{{ index + 1 }}</th>
-              <td>{{ row.file_name }}</td>
-              <td>{{ row.created_at | dateFormat('DD MMM YYYY') }}</td>
-              <td><a :href="row.download_url">{{ row.download_url }}</a></td>
-              <td><button @click="restoreDatabase()" class="btn-sm">Restore</button></td>
-            </tr>
-          </point-table>
-        </template>
-        <template v-else>
-          There is no backup available
-        </template>
-        <button class="btn-sm" @click="createBackup" :disabled="isSaving">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Create new backup
-        </button>
-      </p-block-inner>
+    <p-block-inner>
+      <template v-if="backups && backups.length > 0">
+        <point-table>
+          <tr slot="p-head">
+            <th>#</th>
+            <th>File Name</th>
+            <th>Created At</th>
+            <th>Download URL</th>
+          </tr>
+          <tr
+            v-for="(row, index) in backups"
+            :key="index"
+            slot="p-body"
+          >
+            <th>{{ index + 1 }}</th>
+            <td>{{ row.file_name }}</td>
+            <td>{{ row.created_at | dateFormat('DD MMM YYYY') }}</td>
+            <td><a :href="row.download_url">{{ row.download_url }}</a></td>
+            <td>
+              <button
+                class="btn-sm"
+                @click="restoreDatabase()"
+              >
+                Restore
+              </button>
+            </td>
+          </tr>
+        </point-table>
+      </template>
+      <template v-else>
+        There is no backup available
+      </template>
+      <button
+        class="btn-sm"
+        :disabled="isSaving"
+        @click="createBackup"
+      >
+        <i
+          v-show="isSaving"
+          class="fa fa-asterisk fa-spin"
+        /> Create new backup
+      </button>
+    </p-block-inner>
   </div>
 </template>
 
@@ -49,10 +64,12 @@ export default {
   },
   props: {
     code: {
-      type: String
+      type: String,
+      default: ''
     },
     projectId: {
-      type: [String, Number]
+      type: [String, Number],
+      default: null
     }
   },
   computed: {

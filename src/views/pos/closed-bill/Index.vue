@@ -1,20 +1,24 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-pos/>
+      <breadcrumb-pos />
       <span class="breadcrumb-item active">{{ $t('closed bill') | uppercase }}</span>
     </breadcrumb>
 
-    <pos-menu/>
+    <pos-menu />
 
     <div class="row">
-      <p-block :title="$t('closed bill')" :header="true">
+      <p-block
+        :title="$t('closed bill')"
+        :header="true"
+      >
         <div class="row mb-10">
           <p-date-range-picker
             id="date"
+            v-model="date"
             name="date"
             class="col-sm-4"
-            v-model="date"/>
+          />
         </div>
         <div class="input-group block">
           <p-form-input
@@ -23,13 +27,15 @@
             placeholder="Search"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
           <router-link
-            to="/pos/open-bill/create"
             v-if="$permission.has('create pos')"
-            class="input-group-append">
+            to="/pos/open-bill/create"
+            class="input-group-append"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
         </div>
@@ -47,7 +53,8 @@
             <template v-for="(bill, index) in bills">
               <tr
                 :key="'pb-' + index"
-                slot="p-body">
+                slot="p-body"
+              >
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>{{ bill.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>
@@ -62,8 +69,15 @@
                 </td>
                 <td>{{ bill.amount | numberFormat }}</td>
                 <td class="text-right">
-                  <button class="btn btn-sm btn-danger" @click="deleteBill(bill.id)" :disabled="isDeleting">
-                    <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+                  <button
+                    class="btn btn-sm btn-danger"
+                    :disabled="isDeleting"
+                    @click="deleteBill(bill.id)"
+                  >
+                    <i
+                      v-show="isDeleting"
+                      class="fa fa-asterisk fa-spin"
+                    /> {{ $t('delete') | uppercase }}
                   </button>
                 </td>
               </tr>
@@ -73,8 +87,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>

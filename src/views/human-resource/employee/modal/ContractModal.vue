@@ -2,41 +2,56 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmitContract">
+      @submit.prevent="onSubmitContract"
+    >
       <sweet-modal
         ref="modal"
         :title="$t('add social media') | uppercase"
         overlay-theme="dark"
-        @close="onClose()">
+        @close="onClose()"
+      >
         <p-form-row
           id="contract-date"
-          :label="$t('contract begin')">
-          <div slot="body" class="col-lg-9">
+          :label="$t('contract begin')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <p-date-picker
+              v-model="contract_begin"
               name="contract-date"
-              v-model="contract_begin"/>
+            />
           </div>
         </p-form-row>
 
         <p-form-row
           id="expired-date"
-          :label="$t('contract end')">
-          <div slot="body" class="col-lg-9">
+          :label="$t('contract end')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <p-date-picker
+              v-model="contract_end"
               name="expired-date"
-              v-model="contract_end"/>
+            />
           </div>
         </p-form-row>
 
         <p-form-row
           id="notes"
+          v-model="notes"
           name="notes"
           :label="$t('notes')"
-          v-model="notes">
-        </p-form-row>
+        />
 
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary">
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+          >
             {{ $t('add') | uppercase }}
           </button>
         </div>
@@ -49,10 +64,12 @@
 export default {
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   data () {

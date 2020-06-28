@@ -5,7 +5,8 @@
         ref="modal"
         :title="$t('edit pricing group') | uppercase"
         overlay-theme="dark"
-        @close="onClose()">
+        @close="onClose()"
+      >
         <div class="row">
           <div class="col-sm-12">
             <p-form-row
@@ -15,20 +16,33 @@
               :label="$t('label')"
               name="label"
               :errors="form.errors.get('label')"
-              @errors="form.errors.set('label', null)"/>
+              @errors="form.errors.set('label', null)"
+            />
           </div>
         </div>
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary mr-5" :disabled="isSaving" @click="onSubmit">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary mr-5"
+            :disabled="isSaving"
+            @click="onSubmit"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('update') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete item')"
+            type="button"
             :disabled="isSaving"
-            class="btn btn-sm btn-danger">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-danger"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
       </sweet-modal>

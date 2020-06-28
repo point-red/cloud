@@ -50,9 +50,10 @@
       'side-overlay-o' : openSideOverlay === true || openSideOverlay === 'true',
       'sidebar-inverse' : isSidebarInverse === true || isSidebarInverse === 'true'
     }"
-    class="side-scroll page-header-modern">
+    class="side-scroll page-header-modern"
+  >
     <!-- Side Overlay-->
-    <app-side-overlay/>
+    <app-side-overlay />
     <!-- END Side Overlay -->
 
     <!-- Sidebar -->
@@ -69,11 +70,12 @@
       -->
     <app-sidebar
       :first-uri="firstUri"
-      :second-uri="secondUri"/>
+      :second-uri="secondUri"
+    />
     <!-- END Sidebar -->
 
     <!-- Header -->
-    <app-header/>
+    <app-header />
     <!-- END Header -->
 
     <!-- Main Container -->
@@ -81,7 +83,7 @@
       <!-- Page Content -->
       <div class="content">
         <transition name="fade">
-          <router-view/>
+          <router-view />
         </transition>
 
         <!-- <p-block title="Virtual Assistance"
@@ -99,7 +101,7 @@
     <!-- END Main Container -->
 
     <!-- Footer -->
-    <app-footer/>
+    <app-footer />
     <!-- END Footer -->
   </div>
   <!-- END Page Container -->

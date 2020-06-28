@@ -1,50 +1,78 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <router-link
         to="/human-resource/employee"
-        class="breadcrumb-item">{{ $t('employee') | titlecase }}</router-link>
+        class="breadcrumb-item"
+      >
+        {{ $t('employee') | titlecase }}
+      </router-link>
       <router-link
         :to="'/human-resource/employee/' + employee.id"
-        class="breadcrumb-item">{{ employee.name | titlecase }}</router-link>
+        class="breadcrumb-item"
+      >
+        {{ employee.name | titlecase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ title | titlecase }}</span>
     </breadcrumb>
 
-    <employee-widget :id="id"></employee-widget>
+    <employee-widget :id="id" />
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block
+        :title="title"
+        :header="true"
+      >
         <p-block-inner :is-loading="isLoading">
           <p-table>
             <tr slot="p-head">
               <th>{{ $t('date') }}</th>
-              <th class="text-center">{{ $t('salary') }}</th>
+              <th class="text-center">
+                {{ $t('salary') }}
+              </th>
             </tr>
             <tr
               v-for="(salary, salaryIndex) in salaries"
               :key="salary.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <td>
                 <router-link :to="{ name: 'humanResourceEmployeeSalaryShow', params: { id: employee.id, salaryId: salary.id }}">
                   {{ dataSet.startDates[salaryIndex] | dateFormat('DD MMMM YYYY') }} - {{ dataSet.endDates[salaryIndex] | dateFormat('DD MMMM YYYY') }}
                 </router-link>
               </td>
-              <td class="text-center">Rp {{ dataSet.scores[salaryIndex] | numberFormat }}</td>
+              <td class="text-center">
+                Rp {{ dataSet.scores[salaryIndex] | numberFormat }}
+              </td>
               <td class="text-right">
                 <router-link
-                  :to="{ path: '/human-resource/employee/' + employee.id + '/salary/' + salary.id + '/edit', params: { id: employee.id, kpiId: salary.id }}"
                   v-if="$permission.has('update employee salary')"
-                  class="btn btn-sm btn-secondary">
-                  <i class="si si-note"></i> {{ $t('edit') | uppercase }}
+                  :to="{ path: '/human-resource/employee/' + employee.id + '/salary/' + salary.id + '/edit', params: { id: employee.id, kpiId: salary.id }}"
+                  class="btn btn-sm btn-secondary"
+                >
+                  <i class="si si-note" /> {{ $t('edit') | uppercase }}
                 </router-link>
-                <button :disabled="isExporting.includes(salary.id)" type="submit" class="btn btn-sm btn-primary" @click="exportData(salary.id)" style="margin-left:12px">
-                  <i v-show="isExporting.includes(salary.id)" class="fa fa-asterisk fa-spin" /> Export
+                <button
+                  :disabled="isExporting.includes(salary.id)"
+                  type="submit"
+                  class="btn btn-sm btn-primary"
+                  style="margin-left:12px"
+                  @click="exportData(salary.id)"
+                >
+                  <i
+                    v-show="isExporting.includes(salary.id)"
+                    class="fa fa-asterisk fa-spin"
+                  /> Export
                 </button>
                 &nbsp;
-                <i class="fa fa-close" v-show="$permission.has('delete employee salary')" @click="deleteSalary(salary.id)"/>
+                <i
+                  v-show="$permission.has('delete employee salary')"
+                  class="fa fa-close"
+                  @click="deleteSalary(salary.id)"
+                />
               </td>
             </tr>
           </p-table>
@@ -54,23 +82,33 @@
 
     <p-modal
       id="modal-delete"
+      ref="delete"
       title="Confirmation"
-      ref="delete">
-      <div slot="content"><p>Are you sure want to delete the Salary Form?</p></div>
+    >
+      <div slot="content">
+        <p>Are you sure want to delete the Salary Form?</p>
+      </div>
       <div slot="footer">
         <button
           type="button"
           class="btn btn-alt-secondary"
+          data-dismiss="modal"
           @click="$refs.delete.close()"
-          data-dismiss="modal">{{ $t('cancel') | uppercase }}</button>
+        >
+          {{ $t('cancel') | uppercase }}
+        </button>
         &nbsp;
         <button
-          type="button"
-          @click="onDelete()"
           v-if="$permission.has('delete employee salary')"
+          type="button"
           :disabled="isSaving"
-          class="btn btn-danger">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          class="btn btn-danger"
+          @click="onDelete()"
+        >
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          /> {{ $t('delete') | uppercase }}
         </button>
       </div>
     </p-modal>

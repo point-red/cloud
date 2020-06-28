@@ -1,24 +1,30 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/processing'" class="breadcrumb-item">{{ $t('processing') | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        :to="'/manufacture/processing'"
+        class="breadcrumb-item"
+      >
+        {{ $t('processing') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('input') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <router-link
-            to="/manufacture/processing/input/create"
             v-if="$permission.has('create manufacture formula')"
-            class="input-group-prepend">
+            to="/manufacture/processing/input/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
@@ -27,7 +33,8 @@
             placeholder="Search"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -38,13 +45,18 @@
               <th>{{ $t('number') | uppercase }}</th>
               <th>{{ $t('machine') | uppercase }}</th>
               <th>{{ $t('notes') | uppercase }}</th>
-              <th class="text-center">{{ $t('approval status') | uppercase }}</th>
-              <th class="text-center">{{ $t('form status') | uppercase }}</th>
+              <th class="text-center">
+                {{ $t('approval status') | uppercase }}
+              </th>
+              <th class="text-center">
+                {{ $t('form status') | uppercase }}
+              </th>
             </tr>
             <template v-for="(input, index) in inputs">
               <tr
                 :key="'mi-' + index"
-                slot="p-body">
+                slot="p-body"
+              >
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>{{ input.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>
@@ -55,17 +67,50 @@
                 <td>{{ input.manufacture_machine_name }}</td>
                 <td>{{ input.notes }}</td>
                 <td class="text-center">
-                  <div v-if="input.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                  <div v-if="input.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
-                  <div v-if="input.form.approval_status == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
+                  <div
+                    v-if="input.form.approval_status == 0"
+                    class="badge badge-primary"
+                  >
+                    {{ $t('pending') | uppercase }}
+                  </div>
+                  <div
+                    v-if="input.form.approval_status == -1"
+                    class="badge badge-danger"
+                  >
+                    {{ $t('rejected') | uppercase }}
+                  </div>
+                  <div
+                    v-if="input.form.approval_status == 1"
+                    class="badge badge-success"
+                  >
+                    {{ $t('approved') | uppercase }}
+                  </div>
                 </td>
                 <td class="text-center">
-                  <div v-if="input.form.cancellation_status == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
-                  <div v-else-if="input.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                  <div v-else-if="input.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
+                  <div
+                    v-if="input.form.cancellation_status == 1"
+                    class="badge badge-danger"
+                  >
+                    {{ $t('canceled') | uppercase }}
+                  </div>
+                  <div
+                    v-else-if="input.form.done == 0"
+                    class="badge badge-primary"
+                  >
+                    {{ $t('pending') | uppercase }}
+                  </div>
+                  <div
+                    v-else-if="input.form.done == 1"
+                    class="badge badge-success"
+                  >
+                    {{ $t('done') | uppercase }}
+                  </div>
                 </td>
               </tr>
-              <tr :key="'mia-' + index" slot="p-body">
+              <tr
+                :key="'mia-' + index"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td><b>{{ $t('finished goods') | uppercase }}</b></td>
@@ -74,7 +119,11 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
               </tr>
-              <tr v-for="finishGood in input.finished_goods" :key="'fg-' + finishGood.id" slot="p-body">
+              <tr
+                v-for="finishGood in input.finished_goods"
+                :key="'fg-' + finishGood.id"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
@@ -91,7 +140,10 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
               </tr>
-              <tr :key="'mib-' + index" slot="p-body">
+              <tr
+                :key="'mib-' + index"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td><b>{{ $t('raw materials') | uppercase }}</b></td>
@@ -100,7 +152,11 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
               </tr>
-              <tr v-for="rawMaterial in input.raw_materials_temporary" :key="'rm-' + rawMaterial.id" slot="p-body">
+              <tr
+                v-for="rawMaterial in input.raw_materials_temporary"
+                :key="'rm-' + rawMaterial.id"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
@@ -117,7 +173,10 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
               </tr>
-              <tr :key="'mic-' + index" slot="p-body">
+              <tr
+                :key="'mic-' + index"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -132,8 +191,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>

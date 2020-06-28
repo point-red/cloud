@@ -1,21 +1,34 @@
 <template>
   <div>
-    <p-loading-block v-show="isLoading"/>
+    <p-loading-block v-show="isLoading" />
     <breadcrumb>
-      <router-link to="/account/project" class="breadcrumb-item">{{ $t('project') | uppercase }}</router-link>
+      <router-link
+        to="/account/project"
+        class="breadcrumb-item"
+      >
+        {{ $t('project') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ project.code | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
-    <project-widget :project="project"></project-widget>
+    <project-widget :project="project" />
 
     <hr>
 
-    <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('preferences')" :header="true">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
+      <p-block
+        :title="$t('preferences')"
+        :header="true"
+      >
         <p-block-inner :is-loading="isLoading">
-          <h5 class="content-heading">Mail</h5>
+          <h5 class="content-heading">
+            Mail
+          </h5>
           <p-form-row
             id="mail-driver"
             v-model="form.mail_driver"
@@ -23,7 +36,8 @@
             :label="$t('driver')"
             name="mail_driver"
             :errors="form.errors.get('mail_driver')"
-            @errors="form.errors.set('mail_driver', null)"/>
+            @errors="form.errors.set('mail_driver', null)"
+          />
 
           <p-form-row
             id="mail-host"
@@ -32,7 +46,8 @@
             :label="$t('host')"
             name="mail_host"
             :errors="form.errors.get('mail_host')"
-            @errors="form.errors.set('mail_host', null)"/>
+            @errors="form.errors.set('mail_host', null)"
+          />
 
           <p-form-row
             id="mail-username"
@@ -41,17 +56,19 @@
             :label="$t('username')"
             name="mail_username"
             :errors="form.errors.get('mail_username')"
-            @errors="form.errors.set('mail_username', null)"/>
+            @errors="form.errors.set('mail_username', null)"
+          />
 
           <p-form-row
             id="mail-password"
-            type="password"
             v-model="form.mail_password"
+            type="password"
             :disabled="isSaving"
             :label="$t('password')"
             name="mail_password"
             :errors="form.errors.get('mail_password')"
-            @errors="form.errors.set('mail_password', null)"/>
+            @errors="form.errors.set('mail_password', null)"
+          />
 
           <p-form-row
             id="mail-from-name"
@@ -60,7 +77,8 @@
             :label="$t('from name')"
             name="mail_from_name"
             :errors="form.errors.get('mail_from_name')"
-            @errors="form.errors.set('mail_from_name', null)"/>
+            @errors="form.errors.set('mail_from_name', null)"
+          />
 
           <p-form-row
             id="mail-from-address"
@@ -69,7 +87,8 @@
             :label="$t('from address')"
             name="mail_from_address"
             :errors="form.errors.get('mail_from_address')"
-            @errors="form.errors.set('mail_from_address', null)"/>
+            @errors="form.errors.set('mail_from_address', null)"
+          />
 
           <p-form-row
             id="mail-port"
@@ -78,7 +97,8 @@
             :label="$t('port')"
             name="mail_port"
             :errors="form.errors.get('mail_port')"
-            @errors="form.errors.set('mail_port', null)"/>
+            @errors="form.errors.set('mail_port', null)"
+          />
 
           <p-form-row
             id="mail-encryption"
@@ -87,7 +107,8 @@
             :label="$t('encryption')"
             name="mail_encryption"
             :errors="form.errors.get('mail_encryption')"
-            @errors="form.errors.set('mail_encryption', null)"/>
+            @errors="form.errors.set('mail_encryption', null)"
+          />
 
           <p-form-row
             id="mail-domain"
@@ -96,22 +117,31 @@
             :label="$t('domain')"
             name="mail_domain"
             :errors="form.errors.get('mail_domain')"
-            @errors="form.errors.set('mail_domain', null)"/>
+            @errors="form.errors.set('mail_domain', null)"
+          />
 
           <p-form-row
             id="mail-secret"
-            type="password"
             v-model="form.mail_secret"
+            type="password"
             :disabled="isSaving"
             :label="$t('secret')"
             name="mail_secret"
             :errors="form.errors.get('mail_secret')"
-            @errors="form.errors.set('mail_secret', null)"/>
+            @errors="form.errors.set('mail_secret', null)"
+          />
 
           <hr>
 
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+            :disabled="isSaving"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('update') | uppercase }}
           </button>
         </p-block-inner>
       </p-block>

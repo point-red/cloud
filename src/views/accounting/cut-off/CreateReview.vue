@@ -1,9 +1,12 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-accounting/>
+      <breadcrumb-accounting />
       <span class="breadcrumb-item active">
-        <router-link to="/accounting/cut-off" class="breadcrumb-item">{{ $t('cut off') | uppercase }}</router-link>
+        <router-link
+          to="/accounting/cut-off"
+          class="breadcrumb-item"
+        >{{ $t('cut off') | uppercase }}</router-link>
       </span>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
@@ -12,28 +15,69 @@
       <div class="col-sm-12">
         <div class="row">
           <p-block>
-            <nav class="breadcrumb bg-white text-center" style="display:block !important">
-              <router-link to="/accounting/cut-off/create" class="breadcrumb-item">{{ $t('start') | uppercase }}</router-link>
-              <router-link to="/accounting/cut-off/create/account" class="breadcrumb-item">{{ $t('account') | uppercase }}</router-link>
-              <router-link to="/accounting/cut-off/create/inventory" class="breadcrumb-item">{{ $t('inventory') | uppercase }}</router-link>
-              <router-link to="/accounting/cut-off/create/account-payable" class="breadcrumb-item">{{ $t('account payable') | uppercase }}</router-link>
-              <router-link to="/accounting/cut-off/create/purchase-down-payment" class="breadcrumb-item">{{ $t('purchase down payment') | uppercase }}</router-link>
-              <router-link to="/accounting/cut-off/create/account-receivable" class="breadcrumb-item">{{ $t('account receivable') | uppercase }}</router-link>
-              <router-link to="/accounting/cut-off/create/sales-down-payment" class="breadcrumb-item">{{ $t('sales down payment') | uppercase }}</router-link>
+            <nav
+              class="breadcrumb bg-white text-center"
+              style="display:block !important"
+            >
+              <router-link
+                to="/accounting/cut-off/create"
+                class="breadcrumb-item"
+              >
+                {{ $t('start') | uppercase }}
+              </router-link>
+              <router-link
+                to="/accounting/cut-off/create/account"
+                class="breadcrumb-item"
+              >
+                {{ $t('account') | uppercase }}
+              </router-link>
+              <router-link
+                to="/accounting/cut-off/create/inventory"
+                class="breadcrumb-item"
+              >
+                {{ $t('inventory') | uppercase }}
+              </router-link>
+              <router-link
+                to="/accounting/cut-off/create/account-payable"
+                class="breadcrumb-item"
+              >
+                {{ $t('account payable') | uppercase }}
+              </router-link>
+              <router-link
+                to="/accounting/cut-off/create/purchase-down-payment"
+                class="breadcrumb-item"
+              >
+                {{ $t('purchase down payment') | uppercase }}
+              </router-link>
+              <router-link
+                to="/accounting/cut-off/create/account-receivable"
+                class="breadcrumb-item"
+              >
+                {{ $t('account receivable') | uppercase }}
+              </router-link>
+              <router-link
+                to="/accounting/cut-off/create/sales-down-payment"
+                class="breadcrumb-item"
+              >
+                {{ $t('sales down payment') | uppercase }}
+              </router-link>
               <span class="breadcrumb-item">{{ $t('review') | uppercase }}</span>
             </nav>
             <hr>
-            <h5 class="text-center">CHART OF ACCOUNT</h5>
+            <h5 class="text-center">
+              CHART OF ACCOUNT
+            </h5>
             <template>
               <div class="input-group block mb-5">
                 <p-form-input
                   id="search-text"
+                  ref="searchText"
                   name="search-text"
                   placeholder="Search"
                   class="btn-block"
-                  ref="searchText"
                   :value="searchText"
-                  @input="filterSearch"/>
+                  @input="filterSearch"
+                />
               </div>
               <hr>
               <p-block-inner :is-loading="isLoading">
@@ -43,13 +87,18 @@
                     <th>Name</th>
                     <th>Type</th>
                     <th>Sub Ledger</th>
-                    <th class="text-right">Debit</th>
-                    <th class="text-right">Credit</th>
+                    <th class="text-right">
+                      Debit
+                    </th>
+                    <th class="text-right">
+                      Credit
+                    </th>
                   </tr>
                   <tr
                     v-for="account in accounts"
                     :key="account.id"
-                    slot="p-body">
+                    slot="p-body"
+                  >
                     <td>{{ account.chart_of_account.number }}</td>
                     <td>{{ account.chart_of_account.alias }}</td>
                     <td>{{ account.chart_of_account.type.alias }}</td>
@@ -58,27 +107,42 @@
                         {{ account.chart_of_account.sub_ledger.alias }}
                       </template>
                     </td>
-                    <td class="text-right">{{ account.debit | numberFormat }}</td>
-                    <td class="text-right">{{ account.credit | numberFormat }}</td>
+                    <td class="text-right">
+                      {{ account.debit | numberFormat }}
+                    </td>
+                    <td class="text-right">
+                      {{ account.credit | numberFormat }}
+                    </td>
                   </tr>
                   <tr slot="p-body">
-                    <th></th>
-                    <td colspan="3" class="text-right"><b>TOTAL</b></td>
-                    <td class="text-right">{{ totalDebit | numberFormat }}</td>
-                    <td class="text-right">{{ totalCredit | numberFormat }}</td>
+                    <th />
+                    <td
+                      colspan="3"
+                      class="text-right"
+                    >
+                      <b>TOTAL</b>
+                    </td>
+                    <td class="text-right">
+                      {{ totalDebit | numberFormat }}
+                    </td>
+                    <td class="text-right">
+                      {{ totalCredit | numberFormat }}
+                    </td>
                   </tr>
                 </point-table>
               </p-block-inner>
               <router-link
                 tag="button"
                 to="/accounting/cut-off/create/review"
-                class="btn btn-sm btn-primary min-width-100 float-right">
+                class="btn btn-sm btn-primary min-width-100 float-right"
+              >
                 {{ $t('submit') | uppercase }}
               </router-link>
               <router-link
                 tag="button"
                 to="/accounting/cut-off/create/sales-down-payment"
-                class="btn btn-sm btn-primary min-width-100 float-left">
+                class="btn btn-sm btn-primary min-width-100 float-left"
+              >
                 {{ $t('prev') | uppercase }}
               </router-link>
               <br><br><br>
@@ -90,8 +154,13 @@
     <m-edit-account
       id="edit-account"
       ref="editAccount"
-      @updated="getChartOfAccountsRequest()"/>
-    <m-create-account id="account" ref="account" @updated="getChartOfAccountsRequest()"/>
+      @updated="getChartOfAccountsRequest()"
+    />
+    <m-create-account
+      id="account"
+      ref="account"
+      @updated="getChartOfAccountsRequest()"
+    />
   </div>
 </template>
 

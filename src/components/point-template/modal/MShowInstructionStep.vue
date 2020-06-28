@@ -4,18 +4,26 @@
       ref="modal"
       :title="`accept ${form.approval_action || 'Loading'}` | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <div class="row">
         <div class="col-sm-12">
-          <div class="alert alert-danger" v-if="errors">
+          <div
+            v-if="errors"
+            class="alert alert-danger"
+          >
             <strong>{{ errors.message }}</strong>
           </div>
           <form @submit.prevent="onSubmit">
             <p-form-row
               id="name"
               name="name"
-              label="Step Name">
-              <div slot="body" class="col-lg-9">
+              label="Step Name"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <div class="form-control">
                   {{ form.name }}
                 </div>
@@ -23,10 +31,11 @@
             </p-form-row>
             <hr>
             <div
-              class="card mt-3"
               v-for="(content, i) of form.contents"
               :key="i"
-              :ref="`content-${(i + 1)}`">
+              :ref="`content-${(i + 1)}`"
+              class="card mt-3"
+            >
               <div class="card-body p-3">
                 <div class="d-flex justify-content-between align-items-center">
                   <h5># {{ (i + 1) }}</h5>
@@ -34,18 +43,28 @@
                 <p-form-row
                   :id="`${i}-glossary`"
                   :name="`${i}-glossary`"
-                  :label="`${$t('glossary')}`">
-                  <div slot="body" class="col-lg-9" v-if="form.contents[i] && form.contents[i].glossary">
+                  :label="`${$t('glossary')}`"
+                >
+                  <div
+                    v-if="form.contents[i] && form.contents[i].glossary"
+                    slot="body"
+                    class="col-lg-9"
+                  >
                     {{ form.contents[i].glossary.code }} - {{ form.contents[i].glossary.name }}
                   </div>
                 </p-form-row>
                 <p-form-row
                   :id="`${i}-content`"
                   :name="`${i}-content`"
-                  :label="`Content`">
-                  <div slot="body" class="col-lg-9">
-                    <div
-                      v-html="form.contents[i].content"></div>
+                  :label="`Content`"
+                >
+                  <div
+                    slot="body"
+                    class="col-lg-9"
+                  >
+                    <div>
+                      form.contents[i].content
+                    </div>
                   </div>
                 </p-form-row>
               </div>
@@ -55,29 +74,53 @@
       </div>
       <hr>
       <div class="pull-right">
-        <button class="btn btn-sm btn-light" @click="close">
+        <button
+          class="btn btn-sm btn-light"
+          @click="close"
+        >
           Cancel
         </button>
         <template v-if="form.approval_request_to === authUser.id">
           <template v-if="!form.approved_at && !form.declined_at">
-            <button @click="$refs.modalDeclineInstructionStep.open()" type="submit" class="btn btn-sm btn-danger ml-2" :disabled="isSaving">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('decline') | uppercase }}
+            <button
+              type="submit"
+              class="btn btn-sm btn-danger ml-2"
+              :disabled="isSaving"
+              @click="$refs.modalDeclineInstructionStep.open()"
+            >
+              <i
+                v-show="isSaving"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('decline') | uppercase }}
             </button>
-            <button type="submit" class="btn btn-sm btn-success ml-2" :disabled="isSaving" @click="approve">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('approve') | uppercase }}
+            <button
+              type="submit"
+              class="btn btn-sm btn-success ml-2"
+              :disabled="isSaving"
+              @click="approve"
+            >
+              <i
+                v-show="isSaving"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('approve') | uppercase }}
             </button>
           </template>
-          <button @click="confirmDeleteStep()" class="btn btn-sm btn-danger ml-2" v-else-if="form.declined_at">
+          <button
+            v-else-if="form.declined_at"
+            class="btn btn-sm btn-danger ml-2"
+            @click="confirmDeleteStep()"
+          >
             Delete
           </button>
         </template>
       </div>
     </sweet-modal>
     <m-decline-instruction-step
+      ref="modalDeclineInstructionStep"
       :instruction-id="form.instruction_id"
       :instruction-step-id="form.id"
-      ref="modalDeclineInstructionStep"
-      @added="$emit('added'); close()"></m-decline-instruction-step>
+      @added="$emit('added'); close()"
+    />
   </div>
 </template>
 
@@ -208,8 +251,7 @@ export default {
     deleteContent (i) {
       this.form.contents.splice(i, 1)
     }
-  },
-  components: { VueEditor }
+  }
 }
 </script>
 

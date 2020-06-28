@@ -4,10 +4,23 @@
       :ref="'form-request-delete'"
       :title="$t('form request delete') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
-      <textarea rows="5" class="form-control" ref="reason" placeholder="reason" v-model="reason"></textarea>
+      @close="onClose()"
+    >
+      <textarea
+        ref="reason"
+        v-model="reason"
+        rows="5"
+        class="form-control"
+        placeholder="reason"
+      />
       <hr>
-      <button type="button" @click="onDelete()" class="btn btn-block btn-sm btn-danger mr-5">{{ $t('delete') | uppercase }}</button>
+      <button
+        type="button"
+        class="btn btn-block btn-sm btn-danger mr-5"
+        @click="onDelete()"
+      >
+        {{ $t('delete') | uppercase }}
+      </button>
     </sweet-modal>
   </div>
 </template>

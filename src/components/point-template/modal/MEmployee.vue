@@ -1,41 +1,78 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || $t('select') | uppercase }}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select employee">
+    <span
+      class="link"
+      @click="show"
+    >{{ mutableLabel || $t('select') | uppercase }}</span>
+    <p-modal
+      :id="'select-' + id"
+      :ref="'select-' + id"
+      title="select employee"
+    >
       <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+        <input
+          v-model="searchText"
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          @keydown.enter.prevent=""
+        >
         <hr>
         <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
+          <h3 class="text-center">
+            Loading ...
+          </h3>
         </div>
-        <div v-else class="list-group push">
+        <div
+          v-else
+          class="list-group push"
+        >
           <template v-for="(option, index) in options">
-          <a
-            :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{'active': option.id == mutableId }"
-            @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label | uppercase }}
-          </a>
+            <a
+              :key="index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': option.id == mutableId }"
+              href="javascript:void(0)"
+              @click="choose(option)"
+            >
+              {{ option.label | uppercase }}
+            </a>
           </template>
         </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+        <div
+          v-if="searchText && options.length == 0 && !isLoading"
+          class="alert alert-info text-center"
+        >
           {{ $t('searching not found', [searchText]) | capitalize }} <br>
-          {{ $t('click') }} <span class="link" @click="add"><i class="fa fa-xs" :class="{
-            'fa-refresh fa-spin': isSaving,
-            'fa-plus': !isSaving
-          }"></i> Add</span> {{ $t('to add new data') }}
+          {{ $t('click') }} <span
+            class="link"
+            @click="add"
+          ><i
+            class="fa fa-xs"
+            :class="{
+              'fa-refresh fa-spin': isSaving,
+              'fa-plus': !isSaving
+            }"
+          /> Add</span> {{ $t('to add new data') }}
         </div>
-        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('employee') | capitalize }}, <br/> {{ $t('you can create') }}
+        <div
+          v-if="!searchText && options.length == 0 && !isLoading"
+          class="alert alert-info text-center"
+        >
+          {{ $t('you don\'t have any') | capitalize }} {{ $t('employee') | capitalize }}, <br> {{ $t('you can create') }}
           <router-link :to="'/human-resource/employee/create'">
             <span>{{ $t('new one') }}</span>
           </router-link>
         </div>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('close') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>
@@ -65,10 +102,12 @@ export default {
       required: true
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: null
     },
     label: {
-      type: String
+      type: String,
+      default: null
     }
   },
   watch: {

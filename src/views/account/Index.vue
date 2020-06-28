@@ -4,15 +4,18 @@
       <p-box
         name="Profile"
         link="/account/profile"
-        icon="si si-user"/>
+        icon="si si-user"
+      />
       <p-box
         name="Project"
         link="/account/project"
-        icon="si si-notebook"/>
+        icon="si si-notebook"
+      />
       <p-box
         name="Billing"
         link="/account/billing"
-        icon="si si-docs"/>
+        icon="si si-docs"
+      />
       <!-- <p-box
         name="Reward"
         link="/account/reward"

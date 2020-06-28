@@ -3,29 +3,52 @@
     ref="modal"
     :title="'Select Purchase Order' | uppercase"
     overlay-theme="dark"
-    @close="onClose">
-    <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+    @close="onClose"
+  >
+    <input
+      v-model="searchText"
+      type="text"
+      class="form-control"
+      placeholder="Search..."
+      @keydown.enter.prevent=""
+    >
     <hr>
     <div v-if="isLoading">
-      <h3 class="text-center">Loading ...</h3>
+      <h3 class="text-center">
+        Loading ...
+      </h3>
     </div>
-    <div v-else class="list-group push">
-      <a v-for="(option, index) in options"
-        :key="'request-'+index"
+    <div
+      v-else
+      class="list-group push"
+    >
+      <a
+        v-for="(option, optionIndex) in options"
+        :key="'purchase-order-'+optionIndex"
         class="list-group-item list-group-item-action"
         href="javascript:void(0)"
-        @click="choose(option)">
+        @click="choose(option)"
+      >
         <div class="d-flex justify-content-between align-items-center">
           <div>
             <strong>{{ option.form.number }}</strong><br>
           </div>
-          <div style="font-size: 0.8em;" class="text-black-50 text-right">
+          <div
+            style="font-size: 0.8em;"
+            class="text-black-50 text-right"
+          >
             <span style="font-size: 0.8em">SUPPLIER : {{ option.supplier.name | uppercase }}</span><br>
             {{ option.form.created_at | dateFormat('DD MMMM YYYY HH:mm') }}
           </div>
         </div>
-        <table style="font-size:11px" class="table mb-0">
-          <tr v-for="(item, index) in option.items" :key="'item-'+index">
+        <table
+          style="font-size:11px"
+          class="table mb-0"
+        >
+          <tr
+            v-for="(item, optionItemIndex) in option.items"
+            :key="'item-'+optionItemIndex"
+          >
             <td class="pl-0">
               {{ item.item.name }}
             </td>
@@ -36,11 +59,20 @@
         </table>
       </a>
     </div>
-    <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+    <div
+      v-if="searchText && options.length == 0 && !isLoading"
+      class="alert alert-info text-center"
+    >
       {{ $t('searching not found', [searchText]) | capitalize }}
     </div>
     <div class="pull-right">
-      <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-danger"
+        @click="clear()"
+      >
+        {{ $t('clear') | uppercase }}
+      </button>
     </div>
   </sweet-modal>
 </template>
@@ -60,10 +92,12 @@ export default {
   },
   props: {
     id: {
-      type: String
+      type: String,
+      default: ''
     },
     value: {
-      type: [String, Number]
+      type: [String, Number],
+      default: ''
     }
   },
   watch: {

@@ -1,30 +1,79 @@
 <template>
   <div>
-    <p-modal ref="topUpModal" id="top-up-component" title="top up">
+    <p-modal
+      id="top-up-component"
+      ref="topUpModal"
+      title="top up"
+    >
       <template slot="content">
         <div class="row gutters-tiny">
           <div class="col-sm-12 mb-10">
             <p>{{ 'select the top up value' | uppercase }}</p>
-            <button @click="onClickTemplateButton(50000)" class="btn btn-sm btn-outline-secondary mr-5">{{ 50000 | numberFormat }}</button>
-            <button @click="onClickTemplateButton(100000)" class="btn btn-sm btn-outline-secondary mr-5">{{ 100000 | numberFormat }}</button>
-            <button @click="onClickTemplateButton(300000)" class="btn btn-sm btn-outline-secondary mr-5">{{ 300000 | numberFormat }}</button>
-            <button @click="onClickTemplateButton(500000)" class="btn btn-sm btn-outline-secondary mr-5">{{ 500000 | numberFormat }}</button>
-            <button @click="onClickTemplateButton(1000000)" class="btn btn-sm btn-outline-secondary mr-5">{{ 1000000 | numberFormat }}</button>
-            <button @click="onClickTemplateButton(5000000)" class="btn btn-sm btn-outline-secondary mr-5">{{ 5000000 | numberFormat }}</button>
+            <button
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="onClickTemplateButton(50000)"
+            >
+              {{ 50000 | numberFormat }}
+            </button>
+            <button
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="onClickTemplateButton(100000)"
+            >
+              {{ 100000 | numberFormat }}
+            </button>
+            <button
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="onClickTemplateButton(300000)"
+            >
+              {{ 300000 | numberFormat }}
+            </button>
+            <button
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="onClickTemplateButton(500000)"
+            >
+              {{ 500000 | numberFormat }}
+            </button>
+            <button
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="onClickTemplateButton(1000000)"
+            >
+              {{ 1000000 | numberFormat }}
+            </button>
+            <button
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="onClickTemplateButton(5000000)"
+            >
+              {{ 5000000 | numberFormat }}
+            </button>
             <p-form-number
               id="amount"
+              v-model="form.amount"
               name="amount"
               class="mt-10"
               :is-text-right="false"
-              v-model="form.amount"/>
+            />
           </div>
         </div>
       </template>
       <template slot="footer">
-        <button type="button" @click="pay()" class="btn btn-sm btn-primary" :disabled="isSaving">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('pay now') | uppercase }}
+        <button
+          type="button"
+          class="btn btn-sm btn-primary"
+          :disabled="isSaving"
+          @click="pay()"
+        >
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          /> {{ $t('pay now') | uppercase }}
         </button>
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('cancel') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('cancel') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>

@@ -1,53 +1,71 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
-      <router-link to="/human-resource/employee-group" class="breadcrumb-item">{{ $t('employee group') | uppercase }}</router-link>
+      <breadcrumb-human-resource />
+      <router-link
+        to="/human-resource/employee-group"
+        class="breadcrumb-item"
+      >
+        {{ $t('employee group') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ group.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <button
-            type="button"
-            @click="$refs.addEmployeeGroup.open()"
             v-if="$permission.has('create employee')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addEmployeeGroup.open()"
+          >
             <span>{{ $t('create') | uppercase }}</span>
           </button>
           <button
-            type="button"
-            @click="$refs.editEmployeeGroup.open(group)"
             v-if="$permission.has('update employee')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editEmployeeGroup.open(group)"
+          >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete employee')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="group.name"
             label="Name"
             name="name"
-            v-model="group.name"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-employee-group ref="addEmployeeGroup" @added="onAddedEmployeeGroup($event)"></m-add-employee-group>
-    <m-edit-employee-group ref="editEmployeeGroup" @updated="onUpdatedEmployeeGroup($event)"></m-edit-employee-group>
+    <m-add-employee-group
+      ref="addEmployeeGroup"
+      @added="onAddedEmployeeGroup($event)"
+    />
+    <m-edit-employee-group
+      ref="editEmployeeGroup"
+      @updated="onUpdatedEmployeeGroup($event)"
+    />
   </div>
 </template>
 

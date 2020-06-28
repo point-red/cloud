@@ -4,18 +4,20 @@
       ref="modal"
       :title="$t('add user') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <div class="row">
         <div class="col-sm-12">
           <p-form-row
             id="name"
+            ref="name"
             v-model="form.user_name"
             :disabled="isSaving"
             :label="$t('name')"
             name="name"
-            ref="name"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)"/>
+            @errors="form.errors.set('name', null)"
+          />
 
           <p-form-row
             id="email"
@@ -24,12 +26,21 @@
             :label="$t('email')"
             name="email"
             :errors="form.errors.get('email')"
-            @errors="form.errors.set('email', null)"/>
+            @errors="form.errors.set('email', null)"
+          />
         </div>
       </div>
       <div class="pull-right">
-        <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+        <button
+          type="submit"
+          class="btn btn-sm btn-primary"
+          :disabled="isSaving"
+          @click="onSubmit"
+        >
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          /> {{ $t('save') | uppercase }}
         </button>
       </div>
     </sweet-modal>

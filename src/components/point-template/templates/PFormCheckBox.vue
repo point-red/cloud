@@ -1,14 +1,18 @@
 <template>
   <div :class="{ 'form-group row': isForm }">
     <div :class="{ 'col-12': isForm }">
-      <label class="css-control css-control-primary css-checkbox" @click.prevent>
+      <label
+        class="css-control css-control-primary css-checkbox"
+        @click.prevent
+      >
         <input
           :id="id"
           :name="name"
           :checked="mutableChecked"
           class="css-control-input"
-          type="checkbox">
-        <span class="css-control-indicator"></span>{{ description }}
+          type="checkbox"
+        >
+        <span class="css-control-indicator" />{{ description }}
       </label>
     </div>
   </div>
@@ -23,16 +27,20 @@ export default {
   },
   props: {
     description: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
-      type: String
+      type: String,
+      default: ''
     },
     name: {
-      type: String
+      type: String,
+      default: ''
     },
     checked: {
-      type: [Boolean, Number]
+      type: [Boolean, Number],
+      default: false
     },
     isForm: {
       type: Boolean,

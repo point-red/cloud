@@ -2,63 +2,104 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmitScore">
+      @submit.prevent="onSubmitScore"
+    >
       <p-modal
-        ref="score"
         :id="id"
-        :isLoading="isLoading"
-        title="Score Criteria">
-
+        ref="score"
+        :is-loading="isLoading"
+        title="Score Criteria"
+      >
         <template slot="content">
           <table class="table">
             <tr>
-              <td class="font-w700">{{'Indicator' | uppercase}}</td>
-              <td class="full-width">{{ indicator.name }}</td>
+              <td class="font-w700">
+                {{ 'Indicator' | uppercase }}
+              </td>
+              <td class="full-width">
+                {{ indicator.name }}
+              </td>
             </tr>
           </table>
           <hr>
           <p-table>
-            <tr slot="p-head" v-show="scores.length > 0" class="bg-info-light">
+            <tr
+              v-show="scores.length > 0"
+              slot="p-head"
+              class="bg-info-light"
+            >
               <th>Score Description</th>
-              <th class="text-center">Score</th>
-              <th></th>
+              <th class="text-center">
+                Score
+              </th>
+              <th />
             </tr>
             <tr
               v-for="score in scores"
               slot="p-body"
-              :key="score.id">
+              :key="score.id"
+            >
               <td>{{ score.description }}</td>
-              <td class="text-center">{{ score.score }}</td>
+              <td class="text-center">
+                {{ score.score }}
+              </td>
               <td>
-                <a href="javascript:void(0)" class="badge badge-primary mr-5" @click="edit(score)"><i class="fa fa-pencil"></i></a>
-                <a href="javascript:void(0)" class="badge badge-danger" @click="remove(score.id)"><i class="fa fa-close"></i></a>
+                <a
+                  href="javascript:void(0)"
+                  class="badge badge-primary mr-5"
+                  @click="edit(score)"
+                ><i class="fa fa-pencil" /></a>
+                <a
+                  href="javascript:void(0)"
+                  class="badge badge-danger"
+                  @click="remove(score.id)"
+                ><i class="fa fa-close" /></a>
               </td>
             </tr>
           </p-table>
           <p-form-row
             id="description"
+            v-model="form.description"
             name="description"
             label="score description"
             :disabled="isSaving"
-            v-model="form.description">
-          </p-form-row>
+          />
           <p-form-row
             id="score"
+            v-model="form.score"
             name="score"
             label="score"
             :disabled="isSaving"
-            v-model="form.score">
-          </p-form-row>
+          />
         </template>
         <template slot="footer">
-          <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>
-            <template v-if="isCreateMode">{{ $t('add') | uppercase }}</template>
-            <template v-if="!isCreateMode">{{ $t('update') | uppercase }}</template>
+          <button
+            :disabled="isSaving"
+            type="submit"
+            class="btn btn-sm btn-primary"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            />
+            <template v-if="isCreateMode">
+              {{ $t('add') | uppercase }}
+            </template>
+            <template v-if="!isCreateMode">
+              {{ $t('update') | uppercase }}
+            </template>
           </button>
-          <button type="button" class="btn btn-sm btn-outline-danger" @click="cancel">
-            <template v-if="isCreateMode">{{ $t('close') | uppercase }}</template>
-            <template v-if="!isCreateMode">{{ $t('cancel') | uppercase }}</template>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="cancel"
+          >
+            <template v-if="isCreateMode">
+              {{ $t('close') | uppercase }}
+            </template>
+            <template v-if="!isCreateMode">
+              {{ $t('cancel') | uppercase }}
+            </template>
           </button>
         </template>
       </p-modal>
