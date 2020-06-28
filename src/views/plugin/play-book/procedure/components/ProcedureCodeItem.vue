@@ -101,7 +101,7 @@ export default {
   transition: all .3s ease;
   -webkit-user-select: none !important;
   -webkit-touch-callout: none !important;
-  touch-action: none;
+  user-select: none;
 
   &:hover {
     background: rgba(0, 0, 0, 0.04);
