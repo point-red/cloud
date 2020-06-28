@@ -183,9 +183,8 @@
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPlayBook from '@/views/plugin/play-book/Breadcrumb'
-import debounce from 'lodash/debounce'
 import PointTable from 'point-table-vue'
-import { mapGetters, mapActions, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   components: {
