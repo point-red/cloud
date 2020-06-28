@@ -1216,6 +1216,12 @@ export default {
     BreadcrumbHumanResource,
     EmployeeWidget
   },
+  props: {
+    name: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -1367,11 +1373,10 @@ export default {
       amount_received_difference: 0
     }
   },
-  props: {
-    name: {
-      type: String,
-      default: ''
-    }
+  computed: {
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeAssessment', ['assessment']),
+    ...mapGetters('humanResourceEmployeeSalary', ['salary', 'salaryAssessment', 'salaryAchievement'])
   },
   watch: {
     'form.date' () {
@@ -1410,11 +1415,6 @@ export default {
         this.calculate()
       }
     }
-  },
-  computed: {
-    ...mapGetters('humanResourceEmployee', ['employee']),
-    ...mapGetters('humanResourceEmployeeAssessment', ['assessment']),
-    ...mapGetters('humanResourceEmployeeSalary', ['salary', 'salaryAssessment', 'salaryAchievement'])
   },
   created () {
     this.isLoading = true

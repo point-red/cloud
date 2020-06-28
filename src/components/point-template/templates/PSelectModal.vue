@@ -68,14 +68,6 @@
 import debounce from 'lodash/debounce'
 
 export default {
-  data () {
-    return {
-      search: '',
-      mutableChoosen: this.choosen,
-      mutableOptions: this.options,
-      isLoadingAddButton: false
-    }
-  },
   props: {
     id: {
       type: String,
@@ -96,6 +88,14 @@ export default {
     choosen: {
       type: String,
       default: ''
+    }
+  },
+  data () {
+    return {
+      search: '',
+      mutableChoosen: this.choosen,
+      mutableOptions: this.options,
+      isLoadingAddButton: false
     }
   },
   watch: {

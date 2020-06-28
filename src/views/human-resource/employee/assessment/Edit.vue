@@ -288,6 +288,12 @@ export default {
     Breadcrumb,
     BreadcrumbHumanResource
   },
+  props: {
+    name: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -303,12 +309,6 @@ export default {
       isLoading: false,
       isSaving: false,
       scoreModalTitle: ''
-    }
-  },
-  props: {
-    name: {
-      type: String,
-      default: ''
     }
   },
   computed: {

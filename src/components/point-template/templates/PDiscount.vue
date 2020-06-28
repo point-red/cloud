@@ -44,6 +44,28 @@
 
 <script>
 export default {
+  props: {
+    readonly: {
+      type: Boolean,
+      default: false
+    },
+    isTextRight: {
+      type: Boolean,
+      default: true
+    },
+    discountPercent: {
+      type: Number,
+      default: 0
+    },
+    discountValue: {
+      type: Number,
+      default: 0
+    },
+    baseValue: {
+      type: Number,
+      required: true
+    }
+  },
   data () {
     return {
       number: this.value,
@@ -77,28 +99,6 @@ export default {
       } else if (this.discountPercent == 0 && this.discountValue != 0) {
         this.isPercent = false
       }
-    }
-  },
-  props: {
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    isTextRight: {
-      type: Boolean,
-      default: true
-    },
-    discountPercent: {
-      type: Number,
-      default: 0
-    },
-    discountValue: {
-      type: Number,
-      default: 0
-    },
-    baseValue: {
-      type: Number,
-      required: true
     }
   },
   methods: {

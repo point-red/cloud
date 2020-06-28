@@ -222,6 +222,20 @@ import debounce from 'lodash/debounce'
 import { mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       isSaving: false,
@@ -256,20 +270,6 @@ export default {
           }
         ]
       })
-    }
-  },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number],
-      default: ''
-    },
-    label: {
-      type: String,
-      default: ''
     }
   },
   watch: {

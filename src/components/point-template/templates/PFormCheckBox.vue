@@ -20,11 +20,6 @@
 
 <script>
 export default {
-  data () {
-    return {
-      mutableChecked: false
-    }
-  },
   props: {
     description: {
       type: String,
@@ -47,13 +42,10 @@ export default {
       default: true
     }
   },
-  methods: {
-    togglePerm () {
-      this.mutableChecked = !this.mutableChecked
+  data () {
+    return {
+      mutableChecked: false
     }
-  },
-  mounted () {
-    this.mutableChecked = this.checked
   },
   watch: {
     'mutableChecked' () {
@@ -61,6 +53,14 @@ export default {
     },
     'checked' () {
       this.mutableChecked = this.checked
+    }
+  },
+  mounted () {
+    this.mutableChecked = this.checked
+  },
+  methods: {
+    togglePerm () {
+      this.mutableChecked = !this.mutableChecked
     }
   }
 }

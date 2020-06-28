@@ -61,6 +61,10 @@ import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    TabMenu
+  },
   data () {
     return {
       form: new Form({
@@ -68,10 +72,6 @@ export default {
       }),
       isSaving: false
     }
-  },
-  components: {
-    Breadcrumb,
-    TabMenu
   },
   computed: {
     ...mapGetters('accountProject', ['project'])

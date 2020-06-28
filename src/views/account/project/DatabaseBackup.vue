@@ -55,13 +55,6 @@ export default {
   components: {
     PointTable
   },
-  data () {
-    return {
-      id: this.projectId,
-      isLoading: false,
-      isSaving: false
-    }
-  },
   props: {
     code: {
       type: String,
@@ -72,6 +65,13 @@ export default {
       default: null
     }
   },
+  data () {
+    return {
+      id: this.projectId,
+      isLoading: false,
+      isSaving: false
+    }
+  },
   computed: {
     ...mapGetters('accountProjectDatabaseBackup', ['backups'])
   },
@@ -79,6 +79,14 @@ export default {
     projectId () {
       this.id = this.projectId
     }
+  },
+  created () {
+    this.get({
+      id: this.id,
+      params: {
+        code: this.code
+      }
+    })
   },
   methods: {
     ...mapActions('accountProjectDatabaseBackup', ['get', 'create']),
@@ -104,14 +112,6 @@ export default {
     restoreDatabase () {
       this.$notification.error('This feature not available under beta version')
     }
-  },
-  created () {
-    this.get({
-      id: this.id,
-      params: {
-        code: this.code
-      }
-    })
   }
 }
 </script>

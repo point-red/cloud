@@ -94,6 +94,14 @@ import DatabaseBackup from './DatabaseBackup'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    TabMenu,
+    ProjectWidget,
+    PointTable,
+    DatabaseStorage,
+    DatabaseBackup
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -102,14 +110,6 @@ export default {
       tableName: this.$route.query.table_name,
       content: 'storage' // should be 'storage' or 'backup'
     }
-  },
-  components: {
-    Breadcrumb,
-    TabMenu,
-    ProjectWidget,
-    PointTable,
-    DatabaseStorage,
-    DatabaseBackup
   },
   computed: {
     ...mapGetters('accountProject', ['project']),

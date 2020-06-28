@@ -81,6 +81,12 @@ import _ from 'lodash'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -92,12 +98,6 @@ export default {
   },
   computed: {
     ...mapGetters('masterCustomerGroup', ['groups', 'pagination'])
-  },
-  props: {
-    id: {
-      type: String,
-      default: ''
-    }
   },
   watch: {
     searchText: debounce(function () {

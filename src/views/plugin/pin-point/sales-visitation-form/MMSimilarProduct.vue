@@ -85,6 +85,12 @@ export default {
   components: {
     MAddSimilarProduct
   },
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -96,12 +102,6 @@ export default {
   },
   computed: {
     ...mapGetters('pluginPinPointSimilarProduct', ['similarProduct', 'pagination'])
-  },
-  props: {
-    id: {
-      type: String,
-      default: ''
-    }
   },
   watch: {
     searchText: debounce(function () {

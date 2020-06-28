@@ -63,11 +63,6 @@
 <script>
 
 export default {
-  data () {
-    return {
-      selectedIndex: null
-    }
-  },
   props: {
     value: {
       type: [String, Number],
@@ -76,6 +71,11 @@ export default {
     templates: {
       type: Array,
       default: null
+    }
+  },
+  data () {
+    return {
+      selectedIndex: null
     }
   },
   methods: {

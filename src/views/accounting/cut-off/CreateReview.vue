@@ -174,6 +174,13 @@ import MEditAccount from './MEditAccount'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting,
+    MCreateAccount,
+    MEditAccount,
+    PointTable
+  },
   data () {
     return {
       isSaving: false,
@@ -183,13 +190,6 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1
     }
-  },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting,
-    MCreateAccount,
-    MEditAccount,
-    PointTable
   },
   computed: {
     ...mapGetters('accountingCutOffAccount', ['accounts'])

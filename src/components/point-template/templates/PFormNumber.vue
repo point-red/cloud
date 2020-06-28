@@ -34,32 +34,6 @@ export default {
   components: {
     Cleave
   },
-  data () {
-    return {
-      number: this.value,
-      options: {
-        numeral: true,
-        numeralDecimalScale: 15,
-        numeralPositiveOnly: this.unsigned
-      }
-    }
-  },
-  watch: {
-    value () {
-      this.number = this.value
-    },
-    number () {
-      this.$emit('input', this.number)
-
-      this.$nextTick(() => {
-        if (this.number < this.min) {
-          this.$emit('input', this.min)
-        } else if (this.number > this.max) {
-          this.$emit('input', this.max)
-        }
-      })
-    }
-  },
   props: {
     readonly: {
       type: Boolean,
@@ -96,6 +70,32 @@ export default {
     max: {
       type: Number,
       default: Number.MAX_SAFE_INTEGER
+    }
+  },
+  data () {
+    return {
+      number: this.value,
+      options: {
+        numeral: true,
+        numeralDecimalScale: 15,
+        numeralPositiveOnly: this.unsigned
+      }
+    }
+  },
+  watch: {
+    value () {
+      this.number = this.value
+    },
+    number () {
+      this.$emit('input', this.number)
+
+      this.$nextTick(() => {
+        if (this.number < this.min) {
+          this.$emit('input', this.min)
+        } else if (this.number > this.max) {
+          this.$emit('input', this.max)
+        }
+      })
     }
   },
   methods: {

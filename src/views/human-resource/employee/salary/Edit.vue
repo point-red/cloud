@@ -1117,6 +1117,12 @@ export default {
     BreadcrumbHumanResource,
     EmployeeWidget
   },
+  props: {
+    name: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -1203,12 +1209,6 @@ export default {
       total_company_profit_difference_minus_amount: 0,
       total_weekly_sales: 0,
       amount_received_difference: 0
-    }
-  },
-  props: {
-    name: {
-      type: String,
-      default: ''
     }
   },
   computed: {

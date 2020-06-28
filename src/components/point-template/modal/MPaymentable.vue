@@ -84,6 +84,24 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: null
+    },
+    label: {
+      type: String,
+      default: null
+    },
+    type: {
+      type: String,
+      default: null
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -103,24 +121,6 @@ export default {
     ...mapGetters('masterSupplier', ['suppliers']),
     ...mapGetters('masterCustomer', ['customers']),
     ...mapGetters('humanResourceEmployee', ['employees'])
-  },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number],
-      default: null
-    },
-    label: {
-      type: String,
-      default: null
-    },
-    type: {
-      type: String,
-      default: null
-    }
   },
   watch: {
     searchText: debounce(function () {

@@ -140,20 +140,6 @@ import debounce from 'lodash/debounce'
 import { mapActions } from 'vuex'
 
 export default {
-  data () {
-    return {
-      isSaving: false,
-      form: new Form({
-        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        supplier_id: null,
-        supplier_name: null,
-        chart_of_account_id: null,
-        chart_of_account_name: null,
-        notes: null,
-        amount: 0
-      })
-    }
-  },
   props: {
     id: {
       type: String,
@@ -166,6 +152,20 @@ export default {
     label: {
       type: String,
       default: ''
+    }
+  },
+  data () {
+    return {
+      isSaving: false,
+      form: new Form({
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        supplier_id: null,
+        supplier_name: null,
+        chart_of_account_id: null,
+        chart_of_account_name: null,
+        notes: null,
+        amount: 0
+      })
     }
   },
   watch: {

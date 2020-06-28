@@ -111,6 +111,16 @@
 
 <script>
 export default {
+  props: {
+    id: {
+      type: String,
+      default: null
+    },
+    disableUnitSelection: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       index: null,
@@ -126,16 +136,6 @@ export default {
         label: null,
         converter: null
       }
-    }
-  },
-  props: {
-    id: {
-      type: String,
-      default: null
-    },
-    disableUnitSelection: {
-      type: Boolean,
-      default: false
     }
   },
   methods: {

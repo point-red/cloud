@@ -161,17 +161,17 @@ import ProjectWidget from './Widget'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    TabMenu,
+    ProjectWidget
+  },
   data () {
     return {
       id: this.$route.params.id,
       isLoading: false,
       isSaving: false
     }
-  },
-  components: {
-    Breadcrumb,
-    TabMenu,
-    ProjectWidget
   },
   computed: {
     ...mapGetters('accountProject', ['project', 'projects'])

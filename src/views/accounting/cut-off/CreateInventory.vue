@@ -189,6 +189,13 @@ import MEditInventory from './MEditInventory'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting,
+    PointTable,
+    MCreateInventory,
+    MEditInventory
+  },
   data () {
     return {
       isSaving: false,
@@ -197,13 +204,6 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1
     }
-  },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting,
-    PointTable,
-    MCreateInventory,
-    MEditInventory
   },
   computed: {
     ...mapGetters('accountingCutOffInventory', ['inventories'])

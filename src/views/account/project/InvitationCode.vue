@@ -147,6 +147,12 @@ import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    TabMenu,
+    ProjectWidget,
+    PointTable
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -162,12 +168,6 @@ export default {
       invitationCodeStatus: '',
       loadingMessage: 'Checking invitation code status'
     }
-  },
-  components: {
-    Breadcrumb,
-    TabMenu,
-    ProjectWidget,
-    PointTable
   },
   computed: {
     ...mapGetters('accountProject', ['project']),

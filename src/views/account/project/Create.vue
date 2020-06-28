@@ -434,6 +434,10 @@ import Form from '@/utils/Form'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    TabMenu
+  },
   data () {
     return {
       form: new Form({
@@ -461,10 +465,6 @@ export default {
       timezoneOptions: [],
       isSaving: false
     }
-  },
-  components: {
-    Breadcrumb,
-    TabMenu
   },
   computed: {
     ...mapGetters('accountPlugin', ['plugins', 'pagination']),

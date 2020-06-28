@@ -75,14 +75,6 @@ export default {
   computed: {
     ...mapGetters('auth', ['authUser'])
   },
-  methods: {
-    toggle () {
-      this.show = !this.show
-    },
-    close () {
-      this.show = false
-    }
-  },
   watch: {
     authUser () {
       var self = this
@@ -108,6 +100,14 @@ export default {
   },
   created () {
 
+  },
+  methods: {
+    toggle () {
+      this.show = !this.show
+    },
+    close () {
+      this.show = false
+    }
   }
 }
 </script>

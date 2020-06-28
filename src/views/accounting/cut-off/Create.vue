@@ -94,6 +94,10 @@ import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting
+  },
   data () {
     return {
       isSaving: false,
@@ -103,10 +107,6 @@ export default {
         date: this.$moment().format('YYYY-MM-DD')
       })
     }
-  },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting
   },
   computed: {
     ...mapGetters('accountingCutOff', ['cutOffs'])

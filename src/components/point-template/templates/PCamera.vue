@@ -57,17 +57,17 @@ export default {
   components: {
     WebCam
   },
+  props: {
+    image: {
+      default: null
+    }
+  },
   data () {
     return {
       mutableImage: null,
       camera: null,
       deviceId: null,
       devices: []
-    }
-  },
-  props: {
-    image: {
-      default: null
     }
   },
   watch: {

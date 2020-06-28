@@ -57,19 +57,6 @@
 import debounce from 'lodash/debounce'
 
 export default {
-  data () {
-    return {
-      searchText: '',
-      options: [
-        { id: null, label: 'pending' },
-        { id: 1, label: 'canceled' }
-      ],
-      mutableId: this.value,
-      mutableLabel: this.label,
-      isSaving: false,
-      isLoading: false
-    }
-  },
   props: {
     id: {
       type: String,
@@ -82,6 +69,19 @@ export default {
     label: {
       type: String,
       default: null
+    }
+  },
+  data () {
+    return {
+      searchText: '',
+      options: [
+        { id: null, label: 'pending' },
+        { id: 1, label: 'canceled' }
+      ],
+      mutableId: this.value,
+      mutableLabel: this.label,
+      isSaving: false,
+      isLoading: false
     }
   },
   watch: {

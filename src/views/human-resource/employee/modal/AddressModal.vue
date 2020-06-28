@@ -57,6 +57,18 @@ export default {
       this.$emit('value', this.address)
     }
   },
+  created () {
+    console.log('address created')
+  },
+  updated () {
+    console.log('address updated')
+  },
+  mounted () {
+    console.log('address mounted')
+  },
+  beforeDestroy () {
+    console.log('address before destroy')
+  },
   methods: {
     show () {
       this.$refs.addressModal.show()
@@ -69,18 +81,6 @@ export default {
       this.address = ''
       this.close()
     }
-  },
-  created () {
-    console.log('address created')
-  },
-  updated () {
-    console.log('address updated')
-  },
-  mounted () {
-    console.log('address mounted')
-  },
-  beforeDestroy () {
-    console.log('address before destroy')
   }
 }
 </script>

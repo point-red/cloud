@@ -16,11 +16,6 @@
 
 <script>
 export default {
-  data () {
-    return {
-      selectedValue: ''
-    }
-  },
   props: {
     keyField: {
       type: String,
@@ -51,9 +46,9 @@ export default {
       default: 0 // 0 = unlimited
     }
   },
-  created () {
-    if (this.value !== undefined && this.value !== null) {
-      this.selectedValue = this.value.toString()
+  data () {
+    return {
+      selectedValue: ''
     }
   },
   watch: {
@@ -66,6 +61,11 @@ export default {
       } else {
         this.$refs.select.clear()
       }
+    }
+  },
+  created () {
+    if (this.value !== undefined && this.value !== null) {
+      this.selectedValue = this.value.toString()
     }
   }
 }

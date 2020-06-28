@@ -229,6 +229,11 @@ import LineChart from '@/components/point-chart/LineChart'
 import { mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting,
+    LineChart
+  },
   data () {
     return {
       isLoading: false,
@@ -240,11 +245,6 @@ export default {
       ratioDescription: '',
       ratioResult: ''
     }
-  },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting,
-    LineChart
   },
   mounted () {
     this.date.setMonth(this.date.getMonth() - 6)

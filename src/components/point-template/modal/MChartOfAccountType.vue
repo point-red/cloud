@@ -44,19 +44,6 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  data () {
-    return {
-      searchText: '',
-      options: [],
-      mutableId: this.value,
-      mutableLabel: this.label,
-      isSaving: false,
-      isLoading: false
-    }
-  },
-  computed: {
-    ...mapGetters('accountingChartOfAccountType', ['chartOfAccountTypes'])
-  },
   props: {
     id: {
       type: String,
@@ -70,6 +57,19 @@ export default {
       type: String,
       default: ''
     }
+  },
+  data () {
+    return {
+      searchText: '',
+      options: [],
+      mutableId: this.value,
+      mutableLabel: this.label,
+      isSaving: false,
+      isLoading: false
+    }
+  },
+  computed: {
+    ...mapGetters('accountingChartOfAccountType', ['chartOfAccountTypes'])
   },
   watch: {
     searchText: debounce(function () {

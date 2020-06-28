@@ -269,6 +269,10 @@ import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting
+  },
   data () {
     return {
       isLoading: false,
@@ -287,10 +291,6 @@ export default {
       totalProfitAndLossNonOperation: 0,
       totalProfitAndLossNet: 0
     }
-  },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting
   },
   computed: {
     ...mapGetters('accountingBalanceSheet', ['chartOfAccounts'])

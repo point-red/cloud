@@ -56,13 +56,6 @@
 
 <script>
 export default {
-  data () {
-    return {
-      isFullscreen: false,
-      backdrop: false,
-      showClose: this.canClose
-    }
-  },
   props: {
     id: {
       type: String,
@@ -79,6 +72,13 @@ export default {
     canClose: {
       type: Boolean,
       default: true
+    }
+  },
+  data () {
+    return {
+      isFullscreen: false,
+      backdrop: false,
+      showClose: this.canClose
     }
   },
   methods: {

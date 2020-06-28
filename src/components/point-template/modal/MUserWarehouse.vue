@@ -83,19 +83,6 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  data () {
-    return {
-      searchText: '',
-      options: [],
-      mutableId: this.value,
-      mutableLabel: this.label,
-      isSaving: false,
-      isLoading: false
-    }
-  },
-  computed: {
-    ...mapGetters('masterUser', ['users', 'pagination'])
-  },
   props: {
     id: {
       type: String,
@@ -117,6 +104,19 @@ export default {
       type: Array,
       default: null
     }
+  },
+  data () {
+    return {
+      searchText: '',
+      options: [],
+      mutableId: this.value,
+      mutableLabel: this.label,
+      isSaving: false,
+      isLoading: false
+    }
+  },
+  computed: {
+    ...mapGetters('masterUser', ['users', 'pagination'])
   },
   watch: {
     searchText: debounce(function () {

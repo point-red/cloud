@@ -175,6 +175,13 @@ import MEditSalesDownPayment from './MEditSalesDownPayment'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting,
+    PointTable,
+    MCreateSalesDownPayment,
+    MEditSalesDownPayment
+  },
   data () {
     return {
       isSaving: false,
@@ -183,13 +190,6 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1
     }
-  },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting,
-    PointTable,
-    MCreateSalesDownPayment,
-    MEditSalesDownPayment
   },
   computed: {
     ...mapGetters('accountingCutOffSalesDownPayment', ['salesDownPayments'])

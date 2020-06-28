@@ -154,6 +154,9 @@ import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -173,9 +176,6 @@ export default {
       isSaving: false,
       timezoneOptions: []
     }
-  },
-  components: {
-    Breadcrumb
   },
   computed: {
     ...mapGetters('accountProject', ['project'])

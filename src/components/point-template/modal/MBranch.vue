@@ -59,6 +59,16 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    value: {
+      type: [String, Number],
+      default: null
+    },
+    label: {
+      type: String,
+      default: null
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -71,16 +81,6 @@ export default {
   },
   computed: {
     ...mapGetters('masterBranch', ['branches', 'pagination'])
-  },
-  props: {
-    value: {
-      type: [String, Number],
-      default: null
-    },
-    label: {
-      type: String,
-      default: null
-    }
   },
   watch: {
     searchText: debounce(function () {

@@ -55,47 +55,6 @@ export default {
   components: {
     Cleave
   },
-  data () {
-    return {
-      id: this.itemId,
-      number: this.value,
-      mutableUnit: {
-        id: this.unit.id,
-        name: this.unit.name,
-        converter: this.unit.converter,
-        label: this.unit.label
-      },
-      options: {
-        numeral: true,
-        numeralDecimalScale: 15,
-        numeralPositiveOnly: this.unsigned
-      }
-    }
-  },
-  watch: {
-    unit: {
-      handler: function (newValue) {
-        this.mutableUnit.name = this.unit.name
-        this.mutableUnit.label = this.unit.label
-        this.mutableUnit.converter = this.unit.converter
-      },
-      deep: true
-    },
-    value () {
-      this.number = this.value
-    },
-    number () {
-      this.$emit('input', this.number)
-
-      this.$nextTick(() => {
-        if (this.number < this.min) {
-          this.$emit('input', this.min)
-        } else if (this.number > this.max) {
-          this.$emit('input', this.max)
-        }
-      })
-    }
-  },
   props: {
     readonly: {
       type: Boolean,
@@ -144,6 +103,47 @@ export default {
     max: {
       type: Number,
       default: Number.MAX_SAFE_INTEGER
+    }
+  },
+  data () {
+    return {
+      id: this.itemId,
+      number: this.value,
+      mutableUnit: {
+        id: this.unit.id,
+        name: this.unit.name,
+        converter: this.unit.converter,
+        label: this.unit.label
+      },
+      options: {
+        numeral: true,
+        numeralDecimalScale: 15,
+        numeralPositiveOnly: this.unsigned
+      }
+    }
+  },
+  watch: {
+    unit: {
+      handler: function (newValue) {
+        this.mutableUnit.name = this.unit.name
+        this.mutableUnit.label = this.unit.label
+        this.mutableUnit.converter = this.unit.converter
+      },
+      deep: true
+    },
+    value () {
+      this.number = this.value
+    },
+    number () {
+      this.$emit('input', this.number)
+
+      this.$nextTick(() => {
+        if (this.number < this.min) {
+          this.$emit('input', this.min)
+        } else if (this.number > this.max) {
+          this.$emit('input', this.max)
+        }
+      })
     }
   },
   methods: {

@@ -45,19 +45,6 @@
 
 <script>
 export default {
-  data () {
-    return {
-      options: [
-        { id: null, label: 'pending', value: 'approvalPending' },
-        { id: 1, label: 'approved', value: 'approvalApproved' },
-        { id: 0, label: 'rejected', value: 'approvalRejected' }
-      ],
-      mutableId: this.value,
-      mutableLabel: this.label,
-      isSaving: false,
-      isLoading: false
-    }
-  },
   props: {
     id: {
       type: String,
@@ -70,6 +57,19 @@ export default {
     label: {
       type: String,
       default: ''
+    }
+  },
+  data () {
+    return {
+      options: [
+        { id: null, label: 'pending', value: 'approvalPending' },
+        { id: 1, label: 'approved', value: 'approvalApproved' },
+        { id: 0, label: 'rejected', value: 'approvalRejected' }
+      ],
+      mutableId: this.value,
+      mutableLabel: this.label,
+      isSaving: false,
+      isLoading: false
     }
   },
   watch: {

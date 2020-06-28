@@ -168,14 +168,14 @@ import AssignAutomatedIndicatorModal from './AssignAutomatedIndicatorModal'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
+  components: {
+    AssignAutomatedIndicatorModal
+  },
   props: {
     id: {
       type: String,
       required: true
     }
-  },
-  components: {
-    AssignAutomatedIndicatorModal
   },
   data () {
     return {

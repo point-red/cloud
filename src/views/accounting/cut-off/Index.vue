@@ -44,6 +44,10 @@ import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting
+  },
   data () {
     return {
       isLoading: false,
@@ -68,10 +72,6 @@ export default {
         end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
       }
     }
-  },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting
   },
   computed: {
     ...mapGetters('accountingCutOff', ['cutOffs'])

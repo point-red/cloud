@@ -301,6 +301,12 @@ export default {
     BreadcrumbHumanResource,
     EmployeeWidget
   },
+  props: {
+    name: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -321,23 +327,17 @@ export default {
       scoreModalTitle: ''
     }
   },
-  props: {
-    name: {
-      type: String,
-      default: ''
-    }
+  computed: {
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceKpiResult', ['result']),
+    ...mapGetters('humanResourceKpiTemplate', ['template']),
+    ...mapGetters('humanResourceKpiAutomated', ['automated_codes'])
   },
   watch: {
     'form.date' () {
       this.isLoading = true
       this.getAutomatedScore()
     }
-  },
-  computed: {
-    ...mapGetters('humanResourceEmployee', ['employee']),
-    ...mapGetters('humanResourceKpiResult', ['result']),
-    ...mapGetters('humanResourceKpiTemplate', ['template']),
-    ...mapGetters('humanResourceKpiAutomated', ['automated_codes'])
   },
   created () {
     this.isLoading = true

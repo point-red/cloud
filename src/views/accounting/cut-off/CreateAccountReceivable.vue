@@ -170,6 +170,13 @@ import MEditAccountReceivable from './MEditAccountReceivable'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting,
+    PointTable,
+    MCreateAccountReceivable,
+    MEditAccountReceivable
+  },
   data () {
     return {
       isSaving: false,
@@ -178,13 +185,6 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1
     }
-  },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting,
-    PointTable,
-    MCreateAccountReceivable,
-    MEditAccountReceivable
   },
   computed: {
     ...mapGetters('accountingCutOffAccountReceivable', ['accountReceivables'])

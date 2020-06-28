@@ -337,6 +337,14 @@ export default {
       }
     }
   },
+  created () {
+    this.get({
+      params: {
+        date_from: this.date.start,
+        date_to: this.date.end
+      }
+    })
+  },
   methods: {
     ...mapActions('pluginPinPointReportPerformance', ['get', 'export']),
     percentage: function (actual, target) {
@@ -377,14 +385,6 @@ export default {
         console.log(error)
       })
     }
-  },
-  created () {
-    this.get({
-      params: {
-        date_from: this.date.start,
-        date_to: this.date.end
-      }
-    })
   }
 }
 </script>

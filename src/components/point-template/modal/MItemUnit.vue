@@ -117,6 +117,12 @@
 
 <script>
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       units: [
@@ -129,12 +135,6 @@ export default {
         }
       ],
       isLoading: false
-    }
-  },
-  props: {
-    id: {
-      type: String,
-      default: ''
     }
   },
   watch: {

@@ -231,6 +231,10 @@ import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting
+  },
   data () {
     return {
       date: this.$moment().format('YYYY-MM-DD'),
@@ -251,10 +255,6 @@ export default {
       totalProfitAndLossNonOperation: 0,
       totalProfitAndLossNet: 0
     }
-  },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting
   },
   computed: {
     ...mapGetters('accountingBalanceSheet', ['chartOfAccounts'])

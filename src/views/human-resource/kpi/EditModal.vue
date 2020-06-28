@@ -75,17 +75,17 @@ export default {
       required: true
     }
   },
-  computed: {
-    ...mapGetters('humanResourceKpiTemplate', {
-      template: 'template'
-    })
-  },
   data () {
     return {
       form: new Form(),
       isCreateMode: true,
       isSaving: false
     }
+  },
+  computed: {
+    ...mapGetters('humanResourceKpiTemplate', {
+      template: 'template'
+    })
   },
   methods: {
     ...mapMutations('humanResourceKpiTemplate', {

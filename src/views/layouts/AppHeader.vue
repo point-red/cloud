@@ -120,14 +120,14 @@ import HeaderDropdown from './HeaderDropdown'
 import NotificationDropdown from './NotificationDropdown'
 
 export default {
+  components: {
+    HeaderDropdown,
+    NotificationDropdown
+  },
   data () {
     return {
       tenantName: localStorage.getItem('tenantName')
     }
-  },
-  components: {
-    HeaderDropdown,
-    NotificationDropdown
   },
   methods: {
     ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSideOverlay']),

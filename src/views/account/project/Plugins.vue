@@ -149,6 +149,11 @@ import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    TabMenu,
+    ProjectWidget
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -161,11 +166,6 @@ export default {
       }),
       plugin_url: ''
     }
-  },
-  components: {
-    Breadcrumb,
-    TabMenu,
-    ProjectWidget
   },
   computed: {
     ...mapGetters('accountProject', ['project']),

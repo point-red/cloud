@@ -191,6 +191,13 @@ import MEditAccount from './MEditAccount'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting,
+    MCreateAccount,
+    MEditAccount,
+    PointTable
+  },
   data () {
     return {
       isSaving: false,
@@ -201,15 +208,11 @@ export default {
       currentPage: this.$route.query.page * 1 || 1
     }
   },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting,
-    MCreateAccount,
-    MEditAccount,
-    PointTable
-  },
   computed: {
     ...mapGetters('accountingCutOffAccount', ['accounts'])
+  },
+  created () {
+    this.getChartOfAccountsRequest()
   },
   methods: {
     ...mapActions('accountingCutOffAccount', ['get']),
@@ -255,9 +258,6 @@ export default {
         this.isLoading = false
       })
     }
-  },
-  created () {
-    this.getChartOfAccountsRequest()
   }
 }
 </script>

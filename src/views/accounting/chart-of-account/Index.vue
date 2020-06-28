@@ -123,6 +123,11 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting,
+    PointTable
+  },
   data () {
     return {
       isLoading: false,
@@ -131,13 +136,11 @@ export default {
       currentPage: this.$route.query.page * 1 || 1
     }
   },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting,
-    PointTable
-  },
   computed: {
     ...mapGetters('accountingChartOfAccount', ['chartOfAccounts'])
+  },
+  created () {
+    this.search()
   },
   methods: {
     ...mapActions('accountingChartOfAccount', {
@@ -183,9 +186,6 @@ export default {
     onAdded () {
       this.search()
     }
-  },
-  created () {
-    this.search()
   }
 }
 </script>

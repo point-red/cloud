@@ -46,14 +46,6 @@
 
 <script>
 export default {
-  data () {
-    return {
-      mutableItemUnit: null,
-      mutableInventories: [],
-      mutableRequireExpiryDate: false,
-      mutableRequireProductionNumber: false
-    }
-  },
   props: {
     id: {
       type: String,
@@ -62,6 +54,14 @@ export default {
     inventories: {
       type: Array,
       required: true
+    }
+  },
+  data () {
+    return {
+      mutableItemUnit: null,
+      mutableInventories: [],
+      mutableRequireExpiryDate: false,
+      mutableRequireProductionNumber: false
     }
   },
   methods: {

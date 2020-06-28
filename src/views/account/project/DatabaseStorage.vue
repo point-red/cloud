@@ -45,12 +45,6 @@ export default {
   components: {
     PointTable
   },
-  data () {
-    return {
-      rows: this.data,
-      name: this.tableName
-    }
-  },
   props: {
     data: {
       type: Array,
@@ -63,6 +57,12 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
+    }
+  },
+  data () {
+    return {
+      rows: this.data,
+      name: this.tableName
     }
   },
   watch: {

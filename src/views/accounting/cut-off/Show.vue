@@ -159,6 +159,10 @@ import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -166,10 +170,6 @@ export default {
       totalDebit: 0,
       isLoading: false
     }
-  },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting
   },
   computed: {
     ...mapGetters('accountingCutOff', ['cutOff'])

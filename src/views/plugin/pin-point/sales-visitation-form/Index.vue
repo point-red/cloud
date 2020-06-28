@@ -382,6 +382,9 @@ export default {
       deep: true
     }
   },
+  created () {
+    this.search()
+  },
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),
     toggleBtnDropdown () {
@@ -445,9 +448,6 @@ export default {
         this.isExporting = false
       })
     }
-  },
-  created () {
-    this.search()
   }
 }
 </script>

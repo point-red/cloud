@@ -85,6 +85,12 @@ export default {
   components: {
     MAddInterestReason
   },
+  props: {
+    id: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -96,12 +102,6 @@ export default {
   },
   computed: {
     ...mapGetters('pluginPinPointInterestReason', ['interestReasons', 'pagination'])
-  },
-  props: {
-    id: {
-      type: String,
-      default: ''
-    }
   },
   watch: {
     searchText: debounce(function () {

@@ -38,13 +38,13 @@
 import Breadcrumb from '@/views/account/Breadcrumb'
 
 export default {
+  components: {
+    Breadcrumb
+  },
   data () {
     return {
       //
     }
-  },
-  components: {
-    Breadcrumb
   },
   methods: {
     copyToClipboard () {

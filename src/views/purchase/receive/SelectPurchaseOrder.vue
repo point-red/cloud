@@ -81,15 +81,6 @@
 import debounce from 'lodash/debounce'
 import { mapActions } from 'vuex'
 export default {
-  data () {
-    return {
-      index: null,
-      searchText: '',
-      options: [],
-      selected: {},
-      isLoading: false
-    }
-  },
   props: {
     id: {
       type: String,
@@ -98,6 +89,15 @@ export default {
     value: {
       type: [String, Number],
       default: ''
+    }
+  },
+  data () {
+    return {
+      index: null,
+      searchText: '',
+      options: [],
+      selected: {},
+      isLoading: false
     }
   },
   watch: {
