@@ -1,9 +1,5 @@
-import Index from './Index'
-import Show from './Show'
-import History from './histories/Index'
-
 export default [
-  { path: '/plugin/play-book/procedure', name: 'Procedure', component: Index },
-  { path: '/plugin/play-book/procedure/:id/histories', name: 'ProcedureHistories', component: History },
-  { path: '/plugin/play-book/procedure/:id', name: 'ProcedureContentShow', component: Show }
+  { path: '/plugin/play-book/procedure', name: 'Procedure', component: () => import('./Index.vue') },
+  { path: '/plugin/play-book/procedure/:id/histories', name: 'ProcedureHistories', component: () => import('./histories/Index.vue') },
+  { path: '/plugin/play-book/procedure/:id', name: 'ProcedureContentShow', component: () => import('./Show.vue') }
 ]
