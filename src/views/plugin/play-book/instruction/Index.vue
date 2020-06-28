@@ -422,6 +422,6 @@ export default {
 .row {
   -webkit-user-select: none !important;
   -webkit-touch-callout: none !important;
-  touch-action: none;
+  user-select: none;
 }
 </style>
