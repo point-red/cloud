@@ -91,6 +91,9 @@ export default {
   computed: {
     ...mapGetters('manufactureProcess', ['process'])
   },
+  created () {
+    this.getProcesses()
+  },
   methods: {
     ...mapActions('manufactureProcess', ['update', 'find']),
     getProcesses () {
@@ -120,9 +123,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    this.getProcesses()
   }
 }
 </script>

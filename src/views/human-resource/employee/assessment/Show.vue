@@ -201,11 +201,6 @@ export default {
     ...mapGetters('humanResourceEmployee', ['employee']),
     ...mapGetters('humanResourceEmployeeAssessment', ['assessment'])
   },
-  methods: {
-    ...mapActions('humanResourceEmployeeAssessment', {
-      findEmployeeAssessment: 'find'
-    })
-  },
   created () {
     this.isLoading = true
     this.findEmployeeAssessment({
@@ -220,6 +215,11 @@ export default {
         this.isLoading = false
       }
     )
+  },
+  methods: {
+    ...mapActions('humanResourceEmployeeAssessment', {
+      findEmployeeAssessment: 'find'
+    })
   }
 }
 </script>

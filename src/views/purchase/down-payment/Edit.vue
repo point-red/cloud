@@ -325,6 +325,9 @@ export default {
       }, 0)
     }
   },
+  created () {
+    this.purchaseDownPaymentRequest()
+  },
   methods: {
     ...mapActions('purchaseDownPayment', ['find', 'update']),
     ...mapActions('purchaseOrder', { getPurchaseOrder: 'find' }),
@@ -408,9 +411,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    this.purchaseDownPaymentRequest()
   }
 }
 </script>

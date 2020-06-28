@@ -153,6 +153,9 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('manufactureFormula', ['formulas', 'pagination'])
+  },
   watch: {
     date: function () {
       this.$router.push({
@@ -165,8 +168,11 @@ export default {
       this.getManufactureFormulas()
     }
   },
-  computed: {
-    ...mapGetters('manufactureFormula', ['formulas', 'pagination'])
+  created () {
+    this.getManufactureFormulas()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('manufactureFormula', ['get']),
@@ -221,12 +227,6 @@ export default {
       this.currentPage = value
       this.getManufactureFormulas()
     }
-  },
-  created () {
-    this.getManufactureFormulas()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

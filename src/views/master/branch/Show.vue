@@ -159,6 +159,9 @@ export default {
     ...mapGetters('masterBranch', ['branch']),
     ...mapGetters('masterUser', ['users'])
   },
+  created () {
+    this.findBranch()
+  },
   methods: {
     ...mapActions('masterBranch', ['find', 'delete']),
     ...mapActions('masterUser', ['get']),
@@ -256,9 +259,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findBranch()
   }
 }
 </script>

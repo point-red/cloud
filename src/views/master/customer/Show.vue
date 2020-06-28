@@ -348,6 +348,9 @@ export default {
     ...mapGetters('masterCustomer', ['customer']),
     ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
   },
+  created () {
+    this.findCustomer()
+  },
   methods: {
     ...mapActions('masterCustomer', ['find', 'delete', 'archive', 'activate']),
     ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),
@@ -447,9 +450,6 @@ export default {
         })
       })
     }
-  },
-  created () {
-    this.findCustomer()
   }
 }
 </script>

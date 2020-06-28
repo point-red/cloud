@@ -315,6 +315,9 @@ export default {
       }
     }
   },
+  created () {
+    this.salesQuotationRequest()
+  },
   methods: {
     ...mapActions('salesQuotation', {
       find: 'find',
@@ -415,9 +418,6 @@ export default {
         console.log(error.message)
       })
     }
-  },
-  created () {
-    this.salesQuotationRequest()
   }
 }
 </script>

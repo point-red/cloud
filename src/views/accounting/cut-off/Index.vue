@@ -76,6 +76,9 @@ export default {
   computed: {
     ...mapGetters('accountingCutOff', ['cutOffs'])
   },
+  created () {
+    this.getCutOffs()
+  },
   methods: {
     ...mapActions('accountingCutOff', ['get']),
     filterSearch () {
@@ -110,9 +113,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.getCutOffs()
   }
 }
 </script>

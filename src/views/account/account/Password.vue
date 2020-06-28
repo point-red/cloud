@@ -80,6 +80,17 @@ export default {
   computed: {
     ...mapGetters('auth', ['authUser'])
   },
+  created () {
+    this.isLoading = true
+    this.tryAutoLogin()
+      .then((response) => {
+        this.isLoading = false
+        this.form.id = this.authUser.id
+      }, (error) => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+  },
   methods: {
     ...mapActions('auth', ['updatePassword', 'tryAutoLogin']),
     onSubmit () {
@@ -96,17 +107,6 @@ export default {
           this.$notification.error(error.message)
         })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.tryAutoLogin()
-      .then((response) => {
-        this.isLoading = false
-        this.form.id = this.authUser.id
-      }, (error) => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
   }
 }
 </script>

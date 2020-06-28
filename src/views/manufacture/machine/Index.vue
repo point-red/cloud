@@ -94,6 +94,12 @@ export default {
   computed: {
     ...mapGetters('manufactureMachine', ['machines', 'pagination'])
   },
+  created () {
+    this.getManufactureMachines()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('manufactureMachine', ['get']),
     filterSearch: debounce(function (value) {
@@ -130,12 +136,6 @@ export default {
       this.currentPage = value
       this.getManufactureMachines()
     }
-  },
-  created () {
-    this.getManufactureMachines()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

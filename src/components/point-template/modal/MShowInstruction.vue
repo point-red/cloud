@@ -117,9 +117,6 @@ export default {
   props: [
     'instructionId'
   ],
-  computed: {
-    ...mapGetters('auth', ['authUser'])
-  },
   data () {
     return {
       isSaving: false,
@@ -132,6 +129,9 @@ export default {
       },
       errors: null
     }
+  },
+  computed: {
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
     onClose () {

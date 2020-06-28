@@ -319,6 +319,9 @@ export default {
     ...mapGetters('financePaymentOrder', ['paymentOrder']),
     ...mapGetters('auth', ['authUser'])
   },
+  created () {
+    this.search()
+  },
   methods: {
     ...mapActions('financePaymentOrder', {
       find: 'find',
@@ -405,9 +408,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.search()
   }
 }
 </script>

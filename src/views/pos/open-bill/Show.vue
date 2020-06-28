@@ -367,6 +367,10 @@ export default {
       }
     }
   },
+  created () {
+    this.isLoading = true
+    this.posBillRequest()
+  },
   methods: {
     ...mapActions('posBill', {
       findBill: 'find',
@@ -452,10 +456,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.posBillRequest()
   }
 }
 </script>

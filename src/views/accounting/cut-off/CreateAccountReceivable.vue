@@ -189,6 +189,9 @@ export default {
   computed: {
     ...mapGetters('accountingCutOffAccountReceivable', ['accountReceivables'])
   },
+  created () {
+    this.getAccountReceivableRequest()
+  },
   methods: {
     ...mapActions('accountingCutOffAccountReceivable', ['get']),
     filterSearch: debounce(function (value) {
@@ -220,9 +223,6 @@ export default {
         this.isLoading = false
       })
     }
-  },
-  created () {
-    this.getAccountReceivableRequest()
   }
 }
 </script>

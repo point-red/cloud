@@ -93,6 +93,9 @@ export default {
   computed: {
     ...mapGetters('humanResourceEmployeeGroup', ['group'])
   },
+  created () {
+    this.findEmployeeGroup()
+  },
   methods: {
     ...mapActions('humanResourceEmployeeGroup', ['find', 'delete']),
     updatePage (value) {
@@ -131,9 +134,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findEmployeeGroup()
   }
 }
 </script>

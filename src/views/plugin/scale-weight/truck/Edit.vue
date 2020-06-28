@@ -216,22 +216,6 @@ export default {
   computed: {
     ...mapGetters('pluginScaleWeightTruck', ['scaleWeight'])
   },
-  methods: {
-    ...mapActions('pluginScaleWeightTruck', ['find', 'update']),
-    onSubmit () {
-      this.isSaving = true
-      this.update(this.form).then(response => {
-        this.isSaving = false
-        this.form.reset()
-        this.$notification.success('Update success')
-        this.$router.push('/plugin/scale-weight/truck/' + this.id)
-      }).catch(error => {
-        this.isSaving = false
-        this.$notification.error('Update failed')
-        this.form.errors.record(error.errors)
-      })
-    }
-  },
   created () {
     this.isLoading = true
     this.find({
@@ -254,6 +238,22 @@ export default {
       this.isLoading = false
       this.$notification.error(error.message)
     })
+  },
+  methods: {
+    ...mapActions('pluginScaleWeightTruck', ['find', 'update']),
+    onSubmit () {
+      this.isSaving = true
+      this.update(this.form).then(response => {
+        this.isSaving = false
+        this.form.reset()
+        this.$notification.success('Update success')
+        this.$router.push('/plugin/scale-weight/truck/' + this.id)
+      }).catch(error => {
+        this.isSaving = false
+        this.$notification.error('Update failed')
+        this.form.errors.record(error.errors)
+      })
+    }
   }
 }
 </script>

@@ -194,6 +194,9 @@ export default {
   computed: {
     ...mapGetters('accountingCutOffAccount', ['accounts'])
   },
+  created () {
+    this.getChartOfAccountsRequest()
+  },
   methods: {
     ...mapActions('accountingCutOffAccount', ['get']),
     ...mapActions('accountingChartOfAccountGenerator', ['create']),
@@ -238,9 +241,6 @@ export default {
         this.isLoading = false
       })
     }
-  },
-  created () {
-    this.getChartOfAccountsRequest()
   }
 }
 </script>

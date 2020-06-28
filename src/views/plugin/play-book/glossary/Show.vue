@@ -210,6 +210,11 @@ export default {
       errors: null
     }
   },
+  watch: {
+    isEditMode () {
+      this.errors = null
+    }
+  },
   mounted () {
     this.getData()
   },
@@ -262,11 +267,6 @@ export default {
           this.isLoading = false
         }
       })
-    }
-  },
-  watch: {
-    isEditMode () {
-      this.errors = null
     }
   }
 }

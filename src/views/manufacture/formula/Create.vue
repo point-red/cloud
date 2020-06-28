@@ -276,9 +276,6 @@ export default {
     Breadcrumb,
     BreadcrumbManufacture
   },
-  computed: {
-    ...mapGetters('auth', ['authUser'])
-  },
   data () {
     return {
       isSaving: false,
@@ -323,6 +320,9 @@ export default {
         }]
       })
     }
+  },
+  computed: {
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
     ...mapActions('manufactureFormula', ['create']),

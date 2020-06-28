@@ -96,6 +96,16 @@ export default {
   computed: {
     ...mapGetters('manufactureMachine', ['machine'])
   },
+  created () {
+    this.isLoading = true
+    this.find({ id: this.id })
+      .then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+  },
   methods: {
     ...mapActions('manufactureMachine', ['find', 'delete']),
     onDelete () {
@@ -113,16 +123,6 @@ export default {
           })
       })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.find({ id: this.id })
-      .then(response => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
   }
 }
 </script>

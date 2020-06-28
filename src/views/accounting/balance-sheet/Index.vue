@@ -259,6 +259,9 @@ export default {
   computed: {
     ...mapGetters('accountingBalanceSheet', ['chartOfAccounts'])
   },
+  created () {
+    this.load()
+  },
   methods: {
     ...mapActions('accountingBalanceSheet', ['get']),
     load () {
@@ -325,9 +328,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.load()
   }
 }
 </script>

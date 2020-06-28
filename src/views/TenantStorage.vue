@@ -73,6 +73,12 @@ export default {
   computed: {
     ...mapGetters('cloudStorage', ['cloudStorages', 'pagination'])
   },
+  created () {
+    this.getCloudStorageRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('cloudStorage', ['get']),
     updatePage (value) {
@@ -102,12 +108,6 @@ export default {
       this.currentPage = 1
       this.getCloudStorageRequest()
     }, 300)
-  },
-  created () {
-    this.getCloudStorageRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

@@ -102,6 +102,9 @@ export default {
   computed: {
     ...mapGetters('manufactureMachine', ['machine'])
   },
+  created () {
+    this.getMachines()
+  },
   methods: {
     ...mapActions('manufactureMachine', ['update', 'find']),
     getMachines () {
@@ -132,9 +135,6 @@ export default {
           this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
         })
     }
-  },
-  created () {
-    this.getMachines()
   }
 }
 </script>

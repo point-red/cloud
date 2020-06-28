@@ -180,6 +180,12 @@ export default {
   computed: {
     ...mapGetters('manufactureFormula', ['formulas', 'pagination'])
   },
+  created () {
+    this.getManufactureFormulas()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('manufactureFormula', ['get']),
     filterSearch: debounce(function (value) {
@@ -228,12 +234,6 @@ export default {
       this.currentPage = value
       this.getManufactureFormulas()
     }
-  },
-  created () {
-    this.getManufactureFormulas()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

@@ -100,6 +100,9 @@ export default {
   computed: {
     ...mapGetters('manufactureMachine', ['machines'])
   },
+  created () {
+    this.getMachines()
+  },
   methods: {
     ...mapActions('manufactureMachine', ['create', 'get']),
     getMachines () {
@@ -128,9 +131,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    this.getMachines()
   }
 }
 </script>

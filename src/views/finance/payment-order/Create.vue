@@ -292,13 +292,15 @@ export default {
       })
     }
   },
+  computed: {
+    ...mapGetters('auth', ['authUser'])
+  },
   watch: {
     'form.date': function () {
       this.form.due_date = this.form.date
     }
   },
-  computed: {
-    ...mapGetters('auth', ['authUser'])
+  created () {
   },
   methods: {
     ...mapActions('financePaymentOrder', ['create']),
@@ -372,8 +374,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
   }
 }
 </script>

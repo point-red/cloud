@@ -477,6 +477,33 @@ export default {
       }
     }
   },
+  created () {
+    this.addItemRow()
+
+    if (this.$route.query.id) {
+      this.isLoading = true
+      this.find({
+        id: this.$route.query.id,
+        params: {
+          includes: 'form;customer;items.item.units.prices;items.allocation'
+        }
+      }).then(response => {
+        this.isLoading = false
+        this.form.sales_quotation_id = response.data.id
+        this.form.date = response.data.form.date
+        this.form.customer_id = response.data.customer_id
+        this.form.customer_name = response.data.customer_name
+        this.form.notes = response.data.form.notes
+        this.form.items = response.data.items
+        this.form.items.forEach(function (element) {
+          element.sales_quotation_item_id = element.id
+        })
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    }
+  },
   methods: {
     ...mapActions('salesOrder', ['create']),
     addItemRow () {
@@ -633,33 +660,6 @@ export default {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
-    }
-  },
-  created () {
-    this.addItemRow()
-
-    if (this.$route.query.id) {
-      this.isLoading = true
-      this.find({
-        id: this.$route.query.id,
-        params: {
-          includes: 'form;customer;items.item.units.prices;items.allocation'
-        }
-      }).then(response => {
-        this.isLoading = false
-        this.form.sales_quotation_id = response.data.id
-        this.form.date = response.data.form.date
-        this.form.customer_id = response.data.customer_id
-        this.form.customer_name = response.data.customer_name
-        this.form.notes = response.data.form.notes
-        this.form.items = response.data.items
-        this.form.items.forEach(function (element) {
-          element.sales_quotation_item_id = element.id
-        })
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
     }
   }
 }

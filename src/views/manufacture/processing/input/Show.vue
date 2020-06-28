@@ -367,6 +367,9 @@ export default {
       }
     }
   },
+  created () {
+    this.manufactureInputRequest()
+  },
   methods: {
     ...mapActions('manufactureInput', ['find', 'delete', 'approve', 'reject', 'cancellationApprove', 'cancellationReject']),
     manufactureInputRequest () {
@@ -485,9 +488,6 @@ export default {
         this.form.errors.record(error.errors)
       })
     }
-  },
-  created () {
-    this.manufactureInputRequest()
   }
 }
 </script>

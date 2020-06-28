@@ -497,6 +497,23 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('masterCustomer', ['customer']),
+    ...mapGetters('masterItemGroup', {
+      itemGroups: 'groups'
+    }),
+    ...mapGetters('masterServiceGroup', {
+      serviceGroups: 'groups'
+    }),
+    ...mapGetters('masterPriceListItem', {
+      items: 'items',
+      paginationItem: 'pagination'
+    }),
+    ...mapGetters('masterPriceListService', {
+      services: 'services',
+      paginationService: 'pagination'
+    })
+  },
   watch: {
     'currentGroup' () {
       if (this.currentGroup) {
@@ -528,22 +545,20 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters('masterCustomer', ['customer']),
-    ...mapGetters('masterItemGroup', {
-      itemGroups: 'groups'
-    }),
-    ...mapGetters('masterServiceGroup', {
-      serviceGroups: 'groups'
-    }),
-    ...mapGetters('masterPriceListItem', {
-      items: 'items',
-      paginationItem: 'pagination'
-    }),
-    ...mapGetters('masterPriceListService', {
-      services: 'services',
-      paginationService: 'pagination'
-    })
+  created () {
+    this.isGroupLoading = true
+  },
+  mounted () {
+    this.form.warehouse_id = localStorage.getItem('defaultWarehouse')
+    this.$refs.warehouse.show()
+  },
+  updated () {
+    if (this.itemList.length !== 0) {
+      this.lastPageItem = this.paginationItem.last_page
+    }
+    if (this.serviceList.length !== 0) {
+      this.lastPageService = this.paginationService.last_page
+    }
   },
   methods: {
     ...mapActions('masterCustomer', {
@@ -1015,21 +1030,6 @@ export default {
       this.form.items = []
       this.form.services = []
       this.form.is_done = 0
-    }
-  },
-  created () {
-    this.isGroupLoading = true
-  },
-  mounted () {
-    this.form.warehouse_id = localStorage.getItem('defaultWarehouse')
-    this.$refs.warehouse.show()
-  },
-  updated () {
-    if (this.itemList.length !== 0) {
-      this.lastPageItem = this.paginationItem.last_page
-    }
-    if (this.serviceList.length !== 0) {
-      this.lastPageService = this.paginationService.last_page
     }
   }
 }

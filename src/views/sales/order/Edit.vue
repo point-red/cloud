@@ -492,6 +492,49 @@ export default {
       }
     }
   },
+  created () {
+    this.isLoading = true
+    this.find({
+      id: this.$route.params.id,
+      params: {
+        includes: 'customer;' +
+            'items.item.units;' +
+            'items.allocation;' +
+            'salesQuotation.form;' +
+            'form.createdBy;' +
+            'form.requestApprovalTo;' +
+            'form.branch'
+      }
+    }).then(response => {
+      this.isLoading = false
+      if (response.data.sales_quotation) {
+        this.form.sales_quotation_id = response.data.sales_quotation.id
+      }
+      this.form.date = response.data.form.date
+      this.form.customer_id = response.data.customer_id
+      this.form.customer_name = response.data.customer_name
+      this.form.customer_label = response.data.customer.label
+      this.form.discount_percent = response.data.discount_percent
+      this.form.discount_value = response.data.discount_value
+      this.form.notes = response.data.form.notes
+      this.form.type_of_tax = response.data.type_of_tax
+      this.form.amount = response.data.amount
+      this.form.discount_value = response.data.discount_value
+      this.form.discount_percent = response.data.discount_percent
+      this.form.items = response.data.items
+      this.form.request_approval_to = response.data.form.request_approval_to.id
+      this.form.approver_name = response.data.form.request_approval_to.full_name
+      this.form.approver_email = response.data.form.request_approval_to.email
+      this.form.items.forEach(el => {
+        el.item_label = el.item.label
+      })
+      this.salesQuotation = response.data.sales_quotation
+      this.addItemRow()
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
+  },
   methods: {
     ...mapActions('salesOrder', ['find', 'update']),
     addItemRow () {
@@ -644,49 +687,6 @@ export default {
         this.form.errors.record(error.errors)
       })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.find({
-      id: this.$route.params.id,
-      params: {
-        includes: 'customer;' +
-            'items.item.units;' +
-            'items.allocation;' +
-            'salesQuotation.form;' +
-            'form.createdBy;' +
-            'form.requestApprovalTo;' +
-            'form.branch'
-      }
-    }).then(response => {
-      this.isLoading = false
-      if (response.data.sales_quotation) {
-        this.form.sales_quotation_id = response.data.sales_quotation.id
-      }
-      this.form.date = response.data.form.date
-      this.form.customer_id = response.data.customer_id
-      this.form.customer_name = response.data.customer_name
-      this.form.customer_label = response.data.customer.label
-      this.form.discount_percent = response.data.discount_percent
-      this.form.discount_value = response.data.discount_value
-      this.form.notes = response.data.form.notes
-      this.form.type_of_tax = response.data.type_of_tax
-      this.form.amount = response.data.amount
-      this.form.discount_value = response.data.discount_value
-      this.form.discount_percent = response.data.discount_percent
-      this.form.items = response.data.items
-      this.form.request_approval_to = response.data.form.request_approval_to.id
-      this.form.approver_name = response.data.form.request_approval_to.full_name
-      this.form.approver_email = response.data.form.request_approval_to.email
-      this.form.items.forEach(el => {
-        el.item_label = el.item.label
-      })
-      this.salesQuotation = response.data.sales_quotation
-      this.addItemRow()
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
   }
 }
 </script>

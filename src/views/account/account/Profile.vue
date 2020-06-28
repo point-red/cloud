@@ -85,9 +85,6 @@ export default {
     SideMenu,
     Breadcrumb
   },
-  computed: {
-    ...mapGetters('auth', ['authUser'])
-  },
   data () {
     return {
       showSubmitButton: false,
@@ -102,20 +99,8 @@ export default {
       isSaving: false
     }
   },
-  methods: {
-    ...mapActions('auth', ['updateProfile', 'tryAutoLogin']),
-    onSubmit () {
-      this.isSaving = true
-      this.updateProfile(this.form)
-        .then((response) => {
-          this.isSaving = false
-          this.$notification.success('Update success')
-        }, (error) => {
-          this.isSaving = false
-          this.$notification.error(error.message)
-          this.form.errors.record(error.errors)
-        })
-    }
+  computed: {
+    ...mapGetters('auth', ['authUser'])
   },
   created () {
     this.isLoading = true
@@ -131,6 +116,21 @@ export default {
         this.isLoading = false
         this.$notification.error(error.message)
       })
+  },
+  methods: {
+    ...mapActions('auth', ['updateProfile', 'tryAutoLogin']),
+    onSubmit () {
+      this.isSaving = true
+      this.updateProfile(this.form)
+        .then((response) => {
+          this.isSaving = false
+          this.$notification.success('Update success')
+        }, (error) => {
+          this.isSaving = false
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        })
+    }
   }
 }
 </script>

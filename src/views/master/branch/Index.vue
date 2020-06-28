@@ -113,6 +113,15 @@ export default {
   computed: {
     ...mapGetters('masterBranch', ['branches', 'pagination'])
   },
+  created () {
+    this.getBranchRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('masterBranch', ['get']),
     filterSearch: debounce(function (value) {
@@ -147,15 +156,6 @@ export default {
     onAdded () {
       this.getBranchRequest()
     }
-  },
-  created () {
-    this.getBranchRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

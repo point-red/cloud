@@ -197,6 +197,9 @@ export default {
       downloadLink: ''
     }
   },
+  computed: {
+    ...mapGetters('pluginScaleWeightTruck', ['scaleWeights', 'pagination'])
+  },
   watch: {
     'date_from' () {
       this.$router.push({ query: { search: this.searchText, dateFrom: this.date_from, dateTo: this.date_to } })
@@ -209,8 +212,11 @@ export default {
       this.getScaleWeightRequest()
     }
   },
-  computed: {
-    ...mapGetters('pluginScaleWeightTruck', ['scaleWeights', 'pagination'])
+  created () {
+    this.getScaleWeightRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('pluginScaleWeightTruck', ['get', 'export']),
@@ -267,12 +273,6 @@ export default {
       this.currentPage = value
       this.getScaleWeightRequest()
     }
-  },
-  created () {
-    this.getScaleWeightRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

@@ -246,6 +246,9 @@ export default {
       }
     }
   },
+  created () {
+    this.findInventoryUsage()
+  },
   methods: {
     ...mapActions('inventoryUsage', ['find', 'delete', 'approve', 'reject']),
     findInventoryUsage () {
@@ -314,9 +317,6 @@ export default {
         this.inventoryUsage.form.approvals[0].reason = response.data.form.approvals[0].reason
       })
     }
-  },
-  created () {
-    this.findInventoryUsage()
   }
 }
 </script>

@@ -193,11 +193,11 @@ export default {
   computed: {
     ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
   },
-  methods: {
-    ...mapActions('pluginPinPointSalesVisitationForm', ['get'])
-  },
   created () {
     this.get()
+  },
+  methods: {
+    ...mapActions('pluginPinPointSalesVisitationForm', ['get'])
   }
 }
 </script>

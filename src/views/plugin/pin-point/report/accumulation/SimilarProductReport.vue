@@ -211,6 +211,9 @@ export default {
   computed: {
     ...mapGetters('pluginPinPointReportSimilarProduct', ['products', 'totalPerWeek'])
   },
+  created () {
+    this.search()
+  },
   methods: {
     ...mapActions('pluginPinPointReportSimilarProduct', ['get']),
     search () {
@@ -228,9 +231,6 @@ export default {
         this.isSaving = false
       })
     }
-  },
-  created () {
-    this.search()
   }
 }
 </script>

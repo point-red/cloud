@@ -719,6 +719,50 @@ export default {
     ...mapGetters('masterUser', ['userList']),
     ...mapGetters('cloudStorage', ['cloudStorages', 'pagination'])
   },
+  created () {
+    this.getReligions()
+      .then((response) => {
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+    this.getGenders()
+      .then((response) => {
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+    this.getMaritalStatuses()
+      .then((response) => {
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+    this.getGroups()
+      .then((response) => {
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+    this.getStatuses()
+      .then((response) => {
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+    this.getJobLocations()
+      .then((response) => {
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+    this.getUser()
+      .then((response) => {
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+  },
   methods: {
     ...mapActions('humanResourceEmployee', ['find', 'update']),
     ...mapActions('humanResourceEmployeeReligion', {
@@ -914,50 +958,6 @@ export default {
     close () {
       this.$refs.modal.close()
     }
-  },
-  created () {
-    this.getReligions()
-      .then((response) => {
-        console.log(response.data)
-      }, (error) => {
-        console.log(JSON.stringify(error))
-      })
-    this.getGenders()
-      .then((response) => {
-        console.log(response.data)
-      }, (error) => {
-        console.log(JSON.stringify(error))
-      })
-    this.getMaritalStatuses()
-      .then((response) => {
-        console.log(response.data)
-      }, (error) => {
-        console.log(JSON.stringify(error))
-      })
-    this.getGroups()
-      .then((response) => {
-        console.log(response.data)
-      }, (error) => {
-        console.log(JSON.stringify(error))
-      })
-    this.getStatuses()
-      .then((response) => {
-        console.log(response.data)
-      }, (error) => {
-        console.log(JSON.stringify(error))
-      })
-    this.getJobLocations()
-      .then((response) => {
-        console.log(response.data)
-      }, (error) => {
-        console.log(JSON.stringify(error))
-      })
-    this.getUser()
-      .then((response) => {
-        console.log(response.data)
-      }, (error) => {
-        console.log(JSON.stringify(error))
-      })
   }
 }
 </script>

@@ -173,6 +173,9 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('inventoryInventoryRecapitulation', ['inventories', 'pagination'])
+  },
   watch: {
     date: {
       handler: function () {
@@ -188,8 +191,20 @@ export default {
       deep: true
     }
   },
-  computed: {
-    ...mapGetters('inventoryInventoryRecapitulation', ['inventories', 'pagination'])
+  created () {
+    if (this.$route.query.date_from != this.date.start && this.$route.query.date_to != this.date.end) {
+      this.$router.replace({
+        query: {
+          ...this.$route.query,
+          date_from: this.date.start,
+          date_to: this.date.end
+        }
+      })
+    }
+    this.getInventoryRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('inventoryInventoryRecapitulation', ['get']),
@@ -225,21 +240,6 @@ export default {
       this.currentPage = value
       this.getInventoryRequest()
     }
-  },
-  created () {
-    if (this.$route.query.date_from != this.date.start && this.$route.query.date_to != this.date.end) {
-      this.$router.replace({
-        query: {
-          ...this.$route.query,
-          date_from: this.date.start,
-          date_to: this.date.end
-        }
-      })
-    }
-    this.getInventoryRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

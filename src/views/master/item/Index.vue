@@ -105,6 +105,15 @@ export default {
   computed: {
     ...mapGetters('masterItem', ['items', 'pagination'])
   },
+  created () {
+    this.search()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('masterItem', ['get']),
     onAdded () {
@@ -139,15 +148,6 @@ export default {
       this.currentPage = 1
       this.search()
     }, 300)
-  },
-  created () {
-    this.search()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

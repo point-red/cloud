@@ -242,9 +242,6 @@ export default {
       lastPage: 1
     }
   },
-  created () {
-    this.getEmployeeAssessmentRequest()
-  },
   computed: {
     ...mapGetters('auth', ['authUser']),
     ...mapGetters('humanResourceEmployee', ['employee']),
@@ -263,6 +260,9 @@ export default {
         this.hideChart = true
       }
     }
+  },
+  created () {
+    this.getEmployeeAssessmentRequest()
   },
   updated () {
     this.lastPage = this.pagination.last_page

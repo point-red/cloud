@@ -123,6 +123,9 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('posBill', ['bills', 'pagination'])
+  },
   watch: {
     date: function () {
       this.$router.push({
@@ -135,8 +138,11 @@ export default {
       this.getBills()
     }
   },
-  computed: {
-    ...mapGetters('posBill', ['bills', 'pagination'])
+  created () {
+    this.getBills()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('posBill', ['get', 'delete']),
@@ -200,12 +206,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.getBills()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

@@ -616,6 +616,33 @@ export default {
       }
     })
   },
+  created () {
+    const self = this
+    this.addItemRow()
+    navigator.permissions.query({ name: 'camera' })
+      .then(function (result) {
+        console.log('a ' + result.state)
+        if (result.state == 'granted') {
+          self.isPermissionCameraGranted = true
+        } else if (result.state == 'prompt') {
+          self.isPermissionCameraGranted = false
+        } else {
+          self.isPermissionCameraGranted = false
+        }
+      })
+
+    navigator.permissions.query({ name: 'geolocation' })
+      .then(function (result) {
+        console.log('b ' + result.state)
+        if (result.state == 'granted') {
+          self.isPermissionGeolocationGranted = true
+        } else if (result.state == 'prompt') {
+          self.isPermissionCameraGranted = false
+        } else {
+          self.isPermissionGeolocationGranted = false
+        }
+      })
+  },
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['create']),
     onCaptured (value) {
@@ -803,33 +830,6 @@ export default {
           }
         })
     }
-  },
-  created () {
-    const self = this
-    this.addItemRow()
-    navigator.permissions.query({ name: 'camera' })
-      .then(function (result) {
-        console.log('a ' + result.state)
-        if (result.state == 'granted') {
-          self.isPermissionCameraGranted = true
-        } else if (result.state == 'prompt') {
-          self.isPermissionCameraGranted = false
-        } else {
-          self.isPermissionCameraGranted = false
-        }
-      })
-
-    navigator.permissions.query({ name: 'geolocation' })
-      .then(function (result) {
-        console.log('b ' + result.state)
-        if (result.state == 'granted') {
-          self.isPermissionGeolocationGranted = true
-        } else if (result.state == 'prompt') {
-          self.isPermissionCameraGranted = false
-        } else {
-          self.isPermissionGeolocationGranted = false
-        }
-      })
   }
 }
 </script>

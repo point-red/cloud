@@ -190,6 +190,9 @@ export default {
     ...mapGetters('accountingChartOfAccount', ['chartOfAccount']),
     ...mapGetters('accountingJournal', ['journals'])
   },
+  created () {
+    this.findAccount()
+  },
   methods: {
     ...mapActions('accountingChartOfAccount', ['find', 'delete']),
     ...mapActions('accountingJournal', ['get']),
@@ -236,9 +239,6 @@ export default {
     onUpdatedAccount (supplier) {
       this.findAccount()
     }
-  },
-  created () {
-    this.findAccount()
   }
 }
 </script>

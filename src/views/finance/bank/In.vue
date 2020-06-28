@@ -269,13 +269,13 @@ export default {
       })
     }
   },
+  computed: {
+    ...mapGetters('auth', ['authUser'])
+  },
   watch: {
     'form.date': function () {
       this.form.due_date = this.form.date
     }
-  },
-  computed: {
-    ...mapGetters('auth', ['authUser'])
   },
   methods: {
     ...mapActions('financePayment', ['create']),

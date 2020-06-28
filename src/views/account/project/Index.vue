@@ -143,6 +143,9 @@ export default {
     ...mapGetters('accountProject', ['projects', 'pagination']),
     ...mapGetters('auth', ['authUser'])
   },
+  created () {
+    this.getProjectRequest()
+  },
   methods: {
     ...mapActions('accountProject', {
       getProject: 'get'
@@ -197,9 +200,6 @@ export default {
       this.currentPage = value
       this.getProjectRequest()
     }
-  },
-  created () {
-    this.getProjectRequest()
   }
 }
 </script>

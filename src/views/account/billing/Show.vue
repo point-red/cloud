@@ -199,23 +199,6 @@ export default {
   computed: {
     ...mapGetters('accountInvoice', ['invoice'])
   },
-  methods: {
-    ...mapActions('accountInvoice', ['find']),
-    ...mapActions('accountWalletTopUp', ['create']),
-    pay () {
-      this.isSaving = true
-      this.form.invoice_id = this.invoice.id
-      this.form.amount = this.invoice.total
-      this.create(this.form).then(response => {
-        this.isSaving = false
-        window.open(response.data.invoice_url, '_blank')
-        this.close()
-      }).catch(error => {
-        this.$notification.error(error.message)
-        this.isSaving = false
-      })
-    }
-  },
   beforeDestroy () {
     clearInterval(this.getInvoiceInterval)
   },
@@ -235,6 +218,23 @@ export default {
         }
       })
     }, 5000)
+  },
+  methods: {
+    ...mapActions('accountInvoice', ['find']),
+    ...mapActions('accountWalletTopUp', ['create']),
+    pay () {
+      this.isSaving = true
+      this.form.invoice_id = this.invoice.id
+      this.form.amount = this.invoice.total
+      this.create(this.form).then(response => {
+        this.isSaving = false
+        window.open(response.data.invoice_url, '_blank')
+        this.close()
+      }).catch(error => {
+        this.$notification.error(error.message)
+        this.isSaving = false
+      })
+    }
   }
 }
 </script>

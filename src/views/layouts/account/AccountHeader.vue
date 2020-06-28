@@ -53,6 +53,12 @@ export default {
     HeaderDropdown,
     NotificationDropdown
   },
+  created () {
+    console.log(this.pointSwVersion + ' !== ' + this.pointPackageVersion)
+    if (this.pointSwVersion !== this.pointPackageVersion) {
+      this.pointUpdateAvailable = true
+    }
+  },
   methods: {
     ...mapActions('uiHandler', ['toggleLeftSidebar']),
     updateLater () {
@@ -61,12 +67,6 @@ export default {
     updateNow () {
       localStorage.setItem('pointSwVersion', this.pointPackageVersion)
       window.location.reload(true)
-    }
-  },
-  created () {
-    console.log(this.pointSwVersion + ' !== ' + this.pointPackageVersion)
-    if (this.pointSwVersion !== this.pointPackageVersion) {
-      this.pointUpdateAvailable = true
     }
   }
 }

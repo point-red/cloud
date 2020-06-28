@@ -323,6 +323,19 @@ export default {
       deep: true
     }
   },
+  created () {
+    this.$router.push({
+      query: {
+        ...this.$route.query,
+        date_from: this.date.start,
+        date_to: this.date.end
+      }
+    })
+    this.getPurchaseInvoice()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('purchaseInvoice', ['get']),
     toggleCheckRow (id) {
@@ -432,19 +445,6 @@ export default {
       this.currentPage = value
       this.getPurchaseInvoice()
     }
-  },
-  created () {
-    this.$router.push({
-      query: {
-        ...this.$route.query,
-        date_from: this.date.start,
-        date_to: this.date.end
-      }
-    })
-    this.getPurchaseInvoice()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

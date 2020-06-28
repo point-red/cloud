@@ -210,6 +210,12 @@ export default {
       this.getScaleWeightRequest()
     }
   },
+  created () {
+    this.getScaleWeightRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('pluginScaleWeightItem', ['get', 'export']),
     exportData () {
@@ -265,12 +271,6 @@ export default {
       this.currentPage = value
       this.getScaleWeightRequest()
     }
-  },
-  created () {
-    this.getScaleWeightRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

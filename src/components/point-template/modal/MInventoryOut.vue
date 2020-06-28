@@ -92,6 +92,16 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: null
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -119,16 +129,6 @@ export default {
   },
   computed: {
     ...mapGetters('inventoryInventoryDna', ['inventories'])
-  },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number],
-      default: null
-    }
   },
   watch: {
     searchText: debounce(function () {

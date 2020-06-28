@@ -104,6 +104,15 @@ export default {
   computed: {
     ...mapGetters('masterWarehouse', ['warehouses', 'pagination'])
   },
+  created () {
+    this.getWarehouseRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('masterWarehouse', ['get']),
     filterSearch: debounce(function (value) {
@@ -138,15 +147,6 @@ export default {
     onAdded () {
       this.getWarehouseRequest()
     }
-  },
-  created () {
-    this.getWarehouseRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

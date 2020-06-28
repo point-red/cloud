@@ -96,6 +96,9 @@ export default {
   computed: {
     ...mapGetters('masterSupplierGroup', ['group'])
   },
+  created () {
+    this.findSupplierGroup()
+  },
   methods: {
     ...mapActions('masterSupplierGroup', ['find', 'delete']),
     updatePage (value) {
@@ -135,9 +138,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findSupplierGroup()
   }
 }
 </script>

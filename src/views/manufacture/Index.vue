@@ -26,6 +26,9 @@ export default {
   computed: {
     ...mapGetters('manufactureProcess', ['processes'])
   },
+  created () {
+    this.getManufactureProcesses()
+  },
   methods: {
     ...mapActions('manufactureProcess', ['get']),
     getManufactureProcesses () {
@@ -38,9 +41,6 @@ export default {
           this.$notification.error(error.message)
         })
     }
-  },
-  created () {
-    this.getManufactureProcesses()
   }
 }
 </script>

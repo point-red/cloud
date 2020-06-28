@@ -277,6 +277,29 @@ export default {
       this.form.due_date = this.form.date
     }
   },
+  created () {
+    this.find({
+      id: this.id,
+      params: {
+        includes: 'details.account;details.allocation;form.approvals.requestedBy;form.approvals.requestedTo'
+      }
+    }).then(response => {
+      console.log(response)
+      this.form.increment_group = this.$moment().format('YYYYMM')
+      this.form.id = response.data.id
+      this.form.date = response.data.form.date
+      this.form.due_date = response.data.due_date
+      this.form.payment_type = response.data.payment_type
+      this.form.paymentable_id = response.data.paymentable_id
+      this.form.paymentable_type = response.data.paymentable_type
+      this.form.paymentable_name = response.data.paymentable_name
+      this.form.approver_id = null
+      this.form.disbursed = true
+      this.form.notes = response.data.form.notes
+      this.form.amount = response.data.amount
+      this.form.details = response.data.details
+    })
+  },
   methods: {
     ...mapActions('financePaymentOrder', ['update', 'find']),
     addRow () {
@@ -341,29 +364,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    this.find({
-      id: this.id,
-      params: {
-        includes: 'details.account;details.allocation;form.approvals.requestedBy;form.approvals.requestedTo'
-      }
-    }).then(response => {
-      console.log(response)
-      this.form.increment_group = this.$moment().format('YYYYMM')
-      this.form.id = response.data.id
-      this.form.date = response.data.form.date
-      this.form.due_date = response.data.due_date
-      this.form.payment_type = response.data.payment_type
-      this.form.paymentable_id = response.data.paymentable_id
-      this.form.paymentable_type = response.data.paymentable_type
-      this.form.paymentable_name = response.data.paymentable_name
-      this.form.approver_id = null
-      this.form.disbursed = true
-      this.form.notes = response.data.form.notes
-      this.form.amount = response.data.amount
-      this.form.details = response.data.details
-    })
   }
 }
 </script>

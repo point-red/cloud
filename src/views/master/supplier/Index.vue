@@ -100,6 +100,15 @@ export default {
   computed: {
     ...mapGetters('masterSupplier', ['suppliers', 'pagination'])
   },
+  created () {
+    this.getSupplierRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('masterSupplier', ['get']),
     filterSearch: debounce(function (value) {
@@ -137,15 +146,6 @@ export default {
     onAdded () {
       this.getSupplierRequest()
     }
-  },
-  created () {
-    this.getSupplierRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

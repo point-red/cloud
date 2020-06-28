@@ -143,6 +143,9 @@ export default {
     ...mapGetters('masterUser', ['user']),
     ...mapGetters('masterRole', ['roles'])
   },
+  created () {
+    this.findUser()
+  },
   methods: {
     ...mapActions('masterUser', ['find']),
     onUpdatedUser (branch) {
@@ -162,9 +165,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findUser()
   }
 }
 </script>

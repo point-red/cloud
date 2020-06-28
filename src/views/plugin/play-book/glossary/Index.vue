@@ -113,6 +113,15 @@ export default {
   computed: {
     ...mapGetters('pluginPlayBookGlossary', ['glossaries', 'pagination'])
   },
+  mounted () {
+    this.getGlossaryRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('pluginPlayBookGlossary', [
       'get'
@@ -146,15 +155,6 @@ export default {
       this.page = value
       this.getGlossaryRequest()
     }
-  },
-  mounted () {
-    this.getGlossaryRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

@@ -204,6 +204,12 @@ export default {
     ...mapGetters('humanResourceEmployee', ['employees', 'pagination']),
     ...mapGetters('humanResourceEmployeeGroup', ['groupList'])
   },
+  created () {
+    this.getEmployeesRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('humanResourceEmployee', {
       getEmployees: 'get',
@@ -329,12 +335,6 @@ export default {
         console.log(errors.data)
       })
     }
-  },
-  created () {
-    this.getEmployeesRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

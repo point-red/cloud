@@ -481,6 +481,15 @@ export default {
       deep: true
     }
   },
+  created () {
+    this.getAvailableTimezone()
+    this.localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    if (this.localTimezone) {
+      this.form.timezone = this.localTimezone
+    }
+    this.get()
+    this.getPackages()
+  },
   methods: {
     ...mapActions('accountProject', ['create']),
     ...mapActions('accountPlugin', ['get']),
@@ -578,15 +587,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    this.getAvailableTimezone()
-    this.localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    if (this.localTimezone) {
-      this.form.timezone = this.localTimezone
-    }
-    this.get()
-    this.getPackages()
   }
 }
 </script>

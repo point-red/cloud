@@ -234,6 +234,9 @@ export default {
   computed: {
     ...mapGetters('masterItem', ['item'])
   },
+  created () {
+    this.findItem()
+  },
   methods: {
     ...mapActions('masterItem', ['find', 'delete']),
     onAddedItem (item) {
@@ -272,9 +275,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findItem()
   }
 }
 </script>

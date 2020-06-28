@@ -189,6 +189,29 @@ export default {
     ...mapGetters('financePayment', ['payment']),
     ...mapGetters('auth', ['authUser'])
   },
+  created () {
+    console.log(this.payment)
+    this.form.payment_type = 'cash'
+    this.form.disbursed = true
+    this.form.reference_id = this.payment.reference_id
+    this.form.reference_type = this.payment.reference_type
+    this.form.reference_number = this.payment.reference_number
+    this.form.paymentable_id = this.payment.paymentable_id
+    this.form.paymentable_type = this.payment.paymentable_type
+    this.form.paymentable_name = this.payment.paymentable_name
+    this.form.notes = this.payment.notes
+    this.form.amount = this.payment.amount
+    this.payment.details.forEach(element => {
+      this.form.details.push({
+        chart_of_account_id: element.chart_of_account_id,
+        chart_of_account_label: element.chart_of_account_label,
+        amount: element.amount,
+        allocation_id: element.allocation_id,
+        allocation_name: element.allocation_name,
+        notes: element.notes
+      })
+    })
+  },
   methods: {
     ...mapActions('financePaymentOrder', {
       find: 'find'
@@ -216,29 +239,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    console.log(this.payment)
-    this.form.payment_type = 'cash'
-    this.form.disbursed = true
-    this.form.reference_id = this.payment.reference_id
-    this.form.reference_type = this.payment.reference_type
-    this.form.reference_number = this.payment.reference_number
-    this.form.paymentable_id = this.payment.paymentable_id
-    this.form.paymentable_type = this.payment.paymentable_type
-    this.form.paymentable_name = this.payment.paymentable_name
-    this.form.notes = this.payment.notes
-    this.form.amount = this.payment.amount
-    this.payment.details.forEach(element => {
-      this.form.details.push({
-        chart_of_account_id: element.chart_of_account_id,
-        chart_of_account_label: element.chart_of_account_label,
-        amount: element.amount,
-        allocation_id: element.allocation_id,
-        allocation_name: element.allocation_name,
-        notes: element.notes
-      })
-    })
   }
 }
 </script>

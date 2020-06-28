@@ -96,6 +96,9 @@ export default {
   computed: {
     ...mapGetters('masterItemGroup', ['group'])
   },
+  created () {
+    this.findItemGroup()
+  },
   methods: {
     ...mapActions('masterItemGroup', ['find', 'delete']),
     updatePage (value) {
@@ -135,9 +138,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findItemGroup()
   }
 }
 </script>

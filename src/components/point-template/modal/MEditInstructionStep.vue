@@ -135,6 +135,7 @@ import { mapGetters, mapActions } from 'vuex'
 import { VueEditor } from 'vue2-editor'
 
 export default {
+  components: { VueEditor },
   props: [
     'step', // tidak perlu load manual karena data sudah ada
     'stepId' // harus perlu load dari API
@@ -231,8 +232,7 @@ export default {
     deleteContent (i) {
       this.form.contents.splice(i, 1)
     }
-  },
-  components: { VueEditor }
+  }
 }
 </script>
 

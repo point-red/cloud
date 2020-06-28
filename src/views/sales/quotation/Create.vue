@@ -357,6 +357,9 @@ export default {
       }
     }
   },
+  created () {
+    this.addItemRow()
+  },
   methods: {
     ...mapActions('salesQuotation', ['create']),
     addItemRow () {
@@ -487,9 +490,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    this.addItemRow()
   }
 }
 </script>

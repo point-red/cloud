@@ -129,6 +129,9 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('financePayment', ['payments', 'pagination'])
+  },
   watch: {
     date: function () {
       this.$router.push({
@@ -141,8 +144,11 @@ export default {
       this.getPayments()
     }
   },
-  computed: {
-    ...mapGetters('financePayment', ['payments', 'pagination'])
+  created () {
+    this.getPayments()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('financePayment', ['get']),
@@ -200,12 +206,6 @@ export default {
       this.currentPage = value
       this.getPayments()
     }
-  },
-  created () {
-    this.getPayments()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

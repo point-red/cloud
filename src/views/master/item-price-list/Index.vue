@@ -149,6 +149,15 @@ export default {
   computed: {
     ...mapGetters('masterPriceListItem', ['items', 'pagination', 'groups'])
   },
+  created () {
+    this.getPriceList()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('masterPriceListItem', {
       getItem: 'get',
@@ -205,15 +214,6 @@ export default {
         this.$notifications.error(error.message)
       })
     }
-  },
-  created () {
-    this.getPriceList()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

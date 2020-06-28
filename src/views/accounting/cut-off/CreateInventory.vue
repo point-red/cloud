@@ -208,6 +208,9 @@ export default {
   computed: {
     ...mapGetters('accountingCutOffInventory', ['inventories'])
   },
+  created () {
+    this.getInventoryRequest()
+  },
   methods: {
     ...mapActions('accountingCutOffInventory', ['get']),
     filterSearch: debounce(function (value) {
@@ -240,9 +243,6 @@ export default {
         this.isLoading = false
       })
     }
-  },
-  created () {
-    this.getInventoryRequest()
   }
 }
 </script>

@@ -259,6 +259,15 @@ export default {
   computed: {
     ...mapGetters('masterCustomer', ['customers', 'pagination'])
   },
+  created () {
+    this.getCustomerRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('masterCustomer', ['get', 'bulkArchive', 'bulkActivate', 'bulkDelete']),
     toggleCheckRow (id) {
@@ -418,15 +427,6 @@ export default {
     onAdded () {
       this.getCustomerRequest()
     }
-  },
-  created () {
-    this.getCustomerRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

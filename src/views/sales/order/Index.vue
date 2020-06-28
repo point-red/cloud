@@ -321,6 +321,19 @@ export default {
       deep: true
     }
   },
+  created () {
+    this.$router.push({
+      query: {
+        ...this.$route.query,
+        date_from: this.date.start,
+        date_to: this.date.end
+      }
+    })
+    this.getSalesOrder()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('salesOrder', ['get']),
     toggleCheckRow (id) {
@@ -430,19 +443,6 @@ export default {
       this.currentPage = value
       this.getSalesOrder()
     }
-  },
-  created () {
-    this.$router.push({
-      query: {
-        ...this.$route.query,
-        date_from: this.date.start,
-        date_to: this.date.end
-      }
-    })
-    this.getSalesOrder()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

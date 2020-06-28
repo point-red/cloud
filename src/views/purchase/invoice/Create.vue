@@ -485,6 +485,9 @@ export default {
       }
     }
   },
+  created () {
+    // this.addItemRow()
+  },
   methods: {
     ...mapActions('purchaseInvoice', ['create']),
     addItemRow () {
@@ -629,9 +632,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    // this.addItemRow()
   }
 }
 </script>

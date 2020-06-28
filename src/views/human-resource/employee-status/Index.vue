@@ -89,6 +89,12 @@ export default {
   computed: {
     ...mapGetters('humanResourceEmployeeStatus', ['statuses', 'pagination'])
   },
+  created () {
+    this.getStatusesRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('humanResourceEmployeeStatus', { getStatuses: 'get' }),
     updatePage (value) {
@@ -119,12 +125,6 @@ export default {
         console.log(errors.data)
       })
     }
-  },
-  created () {
-    this.getStatusesRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

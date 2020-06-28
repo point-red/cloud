@@ -137,6 +137,15 @@ export default {
   computed: {
     ...mapGetters('pluginPlayBookProcedureApproval', ['procedures', 'pagination'])
   },
+  mounted () {
+    this.getProcedures()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('pluginPlayBookProcedureApproval', [
       'get'
@@ -199,15 +208,6 @@ export default {
       this.page = value
       this.getProcedures()
     }
-  },
-  mounted () {
-    this.getProcedures()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

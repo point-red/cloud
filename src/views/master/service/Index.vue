@@ -94,6 +94,12 @@ export default {
   computed: {
     ...mapGetters('masterService', ['services'])
   },
+  created () {
+    this.getServiceRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
   methods: {
     ...mapActions('masterService', ['get']),
     filterSearch: debounce(function (value) {
@@ -127,12 +133,6 @@ export default {
     onAdded () {
       this.getServiceRequest()
     }
-  },
-  created () {
-    this.getServiceRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
   }
 }
 </script>

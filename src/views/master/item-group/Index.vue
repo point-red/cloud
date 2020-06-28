@@ -94,6 +94,15 @@ export default {
   computed: {
     ...mapGetters('masterItemGroup', ['groups', 'pagination'])
   },
+  created () {
+    this.getGroupRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('masterItemGroup', {
       getGroup: 'get'
@@ -130,15 +139,6 @@ export default {
       this.searchText = group.name
       this.getGroupRequest()
     }
-  },
-  created () {
-    this.getGroupRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

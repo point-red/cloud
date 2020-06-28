@@ -93,6 +93,9 @@ export default {
   computed: {
     ...mapGetters('masterCustomerGroup', ['group'])
   },
+  created () {
+    this.findCustomerGroup()
+  },
   methods: {
     ...mapActions('masterCustomerGroup', ['find', 'delete']),
     updatePage (value) {
@@ -131,9 +134,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findCustomerGroup()
   }
 }
 </script>

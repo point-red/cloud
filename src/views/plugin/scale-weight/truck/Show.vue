@@ -212,21 +212,6 @@ export default {
   computed: {
     ...mapGetters('pluginScaleWeightTruck', ['scaleWeight'])
   },
-  methods: {
-    ...mapActions('pluginScaleWeightTruck', ['find', 'delete']),
-    onDelete () {
-      this.isDeleting = true
-      this.delete({
-        id: this.id
-      }).then(response => {
-        this.isDeleting = false
-        this.$router.push('/plugin/scale-weight/truck')
-      }).catch(response => {
-        this.isDeleting = false
-        this.$notification.error('cannot delete this scale weight')
-      })
-    }
-  },
   created () {
     this.isLoading = true
     this.find({
@@ -250,6 +235,21 @@ export default {
       this.isLoading = false
       this.$notification.error(error.message)
     })
+  },
+  methods: {
+    ...mapActions('pluginScaleWeightTruck', ['find', 'delete']),
+    onDelete () {
+      this.isDeleting = true
+      this.delete({
+        id: this.id
+      }).then(response => {
+        this.isDeleting = false
+        this.$router.push('/plugin/scale-weight/truck')
+      }).catch(response => {
+        this.isDeleting = false
+        this.$notification.error('cannot delete this scale weight')
+      })
+    }
   }
 }
 </script>

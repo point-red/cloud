@@ -109,6 +109,11 @@ import AccountFooter from './AccountFooter'
 import { mapGetters } from 'vuex'
 
 export default {
+  components: {
+    AccountHeader,
+    AccountSidebar,
+    AccountFooter
+  },
   data () {
     return {
       firstUri: '',
@@ -117,11 +122,6 @@ export default {
   },
   computed: {
     ...mapGetters('uiHandler', ['openLeftSidebar', 'openLeftSidebarXs', 'isSidebarInverse'])
-  },
-  components: {
-    AccountHeader,
-    AccountSidebar,
-    AccountFooter
   },
   created () {
     this.$store.dispatch('path/updateUri', this.$route.path)

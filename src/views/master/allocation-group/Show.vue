@@ -95,6 +95,9 @@ export default {
   computed: {
     ...mapGetters('masterAllocationGroup', ['group'])
   },
+  created () {
+    this.findAllocationGroup()
+  },
   methods: {
     ...mapActions('masterAllocationGroup', ['find', 'delete']),
     onAddedAllocationGroup (allocationGroup) {
@@ -134,9 +137,6 @@ export default {
         })
       })
     }
-  },
-  created () {
-    this.findAllocationGroup()
   }
 }
 </script>

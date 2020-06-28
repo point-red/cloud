@@ -240,6 +240,9 @@ export default {
   computed: {
     ...mapGetters('manufactureInput', ['input'])
   },
+  created () {
+    this.manufactureInputRequest()
+  },
   methods: {
     ...mapActions('manufactureOutput', ['create']),
     ...mapActions('manufactureInput', ['find']),
@@ -321,9 +324,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    this.manufactureInputRequest()
   }
 }
 </script>

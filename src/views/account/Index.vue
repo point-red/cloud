@@ -45,9 +45,6 @@ export default {
   computed: {
     ...mapGetters('accountProject', ['projects'])
   },
-  methods: {
-    ...mapActions('accountProject', ['get'])
-  },
   created () {
     if (this.projects.length == 0) {
       this.isLoading = true
@@ -59,6 +56,9 @@ export default {
           console.log(JSON.stringify(error))
         })
     }
+  },
+  methods: {
+    ...mapActions('accountProject', ['get'])
   }
 }
 </script>

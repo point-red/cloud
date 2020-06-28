@@ -184,6 +184,9 @@ export default {
   computed: {
     ...mapGetters('accountingCutOffPurchaseDownPayment', ['purchaseDownPayments'])
   },
+  created () {
+    this.getPurchaseDownPaymentRequest()
+  },
   methods: {
     ...mapActions('accountingCutOffPurchaseDownPayment', ['get']),
     filterSearch: debounce(function (value) {
@@ -215,9 +218,6 @@ export default {
         this.isLoading = false
       })
     }
-  },
-  created () {
-    this.getPurchaseDownPaymentRequest()
   }
 }
 </script>

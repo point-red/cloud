@@ -256,6 +256,9 @@ export default {
   computed: {
     ...mapGetters('manufactureFormula', ['formula'])
   },
+  created () {
+    this.manufactureFormulaRequest()
+  },
   methods: {
     ...mapActions('manufactureInput', ['create']),
     ...mapActions('manufactureFormula', ['find']),
@@ -357,9 +360,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    this.manufactureFormulaRequest()
   }
 }
 </script>

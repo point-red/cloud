@@ -289,6 +289,9 @@ export default {
       }
     }
   },
+  created () {
+    this.manufactureOutputRequest()
+  },
   methods: {
     ...mapActions('manufactureOutput', ['find', 'delete']),
     manufactureOutputRequest () {
@@ -354,9 +357,6 @@ export default {
         this.form.errors.record(error.errors)
       })
     }
-  },
-  created () {
-    this.manufactureOutputRequest()
   }
 }
 </script>

@@ -90,6 +90,9 @@ export default {
   computed: {
     ...mapGetters('masterAllocation', ['allocation'])
   },
+  created () {
+    this.findAllocation()
+  },
   methods: {
     ...mapActions('masterAllocation', ['find', 'delete']),
     onAddedAllocation (allocation) {
@@ -123,9 +126,6 @@ export default {
           })
       })
     }
-  },
-  created () {
-    this.findAllocation()
   }
 }
 </script>

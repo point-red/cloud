@@ -377,6 +377,9 @@ export default {
       }
     }
   },
+  created () {
+    this.salesOrderRequest()
+  },
   methods: {
     ...mapActions('salesOrder', {
       find: 'find',
@@ -484,9 +487,6 @@ export default {
         console.log(error.message)
       })
     }
-  },
-  created () {
-    this.salesOrderRequest()
   }
 }
 </script>

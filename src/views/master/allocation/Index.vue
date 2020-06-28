@@ -96,6 +96,15 @@ export default {
   computed: {
     ...mapGetters('masterAllocation', ['allocations', 'pagination'])
   },
+  created () {
+    this.getAllocationRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('masterAllocation', ['get']),
     updatePage (value) {
@@ -129,15 +138,6 @@ export default {
     onAdded () {
       this.getAllocationRequest()
     }
-  },
-  created () {
-    this.getAllocationRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

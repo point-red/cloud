@@ -173,6 +173,9 @@ export default {
     ...mapGetters('masterWarehouse', ['warehouse']),
     ...mapGetters('masterUser', ['users'])
   },
+  created () {
+    this.findWarehouse()
+  },
   methods: {
     ...mapActions('masterWarehouse', ['find', 'delete']),
     ...mapActions('masterUser', ['get']),
@@ -272,9 +275,6 @@ export default {
     onUpdatedWarehouse (warehouse) {
       this.findWarehouse()
     }
-  },
-  created () {
-    this.findWarehouse()
   }
 }
 </script>

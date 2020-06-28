@@ -60,6 +60,9 @@ export default {
   computed: {
     ...mapGetters('accountProject', ['projects'])
   },
+  created () {
+    this.getProject()
+  },
   methods: {
     ...mapActions('accountProject', {
       getProject: 'get'
@@ -68,9 +71,6 @@ export default {
       var ref = notificationMethod + '-' + feature + '-' + projectCode
       this.$refs[ref].togglePerm()
     }
-  },
-  created () {
-    this.getProject()
   }
 }
 </script>

@@ -96,6 +96,18 @@ export default {
   computed: {
     ...mapGetters('masterServiceGroup', ['group'])
   },
+  created () {
+    this.isLoading = true
+    this.find({
+      id: this.id
+    }).then(response => {
+      this.isLoading = false
+      this.data.name = response.data.name
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
+  },
   methods: {
     ...mapActions('masterServiceGroup', ['find', 'delete']),
     updatePage (value) {
@@ -135,18 +147,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.find({
-      id: this.id
-    }).then(response => {
-      this.isLoading = false
-      this.data.name = response.data.name
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
   }
 }
 </script>

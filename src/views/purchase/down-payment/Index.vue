@@ -314,6 +314,19 @@ export default {
       deep: true
     }
   },
+  created () {
+    this.$router.push({
+      query: {
+        ...this.$route.query,
+        date_from: this.date.start,
+        date_to: this.date.end
+      }
+    })
+    this.getPurchaseDownPayment()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('purchaseDownPayment', ['get']),
     toggleCheckRow (id) {
@@ -418,19 +431,6 @@ export default {
       this.currentPage = value
       this.getPurchaseDownPayment()
     }
-  },
-  created () {
-    this.$router.push({
-      query: {
-        ...this.$route.query,
-        date_from: this.date.start,
-        date_to: this.date.end
-      }
-    })
-    this.getPurchaseDownPayment()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

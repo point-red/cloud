@@ -372,8 +372,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
   }
 }
 </script>

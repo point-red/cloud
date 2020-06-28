@@ -167,6 +167,10 @@ export default {
     ...mapGetters('masterUser', ['users']),
     ...mapGetters('masterUserInvitation', ['userInvitations'])
   },
+  created () {
+    this.isLoading = true
+    this.getUserRequest()
+  },
   methods: {
     ...mapActions('masterUser', {
       getUser: 'get'
@@ -219,10 +223,6 @@ export default {
     onAdded () {
       this.getUserRequest()
     }
-  },
-  created () {
-    this.isLoading = true
-    this.getUserRequest()
   }
 }
 </script>

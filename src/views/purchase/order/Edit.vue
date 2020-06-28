@@ -488,6 +488,44 @@ export default {
       }
     }
   },
+  created () {
+    this.isLoading = true
+    this.find({
+      id: this.$route.params.id,
+      params: {
+        includes: 'form.requestApprovalTo;supplier;items.item.units;items.allocation;purchaseRequest.form'
+      }
+    }).then(response => {
+      this.isLoading = false
+      if (response.data.purchase_request) {
+        this.form.purchase_request_id = response.data.purchase_request.id
+      }
+      this.form.date = response.data.form.date
+      this.form.supplier_id = response.data.supplier_id
+      this.form.supplier_name = response.data.supplier_name
+      this.form.supplier_label = response.data.supplier.label
+      this.form.discount_percent = response.data.discount_percent
+      this.form.discount_value = response.data.discount_value
+      this.form.notes = response.data.form.notes
+      this.form.type_of_tax = response.data.type_of_tax
+      this.form.amount = response.data.amount
+      this.form.discount_value = response.data.discount_value
+      this.form.discount_percent = response.data.discount_percent
+      this.form.items = response.data.items
+      this.form.request_approval_to = response.data.form.request_approval_to.id
+      this.form.approver_name = response.data.form.request_approval_to.full_name
+      this.form.approver_email = response.data.form.request_approval_to.email
+      this.form.items.forEach(el => {
+        el.item_label = el.item.label
+        el.units = el.item.units
+      })
+      this.purchaseRequest = response.data.purchase_request
+      this.addItemRow()
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
+  },
   methods: {
     ...mapActions('purchaseOrder', ['find', 'update']),
     addItemRow () {
@@ -627,44 +665,6 @@ export default {
         this.form.errors.record(error.errors)
       })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.find({
-      id: this.$route.params.id,
-      params: {
-        includes: 'form.requestApprovalTo;supplier;items.item.units;items.allocation;purchaseRequest.form'
-      }
-    }).then(response => {
-      this.isLoading = false
-      if (response.data.purchase_request) {
-        this.form.purchase_request_id = response.data.purchase_request.id
-      }
-      this.form.date = response.data.form.date
-      this.form.supplier_id = response.data.supplier_id
-      this.form.supplier_name = response.data.supplier_name
-      this.form.supplier_label = response.data.supplier.label
-      this.form.discount_percent = response.data.discount_percent
-      this.form.discount_value = response.data.discount_value
-      this.form.notes = response.data.form.notes
-      this.form.type_of_tax = response.data.type_of_tax
-      this.form.amount = response.data.amount
-      this.form.discount_value = response.data.discount_value
-      this.form.discount_percent = response.data.discount_percent
-      this.form.items = response.data.items
-      this.form.request_approval_to = response.data.form.request_approval_to.id
-      this.form.approver_name = response.data.form.request_approval_to.full_name
-      this.form.approver_email = response.data.form.request_approval_to.email
-      this.form.items.forEach(el => {
-        el.item_label = el.item.label
-        el.units = el.item.units
-      })
-      this.purchaseRequest = response.data.purchase_request
-      this.addItemRow()
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
   }
 }
 </script>

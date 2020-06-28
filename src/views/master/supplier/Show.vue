@@ -117,6 +117,9 @@ export default {
   computed: {
     ...mapGetters('masterSupplier', ['supplier'])
   },
+  created () {
+    this.findSupplier()
+  },
   methods: {
     ...mapActions('masterSupplier', ['find', 'delete']),
     findSupplier () {
@@ -156,9 +159,6 @@ export default {
         })
       })
     }
-  },
-  created () {
-    this.findSupplier()
   }
 }
 </script>

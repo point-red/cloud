@@ -115,6 +115,12 @@ import AppFooter from './AppFooter'
 import { mapGetters } from 'vuex'
 
 export default {
+  components: {
+    AppHeader,
+    AppSidebar,
+    AppSideOverlay,
+    AppFooter
+  },
   data () {
     return {
       firstUri: '',
@@ -123,12 +129,6 @@ export default {
   },
   computed: {
     ...mapGetters('uiHandler', ['openLeftSidebar', 'openLeftSidebarXs', 'openSideOverlay', 'isSidebarInverse'])
-  },
-  components: {
-    AppHeader,
-    AppSidebar,
-    AppSideOverlay,
-    AppFooter
   },
   created () {
     this.$store.dispatch('path/updateUri', this.$route.path)

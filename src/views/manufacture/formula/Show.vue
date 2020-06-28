@@ -271,6 +271,9 @@ export default {
       }
     }
   },
+  created () {
+    this.manufactureFormulaRequest()
+  },
   methods: {
     ...mapActions('manufactureFormula', ['find', 'delete', 'approve', 'reject', 'cancellationApprove', 'cancellationReject']),
     manufactureFormulaRequest () {
@@ -345,9 +348,6 @@ export default {
         this.form.errors.record(error.errors)
       })
     }
-  },
-  created () {
-    this.manufactureFormulaRequest()
   }
 }
 </script>

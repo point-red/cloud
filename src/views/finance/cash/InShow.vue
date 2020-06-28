@@ -176,14 +176,14 @@ export default {
       })
     }
   },
+  computed: {
+    ...mapGetters('financePayment', ['payment']),
+    ...mapGetters('auth', ['authUser'])
+  },
   watch: {
     'form.date': function () {
       this.form.due_date = this.form.date
     }
-  },
-  computed: {
-    ...mapGetters('financePayment', ['payment']),
-    ...mapGetters('auth', ['authUser'])
   },
   created () {
     this.search()

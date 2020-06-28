@@ -491,6 +491,29 @@ export default {
       this.updateDateTo()
     }
   },
+  created () {
+    this.isLoading = true
+    this.get({
+      params: {
+        date_from: this.serverDateTime(this.date_from, 'start'),
+        date_to: this.serverDateTime(this.date_to, 'end')
+      }
+    }).then((response) => {
+      this.isLoading = false
+    }, (error) => {
+      this.isLoading = false
+      this.$notifications.error(error.message)
+    })
+    this.getItems({
+      params: {}
+    }).then((response) => {
+      this.checkedColumnCat = response.data
+      this.isLoading = false
+    }, (error) => {
+      this.isLoading = false
+      this.$notifications.error(error.message)
+    })
+  },
   methods: {
     ...mapActions('pluginScaleWeightMerge', ['get', 'export', 'getItems']),
     updateDateFrom () {
@@ -538,29 +561,6 @@ export default {
         console.log(error)
       })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.get({
-      params: {
-        date_from: this.serverDateTime(this.date_from, 'start'),
-        date_to: this.serverDateTime(this.date_to, 'end')
-      }
-    }).then((response) => {
-      this.isLoading = false
-    }, (error) => {
-      this.isLoading = false
-      this.$notifications.error(error.message)
-    })
-    this.getItems({
-      params: {}
-    }).then((response) => {
-      this.checkedColumnCat = response.data
-      this.isLoading = false
-    }, (error) => {
-      this.isLoading = false
-      this.$notifications.error(error.message)
-    })
   }
 }
 </script>

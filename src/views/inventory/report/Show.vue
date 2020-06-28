@@ -217,6 +217,10 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('masterItem', ['item']),
+    ...mapGetters('inventoryInventoryWarehouseRecapitulation', ['warehouses', 'pagination'])
+  },
   watch: {
     date: {
       handler: function () {
@@ -232,9 +236,16 @@ export default {
       deep: true
     }
   },
-  computed: {
-    ...mapGetters('masterItem', ['item']),
-    ...mapGetters('inventoryInventoryWarehouseRecapitulation', ['warehouses', 'pagination'])
+  created () {
+    this.getInventoryRequest()
+    this.find({
+      id: this.id
+    }).then(response => {
+      this.item_label = response.data.label
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('masterItem', ['find']),
@@ -292,17 +303,6 @@ export default {
       this.currentPage = value
       this.getInventoryRequest()
     }
-  },
-  created () {
-    this.getInventoryRequest()
-    this.find({
-      id: this.id
-    }).then(response => {
-      this.item_label = response.data.label
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

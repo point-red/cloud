@@ -234,6 +234,15 @@ export default {
       return ids
     }
   },
+  mounted () {
+    this.getInstructions()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('pluginPlayBookInstructionApproval', [
       'get'
@@ -283,15 +292,6 @@ export default {
       this.page = value
       this.getInstructions()
     }
-  },
-  mounted () {
-    this.getInstructions()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

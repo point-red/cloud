@@ -320,6 +320,9 @@ export default {
     ...mapGetters('purchaseReceive', ['purchaseReceive']),
     ...mapGetters('auth', ['authUser'])
   },
+  created () {
+    this.purchaseReceiveRequest()
+  },
   methods: {
     ...mapActions('purchaseReceive', ['create', 'find']),
     toggleMore () {
@@ -421,9 +424,6 @@ export default {
           this.isSaving = false
         })
     }
-  },
-  created () {
-    this.purchaseReceiveRequest()
   }
 }
 </script>

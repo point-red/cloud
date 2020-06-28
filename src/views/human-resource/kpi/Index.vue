@@ -267,6 +267,12 @@ export default {
   computed: {
     ...mapGetters('humanResourceKpiTemplate', ['templates', 'pagination'])
   },
+  created () {
+    this.getKpiTemplatesRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('humanResourceKpiTemplate', {
       getKpiTemplates: 'get',
@@ -459,12 +465,6 @@ export default {
       this.page = value
       this.getKpiTemplatesRequest()
     }
-  },
-  created () {
-    this.getKpiTemplatesRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

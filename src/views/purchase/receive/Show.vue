@@ -210,6 +210,9 @@ export default {
       }
     }
   },
+  created () {
+    this.purchaseReceiveRequest()
+  },
   methods: {
     ...mapActions('purchaseReceive', {
       find: 'find',
@@ -275,9 +278,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.purchaseReceiveRequest()
   }
 }
 </script>

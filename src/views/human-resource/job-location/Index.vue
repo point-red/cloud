@@ -97,6 +97,12 @@ export default {
   computed: {
     ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocations', 'pagination'])
   },
+  created () {
+    this.getJobLocationsRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('humanResourceEmployeeJobLocation', { getJobLocations: 'get' }),
     updatePage (value) {
@@ -127,12 +133,6 @@ export default {
         console.log(errors.data)
       })
     }
-  },
-  created () {
-    this.getJobLocationsRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

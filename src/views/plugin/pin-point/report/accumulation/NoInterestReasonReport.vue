@@ -211,6 +211,9 @@ export default {
   computed: {
     ...mapGetters('pluginPinPointReportNoInterestReason', ['reasons', 'totalPerWeek'])
   },
+  created () {
+    this.search()
+  },
   methods: {
     ...mapActions('pluginPinPointReportNoInterestReason', ['get']),
     search () {
@@ -228,9 +231,6 @@ export default {
         this.isSaving = false
       })
     }
-  },
-  created () {
-    this.search()
   }
 }
 </script>

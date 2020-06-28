@@ -174,21 +174,6 @@ export default {
   computed: {
     ...mapGetters('accountingCutOff', ['cutOff'])
   },
-  methods: {
-    ...mapActions('accountingCutOff', ['find', 'delete']),
-    remove () {
-      this.isLoading = true
-      this.delete({ id: this.id })
-        .then((response) => {
-          this.isLoading = false
-          this.$notification.success('Delete success')
-          this.$router.replace('/accounting/cut-off')
-        }, (error) => {
-          this.isLoading = false
-          this.$notification.error(error.message)
-        })
-    }
-  },
   created () {
     this.isLoading = true
     this.find({
@@ -210,6 +195,21 @@ export default {
       this.isLoading = false
       this.$notification.error(error.message)
     })
+  },
+  methods: {
+    ...mapActions('accountingCutOff', ['find', 'delete']),
+    remove () {
+      this.isLoading = true
+      this.delete({ id: this.id })
+        .then((response) => {
+          this.isLoading = false
+          this.$notification.success('Delete success')
+          this.$router.replace('/accounting/cut-off')
+        }, (error) => {
+          this.isLoading = false
+          this.$notification.error(error.message)
+        })
+    }
   }
 }
 </script>

@@ -510,6 +510,24 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('masterCustomer', ['customer']),
+    ...mapGetters('masterItemGroup', {
+      itemGroups: 'groups'
+    }),
+    ...mapGetters('masterServiceGroup', {
+      serviceGroups: 'groups'
+    }),
+    ...mapGetters('masterPriceListItem', {
+      items: 'items',
+      paginationItem: 'pagination'
+    }),
+    ...mapGetters('masterPriceListService', {
+      services: 'services',
+      paginationService: 'pagination'
+    }),
+    ...mapGetters('posBill', ['bill'])
+  },
   watch: {
     'currentGroup' () {
       if (this.currentGroup) {
@@ -541,23 +559,90 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters('masterCustomer', ['customer']),
-    ...mapGetters('masterItemGroup', {
-      itemGroups: 'groups'
-    }),
-    ...mapGetters('masterServiceGroup', {
-      serviceGroups: 'groups'
-    }),
-    ...mapGetters('masterPriceListItem', {
-      items: 'items',
-      paginationItem: 'pagination'
-    }),
-    ...mapGetters('masterPriceListService', {
-      services: 'services',
-      paginationService: 'pagination'
-    }),
-    ...mapGetters('posBill', ['bill'])
+  created () {
+    this.isGroupLoading = true
+    this.findBill({
+      id: this.id,
+      params: {
+        filter_form: 'activePending',
+        includes: 'form;customer;items.item.units;services.service;form.createdBy'
+      }
+    }).then(response => {
+      this.requestAllData()
+      if (!this.$formRules.allowedToUpdate(this.bill.form)) {
+        this.$router.replace('/open-bill')
+      }
+      this.form.date = this.bill.form.date
+      this.form.edited_form_number = this.bill.form.edited_form_number
+      this.form.customer_id = this.bill.customer_id
+      this.form.customer_name = this.bill.customer_name
+      this.form.pricing_group_id = this.bill.customer ? this.bill.customer.pricing_group_id : -1
+      this.form.notes = this.bill.notes
+      this.form.discount_percent = parseFloat(this.bill.discount_percent)
+      this.form.type_of_tax = this.bill.type_of_tax
+      this.form.paid = parseFloat(this.bill.paid)
+      this.form.warehouse_id = this.bill.warehouse_id
+      this.form.items_temporary = []
+      this.bill.items.forEach((item, keyItem) => {
+        const unitIndex = item.item.units.findIndex(o => o.label === item.unit)
+        const unitData = item.item.units[unitIndex]
+        var newItem = Object.assign({}, item)
+        newItem.item_unit = unitData
+        newItem.item_unit_id = unitData.id
+        newItem.total = 0
+        newItem.error = null
+        newItem.require_expiry_date = item.item.require_expiry_date
+        newItem.require_production_number = item.item.require_production_number
+        newItem.pricing_group_id = this.form.pricing_group_id
+        newItem.inventories = []
+        if (item.item.require_expiry_date || item.item.require_production_number) {
+          const itemTemporaryIndex = this.form.items_temporary.findIndex(o => o.item_id === item.item_id && o.unit === item.unit)
+          if (itemTemporaryIndex < 0) {
+            newItem.inventories.push({
+              quantity: item.quantity,
+              expiry_date: item.expiry_date,
+              production_number: item.production_number
+            })
+            this.form.items_temporary.push(newItem)
+          } else {
+            var existing = this.form.items_temporary[itemTemporaryIndex]
+            existing.quantity += item.quantity
+            existing.inventories.push({
+              quantity: item.quantity,
+              expiry_date: item.expiry_date,
+              production_number: item.production_number
+            })
+            this.form.items_temporary[itemTemporaryIndex] = existing
+          }
+        } else {
+          this.form.items_temporary.push(newItem)
+        }
+      })
+      this.bill.services.forEach((service, keyService) => {
+        this.form.services.push({
+          service_id: service.service_id,
+          service_name: service.service_name,
+          quantity: parseFloat(service.quantity),
+          price: parseFloat(service.price),
+          discount_value: parseFloat(service.discount_value),
+          discount_percent: parseFloat(service.discount_percent),
+          total: 0,
+          pricing_group_id: this.form.pricing_group_id,
+          notes: service.notes
+        })
+      })
+    }).catch(error => {
+      this.isGroupLoading = false
+      this.$notification.error(error.message)
+    })
+  },
+  updated () {
+    if (this.itemList.length !== 0) {
+      this.lastPageItem = this.paginationItem.last_page
+    }
+    if (this.serviceList.length !== 0) {
+      this.lastPageService = this.paginationService.last_page
+    }
   },
   methods: {
     ...mapActions('masterCustomer', {
@@ -1021,91 +1106,6 @@ export default {
         this.isDeleting = false
         this.$notification.error(error.message)
       })
-    }
-  },
-  created () {
-    this.isGroupLoading = true
-    this.findBill({
-      id: this.id,
-      params: {
-        filter_form: 'activePending',
-        includes: 'form;customer;items.item.units;services.service;form.createdBy'
-      }
-    }).then(response => {
-      this.requestAllData()
-      if (!this.$formRules.allowedToUpdate(this.bill.form)) {
-        this.$router.replace('/open-bill')
-      }
-      this.form.date = this.bill.form.date
-      this.form.edited_form_number = this.bill.form.edited_form_number
-      this.form.customer_id = this.bill.customer_id
-      this.form.customer_name = this.bill.customer_name
-      this.form.pricing_group_id = this.bill.customer ? this.bill.customer.pricing_group_id : -1
-      this.form.notes = this.bill.notes
-      this.form.discount_percent = parseFloat(this.bill.discount_percent)
-      this.form.type_of_tax = this.bill.type_of_tax
-      this.form.paid = parseFloat(this.bill.paid)
-      this.form.warehouse_id = this.bill.warehouse_id
-      this.form.items_temporary = []
-      this.bill.items.forEach((item, keyItem) => {
-        const unitIndex = item.item.units.findIndex(o => o.label === item.unit)
-        const unitData = item.item.units[unitIndex]
-        var newItem = Object.assign({}, item)
-        newItem.item_unit = unitData
-        newItem.item_unit_id = unitData.id
-        newItem.total = 0
-        newItem.error = null
-        newItem.require_expiry_date = item.item.require_expiry_date
-        newItem.require_production_number = item.item.require_production_number
-        newItem.pricing_group_id = this.form.pricing_group_id
-        newItem.inventories = []
-        if (item.item.require_expiry_date || item.item.require_production_number) {
-          const itemTemporaryIndex = this.form.items_temporary.findIndex(o => o.item_id === item.item_id && o.unit === item.unit)
-          if (itemTemporaryIndex < 0) {
-            newItem.inventories.push({
-              quantity: item.quantity,
-              expiry_date: item.expiry_date,
-              production_number: item.production_number
-            })
-            this.form.items_temporary.push(newItem)
-          } else {
-            var existing = this.form.items_temporary[itemTemporaryIndex]
-            existing.quantity += item.quantity
-            existing.inventories.push({
-              quantity: item.quantity,
-              expiry_date: item.expiry_date,
-              production_number: item.production_number
-            })
-            this.form.items_temporary[itemTemporaryIndex] = existing
-          }
-        } else {
-          this.form.items_temporary.push(newItem)
-        }
-      })
-      this.bill.services.forEach((service, keyService) => {
-        this.form.services.push({
-          service_id: service.service_id,
-          service_name: service.service_name,
-          quantity: parseFloat(service.quantity),
-          price: parseFloat(service.price),
-          discount_value: parseFloat(service.discount_value),
-          discount_percent: parseFloat(service.discount_percent),
-          total: 0,
-          pricing_group_id: this.form.pricing_group_id,
-          notes: service.notes
-        })
-      })
-    }).catch(error => {
-      this.isGroupLoading = false
-      this.$notification.error(error.message)
-    })
-  },
-  updated () {
-    if (this.itemList.length !== 0) {
-      this.lastPageItem = this.paginationItem.last_page
-    }
-    if (this.serviceList.length !== 0) {
-      this.lastPageService = this.paginationService.last_page
     }
   }
 }

@@ -258,6 +258,30 @@ export default {
       }, 100)
     }
   },
+  created () {
+    this.isLoading = true
+    this.findEmployeeAssessment({
+      employeeId: this.id,
+      value: this.value,
+      type: this.type
+    }).then(
+      (response) => {
+        this.isLoading = false
+        this.templateList = []
+        this.assessmentsBy.forEach((tpl, index) => {
+          this.templateList.push(tpl.template)
+        })
+        if (this.templateList.length > 0) {
+          this.templateIndex = 0
+          this.templateSelected = this.assessmentsBy[this.templateIndex]
+        }
+      },
+      (error) => {
+        console.log(JSON.stringify(error))
+        this.isLoading = false
+      }
+    )
+  },
   methods: {
     ...mapActions('humanResourceEmployeeAssessment', {
       findEmployeeAssessment: 'findBy'
@@ -316,30 +340,6 @@ export default {
     toggleHiglight () {
       this.isHighlight = !this.isHighlight
     }
-  },
-  created () {
-    this.isLoading = true
-    this.findEmployeeAssessment({
-      employeeId: this.id,
-      value: this.value,
-      type: this.type
-    }).then(
-      (response) => {
-        this.isLoading = false
-        this.templateList = []
-        this.assessmentsBy.forEach((tpl, index) => {
-          this.templateList.push(tpl.template)
-        })
-        if (this.templateList.length > 0) {
-          this.templateIndex = 0
-          this.templateSelected = this.assessmentsBy[this.templateIndex]
-        }
-      },
-      (error) => {
-        console.log(JSON.stringify(error))
-        this.isLoading = false
-      }
-    )
   }
 }
 </script>

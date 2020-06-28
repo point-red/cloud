@@ -295,11 +295,6 @@ export default {
   computed: {
     ...mapGetters('accountingBalanceSheet', ['chartOfAccounts'])
   },
-  methods: {
-    ...mapActions('accountingBalanceSheet', {
-      getChartOfAccounts: 'get'
-    })
-  },
   created () {
     this.isLoading = true
     this.getChartOfAccounts({
@@ -335,6 +330,11 @@ export default {
       this.totalProfitAndLossOperation = this.totalProfitAndLossGross - this.totalDirectExpense - this.totalFactoryOverheadCost
       this.totalProfitAndLossNet = this.totalProfitAndLossOperation + this.totalOtherIncome - this.totalOtherExpense
       this.isLoading = false
+    })
+  },
+  methods: {
+    ...mapActions('accountingBalanceSheet', {
+      getChartOfAccounts: 'get'
     })
   }
 }

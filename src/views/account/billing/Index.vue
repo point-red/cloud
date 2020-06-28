@@ -105,12 +105,6 @@ export default {
     ...mapGetters('accountWalletBalance', ['amount']),
     ...mapGetters('accountInvoice', ['invoices', 'pagination'])
   },
-  methods: {
-    ...mapActions('accountWalletBalance', ['get']),
-    ...mapActions('accountInvoice', {
-      getInvoices: 'get'
-    })
-  },
   beforeDestroy () {
     clearInterval(this.getBalanceInterval)
   },
@@ -121,6 +115,12 @@ export default {
       console.log('time')
       this.get()
     }, 5000)
+  },
+  methods: {
+    ...mapActions('accountWalletBalance', ['get']),
+    ...mapActions('accountInvoice', {
+      getInvoices: 'get'
+    })
   }
 }
 </script>

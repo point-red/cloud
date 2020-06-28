@@ -159,6 +159,9 @@ export default {
   computed: {
     ...mapGetters('pluginPinPointReportRepeatOrder', ['sales'])
   },
+  created () {
+    this.search()
+  },
   methods: {
     ...mapActions('pluginPinPointReportRepeatOrder', ['get']),
     search () {
@@ -176,9 +179,6 @@ export default {
         this.isSaving = false
       })
     }
-  },
-  created () {
-    this.search()
   }
 }
 </script>

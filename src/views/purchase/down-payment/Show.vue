@@ -326,6 +326,9 @@ export default {
       }
     }
   },
+  created () {
+    this.purchaseDownPaymentRequest()
+  },
   methods: {
     ...mapActions('purchaseDownPayment', {
       find: 'find',
@@ -421,9 +424,6 @@ export default {
         console.log(error.message)
       })
     }
-  },
-  created () {
-    this.purchaseDownPaymentRequest()
   }
 }
 </script>

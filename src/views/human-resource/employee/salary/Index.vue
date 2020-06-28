@@ -139,6 +139,10 @@ export default {
       isExporting: []
     }
   },
+  computed: {
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeSalary', ['salaries', 'dataSet'])
+  },
   created () {
     this.isLoading = true
     this.getEmployeeSalary({
@@ -148,10 +152,6 @@ export default {
     }, (error) => {
       console.log(JSON.stringify(error))
     })
-  },
-  computed: {
-    ...mapGetters('humanResourceEmployee', ['employee']),
-    ...mapGetters('humanResourceEmployeeSalary', ['salaries', 'dataSet'])
   },
   methods: {
     ...mapActions('humanResourceEmployeeSalary', {

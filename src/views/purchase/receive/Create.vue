@@ -265,6 +265,23 @@ export default {
   computed: {
     ...mapGetters('auth', ['authUser'])
   },
+  created () {
+    if (this.$route.query.id) {
+      this.isLoading = true
+      this.find({
+        id: this.$route.query.id,
+        params: {
+          includes: 'form;supplier;items.item.units'
+        }
+      }).then(response => {
+        this.choosePurchaseOrder(response.data)
+      }).catch(error => {
+        this.$notification.error(error.message)
+      }).finally(() => {
+        this.isLoading = false
+      })
+    }
+  },
   methods: {
     ...mapActions('purchaseReceive', ['create']),
     onClickQuantity (row, index) {
@@ -339,23 +356,6 @@ export default {
         }).finally(() => {
           this.isSaving = false
         })
-    }
-  },
-  created () {
-    if (this.$route.query.id) {
-      this.isLoading = true
-      this.find({
-        id: this.$route.query.id,
-        params: {
-          includes: 'form;supplier;items.item.units'
-        }
-      }).then(response => {
-        this.choosePurchaseOrder(response.data)
-      }).catch(error => {
-        this.$notification.error(error.message)
-      }).finally(() => {
-        this.isLoading = false
-      })
     }
   }
 }

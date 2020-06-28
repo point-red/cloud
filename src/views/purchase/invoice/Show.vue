@@ -368,6 +368,9 @@ export default {
       }
     }
   },
+  created () {
+    this.purchaseInvoiceRequest()
+  },
   methods: {
     ...mapActions('purchaseInvoice', {
       find: 'find',
@@ -474,9 +477,6 @@ export default {
         console.log(error.message)
       })
     }
-  },
-  created () {
-    this.purchaseInvoiceRequest()
   }
 }
 </script>

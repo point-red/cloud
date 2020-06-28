@@ -93,6 +93,9 @@ export default {
   computed: {
     ...mapGetters('masterService', ['service'])
   },
+  created () {
+    this.findService()
+  },
   methods: {
     ...mapActions('masterService', ['find', 'delete']),
     onDelete () {
@@ -127,9 +130,6 @@ export default {
           this.$notification.error(error.message)
         })
     }
-  },
-  created () {
-    this.findService()
   }
 }
 </script>

@@ -320,6 +320,19 @@ export default {
       deep: true
     }
   },
+  created () {
+    this.$router.push({
+      query: {
+        ...this.$route.query,
+        date_from: this.date.start,
+        date_to: this.date.end
+      }
+    })
+    this.getInventoryUsage()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('inventoryUsage', ['get']),
     toggleCheckRow (id) {
@@ -427,19 +440,6 @@ export default {
       this.currentPage = value
       this.getInventoryUsage()
     }
-  },
-  created () {
-    this.$router.push({
-      query: {
-        ...this.$route.query,
-        date_from: this.date.start,
-        date_to: this.date.end
-      }
-    })
-    this.getInventoryUsage()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

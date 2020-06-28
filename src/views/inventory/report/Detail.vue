@@ -286,6 +286,11 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('masterItem', ['item']),
+    ...mapGetters('masterWarehouse', ['warehouse']),
+    ...mapGetters('inventoryInventoryDetail', ['inventories', 'pagination', 'openingBalance', 'openingBalanceCurrentPage', 'stockIn', 'stockOut', 'endingBalance'])
+  },
   watch: {
     date: {
       handler: function () {
@@ -312,10 +317,15 @@ export default {
       this.getInventoryRequest()
     }
   },
-  computed: {
-    ...mapGetters('masterItem', ['item']),
-    ...mapGetters('masterWarehouse', ['warehouse']),
-    ...mapGetters('inventoryInventoryDetail', ['inventories', 'pagination', 'openingBalance', 'openingBalanceCurrentPage', 'stockIn', 'stockOut', 'endingBalance'])
+  created () {
+    this.warehouseId = this.$route.params.warehouseId
+    this.id = this.$route.params.id
+    if (!this.$route.query.page) {
+      this.$route.query.page = 1
+    }
+    this.getItemRequest()
+    this.getWarehouseRequest()
+    this.getInventoryRequest()
   },
   methods: {
     ...mapActions('masterItem', ['find', 'delete']),
@@ -423,16 +433,6 @@ export default {
       this.$route.query.page = value
       this.getInventoryRequest()
     }
-  },
-  created () {
-    this.warehouseId = this.$route.params.warehouseId
-    this.id = this.$route.params.id
-    if (!this.$route.query.page) {
-      this.$route.query.page = 1
-    }
-    this.getItemRequest()
-    this.getWarehouseRequest()
-    this.getInventoryRequest()
   }
 }
 </script>
