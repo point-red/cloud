@@ -134,9 +134,12 @@ import { VueEditor } from 'vue2-editor'
 
 export default {
   components: { VueEditor },
-  props: [
-    'instructionId'
-  ],
+  props: {
+    instructionId: {
+      type: Number,
+      default: null
+    }
+  },
   data () {
     return {
       isSaving: false,

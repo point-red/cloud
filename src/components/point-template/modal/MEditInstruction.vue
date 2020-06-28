@@ -78,9 +78,12 @@
 import { mapActions } from 'vuex'
 
 export default {
-  props: [
-    'instruction'
-  ],
+  props: {
+    instruction: {
+      type: Object,
+      default: null
+    }
+  },
   data () {
     return {
       isSaving: false,

@@ -59,9 +59,12 @@
 import { mapActions } from 'vuex'
 
 export default {
-  props: [
-    'procedureId'
-  ],
+  props: {
+    procedureId: {
+      type: Number,
+      default: null
+    }
+  },
   data () {
     return {
       isSaving: false,

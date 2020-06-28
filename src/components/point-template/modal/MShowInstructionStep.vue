@@ -128,10 +128,16 @@
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  props: [
-    'step', // tidak perlu load manual karena data sudah ada
-    'stepId' // harus perlu load dari API
-  ],
+  props: {
+    step: {
+      type: Object,
+      default: null
+    },
+    stepId: {
+      type: Number,
+      default: null
+    }
+  },
   data () {
     return {
       isSaving: false,

@@ -135,10 +135,16 @@ import { VueEditor } from 'vue2-editor'
 
 export default {
   components: { VueEditor },
-  props: [
-    'step', // tidak perlu load manual karena data sudah ada
-    'stepId' // harus perlu load dari API
-  ],
+  props: {
+    step: {
+      type: Object,
+      default: null
+    },
+    stepId: {
+      type: Number,
+      default: null
+    }
+  },
   data () {
     return {
       isSaving: false,

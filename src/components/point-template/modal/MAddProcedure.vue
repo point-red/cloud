@@ -136,9 +136,12 @@
 import { mapActions } from 'vuex'
 
 export default {
-  props: [
-    'parentId'
-  ],
+  props: {
+    parentId: {
+      type: Number,
+      default: null
+    }
+  },
   data () {
     return {
       isSaving: false,

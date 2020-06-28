@@ -75,9 +75,12 @@
 import { mapActions } from 'vuex'
 
 export default {
-  props: [
-    'ids'
-  ],
+  props: {
+    ids: {
+      type: Array,
+      default: null
+    }
+  },
   data () {
     return {
       isSaving: false,
