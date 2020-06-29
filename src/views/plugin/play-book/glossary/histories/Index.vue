@@ -76,6 +76,15 @@ export default {
   computed: {
     ...mapGetters('pluginPlayBookGlossaryHistories', ['glossary', 'histories', 'pagination'])
   },
+  mounted () {
+    this.getHistories()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('pluginPlayBookGlossaryHistories', [
       'get'
@@ -125,15 +134,6 @@ export default {
       this.page = value
       this.getHistories()
     }
-  },
-  mounted () {
-    this.getHistories()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

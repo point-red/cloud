@@ -207,6 +207,15 @@ export default {
   computed: {
     ...mapGetters('pluginPlayBookInstructionApproval', ['instructions', 'pagination'])
   },
+  mounted () {
+    this.getInstructions()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('pluginPlayBookInstructionApproval', [
       'get'
@@ -277,15 +286,6 @@ export default {
       this.selectedStep = step
       this.$refs.modalShowInstructionStep.open()
     }
-  },
-  mounted () {
-    this.getInstructions()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>
