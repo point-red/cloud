@@ -1,9 +1,9 @@
 import api from '@/api'
 
-const url = '/sales/orders'
+const url = '/sales/delivery-notes'
 
 const state = {
-  salesOrder: {
+  deliveryNote: {
     date: null,
     customer_id: null,
     form: {
@@ -18,19 +18,18 @@ const state = {
     },
     customer: {
       name: null
-    },
-    items: []
+    }
   },
-  salesOrders: [],
+  deliveryNotes: [],
   pagination: {}
 }
 
 const getters = {
-  salesOrder: state => {
-    return state.salesOrder
+  deliveryNote: state => {
+    return state.deliveryNote
   },
-  salesOrders: state => {
-    return state.salesOrders
+  deliveryNotes: state => {
+    return state.deliveryNotes
   },
   pagination: state => {
     return state.pagination
@@ -39,23 +38,23 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.salesOrders = payload.data
+    state.deliveryNotes = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    payload.data.items.forEach(element => {
-      element.more = false
-    })
-    state.salesOrder = payload.data
+    // payload.data.items.forEach(element => {
+    //   element.more = false
+    // })
+    state.deliveryNote = payload.data
   },
   'CREATE' (state, payload) {
-    state.salesOrder = payload
+    state.deliveryNote = payload
   },
   'UPDATE' (state, payload) {
-    state.salesOrder = payload
+    state.deliveryNote = payload
   },
   'DELETE' (state, payload) {
-    state.salesOrder = {}
+    state.deliveryNote = {}
   }
 }
 
