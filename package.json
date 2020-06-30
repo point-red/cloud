@@ -23,6 +23,7 @@
     "numeral": "^2.0.6",
     "point-table-vue": "^0.2.4",
     "register-service-worker": "^1.7.1",
+    "sanitize-html": "^1.27.0",
     "sweet-modal-vue": "^2.0.0",
     "sweetalert2": "^9.14.4",
     "v-click-outside": "^3.0.1",

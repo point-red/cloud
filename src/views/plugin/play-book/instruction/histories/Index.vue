@@ -69,12 +69,12 @@
               <td>
                 {{ step.name }}
               </td>
+              <!-- eslint-disable vue/no-v-html -->
               <td
                 v-for="glossary in glossaries"
                 :key="glossary.id"
-              >
-                {{ step.contentsForView[`${glossary.id}`] || '-' }}
-              </td>
+                v-html="$sanitize(step.contentsForView[`${glossary.id}`] || '-')"
+              />
             </tr>
           </point-table>
         </p-block-inner>

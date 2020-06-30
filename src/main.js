@@ -33,6 +33,7 @@ import PackageVersion from '@/components/package-version'
 import * as VueGoogleMaps from 'vue2-google-maps'
 import VScrollLock from 'v-scroll-lock'
 import SweetModal from 'sweet-modal-vue/src/plugin.js'
+import sanitizeHTML from 'sanitize-html'
 
 Vue.use(SweetModal)
 Vue.use(VScrollLock)
@@ -91,6 +92,8 @@ Vue.use(PointPlugin)
 Vue.use(PointRolePermission)
 Vue.use(PointFormRules)
 Vue.use(PointTemplate)
+
+Vue.prototype.$sanitize = sanitizeHTML
 
 Vue.config.productionTip = false
 
