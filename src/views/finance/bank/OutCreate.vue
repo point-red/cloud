@@ -193,8 +193,8 @@ export default {
     this.form.payment_type = 'bank'
     this.form.disbursed = true
     this.form.reference_id = this.payment.reference_id
-    this.form.reference_type = this.payment.reference_type
-    this.form.reference_number = this.payment.reference_number
+    this.form.referenceable_type = this.payment.referenceable_type
+    this.form.referenceable_number = this.payment.referenceable_number
     this.form.paymentable_id = this.payment.paymentable_id
     this.form.paymentable_type = this.payment.paymentable_type
     this.form.paymentable_name = this.payment.paymentable_name
