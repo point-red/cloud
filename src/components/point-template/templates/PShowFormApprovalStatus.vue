@@ -54,18 +54,23 @@
 export default {
   props: {
     cancellationStatus: {
+      type: Number,
       default: null
     },
     approvalStatus: {
+      type: Number,
       default: null
     },
     approvalReason: {
+      type: String,
       default: ''
     },
     approvedBy: {
+      type: String,
       default: ''
     },
     isLoading: {
+      type: Boolean,
       default: false
     }
   },

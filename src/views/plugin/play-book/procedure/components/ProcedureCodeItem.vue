@@ -86,7 +86,28 @@
 <script>
 export default {
   name: 'ProcedureCodeItem',
-  props: ['i', 'procedure', 'noChilds', 'withAddButton', 'isParent']
+  props: {
+    i: {
+      type: [Number, String],
+      default: ''
+    },
+    procedure: {
+      type: Object,
+      default: null
+    },
+    withAddButton: {
+      type: Boolean,
+      default: null
+    },
+    noChilds: {
+      type: Boolean,
+      default: true
+    },
+    isParent: {
+      type: Boolean,
+      default: null
+    }
+  }
 }
 </script>
 

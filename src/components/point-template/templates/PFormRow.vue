@@ -83,7 +83,7 @@ export default {
       default: ''
     },
     isFocus: {
-      tyle: Boolean,
+      type: Boolean,
       default: false
     },
     isTextRight: {

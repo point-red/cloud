@@ -486,6 +486,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   props: {
     roleId: {
+      type: Number,
       required: true
     }
   },
