@@ -114,33 +114,50 @@
           </div>
           <hr>
         </div>
-        <div class="mt-10">
-          <!-- <label class="css-control css-control-primary css-checkbox mr-10">
+        <!-- <div class="mt-10">
+          <label class="css-control css-control-primary css-checkbox mr-10">
             <input
               type="checkbox"
               class="css-control-input"
-              @click="toggleCheckRows()"
-              :checked="isRowsChecked(purchaseRequests, checkedRow)">
-            <span class="css-control-indicator"></span>
-          </label> -->
+              :checked="$_checkList_isRowsChecked(purchaseRequests, $data.$_checkList_checkedRow)"
+              @click="$_checkList_toggleCheckRows(purchaseRequests)"
+            >
+            <span class="css-control-indicator" />
+          </label>
           <span
-            v-show="checkedRow.length > 0"
+            v-show="$data.$_checkList_checkedRow.length > 0"
             class="mr-15 animated fadeIn"
           >
-            <!-- <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary mr-5"
+              @click="bulkCancel()"
+            >
               {{ $t('request approval') | uppercase }}
             </button>
-            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkApprove()">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary mr-5"
+              @click="bulkApprove()"
+            >
               {{ $t('approve') | uppercase }}
             </button>
-            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkReject()">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary mr-5"
+              @click="bulkReject()"
+            >
               {{ $t('reject') | uppercase }}
             </button>
-            <button type="button" class="btn btn-sm btn-secondary" @click="bulkCancel()">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary"
+              @click="bulkCancel()"
+            >
               {{ $t('archive') | uppercase }}
-            </button> -->
+            </button>
           </span>
-        </div>
+        </div> -->
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
@@ -220,13 +237,14 @@
                   </div>
                 </td>
                 <td>
-                <!-- <p-form-check-box
-                  :is-form="false"
-                  id="check-box"
-                  name="check-box"
-                  @click.native="toggleCheckRow(purchaseRequest.id)"
-                  :checked="isRowChecked(purchaseRequest.id)"
-                  class="text-center"/> -->
+                  <!-- <p-form-check-box
+                    id="check-box"
+                    :is-form="false"
+                    name="check-box"
+                    :checked="$_checkList_isRowChecked(purchaseRequest.id)"
+                    class="text-center"
+                    @click.native="$_checkList_toggleCheckRow(purchaseRequest.id)"
+                  /> -->
                 </td>
               </tr>
             </template>
@@ -257,6 +275,7 @@ import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import debounce from 'lodash/debounce'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
+import CheckListMixin from '@/mixins/CheckList'
 
 export default {
   components: {
@@ -265,6 +284,9 @@ export default {
     BreadcrumbPurchase,
     PointTable
   },
+  mixins: [
+    CheckListMixin
+  ],
   data () {
     return {
       isLoading: true,
@@ -273,7 +295,6 @@ export default {
       lastPage: 1,
       limit: 10,
       isAdvanceFilter: false,
-      checkedRow: [],
       formStatus: {
         id: null,
         label: null,
@@ -323,54 +344,6 @@ export default {
   },
   methods: {
     ...mapActions('purchaseRequest', ['get']),
-    toggleCheckRow (id) {
-      if (!this.isRowChecked(id)) {
-        this.checkedRow.push({ id })
-      } else {
-        this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(id), 1)
-      }
-    },
-    toggleCheckRows () {
-      if (!this.isRowsChecked(this.purchaseRequests, this.checkedRow)) {
-        this.purchaseRequests.forEach(element => {
-          if (!this.isRowChecked(element.id)) {
-            const id = element.id
-            this.checkedRow.push({ id })
-          }
-        })
-      } else {
-        this.purchaseRequests.forEach(element => {
-          this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(element.id), 1)
-        })
-      }
-    },
-    isRowChecked (id) {
-      return this.checkedRow.some(element => {
-        return element.id == id
-      })
-    },
-    isRowsChecked (haystack, needles) {
-      if (needles.length == 0) {
-        return false
-      }
-      for (let i = 0; i < haystack.length; i++) {
-        const found = needles.some(element => {
-          return element.id == haystack[i].id
-        })
-        if (!found) {
-          return false
-        }
-      }
-      return true
-    },
-    bulkApprove () {
-      this.bulkApprove({
-        purchaseRequests: this.checkedRow
-      }).then(response => {
-        this.checkedRow = []
-        this.getPurchaseRequest()
-      })
-    },
     chooseFormStatus (option) {
       this.formStatus.label = option.label
       this.formStatus.value = option.value
