@@ -11,8 +11,18 @@
         >RED POINT</a>
       </div>
       <div class="float-left">
-        VERSION {{ pointPackageVersion }} | &copy; 2019
+        VERSION {{ version }} | &copy; 2020
       </div>
     </div>
   </footer>
 </template>
+
+<script>
+export default {
+  data () {
+    return {
+      version: process.env.VUE_APP_VERSION
+    }
+  }
+}
+</script>
