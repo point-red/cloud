@@ -232,8 +232,8 @@ export default {
       this.$store.commit('financePayment/FETCH_OBJECT', {
         data: {
           reference_form_id: paymentOrder.form.id,
-          reference_id: paymentOrder.id,
-          reference_type: 'PaymentOrder',
+          referenceable_id: paymentOrder.id,
+          referenceable_type: 'PaymentOrder',
           reference_number: paymentOrder.form.number,
           paymentable_name: paymentOrder.paymentable.name,
           paymentable_type: paymentOrder.paymentable_type,
@@ -255,8 +255,8 @@ export default {
       this.$store.commit('financePayment/FETCH_OBJECT', {
         data: {
           reference_form_id: downPayment.form.id,
-          reference_id: downPayment.id,
-          reference_type: 'PurchaseDownPayment',
+          referenceable_id: downPayment.id,
+          referenceable_type: 'PurchaseDownPayment',
           reference_number: downPayment.form.number,
           paymentable_name: downPayment.supplier.name,
           paymentable_type: 'Supplier',

@@ -193,8 +193,8 @@ export default {
     console.log(this.payment)
     this.form.payment_type = 'cash'
     this.form.disbursed = true
-    this.form.reference_id = this.payment.reference_id
-    this.form.reference_type = this.payment.reference_type
+    this.form.referenceable_id = this.payment.referenceable_id
+    this.form.referenceable_type = this.payment.referenceable_type
     this.form.reference_number = this.payment.reference_number
     this.form.paymentable_id = this.payment.paymentable_id
     this.form.paymentable_type = this.payment.paymentable_type
