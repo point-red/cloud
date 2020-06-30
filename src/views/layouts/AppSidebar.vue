@@ -362,6 +362,17 @@
                   </router-link>
                 </li>
                 <li
+                  v-if="$permission.has('read sales down payment')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/sales/down-payment"
+                    active-class="active"
+                  >
+                    {{ $t('sales down payment') | uppercase }}
+                  </router-link>
+                </li>
+                <li
                   v-if="$permission.has('read sales order')"
                   @click="toggleLeftSidebar('close-xs')"
                 >
