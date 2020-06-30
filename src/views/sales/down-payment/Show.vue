@@ -1,9 +1,9 @@
 <template>
   <div>
     <breadcrumb v-if="downPayment">
-      <breadcrumb-purchase />
+      <breadcrumb-sales />
       <router-link
-        to="/purchase/down-payment"
+        to="/sales/down-payment"
         class="breadcrumb-item"
       >
         {{ $t('down payment') | uppercase }}
@@ -11,7 +11,7 @@
       <span class="breadcrumb-item active">{{ downPayment.form.number | uppercase }}</span>
     </breadcrumb>
 
-    <purchase-menu />
+    <sales-menu />
 
     <p-show-form-approval-status
       :is-loading="isLoading"
@@ -42,13 +42,13 @@
             <div class="col-sm-12">
               <div class="text-right">
                 <router-link
-                  :to="{ name: 'purchase.down-payment.create' }"
+                  :to="{ name: 'sales.down-payment.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('create') | uppercase }}
                 </router-link>
                 <router-link
-                  :to="{ name: 'purchase.down-payment.edit', params: { id: downPayment.id }}"
+                  :to="{ name: 'sales.down-payment.edit', params: { id: downPayment.id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('edit') | uppercase }}
@@ -110,13 +110,13 @@
                 {{ downPayment.form.branch.phone | uppercase }} <br v-if="downPayment.form.branch.phone">
               </template>
               <h6 class="mt-30 mb-0">
-                {{ $t('to') | uppercase }}: {{ downPayment.supplier_name | uppercase }}
+                {{ $t('to') | uppercase }}: {{ downPayment.customer_name | uppercase }}
               </h6>
-              <div v-if="downPayment.supplier_address">
-                <i class="fa fa-home fa-fw" /> {{ downPayment.supplier_address | uppercase }}
+              <div v-if="downPayment.customer_address">
+                <i class="fa fa-home fa-fw" /> {{ downPayment.customer_address | uppercase }}
               </div>
-              <div v-if="downPayment.supplier_phone">
-                <i class="fa fa-phone fa-fw" /> {{ downPayment.supplier_phone | uppercase }}
+              <div v-if="downPayment.customer_phone">
+                <i class="fa fa-phone fa-fw" /> {{ downPayment.customer_phone | uppercase }}
               </div>
             </div>
           </div>
@@ -294,17 +294,17 @@
 </template>
 
 <script>
-import PurchaseMenu from '../Menu'
+import SalesMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbPurchase from '../Breadcrumb'
+import BreadcrumbSales from '../Breadcrumb'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    PurchaseMenu,
+    SalesMenu,
     Breadcrumb,
-    BreadcrumbPurchase,
+    BreadcrumbSales,
     PointTable
   },
   data () {
@@ -315,22 +315,22 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchaseDownPayment', { downPayment: 'downPayment' }),
+    ...mapGetters('salesDownPayment', { downPayment: 'downPayment' }),
     ...mapGetters('auth', ['authUser'])
   },
   watch: {
     '$route' (to, from) {
       if (to.params.id != from.params.id) {
         this.id = to.params.id
-        this.purchaseDownPaymentRequest()
+        this.salesDownPaymentRequest()
       }
     }
   },
   created () {
-    this.purchaseDownPaymentRequest()
+    this.salesDownPaymentRequest()
   },
   methods: {
-    ...mapActions('purchaseDownPayment', {
+    ...mapActions('salesDownPayment', {
       find: 'find',
       delete: 'delete',
       approve: 'approve',
@@ -338,14 +338,14 @@ export default {
       cancellationApprove: 'cancellationApprove',
       cancellationReject: 'cancellationReject'
     }),
-    purchaseDownPaymentRequest () {
+    salesDownPaymentRequest () {
       this.isLoading = true
       this.find({
         id: this.id,
         params: {
           with_archives: true,
           with_origin: true,
-          includes: 'supplier;' +
+          includes: 'customer;' +
             'downpaymentable.form;' +
             'downpaymentable.items.item;' +
             'form.createdBy;' +
@@ -381,7 +381,7 @@ export default {
       }).then(response => {
         this.isDeleting = false
         this.$notification.success('cancel success')
-        this.purchaseDownPaymentRequest()
+        this.salesDownPaymentRequest()
       }).catch(error => {
         this.isDeleting = false
         this.$notification.error(error.message)
@@ -393,7 +393,7 @@ export default {
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
-        this.purchaseDownPaymentRequest()
+        this.salesDownPaymentRequest()
       })
     },
     onReject (reason) {
@@ -402,7 +402,7 @@ export default {
         reason: reason
       }).then(response => {
         this.$notification.success('reject success')
-        this.purchaseDownPaymentRequest()
+        this.salesDownPaymentRequest()
       })
     },
     onCancellationApprove () {
@@ -410,7 +410,7 @@ export default {
         id: this.id
       }).then(response => {
         this.$notification.success('cancellation approved')
-        this.$router.push('/purchase/down-payment')
+        this.$router.push('/sales/down-payment')
       })
     },
     onCancellationReject (reason) {
@@ -419,7 +419,7 @@ export default {
         reason: reason
       }).then(response => {
         this.$notification.success('cancellation rejected')
-        this.purchaseDownPaymentRequest()
+        this.salesDownPaymentRequest()
       }).catch(error => {
         console.log(error.message)
       })
