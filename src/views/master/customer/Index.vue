@@ -165,7 +165,7 @@
                   'bg-primary-lighter': isRowChecked(customer.id)
                 }"
               >
-                {{ index + 1 }}
+                {{ customerIndex + 1 }}
               </th>
               <td>
                 <p-form-check-box

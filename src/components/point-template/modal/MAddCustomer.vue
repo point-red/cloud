@@ -134,7 +134,7 @@ export default {
         email: null,
         address: null,
         phone: null,
-        credit_limit: null,
+        credit_limit: 0,
         pricing_group_id: null,
         pricing_group_label: null,
         groups: []

@@ -212,6 +212,7 @@
     />
     <m-user
       ref="approver"
+      :permission="'approve purchase request'"
       @choosen="chooseApprover($event)"
     />
     <m-allocation

@@ -390,6 +390,7 @@
     />
     <m-user
       ref="approver"
+      :permission="'approve purchase invoice'"
       @choosen="chooseApprover"
     />
     <m-allocation

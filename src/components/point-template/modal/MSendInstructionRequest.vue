@@ -66,6 +66,7 @@
     </sweet-modal>
     <m-user
       ref="approver"
+      :permission="'approve play book instruction'"
       @choosen="chooseApprover"
     />
   </div>

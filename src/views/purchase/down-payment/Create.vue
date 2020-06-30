@@ -271,6 +271,7 @@
     </form>
     <m-user
       ref="approver"
+      :permission="'approve purchase down payment'"
       @choosen="chooseApprover"
     />
     <select-purchase-order

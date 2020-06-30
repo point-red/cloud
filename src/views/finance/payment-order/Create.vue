@@ -234,6 +234,7 @@
     />
     <m-user
       ref="approver"
+      :permission="'approve payment order'"
       @choosen="chooseApprover($event)"
     />
     <m-allocation
