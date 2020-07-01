@@ -448,17 +448,6 @@
                 class="fa fa-asterisk fa-spin"
               /> {{ $t('save') | uppercase }}
             </button>
-            <button
-              v-else
-              :disabled="isSaving"
-              type="button"
-              class="btn btn-sm btn-danger"
-            >
-              <i
-                v-show="isSaving"
-                class="fa fa-asterisk fa-spin"
-              /> Required to access your location and camera to use this feature
-            </button>
           </div>
         </div>
       </p-block>
