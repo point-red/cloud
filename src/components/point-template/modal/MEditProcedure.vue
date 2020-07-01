@@ -137,7 +137,7 @@ import { mapActions } from 'vuex'
 export default {
   props: {
     procedureId: {
-      type: Object,
+      type: Number,
       default: null
     }
   },

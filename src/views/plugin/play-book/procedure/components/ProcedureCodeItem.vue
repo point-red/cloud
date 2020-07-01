@@ -66,7 +66,7 @@
       v-if="procedure.procedures && procedure.procedures.length && !noChilds"
       class="procedures pl-4"
     >
-      <procedure-code-item
+      <ProcedureCodeItem
         v-for="sub of procedure.procedures"
         :key="sub.id"
         :procedure="sub"
@@ -101,7 +101,7 @@ export default {
     },
     noChilds: {
       type: Boolean,
-      default: true
+      default: false
     },
     isParent: {
       type: Boolean,

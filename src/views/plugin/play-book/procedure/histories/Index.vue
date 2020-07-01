@@ -75,9 +75,6 @@ export default {
   },
   mounted () {
     this.getHistories()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
   },
   updated () {
     this.lastPage = this.pagination.last_page

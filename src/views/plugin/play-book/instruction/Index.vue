@@ -65,7 +65,7 @@
 
               <div v-if="instruction">
                 <button
-                  v-if="$permission.has('edit play book instruction')"
+                  v-if="$permission.has('update play book instruction')"
                   class="btn btn-light ml-2"
                   @click="$refs.modalEditInstruction.open()"
                 >
@@ -158,7 +158,7 @@
     </div>
     <m-add-instruction
       ref="modalAddInstruction"
-      :procedure-id="form.procedure_id"
+      :procedure-id="parseInt(form.procedure_id)"
       @added="$router.push('/plugin/play-book/approval/instruction/send')"
     />
     <m-edit-instruction
@@ -168,7 +168,7 @@
     />
     <m-add-instruction-step
       ref="modalAddStep"
-      :instruction-id="form.instruction_id"
+      :instruction-id="parseInt(form.instruction_id)"
       @added="$router.push('/plugin/play-book/approval/instruction/send')"
     />
     <m-edit-instruction-step
@@ -284,6 +284,13 @@ export default {
     'form.procedure_id' (newValue) {
       this.getInstructions()
       const query = this.$route.query
+
+      if (
+        parseInt(this.$route.query.procedure) === parseInt(this.form.procedure_id)
+      ) {
+        return
+      }
+
       this.$router.replace({
         query: {
           ...query,
@@ -299,6 +306,13 @@ export default {
 
       if (!newValue) {
         delete query.instruction
+      }
+
+      if (
+        parseInt(this.$route.query.procedure) === parseInt(this.form.procedure_id) &&
+        parseInt(this.$route.query.instruction) === parseInt(this.form.instruction_id)
+      ) {
+        return
       }
 
       this.$router.replace({ query })
