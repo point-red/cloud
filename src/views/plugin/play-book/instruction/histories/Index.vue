@@ -16,6 +16,7 @@
       <p-block>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
+            v-if="instruction"
             id="procedure"
             name="procedure"
             :label="$t('procedure')"

@@ -207,6 +207,7 @@
             </button>
           </div>
           <div class="pt-5">
+            {{ form.procedures.length }}
             <procedure-code-item
               v-for="(procedure, i) in form.procedures"
               :key="procedure.id"
@@ -226,17 +227,17 @@
     </div>
     <m-add-procedure
       ref="modalAddProcedure"
-      :parent-id="$route.params.id"
+      :parent-id="parseInt($route.params.id)"
       @added="$router.push('/plugin/play-book/approval/procedure/send')"
     />
     <m-edit-procedure
       ref="modalEditProcedure"
-      :procedure-id="$route.params.id"
+      :procedure-id="parseInt($route.params.id)"
       @added="$router.push('/plugin/play-book/approval/procedure/send')"
     />
     <m-decline-procedure
       ref="modalDeclineProcedure"
-      :procedure-id="$route.params.id"
+      :procedure-id="parseInt($route.params.id)"
       @added="getData()"
     />
   </div>
@@ -269,7 +270,8 @@ export default {
         code: null,
         name: null,
         purpose: null,
-        note: null
+        note: null,
+        procedures: []
       },
       errors: null
     }
