@@ -19,19 +19,6 @@
 
     <tab-menu />
 
-    <div v-if="isPermissionGeolocationGranted == false">
-      <h2><i class="fa fa-warning" /> {{ $t('permission required') | uppercase }}</h2>
-      <p>{{ $t('browser permission warning - sales visitation form') }}</p>
-      <hr>
-      <b>REFERENCE:</b>
-      <br>
-      <a href="https://support.google.com/chrome/answer/114662?hl=en">https://support.google.com/chrome/answer/114662</a>
-      <br>
-      <a href="https://support.google.com/chrome/answer/2693767?hl=en">https://support.google.com/chrome/answer/2693767</a>
-
-      <hr>
-    </div>
-
     <form
       class="row"
       @submit.prevent="onSubmit"
@@ -107,6 +94,7 @@
               @place_changed="setPlace"
               @keypress.enter.prevent
             />
+
             <gmap-map
               id="map"
               ref="map"
@@ -451,7 +439,6 @@
         <div class="form-group row">
           <div class="col-md-12">
             <button
-              v-if="isPermissionGeolocationGranted"
               :disabled="isSaving"
               type="submit"
               class="btn btn-sm btn-primary"
@@ -530,8 +517,6 @@ export default {
       isLoading: false,
       loadingMessage: 'Loading...',
       isSaving: false,
-      isPermissionCameraGranted: true,
-      isPermissionGeolocationGranted: true,
       form: new Form({
         date: this.serverDateTime(),
         image: null,
@@ -592,56 +577,10 @@ export default {
   mounted () {
     this.isLoading = false
     this.loadingMessage = 'Searching current location'
-    // Check for Geolocation API permissions
-    navigator.permissions.query({
-      name: 'geolocation'
-    }).then(permissionStatus => {
-      if (permissionStatus.state == 'granted') {
-        this.getLocation()
-      } else if (permissionStatus.state == 'prompt') {
-        this.loadingMessage = 'Please allow location permission request'
-        this.getLocation()
-      } else if (permissionStatus.state == 'denied') {
-        this.loadingMessage = 'Permission denied'
-        this.isLoading = false
-        this.$alert.error('Permissions Denied', 'Requesting location permissions denied, If you using google chrome you can refer this guide to allow permission request <a href="https://support.google.com/chrome/answer/142065?hl=en" target="_blank">https://support.google.com/chrome/answer/142065</a>')
-      }
-
-      permissionStatus.onchange = () => {
-        if (permissionStatus.state == 'denied') {
-          this.isLoading = false
-          this.loadingMessage = 'Permission denied'
-          this.$alert.error('Permissions Denied', 'Requesting location permissions denied, If you using google chrome you can refer this guide to allow permission request <a href="https://support.google.com/chrome/answer/142065?hl=en" target="_blank">https://support.google.com/chrome/answer/142065</a>')
-        }
-      }
-    })
+    this.getLocation()
   },
   created () {
-    const self = this
     this.addItemRow()
-    navigator.permissions.query({ name: 'camera' })
-      .then(function (result) {
-        console.log('a ' + result.state)
-        if (result.state == 'granted') {
-          self.isPermissionCameraGranted = true
-        } else if (result.state == 'prompt') {
-          self.isPermissionCameraGranted = false
-        } else {
-          self.isPermissionCameraGranted = false
-        }
-      })
-
-    navigator.permissions.query({ name: 'geolocation' })
-      .then(function (result) {
-        console.log('b ' + result.state)
-        if (result.state == 'granted') {
-          self.isPermissionGeolocationGranted = true
-        } else if (result.state == 'prompt') {
-          self.isPermissionCameraGranted = false
-        } else {
-          self.isPermissionGeolocationGranted = false
-        }
-      })
   },
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['create']),
