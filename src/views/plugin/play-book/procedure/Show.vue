@@ -303,7 +303,10 @@ export default {
     },
     async approve () {
       try {
+        const id = this.$route.params.id
         this.isLoading = true
+
+        await this.$store.dispatch('pluginPlayBookProcedureApproval/approve', id)
 
         if (this.form.approval_action === 'update') {
           this.$router.replace(
