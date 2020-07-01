@@ -12,22 +12,20 @@ if (process.env.NODE_ENV === 'production') {
     },
     registered () {
       console.log('Service worker has been registered.')
-      document.getElementById('loading-overlay').style.display = 'none'
     },
     cached () {
       console.log('Content has been cached for offline use.')
-      document.getElementById('loading-overlay').style.display = 'none'
     },
     updatefound () {
       console.log('New content is downloading.')
-      document.getElementById('loading-overlay').style.display = 'block'
     },
     updated () {
       console.log('New content is available; please refresh.')
-      console.log('updated v' + process.env.VUE_APP_VERSION)
-      localStorage.setItem('pointSwVersion', process.env.VUE_APP_VERSION)
-      document.getElementById('loading-overlay').style.display = 'none'
-      window.location.reload(true)
+      navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        for (const registration of registrations) {
+          registration.update()
+        }
+      })
     },
     offline () {
       console.log('No internet connection found. App is running in offline mode.')
