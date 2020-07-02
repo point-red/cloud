@@ -115,9 +115,6 @@ export default {
   },
   mounted () {
     this.getGlossaryRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
   },
   updated () {
     this.lastPage = this.pagination.last_page

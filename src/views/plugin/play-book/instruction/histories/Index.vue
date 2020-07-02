@@ -22,8 +22,10 @@
             :label="$t('procedure')"
           >
             <div
+              v-if="instruction && instruction.procedure"
               slot="body"
               class="col-lg-9"
+              :label="$t('procedure')"
             >
               {{ `${instruction.procedure.code} - ${instruction.procedure.name}` }}
             </div>

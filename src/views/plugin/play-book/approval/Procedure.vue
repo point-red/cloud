@@ -64,7 +64,7 @@
                   {{ new Date(procedure.approval_request_at).toLocaleString() }}
                 </span>
               </td>
-              <td>{{ procedure.approver.name | uppercase }}</td>
+              <td>{{ (procedure.approver ? procedure.approver.name : '-') | uppercase }}</td>
               <td>{{ procedure.approval_action | uppercase }}</td>
               <td>{{ procedure.approval_note || '-' }}</td>
               <td>

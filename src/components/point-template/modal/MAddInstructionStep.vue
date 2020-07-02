@@ -74,7 +74,7 @@
                       :key="`${i}-${(new Date()).toString()}`"
                       v-model="form.contents[i].glossary_id"
                       :disabled="isSaving"
-                      :options="glossaries"
+                      :options="glossaries[i]"
                     />
                   </div>
                 </p-form-row>
@@ -96,7 +96,7 @@
               </div>
             </div>
             <div
-              v-if="form.contents.length > 2"
+              v-if="form.contents.length > 1"
               class="text-right mt-3"
             >
               <button
@@ -161,10 +161,18 @@ export default {
   },
   computed: {
     glossaries () {
-      return this.$store.getters['pluginPlayBookGlossary/glossaries'].map(_glossary => ({
-        id: _glossary.id,
-        label: `${_glossary.code} - ${_glossary.name} (${_glossary.abbreviation})`
-      }))
+      return new Array(this.form.contents.length).fill(null).map((_, iGlossary) => {
+        return this.$store.getters['pluginPlayBookGlossary/glossaries']
+          .map(_glossary => ({
+            id: _glossary.id,
+            label: `${_glossary.code} - ${_glossary.name} (${_glossary.abbreviation})`
+          }))
+          .filter(_glossary => {
+            return !this.form.contents.find(
+              (_content, iContent) => iContent !== iGlossary && parseInt(_content.glossary_id) === _glossary.id
+            )
+          })
+      })
     }
   },
   methods: {

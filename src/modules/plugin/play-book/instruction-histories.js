@@ -11,6 +11,10 @@ const getters = {
     return state.instruction
   },
   instructionHistory: state => {
+    if (!state.instruction) {
+      return []
+    }
+
     const longestIndex = Math.max(
       state.instruction.name.length, state.instruction.number.length
     )

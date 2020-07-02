@@ -8,7 +8,7 @@
         to="/plugin/play-book/approval/instruction"
         class="breadcrumb-item"
       >
-        {{ 'Procedure' | uppercase }}
+        {{ 'Instruction' | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ 'Sent' | uppercase }}</span>
     </breadcrumb>
@@ -29,7 +29,7 @@
             class="btn btn-primary mr-3"
             @click="$refs.modelSendInstructionRequest.open()"
           >
-            Sent {{ (selectedIds.length + selectedStepIds.length) }} {{ `Request${selectedIds.length > 1 ? 's' : ''}` }} <i class="fa fa-paper-plane" />
+            Sent {{ (selectedIds.length) }} {{ `Request${selectedIds.length > 1 ? 's' : ''}` }} <i class="fa fa-paper-plane" />
           </button>
           <p-form-input
             id="search-text"
@@ -54,7 +54,7 @@
               </th>
             </tr>
             <template
-              v-for="(instruction, index) in instructions"
+              v-for="(instruction) in instructions"
             >
               <tr
                 :key="instruction.id"
@@ -62,12 +62,10 @@
               >
                 <td>
                   <input
-                    v-if="!instruction.approved_at"
                     v-model="form.ids[instruction.id]"
                     type="checkbox"
                     style="min-width: auto"
                   >
-                  <span v-else>{{ (++index) + ((page - 1) * limit) }}</span>
                 </td>
                 <td>
                   {{ instruction.number }} - {{ instruction.name }}
@@ -96,13 +94,7 @@
                 :key="step.id"
                 slot="p-body"
               >
-                <td>
-                  <input
-                    v-model="form.stepIds[step.id]"
-                    type="checkbox"
-                    style="min-width: auto"
-                  >
-                </td>
+                <td />
                 <td>
                   <i class="fa fa-long-arrow-right mr-2" />
                   {{ step.name }}
@@ -232,6 +224,21 @@ export default {
       }
 
       return ids
+    }
+  },
+  watch: {
+    /**
+     * Select all steps id of an instruction id
+     */
+    'selectedIds' () {
+      this.form.stepIds = {}
+      this.selectedIds.forEach(id => {
+        const instruction = this.instructions.find(_instruction => _instruction.id === parseInt(id))
+
+        instruction.steps.forEach(_step => {
+          this.form.stepIds[`${_step.id}`] = true
+        })
+      })
     }
   },
   mounted () {

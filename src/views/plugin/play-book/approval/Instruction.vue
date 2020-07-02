@@ -9,7 +9,7 @@
 
     <tab-menu />
 
-    <div class="row">
+    <div class="row mb-5">
       <p-block>
         <div class="input-group block mb-5">
           <router-link
@@ -60,7 +60,7 @@
                 <td>
                   <div>
                     <a
-                      v-if="!instruction.approved_at"
+                      v-if="!instruction.approved_at && authUser.id === instruction.approval_request_to"
                       :href="`#${instruction.id}`"
                       @click.stop="showInstructionModal(instruction.id)"
                     >
@@ -205,10 +205,25 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('auth', ['authUser']),
     ...mapGetters('pluginPlayBookInstructionApproval', ['instructions', 'pagination'])
   },
   mounted () {
-    this.getInstructions()
+    this.getInstructions().then(() => {
+      if (this.$route.query.step_id && this.$route.query.action) {
+        let step = null
+
+        this.instructions.forEach(_ins => {
+          step = _ins.steps.find(_step => _step.id === parseInt(this.$route.query.step_id))
+        })
+
+        this.showInstructionStepModal(step)
+      }
+
+      if (this.$route.query.id && this.$route.query.action) {
+        this.showInstructionModal(this.$route.query.id)
+      }
+    })
     this.$nextTick(() => {
       this.$refs.searchText.setFocus()
     })

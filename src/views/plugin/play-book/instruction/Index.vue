@@ -8,6 +8,12 @@
 
     <div class="row">
       <p-block>
+        <div
+          v-if="isDirty"
+          class="alert alert-warning pb-5"
+        >
+          This is preview mode. Some of the contents is not published.
+        </div>
         <div class="input-group block mb-5">
           <button
             v-if="$permission.has('create play book instruction')"
@@ -27,6 +33,13 @@
             ADD STEP
             <i class="fa fa-plus ml-2" />
           </button>
+          <router-link
+            v-if="isDirty"
+            class="btn btn-sm btn-primary ml-2"
+            to="/plugin/play-book/approval/instruction/send"
+          >
+            Send Approval <i class="fa fa-paper-plane" />
+          </router-link>
         </div>
         <div class="mt-3">
           <p-form-row
@@ -121,6 +134,12 @@
               >
                 {{ glossary.name }}
               </th>
+              <th
+                v-if="$route.query['review[]']"
+                class="text-center"
+              >
+                Action
+              </th>
             </tr>
             <tr
               v-for="(step, i) in steps"
@@ -133,19 +152,72 @@
               </td>
               <td>
                 <a
+                  v-if="step.approved_at"
                   href="javascript:void(0)"
                   :style="{ [stepActive.id === step.id ? 'color' : null]: 'white' }"
                   @click.stop="setStepActive(step)"
                 >
                   {{ step.name }}
                 </a>
+                <span
+                  v-else-if="step.approval_action !== 'destroy'"
+                  class="text-success"
+                >
+                  {{ step.name }}
+                </span>
+                <strike
+                  v-else
+                  class="text-danger"
+                >
+                  {{ step.name }}
+                </strike>
               </td>
               <!-- eslint-disable vue/no-v-html -->
               <td
                 v-for="glossary in glossaries"
                 :key="glossary.id"
                 v-html="$sanitize(step.contentsForView[`${glossary.id}`] || '-')"
-              />
+              >
+                <div
+                  v-if="step.approved_at"
+                  v-html="step.contentsForView[`${glossary.id}`] || '-'"
+                />
+                <div
+                  v-else-if="step.approval_action !== 'destroy'"
+                  class="text-success"
+                  v-html="step.contentsForView[`${glossary.id}`] || '-'"
+                />
+                <strike
+                  v-else
+                  class="text-danger"
+                  v-html="step.contentsForView[`${glossary.id}`] || '-'"
+                />
+              </td>
+              <td
+                v-if="$route.query['review[]']"
+                class="text-center"
+              >
+                <button
+                  v-if="!step.approved_at && step.approval_request_to === authUser.id && !step.declined_at"
+                  type="button"
+                  class="btn btn-sm btn-secondary"
+                  @click="stepIdToDelete = step.id; $refs.modalDeclineInstructionStep.open()"
+                >
+                  {{ $t('decline') | uppercase }}
+                </button>
+                <button
+                  v-if="!step.approved_at && step.approval_request_to === authUser.id && !step.declined_at"
+                  type="submit"
+                  class="btn btn-sm btn-success ml-2"
+                  :disabled="isSaving === step.id"
+                  @click="approveStep(step)"
+                >
+                  <i
+                    v-show="isSaving === step.id"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('approve') | uppercase }}
+                </button>
+              </td>
             </tr>
           </point-table>
         </p-block-inner>
@@ -169,12 +241,18 @@
     <m-add-instruction-step
       ref="modalAddStep"
       :instruction-id="parseInt(form.instruction_id)"
-      @added="$router.push('/plugin/play-book/approval/instruction/send')"
+      @added="isDirty = true; getSteps()"
     />
     <m-edit-instruction-step
       ref="modalEditStep"
       :step="stepActive"
-      @added="$router.push('/plugin/play-book/approval/instruction/send')"
+      @added="isDirty = true; getSteps()"
+    />
+    <m-decline-instruction-step
+      ref="modalDeclineInstructionStep"
+      :instruction-id="form.instruction_id"
+      :instruction-step-id="stepIdToDelete"
+      @added="getSteps()"
     />
   </div>
 </template>
@@ -184,7 +262,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPlayBook from '@/views/plugin/play-book/Breadcrumb'
 import PointTable from 'point-table-vue'
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -196,6 +274,7 @@ export default {
   data () {
     return {
       isLoading: true,
+      isSaving: false,
       searchText: this.$route.query.search,
       page: this.$route.query.page * 1 || 1,
       limit: 10,
@@ -207,14 +286,17 @@ export default {
         procedure_id: null,
         instruction_id: null
       },
+      isDirty: false || this.$route.query.dirty,
       stepActive: {},
-      selectInstructionKey: (new Date()).toString()
+      selectInstructionKey: (new Date()).toString(),
+      stepIdToDelete: null
     }
   },
   computed: {
     ...mapState('pluginPlayBookInstruction', [
       'pagination'
     ]),
+    ...mapGetters('auth', ['authUser']),
     glossaries () {
       const stepGlossaryIds = []
 
@@ -368,10 +450,19 @@ export default {
     async getSteps () {
       try {
         this.isLoading = true
+
+        let reviewIds = this.$route.query['review[]']
+
+        if (!Array.isArray(reviewIds)) {
+          reviewIds = [reviewIds]
+        }
+
         await this.$store.dispatch('pluginPlayBookInstruction/getSteps', {
           page: this.page,
           limit: 10,
-          instruction_id: this.instruction.id
+          instruction_id: this.instruction.id,
+          is_dirty: this.isDirty || null,
+          review: reviewIds
         })
         this.stepActive = {}
       } catch (error) {
@@ -420,6 +511,7 @@ export default {
 
           await this.$store.dispatch('pluginPlayBookInstruction/deleteStep', this.stepActive)
 
+          this.isDirty = true
           this.getSteps()
         } catch (error) {
         } finally {
@@ -427,6 +519,18 @@ export default {
           this.isLoading = false
         }
       })
+    },
+    async approveStep (step) {
+      try {
+        this.isSaving = step.id
+
+        await this.$store.dispatch('pluginPlayBookInstructionApproval/approveStep', step)
+
+        this.getSteps()
+      } catch (error) {
+      } finally {
+        this.isSaving = false
+      }
     }
   }
 }

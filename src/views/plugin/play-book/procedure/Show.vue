@@ -139,7 +139,7 @@
                   class="form-control bg-light"
                   style="height: fit-content"
                 >
-                  {{ form.purpose }}
+                  {{ form.purpose || '-' }}
                 </div>
               </div>
             </p-form-row>
@@ -157,7 +157,7 @@
                   class="form-control bg-light"
                   style="height: fit-content"
                 >
-                  {{ form.content }}
+                  {{ form.content || '-' }}
                 </div>
               </div>
             </p-form-row>
@@ -174,7 +174,7 @@
                   class="form-control bg-light"
                   style="height: fit-content"
                 >
-                  {{ form.note }}
+                  {{ form.note || '-' }}
                 </div>
               </div>
             </p-form-row>
@@ -218,7 +218,7 @@
               @added="getData"
             />
 
-            <div v-if="form.procedures.length < 1">
+            <div v-if="form.procedures && form.procedures.length < 1">
               No content.
             </div>
           </div>
@@ -285,7 +285,15 @@ export default {
     }
   },
   mounted () {
-    this.getData()
+    this.getData().then(() => {
+      if (this.form.approval_request_to === this.authUser.id && !this.form.declined_at && !this.form.approved_at) {
+        if (this.$route.query.action === 'approve') {
+          this.approve()
+        } else if (this.$route.query.action === 'reject') {
+          this.$refs.modalDeclineProcedure.open()
+        }
+      }
+    })
   },
   methods: {
     ...mapActions('pluginPlayBookProcedure', [
@@ -304,27 +312,32 @@ export default {
       }
     },
     async approve () {
-      try {
-        const id = this.$route.params.id
-        this.isLoading = true
+      this.$alert.confirm(this.$t('approve'), this.$t('are you sure you want to approve this approval?')).then(async response => {
+        try {
+          const id = this.$route.params.id
+          this.isLoading = true
 
-        await this.$store.dispatch('pluginPlayBookProcedureApproval/approve', id)
+          await this.$store.dispatch('pluginPlayBookProcedureApproval/approve', id)
 
-        if (this.form.approval_action === 'update') {
-          this.$router.replace(
-            `/plugin/play-book/procedure/${this.form.procedure_pending_id}`
-          )
-        } else if (this.form.approval_action === 'destroy') {
-          this.$router.replace(
-            `/plugin/play-book/procedure/${this.form.procedure_id ? 'content' : 'code'}/`
-          )
-        } else {
-          this.getData()
+          if (this.form.approval_action === 'update') {
+            this.$router.replace(
+              `/plugin/play-book/procedure/${this.form.procedure_pending_id}`
+            )
+          } else if (this.form.approval_action === 'destroy') {
+            this.$alert.success('Delete success', 'This item has been removed.')
+              .then(() => {
+                this.$router.replace(
+                  '/plugin/play-book/procedure/'
+                )
+              })
+          } else {
+            this.getData()
+          }
+        } catch (error) {
+        } finally {
+          this.isLoading = false
         }
-      } catch (error) {
-      } finally {
-        this.isLoading = false
-      }
+      })
     },
     async submit () {
       try {
