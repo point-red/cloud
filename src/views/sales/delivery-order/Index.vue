@@ -335,10 +335,7 @@ export default {
             'form.number': this.searchText,
             'customer.name': this.searchText,
             'item.code': this.searchText,
-            'item.name': this.searchText,
-            'delivery_order_item.notes': this.searchText,
-            'delivery_order_item.quantity': this.searchText,
-            'delivery_order_item.price': this.searchText
+            'item.name': this.searchText
           },
           filter_date_min: {
             'form.date': this.serverDateTime(this.date.start, 'start')
