@@ -143,6 +143,7 @@
                 #
               </th>
               <th width="50px" />
+              <th>Code</th>
               <th>Name</th>
               <th>Email</th>
               <th>Address</th>
@@ -176,6 +177,11 @@
                   class="text-center"
                   @click.native="toggleCheckRow(customer.id)"
                 />
+              </td>
+              <td>
+                <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">
+                  {{ customer.code }}
+                </router-link>
               </td>
               <td>
                 <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">

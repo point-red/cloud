@@ -66,6 +66,12 @@
           /> Sign In
         </button>
       </div>
+      <div class="form-group text-center">
+        <a
+          class="text-center"
+          href="/auth/forgot-password"
+        >Forgot Password</a>
+      </div>
     </form>
     <!-- END Sign In Form -->
   </div>

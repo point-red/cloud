@@ -73,6 +73,13 @@
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="customer.code"
+            label="Name"
+            name="name"
+            readonly
+          />
+          <p-form-row
+            id="name"
             v-model="customer.name"
             label="Name"
             name="name"
