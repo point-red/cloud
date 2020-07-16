@@ -6,7 +6,7 @@
     >
       <sweet-modal
         ref="modal"
-        :title="$t('add social media') | uppercase"
+        :title="$t('add contract') | uppercase"
         overlay-theme="dark"
         @close="onClose()"
       >

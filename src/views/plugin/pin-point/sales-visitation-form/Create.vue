@@ -585,6 +585,8 @@ export default {
           }
           this.center.lat = pos.lat
           this.center.lng = pos.lng
+          this.form.latitude = pos.lat
+          this.form.longitude = pos.lng
           this.markers[0].position.lat = pos.lat
           this.markers[0].position.lng = pos.lng
           this.$refs.map.$mapPromise.then(() => {

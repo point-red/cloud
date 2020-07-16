@@ -145,6 +145,7 @@
             </tr>
             <template v-for="(row, index) in purchaseOrder.items">
               <tr
+                v-if="row.quantity !== 0"
                 slot="p-body"
                 :key="index"
               >
