@@ -637,7 +637,7 @@
       feature="employee"
       :feature-id="form.id"
       :is-user-protected="false"
-      :expiration-day="1"
+      :expiration-day="0"
       @uploaded="attachmentUploaded"
     />
   </div>

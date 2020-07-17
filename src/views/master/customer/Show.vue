@@ -72,10 +72,10 @@
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
-            id="name"
+            id="code"
             v-model="customer.code"
-            label="Name"
-            name="name"
+            label="Code"
+            name="code"
             readonly
           />
           <p-form-row

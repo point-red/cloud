@@ -636,7 +636,7 @@
       form-ref="uploadForm"
       feature="employee"
       :is-user-protected="true"
-      :expiration-day="1"
+      :expiration-day="0"
       @uploaded="attachmentUploaded"
     />
   </div>
