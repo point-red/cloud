@@ -147,6 +147,7 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: false,
+      isUpdating: false,
       isDeleting: false,
       data: {
         name: null,
@@ -180,12 +181,15 @@ export default {
       })
     },
     toggleRelation (userId) {
-      if (this.isChecked(userId)) {
+      if (this.isUpdating === false && this.isChecked(userId)) {
+        this.isUpdating = true
         this.detach({
           user_id: userId,
           branch_id: this.id
         }).then(response => {
-          this.branch.users.splice(this.branch.users.indexOf(userId), 1)
+          this.branch.users.splice(this.branch.users.findIndex(obj => obj.id == userId), 1)
+        }).finally(() => {
+          this.isUpdating = false
         })
       } else {
         this.attach({
@@ -195,6 +199,8 @@ export default {
           this.branch.users.push({
             id: userId
           })
+        }).finally(() => {
+          this.isUpdating = false
         })
       }
     },

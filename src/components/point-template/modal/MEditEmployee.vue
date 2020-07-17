@@ -3,7 +3,7 @@
     <sweet-modal
       ref="modal"
       width="100%"
-      :title="$t('add employee') | uppercase"
+      :title="$t('edit employee') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >
