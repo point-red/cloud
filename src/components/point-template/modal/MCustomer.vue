@@ -124,6 +124,9 @@ export default {
   created () {
     this.search()
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterCustomer', ['get', 'create']),
     search () {

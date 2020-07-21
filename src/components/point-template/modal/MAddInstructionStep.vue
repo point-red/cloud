@@ -175,6 +175,9 @@ export default {
       })
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('pluginPlayBookGlossary', [
       'get'

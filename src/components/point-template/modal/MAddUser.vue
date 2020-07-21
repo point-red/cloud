@@ -65,6 +65,9 @@ export default {
   computed: {
     ...mapGetters('masterUserInvitation', ['user'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterUserInvitation', ['create']),
     onClose () {

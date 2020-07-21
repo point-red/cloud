@@ -54,6 +54,9 @@ export default {
   computed: {
     ...mapGetters('masterCustomerGroup', ['group'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterCustomerGroup', ['create']),
     onClose () {

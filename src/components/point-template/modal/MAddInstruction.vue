@@ -97,6 +97,9 @@ export default {
       errors: null
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('pluginPlayBookInstruction', [
       'store'

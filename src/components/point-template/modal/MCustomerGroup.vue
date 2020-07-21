@@ -110,6 +110,9 @@ export default {
   created () {
     this.search()
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterCustomerGroup', ['get', 'create']),
     search () {

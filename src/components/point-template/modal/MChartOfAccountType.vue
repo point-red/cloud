@@ -83,6 +83,9 @@ export default {
   created () {
     this.search()
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('accountingChartOfAccountType', ['get', 'create']),
     search () {

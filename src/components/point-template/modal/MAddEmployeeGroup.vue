@@ -54,6 +54,9 @@ export default {
   computed: {
     ...mapGetters('humanResourceEmployeeGroup', ['group'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('humanResourceEmployeeGroup', ['create']),
     onClose () {

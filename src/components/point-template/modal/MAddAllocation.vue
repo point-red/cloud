@@ -54,6 +54,9 @@ export default {
   computed: {
     ...mapGetters('masterAllocation', ['allocation'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterAllocation', ['create']),
     onClose () {

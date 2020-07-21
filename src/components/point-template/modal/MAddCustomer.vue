@@ -156,6 +156,9 @@ export default {
   computed: {
     ...mapGetters('masterCustomer', ['customer'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterCustomer', ['create']),
     onClose () {

@@ -54,6 +54,9 @@ export default {
       })
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterPricingGroup', ['get', 'create']),
     onSubmit () {

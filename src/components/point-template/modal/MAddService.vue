@@ -54,6 +54,9 @@ export default {
   computed: {
     ...mapGetters('masterService', ['service'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterService', ['create']),
     onClose () {
