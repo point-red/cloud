@@ -232,6 +232,9 @@ export default {
   computed: {
     ...mapGetters('accountingChartOfAccount', ['chart of account'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('accountingChartOfAccount', ['update']),
     onClose () {

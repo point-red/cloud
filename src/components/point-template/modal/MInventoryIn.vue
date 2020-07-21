@@ -138,6 +138,9 @@ export default {
       }
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     chooseUnit (unit) {
       this.unit = unit

@@ -133,6 +133,9 @@ export default {
   created () {
     this.search()
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterSupplier', {
       getSupplier: 'get'

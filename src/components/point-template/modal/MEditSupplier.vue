@@ -96,6 +96,9 @@ export default {
   computed: {
     ...mapGetters('masterSupplier', ['supplier'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterSupplier', ['update', 'find']),
     onClose () {

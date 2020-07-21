@@ -120,6 +120,9 @@ export default {
   computed: {
     ...mapGetters('masterUser', ['user'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterUser', ['update', 'find']),
     onClose () {

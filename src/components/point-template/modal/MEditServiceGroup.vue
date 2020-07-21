@@ -63,6 +63,9 @@ export default {
   computed: {
     ...mapGetters('masterServiceGroup', ['group'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterServiceGroup', ['update', 'find']),
     findServiceGroup () {

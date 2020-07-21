@@ -63,6 +63,9 @@ export default {
   computed: {
     ...mapGetters('masterRole', ['role'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterRole', ['update', 'find']),
     onClose () {

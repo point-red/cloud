@@ -138,6 +138,9 @@ export default {
   created () {
     this.search()
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('inventoryInventoryDna', ['get', 'pagination']),
     init () {

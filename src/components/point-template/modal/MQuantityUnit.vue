@@ -78,6 +78,9 @@ export default {
   },
   created () {
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     search () {
       // this.isLoading = true

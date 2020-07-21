@@ -86,6 +86,9 @@ export default {
       }
     })
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     choose (option) {
       this.mutableId = option.id

@@ -763,6 +763,9 @@ export default {
         console.log(JSON.stringify(error))
       })
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('humanResourceEmployee', ['find', 'update']),
     ...mapActions('humanResourceEmployeeReligion', {

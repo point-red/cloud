@@ -66,6 +66,9 @@ export default {
       })
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterPricingGroup', ['get', 'update', 'delete']),
     onSubmit () {

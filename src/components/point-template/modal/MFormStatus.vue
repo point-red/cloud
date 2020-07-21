@@ -80,6 +80,9 @@ export default {
       this.mutableId = this.value
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     choose (option) {
       this.mutableId = option.id

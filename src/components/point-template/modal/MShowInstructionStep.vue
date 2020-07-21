@@ -166,6 +166,9 @@ export default {
     },
     ...mapGetters('auth', ['authUser'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('pluginPlayBookGlossary', [
       'get'

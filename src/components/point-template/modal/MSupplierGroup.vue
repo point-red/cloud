@@ -131,6 +131,9 @@ export default {
   created () {
     this.search()
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterSupplierGroup', ['get', 'create']),
     search () {

@@ -92,6 +92,9 @@ export default {
       this.mutableLabel = this.label
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     choose (option) {
       this.mutableId = option.id

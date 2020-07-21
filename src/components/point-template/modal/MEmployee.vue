@@ -121,6 +121,9 @@ export default {
   created () {
     this.search()
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('humanResourceEmployee', ['get', 'create']),
     search () {

@@ -135,6 +135,9 @@ export default {
   computed: {
     ...mapGetters('auth', ['authUser'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     onClose () {
       this.isFailed = false

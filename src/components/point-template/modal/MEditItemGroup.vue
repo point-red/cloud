@@ -63,6 +63,9 @@ export default {
   computed: {
     ...mapGetters('masterItemGroup', ['group'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterItemGroup', ['update', 'find']),
     findItemGroup () {

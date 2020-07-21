@@ -105,6 +105,9 @@ export default {
   created () {
     this.search()
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterPricingGroup', ['get']),
     search () {

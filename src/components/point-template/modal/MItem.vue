@@ -117,6 +117,9 @@ export default {
   created () {
     this.search()
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterItem', ['get', 'create']),
     search () {

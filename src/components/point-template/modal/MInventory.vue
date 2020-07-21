@@ -64,6 +64,9 @@ export default {
       mutableRequireProductionNumber: false
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     show (inventories) {
       this.mutableInventories = inventories

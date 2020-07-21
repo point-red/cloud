@@ -147,6 +147,9 @@ export default {
       deep: true
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     addRow () {
       this.units.push({

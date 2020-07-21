@@ -81,6 +81,9 @@ export default {
   },
   computed: {
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('pluginPlayBookInstructionApproval', [
       'declineStep'

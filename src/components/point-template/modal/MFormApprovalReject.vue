@@ -34,6 +34,9 @@ export default {
       reason: ''
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     open () {
       this.$refs['form-approval-reject'].open()

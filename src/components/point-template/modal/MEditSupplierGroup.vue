@@ -63,6 +63,9 @@ export default {
   computed: {
     ...mapGetters('masterSupplierGroup', ['group'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterSupplierGroup', ['update', 'find']),
     findSupplierGroup () {

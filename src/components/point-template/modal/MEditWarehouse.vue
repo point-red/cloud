@@ -115,6 +115,9 @@ export default {
   computed: {
     ...mapGetters('masterWarehouse', ['warehouse'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterWarehouse', ['update', 'find']),
     onClose () {

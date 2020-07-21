@@ -63,6 +63,9 @@ export default {
   computed: {
     ...mapGetters('masterAllocationGroup', ['group'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterAllocationGroup', ['update', 'find']),
     findAllocationGroup () {

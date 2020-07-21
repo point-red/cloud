@@ -169,6 +169,9 @@ export default {
   computed: {
     ...mapGetters('masterCustomer', ['customer'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterCustomer', ['update', 'find']),
     onClose () {

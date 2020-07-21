@@ -104,6 +104,9 @@ export default {
       approvers: 'userList'
     })
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('pluginPlayBookInstructionApproval', [
       'send'

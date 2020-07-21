@@ -224,6 +224,9 @@ export default {
   computed: {
     ...mapGetters('masterItem', ['item'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterItem', ['find', 'update']),
     onChoosenAccount (account) {

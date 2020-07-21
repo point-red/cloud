@@ -95,6 +95,9 @@ export default {
       errors: null
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('pluginPlayBookProcedureApproval', [
       'send'

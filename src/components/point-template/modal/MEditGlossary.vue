@@ -132,6 +132,9 @@ export default {
   computed: {
     ...mapGetters('masterCustomer', ['customer'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('pluginPlayBookGlossary', [
       'show', 'update'

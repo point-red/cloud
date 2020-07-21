@@ -106,6 +106,9 @@ export default {
       this.mutableId = this.value
     }
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterUser', ['get']),
     search () {

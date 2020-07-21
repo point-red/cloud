@@ -85,6 +85,9 @@ export default {
   computed: {
     ...mapGetters('masterBranch', ['branch'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterBranch', ['update', 'find']),
     onClose () {
