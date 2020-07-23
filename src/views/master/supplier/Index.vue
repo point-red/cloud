@@ -48,21 +48,9 @@
                   {{ supplier.name }}
                 </router-link>
               </td>
-              <td>
-                <template v-for="supplierEmail in supplier.emails">
-                  {{ supplierEmail.email }}
-                </template>
-              </td>
-              <td>
-                <template v-for="supplierAddress in supplier.addresses">
-                  {{ supplierAddress.address }}
-                </template>
-              </td>
-              <td>
-                <template v-for="supplierPhone in supplier.phones">
-                  {{ supplierPhone.number }}
-                </template>
-              </td>
+              <td>{{ supplier.email }}</td>
+              <td>{{ supplier.address }}</td>
+              <td>{{ supplier.phone }}</td>
             </tr>
           </point-table>
         </p-block-inner>
@@ -116,16 +104,15 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          join: 'address,phone,email',
           fields: 'supplier.*',
           sort_by: 'name',
           filter_like: {
-            'name': this.searchText,
-            'address.address': this.searchText,
-            'phone.number': this.searchText,
-            'email.email': this.searchText
+            'supplier.name': this.searchText,
+            'supplier.address': this.searchText,
+            'supplier.phone': this.searchText,
+            'supplier.email': this.searchText
           },
-          includes: 'addresses;phones;emails;groups',
+          includes: 'groups',
           limit: 10,
           page: this.page
         }

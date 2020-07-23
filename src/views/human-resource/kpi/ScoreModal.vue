@@ -30,7 +30,7 @@
               <td>{{ score.description }}</td>
               <td class="text-center">{{ score.score }}</td>
               <td>
-                <a href="javascript:void(0)" class="badge badge-primary" @click="edit(score)"><i class="fa fa-pencil"></i></a>
+                <a href="javascript:void(0)" class="badge badge-primary mr-5" @click="edit(score)"><i class="fa fa-pencil"></i></a>
                 <a href="javascript:void(0)" class="badge badge-danger" @click="remove(score.id)"><i class="fa fa-close"></i></a>
               </td>
             </tr>
@@ -51,14 +51,9 @@
           </p-form-row>
         </template>
         <template slot="footer">
-          <button
-            :disabled="isSaving"
-            type="submit"
-            class="btn btn-primary">
-            <i
-              v-show="isSaving"
-              class="fa fa-asterisk fa-spin"/>
-            <template v-if="isCreateMode">Add</template>
+          <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>
+            <template v-if="isCreateMode">{{ $t('add') | uppercase }}</template>
             <template v-if="!isCreateMode">{{ $t('update') | uppercase }}</template>
           </button>
           <button type="button" class="btn btn-sm btn-outline-danger" @click="cancel">
@@ -115,9 +110,34 @@ export default {
       updateScore: 'update',
       deleteScore: 'delete'
     }),
+    compareValues (key, order = 'asc') {
+      return function innerSort (a, b) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+          // property doesn't exist on either object
+          return 0
+        }
+
+        const varA = (typeof a[key] === 'string')
+          ? a[key].toUpperCase() : a[key]
+        const varB = (typeof b[key] === 'string')
+          ? b[key].toUpperCase() : b[key]
+
+        let comparison = 0
+        if (varA > varB) {
+          comparison = 1
+        } else if (varA < varB) {
+          comparison = -1
+        }
+        return (
+          (order === 'desc') ? (comparison * -1) : comparison
+        )
+      }
+    },
     show (indicator) {
       this.fetchKpiTemplateScores(indicator.scores)
       this.fetchKpiTemplateIndicator(indicator)
+      this.scores.sort(this.compareValues('score'))
       this.form = new Form({
         kpi_template_indicator_id: indicator.id,
         score: '',
@@ -159,7 +179,7 @@ export default {
       }
     },
     edit (score) {
-      for (let field in score) {
+      for (const field in score) {
         this.$set(this.form, field, score[field])
       }
       this.isCreateMode = false

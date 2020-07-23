@@ -287,7 +287,7 @@
 <script>
 import Form from '@/utils/Form'
 import debounce from 'lodash/debounce'
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   data () {
@@ -369,7 +369,7 @@ export default {
       this.isRestrictedToEditBalance()
     },
     isRestrictedToEditBalance () {
-      let restrictedType = ['SALES INCOME', 'OTHER INCOME', 'COST OF SALES', 'DIRECT EXPENSE', 'OTHER EXPENSE', 'FACTORY OVERHEAD COST']
+      const restrictedType = ['SALES INCOME', 'OTHER INCOME', 'COST OF SALES', 'DIRECT EXPENSE', 'OTHER EXPENSE', 'FACTORY OVERHEAD COST']
       this.isRestricted = restrictedType.some(el => {
         return el == this.form.type.name
       })

@@ -94,9 +94,9 @@ export default {
         this.options = []
         response.data.map((key, value) => {
           this.options.push({
-            'id': key['id'],
-            'name': key['name'],
-            'label': key['name']
+            id: key.id,
+            name: key.name,
+            label: key.name
           })
         })
         this.isLoading = false
@@ -117,7 +117,7 @@ export default {
       })
     },
     choose (option) {
-      let isChoosen = this.choosen.some(element => {
+      const isChoosen = this.choosen.some(element => {
         return element.id == option.id
       })
       if (isChoosen) {
@@ -126,9 +126,9 @@ export default {
         })
       } else {
         this.choosen.push({
-          'id': option.id,
-          'name': option.name,
-          'label': option.label
+          id: option.id,
+          name: option.name,
+          label: option.label
         })
       }
     },

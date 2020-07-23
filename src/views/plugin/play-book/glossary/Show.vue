@@ -14,21 +14,21 @@
             <button
               type="button"
               @click="$refs.modalAddGlossary.open()"
-              v-if="$permission.has('create play book glossaries')"
+              v-if="$permission.has('create play book glossary')"
               class="btn btn-sm btn-outline-secondary mr-5">
               {{ $t('create') | uppercase }}
             </button>
             <button
               type="button"
               @click="$refs.modalEditGlossary.open()"
-              v-if="$permission.has('update play book glossaries')"
+              v-if="$permission.has('update play book glossary')"
               class="btn btn-sm btn-outline-secondary mr-5">
               {{ $t('edit') | uppercase }}
             </button>
             <button
               type="button"
               @click="confirmDelete"
-              v-if="$permission.has('delete play book glossaries')"
+              v-if="$permission.has('delete play book glossary')"
               :disabled="isDeleting"
               class="btn btn-sm btn-outline-secondary mr-5">
               <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}

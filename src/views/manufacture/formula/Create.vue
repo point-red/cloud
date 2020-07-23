@@ -30,12 +30,7 @@
                   <td class="font-weight-bold">{{ $t('process') | uppercase }}</td>
                   <td>
                     <span @click="$refs.selectProcess.open()" class="select-link">
-                      <template v-if="form.manufacture_process_name">
-                        {{ form.manufacture_process_name }}
-                      </template>
-                      <template v-else>
-                        {{ $t('select') | uppercase }}
-                      </template>
+                      {{ form.manufacture_process_name || $t('select') | uppercase  }}
                     </span>
                     <m-process id="process" ref="selectProcess" @choosen="chooseManufactureProcess"/>
                   </td>
@@ -170,7 +165,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
 import ManufactureMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbManufacture from '@/views/manufacture/Breadcrumb'
@@ -282,7 +276,7 @@ export default {
       this.form.manufacture_process_name = option.name
     },
     chooseRawMaterial (item) {
-      let row = this.form.raw_materials[item.index]
+      const row = this.form.raw_materials[item.index]
       row.item_id = item.id
       row.item_name = item.name
       row.item_label = item.label
@@ -305,7 +299,7 @@ export default {
       }
     },
     chooseFinishedGoods (item) {
-      let row = this.form.finished_goods[item.index]
+      const row = this.form.finished_goods[item.index]
       row.item_id = item.id
       row.item_name = item.name
       row.item_label = item.label

@@ -19,7 +19,7 @@
 
           <p-form-row
             id="email"
-            v-model="form.emails[0].email"
+            v-model="form.email"
             :disabled="isSaving"
             :label="$t('email')"
             name="email"
@@ -28,7 +28,7 @@
 
           <p-form-row
             id="address"
-            v-model="form.addresses[0].address"
+            v-model="form.address"
             :disabled="isSaving"
             :label="$t('address')"
             name="address"
@@ -37,7 +37,7 @@
 
           <p-form-row
             id="phone"
-            v-model="form.phones[0].number"
+            v-model="form.phone"
             :disabled="isSaving"
             :label="$t('phone')"
             name="phone"
@@ -65,15 +65,9 @@ export default {
       isFailed: false,
       form: new Form({
         name: null,
-        emails: [{
-          email: null
-        }],
-        addresses: [{
-          address: null
-        }],
-        phones: [{
-          number: null
-        }]
+        email: null,
+        address: null,
+        phone: null
       })
     }
   },

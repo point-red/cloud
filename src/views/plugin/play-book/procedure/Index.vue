@@ -12,7 +12,7 @@
           <a
             href="javascript:void(0)"
             @click="$refs.modalAddProcedure.open()"
-            v-if="$permission.has('create play book procedures code')"
+            v-if="$permission.has('create play book procedure')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>

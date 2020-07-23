@@ -279,14 +279,13 @@
     </form>
     <m-customer ref="customer" @choosen="chooseCustomer"/>
     <m-item ref="item" @choosen="chooseItem"/>
-    <m-user ref="approver" @choosen="chooseApprover"/>
+    <m-user ref="approver" @choosen="chooseApprover" permission="approve sales order"/>
     <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
     <select-sales-quotation ref="selectSalesQuotation" @choosen="chooseSalesQuotation"></select-sales-quotation>
   </div>
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
 import SalesMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSales from '@/views/sales/Breadcrumb'
@@ -294,7 +293,6 @@ import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import SelectSalesQuotation from './SelectSalesQuotation'
 import { mapGetters, mapActions } from 'vuex'
-
 export default {
   components: {
     SalesMenu,
@@ -321,6 +319,7 @@ export default {
         customer_address: null,
         customer_phone: null,
         customer_email: null,
+        pricing_group_id: 1,
         need_down_payment: 0,
         cash_only: false,
         notes: null,
@@ -383,7 +382,7 @@ export default {
       })
     },
     toggleMore () {
-      let isMoreActive = this.form.items.some(function (el, index) {
+      const isMoreActive = this.form.items.some(function (el, index) {
         return el.more === false
       })
       this.form.items.forEach(element => {
@@ -408,6 +407,7 @@ export default {
       this.form.customer_address = value.address
       this.form.customer_phone = value.phone
       this.form.customer_email = value.email
+      this.form.pricing_group_id = value.pricing_group_id
     },
     chooseItem (item) {
       if (item.id == null) {
@@ -415,7 +415,7 @@ export default {
         return
       }
 
-      let row = this.form.items[item.index]
+      const row = this.form.items[item.index]
       row.item_id = item.id
       row.item_name = item.name
       row.item_label = item.label
@@ -424,6 +424,12 @@ export default {
         if (unit.id == item.unit_default_sales) {
           row.unit = unit.label
           row.converter = unit.converter
+          if (unit.prices.length > 0) {
+            const index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
+            row.price = parseFloat(unit.prices[index].pivot.price)
+            row.discount_value = parseFloat(unit.prices[index].pivot.discount_value)
+            row.discount_percent = parseFloat(unit.prices[index].pivot.discount_percent)
+          }
         }
       })
       let isNeedNewRow = true
@@ -439,9 +445,15 @@ export default {
     chooseUnit (unit, row) {
       row.unit = unit.label
       row.converter = unit.converter
+      if (unit.prices && unit.prices.length > 0) {
+        const index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
+        row.price = parseFloat(unit.prices[index].pivot.price)
+        row.discount_value = parseFloat(unit.prices[index].pivot.discount_value)
+        row.discount_percent = parseFloat(unit.prices[index].pivot.discount_percent)
+      }
     },
     chooseAllocation (allocation) {
-      let row = this.form.items[allocation.index]
+      const row = this.form.items[allocation.index]
       row.allocation_id = allocation.id
       row.allocation_name = allocation.name
     },

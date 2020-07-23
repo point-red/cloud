@@ -2,13 +2,13 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance/>
-      <span class="breadcrumb-item active">
+      <span class="breadcrumb-item">
         <router-link to="/finance/bank">{{ $t('bank') | uppercase }}</router-link>
       </span>
-      <span class="breadcrumb-item active">
+      <span class="breadcrumb-item">
         <router-link to="/finance/bank/out">{{ $t('out') | uppercase }}</router-link>
       </span>
-      <span class="breadcrumb-item active">{{ paymentOrder.form.number }}</span>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
     <form class="row" @submit.prevent="onSubmit">
@@ -20,7 +20,11 @@
               <table class="table table-sm table-bordered">
                 <tr>
                   <td class="font-weight-bold">{{ $t('required date') | uppercase }}</td>
-                  <td>{{ paymentOrder.date | dateFormat('DD MMMM YYYY') }}</td>
+                  <td>{{ Date.now() | dateFormat('DD MMMM YYYY') }}</td>
+                </tr>
+                <tr>
+                  <td class="font-weight-bold">{{ $t('reference') | uppercase }}</td>
+                  <td>{{ form.reference_number }}</td>
                 </tr>
                 <tr>
                   <td class="font-weight-bold">{{ $t('bank account') | uppercase }}</td>
@@ -34,12 +38,12 @@
             </div>
             <div class="col-sm-6 text-right">
               <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
-              <template v-if="paymentOrder.form.branch">
-                {{ paymentOrder.form.branch.address | uppercase }} <br v-if="paymentOrder.form.branch.address">
-                {{ paymentOrder.form.branch.phone | uppercase }} <br v-if="paymentOrder.form.branch.phone">
+              <template v-if="authUser.branch">
+                <br v-if="authUser.branch.address">{{ authUser.branch.address | uppercase }}
+                <br v-if="authUser.branch.phone">{{ authUser.branch.phone | uppercase }}
               </template>
               <h6 class="mt-30 mb-5">{{ $t('to') | uppercase }} :</h6>
-              {{ paymentOrder.paymentable.label }}
+              {{ form.paymentable_name }}
             </div>
           </div>
 
@@ -53,15 +57,11 @@
               <th style="min-width: 120px">Allocation</th>
               <th class="text-right">Amount</th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in paymentOrder.details" :key="index">
+            <tr slot="p-body" v-for="(row, index) in form.details" :key="index">
               <th>{{ index + 1 }}</th>
-              <td>{{ row.account.number }} - {{ row.account.alias }}</td>
+              <td>{{ row.chart_of_account_label }}</td>
               <td>{{ row.notes }}</td>
-              <td>
-                <template v-if="row.allocation">
-                  {{ row.allocation.name }}
-                </template>
-              </td>
+              <td>{{ row.allocation_name }}</td>
               <td class="text-right">{{ row.amount | numberFormat }}</td>
             </tr>
             <tr slot="p-body">
@@ -69,13 +69,13 @@
               <td></td>
               <td></td>
               <td></td>
-              <td class="text-right">{{ paymentOrder.amount | numberFormat }}</td>
+              <td class="text-right">{{ form.amount | numberFormat }}</td>
             </tr>
           </point-table>
           <div class="row mt-50">
-            <div class="col-sm-6">
+            <div class="col-sm-9">
               <h6 class="mb-0">{{ $t('notes') | uppercase }}</h6>
-              <div style="white-space: pre-wrap;">{{ paymentOrder.form.notes }}</div>
+              <div style="white-space: pre-wrap;">{{ form.notes }}</div>
               <div class="d-sm-block d-md-none mt-10"></div>
             </div>
             <div class="col-sm-3 text-center">
@@ -83,19 +83,6 @@
               <div class="mb-50" style="font-size:11px">{{ form.date | dateFormat('DD MMMM YYYY') }}</div>
               {{ authUser.full_name | uppercase }}
               <div class="d-sm-block d-md-none mt-10"></div>
-            </div>
-            <div class="col-sm-3 text-center">
-              <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-              <div class="mb-50" style="font-size:11px">
-                <template v-if="paymentOrder.form.approval_at">
-                  {{ paymentOrder.form.approval_at | dateFormat('DD MMMM YYYY') }}
-                </template>
-                <template v-else>
-                  _______________
-                </template>
-              </div>
-              {{ paymentOrder.form.request_approval_to.full_name | uppercase }}
-              <div style="font-size:9px">{{ paymentOrder.form.request_approval_to.email | uppercase }}</div>
             </div>
             <div class="col-sm-12">
               <hr>
@@ -112,7 +99,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import Form from '@/utils/Form'
@@ -162,52 +148,6 @@ export default {
       this.form.payment_account_id = account.id
       this.form.payment_account_name = account.label
     },
-    calculate: debounce(function () {
-      var totalAmount = 0
-      this.paymentOrder.details.forEach(function (element) {
-        totalAmount += parseFloat(element.amount)
-      })
-      this.paymentOrder.amount = totalAmount
-    }, 300),
-    search () {
-      this.isLoading = true
-      this.find({
-        id: this.id,
-        params: {
-          includes: 'form;' +
-            'paymentable;' +
-            'details.account;' +
-            'details.allocation;' +
-            'form.createdBy;' +
-            'form.requestApprovalTo;' +
-            'form.branch'
-        }
-      }).then(response => {
-        this.isLoading = false
-        this.form.payment_type = 'bank'
-        this.form.disbursed = true
-        this.form.payment_account_id = response.data.payment_account_id
-        this.form.payment_account_name = response.data.payment_account_name
-        this.form.paymentable_id = response.data.paymentable_id
-        this.form.paymentable_type = response.data.paymentable_type
-        this.form.paymentable_name = response.data.paymentable_name
-        this.form.notes = response.data.notes
-        this.form.amount = response.data.amount
-        response.data.details.forEach(element => {
-          this.form.details.push({
-            chart_of_account_id: element.chart_of_account_id,
-            chart_of_account_name: element.chart_of_account_name,
-            amount: element.amount,
-            allocation_id: element.allocation_id,
-            allocation_name: element.allocation_name,
-            notes: element.notes
-          })
-        })
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
-    },
     onSubmit () {
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
@@ -226,7 +166,26 @@ export default {
     }
   },
   created () {
-    this.search()
+    this.form.payment_type = 'bank'
+    this.form.disbursed = true
+    this.form.reference_id = this.payment.reference_id
+    this.form.reference_type = this.payment.reference_type
+    this.form.reference_number = this.payment.reference_number
+    this.form.paymentable_id = this.payment.paymentable_id
+    this.form.paymentable_type = this.payment.paymentable_type
+    this.form.paymentable_name = this.payment.paymentable_name
+    this.form.notes = this.payment.notes
+    this.form.amount = this.payment.amount
+    this.payment.details.forEach(element => {
+      this.form.details.push({
+        chart_of_account_id: element.chart_of_account_id,
+        chart_of_account_label: element.chart_of_account_label,
+        amount: element.amount,
+        allocation_id: element.allocation_id,
+        allocation_name: element.allocation_name,
+        notes: element.notes
+      })
+    })
   }
 }
 </script>

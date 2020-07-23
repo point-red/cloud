@@ -12,7 +12,7 @@
           <a
             href="javascript:void(0)"
             @click="$refs.modalAddGlossary.open()"
-            v-if="$permission.has('create play book glossaries')"
+            v-if="$permission.has('create play book glossary')"
             class="input-group-prepend">
             <span class="input-group-text">
               <i class="fa fa-plus"></i>

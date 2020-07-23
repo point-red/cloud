@@ -35,7 +35,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                    <td class="font-weight-bold">{{ $t('reference') | uppercase }}</td>
                     <td>
                       {{ downPayment.downpaymentable.form.number }}
                     </td>
@@ -62,13 +62,9 @@
                   </template>
                 </div>
                 <div>
-                  <h6 class="mb-0 ">{{ $t('to') | uppercase }}:</h6>
-                  <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span>
-                  <div style="font-size:12px" v-if="form.supplier_phone">
-                    <br v-if="form.supplier_address">{{ form.supplier_address | uppercase }}
-                    <br v-if="form.supplier_phone">{{ form.supplier_phone }}
-                    <br v-if="form.supplier_email">{{ form.supplier_email | uppercase }}
-                  </div>
+                  <h6 class="mb-0">{{ $t('to') | uppercase }}: {{ form.supplier_label | uppercase }}</h6>
+                  <div v-if="form.supplier_address"><i class="fa fa-home fa-fw"></i> {{ form.supplier_address | uppercase }}</div>
+                  <div v-if="form.supplier_phone"><i class="fa fa-phone fa-fw"></i> {{ form.supplier_phone | uppercase }}</div>
                 </div>
               </div>
             </div>
@@ -172,14 +168,12 @@
         </p-block>
       </div>
     </form>
-    <m-supplier ref="supplier" @choosen="chooseSupplier"/>
     <m-user ref="approver" @choosen="chooseApprover"/>
     <select-purchase-order ref="selectPurchaseOrder" @choosen="choosePurchaseOrder"></select-purchase-order>
   </div>
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
 import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
@@ -289,14 +283,6 @@ export default {
       this.form.request_approval_to = value.id
       this.form.approver_name = value.fullName
       this.form.approver_email = value.email
-    },
-    chooseSupplier (value) {
-      this.form.supplier_id = value.id
-      this.form.supplier_name = value.name
-      this.form.supplier_label = value.label
-      this.form.supplier_address = value.address
-      this.form.supplier_phone = value.phone
-      this.form.supplier_email = value.email
     },
     onSubmit () {
       this.isSaving = true

@@ -12,7 +12,7 @@
           <p-table>
             <tr slot="p-head" v-show="groups.length > 0" class="bg-info-light">
               <th>Name</th>
-              <th></th>
+              <th style="width:100px"></th>
             </tr>
             <tr
               v-for="group in groups"
@@ -20,7 +20,7 @@
               :key="group.id">
               <td>{{ group.name }}</td>
               <td>
-                <a href="javascript:void(0)" class="badge badge-primary" @click="edit(group)"><i class="fa fa-pencil"></i></a>
+                <a href="javascript:void(0)" class="badge badge-primary mr-5" @click="edit(group)"><i class="fa fa-pencil"></i></a>
                 <a href="javascript:void(0)" class="badge badge-danger" @click="remove(group.id)"><i class="fa fa-close"></i></a>
               </td>
             </tr>
@@ -37,15 +37,10 @@
           </p-form-row>
         </template>
         <template slot="footer">
-          <button
-                :disabled="isSaving"
-                type="submit"
-                class="btn btn-primary">
-                <i
-                  v-show="isSaving"
-                  class="fa fa-asterisk fa-spin"/>
-                <template v-if="isCreateMode">Add</template>
-                <template v-if="!isCreateMode">{{ $t('update') | uppercase }}</template>
+          <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>
+            <template v-if="isCreateMode">{{ $t('add') | uppercase }}</template>
+            <template v-if="!isCreateMode">{{ $t('update') | uppercase }}</template>
           </button>
           <button type="button" class="btn btn-sm btn-outline-danger" @click="cancel">
             <template v-if="isCreateMode">{{ $t('close') | uppercase }}</template>
@@ -133,7 +128,7 @@ export default {
       }
     },
     edit (group) {
-      for (let field in group) {
+      for (const field in group) {
         this.$set(this.form, field, group[field])
       }
       this.isCreateMode = false

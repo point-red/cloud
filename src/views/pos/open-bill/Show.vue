@@ -287,27 +287,27 @@ export default {
         }
       }).then(response => {
         this.items_temporary = []
-        for (let index in this.bill.items) {
-          let item = this.bill.items[index]
-          let itemTemporaryIndex = this.items_temporary.findIndex(o => o.item_id === item.item_id && o.unit === item.unit)
+        for (const index in this.bill.items) {
+          const item = this.bill.items[index]
+          const itemTemporaryIndex = this.items_temporary.findIndex(o => o.item_id === item.item_id && o.unit === item.unit)
           if (itemTemporaryIndex < 0) {
             var newItem = Object.assign({}, item)
             newItem.inventories = []
             newItem.require_expiry_date = item.item.require_expiry_date
             newItem.require_production_number = item.item.require_production_number
             newItem.inventories.push({
-              'quantity': item.quantity,
-              'expiry_date': item.expiry_date,
-              'production_number': item.production_number
+              quantity: item.quantity,
+              expiry_date: item.expiry_date,
+              production_number: item.production_number
             })
             this.items_temporary.push(newItem)
           } else {
             var existing = this.items_temporary[itemTemporaryIndex]
             existing.quantity += item.quantity
             existing.inventories.push({
-              'quantity': item.quantity,
-              'expiry_date': item.expiry_date,
-              'production_number': item.production_number
+              quantity: item.quantity,
+              expiry_date: item.expiry_date,
+              production_number: item.production_number
             })
             this.items_temporary[itemTemporaryIndex] = existing
           }

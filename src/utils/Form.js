@@ -9,7 +9,7 @@ export default class Form {
   constructor (data) {
     this.originalData = data
 
-    for (let field in data) {
+    for (const field in data) {
       this[field] = data[field]
     }
 
@@ -20,7 +20,7 @@ export default class Form {
    * Reset the form fields.
    */
   reset () {
-    for (let field in this.originalData) {
+    for (const field in this.originalData) {
       if (!this.originalData[field]) this[field] = null
       else this[field] = this.originalData[field]
     }

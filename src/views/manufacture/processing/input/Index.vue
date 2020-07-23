@@ -231,16 +231,16 @@ export default {
           page: this.currentPage
         }
       }).then(response => {
-        for (let index in this.inputs) {
+        for (const index in this.inputs) {
           this.inputs[index].raw_materials_temporary = []
         }
-        for (let index in this.inputs) {
-          let input = this.inputs[index]
-          for (let rawMaterialIndex in input.raw_materials) {
-            let rawMaterial = input.raw_materials[rawMaterialIndex]
-            let rawMaterialTemporaryIndex = this.inputs[index].raw_materials_temporary.findIndex(o => o.item_id === rawMaterial.item_id && o.warehouse_id === rawMaterial.warehouse_id)
+        for (const index in this.inputs) {
+          const input = this.inputs[index]
+          for (const rawMaterialIndex in input.raw_materials) {
+            const rawMaterial = input.raw_materials[rawMaterialIndex]
+            const rawMaterialTemporaryIndex = this.inputs[index].raw_materials_temporary.findIndex(o => o.item_id === rawMaterial.item_id && o.warehouse_id === rawMaterial.warehouse_id)
             if (rawMaterialTemporaryIndex < 0) {
-              let newItem = Object.assign({}, rawMaterial)
+              const newItem = Object.assign({}, rawMaterial)
               this.inputs[index].raw_materials_temporary.push(newItem)
             } else {
               var exisiting = this.inputs[index].raw_materials_temporary[rawMaterialTemporaryIndex]

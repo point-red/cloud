@@ -168,7 +168,6 @@
 </template>
 
 <script>
-import Menu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbInventory from '@/views/inventory/Breadcrumb'
 import debounce from 'lodash/debounce'
@@ -177,7 +176,6 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    Menu,
     Breadcrumb,
     BreadcrumbInventory,
     PointTable
@@ -211,7 +209,7 @@ export default {
     ...mapGetters('inventoryUsage', ['inventoryUsages', 'pagination'])
   },
   watch: {
-    'date': {
+    date: {
       handler: function () {
         this.$router.push({
           query: {
@@ -238,7 +236,7 @@ export default {
       if (!this.isRowsChecked(this.inventoryUsages, this.checkedRow)) {
         this.inventoryUsages.forEach(element => {
           if (!this.isRowChecked(element.id)) {
-            let id = element.id
+            const id = element.id
             this.checkedRow.push({ id })
           }
         })
@@ -258,7 +256,7 @@ export default {
         return false
       }
       for (let i = 0; i < haystack.length; i++) {
-        let found = needles.some(element => {
+        const found = needles.some(element => {
           return element.id == haystack[i].id
         })
         if (!found) {

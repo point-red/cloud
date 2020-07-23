@@ -102,7 +102,6 @@
 
 <script>
 import Breadcrumb from '@/views/account/Breadcrumb'
-import PointTable from 'point-table-vue'
 import MPayWithWallet from './MPayWithWallet'
 import Form from '@/utils/Form'
 import { mapActions, mapGetters } from 'vuex'
@@ -110,8 +109,6 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   components: {
     Breadcrumb,
-    PointTable,
-    Form,
     MPayWithWallet
   },
   data () {

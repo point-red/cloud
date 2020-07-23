@@ -94,6 +94,46 @@ const actions = {
           reject(error)
         })
     })
+  },
+  approve (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/approve', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  reject (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/reject', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationApprove (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-approve', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationReject (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-reject', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 

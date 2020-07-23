@@ -87,7 +87,6 @@
       </p-block>
     </div>
 
-    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
     <m-send-procedure-request @added="getProcedures" :ids="selectedIds" ref="modelSendProcedureRequest"></m-send-procedure-request>
     <m-edit-procedure
       ref="modalEditProcedure"

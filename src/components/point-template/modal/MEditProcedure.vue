@@ -2,7 +2,7 @@
   <div>
     <sweet-modal
       ref="modal"
-      :title="`${$t('edit procedure')} ${parentId ? 'content' : ''}` | uppercase"
+      :title="$t('edit procedure') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
       <div class="row">
@@ -60,7 +60,6 @@
               v-if="form.procedure_id">
               <div slot="body" class="col-lg-9">
                 <textarea
-                  :id="`${parentId || 'parent'}-content`"
                   name="content"
                   :placeholder="$t('content') | capitalize"
                   class="form-control"

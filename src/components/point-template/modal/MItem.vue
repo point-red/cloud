@@ -97,19 +97,19 @@ export default {
         this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
-            'id': key['id'],
-            'label': key['label'],
-            'name': key['name'],
-            'require_expiry_date': key['require_expiry_date'],
-            'require_production_number': key['require_production_number'],
-            'unit_default': key['unit_default'],
-            'unit_default_purchase': key['unit_default_purchase'],
-            'unit_default_sales': key['unit_default_sales'],
-            'units': key['units']
+            id: key.id,
+            label: key.label,
+            name: key.name,
+            require_expiry_date: key.require_expiry_date,
+            require_production_number: key.require_production_number,
+            unit_default: key.unit_default,
+            unit_default_purchase: key.unit_default_purchase,
+            unit_default_sales: key.unit_default_sales,
+            units: key.units
           })
 
-          if (this.value == key['id']) {
-            this.mutableLabel = key['label']
+          if (this.value == key.id) {
+            this.mutableLabel = key.label
           }
         })
         this.isLoading = false
@@ -142,7 +142,7 @@ export default {
       this.mutableId = option.id
       this.mutableLabel = option.label
       // make default unit non reactive
-      let unit = JSON.parse(JSON.stringify(option.units[0]))
+      const unit = JSON.parse(JSON.stringify(option.units[0]))
       this.$emit('choosen', {
         index: this.index,
         id: option.id,

@@ -1,56 +1,56 @@
 <template>
   <div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select inventory">
-      <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
-        <hr>
-        <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
-        </div>
-        <div v-else>
-          <p-table>
-            <tr slot="p-head">
-              <th v-if="mutableRequireExpiryDate">Expiry Date</th>
-              <th v-if="mutableRequireProductionNumber">Production No.</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-right">Stock</th>
-            </tr>
-            <tr slot="p-body" v-for="(option, index) in inventories" :key="index">
-              <td v-if="mutableRequireExpiryDate">{{ option.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
-              <td v-if="mutableRequireProductionNumber">{{ option.production_number }}</td>
-              <td class="text-right">
-                <p-quantity
-                  :id="'inventory-out-' + index"
-                  :name="'inventory-out-' + index"
-                  @input="calculate"
-                  @choosen="updateUnit"
-                  v-model="option.quantity"
-                  :units="mutableItemUnits"
-                  :unit="mutableItemUnit"/>
-              </td>
-              <td class="text-right">
-                {{ option.remainingInUnit | numberFormat }}
-                {{ mutableItemUnit.label | uppercase }}
-              </td>
-            </tr>
-            <tr slot="p-body">
-              <td v-if="mutableRequireExpiryDate">
-              <td v-if="mutableRequireProductionNumber">
-              <td class="text-right">
-                {{ mutableTotalQuantity | numberFormat }} {{ mutableItemUnit.label }}
-              </td>
-              <td class="text-right"></td>
-            </tr>
-          </p-table>
-        </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
-          {{ $t('searching not found', [searchText]) | capitalize }}
-        </div>
-      </template>
-      <template slot="footer">
-        <button type="button" @click="update()" class="btn btn-sm btn-outline-primary">{{ $t('update') | uppercase }}</button>
-      </template>
-    </p-modal>
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select inventory') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()">
+      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      <hr>
+      <div v-if="isLoading">
+        <h3 class="text-center">Loading ...</h3>
+      </div>
+      <div v-else>
+        <p-table>
+          <tr slot="p-head">
+            <th v-if="mutableRequireExpiryDate">Expiry Date</th>
+            <th v-if="mutableRequireProductionNumber">Production No.</th>
+            <th class="text-right">Quantity</th>
+            <th class="text-right">Stock</th>
+          </tr>
+          <tr slot="p-body" v-for="(option, index) in inventories" :key="index">
+            <td v-if="mutableRequireExpiryDate">{{ option.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
+            <td v-if="mutableRequireProductionNumber">{{ option.production_number }}</td>
+            <td class="text-right">
+              <p-quantity
+                :id="'inventory-out-' + index"
+                :name="'inventory-out-' + index"
+                @input="calculate"
+                @choosen="updateUnit"
+                v-model="option.quantity"
+                :units="mutableItemUnits"
+                :unit="mutableItemUnit"/>
+            </td>
+            <td class="text-right">
+              {{ option.remainingInUnit | numberFormat }}
+              {{ mutableItemUnit.label | uppercase }}
+            </td>
+          </tr>
+          <tr slot="p-body">
+            <td v-if="mutableRequireExpiryDate">
+            <td v-if="mutableRequireProductionNumber">
+            <td class="text-right">
+              {{ mutableTotalQuantity | numberFormat }} {{ mutableItemUnit.label }}
+            </td>
+            <td class="text-right"></td>
+          </tr>
+        </p-table>
+      </div>
+      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+        {{ $t('searching not found', [searchText]) | capitalize }}
+      </div>
+      <button type="button" @click="update()" class="btn btn-sm btn-block btn-primary">{{ $t('update') | uppercase }}</button>
+    </sweet-modal>
   </div>
 </template>
 
@@ -149,7 +149,7 @@ export default {
       this.mutableItemUnit.label = mutableItemUnit.label
       this.calculate()
     },
-    show (row) {
+    open (row) {
       if (!row.warehouse_id) {
         this.$alert.info('INPUT REQURED', this.$t('please select warehouse'))
         return
@@ -172,7 +172,7 @@ export default {
         this.mutableInventories = row.dna
       }
       this.init()
-      this.$refs['select-' + this.id].show()
+      this.$refs['select-' + this.id].open()
     },
     update () {
       this.calculate()
@@ -186,6 +186,8 @@ export default {
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }

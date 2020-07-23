@@ -82,7 +82,7 @@ export default {
     close () {
       document.getElementById(this.id).style.display = 'none'
       document.getElementById(this.id).classList.remove('open')
-      let elements = document.getElementsByClassName('modal open')
+      const elements = document.getElementsByClassName('modal open')
       if (!elements[0]) {
         document.body.classList.remove('modal-open')
       }

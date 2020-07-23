@@ -100,7 +100,7 @@ export default {
     }
   },
   watch: {
-    'units': {
+    units: {
       handler: function (newValue) {
         this.units.forEach(function (element) {
           element.label = element.name

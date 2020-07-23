@@ -13,7 +13,7 @@
       <p-block>
         <div class="input-group block mb-5">
           <router-link
-            v-if="$permission.has('create play book procedures code')"
+            v-if="$permission.has('create play book procedure')"
             class="btn btn-outline-primary mr-3"
             to="/plugin/play-book/approval/procedure/send">
             Sent Request <i class="fa fa-paper-plane"></i>
@@ -29,7 +29,7 @@
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
-          <div class="alert alert-danger" v-if="!$permission.has('accept play book approval procedures')">
+          <div class="alert alert-danger" v-if="!$permission.has('approve play book procedure')">
             <span>You don't have permission to see this page</span>
           </div>
           <point-table v-else>

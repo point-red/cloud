@@ -23,8 +23,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-
 export default {
   data () {
     return {
@@ -46,7 +44,6 @@ export default {
   },
   methods: {
     show (inventories) {
-      this.mutableItemUnit = itemUnit
       this.mutableInventories = inventories
       this.mutableRequireExpiryDate = true
       this.mutableRequireProductionNumber = true

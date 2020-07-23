@@ -61,6 +61,9 @@ export default {
     label: {
       type: String
     },
+    permission: {
+      type: String
+    },
     help: {
       type: String
     }
@@ -76,9 +79,6 @@ export default {
       this.mutableId = this.value
     }
   },
-  created () {
-    this.search()
-  },
   methods: {
     ...mapActions('masterUser', ['get']),
     search () {
@@ -89,22 +89,23 @@ export default {
           limit: 50,
           filter_like: {
             name: this.searchText
-          }
+          },
+          filter_permission: this.permission
         }
       }).then(response => {
         this.options = []
         response.data.map((key, value) => {
           this.options.push({
-            'id': key['id'],
-            'label': key['first_name'] + ' ' + key['last_name'],
-            'email': key['email'],
-            'firstName': key['first_name'],
-            'lastName': key['last_name'],
-            'fullName': key['first_name'] + ' ' + key['last_name']
+            id: key.id,
+            label: key.first_name + ' ' + key.last_name,
+            email: key.email,
+            firstName: key.first_name,
+            lastName: key.last_name,
+            fullName: key.first_name + ' ' + key.last_name
           })
 
-          if (this.value == key['id']) {
-            this.mutableLabel = key['first_name'] + ' ' + key['last_name']
+          if (this.value == key.id) {
+            this.mutableLabel = key.first_name + ' ' + key.last_name
           }
         })
         this.isLoading = false
@@ -126,6 +127,7 @@ export default {
     },
     open () {
       this.$refs['select-' + this.id].open()
+      this.search()
     },
     close () {
       this.$refs['select-' + this.id].close()

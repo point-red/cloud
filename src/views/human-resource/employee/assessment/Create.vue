@@ -4,14 +4,14 @@
       <breadcrumb-human-resource/>
       <router-link
         to="/human-resource/employee"
-        class="breadcrumb-item">{{ $t('employee') | titlecase }}</router-link>
+        class="breadcrumb-item">{{ $t('employee') | uppercase }}</router-link>
       <router-link
         :to="'/human-resource/employee/' + employee.id"
-        class="breadcrumb-item">{{ employee.name | titlecase }}</router-link>
+        class="breadcrumb-item">{{ employee.name | uppercase }}</router-link>
       <router-link
         :to="'/human-resource/employee/' + employee.id + '/assessment'"
-        class="breadcrumb-item">Assessment</router-link>
-      <span class="breadcrumb-item active">Create</span>
+        class="breadcrumb-item">{{ $t('assessment') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
     <employee-widget :id="id"></employee-widget>
@@ -136,6 +136,12 @@
               <td></td>
             </tr>
           </p-table>
+          <p-form-row
+            :label="$t('comment')">
+            <div slot="body" class="col-lg-9 col-form-label">
+              <textarea class="form-control" v-model="form.template.comment" rows="3"></textarea>
+            </div>
+          </p-form-row>
 
           <div class="form-group row">
             <div class="col-md-12">
@@ -198,7 +204,8 @@ export default {
           end: this.$moment().format('YYYY-MM-DD 23:59:59')
         },
         template: {
-          groups: []
+          groups: [],
+          comment: null
         }
 
       }),
@@ -273,12 +280,12 @@ export default {
     },
     removeScore (groupId, indicatorId) {
       // find index of template group
-      let groupIndex = this.form.template.groups
+      const groupIndex = this.form.template.groups
         .findIndex(o => o.indicators
           .find(o => o.id === indicatorId)
         )
       // find index of template indicator
-      let indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
+      const indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
       var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected
       var group = this.form.template.groups[groupIndex]
       var template = this.form.template
@@ -292,12 +299,12 @@ export default {
     },
     addedScore ({ indicatorId, score, notes }) {
       // find index of template group
-      let groupIndex = this.form.template.groups
+      const groupIndex = this.form.template.groups
         .findIndex(o => o.indicators
           .find(o => o.id === indicatorId)
         )
       // find index of template indicator
-      let indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
+      const indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
       // add selected score to template indicator
       var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex]
       var group = this.form.template.groups[groupIndex]
@@ -313,6 +320,7 @@ export default {
       this.$set(this.form.template, 'score_percentage', scorePercentage + (template.score_percentage || 0))
     },
     onSubmit () {
+      this.$set(this.form.template, 'comment', this.form.template.comment)
       if (!this.form.date.start || !this.form.date.end) {
         this.$notification.error('Please select a valid date range')
         return
@@ -366,13 +374,13 @@ export default {
               var groupScorePercentage = 0
 
               group.indicators.forEach((indicator, indicatorIndex) => {
-                var target = this.form.template.groups[groupIndex].indicators[indicatorIndex]['target'] || 0
+                var target = this.form.template.groups[groupIndex].indicators[indicatorIndex].target || 0
                 var score = 0
                 var scorePercentage = 0
 
                 if (response[indicator.automated_code]) {
-                  target = response[indicator.automated_code]['target'] || 0
-                  score = response[indicator.automated_code]['score'] || 0
+                  target = response[indicator.automated_code].target || 0
+                  score = response[indicator.automated_code].score || 0
 
                   scorePercentage = score / target * indicator.weight || 0
 
@@ -382,7 +390,7 @@ export default {
 
                   this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'automated_code', indicator.automated_code)
                 } else if (indicator.selected) {
-                  score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected['score'] || 0
+                  score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected.score || 0
                   scorePercentage = score / target * indicator.weight || 0
                 }
 

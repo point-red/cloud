@@ -112,10 +112,10 @@ export default {
           limit: this.limit,
           sort_by: 'name',
           filter_like: {
-            'name': this.searchText
+            name: this.searchText
           },
           filter_min: {
-            'id': 2
+            id: 2
           },
           page: this.currentPage
         }

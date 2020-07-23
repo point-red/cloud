@@ -17,14 +17,14 @@
               <button
                 type="button"
                 @click="$refs.modalEditProcedure.open()"
-                v-if="$permission.has('update play book procedures code') && form.approved_at"
+                v-if="$permission.has('update play book procedure') && form.approved_at"
                 class="btn btn-sm btn-outline-secondary mr-5">
                 {{ $t('edit') | uppercase }}
               </button>
               <button
                 type="button"
                 @click="confirmDelete"
-                v-if="$permission.has('delete play book procedures code') && (form.approved_at || form.declined_at)"
+                v-if="$permission.has('delete play book procedure') && (form.approved_at || form.declined_at)"
                 :disabled="isDeleting"
                 class="btn btn-sm btn-outline-secondary mr-5">
                 <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
@@ -35,20 +35,20 @@
                 :to="`/plugin/play-book/procedure/${form.id}/histories`"
               >SEE HISTORY</router-link>
             </div>
-            <div class="text-right" v-if="$permission.has('accept play book approval procedures')
+            <div class="text-right" v-if="$permission.has('approve play book procedure')
               && form.approval_request_to === authUser.id
               && !form.declined_at
               && !form.approved_at">
               <button
                 type="button"
                 @click="$refs.modalDeclineProcedure.open()"
-                class="btn btn-sm btn-outline-danger mr-5">
+                class="btn btn-sm btn-secondary mr-5">
                 {{ $t('decline') | uppercase }}
               </button>
               <button
                 @click="approve"
                 type="button"
-                class="btn btn-sm btn-outline-success mr-5">
+                class="btn btn-sm btn-secondary mr-5">
                 {{ $t('approve') | uppercase }}
               </button>
             </div>
@@ -128,7 +128,7 @@
             </div>
             <button
               class="btn btn-sm btn-light"
-              v-if="$permission.has('create play book procedures code') && form.approved_at"
+              v-if="$permission.has('create play book procedure') && form.approved_at"
               @click="$refs.modalAddProcedure.open()">
               <i class="fa fa-plus"></i>
             </button>

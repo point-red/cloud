@@ -68,10 +68,10 @@
               </table>
             </div>
             <div class="col-sm-6 text-right">
-              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
               <template v-if="purchaseRequest.form.branch">
-                {{ purchaseRequest.form.branch.address | uppercase }} <br v-if="purchaseRequest.form.branch.address">
-                {{ purchaseRequest.form.branch.phone | uppercase }} <br v-if="purchaseRequest.form.branch.phone">
+                {{ purchaseRequest.form.branch.address | uppercase }}<br v-if="purchaseRequest.form.branch.address">
+                {{ purchaseRequest.form.branch.phone | uppercase }}<br v-if="purchaseRequest.form.branch.phone">
               </template>
             </div>
           </div>
@@ -193,7 +193,7 @@ export default {
       cancellationReject: 'cancellationReject'
     }),
     toggleMore () {
-      let isMoreActive = this.purchaseRequest.items.some(function (el, index) {
+      const isMoreActive = this.purchaseRequest.items.some(function (el, index) {
         return el.more === false
       })
       this.purchaseRequest.items.forEach(element => {

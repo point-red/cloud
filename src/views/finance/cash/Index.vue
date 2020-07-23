@@ -52,7 +52,7 @@
                   <router-link v-if="payment.disbursed == false" :to="{ name: 'finance.cash.in.show', params: { id: payment.id }}">
                     {{ payment.form.number }}
                   </router-link>
-                  <router-link v-if="payment.disbursed == true" :to="{ name: 'finance.cash.in.show', params: { id: payment.id }}">
+                  <router-link v-if="payment.disbursed == true" :to="{ name: 'finance.cash.out.show', params: { id: payment.id }}">
                     {{ payment.form.number }}
                   </router-link>
                 </th>

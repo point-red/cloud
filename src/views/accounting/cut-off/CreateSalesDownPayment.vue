@@ -146,7 +146,7 @@ export default {
           join: 'customer,cutOff,chartOfAccount',
           filter_like: {
             'customer.name': this.searchText,
-            'amount': this.searchText
+            amount: this.searchText
           },
           includes: 'customer;cutOff;account'
         }

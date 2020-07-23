@@ -21,13 +21,13 @@ const store = new Vuex.Store({
         if (now >= expirationDate) {
           return
         }
-        axios.defaults.headers.common['Authorization'] = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
+        axios.defaults.headers.common.Authorization = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
         commit('auth/storeUser', {})
         dispatch('accountRewardToken/get')
         commit('lang/updateLang', localStorage.getItem('locale') || 'en')
-        state.uiHandler['openLeftSidebar'] = localStorage.getItem('openLeftSidebar') || true
-        state.uiHandler['openSideOverlay'] = localStorage.getItem('openSideOverlay') || false
-        state.uiHandler['isSidebarInverse'] = localStorage.getItem('isSidebarInverse') || true
+        state.uiHandler.openLeftSidebar = localStorage.getItem('openLeftSidebar') || true
+        state.uiHandler.openSideOverlay = localStorage.getItem('openSideOverlay') || false
+        state.uiHandler.isSidebarInverse = localStorage.getItem('isSidebarInverse') || true
         dispatch('auth/tryAutoLogin', {}, { root: true })
           .then(response => {
             return resolve(response)

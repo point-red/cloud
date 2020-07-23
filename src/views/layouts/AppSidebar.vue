@@ -73,12 +73,6 @@
                   {{ userName }}
                 </a>
               </li>
-              <li class="list-inline-item">
-                |
-                <a :href="accountPage + '/reward'" class="link-effect text-dual-primary-dark">
-                  {{ balance || 0 }} <i class="si si-disc"></i>
-                </a>
-              </li>
             </ul>
           </div>
           <!-- END Visible only in normal mode -->
@@ -196,7 +190,7 @@
                     active-class="active">{{ $t('down payment') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase receive')">
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase receive')">
                   <router-link
                     to="/purchase/receive"
                     active-class="active">{{ $t('purchase receive') | uppercase }}
@@ -205,10 +199,10 @@
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase invoice')">
                   <router-link
                     to="/purchase/invoice"
-                    active-class="active">{{ $t('invoice') | uppercase }}
+                    active-class="active">{{ $t('purchase invoice') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase return')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase return')">
                   <router-link
                     to="/purchase/return"
                     active-class="active">{{ $t('return') | uppercase }}
@@ -240,6 +234,12 @@
                     active-class="active">{{ $t('sales order') | uppercase }}
                   </router-link>
                 </li>
+                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read sales order')">
+                  <router-link
+                    to="/sales/report"
+                    active-class="active">{{ $t('sales report') | uppercase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <!-- <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
@@ -262,7 +262,7 @@
                 </li>
               </ul>
             </li> -->
-            <!-- <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory') && authUser.tenant_package_id > 1">
+            <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory') && authUser.tenant_package_id > 1">
               <router-link to="/inventory" class="nav-submenu" active-class="active">
                 <i class="si si-tag"/>
                 <span class="sidebar-mini-hide">{{ $t("inventory") | uppercase }}</span>
@@ -274,7 +274,7 @@
                     active-class="active">{{ $t('inventory report') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
+                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
                   <router-link
                     to="/inventory/usage"
                     active-class="active">{{ $t('inventory usage') | uppercase }}
@@ -297,9 +297,9 @@
                     to="/inventory/transfer"
                     active-class="active">{{ $t('transfer item') | uppercase }}
                   </router-link>
-                </li>
+                </li> -->
               </ul>
-            </li> -->
+            </li>
             <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture') && authUser.tenant_package_id > 1">
               <router-link to="/manufacture" class="nav-submenu" active-class="active">
                 <i class="si si-settings"/>
@@ -456,7 +456,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('accountRewardToken', ['balance']),
     ...mapGetters('auth', ['authUser'])
   },
   methods: {

@@ -130,13 +130,13 @@ export default {
   },
   created () {
     this.$store.dispatch('path/updateUri', this.$route.path)
-    this.firstUri = this.$store.state.path['firstUri']
-    this.secondUri = this.$store.state.path['secondUri']
+    this.firstUri = this.$store.state.path.firstUri
+    this.secondUri = this.$store.state.path.secondUri
   },
   updated () {
     this.$store.dispatch('path/updateUri', this.$route.path)
-    this.firstUri = this.$store.state.path['firstUri']
-    this.secondUri = this.$store.state.path['secondUri']
+    this.firstUri = this.$store.state.path.firstUri
+    this.secondUri = this.$store.state.path.secondUri
   }
 }
 </script>

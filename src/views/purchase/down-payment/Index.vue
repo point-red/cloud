@@ -27,14 +27,14 @@
             :value="searchText"
             @input="filterSearch"/>
         </div>
-        <div class="text-center font-size-sm mb-10">
+        <div class="text-center font-size-sm">
           <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
             {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
           </a>
         </div>
-        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div class="card m-5 pt-10" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
           <div class="row">
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-3 text-center">
               <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
@@ -45,7 +45,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-3 text-center">
               <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
                 <div slot="body">
                   <p-date-picker
@@ -56,7 +56,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-3 text-center">
               <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('approval status')" :is-horizontal="false">
                 <div slot="body">
                   <span
@@ -67,7 +67,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-3 text-center">
               <p-form-row id="form-status" name="form-status" :label="$t('form status')" :is-horizontal="false">
                 <div slot="body">
                   <span
@@ -114,6 +114,7 @@
               <th>Supplier</th>
               <th>Notes</th>
               <th class="text-right">Amount</th>
+              <th class="text-right">Remaining</th>
               <th class="text-center">Approval Status</th>
               <th class="text-center">Form Status</th>
               <th width="50px"></th>
@@ -133,6 +134,7 @@
               </td>
               <td>{{ purchaseDownPayment.form.notes }}</td>
               <td class="text-right">{{ purchaseDownPayment.amount | numberFormat }}</td>
+              <td class="text-right">{{ purchaseDownPayment.remaining | numberFormat }}</td>
               <td class="text-center">
                 <div v-if="purchaseDownPayment.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
                 <div v-if="purchaseDownPayment.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
@@ -211,7 +213,7 @@ export default {
     ...mapGetters('purchaseDownPayment', ['downPayments', 'pagination'])
   },
   watch: {
-    'date': {
+    date: {
       handler: function () {
         this.$router.push({
           query: {
@@ -238,7 +240,7 @@ export default {
       if (!this.isRowsChecked(this.downPayments, this.checkedRow)) {
         this.downPayments.forEach(element => {
           if (!this.isRowChecked(element.id)) {
-            let id = element.id
+            const id = element.id
             this.checkedRow.push({ id })
           }
         })
@@ -258,7 +260,7 @@ export default {
         return false
       }
       for (let i = 0; i < haystack.length; i++) {
-        let found = needles.some(element => {
+        const found = needles.some(element => {
           return element.id == haystack[i].id
         })
         if (!found) {

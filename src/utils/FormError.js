@@ -12,6 +12,7 @@ export default class FormError {
    * @param {string} field
    */
   has (field) {
+    // eslint-disable-next-line no-prototype-builtins
     return this.errors.hasOwnProperty(field)
   }
 

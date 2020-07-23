@@ -2,7 +2,7 @@
   <div>
     <sweet-modal
       :ref="'select-' + id"
-      :title="$t('select form approval status') | uppercase"
+      :title="$t('select form status') | uppercase"
       overlay-theme="dark"
       @close="onClose()">
       <div v-if="isLoading">
@@ -31,9 +31,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
-import { mapGetters, mapActions } from 'vuex'
-
 export default {
   data () {
     return {

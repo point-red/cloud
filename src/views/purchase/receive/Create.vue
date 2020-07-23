@@ -2,178 +2,196 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase/>
-      <router-link :to="{ name: 'purchase.receive.index' }" class="breadcrumb-item">{{ $t('purchase receive') | titlecase }}</router-link>
-      <router-link :to="{ name: 'purchase.order.show', params: { id: id }}" class="breadcrumb-item">{{ purchaseOrder.form.number }}</router-link>
-      <span class="breadcrumb-item active">Create</span>
+      <router-link to="/purchase/receive" class="breadcrumb-item">{{ $t('purchase receive') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
     <purchase-menu/>
 
-    <tab-menu/>
-
-    <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('purchase receive')" :header="true">
-        <p-block-inner :is-loading="isLoading">
-          <p-form-row
-            id="number"
-            name="number"
-            :label="$t('number')">
-            <div slot="body" class="col-lg-9">
-              <template v-if="purchaseOrder.form.number">
-                {{ purchaseOrder.form.number }}
-              </template>
-              <template v-else>
-                <span class="badge badge-danger">{{ $t('archived') }}</span>
-                {{ purchaseOrder.form.edited_number }}
-              </template>
+    <form @submit.prevent="onSubmit">
+      <div class="row">
+        <p-block>
+          <p-block-inner :is-loading="isLoading">
+            <div class="row">
+              <div class="col-sm-6">
+                <h4>{{ $t('purchase receive') | uppercase }}</h4>
+                <table class="table table-sm table-bordered">
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
+                    <td>
+                      <p-date-picker
+                        id="date"
+                        name="date"
+                        :label="$t('date')"
+                        v-model="form.date"
+                        :errors="form.errors.get('date')"
+                        @errors="form.errors.set('date', null)"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('purchase order') | uppercase }}</td>
+                    <td>
+                      <span @click="$refs.selectPurchaseOrder.open()" class="select-link">
+                        <template v-if="purchaseOrder && purchaseOrder.form.number">
+                          {{ purchaseOrder.form.number }}
+                        </template>
+                        <template v-else>
+                          {{ $t('select') | uppercase }}
+                        </template>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('warehouse') | uppercase }}</td>
+                    <td>
+                      <span @click="$refs.warehouse.open()" class="select-link">{{ form.warehouse_name || $t('select') | uppercase }}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('driver') | uppercase }}</td>
+                    <td>
+                        <p-form-input
+                        id="driver"
+                        name="driver"
+                        :label="$t('driver')"
+                        v-model="form.driver"
+                        :errors="form.errors.get('driver')"
+                        @errors="form.errors.set('driver', null)"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">{{ $t('license plate') | uppercase }}</td>
+                    <td>
+                        <p-form-input
+                        id="license plate"
+                        name="license plate"
+                        :label="$t('license plate')"
+                        v-model="form.license_plate"
+                        :errors="form.errors.get('license_plate')"
+                        @errors="form.errors.set('license_plate', null)"/>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-sm-6 text-right">
+                <div class="mb-30">
+                  <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                  <template v-if="authUser.branch">
+                    {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
+                    {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
+                  </template>
+                </div>
+                <div>
+                  <h6 class="mb-0 ">{{ $t('from') | uppercase }}:</h6>
+                  <span>{{ form.supplier_label | uppercase }}</span>
+                  <div style="font-size:12px" v-if="form.supplier_phone">
+                    <br v-if="form.supplier_address">{{ form.supplier_address | uppercase }}
+                    <br v-if="form.supplier_phone">{{ form.supplier_phone }}
+                    <br v-if="form.supplier_email">{{ form.supplier_email | uppercase }}
+                  </div>
+                </div>
+              </div>
             </div>
-          </p-form-row>
-
-          <p-form-row
-            id="supplier"
-            name="supplier"
-            :label="$t('supplier')">
-            <div slot="body" class="col-lg-9">
-              {{ form.supplier_name }}
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="warehouse"
-            name="warehouse"
-            :label="$t('warehouse')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <m-warehouse id="warehouse" v-model="form.warehouse_id" @choosen="chooseWarehouse" :label="form.warehouse_name"/>
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker
-                id="date"
-                name="date"
-                label="date"
-                v-model="form.date"
-                :errors="form.errors.get('date')"
-                @errors="form.errors.set('date', null)"/>
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="driver"
-            v-model="form.driver"
-            :disabled="isSaving"
-            :label="$t('driver')"
-            name="driver"
-            :errors="form.errors.get('driver')"
-            @errors="form.errors.set('driver', null)"/>
-
-          <p-form-row
-            id="license-plate"
-            v-model="form.license_plate"
-            :disabled="isSaving"
-            :label="$t('license plate')"
-            name="license-plate"
-            :errors="form.errors.get('license_plate')"
-            @errors="form.errors.set('license_plate', null)"/>
-
-          <p-separator></p-separator>
-
-          <h5 class="">Item</h5>
-
-          <p-block-inner>
+            <hr>
             <point-table>
               <tr slot="p-head">
                 <th>#</th>
-                <th style="min-width: 120px">Item</th>
-                <th>Notes</th>
-                <th>Quantity</th>
-                <th>Receive</th>
-                <th>Expiry Date</th>
-                <th>Production No.</th>
-                <th></th>
+                <th style="min-width: 120px">{{ $t('item') | uppercase }}</th>
+                <th>{{ $t('quantity remaining') | uppercase }}</th>
+                <th>{{ $t('quantity received') | uppercase }}</th>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in form.items" :key="index">
-                <th>{{ index + 1 }}</th>
-                <td>{{ row.item.name }}</td>
-                <td>{{ row.notes }}</td>
-                <td class="text-right">
-                  {{ row.quantity_pending }} {{ row.unit }}
-                </td>
-                <td>
-                  <p-quantity
-                    :id="'quantity' + index"
-                    :name="'quantity' + index"
-                    :disabled="isSaving"
-                    v-model="row.quantity"
-                    :unit="row.unit"/>
-                </td>
-                <td>
-                  <p-date-picker
-                    id="expiry-date"
-                    name="expiry-date"
-                    v-model="row.expiry_date"/>
-                </td>
-                <td>
-                  <p-form-input
-                    id="production-number"
-                    v-model="row.production_number"
-                    :disabled="isSaving"
-                    name="production-number"/>
-                </td>
-              </tr>
+              <template v-for="(row, index) in form.items">
+                <tr slot="p-body" :key="'item-'+index" v-if="row.quantity_pending > 0">
+                  <th>{{ index + 1 }}</th>
+                  <td>{{ row.item_label }}</td>
+                  <td>{{ row.quantity_pending }} {{ row.unit }}</td>
+                  <td>
+                    <p-quantity
+                      :id="'quantity' + index"
+                      :name="'quantity' + index"
+                      v-model="row.quantity"
+                      :item-id="row.item_id"
+                      :units="row.units"
+                      :unit="{
+                        name: row.unit,
+                        label: row.unit,
+                        converter: row.converter
+                      }"
+                      :max="row.quantity_pending * 1"
+                      @choosen="chooseUnit($event, row)"
+                      @click.native="onClickQuantity(row, index)"
+                      :disable-unit-selection="true"
+                      :readonly="onClickUnit(row)"/>
+                  </td>
+                </tr>
+              </template>
             </point-table>
-          </p-block-inner>
+            <div class="row">
+              <div class="col-sm-9">
+              </div>
+              <div class="col-sm-3 text-center">
+                <h6 class="mb-0">{{ $t('created by') | uppercase }}</h6>
+                <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+                {{ requestedBy | uppercase }}
+                <div class="d-sm-block d-md-none mt-10"></div>
+              </div>
 
-          <p-separator></p-separator>
-
-          <div class="form-group row">
-            <div class="col-md-12">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
-              </button>
+              <div class="col-sm-12">
+                <hr>
+                <button type="submit" class="btn btn-block btn-sm btn-primary" :disabled="isSaving">
+                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                </button>
+              </div>
             </div>
-          </div>
-        </p-block-inner>
-      </p-block>
+          </p-block-inner>
+        </p-block>
+      </div>
     </form>
+    <m-inventory-in ref="inventory" :id="'inventory'" @submit="updateDna($event)" :disable-unit-selection="true"/>
+    <m-warehouse id="warehouse" name="warehouse" ref="warehouse" @choosen="chooseWarehouse"/>
+    <select-purchase-order ref="selectPurchaseOrder" @choosen="choosePurchaseOrder"></select-purchase-order>
   </div>
 </template>
 
 <script>
-import TabMenu from './TabMenu'
+import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import Form from '@/utils/Form'
-import PurchaseMenu from '../Menu'
 import PointTable from 'point-table-vue'
-import debounce from 'lodash/debounce'
+import SelectPurchaseOrder from './SelectPurchaseOrder'
 import { mapGetters, mapActions } from 'vuex'
-
 export default {
+  name: 'Create',
   components: {
-    TabMenu,
+    PurchaseMenu,
+    PointTable,
     Breadcrumb,
     BreadcrumbPurchase,
-    PointTable,
-    PurchaseMenu
+    SelectPurchaseOrder
   },
   data () {
     return {
-      id: this.$route.query.id,
-      isLoading: true,
       isSaving: false,
+      isLoading: false,
+      requestedBy: localStorage.getItem('fullName'),
+      purchaseOrder: {
+        form: {
+          number: null
+        },
+        purchase_receives: []
+      },
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
-        id: this.$route.query.id,
-        date: null,
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        warehouse_id: null,
+        warehouse_name: null,
         supplier_id: null,
         supplier_name: null,
-        warehouse_id: null,
-        purchase_order_id: null,
+        supplier_label: null,
+        supplier_address: null,
+        supplier_phone: null,
+        supplier_email: null,
         driver: null,
         license_plate: null,
         items: []
@@ -181,89 +199,104 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchaseOrder', ['purchaseOrder'])
-  },
-  watch: {
-    'form.required_date': function () {
-      this.form.date = this.form.required_date
-    }
-  },
-  created () {
-    this.isLoading = true
-    this.find({
-      id: this.id,
-      params: {
-        includes: 'supplier;items.item.units;items.allocation;services.service;services.allocation;form.approvals.requestedBy;form.approvals.requestedTo',
-        remaining_info: true
-      }
-    }).then(response => {
-      if (!this.$formRules.allowedToUpdate(response.data.form)) {
-        this.$router.replace('/purchase/order/' + response.data.id)
-      }
-      this.isLoading = false
-      this.form.date = response.data.form.date
-      this.form.purchase_order_id = response.data.id
-      this.form.warehouse_id = response.data.warehouse_id
-      this.form.supplier_id = response.data.supplier_id
-      this.form.supplier_name = response.data.supplier_name
-      this.form.notes = response.data.form.notes
-      response.data.items.forEach((item, keyItem) => {
-        this.form.items.push({
-          purchase_order_item_id: item.id,
-          item_id: item.item_id,
-          item_name: item.item_name,
-          item: item.item,
-          quantity_pending: item.quantity_pending,
-          quantity: item.quantity_pending,
-          expiry_date: this.$moment().format('YYYY-MM-DD'),
-          production_number: null,
-          price: item.price,
-          discount_value: item.discount_value,
-          discount_percent: item.discount_percent,
-          unit: item.unit,
-          converter: item.converter,
-          allocation_id: item.allocation_id,
-          notes: item.notes
-        })
-      })
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    ...mapGetters('auth', ['authUser'])
   },
   methods: {
-    ...mapActions('purchaseOrder', ['find']),
     ...mapActions('purchaseReceive', ['create']),
-    chooseWarehouse (value) {
-      this.form.warehouse_name = value
+    onClickQuantity (row, index) {
+      if (row.item.require_expiry_date == 1 || row.item.require_production_number == 1) {
+        row.index = index
+        this.$refs.inventory.open(row, row.quantity_pending)
+      }
     },
-    updateUnits (itemUnits) {
-      this.form.items.forEach((item, keyItem) => {
-        if (item.item_id == itemUnits.item_id) {
-          this.form.items[keyItem].units = itemUnits.units
-        }
-        item.units.forEach((unit, keyUnit) => {
-          if (unit.converter == 1) {
-            this.form.items[keyItem].unit = unit.label
-            this.form.items[keyItem].converter = unit.converter
-          }
-        })
+    onClickUnit (row) {
+      if (row.item_id == null || row.item.require_expiry_date === 1 || row.item.require_production_number === 1) {
+        return true
+      }
+      return false
+    },
+    chooseUnit (unit, row) {
+      row.unit = unit.label
+      row.converter = unit.converter
+    },
+    chooseWarehouse (warehouse) {
+      this.form.warehouse_id = warehouse.id
+      this.form.warehouse_name = warehouse.name
+      this.form.items.forEach(element => {
+        element.warehouse_id = this.form.warehouse_id
+        element.warehouse_name = this.form.warehouse_name
       })
+    },
+    choosePurchaseOrder (purchaseOrder) {
+      this.purchaseOrder = purchaseOrder
+      this.form.purchase_order_id = purchaseOrder.id
+      this.form.supplier_id = purchaseOrder.supplier_id
+      this.form.supplier_name = purchaseOrder.supplier_name
+      this.form.supplier_label = purchaseOrder.supplier_name
+      this.form.supplier_address = purchaseOrder.supplier_address
+      this.form.supplier_phone = purchaseOrder.supplier_phone
+      this.form.supplier_email = purchaseOrder.supplier_email
+      this.form.items = purchaseOrder.items
+      this.form.items.forEach(purchaseOrderItem => {
+        let quantityPending = 0
+        const quantity = purchaseOrderItem.quantity
+        purchaseOrder.purchase_receives.forEach(purchaseReceive => {
+          purchaseReceive.items.forEach(purchaseReceiveItem => {
+            if (purchaseReceiveItem.purchase_order_item_id == purchaseOrderItem.id) {
+              quantityPending += purchaseReceiveItem.quantity
+            }
+          })
+        })
+        purchaseOrderItem.purchase_order_item_id = purchaseOrderItem.id
+        purchaseOrderItem.item_name = purchaseOrderItem.item.name
+        purchaseOrderItem.item_label = purchaseOrderItem.item.label
+        purchaseOrderItem.quantity_pending = quantity - quantityPending
+        purchaseOrderItem.quantity = 0
+      })
+    },
+    updateDna (e) {
+      this.form.items[e.index].dna = e.dna
+      this.form.items[e.index].quantity = e.quantity
+      this.form.items[e.index].unit = e.unit
+      this.form.items[e.index].converter = e.converter
     },
     onSubmit () {
       this.isSaving = true
+      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
+      this.form.items = this.form.items.filter(item => item.quantity)
       this.create(this.form)
         .then(response => {
-          this.isSaving = false
-          this.form.reset()
           this.$notification.success('create success')
+          Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/purchase/receive/' + response.data.id)
         }).catch(error => {
-          this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
+        }).finally(() => {
+          this.isSaving = false
         })
+    }
+  },
+  created () {
+    if (this.$route.query.id) {
+      this.isLoading = true
+      this.find({
+        id: this.$route.query.id,
+        params: {
+          includes: 'form;supplier;items.item.units'
+        }
+      }).then(response => {
+        this.choosePurchaseOrder(response.data)
+      }).catch(error => {
+        this.$notification.error(error.message)
+      }).finally(() => {
+        this.isLoading = false
+      })
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+
+</style>

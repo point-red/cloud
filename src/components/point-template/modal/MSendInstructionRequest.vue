@@ -21,12 +21,8 @@
               <div class="col text-center">
                 <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
                 <div class="mb-50" style="font-size:11px">_______________</div>
-                <p-select
-                  id="instruction"
-                  name="instruction"
-                  :key="approverKey"
-                  v-model="form.approver_id"
-                  :options="approvers"/>
+                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
             </div>
           </form>
@@ -39,6 +35,7 @@
         </button>
       </div>
     </sweet-modal>
+    <m-user ref="approver" @choosen="chooseApprover"/>
   </div>
 </template>
 
@@ -57,10 +54,11 @@ export default {
       isFailed: false,
       requestedBy: localStorage.getItem('userName'),
       form: {
-        approver_id: null
+        approver_id: null,
+        approver_name: null,
+        approver_email: null
       },
-      errors: null,
-      approverKey: (new Date()).toLocaleString()
+      errors: null
     }
   },
   computed: {
@@ -72,12 +70,10 @@ export default {
     ...mapActions('pluginPlayBookInstructionApproval', [
       'send'
     ]),
-    async getUser () {
-      this.$store.dispatch('masterUser/get', {
-        params: {
-          permission: 'accept play book approval instructions'
-        }
-      })
+    chooseApprover (value) {
+      this.form.approver_id = value.id
+      this.form.approver_name = value.fullName
+      this.form.approver_email = value.email
     },
     onClose () {
       this.isFailed = false
@@ -107,10 +103,6 @@ export default {
     },
     open () {
       this.$refs.modal.open()
-      this.$nextTick(() => {
-        this.getUser()
-        this.approverKey = (new Date()).toLocaleString()
-      })
     },
     close () {
       this.$refs.modal.close()

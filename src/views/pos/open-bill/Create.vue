@@ -52,26 +52,30 @@
 
               <p-block-inner :is-loading="isLoading">
                 <div class="row gutters-tiny">
-                  <template v-if="currentGroupType === 'item'" v-for="(item, index) in itemList">
-                    <p-box-item
-                      v-if="groupItemList.includes(item.item_id)"
-                      :id="'item-' + index"
-                      :key="'item-' + index"
-                      :item="item"
-                      :itemName="item.item_name"
-                      :itemPrice="item.price"
-                      :itemUnit="item.item_unit"
-                      :clicked="chooseItem"/>
+                  <template v-for="(item, index) in itemList">
+                    <template v-if="currentGroupType === 'item'">
+                      <p-box-item
+                        v-if="groupItemList.includes(item.item_id)"
+                        :id="'item-' + index"
+                        :key="'item-' + index"
+                        :item="item"
+                        :itemName="item.item_name"
+                        :itemPrice="item.price"
+                        :itemUnit="item.item_unit"
+                        :clicked="chooseItem"/>
+                    </template>
                   </template>
-                  <template v-if="currentGroupType === 'service'" v-for="(service, index) in serviceList">
-                    <p-box-item
-                      v-if="groupServiceList.includes(service.service_id)"
-                      :id="'service-' + index"
-                      :key="'service-' + index"
-                      :item="service"
-                      :itemName="service.service_name"
-                      :itemPrice="service.price"
-                      :clicked="chooseService"/>
+                  <template v-for="(service, index) in serviceList">
+                    <template v-if="currentGroupType === 'service'">
+                      <p-box-item
+                        v-if="groupServiceList.includes(service.service_id)"
+                        :id="'service-' + index"
+                        :key="'service-' + index"
+                        :item="service"
+                        :itemName="service.service_name"
+                        :itemPrice="service.price"
+                        :clicked="chooseService"/>
+                    </template>
                   </template>
                 </div>
                 <p-pagination
@@ -522,7 +526,7 @@ export default {
       this.form.customer_name = value
     },
     chooseItem (item) {
-      let itemIndex = this.form.items_temporary.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label)
+      const itemIndex = this.form.items_temporary.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label)
       if (itemIndex >= 0) {
         var existingItem = this.form.items_temporary[itemIndex]
         this.selectedItem = Object.assign({}, existingItem)
@@ -546,7 +550,7 @@ export default {
       this.calculate()
     },
     chooseService (service) {
-      let serviceIndex = this.form.services.findIndex(o => o.service_id === service.service_id)
+      const serviceIndex = this.form.services.findIndex(o => o.service_id === service.service_id)
       if (serviceIndex >= 0) {
         var existingService = this.form.services[serviceIndex]
         existingService.quantity += 1
@@ -560,7 +564,7 @@ export default {
     },
     addInventory (value, item) {
       if (value.quantity > 0) {
-        let itemIndex = this.form.items_temporary.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label)
+        const itemIndex = this.form.items_temporary.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label)
         if (itemIndex >= 0) {
           var existingItem = this.form.items_temporary[itemIndex]
           existingItem.quantity = value.quantity
@@ -604,7 +608,7 @@ export default {
       this.calculate()
     },
     updateItem (data) {
-      let item = data.item
+      const item = data.item
       var existingItem = this.form.items_temporary[item.index]
       if (existingItem) {
         if (item.quantity > 0) {
@@ -619,7 +623,7 @@ export default {
       }
     },
     updateService (data) {
-      let service = data.service
+      const service = data.service
       var existingService = this.form.services[service.index]
       if (existingService) {
         if (service.quantity > 0) {
@@ -638,16 +642,16 @@ export default {
       this.requestAllData()
     },
     deleteItem (data) {
-      let item = data.item
-      let existingItem = this.form.items_temporary[item.index]
+      const item = data.item
+      const existingItem = this.form.items_temporary[item.index]
       if (existingItem) {
         this.form.items_temporary.splice(item.index, 1)
         this.calculate()
       }
     },
     deleteService (data) {
-      let service = data.service
-      let existingService = this.form.services[service.index]
+      const service = data.service
+      const existingService = this.form.services[service.index]
       if (existingService) {
         this.form.services.splice(service.index, 1)
         this.calculate()
@@ -665,7 +669,7 @@ export default {
                 this.form.pricing_group_id = price.pricing_group_id
               }
               if (this.form.pricing_group_id && this.form.pricing_group_id === price.pricing_group_id) {
-                let newItem = {
+                const newItem = {
                   item_id: item.id,
                   item_name: item.name,
                   item_unit: unit,
@@ -698,7 +702,7 @@ export default {
               this.form.pricing_group_id = price.pricing_group_id
             }
             if (this.form.pricing_group_id && this.form.pricing_group_id === price.pricing_group_id) {
-              let newService = {
+              const newService = {
                 service_id: service.id,
                 service_name: service.name,
                 quantity: 0,
@@ -725,7 +729,7 @@ export default {
       })
 
       this.form.items_temporary.forEach(item => {
-        let itemIndex = this.itemList.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label && o.pricing_group_id == item.pricing_group_id)
+        const itemIndex = this.itemList.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label && o.pricing_group_id == item.pricing_group_id)
         if (itemIndex >= 0) {
           item.price = this.itemList[itemIndex].price
           this.itemList[itemIndex].inventories = item.inventories
@@ -736,7 +740,7 @@ export default {
       })
 
       this.form.services.forEach(service => {
-        let serviceIndex = this.serviceList.findIndex(o => o.service_id === service.service_id && o.pricing_group_id == service.pricing_group_id)
+        const serviceIndex = this.serviceList.findIndex(o => o.service_id === service.service_id && o.pricing_group_id == service.pricing_group_id)
         if (serviceIndex >= 0) {
           service.price = this.serviceList[serviceIndex].price
           service.error = null
@@ -777,14 +781,14 @@ export default {
       var itemValid = true
 
       this.form.items_temporary.forEach(item => {
-        let itemIndex = this.itemList.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label && o.pricing_group_id == item.pricing_group_id)
+        const itemIndex = this.itemList.findIndex(o => o.item_id === item.item_id && o.item_unit.label === item.item_unit.label && o.pricing_group_id == item.pricing_group_id)
         if (itemIndex < 0) {
           itemValid = false
         }
       })
 
       this.form.services.forEach(service => {
-        let serviceIndex = this.serviceList.findIndex(o => o.service_id === service.service_id && o.pricing_group_id == service.pricing_group_id)
+        const serviceIndex = this.serviceList.findIndex(o => o.service_id === service.service_id && o.pricing_group_id == service.pricing_group_id)
         if (serviceIndex < 0) {
           itemValid = false
         }
@@ -799,16 +803,16 @@ export default {
     },
     setItems () {
       this.form.items = []
-      for (let index in this.form.items_temporary) {
-        let item = this.form.items_temporary[index]
-        if (item['inventories'].length > 0) {
-          for (let indexInventory in item['inventories']) {
-            let inventory = item['inventories'][indexInventory]
-            if (inventory['quantity']) {
+      for (const index in this.form.items_temporary) {
+        const item = this.form.items_temporary[index]
+        if (item.inventories.length > 0) {
+          for (const indexInventory in item.inventories) {
+            const inventory = item.inventories[indexInventory]
+            if (inventory.quantity) {
               var posItem = Object.assign({}, item)
-              posItem.quantity = inventory['quantity']
-              posItem.expiry_date = inventory['expiry_date']
-              posItem.production_number = inventory['production_number']
+              posItem.quantity = inventory.quantity
+              posItem.expiry_date = inventory.expiry_date
+              posItem.production_number = inventory.production_number
               this.form.items.push(posItem)
             }
           }

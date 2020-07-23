@@ -111,7 +111,7 @@ export default {
           fields: 'branch.*',
           sort_by: 'name',
           filter_like: {
-            'name': this.searchText
+            name: this.searchText
           },
           includes: 'users',
           limit: this.limit,

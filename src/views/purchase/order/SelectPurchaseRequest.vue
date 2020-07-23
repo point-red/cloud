@@ -91,6 +91,8 @@ export default {
         }
       }).then(response => {
         this.options = response.data
+      }).catch(error => {
+        this.$notification.error(error.message)
       }).finally(() => {
         this.isLoading = false
       })

@@ -114,8 +114,8 @@ export default {
           limit: 20,
           sort_by: 'name',
           filter_like: {
-            'code': this.searchText,
-            'name': this.searchText
+            code: this.searchText,
+            name: this.searchText
           },
           includes: 'account;units'
         }

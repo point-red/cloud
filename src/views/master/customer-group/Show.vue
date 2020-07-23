@@ -55,15 +55,13 @@
 import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
-import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbMaster,
-    PointTable
+    BreadcrumbMaster
   },
   data () {
     return {

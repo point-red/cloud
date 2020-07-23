@@ -56,7 +56,7 @@ export default {
     },
     devices () {
       // Once we have a list select the first one
-      const [first, ...tail] = this.devices
+      const [first] = this.devices
       if (first) {
         this.camera = first.deviceId
         this.deviceId = first.deviceId

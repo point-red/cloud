@@ -66,18 +66,14 @@
               </table>
             </div>
             <div class="col-sm-6 text-right">
-              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
               <template v-if="salesQuotation.form.branch">
-                {{ salesQuotation.form.branch.address | uppercase }}
-                <br v-if="salesQuotation.form.branch.phone">{{ salesQuotation.form.branch.phone | uppercase }}
+                {{ salesQuotation.form.branch.address | uppercase }} <br v-if="salesQuotation.form.branch.address">
+                {{ salesQuotation.form.branch.phone | uppercase }} <br v-if="salesQuotation.form.branch.phone">
               </template>
-              <h6 class="mt-30 mb-5">{{ $t('customer') | uppercase }}</h6>
-              {{ salesQuotation.customer_name | uppercase }}
-              <div style="font-size:12px">
-                {{ salesQuotation.customer_address | uppercase }}
-                <br v-if="salesQuotation.customer_phone">{{ salesQuotation.customer_phone }}
-                <br v-if="salesQuotation.customer_email">{{ salesQuotation.customer_email | uppercase }}
-              </div>
+              <h6 class="mt-30 mb-0">{{ $t('customer') | uppercase }} {{ salesQuotation.customer_name | uppercase }}</h6>
+              <div v-if="salesQuotation.form.customer_address"><i class="fa fa-home fa-fw"></i> {{ salesQuotation.form.customer_address | uppercase }}</div>
+              <div v-if="salesQuotation.form.customer_phone"><i class="fa fa-phone fa-fw"></i> {{ salesQuotation.form.customer_phone | uppercase }}</div>
             </div>
           </div>
           <hr>
@@ -227,7 +223,7 @@ export default {
       cancellationReject: 'cancellationReject'
     }),
     toggleMore () {
-      let isMoreActive = this.salesQuotation.items.some(function (el, index) {
+      const isMoreActive = this.salesQuotation.items.some(function (el, index) {
         return el.more === false
       })
       this.salesQuotation.items.forEach(element => {

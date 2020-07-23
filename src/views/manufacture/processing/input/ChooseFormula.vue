@@ -164,11 +164,11 @@ export default {
           fields: 'manufacture_formulas.*',
           filter_form: 'active',
           filter_equal: {
-            'manufacture_process_id': this.id
+            manufacture_process_id: this.id
           },
           filter_like: {
             'form.number': this.searchText,
-            'name': this.searchText,
+            name: this.searchText,
             'rawMaterials.item.name': this.searchText,
             'rawMaterials.quantity': this.searchText,
             'finishedGoods.item.name': this.searchText,

@@ -53,13 +53,9 @@
                   </template>
                 </div>
                 <div>
-                  <h6 class="mb-0 ">{{ $t('to') | uppercase }}:</h6>
-                  <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span>
-                  <div style="font-size:12px" v-if="form.supplier_phone">
-                    <br v-if="form.supplier_address">{{ form.supplier_address | uppercase }}
-                    <br v-if="form.supplier_phone">{{ form.supplier_phone }}
-                    <br v-if="form.supplier_email">{{ form.supplier_email | uppercase }}
-                  </div>
+                  <h6 class="mb-0">{{ $t('to') | uppercase }}: <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span></h6>
+                  <div v-if="form.supplier_address"><i class="fa fa-home fa-fw"></i> {{ form.supplier_address | uppercase }}</div>
+                  <div v-if="form.supplier_phone"><i class="fa fa-phone fa-fw"></i> {{ form.supplier_phone | uppercase }}</div>
                 </div>
               </div>
             </div>
@@ -286,7 +282,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
 import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
@@ -383,7 +378,7 @@ export default {
       })
     },
     toggleMore () {
-      let isMoreActive = this.form.items.some(function (el, index) {
+      const isMoreActive = this.form.items.some(function (el, index) {
         return el.more === false
       })
       this.form.items.forEach(element => {
@@ -415,7 +410,7 @@ export default {
         return
       }
 
-      let row = this.form.items[item.index]
+      const row = this.form.items[item.index]
       row.item_id = item.id
       row.item_name = item.name
       row.item_label = item.label
@@ -441,7 +436,7 @@ export default {
       row.converter = unit.converter
     },
     chooseAllocation (allocation) {
-      let row = this.form.items[allocation.index]
+      const row = this.form.items[allocation.index]
       row.allocation_id = allocation.id
       row.allocation_name = allocation.name
     },

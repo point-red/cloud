@@ -34,7 +34,10 @@
             name="process"
             :label="$t('process')">
             <div slot="body" class="col-lg-9 mt-5">
-              <m-process id="process" v-model="form.manufacture_process_id" @choosen="chooseManufactureProcess" :label="form.manufacture_process_name"/>
+              <span @click="$refs.selectProcess.open()" class="select-link">
+                {{ form.manufacture_process_name || $t('select') | uppercase  }}
+              </span>
+              <m-process id="process" ref="selectProcess" @choosen="chooseManufactureProcess"/>
             </div>
           </p-form-row>
           <p-form-row
@@ -42,7 +45,10 @@
             name="machine"
             :label="$t('machine')">
             <div slot="body" class="col-lg-9 mt-5">
-              <m-machine id="machine" v-model="form.manufacture_machine_id" @choosen="chooseManufactureMachine" :label="form.manufacture_machine_name"/>
+              <span @click="$refs.selectMachine.open()" class="select-link">
+                {{ form.manufacture_machine_name || $t('select') | uppercase  }}
+              </span>
+              <m-machine id="machine" ref="selectMachine" @choosen="chooseManufactureMachine"/>
             </div>
           </p-form-row>
 
@@ -63,20 +69,14 @@
             <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="'finished-goods-' + index">
               <th>{{ index + 1 }}</th>
               <td>
-                <m-item
-                  :id="'item-finish-' + index"
-                  :data-index="index"
-                  v-model="row.item_id"
-                  :label="row.item_name"
-                  @choosen="chooseFinishedGood($event, row)"/>
+                <span @click="$refs.itemFinishedGoods.open(index)" class="select-link">
+                  {{ row.item_label || $t('select') | uppercase }}
+                </span>
               </td>
               <td>
-                <m-warehouse
-                  :id="'warehouse-finish-' + index"
-                  :data-index="index"
-                  v-model="row.warehouse_id"
-                  :label="row.warehouse_name"
-                  @choosen="chooseWarehouse($event, row)"/>
+                <span @click="$refs.warehouseFinishedGoods.open(index)" class="select-link">
+                  {{ row.warehouse_name || $t('select') | uppercase }}
+                </span>
               </td>
               <td>
                 <p-quantity
@@ -96,20 +96,15 @@
             <tr slot="p-body" v-for="(row, index) in materials" :key="'raw-materials-' + index">
               <th>{{ index + 1 }}</th>
               <td>
-                <m-item
-                  :id="'item-raw-' + index"
-                  :data-index="index"
-                  v-model="row.item_id"
-                  :label="row.item_name"
-                  @choosen="chooseMaterial($event, row)"/>
+                <span @click="$refs.itemRawMaterial.open(index)" class="select-link">
+                  <i class="fa fa-barcode" v-if="row.require_production_number || row.require_expiry_date"></i>
+                  {{ row.item_label || $t('select') | uppercase }}
+                </span>
               </td>
               <td>
-                <m-warehouse
-                  :id="'warehouse-raw-' + index"
-                  :data-index="index"
-                  v-model="row.warehouse_id"
-                  :label="row.warehouse_name"
-                  @choosen="chooseWarehouse($event, row)"/>
+                <span @click="$refs.warehouseRawMaterials.open(index)" class="select-link">
+                  {{ row.warehouse_name || $t('select') | uppercase }}
+                </span>
               </td>
               <td>
                 <p-quantity
@@ -145,13 +140,8 @@
             <div class="col-sm-3 text-center">
               <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
               <div class="mb-50" style="font-size:11px">_______________</div>
-              <m-user
-                :id="'user'"
-                v-model="form.request_approval_to"
-                :errors="form.errors.get('request_approval_to')"
-                @errors="form.errors.set('request_approval_to', null)"
-                @choosen="chooseApprover"/>
-                {{ form.approver_email }} <br v-if="form.approver_email">
+              <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+              <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
             </div>
           </div>
           <hr>
@@ -165,12 +155,16 @@
         </p-block-inner>
       </p-block>
     </form>
+    <m-user ref="approver" @choosen="chooseApprover"/>
+    <m-warehouse id="warehouse-finished-goods" name="warehouse-finished-goods" ref="warehouseFinishedGoods" @choosen="chooseWarehouseFinishedGood"/>
+    <m-warehouse id="warehouse-raw-materials" name="warehouse-raw-materials" ref="warehouseRawMaterials" @choosen="chooseWarehouseRawMaterial"/>
+    <m-item ref="itemFinishedGoods" @choosen="chooseFinishedGood($event)"/>
+    <m-item ref="itemRawMaterial" @choosen="chooseRawMaterial($event)"/>
     <m-inventory-out ref="inventory" :id="'inventory'" @updated="updateDna($event)"/>
   </div>
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
 import ManufactureMenu from '../../Menu'
 import TabMenu from '../TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
@@ -232,11 +226,13 @@ export default {
         manufacture_formula_name: null,
         notes: null,
         request_approval_to: null,
+        approver_name: null,
+        approver_email: null,
         raw_materials: [],
         finished_goods: [{
           item_id: null,
-          warehouse_id: null,
           item_name: null,
+          warehouse_id: null,
           warehouse_name: null,
           item: {
             require_expiry_date: false,
@@ -271,7 +267,8 @@ export default {
       this.find({
         id: this.formulaId,
         params: {
-          includes: 'manufactureProcess;finishedGoods.item.units;rawMaterials.item.units'
+          includes: 'manufactureProcess;finishedGoods.item.units;' +
+            'rawMaterials.item.units'
         }
       }).then(response => {
         this.formula = response.data
@@ -280,13 +277,25 @@ export default {
         this.form.manufacture_process_id = response.data.manufacture_process.id
         this.form.manufacture_process_name = response.data.manufacture_process.name
         this.form.finished_goods = response.data.finished_goods
-        this.form.materials = response.data.raw_materials
+        this.materials = response.data.raw_materials
       })
     }
   },
   methods: {
     ...mapActions('manufactureInput', ['create']),
     ...mapActions('manufactureFormula', ['find']),
+    onClickQuantity (row) {
+      if (row.require_expiry_date == 1 || row.require_production_number == 1) {
+        this.$refs.inventory.open(row)
+      }
+    },
+    onClickUnit (row) {
+      if (row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
+        return true
+      }
+
+      return false
+    },
     addMaterialRow () {
       this.materials.push({
         row_id: this.materials.length,
@@ -313,23 +322,11 @@ export default {
         converter: null
       })
     },
-    onClickQuantity (row) {
-      if (row.require_expiry_date == 1 || row.require_production_number == 1) {
-        this.$refs.inventory.show(row)
-      }
-    },
-    onClickUnit (row) {
-      if (row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
-        return true
-      }
-
-      return false
-    },
     addFinishGoodRow () {
       this.form.finished_goods.push({
         item_id: null,
-        warehouse_id: null,
         item_name: null,
+        warehouse_id: null,
         warehouse_name: null,
         item: {
           require_expiry_date: false,
@@ -361,48 +358,77 @@ export default {
     chooseManufactureProcess (option) {
       this.form.manufacture_process_name = option.name
     },
-    chooseMaterial (item, row) {
-      row.item_name = item.name
-      row.quantity = 0
-      row.item.id = item.id
-      row.item.units = item.units
-      row.item.unit = item.unit
-      row.require_expiry_date = item.require_expiry_date
-      row.require_production_number = item.require_production_number
-      row.item.units.forEach((unit, keyUnit) => {
-        if (unit.converter == 1) {
-          row.unit = unit.label
-          row.converter = unit.converter
-        }
-      })
-      let isNeedNewRow = true
-      this.materials.forEach(element => {
-        if (element.item_id == null) {
-          isNeedNewRow = false
-        }
-      })
-      if (isNeedNewRow) {
-        this.addMaterialRow()
-      }
-    },
     chooseUnit (unit, row) {
       row.unit = unit.label
       row.converter = unit.converter
     },
-    chooseFinishedGood (item, row) {
-      row.item_name = item.name
-      row.quantity = 0
-      row.item.require_expiry_date = item.require_expiry_date
-      row.item.require_production_number = item.require_production_number
-      row.item.units = item.units
-      row.item.units.forEach((unit, keyUnit) => {
-        if (unit.converter == 1) {
-          row.unit = unit.label
-          row.converter = unit.converter
+    chooseFinishedGood (item) {
+      const row = this.form.finished_goods[item.index]
+      if (item.id == null) {
+        this.clearItem(row)
+      } else {
+        row.quantity = 0
+        row.item_id = item.id
+        row.item_name = item.name
+        row.item_label = item.label
+        row.item.require_expiry_date = item.require_expiry_date
+        row.item.require_production_number = item.require_production_number
+        row.units = item.units
+        row.units.forEach((unit, keyUnit) => {
+          if (unit.id == item.unit_default_purchase) {
+            row.unit = unit.label
+            row.converter = unit.converter
+          }
+        })
+        let isNeedNewRow = true
+        this.form.finished_goods.forEach(element => {
+          if (element.item_id == null) {
+            isNeedNewRow = false
+          }
+        })
+        if (isNeedNewRow) {
+          this.addFinishGoodRow()
         }
-      })
+      }
     },
-    chooseWarehouse (option, row) {
+    chooseRawMaterial (item) {
+      const row = this.materials[item.index]
+      if (item.id == null) {
+        this.clearItem(row)
+      } else {
+        row.quantity = 0
+        row.item_id = item.id
+        row.item_name = item.name
+        row.item_label = item.label
+        row.require_expiry_date = item.require_expiry_date
+        row.require_production_number = item.require_production_number
+        row.units = item.units
+        row.units.forEach((unit, keyUnit) => {
+          if (unit.id == item.unit_default_purchase) {
+            row.unit = unit.label
+            row.converter = unit.converter
+          }
+        })
+        let isNeedNewRow = true
+        this.materials.forEach(element => {
+          if (element.item_id == null) {
+            isNeedNewRow = false
+          }
+        })
+        if (isNeedNewRow) {
+          this.addMaterialRow()
+        }
+      }
+    },
+    chooseWarehouseFinishedGood (option) {
+      const row = this.form.finished_goods[option.index]
+      row.warehouse_id = option.id
+      row.warehouse_name = option.name
+      row.quantity = 0
+    },
+    chooseWarehouseRawMaterial (option) {
+      const row = this.materials[option.index]
+      row.warehouse_id = option.id
       row.warehouse_name = option.name
       row.quantity = 0
     },
@@ -423,7 +449,7 @@ export default {
       this.materials.forEach(material => {
         if (material.dna && material.dna.length > 0) {
           material.dna.forEach(dna => {
-            let newMaterial = JSON.parse(JSON.stringify(material))
+            const newMaterial = JSON.parse(JSON.stringify(material))
             newMaterial.expiry_date = dna.expiry_date
             newMaterial.production_number = dna.production_number
             newMaterial.quantity = dna.quantity

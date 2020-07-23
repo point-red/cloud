@@ -40,7 +40,7 @@
                 class="btn btn-secondary btn-sm mr-5"
                 v-if="$permission.has('create employee kpi') || $permission.has('update employee kpi')"
                 @click="$refs.group.show(template)">
-                <i class="si si-note"></i> Group
+                <i class="si si-note"></i> {{ $t('group') | uppercase }}
               </button>
             </td>
           </tr>
@@ -56,7 +56,13 @@
                   class="btn btn-secondary btn-sm mr-5"
                   v-if="$permission.has('create employee kpi') || $permission.has('update employee kpi')"
                   @click="$refs.indicator.show(group)">
-                  <i class="si si-note"></i> Indicator
+                  <i class="si si-note"></i> {{ $t('indicator') | uppercase }}
+                </button>
+                <button
+                  class="btn btn-secondary btn-sm mr-5"
+                  v-if="$permission.has('create employee kpi') || $permission.has('update employee kpi')"
+                  @click="$refs.copyGroupModal.show(template.id, group.id)">
+                  <i class="si si-bagde"></i> {{ $t('copy to') | uppercase }}
                 </button>
               </td>
             </tr>
@@ -70,7 +76,7 @@
                   class="btn btn-secondary btn-sm mr-5"
                   v-if="($permission.has('create employee kpi') || $permission.has('update employee kpi')) && !indicator.automated_code"
                   @click="$refs.score.show(indicator)">
-                  <i class="si si-badge"></i> Score
+                  <i class="si si-badge"></i> {{ $t('score') | uppercase }}
                 </button>
               </td>
             </tr>
@@ -86,23 +92,17 @@
       </p-block>
     </div>
 
-    <score-modal
-      id="score"
-      ref="score"/>
-
-    <indicator-modal
-      id="indicator"
-      ref="indicator"/>
-
-    <group-modal
-      id="group"
-      ref="group"/>
+    <score-modal id="score" ref="score"/>
+    <indicator-modal id="indicator" ref="indicator"/>
+    <group-modal id="group" ref="group"/>
+    <copy-group-modal id="kpi-template" ref="copyGroupModal" @copied="onCopySuccess"/>
   </div>
 </template>
 
 <script>
 import Form from '@/utils/Form'
 import ScoreModal from './ScoreModal'
+import CopyGroupModal from './CopyGroupModal'
 import IndicatorModal from './IndicatorModal'
 import GroupModal from './GroupModal'
 import Breadcrumb from '@/views/Breadcrumb'
@@ -112,6 +112,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     ScoreModal,
+    CopyGroupModal,
     GroupModal,
     IndicatorModal,
     Breadcrumb,
@@ -119,7 +120,7 @@ export default {
   },
   data () {
     return {
-      id: this.$route.params.id,
+      id: parseInt(this.$route.params.id),
       form: new Form(),
       isLoading: false
     }
@@ -135,15 +136,23 @@ export default {
         this.isLoading = false
       }
     })
-    this.findKpiTemplate({ id: this.id })
-      .then(response => {
-        this.isLoading = false
-      })
+    this.findTemplate()
   },
   methods: {
     ...mapActions('humanResourceKpiTemplate', {
       findKpiTemplate: 'find'
-    })
+    }),
+    findTemplate () {
+      this.findKpiTemplate({ id: this.id })
+        .then(response => {
+          this.isLoading = false
+        })
+    },
+    onCopySuccess (templateId) {
+      this.id = templateId
+      this.$router.push({ params: { id: templateId } })
+      this.findTemplate()
+    }
   }
 }
 </script>

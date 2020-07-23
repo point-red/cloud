@@ -4,11 +4,11 @@
       <breadcrumb-human-resource/>
       <router-link
         to="/human-resource/employee"
-        class="breadcrumb-item">{{ $t('employee') | titlecase }}</router-link>
+        class="breadcrumb-item">{{ $t('employee') | uppercase }}</router-link>
       <router-link
         :to="'/human-resource/employee/' + employee.id"
-        class="breadcrumb-item">{{ employee.name | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Assessment</span>
+        class="breadcrumb-item">{{ employee.name | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ $t('assessment') | uppercase }}</span>
     </breadcrumb>
 
     <employee-widget :id="id"></employee-widget>
@@ -85,6 +85,13 @@
             <td></td>
           </tr>
         </p-table>
+        <p-form-row
+          :is-horizontal="false"
+          :label="$t('comment')">
+          <div slot="body" class="col-lg-9 col-form-label">
+            <pre>{{ assessment.comment }}</pre>
+          </div>
+        </p-form-row>
       </p-block>
     </form>
   </div>

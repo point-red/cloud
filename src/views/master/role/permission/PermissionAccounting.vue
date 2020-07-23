@@ -115,7 +115,7 @@ export default {
     checkPermissionRow (needle, haystack) {
       var totalIndex = 0
       needle.some(function (el, index) {
-        var compare = haystack.some(function (el2, index2) {
+        haystack.some(function (el2, index2) {
           if (el === el2) {
             totalIndex++
           }

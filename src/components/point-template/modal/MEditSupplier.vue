@@ -23,7 +23,7 @@
 
           <p-form-row
             id="email"
-            v-model="form.emails[0].email"
+            v-model="form.email"
             :disabled="isSaving"
             :label="$t('email')"
             name="email"
@@ -32,7 +32,7 @@
 
           <p-form-row
             id="address"
-            v-model="form.addresses[0].address"
+            v-model="form.address"
             :disabled="isSaving"
             :label="$t('address')"
             name="address"
@@ -41,7 +41,7 @@
 
           <p-form-row
             id="phone"
-            v-model="form.phones[0].number"
+            v-model="form.phone"
             :disabled="isSaving"
             :label="$t('phone')"
             name="phone"
@@ -72,15 +72,9 @@ export default {
       form: new Form({
         id: null,
         name: null,
-        emails: [{
-          email: null
-        }],
-        addresses: [{
-          address: null
-        }],
-        phones: [{
-          number: null
-        }]
+        email: null,
+        address: null,
+        phone: null
       })
     }
   },
@@ -97,23 +91,13 @@ export default {
     findSupplier () {
       this.isLoading = true
       this.find({
-        id: this.form.id,
-        params: {
-          includes: 'addresses;phones;emails'
-        }
+        id: this.form.id
       }).then(response => {
         this.isLoading = false
         this.form.name = this.supplier.name
-
-        if (this.supplier.emails.length > 0) {
-          this.form.emails[0].email = this.supplier.emails[0].email
-        }
-        if (this.supplier.addresses.length > 0) {
-          this.form.addresses[0].address = this.supplier.addresses[0].address
-        }
-        if (this.supplier.phones.length > 0) {
-          this.form.phones[0].number = this.supplier.phones[0].number
-        }
+        this.form.address = this.supplier.address
+        this.form.phone = this.supplier.phone
+        this.form.email = this.supplier.email
         this.$nextTick(() => {
           this.$refs.name.setFocus()
         })

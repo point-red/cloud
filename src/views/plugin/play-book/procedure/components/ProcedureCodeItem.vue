@@ -35,7 +35,7 @@
       <div class="action d-flex">
         <button
           class="btn btn-sm btn-light mr-2"
-          v-if="withAddButton && $permission.has('create play book procedures code')"
+          v-if="withAddButton && $permission.has('create play book procedure')"
           @click="$refs.modalAddProcedure.open()">
           <i class="fa fa-plus"></i>
         </button>

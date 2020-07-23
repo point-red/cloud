@@ -98,14 +98,15 @@
                 <tr slot="p-body">
                   <td colspan="2" class="font-w600">BEBAN OPERASIONAL</td>
                 </tr>
-                <tr
-                  v-for="(chartOfAccount, index) in chartOfAccounts"
-                  v-if="chartOfAccount.type.name === 'DIRECT EXPENSE'"
-                  :key="index"
-                  slot="p-body">
-                  <td>{{ chartOfAccount.alias }}</td>
-                  <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
-                </tr>
+                <template v-for="(chartOfAccount, index) in chartOfAccounts">
+                  <tr
+                    v-if="chartOfAccount.type.name === 'DIRECT EXPENSE'"
+                    :key="index"
+                    slot="p-body">
+                    <td>{{ chartOfAccount.alias }}</td>
+                    <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
+                  </tr>
+                </template>
                 <tr slot="p-body">
                   <td></td>
                   <td class="text-right font-w600">{{ totalDirectExpense | numberFormat }}</td>
@@ -123,14 +124,15 @@
                 <tr slot="p-body">
                   <td colspan="2" class="font-w600">PENDAPATAN NON OPERATIONAL</td>
                 </tr>
+                <template v-for="(chartOfAccount, index) in chartOfAccounts">
                 <tr
-                  v-for="(chartOfAccount, index) in chartOfAccounts"
                   v-if="chartOfAccount.type.name === 'OTHER INCOME'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
                   <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
                 </tr>
+                </template>
                 <tr slot="p-body">
                   <td></td>
                   <td class="text-right font-w600">{{ totalOtherIncome | numberFormat }}</td>
@@ -138,14 +140,15 @@
                 <tr slot="p-body">
                   <td colspan="2" class="font-w600">BEBAN NON OPERATIONAL</td>
                 </tr>
+                <template v-for="(chartOfAccount, index) in chartOfAccounts">
                 <tr
-                  v-for="(chartOfAccount, index) in chartOfAccounts"
                   v-if="chartOfAccount.type.name === 'OTHER EXPENSE'"
                   :key="index"
                   slot="p-body">
                   <td>{{ chartOfAccount.alias }}</td>
                   <td class="text-right">{{ chartOfAccount.total | numberFormat }}</td>
                 </tr>
+                </template>
                 <tr slot="p-body">
                   <td></td>
                   <td class="text-right font-w600">{{ totalOtherExpense | numberFormat }}</td>

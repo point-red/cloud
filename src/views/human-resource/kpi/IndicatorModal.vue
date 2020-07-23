@@ -15,7 +15,7 @@
               <th>Name</th>
               <th class="text-center">Weight</th>
               <th class="text-center">Target</th>
-              <th></th>
+              <th style="width:100px"></th>
             </tr>
             <tr
               v-for="indicator in indicators"
@@ -25,7 +25,7 @@
               <td class="text-center">{{ indicator.weight }}%</td>
               <td class="text-center"><template v-if="!indicator.automated_code">{{ indicator.target }}</template></td>
               <td>
-                <a href="javascript:void(0)" class="badge badge-primary" @click="edit(indicator)"><i class="fa fa-pencil"></i></a>
+                <a href="javascript:void(0)" class="badge badge-primary mr-5" @click="edit(indicator)"><i class="fa fa-pencil"></i></a>
                 <a href="javascript:void(0)" class="badge badge-danger" @click="remove(indicator)"><i class="fa fa-close"></i></a>
               </td>
             </tr>
@@ -80,14 +80,9 @@
           </p-form-row>
         </template>
         <template slot="footer">
-          <button
-            :disabled="isSaving"
-            type="submit"
-            class="btn btn-primary">
-            <i
-              v-show="isSaving"
-              class="fa fa-asterisk fa-spin"/>
-            <template v-if="isCreateMode">Add</template>
+          <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
+            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>
+            <template v-if="isCreateMode">{{ $t('add') | uppercase }}</template>
             <template v-if="!isCreateMode">{{ $t('update') | uppercase }}</template>
           </button>
           <button type="button" class="btn btn-sm btn-outline-danger" @click="cancel">
@@ -212,7 +207,7 @@ export default {
       }
     },
     edit (indicator) {
-      for (let field in indicator) {
+      for (const field in indicator) {
         this.$set(this.form, field, indicator[field])
       }
 

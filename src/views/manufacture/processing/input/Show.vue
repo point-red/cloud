@@ -251,7 +251,7 @@ export default {
             converter: rawMaterial.converter
           }
 
-          let foundIndex = this.materials.findIndex(o =>
+          const foundIndex = this.materials.findIndex(o =>
             o.item_id === rawMaterial.item_id &&
             o.warehouse_id === rawMaterial.warehouse_id
           )

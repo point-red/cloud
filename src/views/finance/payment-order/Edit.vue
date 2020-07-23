@@ -167,7 +167,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   components: {

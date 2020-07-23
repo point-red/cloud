@@ -1,170 +1,123 @@
 <template>
   <div>
-    <breadcrumb>
+     <breadcrumb v-if="purchaseReceive">
       <breadcrumb-purchase/>
-      <router-link to="/purchase/receive" class="breadcrumb-item">{{ $t('purchase receive') | titlecase }}</router-link>
-      <template v-if="purchaseReceive.form">
-        <span class="breadcrumb-item active">{{ purchaseReceive.form.number | uppercase }}</span>
-      </template>
-      <template v-else>
-        <router-link v-if="purchaseReceive.origin" :to="{ name: 'purchase.receive.show', params: { id: purchaseReceive.origin.id }}" class="breadcrumb-item">
-          {{ purchaseReceive.form.edited_number | uppercase }}
-        </router-link>
-      </template>
+      <router-link to="/purchase/receive" class="breadcrumb-item">{{ $t('purchase receive') | uppercase }}</router-link>
+      <span class="breadcrumb-item active">{{ purchaseReceive.form.number | uppercase }}</span>
     </breadcrumb>
 
     <purchase-menu/>
 
-    <tab-menu/>
+    <p-show-form-cancellation-status
+      :is-loading="isLoading"
+      :cancellation-status="purchaseReceive.form.cancellation_status"
+      :cancellation-approval-reason="purchaseReceive.form.cancellation_approval_reason"
+      :request-cancellation-reason="purchaseReceive.form.request_cancellation_reason"
+      @onCancellationApprove="onCancellationApprove"
+      @onCancellationReject="onCancellationReject"/>
 
-    <div class="row">
-      <p-block :title="$t('purchase receive')" :header="true">
+    <div class="row" v-if="purchaseReceive">
+      <p-block>
         <p-block-inner :is-loading="isLoading">
-          <p-form-row
-            id="number"
-            name="number"
-            :label="$t('number')">
-            <div slot="body" class="col-lg-9">
-              <template v-if="purchaseReceive.form">
-                <template v-if="purchaseReceive.form.number">
-                  {{ purchaseReceive.form.number }}
-                </template>
-                <template v-else>
-                  <span class="badge badge-danger">{{ $t('archived') }}</span>
-                  {{ purchaseReceive.form.edited_number }}
-                </template>
-              </template>
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="date"
-            name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
-              {{ purchaseReceive.date | dateFormat('DD MMMM YYYY HH:mm') }}
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="warehouse"
-            name="warehouse"
-            :label="$t('warehouse')">
-            <div slot="body" class="col-lg-9">
-              {{ purchaseReceive.warehouse.name }}
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="supplier"
-            name="supplier"
-            :label="$t('supplier')">
-            <div slot="body" class="col-lg-9">
-              <template v-if="purchaseReceive.supplier">
-                {{ purchaseReceive.supplier.name }}
-              </template>
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="driver"
-            name="driver"
-            :label="$t('driver')">
-            <div slot="body" class="col-lg-9">
-              {{ purchaseReceive.driver }}
-            </div>
-          </p-form-row>
-
-          <p-form-row
-            id="license_plate"
-            name="license_plate"
-            :label="$t('license plate')">
-            <div slot="body" class="col-lg-9">
-              {{ purchaseReceive.license_plate }}
-            </div>
-          </p-form-row>
-
-          <p-separator></p-separator>
-
-          <h5 class="">Item</h5>
-
-          <p-block-inner>
-            <point-table>
-              <tr slot="p-head">
-                <th>#</th>
-                <th>Item</th>
-                <th>Notes</th>
-                <th class="text-right">Quantity</th>
-                <th class="text-right">Expiry Date</th>
-                <th class="text-right">Production No.</th>
-              </tr>
-              <tr slot="p-body" v-for="(row, index) in purchaseReceive.items" :key="index">
-                <th>{{ index + 1 }}</th>
-                <td>
-                  [{{ row.item.code }}] {{ row.item.name }}
-                </td>
-                <td>
-                  {{ row.notes }}
-                </td>
-                <td class="text-right">
-                  {{ row.quantity | numberFormat }} {{ row.unit }}
-                </td>
-                <td class="text-right" v-if="row.expiry_date">
-                  {{ row.expiry_date | dateFormat('DD MMMM YYYY') }}
-                </td>
-                <td class="text-right" v-else>
-                  &nbsp;
-                </td>
-                <td class="text-right">
-                  {{ row.production_number }}
-                </td>
-              </tr>
-            </point-table>
-          </p-block-inner>
-
-          <p-separator></p-separator>
-
-          <h5 v-if="purchaseReceive.archives != undefined && purchaseReceive.archives.length > 0">Archives</h5>
-
-          <point-table v-if="purchaseReceive.archives != undefined && purchaseReceive.archives.length > 0">
-            <tr slot="p-head">
-              <th>#</th>
-              <th>Edited Date</th>
-              <th>Edited Reason</th>
-            </tr>
-            <tr slot="p-body" v-for="(archived, index) in purchaseReceive.archives" :key="index">
-              <th>{{ index + 1 }}</th>
-              <td>
-                <router-link :to="{ name: 'purchase.receive.show', params: { id: archived.id }}">
-                  {{ archived.form.updated_at | dateFormat('DD MMMM YYYY HH:mm') }}
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="text-right">
+                <router-link :to="{ name: 'purchase.receive.create' }" class="btn btn-sm btn-outline-secondary mr-5">
+                  {{ $t('create') | uppercase }}
                 </router-link>
-              </td>
-              <td>
-                {{ archived.edited_notes }}
-              </td>
+                <!-- <router-link :to="{ name: 'purchase.receive.edit', params: { id: purchaseReceive.id }}" class="btn btn-sm btn-outline-secondary mr-5">
+                  {{ $t('edit') | uppercase }}
+                </router-link> -->
+                <button
+                  v-if="purchaseReceive.form.cancellation_status == null || purchaseReceive.form.cancellation_status == -1"
+                  @click="$refs.formRequestDelete.open()" class="btn btn-sm btn-outline-secondary mr-5">
+                  {{ $t('delete') | uppercase }}
+                </button>
+                <m-form-request-delete ref="formRequestDelete" @delete="onDelete($event)"></m-form-request-delete>
+              </div>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
+            <div class="col-sm-6">
+              <h4>{{ $t('purchase receive') | uppercase }}</h4>
+              <table class="table table-sm table-bordered">
+                <tr>
+                  <td width="150px" class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                  <td>{{ purchaseReceive.form.number }}</td>
+                </tr>
+                <tr>
+                  <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
+                  <td>{{ purchaseReceive.date | dateFormat('DD MMMM YYYY') }}</td>
+                </tr>
+                <tr v-if="purchaseReceive.purchase_order">
+                  <td class="font-weight-bold">{{ $t('reference') | uppercase }}</td>
+                  <td>{{ purchaseReceive.purchase_order.form.number }}</td>
+                </tr>
+                <tr v-if="purchaseReceive.driver">
+                  <td class="font-weight-bold">{{ $t('driver') | uppercase }}</td>
+                  <td>{{ purchaseReceive.driver }}</td>
+                </tr>
+                <tr v-if="purchaseReceive.license_plate">
+                  <td class="font-weight-bold">{{ $t('license plate') | uppercase }}</td>
+                  <td>{{ purchaseReceive.license_plate }}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="col-sm-6 text-right">
+              <h6 class="mb-5">{{ authUser.tenant_name | uppercase }}</h6>
+              <template v-if="purchaseReceive.form.branch">
+                {{ purchaseReceive.form.branch.address | uppercase }}
+                <br v-if="purchaseReceive.form.branch.phone">{{ purchaseReceive.form.branch.phone | uppercase }}
+              </template>
+              <h6 class="mt-30 mb-5">{{ $t('supplier') | uppercase }}</h6>
+              {{ purchaseReceive.supplier_name | uppercase }}
+              <div style="font-size:12px">
+                {{ purchaseReceive.supplier_address | uppercase }}
+                <br v-if="purchaseReceive.supplier_phone">{{ purchaseReceive.supplier_phone }}
+                <br v-if="purchaseReceive.supplier_email">{{ purchaseReceive.supplier_email | uppercase }}
+              </div>
+            </div>
+          </div>
+          <hr>
+          <point-table class="mt-20">
+            <tr slot="p-head">
+              <th class="text-center">#</th>
+              <th>{{ $t('item') | uppercase }}</th>
+              <th class="text-right">{{ $t('quantity') | uppercase }}</th>
+              <th width="50px"></th>
             </tr>
+            <template v-for="(row, index) in purchaseReceive.items">
+              <tr slot="p-body" :key="index">
+                <th class="text-center">{{ index + 1 }}</th>
+                <td>{{ row.item.label }}</td>
+                <td class="text-right">{{ row.quantity | numberFormat }} {{ row.unit }}</td>
+                <td></td>
+              </tr>
+            </template>
           </point-table>
-
-          <router-link
-            :to="{ path: '/purchase/receive/' + purchaseReceive.id + '/edit', params: { id: purchaseReceive.id }}"
-            v-if="$permission.has('update purchase receive') && $formRules.allowedToUpdate(purchaseReceive.form)"
-            class="btn btn-sm btn-primary mr-5">
-            {{ $t('edit') | uppercase }}
-          </router-link>
-          <a
-            href="javascript:void(0)"
-            @click="onDelete"
-            class="btn btn-sm btn-danger mr-5">
-            {{ $t('cancel') | uppercase }}
-          </a>
+          <div class="row mt-50">
+            <div class="col-sm-9">
+              <h6 class="mb-0">{{ $t('notes') | uppercase }}</h6>
+              <div style="white-space: pre-wrap;">{{ purchaseReceive.form.notes }}</div>
+              <div class="d-sm-block d-md-none mt-10"></div>
+            </div>
+            <div class="col-sm-3 text-center">
+              <h6 class="mb-0">{{ $t('created by') | uppercase }}</h6>
+              <div class="mb-50" style="font-size:11px">{{ purchaseReceive.form.date | dateFormat('DD MMMM YYYY') }}</div>
+              {{ purchaseReceive.form.created_by.full_name | uppercase }}
+              <div class="d-sm-block d-md-none mt-10"></div>
+            </div>
+          </div>
         </p-block-inner>
       </p-block>
     </div>
+
+    <m-form-request-delete ref="formRequestDelete" @delete="onDelete($event)"></m-form-request-delete>
   </div>
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '../Breadcrumb'
@@ -172,8 +125,8 @@ import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  name: 'Show',
   components: {
-    TabMenu,
     PurchaseMenu,
     Breadcrumb,
     BreadcrumbPurchase,
@@ -187,7 +140,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchaseReceive', ['purchaseReceive'])
+    ...mapGetters('purchaseReceive', ['purchaseReceive']),
+    ...mapGetters('auth', ['authUser'])
   },
   watch: {
     '$route' (to, from) {
@@ -198,7 +152,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions('purchaseReceive', ['find', 'delete']),
+    ...mapActions('purchaseReceive', {
+      find: 'find',
+      delete: 'delete',
+      cancellationApprove: 'cancellationApprove',
+      cancellationReject: 'cancellationReject'
+    }),
     purchaseReceiveRequest () {
       this.isLoading = true
       this.find({
@@ -208,11 +167,9 @@ export default {
           includes: 'supplier;' +
             'warehouse;' +
             'items.item.units;' +
-            'items.allocation;' +
-            'services.service;' +
-            'services.allocation;' +
-            'form.approvals.requestedBy;' +
-            'form.approvals.requestedTo'
+            'purchaseOrder.form;' +
+            'form.createdBy;' +
+            'form.branch'
         }
       }).then(response => {
         this.isLoading = false
@@ -221,18 +178,42 @@ export default {
         this.$notification.error(error.message)
       })
     },
-    onDelete () {
+    onDelete (reason) {
       this.isDeleting = true
       this.delete({
-        id: this.id
+        id: this.id,
+        data: {
+          reason: reason
+        }
       }).then(response => {
         this.isDeleting = false
         this.$notification.success('cancel success')
-        this.$router.push('/purchase/receive')
+        this.purchaseReceiveRequest()
       }).catch(error => {
         this.isDeleting = false
         this.$notification.error(error.message)
         this.form.errors.record(error.errors)
+      })
+    },
+    onCancellationApprove () {
+      this.cancellationApprove({
+        id: this.id
+      }).then(response => {
+        this.$notification.success('cancellation approved')
+        this.$router.push('/purchase/receive')
+      }).catch(error => {
+        this.$notification.error(error.message)
+      })
+    },
+    onCancellationReject (reason) {
+      this.cancellationReject({
+        id: this.id,
+        reason: reason
+      }).then(response => {
+        this.$notification.success('cancellation rejected')
+        this.purchaseReceiveRequest()
+      }).catch(error => {
+        this.$notification.error(error.message)
       })
     }
   },

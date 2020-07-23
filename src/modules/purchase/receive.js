@@ -6,7 +6,16 @@ const state = {
   purchaseReceive: {
     date: null,
     supplier_id: null,
-    form: {},
+    form: {
+      number: null,
+      notes: null,
+      created_by: {
+        name: null
+      },
+      request_approval_to: {
+        full_name: null
+      }
+    },
     supplier: {},
     warehouse: {},
     items: [
@@ -107,6 +116,26 @@ const actions = {
   delete (context, payload) {
     return new Promise((resolve, reject) => {
       api.delete(url + '/' + payload.id, payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationApprove (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-approve', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationReject (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-reject', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

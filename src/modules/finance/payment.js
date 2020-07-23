@@ -9,7 +9,8 @@ const state = {
     },
     payment_account: {
       label: null
-    }
+    },
+    details: []
   },
   payments: [],
   pagination: {}

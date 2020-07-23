@@ -3,7 +3,7 @@
     <form @submit.prevent="onSubmit">
       <sweet-modal
         ref="modal"
-        :title="$t('add item') | uppercase"
+        :title="$t('edit item') | uppercase"
         overlay-theme="dark"
         @close="onClose()">
         <div class="row">
@@ -83,7 +83,7 @@
             <hr>
 
             <span @click="$refs.itemGroupRef.open()" class="select-link">
-              {{ form.groups[0].name || $t('select') | uppercase }}
+              {{ form.groups.length > 0 ? form.groups[0].name : $t('select') | uppercase }}
             </span>
 
             <p-separator></p-separator>
@@ -104,7 +104,6 @@
                   style="float:left"
                   id="require-production-number"
                   name="require-production-number"
-                  @click.native="chooseProductionNumber()"
                   :checked="form.require_production_number"/>
               </div>
             </p-form-row>
@@ -117,7 +116,6 @@
                 <p-form-check-box
                   id="require-expiry-date"
                   name="require-expiry-date"
-                  @click.native="chooseExpiryDate()"
                   :checked="form.require_expiry_date"/>
               </div>
             </p-form-row>
@@ -170,21 +168,10 @@ export default {
     ...mapGetters('masterItem', ['item'])
   },
   methods: {
-    ...mapActions('masterItem', ['update']),
+    ...mapActions('masterItem', ['find', 'update']),
     onChoosenAccount (account) {
       this.form.chart_of_account_id = account.id
       this.form.chart_of_account_label = account.label
-    },
-    getItemCode () {
-      this.isLoading = true
-      this.get()
-        .then(response => {
-          this.isLoading = false
-          this.form.code = 'A' + response.next_id
-        }).catch(error => {
-          this.isLoading = false
-          this.$notification.error(error.message)
-        })
     },
     onUpdateItemUnit (units) {
       this.form.units = units
@@ -224,6 +211,17 @@ export default {
         this.form.id = item.id
         this.form.code = item.code
         this.form.name = item.name
+        this.form.barcode = item.barcode
+        this.form.size = item.size
+        this.form.color = item.color
+        this.form.weight = item.weight
+        this.form.notes = item.notes
+        this.form.taxable = item.taxable
+        this.form.stock = item.stock
+        this.form.stock_reminder = item.stock_reminder
+        this.form.unit_default = item.unit_default
+        this.form.unit_default_sales = item.unit_default_sales
+        this.form.unit_default_purchase = item.unit_default_purchase
         this.form.chart_of_account_id = item.chart_of_account_id
         this.form.chart_of_account_label = item.account.label
         this.form.units = item.units

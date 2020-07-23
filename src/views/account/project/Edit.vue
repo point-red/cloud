@@ -196,7 +196,7 @@ export default {
       var tzNames = this.$moment.tz.names()
       this.timezoneOptions = []
       for (var i in tzNames) {
-        let tz = '(GMT' + this.$moment.tz(tzNames[i]).format('Z') + ') ' + tzNames[i]
+        const tz = '(GMT' + this.$moment.tz(tzNames[i]).format('Z') + ') ' + tzNames[i]
         this.timezoneOptions.push({
           id: tzNames[i],
           label: tz

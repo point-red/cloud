@@ -106,12 +106,12 @@ export default {
         this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
-            'id': key['id'],
-            'label': key['name']
+            id: key.id,
+            label: key.name
           })
 
-          if (this.value == key['id']) {
-            this.mutableLabel = key['name']
+          if (this.value == key.id) {
+            this.mutableLabel = key.name
           }
         })
         this.isLoading = false

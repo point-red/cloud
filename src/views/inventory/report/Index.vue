@@ -44,12 +44,12 @@
             <tr slot="p-head">
               <th></th>
               <th></th>
-              <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">opening</th>
-              <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">in</th>
-              <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">out</th>
-              <th style="border: 1px solid #e4e7ed" colspan="2" class="text-center">ending</th>
+              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">opening</th>
+              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">in</th>
+              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">out</th>
+              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">ending</th>
             </tr>
-            <tr slot="p-head">
+            <!-- <tr slot="p-head">
               <th>#</th>
               <th>Item</th>
               <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th>
@@ -60,7 +60,7 @@
               <th style="border: 1px solid #e4e7ed" class="text-center">Value</th>
               <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th>
               <th style="border: 1px solid #e4e7ed" class="text-center">Value</th>
-            </tr>
+            </tr> -->
             <tr slot="p-body" v-for="(inventory, index) in inventories" :key="index">
               <th>{{ ((currentPage - 1) * limit) + index + 1 }}</th>
               <td>
@@ -76,13 +76,13 @@
                 </router-link>
               </td>
               <td class="text-right">{{ inventory.opening_balance | numberFormat }}</td>
-              <td class="text-right">{{ 0 | numberFormat }}</td>
+              <!-- <td class="text-right">{{ 0 | numberFormat }}</td> -->
               <td class="text-right">{{ inventory.stock_in | numberFormat }}</td>
-              <td class="text-right">{{ 0 | numberFormat }}</td>
+              <!-- <td class="text-right">{{ 0 | numberFormat }}</td> -->
               <td class="text-right">{{ inventory.stock_out | numberFormat }}</td>
-              <td class="text-right">{{ 0 | numberFormat }}</td>
+              <!-- <td class="text-right">{{ 0 | numberFormat }}</td> -->
               <td class="text-right">{{ inventory.ending_balance | numberFormat }}</td>
-              <td class="text-right">{{ 0 | numberFormat }}</td>
+              <!-- <td class="text-right">{{ 0 | numberFormat }}</td> -->
             </tr>
           </point-table>
         </p-block-inner>
@@ -124,7 +124,7 @@ export default {
     }
   },
   watch: {
-    'date': {
+    date: {
       handler: function () {
         this.$router.replace({
           query: {
@@ -160,8 +160,8 @@ export default {
           date_from: this.$route.query.date_from,
           date_to: this.$route.query.date_to,
           filter_like: {
-            'code': this.searchText,
-            'name': this.searchText
+            code: this.searchText,
+            name: this.searchText
           }
         }
       }).then(response => {

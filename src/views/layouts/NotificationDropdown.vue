@@ -65,10 +65,10 @@ export default {
             self.notifications = []
             querySnapshot.forEach(function (doc) {
               const data = {
-                'type': 'info',
-                'message': doc.data().message,
-                'clickAction': doc.data().clickAction,
-                'createdAt': doc.data().createdAt
+                type: 'info',
+                message: doc.data().message,
+                clickAction: doc.data().clickAction,
+                createdAt: doc.data().createdAt
               }
               self.notifications.push(data)
             })

@@ -229,7 +229,7 @@ export default {
     ...mapGetters('pluginPinPointSalesVisitationForm', ['forms', 'pagination'])
   },
   watch: {
-    'date': {
+    date: {
       handler: function () {
         this.$router.push({
           query: {

@@ -101,22 +101,13 @@ export default {
     findSupplier () {
       this.isLoading = true
       this.find({
-        id: this.id,
-        params: {
-          includes: 'addresses;phones;emails'
-        }
+        id: this.id
       }).then(response => {
         this.isLoading = false
         this.data.name = response.data.name
-        if (response.data.emails.length > 0) {
-          this.data.email = response.data.emails[0].email
-        }
-        if (response.data.addresses.length > 0) {
-          this.data.address = response.data.addresses[0].address
-        }
-        if (response.data.phones.length > 0) {
-          this.data.phone = response.data.phones[0].number
-        }
+        this.data.email = response.data.email
+        this.data.address = response.data.address
+        this.data.phone = response.data.phone
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)

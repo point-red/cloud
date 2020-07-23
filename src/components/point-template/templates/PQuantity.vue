@@ -51,7 +51,7 @@ export default {
     }
   },
   watch: {
-    'unit': {
+    unit: {
       handler: function (newValue) {
         this.mutableUnit.name = this.unit.name
         this.mutableUnit.label = this.unit.label

@@ -14,6 +14,13 @@
       active-class="btn-primary">
       <span>{{ $t('sales order') | uppercase }}</span>
     </router-link>
+    <router-link
+      to="/sales/report"
+      class="btn mr-5 mb-15"
+      :class="{'btn-secondary': !isMatch('/sales/report')}"
+      active-class="btn-primary">
+      <span>{{ $t('sales report') | uppercase }}</span>
+    </router-link>
     <!-- <router-link
       to="/sales/down-payment"
       class="btn mr-5 mb-15"

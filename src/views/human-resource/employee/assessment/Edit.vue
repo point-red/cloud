@@ -135,6 +135,12 @@
               <td></td>
             </tr>
           </p-table>
+          <p-form-row
+            :label="$t('comment')">
+            <div slot="body" class="col-lg-9 col-form-label">
+              <textarea class="form-control" v-model="form.comment" rows="3"></textarea>
+            </div>
+          </p-form-row>
 
           <div class="form-group row">
             <div class="col-md-12">
@@ -173,7 +179,6 @@ import TabMenu from '@/views/human-resource/TabMenu'
 
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
-import EmployeeWidget from '../EmployeeWidget'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -181,8 +186,7 @@ export default {
     AssignScoreModal,
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource,
-    EmployeeWidget
+    BreadcrumbHumanResource
   },
   data () {
     return {
@@ -190,6 +194,7 @@ export default {
       kpiId: this.$route.params.kpiId,
       form: new Form({
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        comment: null,
         template: {
           groups: []
         }
@@ -222,6 +227,7 @@ export default {
       (response) => {
         this.form.date = this.assessment.date
         this.form.template = this.assessment
+        this.form.comment = this.assessment.comment
         this.assignSelected()
         this.isLoading = false
       },
@@ -251,7 +257,7 @@ export default {
         for (var indicatorIndex in group.indicators) {
           var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex]
 
-          if (!indicator['automated_code']) {
+          if (!indicator.automated_code) {
             var score = indicator.scores.find(o => o.description === indicator.score_description && o.score === indicator.score && o.kpi_indicator_id === indicator.id)
             var scorePercentage = score.score / indicator.target * indicator.weight
 
@@ -264,12 +270,12 @@ export default {
     },
     removeScore (groupId, indicatorId) {
       // find index of template group
-      let groupIndex = this.form.template.groups
+      const groupIndex = this.form.template.groups
         .findIndex(o => o.indicators
           .find(o => o.id === indicatorId)
         )
       // find index of template indicator
-      let indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
+      const indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
       var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected
       var group = this.form.template.groups[groupIndex]
       var template = this.form.template
@@ -283,12 +289,12 @@ export default {
     },
     addedScore ({ indicatorId, score, notes }) {
       // find index of template group
-      let groupIndex = this.form.template.groups
+      const groupIndex = this.form.template.groups
         .findIndex(o => o.indicators
           .find(o => o.id === indicatorId)
         )
       // find index of template indicator
-      let indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
+      const indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicatorId)
       // add selected score to template indicator
       var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex]
       var group = this.form.template.groups[groupIndex]

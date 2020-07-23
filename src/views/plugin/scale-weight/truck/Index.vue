@@ -117,7 +117,6 @@
 
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
 import TabMenu from '../TabMenu'
@@ -126,7 +125,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     Breadcrumb,
-    BreadcrumbPlugin,
     PointTable,
     TabMenu
   },
@@ -185,18 +183,18 @@ export default {
           fields: 'scale_weight_trucks.*',
           sort_by: 'time_in',
           filter_like: {
-            'form_number': this.searchText,
-            'machine_code': this.searchText,
-            'vendor': this.searchText,
-            'driver': this.searchText,
-            'license_number': this.searchText
+            form_number: this.searchText,
+            machine_code: this.searchText,
+            vendor: this.searchText,
+            driver: this.searchText,
+            license_number: this.searchText
           },
           filter_null: 'deleted_at',
           filter_min: {
-            'time_in': this.serverDateTime(this.date_from, 'start')
+            time_in: this.serverDateTime(this.date_from, 'start')
           },
           filter_max: {
-            'time_in': this.serverDateTime(this.date_to, 'end')
+            time_in: this.serverDateTime(this.date_to, 'end')
           },
           limit: 10,
           page: this.currentPage

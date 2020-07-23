@@ -6,22 +6,22 @@
     </breadcrumb>
     <div class="row gutters-tiny">
       <p-box
-        v-if="$permission.has('read play book instructions')"
-        name="Instruction"
-        link="/plugin/play-book/instruction"
-        icon="fa fa-briefcase"/>
-      <p-box
-        v-if="$permission.has('read play book procedures code')"
+        v-if="$permission.has('read play book procedure')"
         name="Procedure"
         link="/plugin/play-book/procedure"
         icon="fa fa-list-ol"/>
       <p-box
-        v-if="$permission.has('read play book glossaries')"
+        v-if="$permission.has('read play book instruction')"
+        name="Instruction"
+        link="/plugin/play-book/instruction"
+        icon="fa fa-briefcase"/>
+      <p-box
+        v-if="$permission.has('read play book glossary')"
         name="Glossary"
         link="/plugin/play-book/glossary"
         icon="fa fa-font"/>
       <p-box
-        v-if="$permission.has('read play book instructions') || $permission.has('read play book procedures code')"
+        v-if="$permission.has('read play book instruction') || $permission.has('read play book procedure')"
         name="Aproval"
         link="/plugin/play-book/approval/procedure"
         icon="fa fa-check-square"/>

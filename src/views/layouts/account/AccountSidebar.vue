@@ -71,12 +71,6 @@
                   {{ userName }}
                 </a>
               </li>
-              <li class="list-inline-item">
-                |
-                <a href="/account/reward" class="link-effect text-dual-primary-dark">
-                  {{ balance || 0 }} <i class="si si-disc"></i>
-                </a>
-              </li>
             </ul>
           </div>
           <!-- END Visible only in normal mode -->
@@ -139,7 +133,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   props: {
@@ -157,11 +151,6 @@ export default {
       userName: localStorage.getItem('userName'),
       accountPage: '//' + process.env.VUE_APP_DOMAIN + '/account'
     }
-  },
-  computed: {
-    ...mapGetters('accountRewardToken', [
-      'balance'
-    ])
   },
   methods: {
     ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSidebarInverse'])

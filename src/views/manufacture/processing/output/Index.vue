@@ -174,11 +174,11 @@ export default {
           fields: 'manufacture_outputs.*',
           filter_form: 'active',
           filter_equal: {
-            'manufacture_process_id': this.id
+            manufacture_process_id: this.id
           },
           filter_like: {
             'form.number': this.searchText,
-            'name': this.searchText,
+            name: this.searchText,
             'finishedGoods.item.name': this.searchText,
             'finishedGoods.quantity': this.searchText
           },
@@ -193,14 +193,14 @@ export default {
           page: this.currentPage
         }
       }).then(response => {
-        for (let index in this.outputs) {
+        for (const index in this.outputs) {
           this.outputs[index].finished_goods_temporary = []
         }
-        for (let index in this.outputs) {
-          let output = this.outputs[index]
-          for (let finishGoodIndex in output.finished_goods) {
-            let finishGood = output.finished_goods[finishGoodIndex]
-            let finishGoodTemporaryIndex = this.outputs[index].finished_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
+        for (const index in this.outputs) {
+          const output = this.outputs[index]
+          for (const finishGoodIndex in output.finished_goods) {
+            const finishGood = output.finished_goods[finishGoodIndex]
+            const finishGoodTemporaryIndex = this.outputs[index].finished_goods_temporary.findIndex(o => o.item_id === finishGood.item_id && o.warehouse_id === finishGood.warehouse_id)
             var finishGoodTemporary
             if (finishGoodTemporaryIndex < 0) {
               finishGoodTemporary = Object.assign({}, finishGood)

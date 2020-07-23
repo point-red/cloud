@@ -39,13 +39,9 @@
                   </template>
                 </div>
                 <div>
-                  <h6 class="mb-0 ">{{ $t('to') | uppercase }}:</h6>
-                  <span @click="$refs.customer.open()" class="select-link">{{ form.customer_label || $t('select') | uppercase }}</span>
-                  <span style="font-size:10px">
-                    <br v-if="form.customer_address">{{ form.customer_address | uppercase }}
-                    <br v-if="form.customer_phone">{{ form.customer_phone }}
-                    <br v-if="form.customer_email">{{ form.customer_email | uppercase }}
-                  </span>
+                  <h6 class="mb-0 ">{{ $t('to') | uppercase }}: <span @click="$refs.customer.open()" class="select-link">{{ form.customer_label || $t('select') | uppercase }}</span></h6>
+                  <div v-if="form.customer_address"><i class="fa fa-home fa-fw"></i> {{ form.customer_address | uppercase }}</div>
+                  <div v-if="form.customer_phone"><i class="fa fa-phone fa-fw"></i> {{ form.customer_phone | uppercase }}</div>
                 </div>
               </div>
             </div>
@@ -198,20 +194,18 @@
     </form>
     <m-customer ref="customer" @choosen="chooseCustomer"/>
     <m-item ref="item" @choosen="chooseItem"/>
-    <m-user ref="approver" @choosen="chooseApprover"/>
+    <m-user ref="approver" @choosen="chooseApprover" permission="approve sales quotation"/>
     <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
   </div>
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
 import SalesMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSales from '@/views/sales/Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
-
 export default {
   components: {
     SalesMenu,
@@ -299,7 +293,7 @@ export default {
       })
     },
     toggleMore () {
-      let isMoreActive = this.form.items.some(function (el, index) {
+      const isMoreActive = this.form.items.some(function (el, index) {
         return el.more === false
       })
       this.form.items.forEach(element => {
@@ -332,7 +326,7 @@ export default {
         return
       }
 
-      let row = this.form.items[item.index]
+      const row = this.form.items[item.index]
       row.item_id = item.id
       row.item_name = item.name
       row.item_label = item.label
@@ -342,7 +336,7 @@ export default {
           row.unit = unit.label
           row.converter = unit.converter
           if (unit.prices.length > 0) {
-            let index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
+            const index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
             row.price = parseFloat(unit.prices[index].pivot.price)
             row.discount_value = parseFloat(unit.prices[index].pivot.discount_value)
             row.discount_percent = parseFloat(unit.prices[index].pivot.discount_percent)
@@ -363,14 +357,14 @@ export default {
       row.unit = unit.label
       row.converter = unit.converter
       if (unit.prices && unit.prices.length > 0) {
-        let index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
+        const index = unit.prices.findIndex(x => x.id === this.form.pricing_group_id)
         row.price = parseFloat(unit.prices[index].pivot.price)
         row.discount_value = parseFloat(unit.prices[index].pivot.discount_value)
         row.discount_percent = parseFloat(unit.prices[index].pivot.discount_percent)
       }
     },
     chooseAllocation (allocation) {
-      let row = this.form.items[allocation.index]
+      const row = this.form.items[allocation.index]
       row.allocation_id = allocation.id
       row.allocation_name = allocation.name
     },
@@ -380,30 +374,6 @@ export default {
       } else {
         this.form.type_of_tax = taxType
       }
-    },
-    chooseSalesRequest (salesRequest) {
-      this.salesRequest = salesRequest
-      this.form.sales_request_id = salesRequest.id
-      this.form.items = salesRequest.items.map(item => {
-        return {
-          sales_request_item_id: item.id,
-          item_id: item.item_id,
-          item_name: item.item.name,
-          item_label: item.item.name,
-          more: false,
-          unit: item.unit,
-          converter: item.converter,
-          quantity: item.quantity,
-          price: item.price,
-          discount_percent: 0,
-          discount_value: 0,
-          total: item.quantity * (item.price - item.discount_value),
-          allocation_id: item.allocation_id,
-          allocation_name: '', // TODO get alocation name
-          notes: item.notes
-        }
-      })
-      this.addItemRow()
     },
     onSubmit () {
       this.isSaving = true

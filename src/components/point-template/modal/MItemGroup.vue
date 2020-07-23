@@ -95,13 +95,13 @@ export default {
         this.options = []
         response.data.map((key, value) => {
           this.options.push({
-            'id': key['id'],
-            'name': key['name'],
-            'label': key['name']
+            id: key.id,
+            name: key.name,
+            label: key.name
           })
 
-          if (this.value == key['id']) {
-            this.mutableLabel = key['name']
+          if (this.value == key.id) {
+            this.mutableLabel = key.name
           }
         })
         this.isLoading = false

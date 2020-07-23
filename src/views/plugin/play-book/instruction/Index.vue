@@ -11,7 +11,7 @@
         <div class="input-group block mb-5">
           <button
             @click="$refs.modalAddInstruction.open()"
-            v-if="$permission.has('create play book instructions')"
+            v-if="$permission.has('create play book instruction')"
             class="btn btn-sm btn-light"
             :disabled="!!!form.procedure_id">
             ADD INSTRUCTION
@@ -19,7 +19,7 @@
           </button>
           <button
             @click="$refs.modalAddStep.open()"
-            v-if="$permission.has('create play book instructions')"
+            v-if="$permission.has('create play book instruction')"
             class="btn btn-sm btn-light ml-2"
             :disabled="!(form.procedure_id && form.instruction_id)">
             ADD STEP
@@ -54,13 +54,13 @@
               <div v-if="instruction">
                 <button
                   class="btn btn-light ml-2"
-                  v-if="$permission.has('edit play book instructions')"
+                  v-if="$permission.has('edit play book instruction')"
                   @click="$refs.modalEditInstruction.open()">
                   Edit
                 </button>
                 <button
                   class="btn btn-light ml-2"
-                  v-if="$permission.has('delete play book instructions')"
+                  v-if="$permission.has('delete play book instruction')"
                   @click="confirmDeleteInstruction">
                   Delete
                 </button>
