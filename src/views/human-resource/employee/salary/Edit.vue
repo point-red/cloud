@@ -861,17 +861,6 @@
 
             <tr slot="p-body">
               <td></td>
-              <td>{{ $t('active days / week') | titlecase }}</td>
-              <td><span class="">{{ active_days_percentage_week_1 | numberFormat }}</span></td>
-              <td><span class="">{{ active_days_percentage_week_2 | numberFormat }}</span></td>
-              <td><span class="">{{ active_days_percentage_week_3 | numberFormat }}</span></td>
-              <td><span class="">{{ active_days_percentage_week_4 | numberFormat }}</span></td>
-              <td><span class="">{{ active_days_percentage_week_5 | numberFormat }}</span></td>
-              <td><span class="font-w700">{{ active_days_percentage_total | numberFormat}}</span></td>
-            </tr>
-
-            <tr slot="p-body">
-              <td></td>
               <td>{{ $t('wa daily report') | titlecase }}</td>
               <td>
                 <span class="">
@@ -992,7 +981,6 @@ export default {
       active_days_percentage_week_3: 0,
       active_days_percentage_week_4: 0,
       active_days_percentage_week_5: 0,
-      active_days_percentage_total: 0,
       base_salary_week_1: 0,
       base_salary_week_2: 0,
       base_salary_week_3: 0,
@@ -1192,8 +1180,6 @@ export default {
           this.active_days_percentage_week_3 = percentageCallWeek3 * Number(this.form.salary.active_days_week3 || 0)
           this.active_days_percentage_week_4 = percentageCallWeek4 * Number(this.form.salary.active_days_week4 || 0)
           this.active_days_percentage_week_5 = percentageCallWeek5 * Number(this.form.salary.active_days_week5 || 0)
-
-          this.active_days_percentage_total = this.active_days_percentage_week_1 + this.active_days_percentage_week_2 + this.active_days_percentage_week_3 + this.active_days_percentage_week_4 + this.active_days_percentage_week_5
 
           this.base_salary_week_1 = baseSalaryPerWeek * this.active_days_percentage_week_1
           this.base_salary_week_2 = baseSalaryPerWeek * this.active_days_percentage_week_2
