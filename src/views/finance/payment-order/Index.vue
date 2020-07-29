@@ -299,8 +299,8 @@ export default {
           filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
           filter_like: {
             'form.number': this.searchText,
-            'form.notes': this.searchText,
-            'account.name': this.searchText
+            'form.notes': this.searchText
+            // 'account.name': this.searchText
           },
           // filter_polymorphic: {
           //   'paymentable.name': this.searchText

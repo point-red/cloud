@@ -248,6 +248,7 @@
     </form>
     <m-user
       ref="approver"
+      permission="approve manufacture formula"
       @choosen="chooseApprover"
     />
     <m-item
