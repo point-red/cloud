@@ -142,7 +142,9 @@
                     </router-link>
                   </th>
                   <td>{{ paymentOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                  <td>{{ paymentOrder.paymentable.name }}</td>
+                  <td>
+                    {{ paymentOrder.paymentable_name }}
+                  </td>
                   <td>{{ paymentOrderDetail.account.number }} - {{ paymentOrderDetail.account.alias }}</td>
                   <td>{{ paymentOrderDetail.notes }}</td>
                   <td class="text-right">
@@ -299,12 +301,10 @@ export default {
           filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
           filter_like: {
             'form.number': this.searchText,
-            'form.notes': this.searchText
-            // 'account.name': this.searchText
+            'form.notes': this.searchText,
+            'payment_order.paymentable_name': this.searchText,
+            'account.name': this.searchText
           },
-          // filter_polymorphic: {
-          //   'paymentable.name': this.searchText
-          // },
           filter_date_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
           },
