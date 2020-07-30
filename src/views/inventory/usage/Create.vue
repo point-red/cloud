@@ -51,10 +51,10 @@
               :is-horizontal="false"
             >
               <div slot="body">
-                <m-warehouse
-                  id="warehouse_id"
-                  v-model="form.warehouse_id"
-                />
+                <span
+                  class="select-link"
+                  @click="$refs.warehouse.open()"
+                >{{ warehouseName || $t('select') | uppercase }}</span>
               </div>
             </p-form-row>
             <hr>
@@ -86,17 +86,26 @@
                     {{ index + 1 }}
                   </th>
                   <td>
-                    <m-item
-                      :id="'item-' + index"
-                      v-model="row.item_id"
-                      @choosen="chooseItem($event, row)"
-                    />
+                    <span
+                      class="select-link"
+                      @click="$refs.item.open(index)"
+                    >
+                      {{ row.item_label || $t('select') | uppercase }}
+                    </span>
                   </td>
                   <td>
+                    <span
+                      class="select-link"
+                      @click="$refs.chartOfAccountRef.open(index)"
+                    >
+                      {{ row.chart_of_account_name || $t('select') | uppercase }}
+                    </span>
                     <m-chart-of-account
-                      :id="'chart-of-account-' + index"
-                      v-model="row.chart_of_account_id"
-                      type="direct expense;other expense;factory overhead cost"
+                      :id="'item-' + index"
+                      v-model="row.item_id"
+                      :data-index="index"
+                      :label="row.item_name"
+                      @choosen="chooseAccount($event, row)"
                     />
                   </td>
                   <td>
@@ -112,7 +121,6 @@
                       :id="'quantity' + index"
                       v-model="row.quantity"
                       :name="'quantity' + index"
-                      :disabled="row.item_id == null"
                       :item-id="row.item_id"
                       :units="row.units"
                       :unit="{
@@ -120,7 +128,10 @@
                         label: row.unit,
                         converter: row.converter
                       }"
+                      :max="row.quantity_pending * 1"
+                      :readonly="onClickUnit(row)"
                       @choosen="chooseUnit($event, row)"
+                      @click.native="onClickQuantity(row, index)"
                     />
                   </td>
                   <td>
@@ -147,13 +158,17 @@
                         name="allocation"
                         :label="$t('allocation')"
                       >
-                        <m-allocation
-                          :id="'allocation-' + index"
+                        <div
                           slot="body"
-                          v-model="row.allocation_id"
-                          class="mt-5"
-                          :v-if="row.item_id == null"
-                        />
+                          class="col-lg-9 mt-5"
+                        >
+                          <span
+                            class="select-link"
+                            @click="$refs.allocation.open(index)"
+                          >
+                            {{ row.allocation_name || $t('select') | uppercase }}
+                          </span>
+                        </div>
                       </p-form-row>
                     </td>
                     <td />
@@ -194,14 +209,11 @@
                 >
                   _______________
                 </div>
-                <m-user
-                  :id="'user'"
-                  v-model="form.request_approval_to"
-                  :errors="form.errors.get('request_approval_to')"
-                  @errors="form.errors.set('request_approval_to', null)"
-                  @choosen="chooseApprover"
-                />
-                {{ form.approver_email }} <br v-if="form.approver_email">
+                <span
+                  class="select-link"
+                  @click="$refs.approver.open()"
+                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
@@ -222,6 +234,34 @@
         </p-block>
       </div>
     </form>
+    <m-item
+      ref="item"
+      @choosen="chooseItem"
+    />
+    <m-inventory-out
+      :id="'inventory'"
+      ref="inventory"
+      :disable-unit-selection="true"
+      @updated="updateDna($event)"
+    />
+    <m-allocation
+      ref="allocation"
+      @choosen="chooseAllocation($event)"
+    />
+    <m-chart-of-account
+      ref="chartOfAccountRef"
+      @choosen="onChoosenAccount"
+    />
+    <m-warehouse
+      id="warehouse_id"
+      ref="warehouse"
+      @choosen="chooseWarehouse($event)"
+    />
+    <m-user
+      ref="approver"
+      :permission="'approve inventory usage'"
+      @choosen="chooseApprover"
+    />
   </div>
 </template>
 
@@ -243,11 +283,15 @@ export default {
       isSaving: false,
       requestedBy: localStorage.getItem('userName'),
       totalPrice: 0,
+      warehouseId: null,
+      warehouseName: null,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         warehouse_id: null,
         request_approval_to: null,
+        approver_name: null,
+        approver_email: null,
         notes: null,
         items: []
       })
@@ -266,10 +310,16 @@ export default {
       this.form.items.push({
         item_id: null,
         item_name: null,
+        item_label: null,
+        chart_of_account_id: null,
+        chart_of_account_name: null,
+        require_expiry_date: null,
+        require_production_number: null,
         unit: null,
         converter: null,
         quantity: null,
         allocation_id: null,
+        allocation_name: null,
         notes: null,
         more: false,
         units: [{
@@ -278,6 +328,23 @@ export default {
           converter: null
         }]
       })
+    },
+    chooseWarehouse (option) {
+      this.warehouseId = option.id
+      this.warehouseName = option.name
+      this.form.warehouse_id = option.id
+    },
+    onChoosenAccount (account) {
+      const row = this.form.items[account.index]
+      row.chart_of_account_id = account.id
+      row.chart_of_account_name = account.label
+    },
+    updateDna (e) {
+      console.log(e)
+      this.form.items[e.index].dna = e.dna
+      this.form.items[e.index].quantity = e.quantity
+      this.form.items[e.index].unit = e.unit
+      this.form.items[e.index].converter = e.converter
     },
     toggleMore () {
       const isMoreActive = this.form.items.some(function (el, index) {
@@ -295,12 +362,29 @@ export default {
         }
       })
     },
+    chooseAllocation (allocation) {
+      const row = this.form.items[allocation.index]
+      row.allocation_id = allocation.id
+      row.allocation_name = allocation.name
+    },
     chooseApprover (value) {
-      this.form.approver_name = value.label
+      this.form.request_approval_to = value.id
+      this.form.approver_name = value.fullName
       this.form.approver_email = value.email
     },
-    chooseItem (item, row) {
+    chooseItem (item) {
+      if (item.id == null) {
+        this.clearItem(item.index)
+        return
+      }
+
+      const row = this.form.items[item.index]
+      row.item = item
+      row.item_id = item.id
       row.item_name = item.name
+      row.item_label = item.label
+      row.require_production_number = item.require_production_number
+      row.require_expiry_date = item.require_expiry_date
       row.units = item.units
       row.units.forEach((unit, keyUnit) => {
         if (unit.id == item.unit_default_purchase) {
@@ -317,6 +401,19 @@ export default {
       if (isNeedNewRow) {
         this.addItemRow()
       }
+    },
+    onClickQuantity (row, index) {
+      if (row.require_expiry_date == 1 || row.require_production_number == 1) {
+        row.warehouse_id = this.warehouseId
+        row.index = index
+        this.$refs.inventory.open(row, row.quantity)
+      }
+    },
+    onClickUnit (row) {
+      if (row.item || row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
+        return true
+      }
+      return false
     },
     chooseUnit (unit, row) {
       row.unit = unit.label

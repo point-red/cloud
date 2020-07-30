@@ -126,7 +126,7 @@
             v-show="checkedRow.length > 0"
             class="mr-15 animated fadeIn"
           >
-            <button
+            <!-- <button
               type="button"
               class="btn btn-sm btn-secondary mr-5"
               @click="bulkCancel()"
@@ -153,7 +153,7 @@
               @click="bulkCancel()"
             >
               {{ $t('archive') | uppercase }}
-            </button>
+            </button> -->
           </span>
         </div>
         <hr>
@@ -163,7 +163,7 @@
               <th width="50px">
                 #
               </th>
-              <th width="50px" />
+              <!-- <th width="50px" /> -->
               <th>Form</th>
               <th>Date</th>
               <th>Item</th>
@@ -189,7 +189,7 @@
                     .{{ index2 + 1 }}
                   </template>
                 </th>
-                <td>
+                <!-- <td>
                   <p-form-check-box
                     id="check-box"
                     :is-form="false"
@@ -198,7 +198,7 @@
                     class="text-center"
                     @click.native="toggleCheckRow(inventoryUsage.id)"
                   />
-                </td>
+                </td> -->
                 <td>
                   <router-link :to="{ name: 'inventory.usage.show', params: { id: inventoryUsage.id }}">
                     {{ inventoryUsage.form.number }}

@@ -36,9 +36,9 @@
             </th>
           </tr>
           <tr
-            v-for="(option, index) in inventories"
+            v-for="(option, inventoryIndex) in inventories"
             slot="p-body"
-            :key="index"
+            :key="inventoryIndex"
           >
             <td v-if="mutableRequireExpiryDate">
               {{ option.expiry_date | dateFormat('DD MMMM YYYY') }}
@@ -48,9 +48,9 @@
             </td>
             <td class="text-right">
               <p-quantity
-                :id="'inventory-out-' + index"
+                :id="'inventory-out-' + inventoryIndex"
                 v-model="option.quantity"
-                :name="'inventory-out-' + index"
+                :name="'inventory-out-' + inventoryIndex"
                 :units="mutableItemUnits"
                 :unit="mutableItemUnit"
                 @input="calculate"
@@ -104,6 +104,7 @@ export default {
   },
   data () {
     return {
+      index: null,
       searchText: '',
       options: [],
       isLoading: false,
@@ -186,14 +187,14 @@ export default {
       this.calculate()
     },
     open (row) {
+      this.index = row.index
       if (!row.warehouse_id) {
         this.$alert.info('INPUT REQURED', this.$t('please select warehouse'))
         return
       }
 
-      if (!row.item) {
+      if (!row.item_id) {
         this.$alert.info('ITEM REQUIRED', this.$t('please select item'))
-        return
       }
 
       this.mutableRowId = row.row_id
@@ -213,10 +214,12 @@ export default {
     update () {
       this.calculate()
       this.$emit('updated', {
+        index: this.index,
         rowId: this.mutableRowId,
-        unit: this.mutableItemUnit,
+        unit: this.mutableItemUnit.name,
+        converter: this.mutableItemUnit.converter,
         dna: this.inventories,
-        totalQuantity: this.mutableTotalQuantity
+        quantity: this.mutableTotalQuantity
       })
       this.close()
     },

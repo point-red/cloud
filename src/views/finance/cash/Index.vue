@@ -71,7 +71,7 @@
                     </router-link>
                   </th>
                   <td>{{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                  <td>{{ payment.paymentable.name }}</td>
+                  <td>{{ payment.paymentable ? payment.paymentable.name : '' }}</td>
                   <td>{{ paymentDetail.chart_of_account.number }} - {{ paymentDetail.chart_of_account.alias }}</td>
                   <td>{{ paymentDetail.notes }}</td>
                   <td>{{ paymentDetail.allocation ? paymentDetail.allocation.name : '' }}</td>
