@@ -27,9 +27,24 @@
         :header="true"
       >
         <div class="text-right">
-          <a href="javascript:void(0)" class="btn btn-square btn-outline-secondary" :class="{ 'active': reportType == 'all' }" @click="chooseType('all')">All</a>
-          <a href="javascript:void(0)" class="btn btn-square btn-outline-secondary" :class="{ 'active': reportType == 'weekly' }" @click="chooseType('weekly')">Weekly</a>
-          <a href="javascript:void(0)" class="btn btn-square btn-outline-secondary" :class="{ 'active': reportType == 'monthly' }" @click="chooseType('monthly')">Monthly</a>
+          <a
+            href="javascript:void(0)"
+            class="btn btn-square btn-outline-secondary"
+            :class="{ 'active': reportType == 'all' }"
+            @click="chooseType('all')"
+          >All</a>
+          <a
+            href="javascript:void(0)"
+            class="btn btn-square btn-outline-secondary"
+            :class="{ 'active': reportType == 'weekly' }"
+            @click="chooseType('weekly')"
+          >Weekly</a>
+          <a
+            href="javascript:void(0)"
+            class="btn btn-square btn-outline-secondary"
+            :class="{ 'active': reportType == 'monthly' }"
+            @click="chooseType('monthly')"
+          >Monthly</a>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -47,7 +62,10 @@
             >
               <td>
                 <template v-if="reportType == 'all'">
-                  <router-link :to="{ name: 'humanResourceEmployeeSalaryShow', params: { id: employee.id, salaryId: salary.id }}" v-if="$permission.has('read employee salary')">
+                  <router-link
+                    v-if="$permission.has('read employee salary')"
+                    :to="{ name: 'humanResourceEmployeeSalaryShow', params: { id: employee.id, salaryId: salary.id }}"
+                  >
                     {{ salary.start_date | dateFormat('DD MMMM YYYY') }} - {{ salary.end_date | dateFormat('DD MMMM YYYY') }}
                   </router-link>
                   <template v-else>
@@ -77,19 +95,36 @@
                   </template>
                 </template>
               </td>
-              <td class="text-center">{{ salary.amount_received | numberFormat }}</td>
+              <td class="text-center">
+                {{ salary.amount_received | numberFormat }}
+              </td>
               <td class="text-right">
                 <router-link
-                  :to="{ path: '/human-resource/employee/' + employee.id + '/salary/' + salary.id + '/edit', params: { id: employee.id, kpiId: salary.id }}"
                   v-if="$permission.has('update employee salary') && reportType == 'all'"
-                  class="btn btn-sm btn-secondary">
-                  <i class="si si-note"></i> {{ $t('edit') | uppercase }}
+                  :to="{ path: '/human-resource/employee/' + employee.id + '/salary/' + salary.id + '/edit', params: { id: employee.id, kpiId: salary.id }}"
+                  class="btn btn-sm btn-secondary"
+                >
+                  <i class="si si-note" /> {{ $t('edit') | uppercase }}
                 </router-link>
-                <button :disabled="isExporting.includes(salary.id)" type="submit" class="btn btn-sm btn-primary" @click="exportData(salary.id)" style="margin-left:12px" v-if="$permission.has('print employee salary') && reportType == 'all'">
-                  <i v-show="isExporting.includes(salary.id)" class="fa fa-asterisk fa-spin" /> Export
+                <button
+                  v-if="$permission.has('print employee salary') && reportType == 'all'"
+                  :disabled="isExporting.includes(salary.id)"
+                  type="submit"
+                  class="btn btn-sm btn-primary"
+                  style="margin-left:12px"
+                  @click="exportData(salary.id)"
+                >
+                  <i
+                    v-show="isExporting.includes(salary.id)"
+                    class="fa fa-asterisk fa-spin"
+                  /> Export
                 </button>
                 &nbsp;
-                <i class="fa fa-close" v-show="$permission.has('delete employee salary') && reportType == 'all'" @click="deleteSalary(salary.id)"/>
+                <i
+                  v-show="$permission.has('delete employee salary') && reportType == 'all'"
+                  class="fa fa-close"
+                  @click="deleteSalary(salary.id)"
+                />
               </td>
             </tr>
           </p-table>
@@ -177,9 +212,9 @@ export default {
       export: 'export'
     }),
     getWeekOfMonth (date) {
-      let dateObject = new Date(date)
-      let adjustedDate = dateObject.getDate() + dateObject.getDay()
-      let prefixes = ['0', '1', '2', '3', '4', '5']
+      const dateObject = new Date(date)
+      const adjustedDate = dateObject.getDate() + dateObject.getDay()
+      const prefixes = ['0', '1', '2', '3', '4', '5']
       return (parseInt(prefixes[0 | adjustedDate / 7]) + 1)
     },
     chooseType (type) {

@@ -1,46 +1,57 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <span class="breadcrumb-item active">{{ $t('additional component') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addAdditionalComponent.open()"
             v-if="$permission.has('create employee salary additional component')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addAdditionalComponent.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
-              <th width="50%">{{ $t('name') }}</th>
-              <th width="40%">{{ $t('source') }}</th>
-              <th width="10%">{{ $t('weight') }}</th>
+              <th width="50px">
+                #
+              </th>
+              <th width="50%">
+                {{ $t('name') }}
+              </th>
+              <th width="40%">
+                {{ $t('source') }}
+              </th>
+              <th width="10%">
+                {{ $t('weight') }}
+              </th>
             </tr>
             <tr
               v-for="(additionalComponent, index) in additionalComponents"
               :key="index"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ (page - 1) * limit + index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'additional-component.show', params: { id: additionalComponent.id }}">
@@ -55,12 +66,15 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <m-add-additional-component ref="addAdditionalComponent" @added="onAdded"></m-add-additional-component>
+    <m-add-additional-component
+      ref="addAdditionalComponent"
+      @added="onAdded"
+    />
   </div>
 </template>
 
@@ -92,6 +106,15 @@ export default {
   computed: {
     ...mapGetters('humanResourceEmployeeAdditionalComponent', ['additionalComponents', 'pagination'])
   },
+  created () {
+    this.getAdditionalComponentRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('humanResourceEmployeeAdditionalComponent', {
       getAdditionalComponent: 'get'
@@ -106,8 +129,8 @@ export default {
         params: {
           sort_by: 'name',
           filter_like: {
-            'name': this.searchText,
-            'automated_code_name': this.searchText
+            name: this.searchText,
+            automated_code_name: this.searchText
           },
           limit: this.limit,
           page: this.page
@@ -129,15 +152,6 @@ export default {
       this.searchText = additionalComponent.name
       this.getAdditionalComponentRequest()
     }
-  },
-  created () {
-    this.getAdditionalComponentRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

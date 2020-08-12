@@ -4,9 +4,12 @@
       ref="modal"
       :title="$t('edit additional component') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <template v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </template>
       <template v-else>
         <div class="row">
@@ -19,26 +22,31 @@
               :label="$t('name')"
               name="name"
               :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"/>
+              @errors="form.errors.set('name', null)"
+            />
             <p-form-row
               id="weight"
-              name="weight"
               v-model="form.weight"
+              name="weight"
               :disabled="isSaving"
               :label="$t('weight')"
               :errors="form.errors.get('weight')"
-              @errors="form.errors.set('weight', null)">
-              <div slot="body" class="col-lg-9">
+              @errors="form.errors.set('weight', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-number
                   id="weight"
+                  v-model="form.weight"
                   name="weight"
                   :is-text-right="false"
-                  v-model="form.weight"
                   :disabled="isSaving"
                   :label="$t('weight')"
                   :errors="form.errors.get('weight')"
-                  @errors="form.errors.set('weight', null)">
-                </p-form-number>
+                  @errors="form.errors.set('weight', null)"
+                />
               </div>
             </p-form-row>
             <p-form-row
@@ -47,12 +55,21 @@
               v-model="form.automated_code_name"
               :label="$t('source')"
               name="automated-code-name"
-              readonly/>
+              readonly
+            />
           </div>
         </div>
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+            :disabled="isSaving"
+            @click="onSubmit"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('save') | uppercase }}
           </button>
         </div>
       </template>

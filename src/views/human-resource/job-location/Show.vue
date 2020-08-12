@@ -17,74 +17,95 @@
       <p-block>
         <div class="text-right">
           <button
-            type="button"
-            @click="$refs.addJobLocation.open()"
             v-if="$permission.has('create employee')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addJobLocation.open()"
+          >
             <span>{{ $t('create') | uppercase }}</span>
           </button>
           <button
-            type="button"
-            @click="$refs.editJobLocation.open(jobLocation)"
             v-if="$permission.has('update employee')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editJobLocation.open(jobLocation)"
+          >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete employee')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="jobLocation.name"
             label="Name"
             name="name"
-            v-model="jobLocation.name"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="base-salary"
             name="base-salary"
             :label="$t('area value')"
-            readonly>
-            <div slot="body" class="col-lg-9">
+            readonly
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <p-form-number
                 id="base-salary"
+                v-model="jobLocation.base_salary"
                 name="base-salary"
                 :is-text-right="false"
-                v-model="jobLocation.base_salary"
                 :disabled="true"
-                :label="$t('area value')">
-              </p-form-number>
+                :label="$t('area value')"
+              />
             </div>
           </p-form-row>
           <p-form-row
             id="multiplier-kpi"
             name="multiplier-kpi"
             :label="$t('multiplier kpi')"
-            readonly>
-            <div slot="body" class="col-lg-9">
+            readonly
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <p-form-number
                 id="multiplier-kpi"
+                v-model="jobLocation.multiplier_kpi"
                 name="multiplier-kpi"
                 :is-text-right="false"
-                v-model="jobLocation.multiplier_kpi"
                 :disabled="true"
-                :label="$t('multiplier kpi')">
-              </p-form-number>
+                :label="$t('multiplier kpi')"
+              />
             </div>
           </p-form-row>
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-job-location ref="addJobLocation" @added="onAddedJobLocation($event)"></m-add-job-location>
-    <m-edit-job-location ref="editJobLocation" @updated="onUpdatedJobLocation($event)"></m-edit-job-location>
+    <m-add-job-location
+      ref="addJobLocation"
+      @added="onAddedJobLocation($event)"
+    />
+    <m-edit-job-location
+      ref="editJobLocation"
+      @updated="onUpdatedJobLocation($event)"
+    />
   </div>
 </template>
 
@@ -93,15 +114,13 @@ import TabMenu from '@/views/human-resource/TabMenu'
 
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
-import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource,
-    PointTable
+    BreadcrumbHumanResource
   },
   data () {
     return {
@@ -114,6 +133,9 @@ export default {
   },
   computed: {
     ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocation'])
+  },
+  created () {
+    this.findJobLocation()
   },
   methods: {
     ...mapActions('humanResourceEmployeeJobLocation', ['find', 'delete']),
@@ -153,9 +175,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findJobLocation()
   }
 }
 </script>

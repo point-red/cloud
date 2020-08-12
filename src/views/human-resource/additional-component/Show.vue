@@ -1,75 +1,98 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
-      <router-link to="/human-resource/additional-component" class="breadcrumb-item">{{ $t('additional component') | uppercase }}</router-link>
+      <breadcrumb-human-resource />
+      <router-link
+        to="/human-resource/additional-component"
+        class="breadcrumb-item"
+      >
+        {{ $t('additional component') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ additionalComponent.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <button
-            type="button"
-            @click="$refs.addAdditionalComponent.open()"
             v-if="$permission.has('create employee salary additional component')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addAdditionalComponent.open()"
+          >
             <span>{{ $t('create') | uppercase }}</span>
           </button>
           <button
-            type="button"
-            @click="$refs.editAdditionalComponent.open(additionalComponent)"
             v-if="$permission.has('update employee salary additional component')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editAdditionalComponent.open(additionalComponent)"
+          >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete employee salary additional component')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="additionalComponent.name"
             label="Name"
             name="name"
-            v-model="additionalComponent.name"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="weight"
             name="weight"
             :label="$t('weight')"
-            readonly>
-            <div slot="body" class="col-lg-9">
+            readonly
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <p-form-number
                 id="weight"
+                v-model="additionalComponent.weight"
                 name="weight"
                 :is-text-right="false"
-                v-model="additionalComponent.weight"
                 :disabled="true"
-                :label="$t('weight')">
-              </p-form-number>
+                :label="$t('weight')"
+              />
             </div>
           </p-form-row>
           <p-form-row
             id="automated-code-name"
+            v-model="additionalComponent.automated_code_name"
             label="Source"
             name="automated-code-name"
-            v-model="additionalComponent.automated_code_name"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-additional-component ref="addAdditionalComponent" @added="onAddedAdditionalComponent($event)"></m-add-additional-component>
-    <m-edit-additional-component ref="editAdditionalComponent" @updated="onUpdatedAdditionalComponent($event)"></m-edit-additional-component>
+    <m-add-additional-component
+      ref="addAdditionalComponent"
+      @added="onAddedAdditionalComponent($event)"
+    />
+    <m-edit-additional-component
+      ref="editAdditionalComponent"
+      @updated="onUpdatedAdditionalComponent($event)"
+    />
   </div>
 </template>
 
@@ -78,15 +101,13 @@ import TabMenu from '@/views/human-resource/TabMenu'
 
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
-import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource,
-    PointTable
+    BreadcrumbHumanResource
   },
   data () {
     return {
@@ -99,6 +120,9 @@ export default {
   },
   computed: {
     ...mapGetters('humanResourceEmployeeAdditionalComponent', ['additionalComponent'])
+  },
+  created () {
+    this.findAdditionalComponent()
   },
   methods: {
     ...mapActions('humanResourceEmployeeAdditionalComponent', ['find', 'delete']),
@@ -138,9 +162,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findAdditionalComponent()
   }
 }
 </script>

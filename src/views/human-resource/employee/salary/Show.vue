@@ -334,106 +334,108 @@
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('area value') | titlecase }}</td>
               <td><span class="">Rp {{ salary.base_salary | numberFormat }}</span></td>
               <td><span class="">Rp {{ salary.base_salary | numberFormat }}</span></td>
               <td><span class="">Rp {{ salary.base_salary | numberFormat }}</span></td>
               <td><span class="">Rp {{ salary.base_salary | numberFormat }}</span></td>
               <td><span class="">Rp {{ salary.base_salary | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('area value per week') | titlecase }}</td>
               <td><span class="">{{ base_salary_week_1 | numberFormat }}</span></td>
               <td><span class="">{{ base_salary_week_2 | numberFormat }}</span></td>
               <td><span class="">{{ base_salary_week_3 | numberFormat }}</span></td>
               <td><span class="">{{ base_salary_week_4 | numberFormat }}</span></td>
               <td><span class="">{{ base_salary_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('daily transport') | titlecase }}</td>
               <td><span class="">{{ salary.daily_transport_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.daily_transport_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.daily_transport_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.daily_transport_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.daily_transport_allowance | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('real transport received') | titlecase }}</td>
               <td><span class="">{{ real_transport_allowance_week_1 | numberFormat }}</span></td>
               <td><span class="">{{ real_transport_allowance_week_2 | numberFormat }}</span></td>
               <td><span class="">{{ real_transport_allowance_week_3 | numberFormat }}</span></td>
               <td><span class="">{{ real_transport_allowance_week_4 | numberFormat }}</span></td>
               <td><span class="">{{ real_transport_allowance_week_5 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">{{ real_transport_allowance_total | numberFormat }}</span></td>
+              <td class="font-w700">
+                <span class="">{{ real_transport_allowance_total | numberFormat }}</span>
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('minimum component') | titlecase }}</td>
               <td><span class="">{{ minimum_component_amount_week_1 | numberFormat }}</span></td>
               <td><span class="">{{ minimum_component_amount_week_2 | numberFormat }}</span></td>
               <td><span class="">{{ minimum_component_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">{{ minimum_component_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">{{ minimum_component_amount_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('multiplier kpi') | titlecase }}</td>
               <td><span class="">{{ salary.multiplier_kpi | numberFormat }}</span></td>
               <td><span class="">{{ salary.multiplier_kpi | numberFormat }}</span></td>
               <td><span class="">{{ salary.multiplier_kpi | numberFormat }}</span></td>
               <td><span class="">{{ salary.multiplier_kpi | numberFormat }}</span></td>
               <td><span class="">{{ salary.multiplier_kpi | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('multiplier kpi (weekly result)') | titlecase }}</td>
               <td><span class="">{{ multiplier_kpi_week_1 | numberFormat }}</span></td>
               <td><span class="">{{ multiplier_kpi_week_2 | numberFormat }}</span></td>
               <td><span class="">{{ multiplier_kpi_week_3 | numberFormat }}</span></td>
               <td><span class="">{{ multiplier_kpi_week_4 | numberFormat }}</span></td>
               <td><span class="">{{ multiplier_kpi_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('additional point') | titlecase }}</td>
               <td><span class="">{{ additional_component_point_week_1 | numberFormat }}</span></td>
               <td><span class="">{{ additional_component_point_week_2 | numberFormat }}</span></td>
               <td><span class="">{{ additional_component_point_week_3 | numberFormat }}</span></td>
               <td><span class="">{{ additional_component_point_week_4 | numberFormat }}</span></td>
               <td><span class="">{{ additional_component_point_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('additional component') | titlecase }}</td>
               <td><span class="">{{ additional_component_amount_week_1 | numberFormat }}</span></td>
               <td><span class="">{{ additional_component_amount_week_2 | numberFormat }}</span></td>
               <td><span class="">{{ additional_component_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">{{ additional_component_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">{{ additional_component_amount_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('total amount') | titlecase }}</td>
               <td><span class="">{{ total_component_amount_week_1 | numberFormat }}</span></td>
               <td><span class="">{{ total_component_amount_week_2 | numberFormat }}</span></td>
@@ -444,36 +446,54 @@
             </tr>
 
             <tr slot="p-body">
-              <td></td>
-              <td class="font-size-h6 font-w700">{{ $t('total amount with allowance') | titlecase }}</td>
-              <td class="font-w700"><span class="">{{ total_amount_received_week_1 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">{{ total_amount_received_week_2 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">{{ total_amount_received_week_3 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">{{ total_amount_received_week_4 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">{{ total_amount_received_week_5 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_received | numberFormat }}</span></td>
+              <td />
+              <td class="font-size-h6 font-w700">
+                {{ $t('total amount with allowance') | titlecase }}
+              </td>
+              <td class="font-w700">
+                <span class="">{{ total_amount_received_week_1 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ total_amount_received_week_2 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ total_amount_received_week_3 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ total_amount_received_week_4 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ total_amount_received_week_5 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_received | numberFormat }}</span>
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('receivable cut > 60 days') | titlecase }}</td>
               <td>{{ salary.receivable_cut_60_days_week1 | numberFormat }}</td>
               <td>{{ salary.receivable_cut_60_days_week2 | numberFormat }}</td>
               <td>{{ salary.receivable_cut_60_days_week3 | numberFormat }}</td>
               <td>{{ salary.receivable_cut_60_days_week4 | numberFormat }}</td>
               <td>{{ salary.receivable_cut_60_days_week5 | numberFormat }}</td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
-              <td class="font-size-h6 font-w700">{{ $t('total amount received') | titlecase }}</td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_received | numberFormat }}</span></td>
+              <td />
+              <td class="font-size-h6 font-w700">
+                {{ $t('total amount received') | titlecase }}
+              </td>
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_received | numberFormat }}</span>
+              </td>
             </tr>
 
             <tr slot="p-body">
@@ -484,7 +504,7 @@
               <td><span class="">{{ company_profit_week_3 | numberFormat }}</span></td>
               <td><span class="">{{ company_profit_week_4 | numberFormat }}</span></td>
               <td><span class="">{{ company_profit_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
@@ -495,7 +515,7 @@
               <td>{{ salary.overdue_receivable_week3 | numberFormat }}</td>
               <td>{{ salary.overdue_receivable_week4 | numberFormat }}</td>
               <td>{{ salary.overdue_receivable_week5 | numberFormat }}</td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
@@ -506,7 +526,7 @@
               <td>{{ salary.payment_from_marketing_week3 | numberFormat }}</td>
               <td>{{ salary.payment_from_marketing_week4 | numberFormat }}</td>
               <td>{{ salary.payment_from_marketing_week5 | numberFormat }}</td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
@@ -517,7 +537,7 @@
               <td>{{ salary.payment_from_sales_week3 | numberFormat }}</td>
               <td>{{ salary.payment_from_sales_week4 | numberFormat }}</td>
               <td>{{ salary.payment_from_sales_week5 | numberFormat }}</td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
@@ -528,7 +548,7 @@
               <td>{{ salary.payment_from_spg_week3 | numberFormat }}</td>
               <td>{{ salary.payment_from_spg_week4 | numberFormat }}</td>
               <td>{{ salary.payment_from_spg_week5 | numberFormat }}</td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
@@ -565,25 +585,25 @@
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('communication allowance') | titlecase }}</td>
               <td><span class="">{{ salary.communication_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.communication_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.communication_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.communication_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.communication_allowance | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('functional allowance') | titlecase }}</td>
               <td><span class="">{{ salary.functional_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.functional_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.functional_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.functional_allowance | numberFormat }}</span></td>
               <td><span class="">{{ salary.functional_allowance | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
@@ -755,9 +775,9 @@ export default {
       findEmployeeSalary: 'find'
     }),
     getWeekOfMonth (date) {
-      let dateObject = new Date(date)
-      let adjustedDate = dateObject.getDate() + dateObject.getDay()
-      let prefixes = ['0', '1', '2', '3', '4', '5']
+      const dateObject = new Date(date)
+      const adjustedDate = dateObject.getDate() + dateObject.getDay()
+      const prefixes = ['0', '1', '2', '3', '4', '5']
       return (parseInt(prefixes[0 | adjustedDate / 7]) + 1)
     },
     calculate () {
@@ -770,15 +790,15 @@ export default {
       this.salary.active_days_in_month = this.salary.active_days_in_month || 0
 
       if (Number(this.salary.active_days_in_month) != 0) {
-        let baseSalaryPerWeek = (this.salary.active_days_in_month || 0) != 0 ? (this.salary.base_salary || 0) / Number(this.salary.active_days_in_month || 0) : 0
-        let baseMultiplierKpiPerWeek = (this.salary.active_days_in_month || 0) != 0 ? (this.salary.multiplier_kpi || 0) / Number(this.salary.active_days_in_month || 0) : 0
+        const baseSalaryPerWeek = (this.salary.active_days_in_month || 0) != 0 ? (this.salary.base_salary || 0) / Number(this.salary.active_days_in_month || 0) : 0
+        const baseMultiplierKpiPerWeek = (this.salary.active_days_in_month || 0) != 0 ? (this.salary.multiplier_kpi || 0) / Number(this.salary.active_days_in_month || 0) : 0
 
         if (this.additionalData.score_percentages_assessments.length != 0) {
-          let percentageCallWeek1 = (Number(this.additionalData.score_percentages_assessments[0].week1 || 0)) / 100
-          let percentageCallWeek2 = (Number(this.additionalData.score_percentages_assessments[0].week2 || 0)) / 100
-          let percentageCallWeek3 = (Number(this.additionalData.score_percentages_assessments[0].week3 || 0)) / 100
-          let percentageCallWeek4 = (Number(this.additionalData.score_percentages_assessments[0].week4 || 0)) / 100
-          let percentageCallWeek5 = (Number(this.additionalData.score_percentages_assessments[0].week5 || 0)) / 100
+          const percentageCallWeek1 = (Number(this.additionalData.score_percentages_assessments[0].week1 || 0)) / 100
+          const percentageCallWeek2 = (Number(this.additionalData.score_percentages_assessments[0].week2 || 0)) / 100
+          const percentageCallWeek3 = (Number(this.additionalData.score_percentages_assessments[0].week3 || 0)) / 100
+          const percentageCallWeek4 = (Number(this.additionalData.score_percentages_assessments[0].week4 || 0)) / 100
+          const percentageCallWeek5 = (Number(this.additionalData.score_percentages_assessments[0].week5 || 0)) / 100
 
           this.active_days_percentage_week_1 = percentageCallWeek1 * Number(this.salary.active_days_week1 || 0)
           this.active_days_percentage_week_2 = percentageCallWeek2 * Number(this.salary.active_days_week2 || 0)

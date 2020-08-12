@@ -17,42 +17,55 @@
       <p-block>
         <div class="text-right">
           <button
-            type="button"
-            @click="$refs.addEmployeeStatus.open()"
             v-if="$permission.has('create employee')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addEmployeeStatus.open()"
+          >
             <span>{{ $t('create') | uppercase }}</span>
           </button>
           <button
-            type="button"
-            @click="$refs.editEmployeeStatus.open(status)"
             v-if="$permission.has('update employee')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editEmployeeStatus.open(status)"
+          >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete employee')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="status.name"
             label="Name"
             name="name"
-            v-model="status.name"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-employee-status ref="addEmployeeStatus" @added="onAddedEmployeeStatus($event)"></m-add-employee-status>
-    <m-edit-employee-status ref="editEmployeeStatus" @updated="onUpdatedEmployeeStatus($event)"></m-edit-employee-status>
+    <m-add-employee-status
+      ref="addEmployeeStatus"
+      @added="onAddedEmployeeStatus($event)"
+    />
+    <m-edit-employee-status
+      ref="editEmployeeStatus"
+      @updated="onUpdatedEmployeeStatus($event)"
+    />
   </div>
 </template>
 
@@ -61,15 +74,13 @@ import TabMenu from '@/views/human-resource/TabMenu'
 
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
-import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource,
-    PointTable
+    BreadcrumbHumanResource
   },
   data () {
     return {
@@ -82,6 +93,9 @@ export default {
   },
   computed: {
     ...mapGetters('humanResourceEmployeeStatus', ['status'])
+  },
+  created () {
+    this.findEmployeeStatus()
   },
   methods: {
     ...mapActions('humanResourceEmployeeStatus', ['find', 'delete']),
@@ -121,9 +135,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findEmployeeStatus()
   }
 }
 </script>

@@ -3,7 +3,6 @@
     <breadcrumb>
       <breadcrumb-human-resource />
       <span class="breadcrumb-item active">{{ $t('job location') | uppercase }}</span>
-
     </breadcrumb>
 
     <tab-menu />
@@ -12,11 +11,11 @@
       <p-block>
         <div class="input-group block">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addJobLocation.open()"
             v-if="$permission.has('create employee')"
+            href="javascript:void(0)"
             to="/human-resource/job-location/create"
             class="input-group-prepend"
+            @click="$refs.addJobLocation.open()"
           >
             <span class="input-group-text">
               <i class="fa fa-plus" />
@@ -36,23 +35,32 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
-              <th width="33%">{{ $t('name') }}</th>
-              <th width="33%">{{ $t('area value') }}</th>
-              <th width="33%">{{ $t('multiplier kpi') }}</th>
+              <th width="50px">
+                #
+              </th>
+              <th width="33%">
+                {{ $t('name') }}
+              </th>
+              <th width="33%">
+                {{ $t('area value') }}
+              </th>
+              <th width="33%">
+                {{ $t('multiplier kpi') }}
+              </th>
             </tr>
             <tr
               v-for="(jobLocation, index) in jobLocations"
               :key="index"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ (page - 1) * limit + index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'job-location.show', params: { id: jobLocation.id }}">
                   {{ jobLocation.name }}
                 </router-link>
               </td>
-                <td>{{ jobLocation.base_salary | numberFormat }}</td>
-                <td>{{ jobLocation.multiplier_kpi | numberFormat }}</td>
+              <td>{{ jobLocation.base_salary | numberFormat }}</td>
+              <td>{{ jobLocation.multiplier_kpi | numberFormat }}</td>
             </tr>
           </point-table>
         </p-block-inner>
@@ -64,7 +72,10 @@
       </p-block>
     </div>
 
-    <m-add-job-location ref="addJobLocation" @added="onAdded"></m-add-job-location>
+    <m-add-job-location
+      ref="addJobLocation"
+      @added="onAdded"
+    />
   </div>
 </template>
 

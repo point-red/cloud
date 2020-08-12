@@ -4,7 +4,8 @@
       ref="modal"
       :title="$t('add additional component') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <div class="row">
         <div class="col-sm-12">
           <p-form-row
@@ -15,33 +16,42 @@
             :label="$t('name')"
             name="name"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)"/>
+            @errors="form.errors.set('name', null)"
+          />
           <p-form-row
             id="weight"
-            name="weight"
             v-model="form.weight"
+            name="weight"
             :disabled="isSaving"
             :label="$t('weight')"
             :errors="form.errors.get('weight')"
-            @errors="form.errors.set('weight', null)">
-            <div slot="body" class="col-lg-9">
+            @errors="form.errors.set('weight', null)"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <p-form-number
                 id="weight"
+                v-model="form.weight"
                 name="weight"
                 :is-text-right="false"
-                v-model="form.weight"
                 :disabled="isSaving"
                 :label="$t('weight')"
                 :errors="form.errors.get('weight')"
-                @errors="form.errors.set('weight', null)">
-              </p-form-number>
+                @errors="form.errors.set('weight', null)"
+              />
             </div>
           </p-form-row>
           <p-form-row
             id="automated-code"
             name="automated-code"
-            label="Source">
-            <div slot="body" class="col-form-label col-lg-9">
+            label="Source"
+          >
+            <div
+              slot="body"
+              class="col-form-label col-lg-9"
+            >
               <p-select-modal
                 id="automated-code"
                 :title="'select source'"
@@ -49,14 +59,23 @@
                 :choosen="form.automated_code"
                 :options="automatedCodeOptions"
                 @choosen="chooseAutomatedCode"
-                @search="searchAutomatedCode"/>
+                @search="searchAutomatedCode"
+              />
             </div>
           </p-form-row>
         </div>
       </div>
       <div class="pull-right">
-        <button type="submit" class="btn btn-sm btn-primary text-right" :disabled="isSaving" @click="onSubmit">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+        <button
+          type="submit"
+          class="btn btn-sm btn-primary text-right"
+          :disabled="isSaving"
+          @click="onSubmit"
+        >
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          /> {{ $t('save') | uppercase }}
         </button>
       </div>
     </sweet-modal>
@@ -79,19 +98,22 @@ export default {
         automated_code_name: null
       }),
       automatedCodeOptionsTemplate: [
-          { id: 'balance', label: 'Balance SKU Area' },
-          { id: 'achievement_national_call', label: '%C National Achievement' },
-          { id: 'achievement_national_effective_call', label: '%EC National Achievement' },
-          { id: 'achievement_national_value', label: '%Value National Achievement' },
-          { id: 'achievement_area_call', label: '%C Area Achievement' },
-          { id: 'achievement_area_effective_call', label: '%EC Area Achievement' },
-          { id: 'achievement_area_value', label: '%Value Area Achievement' }
+        { id: 'balance', label: 'Balance SKU Area' },
+        { id: 'achievement_national_call', label: '%C National Achievement' },
+        { id: 'achievement_national_effective_call', label: '%EC National Achievement' },
+        { id: 'achievement_national_value', label: '%Value National Achievement' },
+        { id: 'achievement_area_call', label: '%C Area Achievement' },
+        { id: 'achievement_area_effective_call', label: '%EC Area Achievement' },
+        { id: 'achievement_area_value', label: '%Value Area Achievement' }
       ],
       automatedCodeOptions: []
     }
   },
   computed: {
     ...mapGetters('humanResourceEmployeeAdditionalComponent', ['additionalComponent'])
+  },
+  created () {
+    this.getAvailableAutomatedCode()
   },
   methods: {
     ...mapActions('humanResourceEmployeeAdditionalComponent', ['create']),
@@ -153,9 +175,6 @@ export default {
     close () {
       this.$refs.modal.close()
     }
-  },
-  created () {
-    this.getAvailableAutomatedCode()
   }
 }
 </script>

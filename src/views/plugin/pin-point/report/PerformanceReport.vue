@@ -27,11 +27,20 @@
         </p-form-row>
         <p-form-row
           id="branch"
+          v-model="branch"
           name="branch"
           :label="$t('branch')"
-          v-model="branch">
-          <div class="col-lg-9" slot="body">
-            <span @click="$refs.branch.open()" class="select-link">{{ branchName || $t('select') | uppercase }}</span>
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.branch.open()"
+            >
+              {{ branchName || $t('select') | uppercase }}
+            </span>
           </div>
         </p-form-row>
         <p-form-row>
@@ -294,17 +303,71 @@
                 </td>
               </tr>
               <tr slot="p-body">
-                <td class="text-center" colspan="2">{{ $t('total') | titlecase }}</td>
-                <td class="text-center" :class="{'bg-success text-white': isColorful}">{{ dataSet.totals.target_call || 0 }}</td>
-                <td class="text-center" :class="{'bg-success text-white': isColorful}">{{ dataSet.totals.target_effective_call || 0 }}</td>
-                <td class="text-center" :class="{'bg-success text-white': isColorful}">{{ dataSet.totals.target_value || 0 | numberFormat }}</td>
-                <td class="text-center" :class="{'bg-danger text-white': isColorful}">{{ dataSet.totals.call || 0 }}</td>
-                <td class="text-center" :class="{'bg-danger text-white': isColorful}">{{ dataSet.totals.effective_call || 0 }}</td>
-                <td class="text-center" :class="{'bg-danger text-white': isColorful}">{{ dataSet.totals.value || 0 | numberFormat }}</td>
-                <td class="text-center" :class="{'bg-primary text-white': isColorful}">{{ percentage(dataSet.totals.call, dataSet.totals.target_call) | numberFormat }}%</td>
-                <td class="text-center" :class="{'bg-primary text-white': isColorful}">{{ percentage(dataSet.totals.effective_call, dataSet.totals.target_effective_call) | numberFormat }}%</td>
-                <td class="text-center" :class="{'bg-primary text-white': isColorful}">{{ dataSet.totals.value / dataSet.totals.target_value * 100 | numberFormat }}%</td>
-                <td class="text-center" v-for="(item, index) in items" :key="index">
+                <td
+                  class="text-center"
+                  colspan="2"
+                >
+                  {{ $t('total') | titlecase }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-success text-white': isColorful}"
+                >
+                  {{ dataSet.totals.target_call || 0 }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-success text-white': isColorful}"
+                >
+                  {{ dataSet.totals.target_effective_call || 0 }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-success text-white': isColorful}"
+                >
+                  {{ dataSet.totals.target_value || 0 | numberFormat }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-danger text-white': isColorful}"
+                >
+                  {{ dataSet.totals.call || 0 }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-danger text-white': isColorful}"
+                >
+                  {{ dataSet.totals.effective_call || 0 }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-danger text-white': isColorful}"
+                >
+                  {{ dataSet.totals.value || 0 | numberFormat }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-primary text-white': isColorful}"
+                >
+                  {{ percentage(dataSet.totals.call, dataSet.totals.target_call) | numberFormat }}%
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-primary text-white': isColorful}"
+                >
+                  {{ percentage(dataSet.totals.effective_call, dataSet.totals.target_effective_call) | numberFormat }}%
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-primary text-white': isColorful}"
+                >
+                  {{ dataSet.totals.value / dataSet.totals.target_value * 100 | numberFormat }}%
+                </td>
+                <td
+                  v-for="(item, index) in items"
+                  :key="index"
+                  class="text-center"
+                >
                   {{ getItemSoldQty(item.id, dataSet.totals.items) | numberFormat }}
                 </td>
               </tr>
@@ -413,7 +476,7 @@ export default {
       this.export({
         date_from: this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'),
         date_to: this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'),
-          branch_id: this.branchId
+        branch_id: this.branchId
       }).then(response => {
         this.isExporting = false
         this.downloadFiles = response.data.files

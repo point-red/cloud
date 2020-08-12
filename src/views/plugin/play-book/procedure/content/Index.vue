@@ -1,9 +1,9 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
-      <breadcrumb-procedure></breadcrumb-procedure>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
+      <breadcrumb-procedure />
       <span class="breadcrumb-item active">{{ 'Content' | uppercase }}</span>
     </breadcrumb>
 
@@ -11,34 +11,51 @@
       <p-block>
         <div class="input-group block mb-5">
           <a
-            href="javascript:void(0)"
-            @click="$refs.modalAddProcedure.open()"
             v-if="$permission.has('create play book procedures code')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.modalAddProcedure.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <div class="text-center font-size-sm mb-10">
-          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          <a
+            href="javascript:void(0)"
+            @click="isAdvanceFilter = !isAdvanceFilter"
+          >
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div
+          v-show="isAdvanceFilter"
+          class="card"
+          :class="{ 'fadeIn': isAdvanceFilter }"
+        >
           <div class="row justify-content-center">
             <div class="col-sm-3 text-center">
-              <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
+              <p-form-row
+                id="status"
+                name="status"
+                :label="$t('status')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <span @click="$refs.status.open({ id: statusId, label: statusLabel })" class="select-link">
+                  <span
+                    class="select-link"
+                    @click="$refs.status.open({ id: statusId, label: statusLabel })"
+                  >
                     {{ statusLabel || $t('select') | uppercase }}
                   </span>
                 </div>
@@ -50,24 +67,28 @@
         <p-block-inner :is-loading="isLoading">
           <procedure-code-item
             v-for="(procedure, i) in procedures"
-            :i="(++i) + ((page - 1) * limit)"
             :key="procedure.id"
+            :i="(++i) + ((page - 1) * limit)"
             :procedure="procedure"
             :with-add-button="true"
             @added="$router.push('/plugin/play-book/approval/procedure/send')"
-            ></procedure-code-item>
+          />
         </p-block-inner>
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
-    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
+    <m-status
+      ref="status"
+      @choosen="onChoosenStatus"
+    />
     <m-add-procedure
       ref="modalAddProcedure"
-      @added="$router.push('/plugin/play-book/approval/procedure/send')"></m-add-procedure>
+      @added="$router.push('/plugin/play-book/approval/procedure/send')"
+    />
   </div>
 </template>
 

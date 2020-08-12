@@ -4,9 +4,12 @@
       ref="modal"
       :title="$t('edit job location') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <template v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </template>
       <template v-else>
         <div class="row">
@@ -19,54 +22,71 @@
               :label="$t('name')"
               name="name"
               :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"/>
+              @errors="form.errors.set('name', null)"
+            />
             <p-form-row
               id="base-salary"
-              name="base-salary"
               v-model="form.base_salary"
+              name="base-salary"
               :disabled="isSaving"
               :label="$t('area value')"
               :errors="form.errors.get('base_salary')"
-              @errors="form.errors.set('base_salary', null)">
-              <div slot="body" class="col-lg-9">
+              @errors="form.errors.set('base_salary', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-number
                   id="base-salary"
+                  v-model="form.base_salary"
                   name="base-salary"
                   :is-text-right="false"
-                  v-model="form.base_salary"
                   :disabled="isSaving"
                   :label="$t('area value')"
                   :errors="form.errors.get('base_salary')"
-                  @errors="form.errors.set('base_salary', null)">
-                </p-form-number>
+                  @errors="form.errors.set('base_salary', null)"
+                />
               </div>
             </p-form-row>
             <p-form-row
               id="multiplier-kpi"
-              name="multiplier-kpi"
               v-model="form.multiplier_kpi"
+              name="multiplier-kpi"
               :disabled="isSaving"
               :label="$t('multiplier kpi')"
               :errors="form.errors.get('multiplier_kpi')"
-              @errors="form.errors.set('multiplier_kpi', null)">
-              <div slot="body" class="col-lg-9">
+              @errors="form.errors.set('multiplier_kpi', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-number
                   id="multiplier-kpi"
+                  v-model="form.multiplier_kpi"
                   name="multiplier-kpi"
                   :is-text-right="false"
-                  v-model="form.multiplier_kpi"
                   :disabled="isSaving"
                   :label="$t('multiplier kpi')"
                   :errors="form.errors.get('multiplier_kpi')"
-                  @errors="form.errors.set('multiplier_kpi', null)">
-                </p-form-number>
+                  @errors="form.errors.set('multiplier_kpi', null)"
+                />
               </div>
             </p-form-row>
           </div>
         </div>
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+            :disabled="isSaving"
+            @click="onSubmit"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('save') | uppercase }}
           </button>
         </div>
       </template>

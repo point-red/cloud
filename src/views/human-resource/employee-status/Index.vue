@@ -11,11 +11,11 @@
       <p-block>
         <div class="input-group block">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addEmployeeStatus.open()"
             v-if="$permission.has('create employee')"
+            href="javascript:void(0)"
             to="/human-resource/employee-status/create"
             class="input-group-prepend"
+            @click="$refs.addEmployeeStatus.open()"
           >
             <span class="input-group-text">
               <i class="fa fa-plus" />
@@ -35,13 +35,16 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Name</th>
             </tr>
             <tr
               v-for="(status, index) in statuses"
               :key="index"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ (page - 1) * limit + index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'employee-status.show', params: { id: status.id }}">
@@ -59,7 +62,10 @@
       </p-block>
     </div>
 
-    <m-add-employee-status ref="addEmployeeStatus" @added="onAdded"></m-add-employee-status>
+    <m-add-employee-status
+      ref="addEmployeeStatus"
+      @added="onAdded"
+    />
   </div>
 </template>
 
