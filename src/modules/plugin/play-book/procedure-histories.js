@@ -43,7 +43,7 @@ const actions = {
     commit('SET_PROCEDURE', null)
     commit('SET_HISTORIES', [])
 
-    let { procedure, histories } = await api.get(url(procedureId), {
+    const { procedure, histories } = await api.get(url(procedureId), {
       params
     })
 
@@ -54,7 +54,7 @@ const actions = {
     commit('SET_PAGINATION', pagination)
   },
   async show ({ commit }, id) {
-    let { procedure } = await api.get(`${url}/${id}`)
+    const { procedure } = await api.get(`${url}/${id}`)
 
     return procedure
   },

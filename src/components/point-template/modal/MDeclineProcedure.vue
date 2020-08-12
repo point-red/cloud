@@ -4,25 +4,34 @@
       ref="modal"
       :title="$t('decline procedure') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <div class="row">
         <div class="col-sm-12">
-          <div class="alert alert-danger" v-if="errors">
+          <div
+            v-if="errors"
+            class="alert alert-danger"
+          >
             <strong>{{ errors.message }}</strong>
           </div>
           <form @submit.prevent="onSubmit">
             <p-form-row
               :id="`${new Date().toString()}-note`"
               name="note"
-              :label="$t('note')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('note')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <textarea
                   :id="`${new Date().toString()}-note`"
+                  v-model="form.approval_note"
                   name="note"
                   :placeholder="$t('note') | capitalize"
                   class="form-control"
                   :label="$t('note')"
-                  v-model="form.approval_note"></textarea>
+                />
               </div>
             </p-form-row>
           </form>
@@ -30,8 +39,16 @@
       </div>
       <hr>
       <div class="pull-right">
-        <button type="submit" class="btn btn-sm btn-danger" :disabled="isSaving" @click="onSubmit">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('decline') | uppercase }}
+        <button
+          type="submit"
+          class="btn btn-sm btn-danger"
+          :disabled="isSaving"
+          @click="onSubmit"
+        >
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          /> {{ $t('decline') | uppercase }}
         </button>
       </div>
     </sweet-modal>
@@ -39,13 +56,15 @@
 </template>
 
 <script>
-import Form from '@/utils/Form'
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
-  props: [
-    'procedureId'
-  ],
+  props: {
+    procedureId: {
+      type: Number,
+      default: null
+    }
+  },
   data () {
     return {
       isSaving: false,
@@ -57,6 +76,9 @@ export default {
     }
   },
   computed: {
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('pluginPlayBookProcedureApproval', [

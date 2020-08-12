@@ -4,82 +4,111 @@
       ref="modal"
       :title="`${$t('add procedure')} ${parentId ? 'content' : ''}` | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <div class="row">
         <div class="col-sm-12">
-          <div class="alert alert-danger" v-if="errors">
+          <div
+            v-if="errors"
+            class="alert alert-danger"
+          >
             <strong>{{ errors.message }}</strong>
           </div>
           <form @submit.prevent="onSubmit">
             <p-form-row
               :id="`${parentId || 'parent'}-code`"
               name="code"
-              :label="$t('code')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('code')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-input
                   :id="`${parentId || 'parent'}-code`"
+                  v-model="form.code"
                   name="code"
                   :placeholder="$t('code') | capitalize"
                   :label="$t('code')"
                   :errors="errors && errors.code"
-                  v-model="form.code" />
+                />
               </div>
             </p-form-row>
             <p-form-row
               :id="`${parentId || 'parent'}-name`"
               name="name"
-              :label="$t('name')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('name')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-input
                   :id="`${parentId || 'parent'}-name`"
+                  v-model="form.name"
                   name="name"
                   :placeholder="$t('name') | capitalize"
                   :label="$t('name')"
                   :errors="errors && errors.name"
-                  v-model="form.name" />
+                />
               </div>
             </p-form-row>
             <p-form-row
               :id="`${parentId || 'parent'}-purpose`"
               name="purpose"
-              :label="$t('purpose')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('purpose')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <textarea
                   :id="`${parentId || 'parent'}-purpose`"
+                  v-model="form.purpose"
                   name="purpose"
                   :placeholder="$t('purpose') | capitalize"
                   class="form-control"
                   :label="$t('purpose')"
-                  v-model="form.purpose"></textarea>
+                />
               </div>
             </p-form-row>
             <p-form-row
+              v-if="parentId"
               :id="`${parentId || 'parent'}-content`"
               name="content"
               :label="$t('content')"
-              v-if="parentId">
-              <div slot="body" class="col-lg-9">
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <textarea
                   :id="`${parentId || 'parent'}-content`"
+                  v-model="form.content"
                   name="content"
                   :placeholder="$t('content') | capitalize"
                   class="form-control"
                   :label="$t('content')"
-                  v-model="form.content"></textarea>
+                />
               </div>
             </p-form-row>
             <p-form-row
               :id="`${parentId || 'parent'}-note`"
               name="note"
-              :label="$t('notes')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('notes')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <textarea
                   :id="`${parentId || 'parent'}-note`"
+                  v-model="form.note"
                   name="note"
                   :placeholder="$t('note') | capitalize"
                   class="form-control"
                   :label="$t('notes')"
-                  v-model="form.note"></textarea>
+                />
               </div>
             </p-form-row>
           </form>
@@ -87,8 +116,16 @@
       </div>
       <hr>
       <div class="pull-right">
-        <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+        <button
+          type="submit"
+          class="btn btn-sm btn-primary"
+          :disabled="isSaving"
+          @click="onSubmit"
+        >
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          /> {{ $t('save') | uppercase }}
         </button>
       </div>
     </sweet-modal>
@@ -96,13 +133,15 @@
 </template>
 
 <script>
-import Form from '@/utils/Form'
-import { mapGetters, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
-  props: [
-    'parentId'
-  ],
+  props: {
+    parentId: {
+      type: Number,
+      default: null
+    }
+  },
   data () {
     return {
       isSaving: false,
@@ -119,13 +158,16 @@ export default {
   },
   computed: {
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('pluginPlayBookProcedure', [
       'store', 'create'
     ]),
     async getCode () {
       try {
-        let { code } = await this.create({
+        const { code } = await this.create({
           procedure_id: this.parentId
         })
         this.form.code = code

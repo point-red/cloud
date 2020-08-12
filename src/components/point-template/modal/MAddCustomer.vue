@@ -5,18 +5,31 @@
         ref="modal"
         :title="$t('add customer') | uppercase"
         overlay-theme="dark"
-        @close="onClose()">
+        @close="onClose()"
+      >
         <div class="row">
           <div class="col-sm-12">
             <p-form-row
+              id="code"
+              ref="code"
+              v-model="form.code"
+              :disabled="isSaving"
+              :label="$t('code')"
+              name="code"
+              :errors="form.errors.get('code')"
+              @errors="form.errors.set('code', null)"
+            />
+
+            <p-form-row
               id="name"
+              ref="name"
               v-model="form.name"
               :disabled="isSaving"
               :label="$t('name')"
               name="name"
-              ref="name"
               :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"/>
+              @errors="form.errors.set('name', null)"
+            />
 
             <p-form-row
               id="email"
@@ -25,7 +38,8 @@
               :label="$t('email')"
               name="email"
               :errors="form.errors.get('email')"
-              @errors="form.errors.set('email', null)"/>
+              @errors="form.errors.set('email', null)"
+            />
 
             <p-form-row
               id="address"
@@ -34,7 +48,8 @@
               :label="$t('address')"
               name="address"
               :errors="form.errors.get('address')"
-              @errors="form.errors.set('address', null)"/>
+              @errors="form.errors.set('address', null)"
+            />
 
             <p-form-row
               id="phone"
@@ -43,9 +58,10 @@
               :label="$t('phone')"
               name="phone"
               :errors="form.errors.get('phone')"
-              @errors="form.errors.set('phone', null)"/>
+              @errors="form.errors.set('phone', null)"
+            />
 
-            <p-separator></p-separator>
+            <p-separator />
 
             <h5>{{ $t('credit limit') | uppercase }}</h5>
             <p>{{ $t('create customer helper - credit limit') }}</p>
@@ -55,23 +71,30 @@
               :disabled="isSaving"
               :is-text-right="false"
               :errors="form.errors.get('credit_limit')"
-              @errors="form.errors.set('credit_limit', null)"/>
+              @errors="form.errors.set('credit_limit', null)"
+            />
 
-            <p-separator></p-separator>
+            <p-separator />
 
             <h5>{{ $t('pricing group') | uppercase }}</h5>
             <p>{{ $t('create customer helper - pricing group') }}</p>
 
-            <span @click="$refs.pricingGroup.open()" class="select-link">
+            <span
+              class="select-link"
+              @click="$refs.pricingGroup.open()"
+            >
               {{ form.pricing_group_label || $t('select') | uppercase }}
             </span>
 
-            <p-separator></p-separator>
+            <p-separator />
 
             <h5>{{ $t('group') | uppercase }}</h5>
             <p>{{ $t('create customer helper - group') }}</p>
 
-            <span @click="$refs.customerGroup.open(form.groups)" class="select-link">
+            <span
+              class="select-link"
+              @click="$refs.customerGroup.open(form.groups)"
+            >
               <template v-if="form.groups.length == 0">{{ $t('select') | uppercase }}</template>
               <template v-for="(group, index) in form.groups">
                 {{ group.label | uppercase }}<template v-if="index + 1 != form.groups.length">,</template>
@@ -81,8 +104,16 @@
         </div>
         <hr>
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+            :disabled="isSaving"
+            @click="onSubmit"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('save') | uppercase }}
           </button>
         </div>
       </sweet-modal>
@@ -90,13 +121,13 @@
     <m-pricing-group
       id="pricing-group"
       ref="pricingGroup"
-      @choosen="onChoosenPricingGroup($event)">
-    </m-pricing-group>
+      @choosen="onChoosenPricingGroup($event)"
+    />
     <m-m-customer-group
       id="customer-group"
       ref="customerGroup"
-      @choosen="onChoosenCustomerGroup($event)">
-    </m-m-customer-group>
+      @choosen="onChoosenCustomerGroup($event)"
+    />
   </div>
 </template>
 
@@ -110,11 +141,12 @@ export default {
       isSaving: false,
       isFailed: false,
       form: new Form({
+        code: null,
         name: null,
         email: null,
         address: null,
         phone: null,
-        credit_limit: null,
+        credit_limit: 0,
         pricing_group_id: null,
         pricing_group_label: null,
         groups: []
@@ -123,6 +155,9 @@ export default {
   },
   computed: {
     ...mapGetters('masterCustomer', ['customer'])
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('masterCustomer', ['create']),

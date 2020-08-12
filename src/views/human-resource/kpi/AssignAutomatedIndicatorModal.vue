@@ -2,36 +2,45 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmit">
+      @submit.prevent="onSubmit"
+    >
       <p-modal
         id="assign-automated-indicator-modal"
         ref="assignAutomatedIndicator"
-        title="Assign Automated Indicator">
+        title="Assign Automated Indicator"
+      >
         <template slot="content">
           <div class="list-group mb-20">
-            <template v-for="(automated_indicator, index) in automatedIndicators">
+            <template v-for="(automatedIndicator, index) in automatedIndicators">
               <a
                 :key="index"
-                @click="choose(automated_indicator, index)"
-                @dblclick="chooseAndSubmit(automated_indicator, index)"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 :class="{
                   'active': selectedIndex === index
                 }"
-                href="javascript:void(0)">
-                  <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ automated_indicator.label }}</span>
+                href="javascript:void(0)"
+                @click="choose(automatedIndicator, index)"
+                @dblclick="chooseAndSubmit(automatedIndicator, index)"
+              >
+                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ automatedIndicator.label }}</span>
               </a>
             </template>
           </div>
         </template>
         <template slot="footer">
           <div v-if="automatedIndicators.length > 0">
-            <button type="submit" class="btn btn-primary">Add</button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+            >
+              Add
+            </button>
           </div>
           <button
             type="button"
             class="btn btn-sm btn-outline-danger"
-            @click="close()">
+            @click="close()"
+          >
             {{ $t('close') | uppercase }}
           </button>
         </template>

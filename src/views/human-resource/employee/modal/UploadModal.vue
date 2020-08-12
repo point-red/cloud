@@ -1,19 +1,43 @@
 <template>
   <div>
-    <form class="row" @submit.prevent="onSubmitFile">
+    <form
+      class="row"
+      @submit.prevent="onSubmitFile"
+    >
       <sweet-modal
         ref="modal"
         :title="$t('add attachment') | uppercase"
         overlay-theme="dark"
-        @close="onClose()">
-        <p-form-row id="file" name="file" :label="$t('file')">
-          <div slot="body" class="col-lg-9">
-            <p-form-file id="file" name="file" @fileChanged="onFileChange" ref="file"/>
+        @close="onClose()"
+      >
+        <p-form-row
+          id="file"
+          name="file"
+          :label="$t('file')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <p-form-file
+              id="file"
+              ref="file"
+              name="file"
+              @fileChanged="onFileChange"
+            />
           </div>
         </p-form-row>
-        <p-form-row id="notes" name="notes" :label="$t('notes')" v-model="notes"></p-form-row>
+        <p-form-row
+          id="notes"
+          v-model="notes"
+          name="notes"
+          :label="$t('notes')"
+        />
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary">
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+          >
             {{ $t('add') | uppercase }}
           </button>
         </div>
@@ -28,7 +52,8 @@ import { mapActions } from 'vuex'
 export default {
   props: {
     id: {
-      type: String
+      type: String,
+      default: ''
     },
     feature: {
       type: String,

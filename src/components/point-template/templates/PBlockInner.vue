@@ -9,9 +9,10 @@
       }"
       :style="{
         'background-color' : background
-      }">
+      }"
+    >
       <div class="block-content block-content-inner">
-        <slot/>
+        <slot />
       </div>
     </div>
   </div>

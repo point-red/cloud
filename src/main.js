@@ -30,13 +30,15 @@ import VueSelectMenu from 'v-selectmenu'
 import ClickOutside from 'v-click-outside'
 import '@/firebase'
 import PackageVersion from '@/components/package-version'
-import * as VueGoogleMaps from 'vue2-google-maps'
 import VScrollLock from 'v-scroll-lock'
 import SweetModal from 'sweet-modal-vue/src/plugin.js'
+import sanitizeHTML from 'sanitize-html'
+import * as GmapVue from 'gmap-vue'
 
 Vue.use(SweetModal)
 Vue.use(VScrollLock)
-Vue.use(VueGoogleMaps, {
+
+Vue.use(GmapVue, {
   load: {
     key: 'AIzaSyDxxNVTca2tPo-jSe_1O7fCP2e6A3QZFzI',
     libraries: 'places' // This is required if you use the Autocomplete plugin
@@ -44,21 +46,22 @@ Vue.use(VueGoogleMaps, {
     // OR: libraries: 'places,drawing,visualization'
     // (as you require)
 
-    // If you want to set the version, you can do so:
+    /// / If you want to set the version, you can do so:
     // v: '3.26',
-  }
+  },
 
-  // If you intend to programmatically custom event listener code
-  // (e.g. `this.$refs.gmap.$on('zoom_changed', someFunc)`)
-  // instead of going through Vue templates (e.g. `<GmapMap @zoom_changed="someFunc">`)
-  // you might need to turn this on.
+  /// / If you intend to programmatically custom event listener code
+  /// / (e.g. `this.$refs.gmap.$on('zoom_changed', someFunc)`)
+  /// / instead of going through Vue templates (e.g. `<GmapMap @zoom_changed="someFunc">`)
+  /// / you might need to turn this on.
   // autobindAllEvents: false,
 
-  // If you want to manually install components, e.g.
-  // import {GmapMarker} from 'vue2-google-maps/src/components/marker'
-  // Vue.component('GmapMarker', GmapMarker)
-  // then disable the following:
-  // installComponents: true,
+  /// / If you want to manually install components, e.g.
+  /// / import {GmapMarker} from 'gmap-vue/src/components/marker'
+  /// / Vue.component('GmapMarker', GmapMarker)
+  /// / then set installComponents to 'false'.
+  /// / If you want to automatically install all the components this property must be set to 'true':
+  installComponents: true
 })
 
 require('vue-tour/dist/vue-tour.css')
@@ -91,6 +94,8 @@ Vue.use(PointPlugin)
 Vue.use(PointRolePermission)
 Vue.use(PointFormRules)
 Vue.use(PointTemplate)
+
+Vue.prototype.$sanitize = sanitizeHTML
 
 Vue.config.productionTip = false
 

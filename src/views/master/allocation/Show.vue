@@ -1,52 +1,70 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <router-link to="/master/allocation" class="breadcrumb-item">{{ $t('allocation') | uppercase }}</router-link>
+      <breadcrumb-master />
+      <router-link
+        to="/master/allocation"
+        class="breadcrumb-item"
+      >
+        {{ $t('allocation') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ allocation.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addAllocation.open()"
             v-if="$permission.has('create allocation')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addAllocation.open()"
+          >
             {{ $t('create') | uppercase }}
           </a>
           <a
-            href="javascript:void(0)"
-            @click="$refs.editAllocation.open(allocation.id)"
             v-if="$permission.has('update allocation')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editAllocation.open(allocation.id)"
+          >
             {{ $t('edit') | uppercase }}
           </a>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete allocation')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="allocation.name"
             label="Name"
             name="name"
-            v-model="allocation.name"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
-    <m-add-allocation ref="addAllocation" @added="onAddedAllocation($event)"></m-add-allocation>
-    <m-edit-allocation ref="editAllocation" @updated="onUpdatedAllocation($event)"></m-edit-allocation>
+    <m-add-allocation
+      ref="addAllocation"
+      @added="onAddedAllocation($event)"
+    />
+    <m-edit-allocation
+      ref="editAllocation"
+      @updated="onUpdatedAllocation($event)"
+    />
   </div>
 </template>
 
@@ -71,6 +89,9 @@ export default {
   },
   computed: {
     ...mapGetters('masterAllocation', ['allocation'])
+  },
+  created () {
+    this.findAllocation()
   },
   methods: {
     ...mapActions('masterAllocation', ['find', 'delete']),
@@ -105,9 +126,6 @@ export default {
           })
       })
     }
-  },
-  created () {
-    this.findAllocation()
   }
 }
 </script>

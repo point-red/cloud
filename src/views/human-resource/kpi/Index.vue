@@ -1,43 +1,82 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <span class="breadcrumb-item active">{{ $t('kpi') | titlecase }}</span>
     </breadcrumb>
 
     <div class="mb-20">
-      <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
-        <slot></slot>
-        <li class="nav-item ml-auto" v-if="$permission.has('create employee kpi')">
+      <ul
+        class="nav nav-tabs nav-tabs-alt"
+        data-toggle="tabs"
+        role="tablist"
+      >
+        <slot />
+        <li
+          v-if="$permission.has('create employee kpi')"
+          class="nav-item ml-auto"
+        >
           <router-link
             to=""
+            class="nav-link"
             @click.native="$refs.create.show()"
-            class="nav-link">
+          >
             <span>{{ $t('add') | uppercase }}</span>
           </router-link>
         </li>
-        <li class="nav-item" v-if="$permission.has('create employee kpi')">
-          <a href="javascript:void(0)" class="nav-link" @click="addFiles()"><i class="si si-cloud-upload"></i> {{ $t('import') | uppercase }}</a>
-          <input type="file" id="file" ref="file" v-on:change="onFileChange" style="display:none" />
+        <li
+          v-if="$permission.has('create employee kpi')"
+          class="nav-item"
+        >
+          <a
+            href="javascript:void(0)"
+            class="nav-link"
+            @click="addFiles()"
+          ><i class="si si-cloud-upload" /> {{ $t('import') | uppercase }}</a>
+          <input
+            id="file"
+            ref="file"
+            type="file"
+            style="display:none"
+            @change="onFileChange"
+          >
         </li>
-        <slot name="right"></slot>
+        <slot name="right" />
       </ul>
     </div>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block
+        :title="title"
+        :header="true"
+      >
         <hr>
         <div class="text-center font-size-sm mb-10">
-          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          <a
+            href="javascript:void(0)"
+            @click="isAdvanceFilter = !isAdvanceFilter"
+          >
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div
+          v-show="isAdvanceFilter"
+          class="card"
+          :class="{ 'fadeIn': isAdvanceFilter }"
+        >
           <div class="row">
             <div class="col-sm-3 text-center">
-              <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
+              <p-form-row
+                id="status"
+                name="status"
+                :label="$t('status')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <span @click="$refs.status.open({ id: statusId, label: statusLabel })" class="select-link">
+                  <span
+                    class="select-link"
+                    @click="$refs.status.open({ id: statusId, label: statusLabel })"
+                  >
                     {{ statusLabel || $t('select') | uppercase }}
                   </span>
                 </div>
@@ -46,11 +85,22 @@
           </div>
         </div>
         <hr>
-        <div class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-          <button type="button" class="btn btn-secondary mr-5" @click="bulkArchiveKpiTemplate()">
+        <div
+          v-show="checkedRow.length > 0"
+          class="mr-15 animated fadeIn"
+        >
+          <button
+            type="button"
+            class="btn btn-secondary mr-5"
+            @click="bulkArchiveKpiTemplate()"
+          >
             {{ $t('archive') | uppercase }}
           </button>
-          <button type="button" class="btn btn-secondary mr-5" @click="bulkActivateKpiTemplate()">
+          <button
+            type="button"
+            class="btn btn-secondary mr-5"
+            @click="bulkActivateKpiTemplate()"
+          >
             {{ $t('activate') | uppercase }}
           </button>
         </div>
@@ -63,49 +113,88 @@
                   id="subscibe"
                   name="subscibe"
                   :is-form="false"
-                  @click.native="toggleCheckRows()"
                   :checked="isRowsChecked(templates, checkedRow)"
-                  class="text-center"/>
+                  class="text-center"
+                  @click.native="toggleCheckRows()"
+                />
               </th>
               <th>Kpi Category</th>
-              <th class="text-center">Total Weight</th>
-              <th class="text-right"></th>
+              <th class="text-center">
+                Total Weight
+              </th>
+              <th class="text-right" />
             </tr>
             <tr
               v-for="(template, index) in templates"
               slot="p-body"
-              :key="template.id">
+              :key="template.id"
+            >
               <th>{{ ++index }}</th>
               <td>
                 <p-form-check-box
-                  :is-form="false"
                   id="subscibe"
-                   @click.native="toggleCheckRow(template.id)"
+                  :is-form="false"
                   :checked="isRowChecked(template.id)"
                   name="subscibe"
-                  class="text-center"/></td>
+                  class="text-center"
+                  @click.native="toggleCheckRow(template.id)"
+                />
+              </td>
               <td>
                 <router-link :to="{ name: 'KpiShow', params: { id: template.id }}">
                   {{ template.name }}
                 </router-link>
               </td>
-              <td class="text-center">{{ template.weight | numberFormat }}%</td>
+              <td class="text-center">
+                {{ template.weight | numberFormat }}%
+              </td>
               <td>
-                  <a
-                    href="javascript:void(0)"
-                    v-if="$permission.has('update employee kpi')"
-                    class="btn btn-sm btn-secondary" @click="$refs.edit.show(template)">
-                    {{ $t('rename') | uppercase }}
-                  </a>
-                  <button :disabled="isExporting.includes(template.id)" type="submit" class="btn btn-sm btn-secondary" @click="exportData(template.id)" style="margin-left:12px">
-                    <i v-show="isExporting.includes(template.id)" class="fa fa-asterisk fa-spin" /> {{ $t('export') | uppercase }}
-                  </button>
-                  <button :disabled="isDuplicating" type="submit" class="btn btn-sm btn-secondary" @click="duplicate(template.id)" style="margin-left:12px" v-if="$permission.has('create employee kpi')">
-                    <i v-show="isDuplicating" class="fa fa-asterisk fa-spin" /> {{ $t('duplicate') | uppercase }}
-                  </button>
-                  <button :disabled="isRemoving" type="submit" class="btn btn-sm btn-secondary" @click="remove(template.id)" style="margin-left:12px" v-if="$permission.has('delete employee kpi')">
-                    <i v-show="isRemoving" class="fa fa-spinner fa-spin" /> {{ $t('remove') | uppercase }}
-                  </button>
+                <a
+                  v-if="$permission.has('update employee kpi')"
+                  href="javascript:void(0)"
+                  class="btn btn-sm btn-secondary"
+                  @click="$refs.edit.show(template)"
+                >
+                  {{ $t('rename') | uppercase }}
+                </a>
+                <button
+                  :disabled="isExporting.includes(template.id)"
+                  type="submit"
+                  class="btn btn-sm btn-secondary"
+                  style="margin-left:12px"
+                  @click="exportData(template.id)"
+                >
+                  <i
+                    v-show="isExporting.includes(template.id)"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('export') | uppercase }}
+                </button>
+                <button
+                  v-if="$permission.has('create employee kpi')"
+                  :disabled="isDuplicating"
+                  type="submit"
+                  class="btn btn-sm btn-secondary"
+                  style="margin-left:12px"
+                  @click="duplicate(template.id)"
+                >
+                  <i
+                    v-show="isDuplicating"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('duplicate') | uppercase }}
+                </button>
+                <button
+                  v-if="$permission.has('delete employee kpi')"
+                  :disabled="isRemoving"
+                  type="submit"
+                  class="btn btn-sm btn-secondary"
+                  style="margin-left:12px"
+                  @click="remove(template.id)"
+                >
+                  <i
+                    v-show="isRemoving"
+                    class="fa fa-spinner fa-spin"
+                  /> {{ $t('remove') | uppercase }}
+                </button>
               </td>
             </tr>
           </point-table>
@@ -113,15 +202,30 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <result-modal id="result" ref="result" :title="'KPI RESULT'"/>
-    <create-modal id="create" ref="create" :title="'KPI CATEGORY'"/>
-    <edit-modal id="edit" ref="edit" :title="'KPI CATEGORY'"/>
-    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
+    <result-modal
+      id="result"
+      ref="result"
+      :title="'KPI RESULT'"
+    />
+    <create-modal
+      id="create"
+      ref="create"
+      :title="'KPI CATEGORY'"
+    />
+    <edit-modal
+      id="edit"
+      ref="edit"
+      :title="'KPI CATEGORY'"
+    />
+    <m-status
+      ref="status"
+      @choosen="onChoosenStatus"
+    />
   </div>
 </template>
 
@@ -162,6 +266,12 @@ export default {
   },
   computed: {
     ...mapGetters('humanResourceKpiTemplate', ['templates', 'pagination'])
+  },
+  created () {
+    this.getKpiTemplatesRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('humanResourceKpiTemplate', {
@@ -355,12 +465,6 @@ export default {
       this.page = value
       this.getKpiTemplatesRequest()
     }
-  },
-  created () {
-    this.getKpiTemplatesRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

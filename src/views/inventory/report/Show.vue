@@ -1,8 +1,13 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-inventory/>
-      <router-link to="/inventory/report" class="breadcrumb-item">{{ $t('report') | uppercase }}</router-link>
+      <breadcrumb-inventory />
+      <router-link
+        to="/inventory/report"
+        class="breadcrumb-item"
+      >
+        {{ $t('report') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ item.label | uppercase }}</span>
     </breadcrumb>
 
@@ -10,31 +15,51 @@
       <p-block>
         <div class="row">
           <div class="col-sm-3 text-center">
-            <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+            <p-form-row
+              id="date-start"
+              name="date-start"
+              :label="$t('date start')"
+              :is-horizontal="false"
+            >
               <div slot="body">
                 <p-date-picker
                   id="date"
+                  v-model="date.start"
                   name="date"
                   label="date"
-                  v-model="date.start"/>
+                />
               </div>
             </p-form-row>
           </div>
           <div class="col-sm-3 text-center">
-            <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+            <p-form-row
+              id="date-end"
+              name="date-end"
+              :label="$t('date end')"
+              :is-horizontal="false"
+            >
               <div slot="body">
                 <p-date-picker
                   id="date"
+                  v-model="date.end"
                   name="date"
                   label="date"
-                  v-model="date.end"/>
+                />
               </div>
             </p-form-row>
           </div>
           <div class="col-sm-3 text-center">
-            <p-form-row id="item" name="item" :label="$t('item')" :is-horizontal="false">
+            <p-form-row
+              id="item"
+              name="item"
+              :label="$t('item')"
+              :is-horizontal="false"
+            >
               <div slot="body">
-                <span @click="$refs.item.open(index)" class="select-link">
+                <span
+                  class="select-link"
+                  @click="$refs.item.open(index)"
+                >
                   {{ item_label || $t('select') | uppercase }}
                 </span>
               </div>
@@ -47,17 +72,42 @@
           placeholder="Search"
           :value="searchText"
           class="btn-block"
-          @input="filterSearch"/>
+          @input="filterSearch"
+        />
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th></th>
-              <th></th>
-              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">opening</th>
-              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">in</th>
-              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">out</th>
-              <th style="border: 1px solid #e4e7ed" colspan="1" class="text-center">ending</th>
+              <th />
+              <th />
+              <th
+                style="border: 1px solid #e4e7ed"
+                colspan="1"
+                class="text-center"
+              >
+                opening
+              </th>
+              <th
+                style="border: 1px solid #e4e7ed"
+                colspan="1"
+                class="text-center"
+              >
+                in
+              </th>
+              <th
+                style="border: 1px solid #e4e7ed"
+                colspan="1"
+                class="text-center"
+              >
+                out
+              </th>
+              <th
+                style="border: 1px solid #e4e7ed"
+                colspan="1"
+                class="text-center"
+              >
+                ending
+              </th>
             </tr>
             <tr slot="p-head">
               <th>#</th>
@@ -71,7 +121,11 @@
               <!-- <th style="border: 1px solid #e4e7ed" class="text-center">Quantity</th> -->
               <!-- <th style="border: 1px solid #e4e7ed" class="text-center">Value</th> -->
             </tr>
-            <tr slot="p-body" v-for="(inventory, index) in warehouses" :key="index">
+            <tr
+              v-for="(inventory, index) in warehouses"
+              slot="p-body"
+              :key="index"
+            >
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link
@@ -84,23 +138,39 @@
                     query: {
                       date_from: date.start,
                       date_to: date.end
-                    }}">
+                    }}"
+                >
                   {{ inventory.name }}
                 </router-link>
               </td>
-              <td class="text-right">{{ inventory.opening_balance | numberFormat }}</td>
+              <td class="text-right">
+                {{ inventory.opening_balance | numberFormat }}
+              </td>
               <!-- <td class="text-right">{{ 0 | numberFormat }}</td> -->
-              <td class="text-right">{{ inventory.stock_in | numberFormat }}</td>
+              <td class="text-right">
+                {{ inventory.stock_in | numberFormat }}
+              </td>
               <!-- <td class="text-right">{{ 0 | numberFormat }}</td> -->
-              <td class="text-right">{{ inventory.stock_out | numberFormat }}</td>
+              <td class="text-right">
+                {{ inventory.stock_out | numberFormat }}
+              </td>
               <!-- <td class="text-right">{{ 0 | numberFormat }}</td> -->
-              <td class="text-right">{{ inventory.ending_balance | numberFormat }}</td>
+              <td class="text-right">
+                {{ inventory.ending_balance | numberFormat }}
+              </td>
               <!-- <td class="text-right">{{ 0 }}</td> -->
             </tr>
             <tr slot="p-body">
-              <th></th>
-              <td class="text-right font-weight-bold" colspan="4">{{ $t('total') | uppercase }}</td>
-              <td class="text-right font-weight-bold">{{ total | numberFormat }}</td>
+              <th />
+              <td
+                class="text-right font-weight-bold"
+                colspan="4"
+              >
+                {{ $t('total') | uppercase }}
+              </td>
+              <td class="text-right font-weight-bold">
+                {{ total | numberFormat }}
+              </td>
               <!-- <td class="text-right font-weight-bold">{{ 0 }}</td> -->
             </tr>
           </point-table>
@@ -108,11 +178,14 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
-    <m-item ref="item" @choosen="chooseItem($event)"/>
+    <m-item
+      ref="item"
+      @choosen="chooseItem($event)"
+    />
   </div>
 </template>
 
@@ -144,6 +217,10 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('masterItem', ['item']),
+    ...mapGetters('inventoryInventoryWarehouseRecapitulation', ['warehouses', 'pagination'])
+  },
   watch: {
     date: {
       handler: function () {
@@ -159,9 +236,16 @@ export default {
       deep: true
     }
   },
-  computed: {
-    ...mapGetters('masterItem', ['item']),
-    ...mapGetters('inventoryInventoryWarehouseRecapitulation', ['warehouses', 'pagination'])
+  created () {
+    this.getInventoryRequest()
+    this.find({
+      id: this.id
+    }).then(response => {
+      this.item_label = response.data.label
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('masterItem', ['find']),
@@ -219,17 +303,6 @@ export default {
       this.currentPage = value
       this.getInventoryRequest()
     }
-  },
-  created () {
-    this.getInventoryRequest()
-    this.find({
-      id: this.id
-    }).then(response => {
-      this.item_label = response.data.label
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

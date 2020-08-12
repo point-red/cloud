@@ -1,90 +1,120 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <router-link to="/master/customer" class="breadcrumb-item">{{ $t('customer') | uppercase }}</router-link>
+      <breadcrumb-master />
+      <router-link
+        to="/master/customer"
+        class="breadcrumb-item"
+      >
+        {{ $t('customer') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ customer.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <button
-            type="button"
-            @click="$refs.addCustomer.open()"
             v-if="$permission.has('create customer')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addCustomer.open()"
+          >
             {{ $t('create') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="$refs.editCustomer.open(customer.id)"
             v-if="$permission.has('update customer')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editCustomer.open(customer.id)"
+          >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete customer')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onArchive()"
             v-if="$permission.has('delete customer') && customer.archived_at == null"
+            type="button"
             :disabled="isArchiving"
-            class="btn btn-sm btn-outline-secondary ml-5">
-            <i v-show="isArchiving" class="fa fa-asterisk fa-spin"/> {{ $t('archive') | uppercase }}
+            class="btn btn-sm btn-outline-secondary ml-5"
+            @click="onArchive()"
+          >
+            <i
+              v-show="isArchiving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('archive') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onActivate()"
             v-if="$permission.has('delete customer') && customer.archived_at != null"
+            type="button"
             :disabled="isArchiving"
-            class="btn btn-sm btn-outline-secondary ml-5">
-            <i v-show="isArchiving" class="fa fa-asterisk fa-spin"/> {{ $t('activate') | uppercase }}
+            class="btn btn-sm btn-outline-secondary ml-5"
+            @click="onActivate()"
+          >
+            <i
+              v-show="isArchiving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('activate') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
+            id="code"
+            v-model="customer.code"
+            label="Code"
+            name="code"
+            readonly
+          />
+          <p-form-row
             id="name"
+            v-model="customer.name"
             label="Name"
             name="name"
-            v-model="customer.name"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="email"
+            v-model="data.email"
             label="Email"
             name="email"
-            v-model="data.email"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="address"
+            v-model="data.address"
             label="Address"
             name="address"
-            v-model="data.address"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="phone"
+            v-model="data.phone"
             label="Phone"
             name="phone"
-            v-model="data.phone"
-            readonly/>
+            readonly
+          />
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <h5>{{ $t('credit limit') | uppercase }}</h5>
           <p>{{ $t('create customer helper - credit limit') }}</p>
 
           {{ data.credit_limit | numberFormat }}
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <h5>{{ $t('pricing group') | uppercase }}</h5>
           <p>{{ $t('create customer helper - pricing group') }}</p>
@@ -93,11 +123,14 @@
             <li>{{ data.pricing_group.label }}</li>
           </ul>
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <h5>{{ $t('group') | uppercase }}</h5>
           <p>{{ $t('create customer helper - group') }}</p>
-          <ul v-for="(group, index) in customer.groups" :key="index">
+          <ul
+            v-for="(group, index) in customer.groups"
+            :key="index"
+          >
             <li>{{ group.name }}</li>
           </ul>
         </p-block-inner>
@@ -106,41 +139,106 @@
         <p-block-inner :is-loading="isLoadingSalesVisitation">
           <point-table>
             <tr slot="p-head">
-              <th></th>
-              <th colspan="4"></th>
-              <th colspan="3" width="250px" style="border: 1px solid black;text-align: center">{{ $t('item sold') }}</th>
+              <th />
+              <th colspan="4" />
+              <th
+                colspan="3"
+                width="250px"
+                style="border: 1px solid black;text-align: center"
+              >
+                {{ $t('item sold') }}
+              </th>
             </tr>
             <tr slot="p-head">
-              <th style="border: 1px solid black;text-align: center" width="150px">{{ $t('date') }}</th>
-              <th style="border: 1px solid black;text-align: center" width="50px">{{ $t('time') }}</th>
-              <th style="border: 1px solid black;text-align: center" width="150px">{{ $t('sales') }}</th>
-              <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('reason') }}</th>
-              <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('similar product') }}</th>
-              <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('item') }}</th>
-              <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('quantity') }}</th>
-              <th style="border: 1px solid black;text-align: center" width="250px">{{ $t('price') }}</th>
+              <th
+                style="border: 1px solid black;text-align: center"
+                width="150px"
+              >
+                {{ $t('date') }}
+              </th>
+              <th
+                style="border: 1px solid black;text-align: center"
+                width="50px"
+              >
+                {{ $t('time') }}
+              </th>
+              <th
+                style="border: 1px solid black;text-align: center"
+                width="150px"
+              >
+                {{ $t('sales') }}
+              </th>
+              <th
+                style="border: 1px solid black;text-align: center"
+                width="250px"
+              >
+                {{ $t('reason') }}
+              </th>
+              <th
+                style="border: 1px solid black;text-align: center"
+                width="250px"
+              >
+                {{ $t('similar product') }}
+              </th>
+              <th
+                style="border: 1px solid black;text-align: center"
+                width="250px"
+              >
+                {{ $t('item') }}
+              </th>
+              <th
+                style="border: 1px solid black;text-align: center"
+                width="250px"
+              >
+                {{ $t('quantity') }}
+              </th>
+              <th
+                style="border: 1px solid black;text-align: center"
+                width="250px"
+              >
+                {{ $t('price') }}
+              </th>
             </tr>
             <template v-for="(form, index) in forms">
               <template v-if="form.details && form.details.length > 0">
-                <tr slot="p-body" v-for="(detail, index2) in form.details" :key="index + '-' + index2">
+                <tr
+                  v-for="(detail, index2) in form.details"
+                  slot="p-body"
+                  :key="index + '-' + index2"
+                >
                   <th>{{ form.form.date | dateFormat('DD MMM YYYY') }}</th>
                   <td>{{ form.form.created_at | dateFormat('HH:mm') }}</td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>
                     <template v-if="form.interest_reasons">
-                      <template v-for="(interestReason, index) in form.interest_reasons">
-                        <p :key="index" class="mb-0">- {{ interestReason.name }}</p>
+                      <template v-for="(interestReason, interestIndex) in form.interest_reasons">
+                        <p
+                          :key="interestIndex"
+                          class="mb-0"
+                        >
+                          - {{ interestReason.name }}
+                        </p>
                       </template>
                     </template>
                     <template v-else>
-                      <template v-for="(noInterestReason, index) in form.no_interest_reasons">
-                        <p :key="index" class="mb-0">- {{ noInterestReason.name }}</p>
+                      <template v-for="(noInterestReason, noInterestIndex) in form.no_interest_reasons">
+                        <p
+                          :key="noInterestIndex"
+                          class="mb-0"
+                        >
+                          - {{ noInterestReason.name }}
+                        </p>
                       </template>
                     </template>
                   </td>
                   <td>
-                    <template v-for="(similarProduct, index) in form.similar_products">
-                      <p :key="index" class="mb-0">- {{ similarProduct.name }}</p>
+                    <template v-for="(similarProduct, similarProductIndex) in form.similar_products">
+                      <p
+                        :key="similarProductIndex"
+                        class="mb-0"
+                      >
+                        - {{ similarProduct.name }}
+                      </p>
                     </template>
                   </td>
                   <td>
@@ -155,30 +253,48 @@
                 </tr>
               </template>
               <template v-else>
-                <tr slot="p-body" :key="index">
+                <tr
+                  slot="p-body"
+                  :key="index"
+                >
                   <td>{{ form.form.date | dateFormat('DD MMM YYYY') }}</td>
                   <td>{{ form.form.created_at | dateFormat('HH:mm') }}</td>
                   <td>{{ form.form.created_by.first_name }} {{ form.form.created_by.last_name }}</td>
                   <td>
                     <template v-if="form.interest_reasons">
-                      <template v-for="(interestReason, index) in form.interest_reasons">
-                        <p :key="index" class="mb-0">- {{ interestReason.name }}</p>
+                      <template v-for="(interestReason, interestIndex) in form.interest_reasons">
+                        <p
+                          :key="interestIndex"
+                          class="mb-0"
+                        >
+                          - {{ interestReason.name }}
+                        </p>
                       </template>
                     </template>
                     <template v-else>
-                      <template v-for="(noInterestReason, index) in form.no_interest_reasons">
-                        <p :key="index" class="mb-0">- {{ noInterestReason.name }}</p>
+                      <template v-for="(noInterestReason, interestIndex) in form.no_interest_reasons">
+                        <p
+                          :key="interestIndex"
+                          class="mb-0"
+                        >
+                          - {{ noInterestReason.name }}
+                        </p>
                       </template>
                     </template>
                   </td>
                   <td>
-                    <template v-for="(similarProduct, index) in form.similar_products">
-                      <p :key="index" class="mb-0">- {{ similarProduct.name }}</p>
+                    <template v-for="(similarProduct, similarProductIndex) in form.similar_products">
+                      <p
+                        :key="similarProductIndex"
+                        class="mb-0"
+                      >
+                        - {{ similarProduct.name }}
+                      </p>
                     </template>
                   </td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td />
+                  <td />
+                  <td />
                 </tr>
               </template>
             </template>
@@ -186,13 +302,19 @@
           <p-pagination
             :current-page="page"
             :last-page="lastPage"
-            @updatePage="updatePage">
-          </p-pagination>
+            @updatePage="updatePage"
+          />
         </p-block-inner>
       </p-block>
     </div>
-    <m-add-customer ref="addCustomer" @added="onAddedCustomer($event)"></m-add-customer>
-    <m-edit-customer ref="editCustomer" @updated="onUpdatedCustomer($event)"></m-edit-customer>
+    <m-add-customer
+      ref="addCustomer"
+      @added="onAddedCustomer($event)"
+    />
+    <m-edit-customer
+      ref="editCustomer"
+      @updated="onUpdatedCustomer($event)"
+    />
   </div>
 </template>
 
@@ -232,6 +354,9 @@ export default {
   computed: {
     ...mapGetters('masterCustomer', ['customer']),
     ...mapGetters('pluginPinPointSalesVisitationForm', ['forms'])
+  },
+  created () {
+    this.findCustomer()
   },
   methods: {
     ...mapActions('masterCustomer', ['find', 'delete', 'archive', 'activate']),
@@ -332,9 +457,6 @@ export default {
         })
       })
     }
-  },
-  created () {
-    this.findCustomer()
   }
 }
 </script>

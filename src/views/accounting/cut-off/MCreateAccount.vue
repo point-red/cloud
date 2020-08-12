@@ -1,15 +1,31 @@
 <template>
   <div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="create account">
+    <p-modal
+      :id="'select-' + id"
+      :ref="'select-' + id"
+      title="create account"
+    >
       <template slot="content">
-        <form class="row" @submit.prevent="onSubmit">
+        <form
+          class="row"
+          @submit.prevent="onSubmit"
+        >
           <p-block>
             <p-form-row
               id="account-type"
               name="account-type"
-              :label="$t('account type')">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account-type :id="'account-type'" v-model="form.type_id" :label="form.type_alias" @choosen="onChooseAccountType($event)"/>
+              :label="$t('account type')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
+                <m-chart-of-account-type
+                  :id="'account-type'"
+                  v-model="form.type_id"
+                  :label="form.type_alias"
+                  @choosen="onChooseAccountType($event)"
+                />
               </div>
             </p-form-row>
 
@@ -20,7 +36,8 @@
               :label="$t('number')"
               name="number"
               :errors="form.errors.get('number')"
-              @errors="form.errors.set('number', null)"/>
+              @errors="form.errors.set('number', null)"
+            />
 
             <p-form-row
               id="name"
@@ -29,7 +46,8 @@
               :label="$t('name')"
               name="name"
               :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"/>
+              @errors="form.errors.set('name', null)"
+            />
 
             <p-form-row
               id="position"
@@ -38,8 +56,12 @@
               :label="$t('position')"
               name="position"
               :errors="form.errors.get('position')"
-              @errors="form.errors.set('position', null)">
-              <div slot="body" class="col-lg-9">
+              @errors="form.errors.set('position', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <button
                   type="button"
                   class="btn btn-sm mr-5"
@@ -47,7 +69,8 @@
                     'btn-success' : form.position == 'DEBIT',
                     'btn-outline-success' : form.position != 'DEBIT'
                   }"
-                  @click="form.position = 'DEBIT'">
+                  @click="form.position = 'DEBIT'"
+                >
                   DEBIT
                 </button>
                 <button
@@ -57,37 +80,46 @@
                     'btn-success' : form.position == 'CREDIT',
                     'btn-outline-success' : form.position != 'CREDIT'
                   }"
-                  @click="form.position = 'CREDIT'">
+                  @click="form.position = 'CREDIT'"
+                >
                   CREDIT
                 </button>
               </div>
             </p-form-row>
 
-            <p-separator></p-separator>
+            <p-separator />
 
             <p-form-row
               id="sub-ledger"
               name="sub-ledger"
-              :label="$t('set sub ledger')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('set sub ledger')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-check-box
                   id="is-sub-ledger"
                   name="is-sub-ledger"
+                  :checked="form.is_sub_ledger"
                   @click.native="toggleSubLedger()"
-                  :checked="form.is_sub_ledger">
-                </p-form-check-box>
+                />
               </div>
             </p-form-row>
 
             <p-form-row
+              v-if="form.is_sub_ledger"
               id="sub_ledger"
               :disabled="isLoading"
               :label="$t('sub ledger')"
               name="sub_ledger"
-              v-if="form.is_sub_ledger"
               :errors="form.errors.get('sub_ledger')"
-              @errors="form.errors.set('sub_ledger', null)">
-              <div slot="body" class="col-lg-9">
+              @errors="form.errors.set('sub_ledger', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <button
                   type="button"
                   class="btn btn-sm mr-5"
@@ -95,7 +127,8 @@
                     'btn-success' : form.sub_ledger == 'CUSTOMER',
                     'btn-outline-success' : form.sub_ledger != 'CUSTOMER'
                   }"
-                  @click="form.sub_ledger = 'CUSTOMER'">
+                  @click="form.sub_ledger = 'CUSTOMER'"
+                >
                   CUSTOMER
                 </button>
                 <button
@@ -105,7 +138,8 @@
                     'btn-success' : form.sub_ledger == 'SUPPLIER',
                     'btn-outline-success' : form.sub_ledger != 'SUPPLIER'
                   }"
-                  @click="form.sub_ledger = 'SUPPLIER'">
+                  @click="form.sub_ledger = 'SUPPLIER'"
+                >
                   SUPPLIER
                 </button>
                 <button
@@ -115,7 +149,8 @@
                     'btn-success' : form.sub_ledger == 'EMPLOYEE',
                     'btn-outline-success' : form.sub_ledger != 'EMPLOYEE'
                   }"
-                  @click="form.sub_ledger = 'EMPLOYEE'">
+                  @click="form.sub_ledger = 'EMPLOYEE'"
+                >
                   EMPLOYEE
                 </button>
                 <button
@@ -125,7 +160,8 @@
                     'btn-success' : form.sub_ledger == 'EXPEDITION',
                     'btn-outline-success' : form.sub_ledger != 'EXPEDITION'
                   }"
-                  @click="form.sub_ledger = 'EXPEDITION'">
+                  @click="form.sub_ledger = 'EXPEDITION'"
+                >
                   EXPEDITION
                 </button>
                 <button
@@ -135,7 +171,8 @@
                     'btn-success' : form.sub_ledger == 'ITEM',
                     'btn-outline-success' : form.sub_ledger != 'ITEM'
                   }"
-                  @click="form.sub_ledger = 'ITEM'">
+                  @click="form.sub_ledger = 'ITEM'"
+                >
                   ITEM
                 </button>
                 <button
@@ -145,37 +182,46 @@
                     'btn-success' : form.sub_ledger == 'FIXED ASSET',
                     'btn-outline-success' : form.sub_ledger != 'FIXED ASSET'
                   }"
-                  @click="form.sub_ledger = 'FIXED ASSET'">
+                  @click="form.sub_ledger = 'FIXED ASSET'"
+                >
                   FIXED ASSET
                 </button>
               </div>
             </p-form-row>
 
-            <p-separator></p-separator>
+            <p-separator />
 
             <p-form-row
               id="is_cash_flow"
               name="is_cash_flow"
-              :label="$t('set cash flow')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('set cash flow')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-check-box
                   id="is_cash_flow"
                   name="is_cash_flow"
+                  :checked="form.is_cash_flow"
                   @click.native="toggleCashFlow()"
-                  :checked="form.is_cash_flow">
-                </p-form-check-box>
+                />
               </div>
             </p-form-row>
 
             <p-form-row
+              v-if="form.is_cash_flow == true"
               id="cash_flow"
               :disabled="isLoading"
               :label="$t('cash flow')"
               name="cash_flow"
-              v-if="form.is_cash_flow == true"
               :errors="form.errors.get('cash_flow')"
-              @errors="form.errors.set('cash_flow', null)">
-              <div slot="body" class="col-lg-9">
+              @errors="form.errors.set('cash_flow', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <button
                   type="button"
                   class="btn btn-sm mr-5"
@@ -183,7 +229,8 @@
                     'btn-success' : form.cash_flow == 'OPERATION',
                     'btn-outline-success' : form.cash_flow != 'OPERATION'
                   }"
-                  @click="form.cash_flow = 'OPERATION'">
+                  @click="form.cash_flow = 'OPERATION'"
+                >
                   {{ $t('operation') | uppercase }}
                 </button>
                 <button
@@ -193,7 +240,8 @@
                     'btn-success' : form.cash_flow == 'INVESTMENT',
                     'btn-outline-success' : form.cash_flow != 'INVESTMENT'
                   }"
-                  @click="form.cash_flow = 'INVESTMENT'">
+                  @click="form.cash_flow = 'INVESTMENT'"
+                >
                   {{ $t('investation') | uppercase }}
                 </button>
                 <button
@@ -203,21 +251,26 @@
                     'btn-success' : form.cash_flow == 'FUNDING',
                     'btn-outline-success' : form.cash_flow != 'FUNDING'
                   }"
-                  @click="form.cash_flow = 'FUNDING'">
+                  @click="form.cash_flow = 'FUNDING'"
+                >
                   {{ $t('funding') | uppercase }}
                 </button>
               </div>
             </p-form-row>
 
             <p-form-row
+              v-if="form.is_cash_flow == true"
               id="cash_flow_position"
               :disabled="isLoading"
               :label="$t('cash flow position')"
               name="cash_flow_position"
-              v-if="form.is_cash_flow == true"
               :errors="form.errors.get('cash_flow_position')"
-              @errors="form.errors.set('cash_flow_position', null)">
-              <div slot="body" class="col-lg-9">
+              @errors="form.errors.set('cash_flow_position', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <button
                   type="button"
                   class="btn btn-sm mr-5"
@@ -225,7 +278,8 @@
                     'btn-success' : form.cash_flow_position == 'DEBIT',
                     'btn-outline-success' : form.cash_flow_position != 'DEBIT'
                   }"
-                  @click="form.cash_flow_position = 'DEBIT'">
+                  @click="form.cash_flow_position = 'DEBIT'"
+                >
                   DEBIT
                 </button>
                 <button
@@ -235,35 +289,48 @@
                     'btn-success' : form.cash_flow_position == 'CREDIT',
                     'btn-outline-success' : form.cash_flow_position != 'CREDIT'
                   }"
-                  @click="form.cash_flow_position = 'CREDIT'">
+                  @click="form.cash_flow_position = 'CREDIT'"
+                >
                   CREDIT
                 </button>
               </div>
             </p-form-row>
 
             <p-form-row
+              v-if="!isRestricted"
               id="balance"
               :disabled="isSaving"
               :label="$t('balance')"
               name="balance"
-              v-if="!isRestricted"
               :errors="form.errors.get('balance')"
-              @errors="form.errors.set('balance', null)">
-              <div slot="body" class="col-lg-9">
+              @errors="form.errors.set('balance', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-number
                   id="balance"
+                  v-model="form.balance"
                   name="balance"
                   :disabled="isSaving"
                   :is-text-right="false"
-                  v-model="form.balance"/>
+                />
               </div>
             </p-form-row>
 
             <div class="form-group row">
-              <div class="col-md-3"></div>
+              <div class="col-md-3" />
               <div class="col-md-9">
-                <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-primary"
+                  :disabled="isSaving"
+                >
+                  <i
+                    v-show="isSaving"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('save') | uppercase }}
                 </button>
               </div>
             </div>
@@ -271,7 +338,13 @@
         </form>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('close') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>
@@ -283,6 +356,20 @@ import debounce from 'lodash/debounce'
 import { mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       isSaving: false,
@@ -299,18 +386,6 @@ export default {
         number: null,
         balance: 0
       })
-    }
-  },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
     }
   },
   watch: {

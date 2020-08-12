@@ -4,24 +4,45 @@
       ref="modal"
       :title="$t('send instruction approval') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <div class="row">
         <div class="col-sm-12">
-          <div class="alert alert-danger" v-if="errors">
+          <div
+            v-if="errors"
+            class="alert alert-danger"
+          >
             <strong>{{ errors.message }}</strong>
           </div>
           <form @submit.prevent="onSubmit">
             <div class="row">
               <div class="col text-center">
-                  <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-                  <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
-                  {{ requestedBy | uppercase }}
-                  <div class="d-sm-block d-md-none mt-10"></div>
+                <h6 class="mb-0">
+                  {{ $t('requested by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  {{ Date.now() | dateFormat('DD MMMM YYYY') }}
+                </div>
+                {{ requestedBy | uppercase }}
+                <div class="d-sm-block d-md-none mt-10" />
               </div>
               <div class="col text-center">
-                <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">_______________</div>
-                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <h6 class="mb-0">
+                  {{ $t('approved by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  _______________
+                </div>
+                <span
+                  class="select-link"
+                  @click="$refs.approver.open()"
+                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
                 <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
             </div>
@@ -30,24 +51,41 @@
       </div>
       <hr>
       <div class="pull-right">
-        <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('send') | uppercase }}
+        <button
+          type="submit"
+          class="btn btn-sm btn-primary"
+          :disabled="isSaving"
+          @click="onSubmit"
+        >
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          /> {{ $t('send') | uppercase }}
         </button>
       </div>
     </sweet-modal>
-    <m-user ref="approver" @choosen="chooseApprover"/>
+    <m-user
+      ref="approver"
+      :permission="'approve play book instruction'"
+      @choosen="chooseApprover"
+    />
   </div>
 </template>
 
 <script>
-import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  props: [
-    'ids',
-    'stepIds'
-  ],
+  props: {
+    ids: {
+      type: Array,
+      default: null
+    },
+    stepIds: {
+      type: Array,
+      default: null
+    }
+  },
   data () {
     return {
       isSaving: false,
@@ -65,6 +103,9 @@ export default {
     ...mapGetters('masterUser', {
       approvers: 'userList'
     })
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('pluginPlayBookInstructionApproval', [

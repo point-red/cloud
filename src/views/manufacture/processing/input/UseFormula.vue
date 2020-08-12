@@ -1,50 +1,86 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/processing/' + id + '/input'" class="breadcrumb-item">{{ $t('input') | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        :to="'/manufacture/processing/' + id"
+        class="breadcrumb-item"
+      >
+        {{ $t('process') | uppercase }}
+      </router-link>
+      <router-link
+        :to="'/manufacture/processing/' + id + '/input'"
+        class="breadcrumb-item"
+      >
+        {{ $t('input') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('use formula') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
-    <tab-menu/>
+    <tab-menu />
 
-    <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('input')" :header="true">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
+      <p-block
+        :title="$t('input')"
+        :header="true"
+      >
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="machine"
             name="machine"
-            :label="$t('machine')">
-            <div slot="body" class="col-lg-9 mt-5">
-              <m-machine id="machine" v-model="form.manufacture_machine_id" @choosen="chooseManufactureMachine" :label="form.manufacture_machine_name"/>
+            :label="$t('machine')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 mt-5"
+            >
+              <m-machine
+                id="machine"
+                v-model="form.manufacture_machine_id"
+                :label="form.manufacture_machine_name"
+                @choosen="chooseManufactureMachine"
+              />
             </div>
           </p-form-row>
 
           <p-form-row
             id="notes"
+            v-model="form.notes"
             name="notes"
             :label="$t('notes')"
-            v-model="form.notes"
             :disabled="isSaving"
             :errors="form.errors.get('notes')"
-            @errors="form.errors.set('notes', null)"/>
+            @errors="form.errors.set('notes', null)"
+          />
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <h5>{{ $t('finished goods') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
-              <th style="min-width: 120px">Item</th>
-              <th style="min-width: 120px">Warehouse</th>
-              <th width="50px"></th>
+              <th width="50px">
+                #
+              </th>
+              <th style="min-width: 120px">
+                Item
+              </th>
+              <th style="min-width: 120px">
+                Warehouse
+              </th>
+              <th width="50px" />
               <th>Quantity</th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.finished_goods" :key="index">
+            <tr
+              v-for="(row, index) in form.finished_goods"
+              slot="p-body"
+              :key="index"
+            >
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -56,31 +92,44 @@
                   {{ row.warehouse.name }}
                 </router-link>
               </td>
-              <td width="50px"></td>
+              <td width="50px" />
               <td>
                 <p-quantity
                   :id="'quantity' + index"
-                  :name="'quantity' + index"
                   v-model="row.quantity"
+                  :name="'quantity' + index"
                   :unit="row.item.units[0].label"
-                  @input="quantityChange($event, row)"/>
+                  @input="quantityChange($event, row)"
+                />
               </td>
             </tr>
           </point-table>
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <h5>{{ $t('raw materials') | titlecase }}</h5>
           <hr>
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
-              <th style="min-width: 120px">Item</th>
-              <th style="min-width: 120px">Warehouse</th>
-              <th width="50px">&nbsp;</th>
+              <th width="50px">
+                #
+              </th>
+              <th style="min-width: 120px">
+                Item
+              </th>
+              <th style="min-width: 120px">
+                Warehouse
+              </th>
+              <th width="50px">
+&nbsp;
+              </th>
               <th>Quantity</th>
             </tr>
-            <tr slot="p-body" v-for="(row, index) in form.raw_materials_temporary" :key="index">
+            <tr
+              v-for="(row, index) in form.raw_materials_temporary"
+              slot="p-body"
+              :key="index"
+            >
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -94,29 +143,31 @@
               </td>
               <td>
                 <m-inventory-out
+                  v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"
                   :id="'inventory-' + index"
-                  :itemId="row.item_id"
-                  :itemUnit="row.item.units[0]"
-                  :requireExpiryDate="row.item.require_expiry_date"
-                  :requireProductionNumber="row.item.require_production_number"
-                  :warehouseId="row.warehouse_id"
+                  :item-id="row.item_id"
+                  :item-unit="row.item.units[0]"
+                  :require-expiry-date="row.item.require_expiry_date"
+                  :require-production-number="row.item.require_production_number"
+                  :warehouse-id="row.warehouse_id"
                   :value="row.quantity"
                   :inventories="row.inventories"
                   @add="addInventory($event, row)"
-                  v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1) && row.item_id && row.warehouse_id"/>
+                />
               </td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
-                  :name="'quantity' + index"
                   v-model="row.quantity"
+                  :name="'quantity' + index"
                   :unit="row.unit"
-                  :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
+                  :readonly="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"
+                />
               </td>
             </tr>
           </point-table>
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <div class="row">
             <div class="col-sm-12">
@@ -125,13 +176,18 @@
               <p-form-row
                 id="approver"
                 name="approver"
-                :label="$t('approver')">
-                <div slot="body" class="col-lg-9 mt-5">
+                :label="$t('approver')"
+              >
+                <div
+                  slot="body"
+                  class="col-lg-9 mt-5"
+                >
                   <m-user
                     :id="'user'"
                     v-model="form.approver_id"
                     :errors="form.errors.get('approver_id')"
-                    @errors="form.errors.set('approver_id', null)"/>
+                    @errors="form.errors.set('approver_id', null)"
+                  />
                 </div>
               </p-form-row>
             </div>
@@ -139,8 +195,15 @@
 
           <div class="form-group row">
             <div class="col-md-12">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                :disabled="isSaving"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
               </button>
             </div>
           </div>
@@ -192,6 +255,9 @@ export default {
   },
   computed: {
     ...mapGetters('manufactureFormula', ['formula'])
+  },
+  created () {
+    this.manufactureFormulaRequest()
   },
   methods: {
     ...mapActions('manufactureInput', ['create']),
@@ -294,9 +360,6 @@ export default {
           this.form.errors.record(error.errors)
         })
     }
-  },
-  created () {
-    this.manufactureFormulaRequest()
   }
 }
 </script>

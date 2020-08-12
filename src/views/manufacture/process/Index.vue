@@ -1,21 +1,22 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
+      <breadcrumb-manufacture />
       <span class="breadcrumb-item active">{{ $t('process') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <router-link
-            to="/manufacture/process/create"
             v-if="$permission.has('create manufacture process')"
-            class="input-group-prepend">
+            to="/manufacture/process/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
@@ -24,23 +25,32 @@
             placeholder="Search"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>{{ $t('name') }}</th>
               <th>{{ $t('notes') }}</th>
-              <th></th>
+              <th />
             </tr>
             <template v-for="(process, index) in processes">
-              <tr :key="'mp-' + index" slot="p-body">
+              <tr
+                :key="'mp-' + index"
+                slot="p-body"
+              >
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>
-                  <router-link :to="{ name: 'manufacture.process.show', params: { id: process.id }}" v-if="$permission.has('read manufacture process')">
-                     {{ process.name }}
+                  <router-link
+                    v-if="$permission.has('read manufacture process')"
+                    :to="{ name: 'manufacture.process.show', params: { id: process.id }}"
+                  >
+                    {{ process.name }}
                   </router-link>
                 </td>
                 <td>{{ process.notes }}</td>
@@ -56,8 +66,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>
@@ -89,6 +99,12 @@ export default {
   },
   computed: {
     ...mapGetters('manufactureProcess', ['processes', 'pagination'])
+  },
+  created () {
+    this.getManufactureProcesses()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('manufactureProcess', ['get']),
@@ -125,12 +141,6 @@ export default {
       this.currentPage = value
       this.getManufactureProcesses()
     }
-  },
-  created () {
-    this.getManufactureProcesses()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

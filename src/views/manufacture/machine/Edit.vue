@@ -1,51 +1,69 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link to="/manufacture/machine" class="breadcrumb-item">{{ $t('machine') | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        to="/manufacture/machine"
+        class="breadcrumb-item"
+      >
+        {{ $t('machine') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
-    <form class="row" @submit.prevent="onSubmit">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
       <p-block>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="code"
+            v-model="form.code"
             name="code"
             :label="$t('code')"
-            v-model="form.code"
             :disabled="true"
             :errors="form.errors.get('code')"
-            @errors="form.errors.set('code', null)"/>
+            @errors="form.errors.set('code', null)"
+          />
 
           <p-form-row
             id="name"
+            v-model="form.name"
             name="name"
             :label="$t('name')"
             :placeholder="$t('required') | uppercase"
-            v-model="form.name"
             :disabled="isSaving"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)"/>
+            @errors="form.errors.set('name', null)"
+          />
 
           <p-form-row
             id="notes"
+            v-model="form.notes"
             name="notes"
             :label="$t('notes')"
-            v-model="form.notes"
             :disabled="isSaving"
             :errors="form.errors.get('notes')"
-            @errors="form.errors.set('notes', null)"/>
+            @errors="form.errors.set('notes', null)"
+          />
 
           <hr>
 
           <div class="row">
-            <div class="col-lg-3"></div>
+            <div class="col-lg-3" />
             <div class="col-lg-9">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                :disabled="isSaving"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('update') | uppercase }}
               </button>
             </div>
           </div>
@@ -84,6 +102,9 @@ export default {
   computed: {
     ...mapGetters('manufactureMachine', ['machine'])
   },
+  created () {
+    this.getMachines()
+  },
   methods: {
     ...mapActions('manufactureMachine', ['update', 'find']),
     getMachines () {
@@ -114,9 +135,6 @@ export default {
           this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
         })
     }
-  },
-  created () {
-    this.getMachines()
   }
 }
 </script>

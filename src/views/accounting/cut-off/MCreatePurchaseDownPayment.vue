@@ -1,19 +1,33 @@
 <template>
   <div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="create purchase down payment">
+    <p-modal
+      :id="'select-' + id"
+      :ref="'select-' + id"
+      title="create purchase down payment"
+    >
       <template slot="content">
-        <form class="row" @submit.prevent="onSubmit">
+        <form
+          class="row"
+          @submit.prevent="onSubmit"
+        >
           <p-block>
             <p-form-row
               id="supplier_id"
+              v-model="form.supplier_id"
               name="supplier_id"
               :label="$t('supplier')"
-              v-model="form.supplier_id"
               :disabled="isSaving"
               :errors="form.errors.get('supplier_id')"
-              @errors="form.errors.set('supplier_id', null)">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-supplier id="supplier" v-model="form.supplier_id"/>
+              @errors="form.errors.set('supplier_id', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
+                <m-supplier
+                  id="supplier"
+                  v-model="form.supplier_id"
+                />
               </div>
             </p-form-row>
 
@@ -23,20 +37,29 @@
               :label="$t('account')"
               :disabled="isSaving"
               :errors="form.errors.get('account')"
-              @errors="form.errors.set('account', null)">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-chart-of-account id="chart-of-account" v-model="form.chart_of_account_id" sub-ledger="purchase down payment"/>
+              @errors="form.errors.set('account', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
+                <m-chart-of-account
+                  id="chart-of-account"
+                  v-model="form.chart_of_account_id"
+                  sub-ledger="purchase down payment"
+                />
               </div>
             </p-form-row>
 
             <p-form-row
               id="notes"
+              v-model="form.notes"
               name="notes"
               :label="$t('notes')"
-              v-model="form.notes"
               :disabled="isSaving"
               :errors="form.errors.get('notes')"
-              @errors="form.errors.set('notes', null)"/>
+              @errors="form.errors.set('notes', null)"
+            />
 
             <p-form-row
               id="amount"
@@ -44,26 +67,44 @@
               :label="$t('amount')"
               :disabled="isSaving"
               :errors="form.errors.get('amount')"
-              @errors="form.errors.set('amount', null)">
-              <div slot="body" class="col-lg-9 mt-5">
+              @errors="form.errors.set('amount', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
                 <p-form-number
                   :id="'amount'"
+                  v-model="form.amount"
                   :name="'amount'"
                   :is-text-right="false"
-                  v-model="form.amount"/>
+                />
               </div>
             </p-form-row>
 
             <div class="col-lg-9 offset-3">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                :disabled="isSaving"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
               </button>
             </div>
           </p-block>
         </form>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('close') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>
@@ -75,6 +116,20 @@ import debounce from 'lodash/debounce'
 import { mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       isSaving: false,
@@ -84,18 +139,6 @@ export default {
         notes: null,
         amount: 0
       })
-    }
-  },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
     }
   },
   watch: {

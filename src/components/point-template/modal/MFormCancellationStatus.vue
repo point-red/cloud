@@ -1,29 +1,53 @@
 <template>
   <div>
-    <span @click="show" class="link">{{ mutableLabel || 'SELECT' | uppercase }}</span>
-    <a href="javascript:void(0)" class="ml-5" @click="clear" v-show="mutableId != null">
-      <i class="clickable fa fa-close"></i>
+    <span
+      class="link"
+      @click="show"
+    >{{ mutableLabel || 'SELECT' | uppercase }}</span>
+    <a
+      v-show="mutableId != null"
+      href="javascript:void(0)"
+      class="ml-5"
+      @click="clear"
+    >
+      <i class="clickable fa fa-close" />
     </a>
-    <p-modal :ref="'select-form-cancellation-' + id" :id="'select-form-cancellation-' + id" title="select form cancellation status">
+    <p-modal
+      :id="'select-form-cancellation-' + id"
+      :ref="'select-form-cancellation-' + id"
+      title="select form cancellation status"
+    >
       <template slot="content">
         <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
+          <h3 class="text-center">
+            Loading ...
+          </h3>
         </div>
-        <div v-else class="list-group push">
+        <div
+          v-else
+          class="list-group push"
+        >
           <template v-for="(option, index) in options">
-          <a
-            :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{'active': option.id == mutableId }"
-            @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label | uppercase }}
-          </a>
+            <a
+              :key="index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': option.id == mutableId }"
+              href="javascript:void(0)"
+              @click="choose(option)"
+            >
+              {{ option.label | uppercase }}
+            </a>
           </template>
         </div>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('close') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>
@@ -33,6 +57,20 @@
 import debounce from 'lodash/debounce'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      default: null
+    },
+    value: {
+      type: [String, Number],
+      default: null
+    },
+    label: {
+      type: String,
+      default: null
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -46,19 +84,6 @@ export default {
       isLoading: false
     }
   },
-  props: {
-    id: {
-      type: String,
-      default: null
-    },
-    value: {
-      type: [String, Number],
-      default: null
-    },
-    label: {
-      type: String
-    }
-  },
   watch: {
     searchText: debounce(function () {
       this.search()
@@ -66,6 +91,9 @@ export default {
     label () {
       this.mutableLabel = this.label
     }
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     choose (option) {

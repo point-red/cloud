@@ -4,32 +4,58 @@
       :ref="'select-' + id"
       :title="$t('select inventory') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
-      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      @close="onClose()"
+    >
+      <input
+        v-model="searchText"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        @keydown.enter.prevent=""
+      >
       <hr>
       <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
       <div v-else>
         <p-table>
           <tr slot="p-head">
-            <th v-if="mutableRequireExpiryDate">Expiry Date</th>
-            <th v-if="mutableRequireProductionNumber">Production No.</th>
-            <th class="text-right">Quantity</th>
-            <th class="text-right">Stock</th>
+            <th v-if="mutableRequireExpiryDate">
+              Expiry Date
+            </th>
+            <th v-if="mutableRequireProductionNumber">
+              Production No.
+            </th>
+            <th class="text-right">
+              Quantity
+            </th>
+            <th class="text-right">
+              Stock
+            </th>
           </tr>
-          <tr slot="p-body" v-for="(option, index) in inventories" :key="index">
-            <td v-if="mutableRequireExpiryDate">{{ option.expiry_date | dateFormat('DD MMMM YYYY') }}</td>
-            <td v-if="mutableRequireProductionNumber">{{ option.production_number }}</td>
+          <tr
+            v-for="(option, inventoryIndex) in inventories"
+            slot="p-body"
+            :key="inventoryIndex"
+          >
+            <td v-if="mutableRequireExpiryDate">
+              {{ option.expiry_date | dateFormat('DD MMMM YYYY') }}
+            </td>
+            <td v-if="mutableRequireProductionNumber">
+              {{ option.production_number }}
+            </td>
             <td class="text-right">
               <p-quantity
-                :id="'inventory-out-' + index"
-                :name="'inventory-out-' + index"
+                :id="'inventory-out-' + inventoryIndex"
+                v-model="option.quantity"
+                :name="'inventory-out-' + inventoryIndex"
+                :units="mutableItemUnits"
+                :unit="mutableItemUnit"
                 @input="calculate"
                 @choosen="updateUnit"
-                v-model="option.quantity"
-                :units="mutableItemUnits"
-                :unit="mutableItemUnit"/>
+              />
             </td>
             <td class="text-right">
               {{ option.remainingInUnit | numberFormat }}
@@ -37,19 +63,26 @@
             </td>
           </tr>
           <tr slot="p-body">
-            <td v-if="mutableRequireExpiryDate">
-            <td v-if="mutableRequireProductionNumber">
-            <td class="text-right">
+            <td v-if="mutableRequireExpiryDate" /><td v-if="mutableRequireProductionNumber" /><td class="text-right">
               {{ mutableTotalQuantity | numberFormat }} {{ mutableItemUnit.label }}
             </td>
-            <td class="text-right"></td>
+            <td class="text-right" />
           </tr>
         </p-table>
       </div>
-      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+      <div
+        v-if="searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
         {{ $t('searching not found', [searchText]) | capitalize }}
       </div>
-      <button type="button" @click="update()" class="btn btn-sm btn-block btn-primary">{{ $t('update') | uppercase }}</button>
+      <button
+        type="button"
+        class="btn btn-sm btn-block btn-primary"
+        @click="update()"
+      >
+        {{ $t('update') | uppercase }}
+      </button>
     </sweet-modal>
   </div>
 </template>
@@ -59,8 +92,19 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: null
+    }
+  },
   data () {
     return {
+      index: null,
       searchText: '',
       options: [],
       isLoading: false,
@@ -87,16 +131,6 @@ export default {
   computed: {
     ...mapGetters('inventoryInventoryDna', ['inventories'])
   },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number],
-      default: null
-    }
-  },
   watch: {
     searchText: debounce(function () {
       this.search()
@@ -104,6 +138,9 @@ export default {
   },
   created () {
     this.search()
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('inventoryInventoryDna', ['get', 'pagination']),
@@ -150,14 +187,14 @@ export default {
       this.calculate()
     },
     open (row) {
+      this.index = row.index
       if (!row.warehouse_id) {
         this.$alert.info('INPUT REQURED', this.$t('please select warehouse'))
         return
       }
 
-      if (!row.item) {
+      if (!row.item_id) {
         this.$alert.info('ITEM REQUIRED', this.$t('please select item'))
-        return
       }
 
       this.mutableRowId = row.row_id
@@ -177,10 +214,12 @@ export default {
     update () {
       this.calculate()
       this.$emit('updated', {
+        index: this.index,
         rowId: this.mutableRowId,
-        unit: this.mutableItemUnit,
+        unit: this.mutableItemUnit.name,
+        converter: this.mutableItemUnit.converter,
         dna: this.inventories,
-        totalQuantity: this.mutableTotalQuantity
+        quantity: this.mutableTotalQuantity
       })
       this.close()
     },

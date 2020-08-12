@@ -7,47 +7,56 @@
         'block-mode-pinned' : pinned,
         'block-mode-hidden' : hidden
       }"
-      class="block">
+      class="block"
+    >
       <div
         v-show="header"
-        class="block-header bg-gray-lighter">
-        <h3 class="block-title">{{ title | uppercase }}</h3>
+        class="block-header bg-gray-lighter"
+      >
+        <h3 class="block-title">
+          {{ title | uppercase }}
+        </h3>
         <div
           v-show="showOptions"
-          class="block-options">
-          <slot name="header"/>
+          class="block-options"
+        >
+          <slot name="header" />
           <button
             v-show="showFullscreenButton"
             type="button"
             class="btn-block-option"
-            @click="toggleFullscreen">
-            <i :class="{ 'si si-size-fullscreen' : !fullscreen, 'si si-size-actual' : fullscreen }"/>
+            @click="toggleFullscreen"
+          >
+            <i :class="{ 'si si-size-fullscreen' : !fullscreen, 'si si-size-actual' : fullscreen }" />
           </button>
           <button
             v-show="showPrinterButton && fullscreen"
             type="button"
             class="btn-block-option"
-            @click="printBlock">
-            <i class="si si-printer"/> {{ $t('print') | uppercase }}
+            @click="printBlock"
+          >
+            <i class="si si-printer" /> {{ $t('print') | uppercase }}
           </button>
           <button
             v-show="showPinnedButton"
             type="button"
             class="btn-block-option"
-            @click="togglePinned">
-            <i class="si si-pin"/>
+            @click="togglePinned"
+          >
+            <i class="si si-pin" />
           </button>
           <button
             v-show="showHiddenButton"
             type="button"
             class="btn-block-option"
-            @click="toggleHidden">
-            <i :class="{ 'si si-arrow-up' : !hidden, 'si si-arrow-down' : hidden }"/>
+            @click="toggleHidden"
+          >
+            <i :class="{ 'si si-arrow-up' : !hidden, 'si si-arrow-down' : hidden }" />
           </button>
         </div>
       </div>
       <div class="block-content">
-        <slot/>
+        <slot />
       </div>
     </div>
   </div>

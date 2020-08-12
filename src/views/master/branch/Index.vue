@@ -1,45 +1,50 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
+      <breadcrumb-master />
       <span class="breadcrumb-item active">{{ $t('branch') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addBranch.open()"
             v-if="$permission.has('create branch')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addBranch.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
-        <hr/>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Branch</th>
               <th>User</th>
             </tr>
             <tr
               v-for="(branch, index) in branches"
               :key="branch.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ (page - 1) * limit + (index + 1) }}</th>
               <td>
                 <router-link :to="{ name: 'branch.show', params: { id: branch.id }}">
@@ -48,9 +53,18 @@
               </td>
               <td>
                 <template v-for="(user, index2) in branch.users">
-                  <span class="mr-10" :key="'branch-user-' + index2">
-                    <i class="si si-user" v-if="!user.pivot.is_default"></i>
-                    <i class="si si-user-following" v-if="user.pivot.is_default"></i> {{ user.full_name }}
+                  <span
+                    :key="'branch-user-' + index2"
+                    class="mr-10"
+                  >
+                    <i
+                      v-if="!user.pivot.is_default"
+                      class="si si-user"
+                    />
+                    <i
+                      v-if="user.pivot.is_default"
+                      class="si si-user-following"
+                    /> {{ user.full_name }}
                   </span>
                 </template>
               </td>
@@ -60,12 +74,15 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <m-add-branch ref="addBranch" @added="onAdded"></m-add-branch>
+    <m-add-branch
+      ref="addBranch"
+      @added="onAdded"
+    />
   </div>
 </template>
 
@@ -95,6 +112,15 @@ export default {
   },
   computed: {
     ...mapGetters('masterBranch', ['branches', 'pagination'])
+  },
+  created () {
+    this.getBranchRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('masterBranch', ['get']),
@@ -130,15 +156,6 @@ export default {
     onAdded () {
       this.getBranchRequest()
     }
-  },
-  created () {
-    this.getBranchRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

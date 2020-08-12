@@ -1,10 +1,20 @@
 <template>
   <div class="col-6 col-sm-4 col-md-3">
-    <a href="javascript:void(0)" class="block text-center" @click="clicked(item)">
+    <a
+      href="javascript:void(0)"
+      class="block text-center"
+      @click="clicked(item)"
+    >
       <div class="mt-10 mr-5">
-        <img class="img-fluid" src="/300x175.jpg">
+        <img
+          class="img-fluid"
+          src="/300x175.jpg"
+        >
         <p class="font-w600 mb-0">{{ itemName | uppercase }} <template v-if="itemUnit">({{ itemUnit.label }})</template></p>
-        <p class="font-w400" v-if="itemPrice">{{ itemPrice | numberFormat }}</p>
+        <p
+          v-if="itemPrice"
+          class="font-w400"
+        >{{ itemPrice | numberFormat }}</p>
       </div>
     </a>
   </div>
@@ -30,7 +40,8 @@ export default {
       default: null
     },
     clicked: {
-      type: Function
+      type: Function,
+      default: null
     }
   }
 }

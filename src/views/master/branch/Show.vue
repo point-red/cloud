@@ -1,87 +1,116 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <router-link to="/master/branch" class="breadcrumb-item">{{ $t('branch') | uppercase }}</router-link>
+      <breadcrumb-master />
+      <router-link
+        to="/master/branch"
+        class="breadcrumb-item"
+      >
+        {{ $t('branch') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ branch.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addBranch.open()"
             v-if="$permission.has('create branch')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addBranch.open()"
+          >
             {{ $t('create') | uppercase }}
           </a>
           <a
-            href="javascript:void(0)"
-            @click="$refs.editBranch.open(branch.id)"
             v-if="$permission.has('update branch')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editBranch.open(branch.id)"
+          >
             {{ $t('edit') | uppercase }}
           </a>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete branch')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="data.name"
             :label="$t('name') | uppercase"
             name="name"
-            v-model="data.name"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="address"
+            v-model="data.address"
             :label="$t('address') | uppercase"
             name="address"
-            v-model="data.address"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="phone"
+            v-model="data.phone"
             :label="$t('phone') | uppercase"
             name="phone"
-            v-model="data.phone"
-            readonly/>
+            readonly
+          />
           <hr>
-          <p-separator></p-separator>
+          <p-separator />
           <h5>{{ $t('user access') | uppercase }}</h5>
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>user</th>
-              <th class="text-center">access</th>
+              <th class="text-center">
+                access
+              </th>
               <th class="text-center">
                 set as default
-                <i class="fa fa-info-circle" @click="$alert.show('info', $t('branch - set as default'))"></i>
+                <i
+                  class="fa fa-info-circle"
+                  @click="$alert.show('info', $t('branch - set as default'))"
+                />
               </th>
             </tr>
-            <tr slot="p-body" v-for="(user, index) in users" :key="'user-' + index">
-              <th width="50px">{{ index + 1 }}</th>
+            <tr
+              v-for="(user, index) in users"
+              slot="p-body"
+              :key="'user-' + index"
+            >
+              <th width="50px">
+                {{ index + 1 }}
+              </th>
               <td>{{ user.full_name }}</td>
               <td class="text-center">
                 <input
                   type="checkbox"
                   :checked="isChecked(user.id)"
-                  @click="toggleRelation(user.id)">
+                  @click="toggleRelation(user.id)"
+                >
               </td>
               <td class="text-center">
                 <input
-                  type="checkbox"
                   v-if="isChecked(user.id)"
+                  type="checkbox"
                   :checked="isDefault(user)"
-                  @click="toggleDefault(user.id)">
+                  @click="toggleDefault(user.id)"
+                >
               </td>
             </tr>
           </point-table>
@@ -89,8 +118,14 @@
       </p-block>
     </div>
 
-    <m-add-branch ref="addBranch" @added="onAddedBranch($event)"></m-add-branch>
-    <m-edit-branch ref="editBranch" @updated="onUpdatedBranch($event)"></m-edit-branch>
+    <m-add-branch
+      ref="addBranch"
+      @added="onAddedBranch($event)"
+    />
+    <m-edit-branch
+      ref="editBranch"
+      @updated="onUpdatedBranch($event)"
+    />
   </div>
 </template>
 
@@ -112,6 +147,7 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: false,
+      isUpdating: false,
       isDeleting: false,
       data: {
         name: null,
@@ -123,6 +159,9 @@ export default {
   computed: {
     ...mapGetters('masterBranch', ['branch']),
     ...mapGetters('masterUser', ['users'])
+  },
+  created () {
+    this.findBranch()
   },
   methods: {
     ...mapActions('masterBranch', ['find', 'delete']),
@@ -142,12 +181,15 @@ export default {
       })
     },
     toggleRelation (userId) {
-      if (this.isChecked(userId)) {
+      if (this.isUpdating === false && this.isChecked(userId)) {
+        this.isUpdating = true
         this.detach({
           user_id: userId,
           branch_id: this.id
         }).then(response => {
-          this.branch.users.splice(this.branch.users.indexOf(userId), 1)
+          this.branch.users.splice(this.branch.users.findIndex(obj => obj.id == userId), 1)
+        }).finally(() => {
+          this.isUpdating = false
         })
       } else {
         this.attach({
@@ -157,6 +199,8 @@ export default {
           this.branch.users.push({
             id: userId
           })
+        }).finally(() => {
+          this.isUpdating = false
         })
       }
     },
@@ -221,9 +265,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findBranch()
   }
 }
 </script>

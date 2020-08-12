@@ -1,53 +1,71 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <router-link to="/master/customer-group" class="breadcrumb-item">{{ $t('customer group') | uppercase }}</router-link>
+      <breadcrumb-master />
+      <router-link
+        to="/master/customer-group"
+        class="breadcrumb-item"
+      >
+        {{ $t('customer group') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ group.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <button
-            type="button"
-            @click="$refs.addCustomerGroup.open()"
             v-if="$permission.has('create customer')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addCustomerGroup.open()"
+          >
             <span>{{ $t('create') | uppercase }}</span>
           </button>
           <button
-            type="button"
-            @click="$refs.editCustomerGroup.open(group)"
             v-if="$permission.has('update customer')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editCustomerGroup.open(group)"
+          >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete customer')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="group.name"
             label="Name"
             name="name"
-            v-model="group.name"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-customer-group ref="addCustomerGroup" @added="onAddedCustomerGroup($event)"></m-add-customer-group>
-    <m-edit-customer-group ref="editCustomerGroup" @updated="onUpdatedCustomerGroup($event)"></m-edit-customer-group>
+    <m-add-customer-group
+      ref="addCustomerGroup"
+      @added="onAddedCustomerGroup($event)"
+    />
+    <m-edit-customer-group
+      ref="editCustomerGroup"
+      @updated="onUpdatedCustomerGroup($event)"
+    />
   </div>
 </template>
 
@@ -74,6 +92,9 @@ export default {
   },
   computed: {
     ...mapGetters('masterCustomerGroup', ['group'])
+  },
+  created () {
+    this.findCustomerGroup()
   },
   methods: {
     ...mapActions('masterCustomerGroup', ['find', 'delete']),
@@ -113,9 +134,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findCustomerGroup()
   }
 }
 </script>

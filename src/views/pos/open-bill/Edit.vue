@@ -1,9 +1,19 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-pos/>
-      <router-link to="/pos/open-bill" class="breadcrumb-item">{{ $t('open bill') | uppercase }}</router-link>
-      <router-link :to="{ name: 'pos.open-bill.show', params: { id: id }}" class="breadcrumb-item">{{ id }}</router-link>
+      <breadcrumb-pos />
+      <router-link
+        to="/pos/open-bill"
+        class="breadcrumb-item"
+      >
+        {{ $t('open bill') | uppercase }}
+      </router-link>
+      <router-link
+        :to="{ name: 'pos.open-bill.show', params: { id: id }}"
+        class="breadcrumb-item"
+      >
+        {{ id }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
@@ -14,26 +24,30 @@
         :is-fullscreen="true"
         :show-fullscreen-button="false"
         :show-hidden-button="false"
-        column="col-sm-12">
-
+        column="col-sm-12"
+      >
         <template v-slot:header>
           |<router-link
             v-if="$permission.has('create pos')"
             to="/pos/open-bill/create"
-            exact>
+            exact
+          >
             <button
               type="button"
-              class="btn-block-option">
+              class="btn-block-option"
+            >
               Add
             </button>
           </router-link>|
           <router-link
             v-if="$permission.has('read pos')"
             to="/pos/open-bill"
-            exact>
+            exact
+          >
             <button
               type="button"
-              class="btn-block-option">
+              class="btn-block-option"
+            >
               List
             </button>
           </router-link>|
@@ -42,24 +56,53 @@
         <p-block-inner :is-loading="isGroupLoading">
           <div class="row">
             <div class="col-sm-8">
-              <ul class="nav nav-tabs nav-tabs-alt mb-15" data-toggle="tabs" role="tablist">
-                <li class="nav-item" v-for="(group, index) in itemGroups" :key="'item-group-' + index">
-                  <a class="nav-link active" v-if="currentGroup && currentGroupType === 'item' && group.id === currentGroup.id">{{ group.name }}</a>
-                  <a class="nav-link" style="cursor:pointer;" v-else @click="selectGroup(group, 'item')">{{ group.name }}</a>
+              <ul
+                class="nav nav-tabs nav-tabs-alt mb-15"
+                data-toggle="tabs"
+                role="tablist"
+              >
+                <li
+                  v-for="(group, index) in itemGroups"
+                  :key="'item-group-' + index"
+                  class="nav-item"
+                >
+                  <a
+                    v-if="currentGroup && currentGroupType === 'item' && group.id === currentGroup.id"
+                    class="nav-link active"
+                  >{{ group.name }}</a>
+                  <a
+                    v-else
+                    class="nav-link"
+                    style="cursor:pointer;"
+                    @click="selectGroup(group, 'item')"
+                  >{{ group.name }}</a>
                 </li>
-                <li class="nav-item" v-for="(group, index) in serviceGroups" :key="'service-group-' + index">
-                  <a class="nav-link active" v-if="currentGroup && currentGroupType === 'service' && group.id === currentGroup.id">{{ group.name }}</a>
-                  <a class="nav-link" style="cursor:pointer;" v-else @click="selectGroup(group, 'service')">{{ group.name }}</a>
+                <li
+                  v-for="(group, index) in serviceGroups"
+                  :key="'service-group-' + index"
+                  class="nav-item"
+                >
+                  <a
+                    v-if="currentGroup && currentGroupType === 'service' && group.id === currentGroup.id"
+                    class="nav-link active"
+                  >{{ group.name }}</a>
+                  <a
+                    v-else
+                    class="nav-link"
+                    style="cursor:pointer;"
+                    @click="selectGroup(group, 'service')"
+                  >{{ group.name }}</a>
                 </li>
               </ul>
 
               <p-form-input
                 id="search-text"
+                v-model="searchText"
                 name="search-text"
                 placeholder="Search"
-                v-model="searchText"
                 :disabled="isSaving || isDeleting || isLoading || isGroupLoading"
-                @input="filterSearch"/>
+                @input="filterSearch"
+              />
 
               <p-block-inner :is-loading="isLoading">
                 <div class="row gutters-tiny">
@@ -70,10 +113,11 @@
                         :id="'item-' + index"
                         :key="'item-' + index"
                         :item="item"
-                        :itemName="item.item_name"
-                        :itemPrice="item.price"
-                        :itemUnit="item.item_unit"
-                        :clicked="chooseItem"/>
+                        :item-name="item.item_name"
+                        :item-price="item.price"
+                        :item-unit="item.item_unit"
+                        :clicked="chooseItem"
+                      />
                     </template>
                   </template>
                   <template v-for="(service, index) in serviceList">
@@ -83,90 +127,124 @@
                         :id="'service-' + index"
                         :key="'service-' + index"
                         :item="service"
-                        :itemName="service.service_name"
-                        :itemPrice="service.price"
-                        :clicked="chooseService"/>
-                      </template>
+                        :item-name="service.service_name"
+                        :item-price="service.price"
+                        :clicked="chooseService"
+                      />
+                    </template>
                   </template>
                 </div>
                 <p-pagination
                   v-if="currentGroupType === 'item' && itemList.length !== 0"
                   :current-page="currentPageItem"
                   :last-page="lastPageItem"
-                  @updatePageItem="updatePageItem">
-                </p-pagination>
+                  @updatePageItem="updatePageItem"
+                />
                 <p-pagination
                   v-if="currentGroupType === 'service' && serviceList.length !== 0"
                   :current-page="currentPageService"
                   :last-page="lastPageService"
-                  @updatePageService="updatePageService">
-                </p-pagination>
+                  @updatePageService="updatePageService"
+                />
               </p-block-inner>
             </div>
 
-            <div class="col-sm-4" style="background-color:LightGray;">
+            <div
+              class="col-sm-4"
+              style="background-color:LightGray;"
+            >
               <p-table style="margin-bottom:0px;">
                 <tr slot="p-body">
                   <td>
                     {{ $t('customer') | titlecase }}
                   </td>
                   <td style="text-align:right;">
-                    <div slot="body" style="text-align:right;">
-                      <m-customer id="customer" v-model="form.customer_id" @choosen="chooseCustomer"/>
+                    <div
+                      slot="body"
+                      style="text-align:right;"
+                    >
+                      <m-customer
+                        id="customer"
+                        v-model="form.customer_id"
+                        @choosen="chooseCustomer"
+                      />
                     </div>
                   </td>
                 </tr>
                 <template v-for="(row, index) in form.items_temporary">
-                  <tr slot="p-body" :key="'item-select-' + index" @click="showItem(index, row)" style="cursor:pointer;">
-                    <td style="text-align:left;" width="75%">
+                  <tr
+                    slot="p-body"
+                    :key="'item-select-' + index"
+                    style="cursor:pointer;"
+                    @click="showItem(index, row)"
+                  >
+                    <td
+                      style="text-align:left;"
+                      width="75%"
+                    >
                       <template>
                         <label style="cursor:pointer;color:blue;">{{ row.quantity | numberFormat }}x</label>
                         {{ row.price | numberFormat }}
                       </template>
-                      <br/>
+                      <br>
                       <b>{{ row.item_name }} ({{ row.item_unit.label }})</b>
                       <template v-if="row.discount_percent > 0">
-                        <br/>
+                        <br>
                         <label style="cursor:pointer;color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
                       </template>
                       <template v-if="row.error">
-                        <br/>
+                        <br>
                         <label style="cursor:pointer;color:red;">{{ row.error }}</label>
                       </template>
                       <template v-if="row.notes">
-                        <br/>
-                        <br/>
+                        <br>
+                        <br>
                         <label style="cursor:pinter;">Note: {{ row.notes }}</label>
                       </template>
                     </td>
-                    <td style="text-align:right;" width="25%">
+                    <td
+                      style="text-align:right;"
+                      width="25%"
+                    >
                       <b>{{ row.total | numberFormat }}</b>
                     </td>
                   </tr>
                 </template>
-                <tr slot="p-body" v-for="(row, index) in form.services" :key="'service-select-' + index" @click="showService(index, row)" style="cursor:pointer;">
-                  <td style="text-align:left;" width="75%">
+                <tr
+                  v-for="(row, index) in form.services"
+                  slot="p-body"
+                  :key="'service-select-' + index"
+                  style="cursor:pointer;"
+                  @click="showService(index, row)"
+                >
+                  <td
+                    style="text-align:left;"
+                    width="75%"
+                  >
                     <template>
                       <label style="cursor:pointer;color:blue;">{{ row.quantity | numberFormat }}x</label>
                       {{ row.price | numberFormat }}
                     </template>
-                    <br/>
+                    <br>
                     <b>{{ row.service_name }}</b>
                     <template v-if="row.discount_percent > 0">
-                      <br/>
+                      <br>
                       <label style="cursor:pointer;color:orange;">{{ row.discount_percent | numberFormat }}% Discount</label>
                     </template>
                     <template v-if="row.error">
-                      <br/>
+                      <br>
                       <label style="cursor:pointer;color:red;">{{ row.error }}</label>
                     </template>
                     <template v-if="row.notes">
-                      <br/>
-                      <br/>
+                      <br>
+                      <br>
                       <label style="cursor:pinter;">Note: {{ row.notes }}</label>
                     </template>
                   </td>
-                  <td style="text-align:right;" width="25%">
+                  <td
+                    style="text-align:right;"
+                    width="25%"
+                  >
                     <b>{{ row.total | numberFormat }}</b>
                   </td>
                 </tr>
@@ -186,13 +264,21 @@
                     <b>{{ form.subtotal | numberFormat }}</b>
                   </td>
                 </tr>
-                <tr slot="p-body" @click="showDiscount()" style="cursor:pointer;">
+                <tr
+                  slot="p-body"
+                  style="cursor:pointer;"
+                  @click="showDiscount()"
+                >
                   <td>
                     {{ $t('discount') | titlecase }}
                   </td>
                   <td style="text-align:right;">
-                    <template v-if="!form.discount_percent"><b>+</b></template>
-                    <template v-else><b>{{ form.discount_percent | numberFormat }}%</b></template>
+                    <template v-if="!form.discount_percent">
+                      <b>+</b>
+                    </template>
+                    <template v-else>
+                      <b>{{ form.discount_percent | numberFormat }}%</b>
+                    </template>
                   </td>
                 </tr>
                 <tr slot="p-body">
@@ -208,13 +294,17 @@
                     {{ $t('money received') | titlecase }}
                   </td>
                   <td style="text-align:right;">
-                    <div slot="body" style="text-align:right;">
+                    <div
+                      slot="body"
+                      style="text-align:right;"
+                    >
                       <p-form-number
                         id="paid"
+                        v-model="form.paid"
                         name="paid"
                         :readonly="isSaving || isDeleting || isLoading || isGroupLoading"
-                        v-model="form.paid"
-                        @keyup.native="calculate()"/>
+                        @keyup.native="calculate()"
+                      />
                     </div>
                   </td>
                 </tr>
@@ -223,8 +313,14 @@
                     {{ $t('money change') | titlecase }}
                   </td>
                   <td style="text-align:right;">
-                    <b style="color:red;" v-if="form.change < 0">{{ form.change | numberFormat }}</b>
-                    <b style="color:green;" v-else>{{ form.change | numberFormat }}</b>
+                    <b
+                      v-if="form.change < 0"
+                      style="color:red;"
+                    >{{ form.change | numberFormat }}</b>
+                    <b
+                      v-else
+                      style="color:green;"
+                    >{{ form.change | numberFormat }}</b>
                   </td>
                 </tr>
               </p-table>
@@ -232,21 +328,58 @@
               <p-form-row
                 id="notes"
                 name="notes"
-                :label="$t('notes')">
-                <div slot="body" class="col-lg-12 mt-5">
-                  <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes" :readonly="isSaving"></textarea>
+                :label="$t('notes')"
+              >
+                <div
+                  slot="body"
+                  class="col-lg-12 mt-5"
+                >
+                  <textarea
+                    v-model="form.notes"
+                    rows="5"
+                    class="form-control"
+                    placeholder="Notes"
+                    :readonly="isSaving"
+                  />
                 </div>
               </p-form-row>
               <div class="form-group row">
                 <div class="col-md-12">
-                  <button v-if="form.items_temporary.length !== 0 || form.services.length !== 0" type="button" class="btn btn-block btn-success" :disabled="isSaving || isDeleting || isLoading || isGroupLoading" @click="charge">
-                    <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Charge {{ form.amount | numberFormat }}
+                  <button
+                    v-if="form.items_temporary.length !== 0 || form.services.length !== 0"
+                    type="button"
+                    class="btn btn-block btn-success"
+                    :disabled="isSaving || isDeleting || isLoading || isGroupLoading"
+                    @click="charge"
+                  >
+                    <i
+                      v-show="isSaving"
+                      class="fa fa-asterisk fa-spin"
+                    /> Charge {{ form.amount | numberFormat }}
                   </button>
-                  <button v-if="form.items_temporary.length !== 0 || form.services.length !== 0" type="button" class="btn btn-block btn-primary" :disabled="isSaving || isDeleting || isLoading || isGroupLoading" @click="save">
-                    <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                  <button
+                    v-if="form.items_temporary.length !== 0 || form.services.length !== 0"
+                    type="button"
+                    class="btn btn-block btn-primary"
+                    :disabled="isSaving || isDeleting || isLoading || isGroupLoading"
+                    @click="save"
+                  >
+                    <i
+                      v-show="isSaving"
+                      class="fa fa-asterisk fa-spin"
+                    /> {{ $t('save') | uppercase }}
                   </button>
-                  <button type="button" class="btn btn-block btn-danger" :disabled="isSaving || isDeleting || isLoading || isGroupLoading" @click="onDelete" v-if="$permission.has('delete pos')">
-                    <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+                  <button
+                    v-if="$permission.has('delete pos')"
+                    type="button"
+                    class="btn btn-block btn-danger"
+                    :disabled="isSaving || isDeleting || isLoading || isGroupLoading"
+                    @click="onDelete"
+                  >
+                    <i
+                      v-show="isDeleting"
+                      class="fa fa-asterisk fa-spin"
+                    /> {{ $t('delete') | uppercase }}
                   </button>
                 </div>
               </div>
@@ -259,35 +392,38 @@
     <discount-modal
       id="discount"
       ref="discount"
-      @updateDiscount="updateDiscount"/>
+      @updateDiscount="updateDiscount"
+    />
 
     <item-modal
       id="item"
       ref="item"
       @updateItem="updateItem"
-      @deleteItem="deleteItem"/>
+      @deleteItem="deleteItem"
+    />
 
     <service-modal
       id="service"
       ref="service"
       @updateService="updateService"
-      @deleteService="deleteService"/>
+      @deleteService="deleteService"
+    />
 
     <m-inventory-out
-      ref="inventory"
       :id="'inventory'"
+      ref="inventory"
       :key="'inventory'"
-      :itemId="selectedItem.item_id"
-      :requireExpiryDate="selectedItem.require_expiry_date"
-      :requireProductionNumber="selectedItem.require_production_number"
-      :warehouseId="form.warehouse_id"
+      :item-id="selectedItem.item_id"
+      :require-expiry-date="selectedItem.require_expiry_date"
+      :require-production-number="selectedItem.require_production_number"
+      :warehouse-id="form.warehouse_id"
       :inventories="selectedItem.inventories"
+      :is-pos="true"
+      :item-name="selectedItem.item_name"
+      :item-price="selectedItem.price"
+      :item-unit="selectedItem.item_unit"
       @add="addInventory($event, selectedItem)"
-      :isPos="true"
-      :itemName="selectedItem.item_name"
-      :itemPrice="selectedItem.price"
-      :itemUnit="selectedItem.item_unit">
-    </m-inventory-out>
+    />
   </div>
 </template>
 
@@ -374,6 +510,24 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('masterCustomer', ['customer']),
+    ...mapGetters('masterItemGroup', {
+      itemGroups: 'groups'
+    }),
+    ...mapGetters('masterServiceGroup', {
+      serviceGroups: 'groups'
+    }),
+    ...mapGetters('masterPriceListItem', {
+      items: 'items',
+      paginationItem: 'pagination'
+    }),
+    ...mapGetters('masterPriceListService', {
+      services: 'services',
+      paginationService: 'pagination'
+    }),
+    ...mapGetters('posBill', ['bill'])
+  },
   watch: {
     'currentGroup' () {
       if (this.currentGroup) {
@@ -405,23 +559,90 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters('masterCustomer', ['customer']),
-    ...mapGetters('masterItemGroup', {
-      itemGroups: 'groups'
-    }),
-    ...mapGetters('masterServiceGroup', {
-      serviceGroups: 'groups'
-    }),
-    ...mapGetters('masterPriceListItem', {
-      items: 'items',
-      paginationItem: 'pagination'
-    }),
-    ...mapGetters('masterPriceListService', {
-      services: 'services',
-      paginationService: 'pagination'
-    }),
-    ...mapGetters('posBill', ['bill'])
+  created () {
+    this.isGroupLoading = true
+    this.findBill({
+      id: this.id,
+      params: {
+        filter_form: 'activePending',
+        includes: 'form;customer;items.item.units;services.service;form.createdBy'
+      }
+    }).then(response => {
+      this.requestAllData()
+      if (!this.$formRules.allowedToUpdate(this.bill.form)) {
+        this.$router.replace('/open-bill')
+      }
+      this.form.date = this.bill.form.date
+      this.form.edited_form_number = this.bill.form.edited_form_number
+      this.form.customer_id = this.bill.customer_id
+      this.form.customer_name = this.bill.customer_name
+      this.form.pricing_group_id = this.bill.customer ? this.bill.customer.pricing_group_id : -1
+      this.form.notes = this.bill.notes
+      this.form.discount_percent = parseFloat(this.bill.discount_percent)
+      this.form.type_of_tax = this.bill.type_of_tax
+      this.form.paid = parseFloat(this.bill.paid)
+      this.form.warehouse_id = this.bill.warehouse_id
+      this.form.items_temporary = []
+      this.bill.items.forEach((item, keyItem) => {
+        const unitIndex = item.item.units.findIndex(o => o.label === item.unit)
+        const unitData = item.item.units[unitIndex]
+        var newItem = Object.assign({}, item)
+        newItem.item_unit = unitData
+        newItem.item_unit_id = unitData.id
+        newItem.total = 0
+        newItem.error = null
+        newItem.require_expiry_date = item.item.require_expiry_date
+        newItem.require_production_number = item.item.require_production_number
+        newItem.pricing_group_id = this.form.pricing_group_id
+        newItem.inventories = []
+        if (item.item.require_expiry_date || item.item.require_production_number) {
+          const itemTemporaryIndex = this.form.items_temporary.findIndex(o => o.item_id === item.item_id && o.unit === item.unit)
+          if (itemTemporaryIndex < 0) {
+            newItem.inventories.push({
+              quantity: item.quantity,
+              expiry_date: item.expiry_date,
+              production_number: item.production_number
+            })
+            this.form.items_temporary.push(newItem)
+          } else {
+            var existing = this.form.items_temporary[itemTemporaryIndex]
+            existing.quantity += item.quantity
+            existing.inventories.push({
+              quantity: item.quantity,
+              expiry_date: item.expiry_date,
+              production_number: item.production_number
+            })
+            this.form.items_temporary[itemTemporaryIndex] = existing
+          }
+        } else {
+          this.form.items_temporary.push(newItem)
+        }
+      })
+      this.bill.services.forEach((service, keyService) => {
+        this.form.services.push({
+          service_id: service.service_id,
+          service_name: service.service_name,
+          quantity: parseFloat(service.quantity),
+          price: parseFloat(service.price),
+          discount_value: parseFloat(service.discount_value),
+          discount_percent: parseFloat(service.discount_percent),
+          total: 0,
+          pricing_group_id: this.form.pricing_group_id,
+          notes: service.notes
+        })
+      })
+    }).catch(error => {
+      this.isGroupLoading = false
+      this.$notification.error(error.message)
+    })
+  },
+  updated () {
+    if (this.itemList.length !== 0) {
+      this.lastPageItem = this.paginationItem.last_page
+    }
+    if (this.serviceList.length !== 0) {
+      this.lastPageService = this.paginationService.last_page
+    }
   },
   methods: {
     ...mapActions('masterCustomer', {
@@ -885,91 +1106,6 @@ export default {
         this.isDeleting = false
         this.$notification.error(error.message)
       })
-    }
-  },
-  created () {
-    this.isGroupLoading = true
-    this.findBill({
-      id: this.id,
-      params: {
-        filter_form: 'activePending',
-        includes: 'form;customer;items.item.units;services.service;form.createdBy'
-      }
-    }).then(response => {
-      this.requestAllData()
-      if (!this.$formRules.allowedToUpdate(this.bill.form)) {
-        this.$router.replace('/open-bill')
-      }
-      this.form.date = this.bill.form.date
-      this.form.edited_form_number = this.bill.form.edited_form_number
-      this.form.customer_id = this.bill.customer_id
-      this.form.customer_name = this.bill.customer_name
-      this.form.pricing_group_id = this.bill.customer ? this.bill.customer.pricing_group_id : -1
-      this.form.notes = this.bill.notes
-      this.form.discount_percent = parseFloat(this.bill.discount_percent)
-      this.form.type_of_tax = this.bill.type_of_tax
-      this.form.paid = parseFloat(this.bill.paid)
-      this.form.warehouse_id = this.bill.warehouse_id
-      this.form.items_temporary = []
-      this.bill.items.forEach((item, keyItem) => {
-        const unitIndex = item.item.units.findIndex(o => o.label === item.unit)
-        const unitData = item.item.units[unitIndex]
-        var newItem = Object.assign({}, item)
-        newItem.item_unit = unitData
-        newItem.item_unit_id = unitData.id
-        newItem.total = 0
-        newItem.error = null
-        newItem.require_expiry_date = item.item.require_expiry_date
-        newItem.require_production_number = item.item.require_production_number
-        newItem.pricing_group_id = this.form.pricing_group_id
-        newItem.inventories = []
-        if (item.item.require_expiry_date || item.item.require_production_number) {
-          const itemTemporaryIndex = this.form.items_temporary.findIndex(o => o.item_id === item.item_id && o.unit === item.unit)
-          if (itemTemporaryIndex < 0) {
-            newItem.inventories.push({
-              quantity: item.quantity,
-              expiry_date: item.expiry_date,
-              production_number: item.production_number
-            })
-            this.form.items_temporary.push(newItem)
-          } else {
-            var existing = this.form.items_temporary[itemTemporaryIndex]
-            existing.quantity += item.quantity
-            existing.inventories.push({
-              quantity: item.quantity,
-              expiry_date: item.expiry_date,
-              production_number: item.production_number
-            })
-            this.form.items_temporary[itemTemporaryIndex] = existing
-          }
-        } else {
-          this.form.items_temporary.push(newItem)
-        }
-      })
-      this.bill.services.forEach((service, keyService) => {
-        this.form.services.push({
-          service_id: service.service_id,
-          service_name: service.service_name,
-          quantity: parseFloat(service.quantity),
-          price: parseFloat(service.price),
-          discount_value: parseFloat(service.discount_value),
-          discount_percent: parseFloat(service.discount_percent),
-          total: 0,
-          pricing_group_id: this.form.pricing_group_id,
-          notes: service.notes
-        })
-      })
-    }).catch(error => {
-      this.isGroupLoading = false
-      this.$notification.error(error.message)
-    })
-  },
-  updated () {
-    if (this.itemList.length !== 0) {
-      this.lastPageItem = this.paginationItem.last_page
-    }
-    if (this.serviceList.length !== 0) {
-      this.lastPageService = this.paginationService.last_page
     }
   }
 }

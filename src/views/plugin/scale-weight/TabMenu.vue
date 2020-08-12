@@ -1,31 +1,47 @@
 <template>
-  <ul class="nav nav-tabs nav-tabs-alt mb-10" data-toggle="tabs" role="tablist">
-    <slot></slot>
-    <li class="nav-item" v-if="$permission.has('read scale weight truck')">
+  <ul
+    class="nav nav-tabs nav-tabs-alt mb-10"
+    data-toggle="tabs"
+    role="tablist"
+  >
+    <slot />
+    <li
+      v-if="$permission.has('read scale weight truck')"
+      class="nav-item"
+    >
       <router-link
         to="/plugin/scale-weight/truck"
         class="nav-link"
-        active-class="active">
+        active-class="active"
+      >
         <span>{{ $t('scale weight truck') | uppercase }}</span>
       </router-link>
     </li>
-    <li class="nav-item" v-if="$permission.has('read scale weight item')">
+    <li
+      v-if="$permission.has('read scale weight item')"
+      class="nav-item"
+    >
       <router-link
         to="/plugin/scale-weight/item"
         class="nav-link"
-        active-class="active">
+        active-class="active"
+      >
         <span>{{ $t('scale weight item') | uppercase }}</span>
       </router-link>
     </li>
-    <li class="nav-item" v-if="$permission.has('read scale weight truck') || $permission.has('read scale weight item')">
+    <li
+      v-if="$permission.has('read scale weight truck') || $permission.has('read scale weight item')"
+      class="nav-item"
+    >
       <router-link
         to="/plugin/scale-weight/merge"
         class="nav-link"
-        active-class="active">
+        active-class="active"
+      >
         <span>{{ $t('scale weight') | uppercase }}</span>
       </router-link>
     </li>
-    <slot name="right"></slot>
+    <slot name="right" />
   </ul>
 </template>
 

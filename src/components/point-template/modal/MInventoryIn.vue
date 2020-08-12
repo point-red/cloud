@@ -5,74 +5,102 @@
       :title="$t('select inventory') | uppercase"
       overlay-theme="dark"
       width="100%"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <div class="row">
         <div class="col-sm-12">
           <p-table>
             <tr slot="p-head">
-              <th v-if="requireExpiryDate">Expiry Date</th>
-              <th v-if="requireProductionNumber">Production No.</th>
+              <th v-if="requireExpiryDate">
+                Expiry Date
+              </th>
+              <th v-if="requireProductionNumber">
+                Production No.
+              </th>
               <th>Quantity</th>
-              <th width="50px">&nbsp;</th>
+              <th width="50px">
+                &nbsp;
+              </th>
             </tr>
-            <tr slot="p-body" v-for="(option, index) in options" :key="index">
+            <tr
+              v-for="(option, optionIndex) in options"
+              slot="p-body"
+              :key="optionIndex"
+            >
               <td width="100px">
                 <p-date-picker
+                  v-if="requireExpiryDate"
                   id="expiry-date"
-                  name="expiry-date"
                   v-model="option.expiry_date"
-                  v-if="requireExpiryDate"/>
+                  name="expiry-date"
+                />
               </td>
               <td>
                 <p-form-input
+                  v-if="requireProductionNumber"
                   id="production-number"
                   v-model="option.production_number"
                   name="production-number"
-                  v-if="requireProductionNumber"/>
+                />
               </td>
               <td>
                 <p-quantity
                   :id="'quantity' + index"
-                  :name="'quantity' + index"
                   v-model="option.quantity"
+                  :name="'quantity' + index"
                   :units="units"
                   :unit="unit"
+                  :max="max ? max : Number.MAX_SAFE_INTEGER"
+                  :disable-unit-selection="disableUnitSelection"
                   @choosen="chooseUnit($event)"
                   @input="updateTotalQuantity()"
-                  :max="max ? max : Number.MAX_SAFE_INTEGER"
-                  :disable-unit-selection="disableUnitSelection"/>
+                />
               </td>
               <td>
-                <button class="btn btn-sm btn-secondary" @click="deleteDna(index)"><i class=" fa fa-times"></i></button>
+                <button
+                  class="btn btn-sm btn-secondary"
+                  @click="deleteDna(index)"
+                >
+                  <i class=" fa fa-times" />
+                </button>
               </td>
             </tr>
             <tr slot="p-body">
-              <td></td>
-              <td></td>
+              <td />
+              <td />
               <td>
                 <p-quantity
                   :id="'quantity' + index"
-                  :name="'quantity' + index"
                   v-model="totalQuantity"
+                  :name="'quantity' + index"
                   :units="units"
                   :unit="unit"
-                  @choosen="chooseUnit($event)"
                   :disabled="true"
-                  :disable-unit-selection="disableUnitSelection"/>
+                  :disable-unit-selection="disableUnitSelection"
+                  @choosen="chooseUnit($event)"
+                />
               </td>
-              <td></td>
+              <td />
             </tr>
           </p-table>
         </div>
       </div>
       <div class="row">
         <div class="col-sm-3">
-          <button type="button" class="btn btn-sm btn-secondary btn-block" @click="addDna">
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary btn-block"
+            @click="addDna"
+          >
             ADD
           </button>
         </div>
         <div class="col-sm-9">
-          <button type="button" class="btn btn-sm btn-primary btn-block" @click="onSubmit">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary btn-block"
+            @click="onSubmit"
+          >
             SUBMIT
           </button>
         </div>
@@ -83,6 +111,16 @@
 
 <script>
 export default {
+  props: {
+    id: {
+      type: String,
+      default: null
+    },
+    disableUnitSelection: {
+      type: Boolean,
+      default: false
+    }
+  },
   data () {
     return {
       index: null,
@@ -100,15 +138,8 @@ export default {
       }
     }
   },
-  props: {
-    id: {
-      type: String,
-      required: false
-    },
-    disableUnitSelection: {
-      type: Boolean,
-      default: false
-    }
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     chooseUnit (unit) {

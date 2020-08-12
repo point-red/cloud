@@ -1,105 +1,141 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <router-link to="/master/warehouse" class="breadcrumb-item">{{ $t('warehouse') | uppercase }}</router-link>
+      <breadcrumb-master />
+      <router-link
+        to="/master/warehouse"
+        class="breadcrumb-item"
+      >
+        {{ $t('warehouse') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ warehouse.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addWarehouse.open()"
             v-if="$permission.has('create warehouse')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addWarehouse.open()"
+          >
             {{ $t('create') | uppercase }}
           </a>
           <a
-            href="javascript:void(0)"
-            @click="$refs.editWarehouse.open(warehouse.id)"
             v-if="$permission.has('update warehouse')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editWarehouse.open(warehouse.id)"
+          >
             {{ $t('edit') | uppercase }}
           </a>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete warehouse')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
+            v-if="data.branch"
             id="branch"
+            v-model="data.branch.name"
             label="branch"
             name="branch"
-            v-if="data.branch"
-            v-model="data.branch.name"
-            readonly/>
+            readonly
+          />
 
           <p-form-row
             id="name"
+            v-model="data.name"
             label="name"
             name="name"
-            v-model="data.name"
-            readonly/>
+            readonly
+          />
 
           <p-form-row
             id="address"
             v-model="data.address"
             :disabled="true"
             :label="$t('address')"
-            name="address"/>
+            name="address"
+          />
 
           <p-form-row
             id="phone"
             v-model="data.phone"
             :disabled="true"
             :label="$t('phone')"
-            name="phone"/>
+            name="phone"
+          />
 
-          <p-separator></p-separator>
+          <p-separator />
           <h5>{{ $t('user access') | uppercase }}</h5>
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>user</th>
-              <th class="text-center">access</th>
+              <th class="text-center">
+                access
+              </th>
               <th class="text-center">
                 set as default
-                <i class="fa fa-info-circle" @click="$alert.show('info', $t('branch - set as default'))"></i>
+                <i
+                  class="fa fa-info-circle"
+                  @click="$alert.show('info', $t('branch - set as default'))"
+                />
               </th>
             </tr>
-            <tr slot="p-body" v-for="(user, index) in users" :key="'user-' + index">
-              <th width="50px">{{ index + 1 }}</th>
+            <tr
+              v-for="(user, index) in users"
+              slot="p-body"
+              :key="'user-' + index"
+            >
+              <th width="50px">
+                {{ index + 1 }}
+              </th>
               <td>{{ user.full_name }}</td>
               <td class="text-center">
                 <input
                   type="checkbox"
                   :checked="isChecked(user.id)"
-                  @click="toggleRelation(user.id)">
+                  @click="toggleRelation(user.id)"
+                >
               </td>
               <td class="text-center">
                 <input
-                  type="checkbox"
                   v-if="isChecked(user.id)"
+                  type="checkbox"
                   :checked="isDefault(user)"
-                  @click="toggleDefault(user.id)">
+                  @click="toggleDefault(user.id)"
+                >
               </td>
             </tr>
           </point-table>
         </p-block-inner>
       </p-block>
     </div>
-    <m-add-warehouse ref="addWarehouse" @added="onAddedWarehouse($event)"></m-add-warehouse>
-    <m-edit-warehouse ref="editWarehouse" @updated="onUpdatedWarehouse($event)"></m-edit-warehouse>
+    <m-add-warehouse
+      ref="addWarehouse"
+      @added="onAddedWarehouse($event)"
+    />
+    <m-edit-warehouse
+      ref="editWarehouse"
+      @updated="onUpdatedWarehouse($event)"
+    />
   </div>
 </template>
 
@@ -136,6 +172,9 @@ export default {
   computed: {
     ...mapGetters('masterWarehouse', ['warehouse']),
     ...mapGetters('masterUser', ['users'])
+  },
+  created () {
+    this.findWarehouse()
   },
   methods: {
     ...mapActions('masterWarehouse', ['find', 'delete']),
@@ -236,9 +275,6 @@ export default {
     onUpdatedWarehouse (warehouse) {
       this.findWarehouse()
     }
-  },
-  created () {
-    this.findWarehouse()
   }
 }
 </script>

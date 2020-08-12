@@ -5,102 +5,135 @@
         ref="modal"
         :title="$t('edit customer') | uppercase"
         overlay-theme="dark"
-        @close="onClose()">
+        @close="onClose()"
+      >
         <template v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
+          <h3 class="text-center">
+            Loading ...
+          </h3>
         </template>
         <template v-else>
-        <div class="row">
-          <div class="col-sm-12">
-            <p-form-row
-              id="name"
-              v-model="form.name"
-              :disabled="isSaving"
-              :label="$t('name')"
-              name="name"
-              ref="name"
-              :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"/>
+          <div class="row">
+            <div class="col-sm-12">
+              <p-form-row
+                id="code"
+                ref="code"
+                v-model="form.code"
+                :disabled="isSaving"
+                :label="$t('code')"
+                name="code"
+                :errors="form.errors.get('code')"
+                @errors="form.errors.set('code', null)"
+              />
 
-            <p-form-row
-              id="email"
-              v-model="form.email"
-              :disabled="isSaving"
-              :label="$t('email')"
-              name="email"
-              :errors="form.errors.get('email')"
-              @errors="form.errors.set('email', null)"/>
+              <p-form-row
+                id="name"
+                ref="name"
+                v-model="form.name"
+                :disabled="isSaving"
+                :label="$t('name')"
+                name="name"
+                :errors="form.errors.get('name')"
+                @errors="form.errors.set('name', null)"
+              />
 
-            <p-form-row
-              id="address"
-              v-model="form.address"
-              :disabled="isSaving"
-              :label="$t('address')"
-              name="address"
-              :errors="form.errors.get('address')"
-              @errors="form.errors.set('address', null)"/>
+              <p-form-row
+                id="email"
+                v-model="form.email"
+                :disabled="isSaving"
+                :label="$t('email')"
+                name="email"
+                :errors="form.errors.get('email')"
+                @errors="form.errors.set('email', null)"
+              />
 
-            <p-form-row
-              id="phone"
-              v-model="form.phone"
-              :disabled="isSaving"
-              :label="$t('phone')"
-              name="phone"
-              :errors="form.errors.get('phone')"
-              @errors="form.errors.set('phone', null)"/>
+              <p-form-row
+                id="address"
+                v-model="form.address"
+                :disabled="isSaving"
+                :label="$t('address')"
+                name="address"
+                :errors="form.errors.get('address')"
+                @errors="form.errors.set('address', null)"
+              />
 
-            <p-separator></p-separator>
+              <p-form-row
+                id="phone"
+                v-model="form.phone"
+                :disabled="isSaving"
+                :label="$t('phone')"
+                name="phone"
+                :errors="form.errors.get('phone')"
+                @errors="form.errors.set('phone', null)"
+              />
 
-            <h5>{{ $t('credit limit') | uppercase }}</h5>
-            <p>{{ $t('create customer helper - credit limit') }}</p>
+              <p-separator />
 
-            <p-form-number
-              v-model="form.credit_limit"
-              :disabled="isSaving"
-              :is-text-right="false"
-              :errors="form.errors.get('credit_limit')"
-              @errors="form.errors.set('credit_limit', null)"/>
+              <h5>{{ $t('credit limit') | uppercase }}</h5>
+              <p>{{ $t('create customer helper - credit limit') }}</p>
 
-            <p-separator></p-separator>
+              <p-form-number
+                v-model="form.credit_limit"
+                :disabled="isSaving"
+                :is-text-right="false"
+                :errors="form.errors.get('credit_limit')"
+                @errors="form.errors.set('credit_limit', null)"
+              />
 
-            <h5>{{ $t('pricing group') | uppercase }}</h5>
-            <p>{{ $t('create customer helper - pricing group') }}</p>
+              <p-separator />
 
-            <span @click="$refs.pricingGroup.open()" class="select-link">
-              {{ form.pricing_group_label || $t('select') | uppercase }}
-            </span>
+              <h5>{{ $t('pricing group') | uppercase }}</h5>
+              <p>{{ $t('create customer helper - pricing group') }}</p>
 
-            <p-separator></p-separator>
+              <span
+                class="select-link"
+                @click="$refs.pricingGroup.open()"
+              >
+                {{ form.pricing_group_label || $t('select') | uppercase }}
+              </span>
 
-            <h5>{{ $t('group') | uppercase }}</h5>
-            <p>{{ $t('create customer helper - group') }}</p>
+              <p-separator />
 
-            <span @click="$refs.customerGroup.open(form.groups)" class="select-link">
-              <template v-if="form.groups.length == 0">{{ $t('select') | uppercase }}</template>
-              <template v-for="(group, index) in form.groups">
-                {{ group.name | uppercase }}<template v-if="index + 1 != form.groups.length">,</template>
-              </template>
-            </span>
+              <h5>{{ $t('group') | uppercase }}</h5>
+              <p>{{ $t('create customer helper - group') }}</p>
+
+              <span
+                class="select-link"
+                @click="$refs.customerGroup.open(form.groups)"
+              >
+                <template v-if="form.groups.length == 0">{{ $t('select') | uppercase }}</template>
+                <template v-for="(group, index) in form.groups">
+                  {{ group.name | uppercase }}<template v-if="index + 1 != form.groups.length">,</template>
+                </template>
+              </span>
+            </div>
           </div>
-        </div>
-        <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
-          </button>
-        </div>
+          <div class="pull-right">
+            <button
+              type="submit"
+              class="btn btn-sm btn-primary"
+              :disabled="isSaving"
+              @click="onSubmit"
+            >
+              <i
+                v-show="isSaving"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('update') | uppercase }}
+            </button>
+          </div>
         </template>
       </sweet-modal>
     </form>
     <m-pricing-group
       id="pricing-group"
       ref="pricingGroup"
-      @choosen="onChoosenPricingGroup($event)">
-    </m-pricing-group>
+      @choosen="onChoosenPricingGroup($event)"
+    />
     <m-m-customer-group
       id="customer-group"
       ref="customerGroup"
-      @choosen="onChoosenCustomerGroup($event)">
-    </m-m-customer-group>
+      @choosen="onChoosenCustomerGroup($event)"
+    />
   </div>
 </template>
 
@@ -116,6 +149,7 @@ export default {
       isFailed: false,
       form: new Form({
         id: null,
+        code: null,
         name: null,
         emails: [{
           email: null
@@ -135,6 +169,9 @@ export default {
   computed: {
     ...mapGetters('masterCustomer', ['customer'])
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
     ...mapActions('masterCustomer', ['update', 'find']),
     onClose () {
@@ -151,6 +188,7 @@ export default {
         }
       }).then(response => {
         this.isLoading = false
+        this.form.code = this.customer.code
         this.form.name = this.customer.name
         this.form.address = this.customer.address
         this.form.phone = this.customer.phone

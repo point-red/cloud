@@ -1,23 +1,32 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        :to="'/manufacture/processing/' + id"
+        class="breadcrumb-item"
+      >
+        {{ $t('process') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('input') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('input')" :header="true">
+      <p-block
+        :title="$t('input')"
+        :header="true"
+      >
         <div class="row mb-10">
           <p-date-range-picker
             id="date"
+            v-model="date"
             name="date"
             class="col-sm-4"
-            v-model="date"/>
+          />
         </div>
         <div class="input-group block">
           <p-form-input
@@ -26,13 +35,15 @@
             placeholder="Search"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
           <router-link
-            :to="'/manufacture/processing/' + id + '/input/create'"
             v-if="$permission.has('create manufacture')"
-            class="input-group-append">
+            :to="'/manufacture/processing/' + id + '/input/create'"
+            class="input-group-append"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
         </div>
@@ -50,7 +61,8 @@
             <template v-for="(input, index) in inputs">
               <tr
                 :key="'mi-' + index"
-                slot="p-body">
+                slot="p-body"
+              >
                 <th>{{ index + 1 + ( ( currentPage - 1 ) * limit ) }}</th>
                 <td>{{ input.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>
@@ -62,14 +74,21 @@
                 <td>{{ input.notes }}</td>
                 <td>&nbsp;</td>
               </tr>
-              <tr :key="'mia-' + index" slot="p-body">
+              <tr
+                :key="'mia-' + index"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td><b>{{ $t('finished goods') | titlecase }}</b></td>
                 <td><b>{{ $t('quantity produced') | titlecase }}</b></td>
                 <td><b>{{ $t('warehouse') | titlecase }}</b></td>
               </tr>
-              <tr v-for="finishGood in input.finished_goods" :key="'fg-' + finishGood.id" slot="p-body">
+              <tr
+                v-for="finishGood in input.finished_goods"
+                :key="'fg-' + finishGood.id"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
@@ -86,14 +105,21 @@
                   </router-link>
                 </td>
               </tr>
-              <tr :key="'mib-' + index" slot="p-body">
+              <tr
+                :key="'mib-' + index"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td><b>{{ $t('raw materials') | titlecase }}</b></td>
                 <td><b>{{ $t('quantity used') | titlecase }}</b></td>
                 <td><b>{{ $t('warehouse') | titlecase }}</b></td>
               </tr>
-              <tr v-for="rawMaterial in input.raw_materials_temporary" :key="'rm-' + rawMaterial.id" slot="p-body">
+              <tr
+                v-for="rawMaterial in input.raw_materials_temporary"
+                :key="'rm-' + rawMaterial.id"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>
@@ -110,7 +136,10 @@
                   </router-link>
                 </td>
               </tr>
-              <tr :key="'mic-' + index" slot="p-body">
+              <tr
+                :key="'mic-' + index"
+                slot="p-body"
+              >
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
@@ -123,8 +152,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>
@@ -161,6 +190,9 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters('manufactureInput', ['inputs', 'pagination'])
+  },
   watch: {
     date: function () {
       this.$router.push({
@@ -173,8 +205,11 @@ export default {
       this.getManufactureInputs()
     }
   },
-  computed: {
-    ...mapGetters('manufactureInput', ['inputs', 'pagination'])
+  created () {
+    this.getManufactureInputs()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('manufactureInput', ['get']),
@@ -247,12 +282,6 @@ export default {
       this.currentPage = value
       this.getManufactureInputs()
     }
-  },
-  created () {
-    this.getManufactureInputs()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

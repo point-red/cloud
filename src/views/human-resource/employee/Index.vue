@@ -1,45 +1,62 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <span class="breadcrumb-item active">{{ 'employee' | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block mb-5">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addEmployee.open()"
             v-if="$permission.has('create employee')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addEmployee.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
             class="btn-block"
-            ref="searchText"
             :value="searchText"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <div class="text-center font-size-sm mb-10">
-          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          <a
+            href="javascript:void(0)"
+            @click="isAdvanceFilter = !isAdvanceFilter"
+          >
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div
+          v-show="isAdvanceFilter"
+          class="card"
+          :class="{ 'fadeIn': isAdvanceFilter }"
+        >
           <div class="row">
             <div class="col-sm-3 text-center">
-              <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
+              <p-form-row
+                id="status"
+                name="status"
+                :label="$t('status')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <span @click="$refs.status.open({ id: statusId, label: statusLabel })" class="select-link">
+                  <span
+                    class="select-link"
+                    @click="$refs.status.open({ id: statusId, label: statusLabel })"
+                  >
                     {{ statusLabel || $t('select') | uppercase }}
                   </span>
                 </div>
@@ -48,77 +65,110 @@
           </div>
         </div>
         <hr>
-        <div class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-          <button type="button" class="btn btn-secondary mr-5" @click="bulkArchiveEmployee()">
+        <div
+          v-show="checkedRow.length > 0"
+          class="mr-15 animated fadeIn"
+        >
+          <button
+            type="button"
+            class="btn btn-secondary mr-5"
+            @click="bulkArchiveEmployee()"
+          >
             {{ $t('archive') | uppercase }}
           </button>
-          <button type="button" class="btn btn-secondary mr-5" @click="bulkActivateEmployee()">
+          <button
+            type="button"
+            class="btn btn-secondary mr-5"
+            @click="bulkActivateEmployee()"
+          >
             {{ $t('activate') | uppercase }}
           </button>
-          <button type="button" class="btn btn-secondary" @click="bulkDeleteEmployee()">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            @click="bulkDeleteEmployee()"
+          >
             {{ $t('delete') | uppercase }}
           </button>
         </div>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th width="50px">
                 <p-form-check-box
                   id="subscibe"
                   name="subscibe"
                   :is-form="false"
-                  @click.native="toggleCheckRows()"
                   :checked="isRowsChecked(employees, checkedRow)"
-                  class="text-center"/>
+                  class="text-center"
+                  @click.native="toggleCheckRows()"
+                />
               </th>
               <th>{{ $t('name') }}</th>
               <th>{{ $t('job title') }}</th>
               <th>{{ $t('employee group') }}</th>
             </tr>
             <template v-for="(employee, index) in employees">
-            <tr :key="employee.id"
-              v-if="($permission.has('create employee assessment') && isShow(employee.scorers)) || $permission.has('read employee')"
-              :class="{
-                'bg-gray': employee.archived_at != null,
-                'bg-primary-lighter': isRowChecked(employee.id)
-              }"
-              slot="p-body">
-              <th :class="{
-                'bg-gray': employee.archived_at != null,
-                'bg-primary-lighter': isRowChecked(employee.id)
-              }">
-                {{ getNumberIndex(index) }}
-              </th>
-              <td>
-                <p-form-check-box
-                  :is-form="false"
-                  id="subscibe"
-                  name="subscibe"
-                  @click.native="toggleCheckRow(employee.id)"
-                  :checked="isRowChecked(employee.id)"
-                  class="text-center"/>
-              </td>
-              <td>
-                <router-link :to="{ name: 'EmployeeShow', params: { id: employee.id }}">
-                  {{ employee.name }}
-                </router-link>
-              </td>
-              <td>{{ employee.job_title }}</td>
-              <td><template v-if="employee.group">{{ employee.group.name }}</template></td>
-            </tr>
+              <tr
+                v-if="($permission.has('create employee assessment') && isShow(employee.scorers)) || $permission.has('read employee')"
+                :key="employee.id"
+                slot="p-body"
+                :class="{
+                  'bg-gray': employee.archived_at != null,
+                  'bg-primary-lighter': isRowChecked(employee.id)
+                }"
+              >
+                <th
+                  :class="{
+                    'bg-gray': employee.archived_at != null,
+                    'bg-primary-lighter': isRowChecked(employee.id)
+                  }"
+                >
+                  {{ getNumberIndex(index) }}
+                </th>
+                <td>
+                  <p-form-check-box
+                    id="subscibe"
+                    :is-form="false"
+                    name="subscibe"
+                    :checked="isRowChecked(employee.id)"
+                    class="text-center"
+                    @click.native="toggleCheckRow(employee.id)"
+                  />
+                </td>
+                <td>
+                  <router-link :to="{ name: 'EmployeeShow', params: { id: employee.id }}">
+                    {{ employee.name }}
+                  </router-link>
+                </td>
+                <td>{{ employee.job_title }}</td>
+                <td>
+                  <template v-if="employee.group">
+                    {{ employee.group.name }}
+                  </template>
+                </td>
+              </tr>
             </template>
           </point-table>
         </p-block-inner>
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
-    <m-add-employee ref="addEmployee" @added="onAdded"></m-add-employee>
-    <m-status ref="status" @choosen="onChoosenStatus"></m-status>
+    <m-add-employee
+      ref="addEmployee"
+      @added="onAdded"
+    />
+    <m-status
+      ref="status"
+      @choosen="onChoosenStatus"
+    />
   </div>
 </template>
 
@@ -154,6 +204,12 @@ export default {
     ...mapGetters('auth', ['authUser']),
     ...mapGetters('humanResourceEmployee', ['employees', 'pagination']),
     ...mapGetters('humanResourceEmployeeGroup', ['groupList'])
+  },
+  created () {
+    this.getEmployeesRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('humanResourceEmployee', {
@@ -280,12 +336,6 @@ export default {
         console.log(errors.data)
       })
     }
-  },
-  created () {
-    this.getEmployeesRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

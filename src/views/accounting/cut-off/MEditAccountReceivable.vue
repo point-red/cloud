@@ -1,19 +1,34 @@
 <template>
   <div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="edit account receivable">
+    <p-modal
+      :id="'select-' + id"
+      :ref="'select-' + id"
+      title="edit account receivable"
+    >
       <template slot="content">
-        <form class="row" @submit.prevent="onSubmit">
+        <form
+          class="row"
+          @submit.prevent="onSubmit"
+        >
           <p-block>
             <p-form-row
               id="customer"
+              v-model="form.customer"
               name="customer"
               :label="$t('customer')"
-              v-model="form.customer"
               :disabled="isSaving"
               :errors="form.errors.get('customer')"
-              @errors="form.errors.set('customer', null)">
-              <div slot="body" class="col-lg-9 mt-5">
-                <m-customer id="edit-customer" v-model="form.customer_id" :label="form.customer_name"/>
+              @errors="form.errors.set('customer', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
+                <m-customer
+                  id="edit-customer"
+                  v-model="form.customer_id"
+                  :label="form.customer_name"
+                />
               </div>
             </p-form-row>
 
@@ -23,24 +38,30 @@
               :label="$t('account')"
               :disabled="isSaving"
               :errors="form.errors.get('account')"
-              @errors="form.errors.set('account', null)">
-              <div slot="body" class="col-lg-9 mt-5">
+              @errors="form.errors.set('account', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
                 <m-chart-of-account
                   id="edit-chart-of-account"
                   v-model="form.chart_of_account_id"
                   :label="form.chart_of_account_name"
-                  sub-ledger="account receivable"/>
+                  sub-ledger="account receivable"
+                />
               </div>
             </p-form-row>
 
             <p-form-row
               id="notes"
+              v-model="form.notes"
               name="notes"
               :label="$t('notes')"
-              v-model="form.notes"
               :disabled="isSaving"
               :errors="form.errors.get('notes')"
-              @errors="form.errors.set('notes', null)"/>
+              @errors="form.errors.set('notes', null)"
+            />
 
             <p-form-row
               id="amount"
@@ -48,24 +69,44 @@
               :label="$t('amount')"
               :disabled="isSaving"
               :errors="form.errors.get('amount')"
-              @errors="form.errors.set('amount', null)">
-              <div slot="body" class="col-lg-9 mt-5">
+              @errors="form.errors.set('amount', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
                 <p-form-number
                   :id="'amount'"
+                  v-model="form.amount"
                   :name="'amount'"
                   :is-text-right="false"
-                  v-model="form.amount"/>
+                />
               </div>
             </p-form-row>
 
             <div class="form-group row">
-              <div class="col-md-3"></div>
+              <div class="col-md-3" />
               <div class="col-md-9">
-                <button type="submit" class="btn btn-sm btn-primary mr-5" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-primary mr-5"
+                  :disabled="isSaving"
+                >
+                  <i
+                    v-show="isSaving"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('save') | uppercase }}
                 </button>
-                <button type="button" class="btn btn-sm btn-danger" :disabled="isSaving" @click="deleteAccountReceivable()">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  :disabled="isSaving"
+                  @click="deleteAccountReceivable()"
+                >
+                  <i
+                    v-show="isSaving"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('delete') | uppercase }}
                 </button>
               </div>
             </div>
@@ -73,7 +114,13 @@
         </form>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('close') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>
@@ -85,6 +132,20 @@ import debounce from 'lodash/debounce'
 import { mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       isSaving: false,
@@ -97,18 +158,6 @@ export default {
         notes: null,
         amount: 0
       })
-    }
-  },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
     }
   },
   watch: {

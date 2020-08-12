@@ -1,33 +1,37 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-accounting/>
+      <breadcrumb-accounting />
       <span class="breadcrumb-item active">{{ $t('cut off') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
-      <p-block :title="$t('cut off')" :header="false">
+      <p-block
+        :title="$t('cut off')"
+        :header="false"
+      >
         <div class="input-group block">
           <router-link
-            to="/accounting/cut-off/create"
             v-if="$permission.has('create cut off')"
-            class="input-group-prepend">
+            to="/accounting/cut-off/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             class="btn-block"
             :value="searchText"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <p-block-inner :is-loading="isLoading">
-          <p-table>
-          </p-table>
+          <p-table />
         </p-block-inner>
       </p-block>
     </div>
@@ -40,6 +44,10 @@ import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting
+  },
   data () {
     return {
       isLoading: false,
@@ -65,12 +73,11 @@ export default {
       }
     }
   },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting
-  },
   computed: {
     ...mapGetters('accountingCutOff', ['cutOffs'])
+  },
+  created () {
+    this.getCutOffs()
   },
   methods: {
     ...mapActions('accountingCutOff', ['get']),
@@ -106,9 +113,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.getCutOffs()
   }
 }
 </script>

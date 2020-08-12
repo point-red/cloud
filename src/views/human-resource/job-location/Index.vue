@@ -1,11 +1,12 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <span class="breadcrumb-item active">{{ $t('job location') | uppercase }}</span>
+
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
@@ -14,19 +15,22 @@
             href="javascript:void(0)"
             @click="$refs.addJobLocation.open()"
             v-if="$permission.has('create employee')"
-            class="input-group-prepend">
+            to="/human-resource/job-location/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
-            :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            :value="searchText"
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -55,8 +59,8 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
@@ -91,6 +95,15 @@ export default {
   },
   computed: {
     ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocations', 'pagination'])
+  },
+  created () {
+    this.getJobLocationsRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('humanResourceEmployeeJobLocation', {
@@ -128,15 +141,6 @@ export default {
       this.searchText = jobLocation.name
       this.getJobLocationRequest()
     }
-  },
-  created () {
-    this.getJobLocationRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

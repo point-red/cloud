@@ -1,62 +1,79 @@
 <template>
   <div>
-    <p-loading-block v-show="isLoading" :message="loadingMessage"/>
+    <p-loading-block
+      v-show="isLoading"
+      :message="loadingMessage"
+    />
 
     <breadcrumb>
-      <breadcrumb-plugin/>
-      <breadcrumb-pin-point/>
-      <router-link to="/plugin/pin-point/sales-visitation-form" class="breadcrumb-item">{{ $t('sales visitation') | uppercase }}</router-link>
+      <breadcrumb-plugin />
+      <breadcrumb-pin-point />
+      <router-link
+        to="/plugin/pin-point/sales-visitation-form"
+        class="breadcrumb-item"
+      >
+        {{ $t('sales visitation') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
-    <div v-if="isPermissionGeolocationGranted == false">
-      <h2><i class="fa fa-warning"></i> {{ $t('permission required') | uppercase }}</h2>
-      <p>{{ $t('browser permission warning - sales visitation form') }}</p>
-      <hr>
-      <b>REFERENCE:</b>
-      <br>
-      <a href="https://support.google.com/chrome/answer/114662?hl=en">https://support.google.com/chrome/answer/114662</a>
-      <br>
-      <a href="https://support.google.com/chrome/answer/2693767?hl=en">https://support.google.com/chrome/answer/2693767</a>
-
-      <hr>
-    </div>
-
-    <form class="row" @submit.prevent="onSubmit">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
       <p-block
         :is-loading="isLoading"
         :header="false"
         :title="$t('sales visitation')"
-        column="col-sm-12">
-
+        column="col-sm-12"
+      >
         <h5>{{ $t('sales visitation') | uppercase }}</h5>
 
         <hr>
 
         <p-form-row :label="$t('photo')">
-          <div slot="body" class="col-lg-9">
-            <p-camera :image="form.image" @onCaptured="onCaptured($event)"></p-camera>
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <p-camera
+              :image="form.image"
+              @onCaptured="onCaptured($event)"
+            />
           </div>
         </p-form-row>
 
         <p-form-row
           id="customer"
+          v-model="form.customer"
           name="customer"
           :label="$t('customer')"
           :disabled="isSaving"
-          v-model="form.customer"
           :errors="form.errors.get('customer')"
-          @errors="form.errors.set('customer', null)">
-          <div class="col-lg-9" slot="body">
-            <span @click="$refs.customer.open()" class="select-link">{{ form.customer_name || $t('select') | uppercase }}</span>
+          @errors="form.errors.set('customer', null)"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.customer.open()"
+            >{{ form.customer_name || $t('select') | uppercase }}</span>
           </div>
         </p-form-row>
 
         <p-form-row :label="'group'">
-          <div class="col-lg-9" slot="body">
-            <span @click="$refs.group.open()" class="select-link">{{ form.group_name || $t('select') | uppercase }}</span>
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.group.open()"
+            >{{ form.group_name || $t('select') | uppercase }}</span>
           </div>
         </p-form-row>
 
@@ -64,14 +81,20 @@
           id="gmap"
           name="gmap"
           :label="'Google Map - ' + $t('address')"
-          :placeholder="'' + $t('address')">
-          <div slot="body" class="col-lg-9">
-            <gmap-autocomplete :value="description"
-              @place_changed="setPlace"
-              v-on:keypress.enter.prevent
+          :placeholder="'' + $t('address')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <gmap-autocomplete
+              :value="description"
               :disabled="true"
-              class="form-control">
-            </gmap-autocomplete>
+              class="form-control"
+              @place_changed="setPlace"
+              @keypress.enter.prevent
+            />
+
             <gmap-map
               id="map"
               ref="map"
@@ -99,65 +122,74 @@
                   }
                 ]
               }"
-              style="width: 100%; height: 200px">
-                <gmap-marker
-                  :key="index"
-                  v-for="(m, index) in markers"
-                  :position="center = m.position"
-                  :clickable="true"
-                  :draggable="true"
-                  @click="center=m.position"></gmap-marker>
+              style="width: 100%; height: 200px"
+            >
+              <gmap-marker
+                v-for="(m, index) in markers"
+                :key="index"
+                :position="center = m.position"
+                :clickable="true"
+                :draggable="true"
+                @click="center=m.position"
+              />
             </gmap-map>
           </div>
         </p-form-row>
 
         <p-form-row
           id="address"
+          v-model="form.address"
           name="address"
           :label="$t('address')"
           :placeholder="$t('address')"
           :disabled="isSaving"
-          v-model="form.address"
           :errors="form.errors.get('address')"
-          @errors="form.errors.set('address', null)">
-        </p-form-row>
+          @errors="form.errors.set('address', null)"
+        />
 
         <p-form-row
           id="district"
+          v-model="form.district"
           name="district"
           :placeholder="$t('district')"
           :disabled="isSaving"
-          v-model="form.district"
           :errors="form.errors.get('district')"
-          @errors="form.errors.set('district', null)">
-        </p-form-row>
+          @errors="form.errors.set('district', null)"
+        />
 
         <p-form-row
           id="sub_district"
+          v-model="form.sub_district"
           name="sub_district"
           :placeholder="$t('sub district')"
           :disabled="isSaving"
-          v-model="form.sub_district"
           :errors="form.errors.get('sub_district')"
-          @errors="form.errors.set('sub_district', null)">
-        </p-form-row>
+          @errors="form.errors.set('sub_district', null)"
+        />
 
         <p-form-row
           id="phone"
+          v-model="form.phone"
           name="phone"
           :label="$t('phone')"
           :disabled="isSaving"
-          v-model="form.phone"
           :errors="form.errors.get('phone')"
-          @errors="form.errors.set('phone', null)">
-        </p-form-row>
+          @errors="form.errors.set('phone', null)"
+        />
 
         <p-form-row
           id="similar-product"
           name="similar_product"
-          :label="$t('similar product') | titlecase">
-          <div slot="body" class="col-lg-9">
-            <span @click="$refs.similarProduct.open(form.similar_products)" class="select-link">
+          :label="$t('similar product') | titlecase"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.similarProduct.open(form.similar_products)"
+            >
               <template v-if="form.similar_products.length == 0">{{ $t('select') | uppercase }}</template>
               <template v-for="(similarProduct, index) in form.similar_products">
                 {{ similarProduct.name | uppercase }}<template v-if="index + 1 != form.similar_products.length">,</template>
@@ -169,9 +201,16 @@
         <p-form-row
           id="interest"
           name="interest"
-          :label="$t('interest reason') | titlecase">
-          <div slot="body" class="col-lg-9">
-            <span @click="$refs.interestReason.open(form.interest_reasons)" class="select-link">
+          :label="$t('interest reason') | titlecase"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.interestReason.open(form.interest_reasons)"
+            >
               <template v-if="form.interest_reasons.length == 0">{{ $t('select') | uppercase }}</template>
               <template v-for="(interestReason, index) in form.interest_reasons">
                 {{ interestReason.name | uppercase }}<template v-if="index + 1 != form.interest_reasons.length">,</template>
@@ -183,9 +222,16 @@
         <p-form-row
           id="no-interest"
           name="no_interest"
-          :label="$t('no interest reason')">
-          <div slot="body" class="col-lg-9">
-            <span @click="$refs.noInterestReason.open(form.no_interest_reasons)" class="select-link">
+          :label="$t('no interest reason')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.noInterestReason.open(form.no_interest_reasons)"
+            >
               <template v-if="form.no_interest_reasons.length == 0">{{ $t('select') | uppercase }}</template>
               <template v-for="(noInterestReason, index) in form.no_interest_reasons">
                 {{ noInterestReason.name | uppercase }}<template v-if="index + 1 != form.no_interest_reasons.length">,</template>
@@ -196,31 +242,35 @@
 
         <p-form-row
           id="notes"
+          v-model="form.notes"
           name="notes"
           :label="'notes'"
           :disabled="isSaving"
-          v-model="form.notes"
           :errors="form.errors.get('notes')"
-          @errors="form.errors.set('notes', null)">
-        </p-form-row>
+          @errors="form.errors.set('notes', null)"
+        />
 
-        <p-separator></p-separator>
+        <p-separator />
 
         <h5>{{ $t('form sales') | uppercase }}</h5>
 
         <hr>
 
         <p-form-row :label="$t('date')">
-          <div slot="body" class="col-lg-9">
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <p-date-picker
               id="date"
+              v-model="form.date"
               name="date"
               label="date"
-              v-model="form.date"
               type="datetime"
               format="YYYY-MM-DD HH:mm:ss"
               :errors="form.errors.get('date')"
-              @errors="form.errors.set('date', null)"/>
+              @errors="form.errors.set('date', null)"
+            />
           </div>
         </p-form-row>
 
@@ -231,19 +281,25 @@
             <th>Harga Satuan</th>
             <th>Total</th>
           </tr>
-          <tr slot="p-body" v-for="(row, index) in form.items" :key="'row-' + index">
+          <tr
+            v-for="(row, index) in form.items"
+            slot="p-body"
+            :key="'row-' + index"
+          >
             <td>
-              <span @click="$refs.item.open(index)" class="select-link">
+              <span
+                class="select-link"
+                @click="$refs.item.open(index)"
+              >
                 {{ row.item_label || $t('select') | uppercase }}
               </span>
             </td>
             <td>
               <p-quantity
                 :id="'quantity' + index"
+                v-model="row.quantity"
                 :name="'quantity' + index"
                 :disabled="row.item_id == null"
-                v-model="row.quantity"
-                @keyup.native="calculate"
                 :item-id="row.item_id"
                 :units="row.units"
                 :unit="{
@@ -251,109 +307,175 @@
                   label: row.unit,
                   converter: row.converter
                 }"
-                @choosen="chooseUnit($event, row)"/>
+                @keyup.native="calculate"
+                @choosen="chooseUnit($event, row)"
+              />
             </td>
             <td>
               <p-form-number
                 :id="'price' + index"
+                v-model="row.price"
                 :name="'price' + index"
                 :disabled="row.item_id == null"
                 @keyup.native="calculate"
-                v-model="row.price"/>
+              />
             </td>
             <td>
               <p-form-number
                 :id="'total' + index"
+                v-model="row.total"
                 :name="'total' + index"
                 :disabled="true"
-                v-model="row.total"/>
+              />
             </td>
           </tr>
           <tr slot="p-body">
-            <td></td>
-            <td></td>
+            <td />
+            <td />
             <td>Total</td>
             <td>
               <p-form-number
                 v-model="form.total_price"
                 :readonly="true"
-                :is-text-right="true"/>
+                :is-text-right="true"
+              />
             </td>
           </tr>
         </p-table>
 
-        <hr/>
+        <hr>
 
         <p-form-row :label="$t('payment method') | titlecase">
-          <div slot="body" class="col-lg-9">
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <label class="css-control css-control-primary css-radio">
-              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'cash'">
-              <span class="css-control-indicator"></span> Tunai
+              <input
+                v-model="form.payment_method"
+                type="radio"
+                class="css-control-input"
+                name="radio-group2"
+                :value="'cash'"
+              >
+              <span class="css-control-indicator" /> Tunai
             </label>
             <label class="css-control css-control-primary css-radio">
-              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'credit'">
-              <span class="css-control-indicator"></span> Tempo
+              <input
+                v-model="form.payment_method"
+                type="radio"
+                class="css-control-input"
+                name="radio-group2"
+                :value="'credit'"
+              >
+              <span class="css-control-indicator" /> Tempo
             </label>
             <label class="css-control css-control-primary css-radio">
-              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'taking-order'">
-              <span class="css-control-indicator"></span> Taking Order
+              <input
+                v-model="form.payment_method"
+                type="radio"
+                class="css-control-input"
+                name="radio-group2"
+                :value="'taking-order'"
+              >
+              <span class="css-control-indicator" /> Taking Order
             </label>
             <label class="css-control css-control-primary css-radio">
-              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'sell-out'">
-              <span class="css-control-indicator"></span> Sell Out
+              <input
+                v-model="form.payment_method"
+                type="radio"
+                class="css-control-input"
+                name="radio-group2"
+                :value="'sell-out'"
+              >
+              <span class="css-control-indicator" /> Sell Out
             </label>
           </div>
         </p-form-row>
 
         <p-form-row
+          v-show="form.payment_method === 'credit'"
           id="date"
           name="date"
-          v-show="form.payment_method === 'credit'"
-          :label="$t('due date')">
-          <div slot="body" class="col-lg-9">
+          :label="$t('due date')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <p-date-picker
               id="date"
+              v-model="form.due_date"
               name="date"
               label="date"
-              v-model="form.due_date"
               :errors="form.errors.get('date')"
-              @errors="form.errors.set('date', null)"/>
+              @errors="form.errors.set('date', null)"
+            />
           </div>
         </p-form-row>
 
-        <p-form-row :label="$t('payment received') | titlecase" v-show="form.payment_method === 'credit'">
-          <div slot="body" class="col-lg-9">
+        <p-form-row
+          v-show="form.payment_method === 'credit'"
+          :label="$t('payment received') | titlecase"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <p-form-number
               id="payment-received"
-              name="payment_received"
               v-model="form.payment_received"
+              name="payment_received"
               :disabled="isSaving"
               :errors="form.errors.get('payment_received')"
+              :is-text-right="false"
               @errors="form.errors.set('payment_received', null)"
-              :is-text-right="false"/>
+            />
           </div>
         </p-form-row>
 
-        <hr/>
+        <hr>
 
         <div class="form-group row">
           <div class="col-md-12">
-            <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary" v-if="isPermissionGeolocationGranted">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
-            </button>
-            <button :disabled="isSaving" type="button" class="btn btn-sm btn-danger" v-else>
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Required to access your location and camera to use this feature
+            <button
+              :disabled="isSaving"
+              type="submit"
+              class="btn btn-sm btn-primary"
+            >
+              <i
+                v-show="isSaving"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('save') | uppercase }}
             </button>
           </div>
         </div>
       </p-block>
     </form>
-    <m-customer ref="customer" @choosen="chooseCustomer"/>
-    <m-customer-group ref="group" @choosen="chooseGroup"/>
-    <m-item ref="item" @choosen="chooseItem($event)"/>
-    <m-m-interest-reason ref="interestReason" @choosen="chooseInterestReason($event)"/>
-    <m-m-no-interest-reason ref="noInterestReason" @choosen="chooseNoInterestReason($event)"/>
-    <m-m-similar-product ref="similarProduct" @choosen="chooseSimilarProduct($event)"/>
+    <m-customer
+      ref="customer"
+      @choosen="chooseCustomer"
+    />
+    <m-customer-group
+      ref="group"
+      @choosen="chooseGroup"
+    />
+    <m-item
+      ref="item"
+      @choosen="chooseItem($event)"
+    />
+    <m-m-interest-reason
+      ref="interestReason"
+      @choosen="chooseInterestReason($event)"
+    />
+    <m-m-no-interest-reason
+      ref="noInterestReason"
+      @choosen="chooseNoInterestReason($event)"
+    />
+    <m-m-similar-product
+      ref="similarProduct"
+      @choosen="chooseSimilarProduct($event)"
+    />
   </div>
 </template>
 
@@ -384,8 +506,6 @@ export default {
       isLoading: false,
       loadingMessage: 'Loading...',
       isSaving: false,
-      isPermissionCameraGranted: true,
-      isPermissionGeolocationGranted: true,
       form: new Form({
         date: this.serverDateTime(),
         image: null,
@@ -446,29 +566,10 @@ export default {
   mounted () {
     this.isLoading = false
     this.loadingMessage = 'Searching current location'
-    // Check for Geolocation API permissions
-    navigator.permissions.query({
-      name: 'geolocation'
-    }).then(permissionStatus => {
-      if (permissionStatus.state == 'granted') {
-        this.getLocation()
-      } else if (permissionStatus.state == 'prompt') {
-        this.loadingMessage = 'Please allow location permission request'
-        this.getLocation()
-      } else if (permissionStatus.state == 'denied') {
-        this.loadingMessage = 'Permission denied'
-        this.isLoading = false
-        this.$alert.error('Permissions Denied', 'Requesting location permissions denied, If you using google chrome you can refer this guide to allow permission request <a href="https://support.google.com/chrome/answer/142065?hl=en" target="_blank">https://support.google.com/chrome/answer/142065</a>')
-      }
-
-      permissionStatus.onchange = () => {
-        if (permissionStatus.state == 'denied') {
-          this.isLoading = false
-          this.loadingMessage = 'Permission denied'
-          this.$alert.error('Permissions Denied', 'Requesting location permissions denied, If you using google chrome you can refer this guide to allow permission request <a href="https://support.google.com/chrome/answer/142065?hl=en" target="_blank">https://support.google.com/chrome/answer/142065</a>')
-        }
-      }
-    })
+    this.getLocation()
+  },
+  created () {
+    this.addItemRow()
   },
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['create']),
@@ -484,6 +585,8 @@ export default {
           }
           this.center.lat = pos.lat
           this.center.lng = pos.lng
+          this.form.latitude = pos.lat
+          this.form.longitude = pos.lng
           this.markers[0].position.lat = pos.lat
           this.markers[0].position.lng = pos.lng
           this.$refs.map.$mapPromise.then(() => {
@@ -657,33 +760,6 @@ export default {
           }
         })
     }
-  },
-  created () {
-    const self = this
-    this.addItemRow()
-    navigator.permissions.query({ name: 'camera' })
-      .then(function (result) {
-        console.log('a ' + result.state)
-        if (result.state == 'granted') {
-          self.isPermissionCameraGranted = true
-        } else if (result.state == 'prompt') {
-          self.isPermissionCameraGranted = false
-        } else {
-          self.isPermissionCameraGranted = false
-        }
-      })
-
-    navigator.permissions.query({ name: 'geolocation' })
-      .then(function (result) {
-        console.log('b ' + result.state)
-        if (result.state == 'granted') {
-          self.isPermissionGeolocationGranted = true
-        } else if (result.state == 'prompt') {
-          self.isPermissionCameraGranted = false
-        } else {
-          self.isPermissionGeolocationGranted = false
-        }
-      })
   }
 }
 </script>

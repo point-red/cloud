@@ -1,26 +1,38 @@
 <template>
   <div class="mb-20">
-    <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
-      <slot></slot>
-      <li class="nav-item ml-auto" v-if="$permission.has('create employee assessment')">
+    <ul
+      class="nav nav-tabs nav-tabs-alt"
+      data-toggle="tabs"
+      role="tablist"
+    >
+      <slot />
+      <li
+        v-if="$permission.has('create employee assessment')"
+        class="nav-item ml-auto"
+      >
         <router-link
           :to="'/human-resource/employee/' + id + '/assessment/create'"
           exact
           class="nav-link"
-          active-class="active">
-          <span><i class="si si-plus"></i> {{ $t('add') | uppercase }}</span>
+          active-class="active"
+        >
+          <span><i class="si si-plus" /> {{ $t('add') | uppercase }}</span>
         </router-link>
       </li>
-      <li class="nav-item" v-if="$permission.has('read employee assessment')">
+      <li
+        v-if="$permission.has('read employee assessment')"
+        class="nav-item"
+      >
         <router-link
           :to="'/human-resource/employee/' + id + '/assessment'"
           exact
           class="nav-link"
-          active-class="active">
-          <span><i class="si si-docs"></i> List</span>
+          active-class="active"
+        >
+          <span><i class="si si-docs" /> List</span>
         </router-link>
       </li>
-      <slot name="right"></slot>
+      <slot name="right" />
     </ul>
   </div>
 </template>

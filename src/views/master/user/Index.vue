@@ -1,22 +1,23 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
+      <breadcrumb-master />
       <span class="breadcrumb-item active">{{ $t('user') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addUser.open()"
             v-if="$permission.has('create user')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addUser.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
@@ -25,13 +26,16 @@
             placeholder="Search"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Username</th>
               <th>Full Name</th>
               <th>Email</th>
@@ -43,7 +47,8 @@
             <tr
               v-for="(user, index) in users"
               :key="user.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'UserShow', params: { id: user.id }}">
@@ -54,32 +59,43 @@
               <td>{{ user.email }}</td>
               <td>{{ user.phone }}</td>
               <td>
-                <span v-for="role in user.roles" :key="'role-' + role.id">
-                  <i class="si si-badge"></i> {{ role.name }}
+                <span
+                  v-for="role in user.roles"
+                  :key="'role-' + role.id"
+                >
+                  <i class="si si-badge" /> {{ role.name }}
                 </span>
               </td>
               <td>
                 <span v-if="user.branches && user.branches.length > 0">
-                  <span v-for="branch in user.branches" :key="'branch-' + branch.id">
-                    <i class="si si-globe-alt"></i> {{ branch.name }} <br>
+                  <span
+                    v-for="branch in user.branches"
+                    :key="'branch-' + branch.id"
+                  >
+                    <i class="si si-globe-alt" /> {{ branch.name }} <br>
                   </span>
                 </span>
               </td>
               <td>
                 <span v-if="user.warehouses && user.warehouses.length > 0">
-                  <span v-for="warehouse in user.warehouses" :key="'warehouse-'+warehouse.id">
-                    <i class="si si-home"></i> {{ warehouse.name }} <br/>
+                  <span
+                    v-for="warehouse in user.warehouses"
+                    :key="'warehouse-'+warehouse.id"
+                  >
+                    <i class="si si-home" /> {{ warehouse.name }} <br>
                   </span>
                 </span>
               </td>
             </tr>
           </point-table>
           <template v-if="userInvitations.length > 0">
-            <p-separator></p-separator>
+            <p-separator />
             <h5>{{ $t('pending invitation') | uppercase }}</h5>
             <point-table>
               <tr slot="p-head">
-                <th width="50px">#</th>
+                <th width="50px">
+                  #
+                </th>
                 <th>Username</th>
                 <th>Email</th>
                 <th>Status</th>
@@ -87,11 +103,17 @@
               <tr
                 v-for="(userInvitation, indexInvitation) in userInvitations"
                 :key="'user-invitation-'+userInvitation.id"
-                slot="p-body">
+                slot="p-body"
+              >
                 <th>{{ ++indexInvitation }}</th>
                 <td>{{ userInvitation.user_name }}</td>
                 <td>{{ userInvitation.user_email }}</td>
-                <td><label for="pending" class="badge badge-danger"><i class="fa fa-warning"></i> PENDING</label></td>
+                <td>
+                  <label
+                    for="pending"
+                    class="badge badge-danger"
+                  ><i class="fa fa-warning" /> PENDING</label>
+                </td>
               </tr>
             </point-table>
           </template>
@@ -99,12 +121,19 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
-    <m-add-user ref="addUser" @added="onAdded"></m-add-user>
-    <set-warehouse-modal id="setWarehouse" ref="setWarehouseModal" :title="'Set Warehouse'"/>
+    <m-add-user
+      ref="addUser"
+      @added="onAdded"
+    />
+    <set-warehouse-modal
+      id="setWarehouse"
+      ref="setWarehouseModal"
+      :title="'Set Warehouse'"
+    />
   </div>
 </template>
 
@@ -137,6 +166,10 @@ export default {
   computed: {
     ...mapGetters('masterUser', ['users']),
     ...mapGetters('masterUserInvitation', ['userInvitations'])
+  },
+  created () {
+    this.isLoading = true
+    this.getUserRequest()
   },
   methods: {
     ...mapActions('masterUser', {
@@ -190,10 +223,6 @@ export default {
     onAdded () {
       this.getUserRequest()
     }
-  },
-  created () {
-    this.isLoading = true
-    this.getUserRequest()
   }
 }
 </script>

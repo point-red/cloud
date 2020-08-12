@@ -5,7 +5,7 @@ const url = '/sales/orders'
 const state = {
   salesOrder: {
     date: null,
-    supplier_id: null,
+    customer_id: null,
     form: {
       number: null,
       notes: null,
@@ -16,7 +16,7 @@ const state = {
         full_name: null
       }
     },
-    supplier: {
+    customer: {
       name: null
     },
     items: []

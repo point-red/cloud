@@ -2,22 +2,26 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmitPhone">
+      @submit.prevent="onSubmitPhone"
+    >
       <p-modal
-        ref="emailCompanyModalRef"
         :id="id"
-        :title="title">
+        ref="emailCompanyModalRef"
+        :title="title"
+      >
         <template slot="content">
           <p-form-row
             id="email-company"
+            v-model="emailCompany"
             name="email-company"
             :label="$t('email')"
-            :isFocus="isFocus"
-            v-model="emailCompany">
-          </p-form-row>
+            :is-focus="isFocus"
+          />
         </template>
         <template slot="footer">
-          <button class="btn btn-primary">Add</button>
+          <button class="btn btn-primary">
+            Add
+          </button>
         </template>
       </p-modal>
     </form>
@@ -28,7 +32,8 @@
 export default {
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
       type: String,

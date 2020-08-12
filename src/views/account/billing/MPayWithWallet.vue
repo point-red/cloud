@@ -1,36 +1,64 @@
 <template>
   <div>
-    <p-loading-block message="please wait and do not close this page" v-show="isSaving"/>
+    <p-loading-block
+      v-show="isSaving"
+      message="please wait and do not close this page"
+    />
     <form @submit.prevent>
       <sweet-modal
         ref="modal"
         :title="$t('pay invoice') | uppercase"
         overlay-theme="dark"
-        @close="onClose()">
+        @close="onClose()"
+      >
         <div class="row">
           <div class="col-sm-12">
             <table class="table">
               <tr>
                 <td>WALLET</td>
-                <td class="text-right">{{ amount | numberFormat }}</td>
+                <td class="text-right">
+                  {{ amount | numberFormat }}
+                </td>
               </tr>
               <tr>
                 <td>INVOICE #{{ invoice.number }}</td>
-                <td class="text-right">-{{ invoice.total | numberFormat }}</td>
+                <td class="text-right">
+                  -{{ invoice.total | numberFormat }}
+                </td>
               </tr>
               <tr>
-                <td></td>
-                <td class="text-right">{{ amount - invoice.total | numberFormat }}</td>
+                <td />
+                <td class="text-right">
+                  {{ amount - invoice.total | numberFormat }}
+                </td>
               </tr>
             </table>
           </div>
         </div>
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary mr-5" :disabled="isSaving" v-if="invoice.total <= amount" @click="onSubmit()">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('pay') | uppercase }}
+          <button
+            v-if="invoice.total <= amount"
+            type="submit"
+            class="btn btn-sm btn-primary mr-5"
+            :disabled="isSaving"
+            @click="onSubmit()"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('pay') | uppercase }}
           </button>
-          <button type="button" class="btn btn-sm btn-danger mr-5" :disabled="isSaving" v-if="invoice.total > amount" @click="close()">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('not enough wallet') | uppercase }}
+          <button
+            v-if="invoice.total > amount"
+            type="button"
+            class="btn btn-sm btn-danger mr-5"
+            :disabled="isSaving"
+            @click="close()"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('not enough wallet') | uppercase }}
           </button>
         </div>
       </sweet-modal>

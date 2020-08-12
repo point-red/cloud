@@ -2,23 +2,33 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmitAddress">
+      @submit.prevent="onSubmitAddress"
+    >
       <p-modal
-        ref="addressModal"
         :id="id"
-        :title="title">
+        ref="addressModal"
+        :title="title"
+      >
         <template slot="content">
           <p-form-row
             id="name"
+            v-model="address"
             name="name"
             :label="$t('address')"
-            :isFocus="true"
-            v-model="address">
-          </p-form-row>
+            :is-focus="true"
+          />
         </template>
         <template slot="footer">
-          <button class="btn btn-primary">Add</button>
-          <button type="button" @click="close" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+          <button class="btn btn-primary">
+            Add
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="close"
+          >
+            {{ $t('close') | uppercase }}
+          </button>
         </template>
       </p-modal>
     </form>
@@ -29,7 +39,8 @@
 export default {
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
       type: String,
@@ -46,6 +57,18 @@ export default {
       this.$emit('value', this.address)
     }
   },
+  created () {
+    console.log('address created')
+  },
+  updated () {
+    console.log('address updated')
+  },
+  mounted () {
+    console.log('address mounted')
+  },
+  beforeDestroy () {
+    console.log('address before destroy')
+  },
   methods: {
     show () {
       this.$refs.addressModal.show()
@@ -58,18 +81,6 @@ export default {
       this.address = ''
       this.close()
     }
-  },
-  created () {
-    console.log('address created')
-  },
-  updated () {
-    console.log('address updated')
-  },
-  mounted () {
-    console.log('address mounted')
-  },
-  beforeDestroy () {
-    console.log('address before destroy')
   }
 }
 </script>

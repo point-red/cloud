@@ -1,20 +1,27 @@
 <template>
   <div>
     <date-picker
+      v-model="date"
+      v-mask="mask"
       format="DD-MM-YYYY"
       type="date"
-      v-model="date"
       :shortcuts="shortcuts"
       value-type="YYYY-MM-DD"
-      v-mask="mask"/>
+    />
 
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-feedback">{{ error }}</div>
+      class="invalid-feedback"
+    >
+      {{ error }}
+    </div>
     <div
       v-show="help"
-      class="form-text text-muted">{{ help }}</div>
+      class="form-text text-muted"
+    >
+      {{ help }}
+    </div>
   </div>
 </template>
 
@@ -29,17 +36,19 @@ export default {
   props: {
     name: {
       type: String,
-      required: false
+      default: null
     },
     value: {
       type: [Date, String],
       default: new Date()
     },
     help: {
-      type: String
+      type: String,
+      default: null
     },
     errors: {
-      type: Array
+      type: Array,
+      default: null
     }
   },
   data () {

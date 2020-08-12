@@ -30,7 +30,7 @@ const actions = {
     return api.post(`${url}/send`, payload)
   },
   async get ({ commit, state }, payload) {
-    let { data, meta } = await api.get(url, {
+    const { data, meta } = await api.get(url, {
       params: payload
     })
 

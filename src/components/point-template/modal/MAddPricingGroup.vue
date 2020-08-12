@@ -5,23 +5,33 @@
         ref="modal"
         :title="$t('add pricing group') | uppercase"
         overlay-theme="dark"
-        @close="onClose()">
+        @close="onClose()"
+      >
         <div class="row">
           <div class="col-sm-12">
             <p-form-row
               id="label"
+              ref="label"
               v-model="form.label"
               :disabled="isSaving"
               :label="$t('label')"
               name="label"
-              ref="label"
               :errors="form.errors.get('label')"
-              @errors="form.errors.set('label', null)"/>
+              @errors="form.errors.set('label', null)"
+            />
           </div>
         </div>
         <div class="pull-right">
-          <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+          <button
+            type="submit"
+            class="btn btn-sm btn-primary"
+            :disabled="isSaving"
+            @click="onSubmit"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('save') | uppercase }}
           </button>
         </div>
       </sweet-modal>
@@ -43,6 +53,9 @@ export default {
         label: ''
       })
     }
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('masterPricingGroup', ['get', 'create']),

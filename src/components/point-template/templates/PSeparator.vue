@@ -1,5 +1,5 @@
 <template>
-  <div class="row"></div>
+  <div class="row" />
 </template>
 
 <style scoped>

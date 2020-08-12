@@ -19,11 +19,11 @@ const getters = {
     }
 
     procedures.forEach(procedure => {
-      const subs = [ ...procedure.procedures ]
+      const subs = [...procedure.procedures]
       delete procedure.procedures
 
       results.push(procedure)
-      results = results.concat(getters['allProcedures'](subs))
+      results = results.concat(getters.allProcedures(subs))
     })
 
     return results
@@ -55,7 +55,7 @@ const actions = {
     return api.put(`${url}/${procedure.id}`, procedure)
   },
   async get ({ commit, state }, payload) {
-    let { data, meta } = await api.get(url, {
+    const { data, meta } = await api.get(url, {
       params: payload
     })
 
@@ -63,7 +63,7 @@ const actions = {
     commit('SET_PAGINATION', meta)
   },
   async show ({ commit }, id) {
-    let { procedure } = await api.get(`${url}/${id}`)
+    const { procedure } = await api.get(`${url}/${id}`)
 
     return procedure
   },

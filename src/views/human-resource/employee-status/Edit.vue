@@ -1,35 +1,45 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <router-link
         to="/human-resource/employee-status"
-        class="breadcrumb-item">{{ $t('employee status') | uppercase }}</router-link>
+        class="breadcrumb-item"
+      >
+        {{ $t('employee status') | uppercase }}
+      </router-link>
       <router-link
         :to="'/human-resource/employee-status/' + status.id"
-        class="breadcrumb-item">{{ status.name | uppercase }}</router-link>
+        class="breadcrumb-item"
+      >
+        {{ status.name | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
-    <form class="row" @submit.prevent="onSubmit">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
       <p-block
         :is-loading="isLoading"
         :header="true"
         :title="$t('employee status')"
-        column="col-sm-12">
+        column="col-sm-12"
+      >
         <div class="row">
           <div class="col-sm-6">
             <p-form-row
               id="name"
+              v-model="form.name"
               name="name"
               :label="$t('name')"
               :disabled="isSaving"
-              v-model="form.name"
               :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)">
-            </p-form-row>
+              @errors="form.errors.set('name', null)"
+            />
           </div>
         </div>
         <div class="form-group row">
@@ -38,13 +48,18 @@
             <button
               type="submit"
               :disabled="isSaving"
-              class="btn btn-sm btn-primary mr-5">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+              class="btn btn-sm btn-primary mr-5"
+            >
+              <i
+                v-show="isSaving"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('update') | uppercase }}
             </button>
             <button
               type="button"
               class="btn btn-sm btn-outline-danger"
-              @click="$router.push('/human-resource/employee-status/' + id)">
+              @click="$router.push('/human-resource/employee-status/' + id)"
+            >
               {{ $t('close') | uppercase }}
             </button>
           </div>

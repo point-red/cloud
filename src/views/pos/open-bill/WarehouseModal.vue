@@ -2,32 +2,43 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmitWarehouse">
+      @submit.prevent="onSubmitWarehouse"
+    >
       <p-modal
-        ref="warehouseModal"
         id="warehouseModal"
+        ref="warehouseModal"
         :can-close="false"
-        :title="title | uppercase">
+        :title="title | uppercase"
+      >
         <template slot="content">
           <div v-if="isLoading">
-            <h5 class="text-center">Loading ...</h5>
+            <h5 class="text-center">
+              Loading ...
+            </h5>
           </div>
-          <div v-else class="list-group push">
+          <div
+            v-else
+            class="list-group push"
+          >
             <div class="list-group">
               <template v-for="(warehouse, index) in user.warehouses">
                 <a
                   :key="index"
-                  @click="onSubmitWarehouse(warehouse, index)"
                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                  href="javascript:void(0)">
-                    <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ warehouse.name | titlecase }}</span>
+                  href="javascript:void(0)"
+                  @click="onSubmitWarehouse(warehouse, index)"
+                >
+                  <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ warehouse.name | titlecase }}</span>
                 </a>
               </template>
             </div>
           </div>
-          <div class="alert alert-info text-center" v-if="user.warehouses.length == 0 && !isLoading">
+          <div
+            v-if="user.warehouses.length == 0 && !isLoading"
+            class="alert alert-info text-center"
+          >
             {{ $t('you don\'t have access to any') | capitalize }} {{ $t('warehouse') | capitalize }}
-            <br/>
+            <br>
             <router-link :to="'/master/user/'">
               <span>{{ $t('add access to') | capitalize }} {{ $t('warehouse') | capitalize }}</span>
             </router-link>

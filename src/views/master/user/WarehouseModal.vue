@@ -2,38 +2,57 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmitWarehouse">
+      @submit.prevent="onSubmitWarehouse"
+    >
       <p-modal
-        ref="assignWarehouse"
         id="assignWarehouse"
-        :title="title">
+        ref="assignWarehouse"
+        :title="title"
+      >
         <template slot="content">
           <div v-if="isLoading">
-            <h5 class="text-center">Loading ...</h5>
+            <h5 class="text-center">
+              Loading ...
+            </h5>
           </div>
-          <div v-else class="list-group push">
+          <div
+            v-else
+            class="list-group push"
+          >
             <div class="list-group">
               <template v-for="(warehouse, index) in warehouseList">
                 <a
                   :key="index"
-                  @click="onSubmitWarehouse(warehouse, index)"
                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                  href="javascript:void(0)">
-                    <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ warehouse.name | titlecase }}</span>
+                  href="javascript:void(0)"
+                  @click="onSubmitWarehouse(warehouse, index)"
+                >
+                  <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ warehouse.name | titlecase }}</span>
                 </a>
               </template>
             </div>
           </div>
-          <div class="alert alert-info text-center" v-if="warehouseList.length == 0 && !isLoading">
-            {{ $t('you don\'t have any') | capitalize }} {{ $t('warehouse') | capitalize }}, <br/> {{ $t('you can create') }}
+          <div
+            v-if="warehouseList.length == 0 && !isLoading"
+            class="alert alert-info text-center"
+          >
+            {{ $t('you don\'t have any') | capitalize }} {{ $t('warehouse') | capitalize }}, <br> {{ $t('you can create') }}
             <router-link :to="'/master/warehouse/create'">
               <span>{{ $t('new one') }}</span>
             </router-link>
           </div>
         </template>
         <template slot="footer">
-          <button type="button" class="btn btn-sm btn-outline-secondary" :disabled="isSaving" @click="$refs.assignWarehouse.close()">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('close') | uppercase }}
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            :disabled="isSaving"
+            @click="$refs.assignWarehouse.close()"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>
@@ -47,7 +66,8 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
       type: String,

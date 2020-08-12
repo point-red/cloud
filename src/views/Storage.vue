@@ -10,13 +10,14 @@
       <p-block>
         <p-form-input
           id="search-text"
+          ref="searchText"
           name="search-text"
           placeholder="Search"
-          ref="searchText"
           :value="searchText"
-          @input="filterSearch"/>
+          @input="filterSearch"
+        />
 
-        <hr/>
+        <hr>
 
         <p-block-inner :is-loading="isLoading">
           <point-table>
@@ -30,7 +31,8 @@
             <tr
               v-for="(cloudStorage, index) in cloudStorages"
               :key="cloudStorage.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ index + 1 }}</th>
               <td>{{ cloudStorage.project.name }}</td>
               <td>{{ cloudStorage.file_name }}</td>
@@ -46,8 +48,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>
@@ -72,6 +74,12 @@ export default {
   },
   computed: {
     ...mapGetters('cloudStorage', ['cloudStorages', 'pagination'])
+  },
+  created () {
+    this.getCloudStorageRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('cloudStorage', ['get']),
@@ -101,12 +109,6 @@ export default {
       this.currentPage = 1
       this.getCloudStorageRequest()
     }, 300)
-  },
-  created () {
-    this.getCloudStorageRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

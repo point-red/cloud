@@ -1,64 +1,173 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin/>
-      <router-link to="/plugin/scale-weight" class="breadcrumb-item">{{ $t('scale weight') | uppercase }}</router-link>
-      <router-link to="/plugin/scale-weight/truck" class="breadcrumb-item">{{ $t('truck') | uppercase }}</router-link>
+      <breadcrumb-plugin />
+      <router-link
+        to="/plugin/scale-weight"
+        class="breadcrumb-item"
+      >
+        {{ $t('scale weight') | uppercase }}
+      </router-link>
+      <router-link
+        to="/plugin/scale-weight/truck"
+        class="breadcrumb-item"
+      >
+        {{ $t('truck') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ data.id }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('scale weight truck')" :header="true">
+      <p-block
+        :title="$t('scale weight truck')"
+        :header="true"
+      >
         <router-link
-          to="/plugin/scale-weight/truck/create"
           v-if="$permission.has('create scale weight truck')"
           slot="header"
+          to="/plugin/scale-weight/truck/create"
           exact
-          class="btn-block-option">
-          <span><i class="si si-plus"></i> {{ $t('new scale weight') | titlecase }}</span>
+          class="btn-block-option"
+        >
+          <span><i class="si si-plus" /> {{ $t('new scale weight') | titlecase }}</span>
         </router-link>
         <p-block-inner :is-loading="isLoading">
-          <p-form-row id="machine_code" name="machine_code" label="Machine" v-model="data.machine_code" readonly/>
-          <p-form-row id="form_number" name="form_number" label="Form" v-model="data.form_number" readonly/>
-          <p-form-row id="vendor" name="vendor" label="Vendor" v-model="data.vendor" readonly/>
-          <p-form-row id="driver" name="driver" label="Driver" v-model="data.driver" readonly/>
-          <p-form-row id="license_number" name="license_number" label="License Number" v-model="data.license_number" readonly/>
-          <p-form-row id="gross_weight" name="gross_weight" label="Gross Weight">
-            <div slot="body" class="col-lg-9">
-              <p-form-number :is-text-right="false" id="gross_weight" name="gross_weight" label="Gross Weight" v-model="data.gross_weight" readonly/>
+          <p-form-row
+            id="machine_code"
+            v-model="data.machine_code"
+            name="machine_code"
+            label="Machine"
+            readonly
+          />
+          <p-form-row
+            id="form_number"
+            v-model="data.form_number"
+            name="form_number"
+            label="Form"
+            readonly
+          />
+          <p-form-row
+            id="vendor"
+            v-model="data.vendor"
+            name="vendor"
+            label="Vendor"
+            readonly
+          />
+          <p-form-row
+            id="driver"
+            v-model="data.driver"
+            name="driver"
+            label="Driver"
+            readonly
+          />
+          <p-form-row
+            id="license_number"
+            v-model="data.license_number"
+            name="license_number"
+            label="License Number"
+            readonly
+          />
+          <p-form-row
+            id="gross_weight"
+            name="gross_weight"
+            label="Gross Weight"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
+              <p-form-number
+                id="gross_weight"
+                v-model="data.gross_weight"
+                :is-text-right="false"
+                name="gross_weight"
+                label="Gross Weight"
+                readonly
+              />
             </div>
           </p-form-row>
-          <p-form-row id="tare_weight" name="tare_weight" label="Tare Weight">
-            <div slot="body" class="col-lg-9">
-              <p-form-number :is-text-right="false" id="tare_weight" name="tare_weight" label="Tare Weight" v-model="data.tare_weight" readonly/>
+          <p-form-row
+            id="tare_weight"
+            name="tare_weight"
+            label="Tare Weight"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
+              <p-form-number
+                id="tare_weight"
+                v-model="data.tare_weight"
+                :is-text-right="false"
+                name="tare_weight"
+                label="Tare Weight"
+                readonly
+              />
             </div>
           </p-form-row>
-          <p-form-row id="net_weight" name="net_weight" label="Net Weight">
-            <div slot="body" class="col-lg-9">
-              <p-form-number :is-text-right="false" id="net_weight" name="net_weight" label="Net Weight" v-model="data.net_weight" readonly/>
+          <p-form-row
+            id="net_weight"
+            name="net_weight"
+            label="Net Weight"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
+              <p-form-number
+                id="net_weight"
+                v-model="data.net_weight"
+                :is-text-right="false"
+                name="net_weight"
+                label="Net Weight"
+                readonly
+              />
             </div>
           </p-form-row>
-          <p-form-row id="time_in" name="time_in" label="Time In" v-model="data.time_in" readonly/>
-          <p-form-row id="time_out" name="time_out" label="Time Out" v-model="data.time_out" readonly/>
-          <p-form-row id="user" name="user" label="User" v-model="data.user" readonly/>
+          <p-form-row
+            id="time_in"
+            v-model="data.time_in"
+            name="time_in"
+            label="Time In"
+            readonly
+          />
+          <p-form-row
+            id="time_out"
+            v-model="data.time_out"
+            name="time_out"
+            label="Time Out"
+            readonly
+          />
+          <p-form-row
+            id="user"
+            v-model="data.user"
+            name="user"
+            label="User"
+            readonly
+          />
 
           <hr>
 
           <router-link
-            :to="{ path: '/plugin/scale-weight/truck/' + scaleWeight.id + '/edit', params: { id: scaleWeight.id }}"
             v-if="$permission.has('update scale weight truck')"
-            class="btn btn-sm btn-primary mr-5">
+            :to="{ path: '/plugin/scale-weight/truck/' + scaleWeight.id + '/edit', params: { id: scaleWeight.id }}"
+            class="btn btn-sm btn-primary mr-5"
+          >
             {{ $t('edit') | uppercase }}
           </router-link>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete scale weight truck')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-danger"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </p-block-inner>
       </p-block>
@@ -103,21 +212,6 @@ export default {
   computed: {
     ...mapGetters('pluginScaleWeightTruck', ['scaleWeight'])
   },
-  methods: {
-    ...mapActions('pluginScaleWeightTruck', ['find', 'delete']),
-    onDelete () {
-      this.isDeleting = true
-      this.delete({
-        id: this.id
-      }).then(response => {
-        this.isDeleting = false
-        this.$router.push('/plugin/scale-weight/truck')
-      }).catch(response => {
-        this.isDeleting = false
-        this.$notification.error('cannot delete this scale weight')
-      })
-    }
-  },
   created () {
     this.isLoading = true
     this.find({
@@ -141,6 +235,21 @@ export default {
       this.isLoading = false
       this.$notification.error(error.message)
     })
+  },
+  methods: {
+    ...mapActions('pluginScaleWeightTruck', ['find', 'delete']),
+    onDelete () {
+      this.isDeleting = true
+      this.delete({
+        id: this.id
+      }).then(response => {
+        this.isDeleting = false
+        this.$router.push('/plugin/scale-weight/truck')
+      }).catch(response => {
+        this.isDeleting = false
+        this.$notification.error('cannot delete this scale weight')
+      })
+    }
   }
 }
 </script>

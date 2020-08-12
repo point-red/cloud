@@ -4,40 +4,67 @@
       :ref="'select-' + id"
       :title="$t('select allocation') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <input
-        type="text"
-        class="form-control"
         ref="searchText"
         v-model="searchText"
+        type="text"
+        class="form-control"
         placeholder="Search..."
-        @keydown.enter.prevent="">
+        @keydown.enter.prevent=""
+      >
       <hr>
       <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
-      <div v-else class="list-group push">
-        <template v-for="(option, index) in options">
-        <a
-          :key="index"
-          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-          :class="{'active': option.id == mutableId }"
-          @click="choose(option)"
-          href="javascript:void(0)">
-          {{ option.name | uppercase }}
-        </a>
+      <div
+        v-else
+        class="list-group push"
+      >
+        <template v-for="(option, optionIndex) in options">
+          <a
+            :key="optionIndex"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            :class="{'active': option.id == mutableId }"
+            href="javascript:void(0)"
+            @click="choose(option)"
+          >
+            {{ option.name | uppercase }}
+          </a>
         </template>
       </div>
-      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+      <div
+        v-if="searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
       <div class="pull-right">
-        <button type="button" @click="add()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('add') | uppercase }}</button>
-        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary mr-5"
+          @click="add()"
+        >
+          {{ $t('add') | uppercase }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="clear()"
+        >
+          {{ $t('clear') | uppercase }}
+        </button>
       </div>
     </sweet-modal>
 
-    <m-add-allocation id="add-allocation" ref="addAllocation" @added="onAdded()"></m-add-allocation>
+    <m-add-allocation
+      id="add-allocation"
+      ref="addAllocation"
+      @added="onAdded()"
+    />
   </div>
 </template>
 
@@ -46,6 +73,20 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -60,17 +101,6 @@ export default {
   computed: {
     ...mapGetters('masterAllocation', ['allocations', 'pagination'])
   },
-  props: {
-    id: {
-      type: String
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
-    }
-  },
   watch: {
     searchText: debounce(function () {
       this.search()
@@ -84,6 +114,9 @@ export default {
   },
   created () {
     this.search()
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('masterAllocation', ['get', 'create']),

@@ -1,12 +1,17 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-purchase/>
-      <router-link to="/purchase/receive" class="breadcrumb-item">{{ $t('purchase receive') | uppercase }}</router-link>
+      <breadcrumb-purchase />
+      <router-link
+        to="/purchase/receive"
+        class="breadcrumb-item"
+      >
+        {{ $t('purchase receive') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <purchase-menu/>
+    <purchase-menu />
 
     <form @submit.prevent="onSubmit">
       <div class="row">
@@ -17,21 +22,29 @@
                 <h4>{{ $t('purchase receive') | uppercase }}</h4>
                 <table class="table table-sm table-bordered">
                   <tr>
-                    <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('date') | uppercase }}
+                    </td>
                     <td>
                       <p-date-picker
                         id="date"
+                        v-model="form.date"
                         name="date"
                         :label="$t('date')"
-                        v-model="form.date"
                         :errors="form.errors.get('date')"
-                        @errors="form.errors.set('date', null)"/>
+                        @errors="form.errors.set('date', null)"
+                      />
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('purchase order') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('purchase order') | uppercase }}
+                    </td>
                     <td>
-                      <span @click="$refs.selectPurchaseOrder.open()" class="select-link">
+                      <span
+                        class="select-link"
+                        @click="$refs.selectPurchaseOrder.open()"
+                      >
                         <template v-if="purchaseOrder && purchaseOrder.form.number">
                           {{ purchaseOrder.form.number }}
                         </template>
@@ -42,7 +55,9 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('warehouse') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('warehouse') | uppercase }}
+                    </td>
                     <td>
                       <!-- <span @click="$refs.warehouse.show()" class="select-link">
                         <template v-if="warehouse">
@@ -54,49 +69,63 @@
                       </span> -->
                       <m-warehouse
                         id="warehouse"
-                        name="warehouse"
                         ref="warehouse"
-                        @choosen="chooseWarehouse"/>
+                        name="warehouse"
+                        @choosen="chooseWarehouse"
+                      />
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('driver') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('driver') | uppercase }}
+                    </td>
                     <td>
-                        <p-form-input
+                      <p-form-input
                         id="driver"
+                        v-model="form.driver"
                         name="driver"
                         :label="$t('driver')"
-                        v-model="form.driver"
                         :errors="form.errors.get('driver')"
-                        @errors="form.errors.set('driver', null)"/>
+                        @errors="form.errors.set('driver', null)"
+                      />
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('license plate') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('license plate') | uppercase }}
+                    </td>
                     <td>
-                        <p-form-input
+                      <p-form-input
                         id="license plate"
+                        v-model="form.license_plate"
                         name="license plate"
                         :label="$t('license plate')"
-                        v-model="form.license_plate"
                         :errors="form.errors.get('license_plate')"
-                        @errors="form.errors.set('license_plate', null)"/>
+                        @errors="form.errors.set('license_plate', null)"
+                      />
                     </td>
                   </tr>
                 </table>
               </div>
               <div class="col-sm-6 text-right">
                 <div class="mb-30">
-                  <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                  <h6 class="mb-0">
+                    {{ authUser.tenant_name | uppercase }}
+                  </h6>
                   <template v-if="authUser.branch">
                     {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
                     {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
                   </template>
                 </div>
                 <div>
-                  <h6 class="mb-0 ">{{ $t('from') | uppercase }}:</h6>
+                  <h6 class="mb-0 ">
+                    {{ $t('from') | uppercase }}:
+                  </h6>
                   <span>{{ form.supplier_label | uppercase }}</span>
-                  <div style="font-size:12px" v-if="form.supplier_phone">
+                  <div
+                    v-if="form.supplier_phone"
+                    style="font-size:12px"
+                  >
                     <br v-if="form.supplier_address">{{ form.supplier_address | uppercase }}
                     <br v-if="form.supplier_phone">{{ form.supplier_phone }}
                     <br v-if="form.supplier_email">{{ form.supplier_email | uppercase }}
@@ -108,25 +137,34 @@
             <point-table>
               <tr slot="p-head">
                 <th>#</th>
-                <th style="min-width: 120px">{{ $t('item') | uppercase }}</th>
+                <th style="min-width: 120px">
+                  {{ $t('item') | uppercase }}
+                </th>
                 <th>{{ $t('quantity remaining') | uppercase }}</th>
                 <th>{{ $t('quantity received') | uppercase }}</th>
                 <th>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
-                    <i class="fa fa-ellipsis-h"/>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    @click="toggleMore()"
+                  >
+                    <i class="fa fa-ellipsis-h" />
                   </button>
                 </th>
               </tr>
               <template v-for="(row, index) in form.items">
-                <tr slot="p-body" :key="'item-'+index">
+                <tr
+                  slot="p-body"
+                  :key="'item-'+index"
+                >
                   <th>{{ index + 1 }}</th>
                   <td>{{ row.item_label }}</td>
                   <td>{{ row.quantity_remaining | numberFormat }} {{ row.unit }}</td>
                   <td>
                     <p-quantity
                       :id="'quantity' + index"
-                      :name="'quantity' + index"
                       v-model="row.quantity"
+                      :name="'quantity' + index"
                       :item-id="row.item_id"
                       :units="row.units"
                       :unit="{
@@ -135,30 +173,37 @@
                         converter: row.converter
                       }"
                       :max="row.quantity * 1"
-                      @choosen="chooseUnit($event, row)"/>
+                      @choosen="chooseUnit($event, row)"
+                    />
                   </td>
                   <td>
-                    <button type="button"
+                    <button
+                      v-if="!isSaving"
+                      type="button"
                       class="btn btn-sm btn-outline-secondary"
                       @click="row.more = !row.more"
-                      v-if="!isSaving">
-                      <i class="fa fa-ellipsis-h"/>
+                    >
+                      <i class="fa fa-ellipsis-h" />
                     </button>
                   </td>
                 </tr>
                 <template v-if="row.more">
-                  <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
-                    <th class="bg-gray-light"></th>
+                  <tr
+                    slot="p-body"
+                    :key="'ext-'+index"
+                    class="bg-gray-light"
+                  >
+                    <th class="bg-gray-light" />
                     <td colspan="4">
                       <p-form-row
                         id="notes"
-                        name="notes"
                         v-model="row.notes"
-                        :label="$t('notes')">
-                      </p-form-row>
+                        name="notes"
+                        :label="$t('notes')"
+                      />
                     </td>
-                    <td></td>
-                    <td></td>
+                    <td />
+                    <td />
                   </tr>
                 </template>
               </template>
@@ -166,25 +211,48 @@
             <!-- <div class="row"></div> -->
             <!-- <hr> -->
             <div class="row">
-              <div class="col-sm-6">
-              </div>
+              <div class="col-sm-6" />
               <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+                <h6 class="mb-0">
+                  {{ $t('requested by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  {{ Date.now() | dateFormat('DD MMMM YYYY') }}
+                </div>
                 {{ requestedBy | uppercase }}
-                <div class="d-sm-block d-md-none mt-10"></div>
+                <div class="d-sm-block d-md-none mt-10" />
               </div>
               <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">_______________</div>
-                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <h6 class="mb-0">
+                  {{ $t('approved by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  _______________
+                </div>
+                <span
+                  class="select-link"
+                  @click="$refs.approver.open()"
+                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
                 <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
                 <hr>
-                <button type="submit" class="btn btn-block btn-sm btn-primary" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                <button
+                  type="submit"
+                  class="btn btn-block btn-sm btn-primary"
+                  :disabled="isSaving"
+                >
+                  <i
+                    v-show="isSaving"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('save') | uppercase }}
                 </button>
               </div>
             </div>
@@ -193,8 +261,14 @@
       </div>
     </form>
 
-    <m-user ref="approver" @choosen="chooseApprover"/>
-    <select-purchase-order ref="selectPurchaseOrder" @choosen="choosePurchaseOrder"></select-purchase-order>
+    <m-user
+      ref="approver"
+      @choosen="chooseApprover"
+    />
+    <select-purchase-order
+      ref="selectPurchaseOrder"
+      @choosen="choosePurchaseOrder"
+    />
   </div>
 </template>
 
@@ -245,6 +319,9 @@ export default {
   computed: {
     ...mapGetters('purchaseReceive', ['purchaseReceive']),
     ...mapGetters('auth', ['authUser'])
+  },
+  created () {
+    this.purchaseReceiveRequest()
   },
   methods: {
     ...mapActions('purchaseReceive', ['create', 'find']),
@@ -347,9 +424,6 @@ export default {
           this.isSaving = false
         })
     }
-  },
-  created () {
-    this.purchaseReceiveRequest()
   }
 }
 </script>

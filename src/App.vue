@@ -2,11 +2,12 @@
   <div
     id="app"
     style="heigth: 900px"
-    @click="closeHeaderDropdown($event)">
+    @click="closeHeaderDropdown($event)"
+  >
     <network>
       <span slot="online">
         <transition name="fade">
-          <router-view/>
+          <router-view />
         </transition>
       </span>
       <span slot="offline">
@@ -15,7 +16,7 @@
             <div class="content content-full">
               <div class="py-30 text-center">
                 <div class="display-3 text-danger">
-                  <i class="fa fa-plug"/>
+                  <i class="fa fa-plug" />
                 </div>
                 <h1 class="h2 font-w700 mt-30 mb-10 text-danger">Oops.. You are not connected to the internet..</h1>
                 <h2 class="h3 font-w400 text-muted mb-50">Please connect to the internet..</h2>
@@ -29,7 +30,8 @@
       :max="3"
       :duration="5000"
       group="notification"
-      position="bottom right" />
+      position="bottom right"
+    />
     <p-loading-block v-show="isLoadingBlock" />
   </div>
 </template>

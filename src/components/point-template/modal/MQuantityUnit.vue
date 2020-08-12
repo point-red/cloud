@@ -4,22 +4,35 @@
       :ref="'select-' + id"
       :title="$t('select unit') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
-      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      @close="onClose()"
+    >
+      <input
+        v-model="searchText"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        @keydown.enter.prevent=""
+      >
       <hr>
       <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
-      <div v-else class="list-group push">
+      <div
+        v-else
+        class="list-group push"
+      >
         <template v-for="(unit, index) in units">
-        <a
-          :key="index"
-          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-          :class="{'active': unit.id == mutableId }"
-          @click="choose(unit)"
-          href="javascript:void(0)">
-          {{ unit.label | uppercase }}
-        </a>
+          <a
+            :key="index"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            :class="{'active': unit.id == mutableId }"
+            href="javascript:void(0)"
+            @click="choose(unit)"
+          >
+            {{ unit.label | uppercase }}
+          </a>
         </template>
       </div>
     </sweet-modal>
@@ -30,6 +43,20 @@
 import debounce from 'lodash/debounce'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: null
+    },
+    label: {
+      type: String,
+      default: null
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -41,18 +68,6 @@ export default {
       units: []
     }
   },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
-    }
-  },
   watch: {
     searchText: debounce(function () {
       this.search()
@@ -62,6 +77,9 @@ export default {
     }
   },
   created () {
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     search () {

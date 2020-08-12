@@ -1,25 +1,36 @@
 <template>
   <div>
-    <form class="row" @submit.prevent="onSubmitRole">
+    <form
+      class="row"
+      @submit.prevent="onSubmitRole"
+    >
       <p-modal
-        ref="assignRole"
         id="assignRole"
-        :title="$t('employee assessment')">
+        ref="assignRole"
+        :title="$t('employee assessment')"
+      >
         <template slot="content">
           <div class="list-group mb-20">
             <template v-for="(role, index) in roles">
               <a
                 :key="index"
-                @click="onSubmitRole(role, index)"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                href="javascript:void(0)">
-                  <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ role.name | uppercase }}</span>
+                href="javascript:void(0)"
+                @click="onSubmitRole(role, index)"
+              >
+                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ role.name | uppercase }}</span>
               </a>
             </template>
           </div>
         </template>
         <template slot="footer">
-          <button type="button" class="btn btn-sm btn-outline-secondary" @click="$refs.assignRole.close()">{{ $t('close') | uppercase }}</button>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            @click="$refs.assignRole.close()"
+          >
+            {{ $t('close') | uppercase }}
+          </button>
         </template>
       </p-modal>
     </form>

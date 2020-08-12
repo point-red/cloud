@@ -1,29 +1,39 @@
 <template>
   <div>
-    <form class="row" @submit.prevent="onSubmit">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
       <p-modal
-        ref="copyGroupModal"
         :id="id"
-        :isLoading="isLoading"
-        title="List Kpi Template">
+        ref="copyGroupModal"
+        :is-loading="isLoading"
+        title="List Kpi Template"
+      >
         <template slot="content">
           <div class="list-group push mb-20">
             <template v-for="(template, index) in templates">
               <button
-                type="button"
+                v-if="templateId != template.id"
                 :key="index"
+                type="button"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 :class="{'active': template.id == form.template_id }"
                 href="javascript:void(0)"
-                v-if="templateId != template.id"
-                @click="chooseTemplate(template)">
+                @click="chooseTemplate(template)"
+              >
                 {{ template.name }}
               </button>
             </template>
           </div>
         </template>
         <template slot="footer">
-          <button type="submit" class="btn btn-sm btn-block btn-primary">{{ $t('copy to') | uppercase }} {{ form.template_name | uppercase }}</button>
+          <button
+            type="submit"
+            class="btn btn-sm btn-block btn-primary"
+          >
+            {{ $t('copy to') | uppercase }} {{ form.template_name | uppercase }}
+          </button>
         </template>
       </p-modal>
     </form>

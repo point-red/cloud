@@ -46,7 +46,7 @@
     <!-- Main Container -->
     <main id="main-container">
       <!-- Page Content -->
-      <router-view/>
+      <router-view />
       <!-- END Page Content -->
     </main>
     <!-- END Main Container -->

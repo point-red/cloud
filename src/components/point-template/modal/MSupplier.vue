@@ -4,48 +4,81 @@
       :ref="'select-' + id"
       :title="$t('select supplier') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <input
-        type="text"
-        class="form-control"
         ref="searchText"
         v-model="searchText"
+        type="text"
+        class="form-control"
         placeholder="Search..."
-        @keydown.enter.prevent="">
+        @keydown.enter.prevent=""
+      >
       <hr>
       <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
-      <div v-else class="list-group push">
+      <div
+        v-else
+        class="list-group push"
+      >
         <template v-for="(option, index) in options">
-        <div
-          :key="index"
-          class="list-group-item list-group-item-action justify-content-between align-items-center"
-          :class="{'active': option.id == mutableId }"
-          @click="choose(option)"
-          href="javascript:void(0)">
-          {{ option.label | uppercase }}
-          <div v-if="option.address" style="font-size:11px"><i class="fa fa-home fa-fw"></i> {{ option.address | uppercase }}</div>
-          <div v-if="option.phone" style="font-size:11px"><i class="fa fa-phone fa-fw"></i> {{ option.phone | uppercase }}</div>
-        </div>
+          <div
+            :key="index"
+            class="list-group-item list-group-item-action justify-content-between align-items-center"
+            :class="{'active': option.id == mutableId }"
+            href="javascript:void(0)"
+            @click="choose(option)"
+          >
+            {{ option.label | uppercase }}
+            <div
+              v-if="option.address"
+              style="font-size:11px"
+            >
+              <i class="fa fa-home fa-fw" /> {{ option.address | uppercase }}
+            </div>
+            <div
+              v-if="option.phone"
+              style="font-size:11px"
+            >
+              <i class="fa fa-phone fa-fw" /> {{ option.phone | uppercase }}
+            </div>
+          </div>
         </template>
       </div>
-      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+      <div
+        v-if="searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
       <div class="pull-left">
-        <button type="button" class="btn btn-sm btn-outline-secondary mr-5" @click="$refs.addSupplier.open()">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary mr-5"
+          @click="$refs.addSupplier.open()"
+        >
           {{ $t('create new') | uppercase }}
         </button>
       </div>
       <div class="pull-right">
-        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="clear()"
+        >
           {{ $t('clear') | uppercase }}
         </button>
       </div>
     </sweet-modal>
 
-    <m-add-supplier id="add-supplier" ref="addSupplier" @added="onAdded()"></m-add-supplier>
+    <m-add-supplier
+      id="add-supplier"
+      ref="addSupplier"
+      @added="onAdded()"
+    />
   </div>
 </template>
 
@@ -54,6 +87,20 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -66,17 +113,6 @@ export default {
   },
   computed: {
     ...mapGetters('masterSupplier', ['suppliers', 'pagination'])
-  },
-  props: {
-    id: {
-      type: String
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
-    }
   },
   watch: {
     searchText: debounce(function () {
@@ -91,6 +127,9 @@ export default {
   },
   created () {
     this.search()
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('masterSupplier', ['get', 'create']),

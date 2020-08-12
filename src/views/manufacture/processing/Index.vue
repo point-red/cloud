@@ -1,13 +1,13 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
+      <breadcrumb-manufacture />
       <span class="breadcrumb-item active">{{ $t('processing') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu></manufacture-menu>
+    <manufacture-menu />
 
-    <tab-menu></tab-menu>
+    <tab-menu />
   </div>
 </template>
 

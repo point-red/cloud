@@ -1,9 +1,9 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
-      <breadcrumb-procedure></breadcrumb-procedure>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
+      <breadcrumb-procedure />
       <span class="breadcrumb-item active">{{ form.code || 'Show' | uppercase }}</span>
     </breadcrumb>
 
@@ -11,62 +11,100 @@
       <p-block>
         <p-block-inner :is-loading="isLoading">
           <div class="d-flex justify-content-between align-items-center">
-            <h5 class="my-0" v-if="!form.approved_at">{{ `${form.approval_action} submission` | uppercase }}</h5>
-            <h5 class="my-0" v-else>{{ `code` | uppercase }}</h5>
+            <h5
+              v-if="!form.approved_at"
+              class="my-0"
+            >
+              {{ `${form.approval_action} submission` | uppercase }}
+            </h5>
+            <h5
+              v-else
+              class="my-0"
+            >
+              {{ `code` | uppercase }}
+            </h5>
             <div class="text-right">
               <button
-                type="button"
-                @click="$refs.modalEditProcedure.open()"
                 v-if="$permission.has('update play book procedure') && form.approved_at"
-                class="btn btn-sm btn-outline-secondary mr-5">
+                type="button"
+                class="btn btn-sm btn-outline-secondary mr-5"
+                @click="$refs.modalEditProcedure.open()"
+              >
                 {{ $t('edit') | uppercase }}
               </button>
               <button
-                type="button"
-                @click="confirmDelete"
                 v-if="$permission.has('delete play book procedure') && (form.approved_at || form.declined_at)"
+                type="button"
                 :disabled="isDeleting"
-                class="btn btn-sm btn-outline-secondary mr-5">
-                <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+                class="btn btn-sm btn-outline-secondary mr-5"
+                @click="confirmDelete"
+              >
+                <i
+                  v-show="isDeleting"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('delete') | uppercase }}
               </button>
               <router-link
                 v-if="form.approved_at"
                 class="btn btn-sm btn-outline-secondary"
                 :to="`/plugin/play-book/procedure/${form.id}/histories`"
-              >SEE HISTORY</router-link>
+              >
+                SEE HISTORY
+              </router-link>
             </div>
-            <div class="text-right" v-if="$permission.has('approve play book procedure')
-              && form.approval_request_to === authUser.id
-              && !form.declined_at
-              && !form.approved_at">
+            <div
+              v-if="$permission.has('approve play book procedure')
+                && form.approval_request_to === authUser.id
+                && !form.declined_at
+                && !form.approved_at"
+              class="text-right"
+            >
               <button
                 type="button"
+                class="btn btn-sm btn-secondary mr-5"
                 @click="$refs.modalDeclineProcedure.open()"
-                class="btn btn-sm btn-secondary mr-5">
+              >
                 {{ $t('decline') | uppercase }}
               </button>
               <button
-                @click="approve"
                 type="button"
-                class="btn btn-sm btn-secondary mr-5">
+                class="btn btn-sm btn-secondary mr-5"
+                @click="approve"
+              >
                 {{ $t('approve') | uppercase }}
               </button>
             </div>
           </div>
           <hr>
-          <div class="alert alert-success" v-if="updateSucess">
+          <div
+            v-if="updateSucess"
+            class="alert alert-success"
+          >
             Procedure updated
           </div>
-          <div class="alert alert-danger" v-if="errors">
+          <div
+            v-if="errors"
+            class="alert alert-danger"
+          >
             <strong>{{ errors.message }}</strong>
           </div>
-          <form @submit.prevent="submit" class="col-lg-6">
+          <form
+            class="col-lg-6"
+            @submit.prevent="submit"
+          >
             <p-form-row
               id="code"
               name="code"
-              :label="$t('code')">
-              <div slot="body" class="col-lg-9">
-                <div class="form-control bg-light" style="height: fit-content">
+              :label="$t('code')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
+                <div
+                  class="form-control bg-light"
+                  style="height: fit-content"
+                >
                   {{ form.code }}
                 </div>
               </div>
@@ -74,9 +112,16 @@
             <p-form-row
               id="name"
               name="name"
-              :label="$t('name')">
-              <div slot="body" class="col-lg-9">
-                <div class="form-control bg-light" style="height: fit-content">
+              :label="$t('name')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
+                <div
+                  class="form-control bg-light"
+                  style="height: fit-content"
+                >
                   {{ form.name }}
                 </div>
               </div>
@@ -84,67 +129,96 @@
             <p-form-row
               id="purpose"
               name="purpose"
-              :label="$t('purpose')">
-              <div slot="body" class="col-lg-9">
-                <div class="form-control bg-light" style="height: fit-content">
-                  {{ form.purpose }}
+              :label="$t('purpose')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
+                <div
+                  class="form-control bg-light"
+                  style="height: fit-content"
+                >
+                  {{ form.purpose || '-' }}
                 </div>
               </div>
             </p-form-row>
             <p-form-row
+              v-if="form.procedure_id"
               id="content"
               name="content"
-              v-if="form.procedure_id"
-              :label="$t('content')">
-              <div slot="body" class="col-lg-9">
-                <div class="form-control bg-light" style="height: fit-content">
-                  {{ form.content }}
+              :label="$t('content')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
+                <div
+                  class="form-control bg-light"
+                  style="height: fit-content"
+                >
+                  {{ form.content || '-' }}
                 </div>
               </div>
             </p-form-row>
             <p-form-row
               id="note"
               name="note"
-              :label="$t('note')">
-              <div slot="body" class="col-lg-9">
-                <div class="form-control bg-light" style="height: fit-content">
-                  {{ form.note }}
+              :label="$t('note')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
+                <div
+                  class="form-control bg-light"
+                  style="height: fit-content"
+                >
+                  {{ form.note || '-' }}
                 </div>
               </div>
             </p-form-row>
           </form>
         </p-block-inner>
         <hr>
-        <p-block-inner :is-loading="isLoading" class="mt-5">
+        <p-block-inner
+          :is-loading="isLoading"
+          class="mt-5"
+        >
           <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
               <router-link
-                class="btn btn-sm btn-light mr-3"
                 v-if="form.procedure_id"
-                :to="`/plugin/play-book/procedure/${form.procedure_id}`">
-                <i class="fa fa-arrow-left"></i>
+                class="btn btn-sm btn-light mr-3"
+                :to="`/plugin/play-book/procedure/${form.procedure_id}`"
+              >
+                <i class="fa fa-arrow-left" />
               </router-link>
-              <h5 class="my-0">{{ $t('content') | uppercase }}</h5>
+              <h5 class="my-0">
+                {{ $t('content') | uppercase }}
+              </h5>
             </div>
             <button
-              class="btn btn-sm btn-light"
               v-if="$permission.has('create play book procedure') && form.approved_at"
-              @click="$refs.modalAddProcedure.open()">
-              <i class="fa fa-plus"></i>
+              class="btn btn-sm btn-light"
+              @click="$refs.modalAddProcedure.open()"
+            >
+              <i class="fa fa-plus" />
             </button>
           </div>
           <div class="pt-5">
+            {{ form.procedures.length }}
             <procedure-code-item
               v-for="(procedure, i) in form.procedures"
-              :i="(++i)"
               :key="procedure.id"
+              :i="(++i)"
               :procedure="procedure"
               :with-add-button="true"
               :is-parent="true"
               @added="getData"
-              ></procedure-code-item>
+            />
 
-            <div v-if="form.procedures.length < 1">
+            <div v-if="form.procedures && form.procedures.length < 1">
               No content.
             </div>
           </div>
@@ -153,16 +227,19 @@
     </div>
     <m-add-procedure
       ref="modalAddProcedure"
-      :parent-id="$route.params.id"
-      @added="$router.push('/plugin/play-book/approval/procedure/send')"></m-add-procedure>
+      :parent-id="parseInt($route.params.id)"
+      @added="$router.push('/plugin/play-book/approval/procedure/send')"
+    />
     <m-edit-procedure
       ref="modalEditProcedure"
-      :procedure-id="$route.params.id"
-      @added="$router.push('/plugin/play-book/approval/procedure/send')"></m-edit-procedure>
+      :procedure-id="parseInt($route.params.id)"
+      @added="$router.push('/plugin/play-book/approval/procedure/send')"
+    />
     <m-decline-procedure
       ref="modalDeclineProcedure"
-      :procedure-id="$route.params.id"
-      @added="getData()"></m-decline-procedure>
+      :procedure-id="parseInt($route.params.id)"
+      @added="getData()"
+    />
   </div>
 </template>
 
@@ -172,8 +249,6 @@ import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPlayBook from '@/views/plugin/play-book/Breadcrumb'
 import BreadcrumbProcedure from '@/views/plugin/play-book/procedure/components/Breadcrumb'
 import ProcedureCodeItem from './components/ProcedureCodeItem'
-import debounce from 'lodash/debounce'
-import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -195,7 +270,8 @@ export default {
         code: null,
         name: null,
         purpose: null,
-        note: null
+        note: null,
+        procedures: []
       },
       errors: null
     }
@@ -203,8 +279,21 @@ export default {
   computed: {
     ...mapGetters('auth', ['authUser'])
   },
+  watch: {
+    '$route.params.id' () {
+      this.getData()
+    }
+  },
   mounted () {
-    this.getData()
+    this.getData().then(() => {
+      if (this.form.approval_request_to === this.authUser.id && !this.form.declined_at && !this.form.approved_at) {
+        if (this.$route.query.action === 'approve') {
+          this.approve()
+        } else if (this.$route.query.action === 'reject') {
+          this.$refs.modalDeclineProcedure.open()
+        }
+      }
+    })
   },
   methods: {
     ...mapActions('pluginPlayBookProcedure', [
@@ -215,7 +304,7 @@ export default {
         const id = this.$route.params.id
         this.isLoading = true
 
-        let procedure = await this.show(id)
+        const procedure = await this.show(id)
         this.form = { ...procedure }
       } catch (error) {
       } finally {
@@ -223,33 +312,37 @@ export default {
       }
     },
     async approve () {
-      try {
-        const id = this.$route.params.id
-        this.isLoading = true
+      this.$alert.confirm(this.$t('approve'), this.$t('are you sure you want to approve this approval?')).then(async response => {
+        try {
+          const id = this.$route.params.id
+          this.isLoading = true
 
-        let data = await this.$store.dispatch('pluginPlayBookProcedureApproval/approve', id)
+          await this.$store.dispatch('pluginPlayBookProcedureApproval/approve', id)
 
-        if (this.form.approval_action === 'update') {
-          this.$router.replace(
-            `/plugin/play-book/procedure/${this.form.procedure_pending_id}`
-          )
-        } else if (this.form.approval_action === 'destroy') {
-          this.$router.replace(
-            `/plugin/play-book/procedure/${this.form.procedure_id ? 'content' : 'code'}/`
-          )
-        } else {
-          this.getData()
+          if (this.form.approval_action === 'update') {
+            this.$router.replace(
+              `/plugin/play-book/procedure/${this.form.procedure_pending_id}`
+            )
+          } else if (this.form.approval_action === 'destroy') {
+            this.$alert.success('Delete success', 'This item has been removed.')
+              .then(() => {
+                this.$router.replace(
+                  '/plugin/play-book/procedure/'
+                )
+              })
+          } else {
+            this.getData()
+          }
+        } catch (error) {
+        } finally {
+          this.isLoading = false
         }
-      } catch (error) {
-      } finally {
-        this.isLoading = false
-      }
+      })
     },
     async submit () {
       try {
         this.errors = null
         this.isSaving = true
-        let { data } = await this.update(this.form)
         this.isEditMode = false
         this.updateSucess = true
 
@@ -284,11 +377,6 @@ export default {
         }
       })
     }
-  },
-  watch: {
-    '$route.params.id' () {
-      this.getData()
-    }
   }
 }
 </script>
@@ -297,6 +385,6 @@ export default {
 .row {
   -webkit-user-select: none !important;
   -webkit-touch-callout: none !important;
-  touch-action: none;
+  user-select: none;
 }
 </style>

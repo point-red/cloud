@@ -1,78 +1,111 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-purchase/>
+      <breadcrumb-purchase />
       <span class="breadcrumb-item active">{{ $t('purchase request') | uppercase }}</span>
     </breadcrumb>
 
-    <purchase-menu/>
+    <purchase-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <router-link
-            to="/purchase/request/create"
             v-if="$permission.has('create purchase request')"
-            class="input-group-prepend">
+            to="/purchase/request/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             class="btn-block"
             :value="searchText"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <div class="text-center font-size-sm">
-          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          <a
+            href="javascript:void(0)"
+            @click="isAdvanceFilter = !isAdvanceFilter"
+          >
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div class="card m-5 pt-10" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div
+          v-show="isAdvanceFilter"
+          class="card m-5 pt-10"
+          :class="{ 'fadeIn': isAdvanceFilter }"
+        >
           <div class="row">
             <div class="col-sm-3 text-center">
-              <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+              <p-form-row
+                id="date-start"
+                name="date-start"
+                :label="$t('date start')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.start"
                     name="date"
                     label="date"
-                    v-model="date.start"/>
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
-              <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+              <p-form-row
+                id="date-end"
+                name="date-end"
+                :label="$t('date end')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.end"
                     name="date"
                     label="date"
-                    v-model="date.end"/>
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
-              <p-form-row id="form-approval-status" name="form-approval-status" :label="$t('approval status')" :is-horizontal="false">
+              <p-form-row
+                id="form-approval-status"
+                name="form-approval-status"
+                :label="$t('approval status')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <span
+                    class="select-link"
                     @click="$refs.formApprovalStatus.open()"
-                    class="select-link">
+                  >
                     {{ formApprovalStatus.label || $t('select') | uppercase }}
                   </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
-              <p-form-row id="form-status" name="form-status" :label="$t('form status')" :is-horizontal="false">
+              <p-form-row
+                id="form-status"
+                name="form-status"
+                :label="$t('form status')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <span
+                    class="select-link"
                     @click="$refs.formStatus.open()"
-                    class="select-link">
+                  >
                     {{ formStatus.label || $t('select') | uppercase }}
                   </span>
                 </div>
@@ -81,89 +114,157 @@
           </div>
           <hr>
         </div>
-        <div class="mt-10">
-          <!-- <label class="css-control css-control-primary css-checkbox mr-10">
+        <!-- <div class="mt-10">
+          <label class="css-control css-control-primary css-checkbox mr-10">
             <input
               type="checkbox"
               class="css-control-input"
-              @click="toggleCheckRows()"
-              :checked="isRowsChecked(purchaseRequests, checkedRow)">
-            <span class="css-control-indicator"></span>
-          </label> -->
-          <span class="mr-15 animated fadeIn" v-show="checkedRow.length > 0">
-            <!-- <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkCancel()">
+              :checked="$_checkList_isRowsChecked(purchaseRequests, $data.$_checkList_checkedRow)"
+              @click="$_checkList_toggleCheckRows(purchaseRequests)"
+            >
+            <span class="css-control-indicator" />
+          </label>
+          <span
+            v-show="$data.$_checkList_checkedRow.length > 0"
+            class="mr-15 animated fadeIn"
+          >
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary mr-5"
+              @click="bulkCancel()"
+            >
               {{ $t('request approval') | uppercase }}
             </button>
-            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkApprove()">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary mr-5"
+              @click="bulkApprove()"
+            >
               {{ $t('approve') | uppercase }}
             </button>
-            <button type="button" class="btn btn-sm btn-secondary mr-5" @click="bulkReject()">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary mr-5"
+              @click="bulkReject()"
+            >
               {{ $t('reject') | uppercase }}
             </button>
-            <button type="button" class="btn btn-sm btn-secondary" @click="bulkCancel()">
+            <button
+              type="button"
+              class="btn btn-sm btn-secondary"
+              @click="bulkCancel()"
+            >
               {{ $t('archive') | uppercase }}
-            </button> -->
+            </button>
           </span>
-        </div>
+        </div> -->
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">Form</th>
+              <th width="50px">
+                Form
+              </th>
               <th>Date</th>
               <th>Item</th>
               <th>Notes</th>
-              <th class="text-right">Quantity</th>
-              <th class="text-center">Approval Status</th>
-              <th class="text-center">Form Status</th>
-              <th width="50px"></th>
+              <th class="text-right">
+                Quantity
+              </th>
+              <th class="text-center">
+                Approval Status
+              </th>
+              <th class="text-center">
+                Form Status
+              </th>
+              <th width="50px" />
             </tr>
             <template v-for="(purchaseRequest, index) in purchaseRequests">
-            <tr
-              v-for="(purchaseRequestItem, index2) in purchaseRequest.items"
-              :key="'pr-' + index + '-i-' + index2"
-              slot="p-body">
-              <th>
-                <router-link :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.id }}">
-                  {{ purchaseRequest.form.number }}
-                </router-link>
-              </th>
-              <td>{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-              <td>{{ purchaseRequestItem.item_name }}</td>
-              <td>{{ purchaseRequestItem.notes }}</td>
-              <td class="text-right">{{ purchaseRequestItem.quantity | numberFormat }} {{ purchaseRequestItem.unit }}</td>
-              <td class="text-center">
-                <div v-if="purchaseRequest.form.approval_status == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-if="purchaseRequest.form.approval_status == -1" class="badge badge-danger">{{ $t('rejected') | uppercase }}</div>
-                <div v-if="purchaseRequest.form.approval_status == 1" class="badge badge-success">{{ $t('approved') | uppercase }}</div>
-              </td>
-              <td class="text-center">
-                <div v-if="purchaseRequest.form.cancellation_status == 1" class="badge badge-danger">{{ $t('canceled') | uppercase }}</div>
-                <div v-else-if="purchaseRequest.form.done == 0" class="badge badge-primary">{{ $t('pending') | uppercase }}</div>
-                <div v-else-if="purchaseRequest.form.done == 1" class="badge badge-success">{{ $t('done') | uppercase }}</div>
-              </td>
-              <td>
-                <!-- <p-form-check-box
-                  :is-form="false"
-                  id="check-box"
-                  name="check-box"
-                  @click.native="toggleCheckRow(purchaseRequest.id)"
-                  :checked="isRowChecked(purchaseRequest.id)"
-                  class="text-center"/> -->
-              </td>
-            </tr>
+              <tr
+                v-for="(purchaseRequestItem, index2) in purchaseRequest.items"
+                :key="'pr-' + index + '-i-' + index2"
+                slot="p-body"
+              >
+                <th>
+                  <router-link :to="{ name: 'purchase.request.show', params: { id: purchaseRequest.id }}">
+                    {{ purchaseRequest.form.number }}
+                  </router-link>
+                </th>
+                <td>{{ purchaseRequest.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ purchaseRequestItem.item_name }}</td>
+                <td>{{ purchaseRequestItem.notes }}</td>
+                <td class="text-right">
+                  {{ purchaseRequestItem.quantity | numberFormat }} {{ purchaseRequestItem.unit }}
+                </td>
+                <td class="text-center">
+                  <div
+                    v-if="purchaseRequest.form.approval_status == 0"
+                    class="badge badge-primary"
+                  >
+                    {{ $t('pending') | uppercase }}
+                  </div>
+                  <div
+                    v-if="purchaseRequest.form.approval_status == -1"
+                    class="badge badge-danger"
+                  >
+                    {{ $t('rejected') | uppercase }}
+                  </div>
+                  <div
+                    v-if="purchaseRequest.form.approval_status == 1"
+                    class="badge badge-success"
+                  >
+                    {{ $t('approved') | uppercase }}
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div
+                    v-if="purchaseRequest.form.cancellation_status == 1"
+                    class="badge badge-danger"
+                  >
+                    {{ $t('canceled') | uppercase }}
+                  </div>
+                  <div
+                    v-else-if="purchaseRequest.form.done == 0"
+                    class="badge badge-primary"
+                  >
+                    {{ $t('pending') | uppercase }}
+                  </div>
+                  <div
+                    v-else-if="purchaseRequest.form.done == 1"
+                    class="badge badge-success"
+                  >
+                    {{ $t('done') | uppercase }}
+                  </div>
+                </td>
+                <td>
+                  <!-- <p-form-check-box
+                    id="check-box"
+                    :is-form="false"
+                    name="check-box"
+                    :checked="$_checkList_isRowChecked(purchaseRequest.id)"
+                    class="text-center"
+                    @click.native="$_checkList_toggleCheckRow(purchaseRequest.id)"
+                  /> -->
+                </td>
+              </tr>
             </template>
           </point-table>
         </p-block-inner>
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
-    <m-form-approval-status ref="formApprovalStatus" @choosen="chooseFormApprovalStatus($event)"/>
-    <m-form-status ref="formStatus" @choosen="chooseFormStatus($event)"/>
+    <m-form-approval-status
+      ref="formApprovalStatus"
+      @choosen="chooseFormApprovalStatus($event)"
+    />
+    <m-form-status
+      ref="formStatus"
+      @choosen="chooseFormStatus($event)"
+    />
   </div>
 </template>
 
@@ -174,6 +275,7 @@ import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import debounce from 'lodash/debounce'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
+import CheckListMixin from '@/mixins/CheckList'
 
 export default {
   components: {
@@ -182,6 +284,9 @@ export default {
     BreadcrumbPurchase,
     PointTable
   },
+  mixins: [
+    CheckListMixin
+  ],
   data () {
     return {
       isLoading: true,
@@ -190,7 +295,6 @@ export default {
       lastPage: 1,
       limit: 10,
       isAdvanceFilter: false,
-      checkedRow: [],
       formStatus: {
         id: null,
         label: null,
@@ -225,56 +329,21 @@ export default {
       deep: true
     }
   },
+  created () {
+    this.$router.push({
+      query: {
+        ...this.$route.query,
+        date_from: this.date.start,
+        date_to: this.date.end
+      }
+    })
+    this.getPurchaseRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('purchaseRequest', ['get']),
-    toggleCheckRow (id) {
-      if (!this.isRowChecked(id)) {
-        this.checkedRow.push({ id })
-      } else {
-        this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(id), 1)
-      }
-    },
-    toggleCheckRows () {
-      if (!this.isRowsChecked(this.purchaseRequests, this.checkedRow)) {
-        this.purchaseRequests.forEach(element => {
-          if (!this.isRowChecked(element.id)) {
-            const id = element.id
-            this.checkedRow.push({ id })
-          }
-        })
-      } else {
-        this.purchaseRequests.forEach(element => {
-          this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(element.id), 1)
-        })
-      }
-    },
-    isRowChecked (id) {
-      return this.checkedRow.some(element => {
-        return element.id == id
-      })
-    },
-    isRowsChecked (haystack, needles) {
-      if (needles.length == 0) {
-        return false
-      }
-      for (let i = 0; i < haystack.length; i++) {
-        const found = needles.some(element => {
-          return element.id == haystack[i].id
-        })
-        if (!found) {
-          return false
-        }
-      }
-      return true
-    },
-    bulkApprove () {
-      this.bulkApprove({
-        purchaseRequests: this.checkedRow
-      }).then(response => {
-        this.checkedRow = []
-        this.getPurchaseRequest()
-      })
-    },
     chooseFormStatus (option) {
       this.formStatus.label = option.label
       this.formStatus.value = option.value
@@ -335,19 +404,6 @@ export default {
       this.currentPage = value
       this.getPurchaseRequest()
     }
-  },
-  created () {
-    this.$router.push({
-      query: {
-        ...this.$route.query,
-        date_from: this.date.start,
-        date_to: this.date.end
-      }
-    })
-    this.getPurchaseRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

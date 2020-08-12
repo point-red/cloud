@@ -1,41 +1,54 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-accounting/>
+      <breadcrumb-accounting />
       <span class="breadcrumb-item active">{{ $t('chart of account') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
       <p-block>
-        <div class="text-center" v-show="chartOfAccounts.length == 0 && !this.searchText && !isLoading">
+        <div
+          v-show="chartOfAccounts.length == 0 && !searchText && !isLoading"
+          class="text-center"
+        >
           <p-block-inner>
             <p>
               Anda tidak memiliki akun saat ini, klik tombol di bawah ini untuk generate default akun
             </p>
-            <button type="submit" class="btn btn-sm btn-primary mb-15" :disabled="isSaving" @click="generate()">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('generate account') | uppercase }}
+            <button
+              type="submit"
+              class="btn btn-sm btn-primary mb-15"
+              :disabled="isSaving"
+              @click="generate()"
+            >
+              <i
+                v-show="isSaving"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('generate account') | uppercase }}
             </button>
           </p-block-inner>
           <hr>
         </div>
         <div class="input-group block mb-5">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addAccount.open()"
             v-if="$permission.has('create chart of account')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addAccount.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
             class="btn-block"
-            ref="searchText"
             :value="searchText"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -44,15 +57,24 @@
               <th>Number</th>
               <th>Name</th>
               <th>Type</th>
-              <th class="text-center">Sub Ledger</th>
-              <th class="text-center">Debit</th>
-              <th class="text-center">Credit</th>
-              <th class="text-center">Locked</th>
+              <th class="text-center">
+                Sub Ledger
+              </th>
+              <th class="text-center">
+                Debit
+              </th>
+              <th class="text-center">
+                Credit
+              </th>
+              <th class="text-center">
+                Locked
+              </th>
             </tr>
             <tr
               v-for="chartOfAccount in chartOfAccounts"
               :key="chartOfAccount.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ chartOfAccount.number }}</th>
               <td>
                 <router-link :to="{ name: 'accounting.chart-of-account.show', params: { id: chartOfAccount.id }}">
@@ -64,20 +86,32 @@
                 {{ chartOfAccount.sub_ledger }}
               </td>
               <td class="text-center">
-                <i class="fa fa-check" v-if="chartOfAccount.position == 'DEBIT'"></i>
+                <i
+                  v-if="chartOfAccount.position == 'DEBIT'"
+                  class="fa fa-check"
+                />
               </td>
               <td class="text-center">
-                <i class="fa fa-check" v-if="chartOfAccount.position == 'CREDIT'"></i>
+                <i
+                  v-if="chartOfAccount.position == 'CREDIT'"
+                  class="fa fa-check"
+                />
               </td>
               <td class="text-center">
-                <i class="fa fa-check" v-if="chartOfAccount.is_locked"></i>
+                <i
+                  v-if="chartOfAccount.is_locked"
+                  class="fa fa-check"
+                />
               </td>
             </tr>
           </point-table>
         </p-block-inner>
       </p-block>
     </div>
-    <m-add-chart-of-account ref="addAccount" @added="onAdded"></m-add-chart-of-account>
+    <m-add-chart-of-account
+      ref="addAccount"
+      @added="onAdded"
+    />
   </div>
 </template>
 
@@ -89,6 +123,11 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting,
+    PointTable
+  },
   data () {
     return {
       isLoading: false,
@@ -97,13 +136,11 @@ export default {
       currentPage: this.$route.query.page * 1 || 1
     }
   },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting,
-    PointTable
-  },
   computed: {
     ...mapGetters('accountingChartOfAccount', ['chartOfAccounts'])
+  },
+  created () {
+    this.search()
   },
   methods: {
     ...mapActions('accountingChartOfAccount', {
@@ -149,9 +186,6 @@ export default {
     onAdded () {
       this.search()
     }
-  },
-  created () {
-    this.search()
   }
 }
 </script>

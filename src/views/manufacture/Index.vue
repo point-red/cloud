@@ -4,7 +4,7 @@
       <span class="breadcrumb-item active">{{ $t('manufacture') | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu></manufacture-menu>
+    <manufacture-menu />
   </div>
 </template>
 
@@ -26,6 +26,9 @@ export default {
   computed: {
     ...mapGetters('manufactureProcess', ['processes'])
   },
+  created () {
+    this.getManufactureProcesses()
+  },
   methods: {
     ...mapActions('manufactureProcess', ['get']),
     getManufactureProcesses () {
@@ -38,9 +41,6 @@ export default {
           this.$notification.error(error.message)
         })
     }
-  },
-  created () {
-    this.getManufactureProcesses()
   }
 }
 </script>

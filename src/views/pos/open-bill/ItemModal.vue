@@ -1,72 +1,105 @@
 <template>
   <div>
     <form
-      class="row">
+      class="row"
+    >
       <p-modal
-        ref="itemModal"
         :id="id"
-        :isLoading="isLoading"
-        :title="title | uppercase">
+        ref="itemModal"
+        :is-loading="isLoading"
+        :title="title | uppercase"
+      >
         <template slot="content">
           <p-form-row
             id="item-name"
+            v-model="item_name"
             name="item-name"
             label="name"
             :disabled="true"
-            v-model="item_name">
-          </p-form-row>
+          />
           <p-form-row
             id="price"
             name="price"
-            :label="$t('price')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('price')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <p-form-number
                 v-model="price"
                 :disabled="true"
-                :is-text-right="false"/>
+                :is-text-right="false"
+              />
             </div>
           </p-form-row>
           <p-form-row
             id="quantity"
             name="quantity"
-            :label="$t('quantity')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('quantity')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <p-quantity
                 v-model="quantity"
                 :readonly="isSaving"
                 :is-text-right="false"
                 :unsigned="true"
                 :unit="unit.label"
-                :showAddReduceButtons="true"/>
+                :show-add-reduce-buttons="true"
+              />
             </div>
           </p-form-row>
           <p-form-row
             id="discount-percent"
             name="discount-percent"
-            :label="$t('discount')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('discount')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <p-quantity
                 v-model="discount_percent"
                 :readonly="isSaving"
                 :is-text-right="false"
                 :unsigned="true"
-                unit="%"/>
+                unit="%"
+              />
             </div>
           </p-form-row>
           <p-form-row
             id="notes"
             name="notes"
-            :label="$t('notes')">
-            <div slot="body" class="col-lg-12 mt-5">
-              <textarea rows="5" class="form-control" placeholder="Notes" v-model="notes" :readonly="isSaving"></textarea>
+            :label="$t('notes')"
+          >
+            <div
+              slot="body"
+              class="col-lg-12 mt-5"
+            >
+              <textarea
+                v-model="notes"
+                rows="5"
+                class="form-control"
+                placeholder="Notes"
+                :readonly="isSaving"
+              />
             </div>
           </p-form-row>
         </template>
         <template slot="footer">
-          <button :disabled="isSaving" type="button" class="btn btn-sm btn-outline-danger" @click="close">
+          <button
+            :disabled="isSaving"
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="close"
+          >
             <i
               v-show="isSaving"
-              class="fa fa-asterisk fa-spin"/> {{ $t('close') | uppercase }}
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>

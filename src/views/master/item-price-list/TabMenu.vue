@@ -1,31 +1,47 @@
 <template>
-  <ul class="nav nav-tabs nav-tabs-alt mb-10" data-toggle="tabs" role="tablist">
-    <slot></slot>
-    <li class="nav-item" v-if="$permission.has('read item')">
+  <ul
+    class="nav nav-tabs nav-tabs-alt mb-10"
+    data-toggle="tabs"
+    role="tablist"
+  >
+    <slot />
+    <li
+      v-if="$permission.has('read item')"
+      class="nav-item"
+    >
       <router-link
         to="/master/item"
         class="nav-link"
-        active-class="active">
+        active-class="active"
+      >
         <span>{{ $t('item') | uppercase }}</span>
       </router-link>
     </li>
-    <li class="nav-item" v-if="$permission.has('read item')">
+    <li
+      v-if="$permission.has('read item')"
+      class="nav-item"
+    >
       <router-link
         to="/master/item-group"
         class="nav-link"
-        active-class="active">
+        active-class="active"
+      >
         <span>{{ $t('group') | uppercase }}</span>
       </router-link>
     </li>
-    <li class="nav-item" v-if="$permission.has('read item')">
+    <li
+      v-if="$permission.has('read item')"
+      class="nav-item"
+    >
       <router-link
         to="/master/item-price-list"
         class="nav-link"
-        active-class="active">
+        active-class="active"
+      >
         <span>{{ $t('price list') | uppercase }}</span>
       </router-link>
     </li>
-    <slot name="right"></slot>
+    <slot name="right" />
   </ul>
 </template>
 

@@ -1,9 +1,9 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
-      <breadcrumb-procedure></breadcrumb-procedure>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
+      <breadcrumb-procedure />
       <span class="breadcrumb-item active">{{ procedure && procedure.code || 'Loading' | uppercase }}</span>
       <span class="breadcrumb-item active">{{ 'Histories' | uppercase }}</span>
     </breadcrumb>
@@ -14,7 +14,9 @@
           <h4>{{ 'histories' | uppercase }}</h4>
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Code</th>
               <th>Name</th>
               <th>Purpose</th>
@@ -23,7 +25,8 @@
             <tr
               v-for="(history, index) in histories"
               :key="history.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ (++index) + ((page - 1) * limit) }}</th>
               <td>{{ history.code }}</td>
               <td>{{ history.name }}</td>
@@ -35,8 +38,8 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>
@@ -69,6 +72,12 @@ export default {
   },
   computed: {
     ...mapGetters('pluginPlayBookProcedureHistories', ['procedure', 'histories', 'pagination'])
+  },
+  mounted () {
+    this.getHistories()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('pluginPlayBookProcedureHistories', [
@@ -119,15 +128,6 @@ export default {
       this.page = value
       this.getHistories()
     }
-  },
-  mounted () {
-    this.getHistories()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>
@@ -136,6 +136,6 @@ export default {
 .row {
   -webkit-user-select: none !important;
   -webkit-touch-callout: none !important;
-  touch-action: none;
+  user-select: none;
 }
 </style>

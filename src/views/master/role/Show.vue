@@ -1,98 +1,187 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
+      <breadcrumb-master />
       <span class="breadcrumb-item active">{{ $t('role & permission') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addRole.open()"
             v-if="$permission.has('create role')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addRole.open()"
+          >
             {{ $t('create') | uppercase }}
           </a>
           <a
-            href="javascript:void(0)"
-            @click="$refs.editRole.open(role.id)"
             v-if="$permission.has('update role')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editRole.open(role.id)"
+          >
             {{ $t('edit') | uppercase }}
           </a>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete role')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="role.name"
             :label="$t('name') | uppercase"
             name="name"
-            v-model="role.name"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
 
-    <ul class="nav nav-tabs nav-tabs-alt mb-10" data-toggle="tabs" role="tablist">
+    <ul
+      class="nav nav-tabs nav-tabs-alt mb-10"
+      data-toggle="tabs"
+      role="tablist"
+    >
       <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('master')" :class="{'active': choosen == 'master'}">{{ $t('master') | uppercase }}</a>
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          :class="{'active': choosen == 'master'}"
+          @click="choose('master')"
+        >{{ $t('master') | uppercase }}</a>
       </li>
       <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('purchasing')" :class="{'active': choosen == 'purchasing'}">{{ $t('purchasing') | uppercase }}</a>
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          :class="{'active': choosen == 'purchasing'}"
+          @click="choose('purchasing')"
+        >{{ $t('purchasing') | uppercase }}</a>
       </li>
       <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('sales')" :class="{'active': choosen == 'sales'}">{{ $t('sales') | uppercase }}</a>
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          :class="{'active': choosen == 'sales'}"
+          @click="choose('sales')"
+        >{{ $t('sales') | uppercase }}</a>
       </li>
       <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('inventory')" :class="{'active': choosen == 'inventory'}">{{ $t('inventory') | uppercase }}</a>
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          :class="{'active': choosen == 'inventory'}"
+          @click="choose('inventory')"
+        >{{ $t('inventory') | uppercase }}</a>
       </li>
       <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('manufacture')" :class="{'active': choosen == 'manufacture'}">{{ $t('manufacture') | uppercase }}</a>
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          :class="{'active': choosen == 'manufacture'}"
+          @click="choose('manufacture')"
+        >{{ $t('manufacture') | uppercase }}</a>
       </li>
       <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('finance')" :class="{'active': choosen == 'finance'}">{{ $t('finance') | uppercase }}</a>
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          :class="{'active': choosen == 'finance'}"
+          @click="choose('finance')"
+        >{{ $t('finance') | uppercase }}</a>
       </li>
       <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('accounting')" :class="{'active': choosen == 'accounting'}">{{ $t('accounting') | uppercase }}</a>
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          :class="{'active': choosen == 'accounting'}"
+          @click="choose('accounting')"
+        >{{ $t('accounting') | uppercase }}</a>
       </li>
       <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('human-resource')" :class="{'active': choosen == 'human-resource'}">{{ $t('human resource') | uppercase }}</a>
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          :class="{'active': choosen == 'human-resource'}"
+          @click="choose('human-resource')"
+        >{{ $t('human resource') | uppercase }}</a>
       </li>
       <li class="nav-item">
-        <a href="javascript:void(0)" class="nav-link" @click="choose('plugin')" :class="{'active': choosen == 'plugin'}">{{ $t('plugin') | uppercase }}</a>
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          :class="{'active': choosen == 'plugin'}"
+          @click="choose('plugin')"
+        >{{ $t('plugin') | uppercase }}</a>
       </li>
     </ul>
 
     <div class="row">
       <p-block>
         <p-block-inner :is-loading="isLoading">
-          <permission-master :roleId="id" v-show="choosen === 'master'" />
-          <permission-purchasing :roleId="id" v-show="choosen === 'purchasing'" />
-          <permission-sales :roleId="id" v-show="choosen === 'sales'" />
-          <permission-inventory :roleId="id" v-show="choosen === 'inventory'" />
-          <permission-manufacture :roleId="id" v-show="choosen === 'manufacture'" />
-          <permission-finance :roleId="id" v-show="choosen === 'finance'" />
-          <permission-accounting :roleId="id" v-show="choosen === 'accounting'" />
-          <permission-human-resource :roleId="id" v-show="choosen === 'human-resource'" />
-          <permission-plugin :roleId="id" v-show="choosen === 'plugin'" />
+          <permission-master
+            v-show="choosen === 'master'"
+            :role-id="id"
+          />
+          <permission-purchasing
+            v-show="choosen === 'purchasing'"
+            :role-id="id"
+          />
+          <permission-sales
+            v-show="choosen === 'sales'"
+            :role-id="id"
+          />
+          <permission-inventory
+            v-show="choosen === 'inventory'"
+            :role-id="id"
+          />
+          <permission-manufacture
+            v-show="choosen === 'manufacture'"
+            :role-id="id"
+          />
+          <permission-finance
+            v-show="choosen === 'finance'"
+            :role-id="id"
+          />
+          <permission-accounting
+            v-show="choosen === 'accounting'"
+            :role-id="id"
+          />
+          <permission-human-resource
+            v-show="choosen === 'human-resource'"
+            :role-id="id"
+          />
+          <permission-plugin
+            v-show="choosen === 'plugin'"
+            :role-id="id"
+          />
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-role ref="addRole" @added="onAddedRole($event)"></m-add-role>
-    <m-edit-role ref="editRole" @updated="onUpdatedRole($event)"></m-edit-role>
+    <m-add-role
+      ref="addRole"
+      @added="onAddedRole($event)"
+    />
+    <m-edit-role
+      ref="editRole"
+      @updated="onUpdatedRole($event)"
+    />
   </div>
 </template>
 

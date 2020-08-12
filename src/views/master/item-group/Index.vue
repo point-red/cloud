@@ -1,44 +1,49 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
+      <breadcrumb-master />
       <span class="breadcrumb-item active">{{ $t('item group') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addItemGroup.open()"
             v-if="$permission.has('create item')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addItemGroup.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Name</th>
             </tr>
             <tr
               v-for="(group, index) in groups"
               :key="index"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'item-group.show', params: { id: group.id }}">
@@ -51,12 +56,15 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <m-add-item-group ref="addItemGroup" @added="onAdded"></m-add-item-group>
+    <m-add-item-group
+      ref="addItemGroup"
+      @added="onAdded"
+    />
   </div>
 </template>
 
@@ -85,6 +93,15 @@ export default {
   },
   computed: {
     ...mapGetters('masterItemGroup', ['groups', 'pagination'])
+  },
+  created () {
+    this.getGroupRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('masterItemGroup', {
@@ -122,15 +139,6 @@ export default {
       this.searchText = group.name
       this.getGroupRequest()
     }
-  },
-  created () {
-    this.getGroupRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

@@ -1,26 +1,21 @@
 <template>
   <div>
     <v-selectmenu
+      ref="select"
+      :key="options.length"
+      v-model="selectedValue"
       :data="options"
       key-field="id"
       show-field="label"
       position="left"
-      ref="select"
       :multiple="multiple"
       :max-selected="maxSelected"
-      :key="options.length"
-      v-model="selectedValue">
-    </v-selectmenu>
+    />
   </div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-      selectedValue: ''
-    }
-  },
   props: {
     keyField: {
       type: String,
@@ -31,14 +26,16 @@ export default {
       default: 'label'
     },
     options: {
-      type: Array
+      type: Array,
+      default: null
     },
     placeholder: {
       type: String,
       default: 'SELECT'
     },
     value: {
-      type: [String, Number, Boolean]
+      type: [String, Number, Boolean],
+      default: null
     },
     multiple: {
       type: Boolean,
@@ -49,9 +46,9 @@ export default {
       default: 0 // 0 = unlimited
     }
   },
-  created () {
-    if (this.value !== undefined && this.value !== null) {
-      this.selectedValue = this.value.toString()
+  data () {
+    return {
+      selectedValue: ''
     }
   },
   watch: {
@@ -64,6 +61,11 @@ export default {
       } else {
         this.$refs.select.clear()
       }
+    }
+  },
+  created () {
+    if (this.value !== undefined && this.value !== null) {
+      this.selectedValue = this.value.toString()
     }
   }
 }

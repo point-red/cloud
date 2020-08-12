@@ -1,19 +1,46 @@
 <template>
-  <div class="btn-group" role="group" v-click-outside="close">
-    <button type="button" class="btn btn-rounded btn-dual-secondary" @click="toggle">
-      <i class="fa fa-flag mr-5"></i>
+  <div
+    v-click-outside="close"
+    class="btn-group"
+    role="group"
+  >
+    <button
+      type="button"
+      class="btn btn-rounded btn-dual-secondary"
+      @click="toggle"
+    >
+      <i class="fa fa-flag mr-5" />
       <!-- <span class="badge badge-danger badge-pill">1</span> -->
     </button>
-    <div class="dropdown-menu dropdown-menu-right min-width-300"
-      :class="{'show': show}">
-      <h5 class="h6 text-center py-10 mb-0 border-b text-uppercase">Notifications</h5>
+    <div
+      class="dropdown-menu dropdown-menu-right min-width-300"
+      :class="{'show': show}"
+    >
+      <h5 class="h6 text-center py-10 mb-0 border-b text-uppercase">
+        Notifications
+      </h5>
       <ul class="list-unstyled my-20">
-        <li v-for="(notification, index) in notifications" :key="index">
-          <a class="text-body-color-dark media mb-15" :href="'//'+notification.clickAction">
+        <li
+          v-for="(notification, index) in notifications"
+          :key="index"
+        >
+          <a
+            class="text-body-color-dark media mb-15"
+            :href="'//'+notification.clickAction"
+          >
             <div class="ml-5 mr-15">
-              <i class="fa fa-fw fa-info-circle text-primary" v-if="notification.type == 'info'"></i>
-              <i class="fa fa-fw fa-warning text-warning" v-if="notification.type == 'warning'"></i>
-              <i class="fa fa-fw fa-calendar text-info" v-if="notification.type == 'reminder'"></i>
+              <i
+                v-if="notification.type == 'info'"
+                class="fa fa-fw fa-info-circle text-primary"
+              />
+              <i
+                v-if="notification.type == 'warning'"
+                class="fa fa-fw fa-warning text-warning"
+              />
+              <i
+                v-if="notification.type == 'reminder'"
+                class="fa fa-fw fa-calendar text-info"
+              />
             </div>
             <div class="media-body pr-10">
               <p class="mb-0">{{ notification.message }}</p>
@@ -22,9 +49,12 @@
           </a>
         </li>
       </ul>
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item text-center mb-0" href="javascript:void(0)">
-        <i class="fa fa-flag mr-5"></i> View All
+      <div class="dropdown-divider" />
+      <a
+        class="dropdown-item text-center mb-0"
+        href="javascript:void(0)"
+      >
+        <i class="fa fa-flag mr-5" /> View All
       </a>
     </div>
   </div>
@@ -44,14 +74,6 @@ export default {
   },
   computed: {
     ...mapGetters('auth', ['authUser'])
-  },
-  methods: {
-    toggle () {
-      this.show = !this.show
-    },
-    close () {
-      this.show = false
-    }
   },
   watch: {
     authUser () {
@@ -78,6 +100,14 @@ export default {
   },
   created () {
 
+  },
+  methods: {
+    toggle () {
+      this.show = !this.show
+    },
+    close () {
+      this.show = false
+    }
   }
 }
 </script>

@@ -4,26 +4,28 @@
       <span class="breadcrumb-item active">{{ $t('project') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block mb-5">
           <router-link
             to="/account/project/create"
-            class="input-group-prepend">
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </router-link>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -31,14 +33,17 @@
             <tr slot="p-head">
               <th>Company Id</th>
               <th>Company Name</th>
-              <th class="text-center">Max User</th>
+              <th class="text-center">
+                Max User
+              </th>
               <th>Expired Date</th>
-              <th></th>
+              <th />
             </tr>
             <tr
               v-for="(project, index) in projects"
               :key="index"
-              slot="p-body">
+              slot="p-body"
+            >
               <td>{{ project.code | uppercase }}</td>
               <td>
                 <template v-if="project.owner_id === userId">
@@ -46,9 +51,13 @@
                     {{ project.name }}
                   </router-link>
                 </template>
-                <template v-else>{{ project.name }}</template>
+                <template v-else>
+                  {{ project.name }}
+                </template>
               </td>
-              <td class="text-center">{{ project.total_user | uppercase }}</td>
+              <td class="text-center">
+                {{ project.total_user | uppercase }}
+              </td>
               <td>{{ project.expired_date | dateFormat('DD MMMM YYYY') }}</td>
               <td class="text-right">
                 <template v-if="project.joined == false && project.request_join_at == null">
@@ -56,31 +65,41 @@
                     type="button"
                     class="btn btn-sm btn-secondary"
                     :disabled="isSaving"
-                    @click="joinProject(index)">
-                    <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>
-                    <i v-show="!isSaving" class="fa fa-check-circle-o"/> Join
+                    @click="joinProject(index)"
+                  >
+                    <i
+                      v-show="isSaving"
+                      class="fa fa-asterisk fa-spin"
+                    />
+                    <i
+                      v-show="!isSaving"
+                      class="fa fa-check-circle-o"
+                    /> Join
                   </button>
                 </template>
                 <template v-if="project.joined == false && project.request_join_at != null && project.owner_id == userId">
                   <a
                     class="btn btn-sm btn-secondary"
-                    href="javascript:void(0)">
-                    <i class="fa fa-users"/> Pending Request
+                    href="javascript:void(0)"
+                  >
+                    <i class="fa fa-users" /> Pending Request
                   </a>
                 </template>
                 <template v-if="project.joined == false && project.request_join_at != null && project.owner_id != userId">
                   <a
                     class="btn btn-sm btn-secondary"
-                    href="javascript:void(0)">
-                    <i class="fa fa-users"/> Pending Request
+                    href="javascript:void(0)"
+                  >
+                    <i class="fa fa-users" /> Pending Request
                   </a>
                 </template>
                 <template v-if="project.is_generated == true && project.joined == true">
                   <a
                     class="btn btn-sm btn-secondary"
                     :href="'//' + project.code + '.' + domain"
-                    @click="redirectToProject(project)">
-                    <i class="fa fa-globe"/> Open
+                    @click="redirectToProject(project)"
+                  >
+                    <i class="fa fa-globe" /> Open
                   </a>
                 </template>
               </td>
@@ -90,8 +109,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>
@@ -123,6 +142,9 @@ export default {
   computed: {
     ...mapGetters('accountProject', ['projects', 'pagination']),
     ...mapGetters('auth', ['authUser'])
+  },
+  created () {
+    this.getProjectRequest()
   },
   methods: {
     ...mapActions('accountProject', {
@@ -178,9 +200,6 @@ export default {
       this.currentPage = value
       this.getProjectRequest()
     }
-  },
-  created () {
-    this.getProjectRequest()
   }
 }
 </script>

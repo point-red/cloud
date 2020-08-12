@@ -1,11 +1,11 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <span class="breadcrumb-item active">{{ $t('employee status') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
@@ -14,19 +14,22 @@
             href="javascript:void(0)"
             @click="$refs.addEmployeeStatus.open()"
             v-if="$permission.has('create employee')"
-            class="input-group-prepend">
+            to="/human-resource/employee-status/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
-            :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            :value="searchText"
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
@@ -51,8 +54,8 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
@@ -87,6 +90,15 @@ export default {
   },
   computed: {
     ...mapGetters('humanResourceEmployeeStatus', ['statuses', 'pagination'])
+  },
+  created () {
+    this.getStatusesRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('humanResourceEmployeeStatus', {
@@ -124,15 +136,6 @@ export default {
       this.searchText = status.name
       this.getStatusRequest()
     }
-  },
-  created () {
-    this.getStatusRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

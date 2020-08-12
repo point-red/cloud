@@ -1,12 +1,17 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-purchase/>
-      <router-link to="/purchase/request" class="breadcrumb-item">{{ $t('purchase request') | uppercase }}</router-link>
+      <breadcrumb-purchase />
+      <router-link
+        to="/purchase/request"
+        class="breadcrumb-item"
+      >
+        {{ $t('purchase request') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <purchase-menu/>
+    <purchase-menu />
 
     <form @submit.prevent="onSubmit">
       <div class="row">
@@ -17,21 +22,26 @@
                 <h4>{{ $t('purchase request') | uppercase }}</h4>
                 <table class="table table-sm table-bordered">
                   <tr>
-                    <td class="font-weight-bold">{{ $t('required date') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('required date') | uppercase }}
+                    </td>
                     <td>
                       <p-date-picker
                         id="required-date"
+                        v-model="form.required_date"
                         name="required-date"
                         :label="$t('required date')"
-                        v-model="form.required_date"
                         :errors="form.errors.get('required_date')"
-                        @errors="form.errors.set('required_date', null)"/>
+                        @errors="form.errors.set('required_date', null)"
+                      />
                     </td>
                   </tr>
                 </table>
               </div>
               <div class="col-sm-6 text-right">
-                <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                <h6 class="mb-0">
+                  {{ authUser.tenant_name | uppercase }}
+                </h6>
                 <template v-if="authUser.branch">
                   {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
                   {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
@@ -41,37 +51,52 @@
             <hr>
             <point-table class="mt-20">
               <tr slot="p-head">
-                <th class="text-center">#</th>
+                <th class="text-center">
+                  #
+                </th>
                 <th>Item</th>
                 <th>Notes</th>
                 <th>Quantity</th>
                 <th>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
-                    <i class="fa fa-ellipsis-h"/>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    @click="toggleMore()"
+                  >
+                    <i class="fa fa-ellipsis-h" />
                   </button>
                 </th>
               </tr>
               <template v-for="(row, index) in form.items">
-                <tr slot="p-body" :key="index">
-                  <th class="text-center">{{ index + 1 }}</th>
+                <tr
+                  slot="p-body"
+                  :key="index"
+                >
+                  <th class="text-center">
+                    {{ index + 1 }}
+                  </th>
                   <td>
-                    <span @click="$refs.item.open(index)" class="select-link">
+                    <span
+                      class="select-link"
+                      @click="$refs.item.open(index)"
+                    >
                       {{ row.item_label || $t('select') | uppercase }}
                     </span>
                   </td>
                   <td>
                     <p-form-input
                       id="notes"
+                      v-model="row.notes"
                       name="notes"
                       :disabled="row.item_id == null"
-                      v-model="row.notes"/>
+                    />
                   </td>
                   <td>
                     <p-quantity
                       :id="'quantity' + index"
+                      v-model="row.quantity"
                       :name="'quantity' + index"
                       :disabled="row.item_id == null"
-                      v-model="row.quantity"
                       :item-id="row.item_id"
                       :units="row.units"
                       :unit="{
@@ -79,58 +104,101 @@
                         label: row.unit,
                         converter: row.converter
                       }"
-                      @choosen="chooseUnit($event, row)"/>
+                      @choosen="chooseUnit($event, row)"
+                    />
                   </td>
                   <td>
-                    <button type="button"
+                    <button
+                      v-if="!isSaving"
+                      type="button"
                       class="btn btn-sm btn-outline-secondary"
                       @click="row.more = !row.more"
-                      v-if="!isSaving">
-                      <i class="fa fa-ellipsis-h"/>
+                    >
+                      <i class="fa fa-ellipsis-h" />
                     </button>
                   </td>
                 </tr>
                 <template v-if="row.more && row.item_id">
-                <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
-                  <th class="bg-gray-light"></th>
-                  <td colspan="3">
-                    <p-form-row
-                      id="allocation"
-                      name="allocation"
-                      :label="$t('allocation')">
-                      <div slot="body" class="col-lg-9 mt-5">
-                        <span @click="$refs.allocation.open(index)" class="select-link">
-                          {{ row.allocation_name || $t('select') | uppercase }}
-                        </span>
-                      </div>
-                    </p-form-row>
-                  </td>
-                  <td></td>
-                </tr>
+                  <tr
+                    slot="p-body"
+                    :key="'ext-'+index"
+                    class="bg-gray-light"
+                  >
+                    <th class="bg-gray-light" />
+                    <td colspan="3">
+                      <p-form-row
+                        id="allocation"
+                        name="allocation"
+                        :label="$t('allocation')"
+                      >
+                        <div
+                          slot="body"
+                          class="col-lg-9 mt-5"
+                        >
+                          <span
+                            class="select-link"
+                            @click="$refs.allocation.open(index)"
+                          >
+                            {{ row.allocation_name || $t('select') | uppercase }}
+                          </span>
+                        </div>
+                      </p-form-row>
+                    </td>
+                    <td />
+                  </tr>
                 </template>
               </template>
             </point-table>
             <div class="row mt-50">
               <div class="col-sm-6">
-                <textarea rows="5" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
-                <div class="d-sm-block d-md-none mt-10"></div>
+                <textarea
+                  v-model="form.notes"
+                  rows="5"
+                  class="form-control"
+                  placeholder="Notes"
+                />
+                <div class="d-sm-block d-md-none mt-10" />
               </div>
               <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+                <h6 class="mb-0">
+                  {{ $t('requested by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  {{ Date.now() | dateFormat('DD MMMM YYYY') }}
+                </div>
                 {{ requestedBy | uppercase }}
-                <div class="d-sm-block d-md-none mt-10"></div>
+                <div class="d-sm-block d-md-none mt-10" />
               </div>
               <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">_______________</div>
-                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <h6 class="mb-0">
+                  {{ $t('approved by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  _______________
+                </div>
+                <span
+                  class="select-link"
+                  @click="$refs.approver.open()"
+                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
                 <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
               <div class="col-sm-12">
                 <hr>
-                <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+                <button
+                  type="submit"
+                  class="btn btn-sm btn-primary"
+                  :disabled="isSaving"
+                >
+                  <i
+                    v-show="isSaving"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('save') | uppercase }}
                 </button>
               </div>
             </div>
@@ -138,9 +206,19 @@
         </p-block>
       </div>
     </form>
-    <m-item ref="item" @choosen="chooseItem($event)"/>
-    <m-user ref="approver" @choosen="chooseApprover($event)"/>
-    <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
+    <m-item
+      ref="item"
+      @choosen="chooseItem($event)"
+    />
+    <m-user
+      ref="approver"
+      :permission="'approve purchase request'"
+      @choosen="chooseApprover($event)"
+    />
+    <m-allocation
+      ref="allocation"
+      @choosen="chooseAllocation($event)"
+    />
   </div>
 </template>
 

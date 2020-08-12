@@ -1,28 +1,49 @@
 <template>
   <div>
     <web-cam
+      v-show="!mutableImage"
       ref="webcam"
       :device-id="deviceId"
       width="100%"
-      v-show="!mutableImage"
       @started="onStarted"
       @stopped="onStopped"
       @error="onError"
       @cameras="onCameras"
-      @camera-change="onCameraChange"/>
-    <img :src="mutableImage" width="100%" class="img-responsive" v-show="mutableImage"/>
+      @camera-change="onCameraChange"
+    />
+    <img
+      v-show="mutableImage"
+      :src="mutableImage"
+      width="100%"
+      class="img-responsive"
+    >
     <hr>
     <select v-model="camera">
       <option
         v-for="device in devices"
         :key="device.deviceId"
-        :value="device.deviceId">
+        :value="device.deviceId"
+      >
         {{ device.label }}
       </option>
     </select>
     <hr>
-    <button v-show="!mutableImage" type="button" class="btn btn-primary mr-5" @click="onCapture">Capture</button>
-    <button v-show="mutableImage" type="button" class="btn btn-primary mr-5" @click="onRecapture">Recapture</button>
+    <button
+      v-show="!mutableImage"
+      type="button"
+      class="btn btn-primary mr-5"
+      @click="onCapture"
+    >
+      Capture
+    </button>
+    <button
+      v-show="mutableImage"
+      type="button"
+      class="btn btn-primary mr-5"
+      @click="onRecapture"
+    >
+      Recapture
+    </button>
     <!-- <button type="button" class="btn btn-danger mr-5" @click="onStop">Stop Camera</button> -->
     <!-- <button type="button" class="btn btn-success" @click="onStart">Start Camera</button> -->
     <hr>
@@ -36,6 +57,12 @@ export default {
   components: {
     WebCam
   },
+  props: {
+    image: {
+      type: String,
+      default: null
+    }
+  },
   data () {
     return {
       mutableImage: null,
@@ -43,9 +70,6 @@ export default {
       deviceId: null,
       devices: []
     }
-  },
-  props: {
-    image: null
   },
   watch: {
     camera (id) {

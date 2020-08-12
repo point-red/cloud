@@ -1,120 +1,222 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
       <span class="breadcrumb-item active">{{ 'Instruction' | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
       <p-block>
+        <div
+          v-if="isDirty"
+          class="alert alert-warning pb-5"
+        >
+          This is preview mode. Some of the contents is not published.
+        </div>
         <div class="input-group block mb-5">
           <button
-            @click="$refs.modalAddInstruction.open()"
             v-if="$permission.has('create play book instruction')"
             class="btn btn-sm btn-light"
-            :disabled="!!!form.procedure_id">
+            :disabled="!!!form.procedure_id"
+            @click="$refs.modalAddInstruction.open()"
+          >
             ADD INSTRUCTION
-            <i class="fa fa-plus ml-2"></i>
+            <i class="fa fa-plus ml-2" />
           </button>
           <button
-            @click="$refs.modalAddStep.open()"
             v-if="$permission.has('create play book instruction')"
             class="btn btn-sm btn-light ml-2"
-            :disabled="!(form.procedure_id && form.instruction_id)">
+            :disabled="!(form.procedure_id && form.instruction_id)"
+            @click="$refs.modalAddStep.open()"
+          >
             ADD STEP
-            <i class="fa fa-plus ml-2"></i>
+            <i class="fa fa-plus ml-2" />
           </button>
+          <router-link
+            v-if="isDirty"
+            class="btn btn-sm btn-primary ml-2"
+            to="/plugin/play-book/approval/instruction/send"
+          >
+            Send Approval <i class="fa fa-paper-plane" />
+          </router-link>
         </div>
         <div class="mt-3">
           <p-form-row
             id="procedure"
             name="procedure"
-            :label="$t('procedure')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('procedure')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <p-select
                 id="procedure"
-                name="procedure"
                 v-model="form.procedure_id"
-                :options="procedures"/>
+                name="procedure"
+                :options="procedures"
+              />
             </div>
           </p-form-row>
           <p-form-row
             id="instruction"
             name="instruction"
-            :label="$t('instruction')">
-            <div slot="body" class="col-lg-9 d-flex">
+            :label="$t('instruction')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 d-flex"
+            >
               <p-select
                 id="instruction"
-                name="instruction"
-                v-model="form.instruction_id"
                 :key="selectInstructionKey"
-                :options="instructions"/>
+                v-model="form.instruction_id"
+                name="instruction"
+                :options="instructions"
+              />
 
               <div v-if="instruction">
                 <button
+                  v-if="$permission.has('update play book instruction')"
                   class="btn btn-light ml-2"
-                  v-if="$permission.has('edit play book instruction')"
-                  @click="$refs.modalEditInstruction.open()">
+                  @click="$refs.modalEditInstruction.open()"
+                >
                   Edit
                 </button>
                 <button
-                  class="btn btn-light ml-2"
                   v-if="$permission.has('delete play book instruction')"
-                  @click="confirmDeleteInstruction">
+                  class="btn btn-light ml-2"
+                  @click="confirmDeleteInstruction"
+                >
                   Delete
                 </button>
               </div>
             </div>
           </p-form-row>
         </div>
-        <p-block-inner :is-loading="isLoading" v-if="instruction">
+        <p-block-inner
+          v-if="instruction"
+          :is-loading="isLoading"
+        >
           <div class="text-right">
             <button
+              v-if="stepActive.id"
+              class="btn btn-sm btn-light mr-1"
               @click.stop="$refs.modalEditStep.open()"
-              v-if="stepActive.id"
-              class="btn btn-sm btn-light mr-1">Edit</button>
+            >
+              Edit
+            </button>
             <button
-              @click.stop="confirmDeleteStep()"
               v-if="stepActive.id"
-              class="btn btn-sm btn-light">Delete</button>
+              class="btn btn-sm btn-light"
+              @click.stop="confirmDeleteStep()"
+            >
+              Delete
+            </button>
             <router-link
               class="btn btn-sm btn-light"
-              :to="`/plugin/play-book/instruction/${instruction.id}/histories`">
+              :to="`/plugin/play-book/instruction/${instruction.id}/histories`"
+            >
               See Histories
             </router-link>
           </div>
           <hr>
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Step</th>
               <th
                 v-for="glossary in glossaries"
-                :key="glossary.id">
+                :key="glossary.id"
+              >
                 {{ glossary.name }}
+              </th>
+              <th
+                v-if="$route.query['review[]']"
+                class="text-center"
+              >
+                Action
               </th>
             </tr>
             <tr
-              :class="{ 'bg-primary text-white': stepActive.id === step.id }"
               v-for="(step, i) in steps"
               :key="i"
-              slot="p-body">
+              slot="p-body"
+              :class="{ 'bg-primary text-white': stepActive.id === step.id }"
+            >
               <td>
                 <strong>{{ (++i) + ((page - 1) * limit) }}</strong>
               </td>
               <td>
                 <a
+                  v-if="step.approved_at"
                   href="javascript:void(0)"
+                  :style="{ [stepActive.id === step.id ? 'color' : null]: 'white' }"
                   @click.stop="setStepActive(step)"
-                  :style="{ [stepActive.id === step.id ? 'color' : null]: 'white' }">
+                >
                   {{ step.name }}
                 </a>
+                <span
+                  v-else-if="step.approval_action !== 'destroy'"
+                  class="text-success"
+                >
+                  {{ step.name }}
+                </span>
+                <strike
+                  v-else
+                  class="text-danger"
+                >
+                  {{ step.name }}
+                </strike>
               </td>
+              <!-- eslint-disable vue/no-v-html -->
               <td
                 v-for="glossary in glossaries"
                 :key="glossary.id"
-                v-html="step.contentsForView[`${glossary.id}`] || '-'">
+                v-html="$sanitize(step.contentsForView[`${glossary.id}`] || '-')"
+              >
+                <div
+                  v-if="step.approved_at"
+                  v-html="step.contentsForView[`${glossary.id}`] || '-'"
+                />
+                <div
+                  v-else-if="step.approval_action !== 'destroy'"
+                  class="text-success"
+                  v-html="step.contentsForView[`${glossary.id}`] || '-'"
+                />
+                <strike
+                  v-else
+                  class="text-danger"
+                  v-html="step.contentsForView[`${glossary.id}`] || '-'"
+                />
+              </td>
+              <td
+                v-if="$route.query['review[]']"
+                class="text-center"
+              >
+                <button
+                  v-if="!step.approved_at && step.approval_request_to === authUser.id && !step.declined_at"
+                  type="button"
+                  class="btn btn-sm btn-secondary"
+                  @click="stepIdToDelete = step.id; $refs.modalDeclineInstructionStep.open()"
+                >
+                  {{ $t('decline') | uppercase }}
+                </button>
+                <button
+                  v-if="!step.approved_at && step.approval_request_to === authUser.id && !step.declined_at"
+                  type="submit"
+                  class="btn btn-sm btn-success ml-2"
+                  :disabled="isSaving === step.id"
+                  @click="approveStep(step)"
+                >
+                  <i
+                    v-show="isSaving === step.id"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('approve') | uppercase }}
+                </button>
               </td>
             </tr>
           </point-table>
@@ -122,26 +224,36 @@
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
     <m-add-instruction
-      :procedure-id="form.procedure_id"
       ref="modalAddInstruction"
-      @added="$router.push('/plugin/play-book/approval/instruction/send')"></m-add-instruction>
+      :procedure-id="parseInt(form.procedure_id)"
+      @added="$router.push('/plugin/play-book/approval/instruction/send')"
+    />
     <m-edit-instruction
-      :instruction="instruction"
       ref="modalEditInstruction"
-      @added="$router.push('/plugin/play-book/approval/instruction/send')"></m-edit-instruction>
+      :instruction="instruction"
+      @added="$router.push('/plugin/play-book/approval/instruction/send')"
+    />
     <m-add-instruction-step
       ref="modalAddStep"
-      :instruction-id="form.instruction_id"
-      @added="$router.push('/plugin/play-book/approval/instruction/send')"></m-add-instruction-step>
+      :instruction-id="parseInt(form.instruction_id)"
+      @added="isDirty = true; getSteps()"
+    />
     <m-edit-instruction-step
       ref="modalEditStep"
       :step="stepActive"
-      @added="$router.push('/plugin/play-book/approval/instruction/send')"></m-edit-instruction-step>
+      @added="isDirty = true; getSteps()"
+    />
+    <m-decline-instruction-step
+      ref="modalDeclineInstructionStep"
+      :instruction-id="form.instruction_id"
+      :instruction-step-id="stepIdToDelete"
+      @added="getSteps()"
+    />
   </div>
 </template>
 
@@ -149,9 +261,8 @@
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPlayBook from '@/views/plugin/play-book/Breadcrumb'
-import debounce from 'lodash/debounce'
 import PointTable from 'point-table-vue'
-import { mapGetters, mapActions, mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -163,6 +274,7 @@ export default {
   data () {
     return {
       isLoading: true,
+      isSaving: false,
       searchText: this.$route.query.search,
       page: this.$route.query.page * 1 || 1,
       limit: 10,
@@ -174,14 +286,17 @@ export default {
         procedure_id: null,
         instruction_id: null
       },
+      isDirty: false || this.$route.query.dirty,
       stepActive: {},
-      selectInstructionKey: (new Date()).toString()
+      selectInstructionKey: (new Date()).toString(),
+      stepIdToDelete: null
     }
   },
   computed: {
     ...mapState('pluginPlayBookInstruction', [
       'pagination'
     ]),
+    ...mapGetters('auth', ['authUser']),
     glossaries () {
       const stepGlossaryIds = []
 
@@ -247,6 +362,50 @@ export default {
       })
     }
   },
+  watch: {
+    'form.procedure_id' (newValue) {
+      this.getInstructions()
+      const query = this.$route.query
+
+      if (
+        parseInt(this.$route.query.procedure) === parseInt(this.form.procedure_id)
+      ) {
+        return
+      }
+
+      this.$router.replace({
+        query: {
+          ...query,
+          procedure: newValue
+        }
+      })
+    },
+    'form.instruction_id' (newValue) {
+      const query = {
+        ...this.$route.query,
+        instruction: newValue
+      }
+
+      if (!newValue) {
+        delete query.instruction
+      }
+
+      if (
+        parseInt(this.$route.query.procedure) === parseInt(this.form.procedure_id) &&
+        parseInt(this.$route.query.instruction) === parseInt(this.form.instruction_id)
+      ) {
+        return
+      }
+
+      this.$router.replace({ query })
+    },
+    async '$route.query.procedure' () {
+      await this.getInstructions()
+    },
+    async '$route.query.instruction' () {
+      await this.getSteps()
+    }
+  },
   async mounted () {
     this.$store.dispatch('pluginPlayBookGlossary/get')
     await this.getProcedures()
@@ -262,6 +421,9 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('click', this.setStepActive)
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     async getProcedures () {
@@ -288,10 +450,19 @@ export default {
     async getSteps () {
       try {
         this.isLoading = true
+
+        let reviewIds = this.$route.query['review[]']
+
+        if (!Array.isArray(reviewIds)) {
+          reviewIds = [reviewIds]
+        }
+
         await this.$store.dispatch('pluginPlayBookInstruction/getSteps', {
           page: this.page,
           limit: 10,
-          instruction_id: this.instruction.id
+          instruction_id: this.instruction.id,
+          is_dirty: this.isDirty || null,
+          review: reviewIds
         })
         this.stepActive = {}
       } catch (error) {
@@ -340,6 +511,7 @@ export default {
 
           await this.$store.dispatch('pluginPlayBookInstruction/deleteStep', this.stepActive)
 
+          this.isDirty = true
           this.getSteps()
         } catch (error) {
         } finally {
@@ -347,39 +519,18 @@ export default {
           this.isLoading = false
         }
       })
-    }
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
-  },
-  watch: {
-    'form.procedure_id' (newValue) {
-      this.getInstructions()
-      const query = this.$route.query
-      this.$router.replace({
-        query: {
-          ...query,
-          procedure: newValue
-        }
-      })
     },
-    'form.instruction_id' (newValue) {
-      let query = {
-        ...this.$route.query,
-        instruction: newValue
-      }
+    async approveStep (step) {
+      try {
+        this.isSaving = step.id
 
-      if (!newValue) {
-        delete query.instruction
-      }
+        await this.$store.dispatch('pluginPlayBookInstructionApproval/approveStep', step)
 
-      this.$router.replace({ query })
-    },
-    async '$route.query.procedure' () {
-      await this.getInstructions()
-    },
-    async '$route.query.instruction' () {
-      await this.getSteps()
+        this.getSteps()
+      } catch (error) {
+      } finally {
+        this.isSaving = false
+      }
     }
   }
 }
@@ -389,6 +540,6 @@ export default {
 .row {
   -webkit-user-select: none !important;
   -webkit-touch-callout: none !important;
-  touch-action: none;
+  user-select: none;
 }
 </style>

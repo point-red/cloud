@@ -1,13 +1,25 @@
 <template>
   <div>
-    <input type="file" :id="id" :name="name" ref="file" v-on:change="onFileChange()"/>
+    <input
+      :id="id"
+      ref="file"
+      type="file"
+      :name="name"
+      @change="onFileChange()"
+    >
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
+      class="invalid-input"
+    >
+      <i class="fa fa-warning" /> {{ error }}
+    </div>
     <div
       v-show="help"
-      class="form-text text-muted">{{ help }}</div>
+      class="form-text text-muted"
+    >
+      {{ help }}
+    </div>
   </div>
 </template>
 
@@ -23,7 +35,8 @@ export default {
       required: true
     },
     help: {
-      type: String
+      type: String,
+      default: null
     },
     errors: {
       type: Array,

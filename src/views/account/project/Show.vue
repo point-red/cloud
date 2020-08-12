@@ -1,13 +1,18 @@
 <template>
   <div>
     <breadcrumb>
-      <router-link to="/account/project" class="breadcrumb-item">{{ $t('project') | uppercase }}</router-link>
+      <router-link
+        to="/account/project"
+        class="breadcrumb-item"
+      >
+        {{ $t('project') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ project.code | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
-    <project-widget :project="project"></project-widget>
+    <project-widget :project="project" />
 
     <hr>
 
@@ -17,119 +22,130 @@
           <button
             v-if="project.is_generated == true"
             class="btn btn-sm btn-outline-secondary mr-5"
-            @click="redirectToProject(project)">
-            <i class="fa fa-globe"></i> {{ $t('open') | uppercase }}
+            @click="redirectToProject(project)"
+          >
+            <i class="fa fa-globe" /> {{ $t('open') | uppercase }}
           </button>
           <router-link
             tag="button"
             :to="{ path: '/account/project/create' }"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            class="btn btn-sm btn-outline-secondary mr-5"
+          >
             {{ $t('create') | uppercase }}
           </router-link>
           <router-link
             tag="button"
             :to="{ path: '/account/project/' + project.id + '/edit', params: { id: project.id }}"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            class="btn btn-sm btn-outline-secondary mr-5"
+          >
             {{ $t('edit') | uppercase }}
           </router-link>
           <button
             type="button"
-            @click="onDelete()"
             :disabled="isSaving"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isSaving" class="fa fa-asterisk fa-spin"/>
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            />
             {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-form-row
           id="code"
-          name="code"
           v-model="project.code"
+          name="code"
           :disabled="true"
           :label="$t('company identifier')"
-          :help="'WEBSITE URL : ' + project.code + '.cloud.point.red'">
-        </p-form-row>
+          :help="'WEBSITE URL : ' + project.code + '.cloud.point.red'"
+        />
 
         <p-form-row
           id="name"
-          name="name"
           v-model="project.name"
+          name="name"
           :disabled="true"
-          :label="$t('company name')">
-        </p-form-row>
+          :label="$t('company name')"
+        />
 
         <p-form-row
           id="total-user"
-          name="total-user"
           v-model="project.total_user"
+          name="total-user"
           :disabled="true"
-          :label="$t('total user')">
-        </p-form-row>
+          :label="$t('total user')"
+        />
 
-        <p-separator></p-separator>
+        <p-separator />
 
         <p-form-row
           id="group"
-          name="group"
           v-model="project.group"
+          name="group"
           :disabled="true"
-          :label="$t('company group')">
-        </p-form-row>
+          :label="$t('company group')"
+        />
 
         <p-form-row
           id="address"
-          name="address"
           v-model="project.address"
+          name="address"
           :disabled="true"
-          :label="$t('company address')">
-        </p-form-row>
+          :label="$t('company address')"
+        />
 
         <p-form-row
           id="phone"
-          name="phone"
           v-model="project.phone"
+          name="phone"
           :disabled="true"
-          :label="$t('company phone')">
-        </p-form-row>
+          :label="$t('company phone')"
+        />
 
         <p-form-row
           id="whatsapp"
-          name="whatsapp"
           v-model="project.whatsapp"
+          name="whatsapp"
           :disabled="true"
-          :label="$t('company whatsapp')">
-        </p-form-row>
+          :label="$t('company whatsapp')"
+        />
 
         <p-form-row
           id="website"
-          name="website"
           v-model="project.website"
+          name="website"
           :disabled="true"
-          :label="$t('company website')">
-        </p-form-row>
+          :label="$t('company website')"
+        />
 
         <p-form-row
           id="marketplace-notes"
-          name="marketplace-notes"
           v-model="project.marketplace_notes"
+          name="marketplace-notes"
           :disabled="true"
-          :label="$t('marketplace notes')">
-        </p-form-row>
+          :label="$t('marketplace notes')"
+        />
 
         <p-form-row
           id="vat-id-number"
-          name="vat_id_number"
           v-model="project.vat_id_number"
+          name="vat_id_number"
           :disabled="true"
-          :label="$t('vat identification number')">
-        </p-form-row>
+          :label="$t('vat identification number')"
+        />
 
         <p-form-row
           id="timezone"
           name="timezone"
-          :label="$t('timezone')">
-          <div slot="body" class="col-form-label col-lg-9">
+          :label="$t('timezone')"
+        >
+          <div
+            slot="body"
+            class="col-form-label col-lg-9"
+          >
             {{ project.timezone }}
           </div>
         </p-form-row>
@@ -145,17 +161,17 @@ import ProjectWidget from './Widget'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    TabMenu,
+    ProjectWidget
+  },
   data () {
     return {
       id: this.$route.params.id,
       isLoading: false,
       isSaving: false
     }
-  },
-  components: {
-    Breadcrumb,
-    TabMenu,
-    ProjectWidget
   },
   computed: {
     ...mapGetters('accountProject', ['project', 'projects'])

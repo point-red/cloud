@@ -1,7 +1,10 @@
 <template>
   <nav id="sidebar">
     <!-- Sidebar Scroll Container -->
-    <div id="sidebar-scroll" :v-scroll-lock="true">
+    <div
+      id="sidebar-scroll"
+      :v-scroll-lock="true"
+    >
       <!-- Sidebar Content -->
       <div class="sidebar-content">
         <!-- Side Header -->
@@ -23,8 +26,9 @@
             <button
               type="button"
               class="btn btn-circle btn-dual-secondary d-lg-none align-v-r"
-              @click="toggleLeftSidebar">
-              <i class="fa fa-times text-danger"/>
+              @click="toggleLeftSidebar"
+            >
+              <i class="fa fa-times text-danger" />
             </button>
             <!-- END Close Sidebar -->
 
@@ -34,9 +38,10 @@
                 to="/"
                 exact
                 active-class="active"
-                class="link-effect font-w700">
-                  <span class="font-size-xl text-dual-primary-dark">POINT.</span>
-                </router-link>
+                class="link-effect font-w700"
+              >
+                <span class="font-size-xl text-dual-primary-dark">POINT.</span>
+              </router-link>
             </div>
             <!-- END Logo -->
           </div>
@@ -51,7 +56,8 @@
             <img
               class="img-avatar img-avatar32"
               src="/assets/img/avatars/avatar0.jpg"
-              alt="">
+              alt=""
+            >
           </div>
           <!-- END Visible only in mini mode -->
 
@@ -59,17 +65,20 @@
           <div class="sidebar-mini-hidden-b text-center">
             <a
               :href="accountPage"
-              class="img-link">
+              class="img-link"
+            >
               <img
                 class="img-avatar"
                 src="/assets/img/avatars/avatar0.jpg"
-                alt="">
+                alt=""
+              >
             </a>
             <ul class="list-inline mt-3 mb-0">
               <li class="list-inline-item">
                 <a
                   :href="accountPage + '/profile'"
-                  class="link-effect text-dual-primary-dark font-size-xs font-w600 text-uppercase">
+                  class="link-effect text-dual-primary-dark font-size-xs font-w600 text-uppercase"
+                >
                   {{ userName }}
                 </a>
               </li>
@@ -87,119 +96,220 @@
                 to="/"
                 exact
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-speedometer"/> {{ $t("dashboard") | uppercase }}</router-link>
+                class="sidebar-mini-hide"
+              >
+                <i class="si si-speedometer" /> {{ $t("dashboard") | uppercase }}
+              </router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/menu"
                 exact
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-list"/> {{ $t("main menu") | uppercase }}</router-link>
+                class="sidebar-mini-hide"
+              >
+                <i class="si si-list" /> {{ $t("main menu") | uppercase }}
+              </router-link>
             </li>
             <li class="nav-main-heading">
               <span class="sidebar-mini-visible">MD</span>
               <span class="sidebar-mini-hidden">Modules</span>
             </li>
-            <li :class="{ 'open' : firstUri === 'master' }" v-if="$permission.has('menu master')">
+            <li
+              v-if="$permission.has('menu master')"
+              :class="{ 'open' : firstUri === 'master' }"
+            >
               <router-link
                 to="/master"
                 class="nav-submenu"
-                active-class="active">
-                <i class="si si-layers"/>
+                active-class="active"
+              >
+                <i class="si si-layers" />
                 <span class="sidebar-mini-hide">{{ $t("master") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read user')">
-                  <router-link to="/master/user" active-class="active">
+                <li
+                  v-if="$permission.has('read user')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/master/user"
+                    active-class="active"
+                  >
                     {{ $t('user') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read customer')">
-                  <router-link to="/master/customer" active-class="active">
+                <li
+                  v-if="$permission.has('read customer')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/master/customer"
+                    active-class="active"
+                  >
                     {{ $t('customer') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read supplier')">
-                  <router-link to="/master/supplier" active-class="active">
+                <li
+                  v-if="$permission.has('read supplier')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/master/supplier"
+                    active-class="active"
+                  >
                     {{ $t('supplier') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read warehouse')">
-                  <router-link to="/master/warehouse" active-class="active">
+                <li
+                  v-if="$permission.has('read warehouse')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/master/warehouse"
+                    active-class="active"
+                  >
                     {{ $t('warehouse') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read allocation')">
-                  <router-link to="/master/allocation" active-class="active">
+                <li
+                  v-if="$permission.has('read allocation')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/master/allocation"
+                    active-class="active"
+                  >
                     {{ $t('allocation') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read service')">
-                  <router-link to="/master/service" active-class="active">
+                <li
+                  v-if="$permission.has('read service')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/master/service"
+                    active-class="active"
+                  >
                     {{ $t('service') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read item')">
-                  <router-link to="/master/item" active-class="active">
+                <li
+                  v-if="$permission.has('read item')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/master/item"
+                    active-class="active"
+                  >
                     {{ $t('item') | uppercase }}
                   </router-link>
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'human-resource' }" v-if="$permission.has('menu human resource')">
-              <router-link to="/human-resource" class="nav-submenu" active-class="active">
-                <i class="si si-emoticon-smile"/>
+            <li
+              v-if="$permission.has('menu human resource')"
+              :class="{ 'open' : firstUri === 'human-resource' }"
+            >
+              <router-link
+                to="/human-resource"
+                class="nav-submenu"
+                active-class="active"
+              >
+                <i class="si si-emoticon-smile" />
                 <span class="sidebar-mini-hide">{{ $t("human resource") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read employee') || $permission.has('create employee assessment') || $permission.has('read employee assessment')">
+                <li
+                  v-if="$permission.has('read employee') || $permission.has('create employee assessment') || $permission.has('read employee assessment')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/human-resource/employee"
-                    active-class="active">{{ $t('employee') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('employee') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$plugin.has('KPI') && $permission.has('read employee kpi')">
+                <li
+                  v-if="$plugin.has('KPI') && $permission.has('read employee kpi')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/human-resource/kpi"
-                    active-class="active">{{ $t('kpi template') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('kpi template') | uppercase }}
                   </router-link>
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'purchase' }" v-if="$permission.has('menu purchase') && authUser.tenant_package_id > 1">
-              <router-link to="/purchase" class="nav-submenu" active-class="active">
-                <i class="si si-basket"/>
+            <li
+              v-if="$permission.has('menu purchase') && authUser.tenant_package_id > 1"
+              :class="{ 'open' : firstUri === 'purchase' }"
+            >
+              <router-link
+                to="/purchase"
+                class="nav-submenu"
+                active-class="active"
+              >
+                <i class="si si-basket" />
                 <span class="sidebar-mini-hide">{{ $t("purchase") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase request')">
+                <li
+                  v-if="$permission.has('read purchase request')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/purchase/request"
-                    active-class="active">{{ $t('purchase request') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('purchase request') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase order')">
+                <li
+                  v-if="$permission.has('read purchase order')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/purchase/order"
-                    active-class="active">{{ $t('purchase order') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('purchase order') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase down payment')">
+                <li
+                  v-if="$permission.has('read purchase down payment')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/purchase/down-payment"
-                    active-class="active">{{ $t('down payment') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('down payment') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase receive')">
+                <li
+                  v-if="$permission.has('read purchase receive')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/purchase/receive"
-                    active-class="active">{{ $t('purchase receive') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('purchase receive') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase invoice')">
+                <li
+                  v-if="$permission.has('read purchase invoice')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/purchase/invoice"
-                    active-class="active">{{ $t('purchase invoice') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('purchase invoice') | uppercase }}
                   </router-link>
                 </li>
                 <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase return')">
@@ -216,28 +326,72 @@
                 </li> -->
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'sales' }" v-if="$permission.has('menu sales') && authUser.tenant_package_id > 1">
-              <router-link to="/sales" class="nav-submenu" active-class="active">
-                <i class="si si-basket-loaded"/>
+            <li
+              v-if="$permission.has('menu sales') && authUser.tenant_package_id > 1"
+              :class="{ 'open' : firstUri === 'sales' }"
+            >
+              <router-link
+                to="/sales"
+                class="nav-submenu"
+                active-class="active"
+              >
+                <i class="si si-basket-loaded" />
                 <span class="sidebar-mini-hide">{{ $t("sales") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read sales quotation')">
+                <li
+                  v-if="$permission.has('read sales quotation')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/sales/quotation"
-                    active-class="active">{{ $t('sales quotation') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('sales quotation') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read sales order')">
+                <li
+                  v-if="$permission.has('read sales order')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/sales/order"
-                    active-class="active">{{ $t('sales order') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('sales order') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read sales order')">
+                <li
+                  v-if="$permission.has('read sales down payment')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/sales/down-payment"
+                    active-class="active"
+                  >
+                    {{ $t('sales down payment') | uppercase }}
+                  </router-link>
+                </li>
+                <li
+                  v-if="$permission.has('read sales delivery order')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/sales/delivery-order"
+                    active-class="active"
+                  >
+                    {{ $t('delivery order') | uppercase }}
+                  </router-link>
+                </li>
+                <li
+                  v-if="$permission.has('read sales order')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/sales/report"
-                    active-class="active">{{ $t('sales report') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('sales report') | uppercase }}
                   </router-link>
                 </li>
               </ul>
@@ -262,24 +416,42 @@
                 </li>
               </ul>
             </li> -->
-            <li :class="{ 'open' : firstUri === 'inventory' }" v-if="$permission.has('menu inventory') && authUser.tenant_package_id > 1">
-              <router-link to="/inventory" class="nav-submenu" active-class="active">
-                <i class="si si-tag"/>
+            <li
+              v-if="$permission.has('menu inventory') && authUser.tenant_package_id > 1"
+              :class="{ 'open' : firstUri === 'inventory' }"
+            >
+              <router-link
+                to="/inventory"
+                class="nav-submenu"
+                active-class="active"
+              >
+                <i class="si si-tag" />
                 <span class="sidebar-mini-hide">{{ $t("inventory") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory report')">
+                <li
+                  v-if="$permission.has('read inventory report')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/inventory/report"
-                    active-class="active">{{ $t('inventory report') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('inventory report') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory usage')">
+                <li
+                  v-if="$permission.has('read inventory usage')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/inventory/usage"
-                    active-class="active">{{ $t('inventory usage') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('inventory usage') | uppercase }}
                   </router-link>
                 </li>
+                <!--
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory audit')">
                   <router-link
                     to="/inventory/audit"
@@ -300,28 +472,50 @@
                 </li> -->
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'manufacture' }" v-if="$permission.has('menu manufacture') && authUser.tenant_package_id > 1">
-              <router-link to="/manufacture" class="nav-submenu" active-class="active">
-                <i class="si si-settings"/>
+            <li
+              v-if="$permission.has('menu manufacture') && authUser.tenant_package_id > 1"
+              :class="{ 'open' : firstUri === 'manufacture' }"
+            >
+              <router-link
+                to="/manufacture"
+                class="nav-submenu"
+                active-class="active"
+              >
+                <i class="si si-settings" />
                 <span class="sidebar-mini-hide">{{ $t("manufacture") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture machine')">
+                <li
+                  v-if="$permission.has('read manufacture machine')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/manufacture/machine"
-                    active-class="active">{{ $t('machine') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('machine') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture process')">
+                <li
+                  v-if="$permission.has('read manufacture process')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/manufacture/process"
-                    active-class="active">{{ $t('process') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('process') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture formula')">
+                <li
+                  v-if="$permission.has('read manufacture formula')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/manufacture/formula"
-                    active-class="active">{{ $t('formula') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('formula') | uppercase }}
                   </router-link>
                 </li>
                 <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read manufacture processing')">
@@ -332,42 +526,76 @@
                 </li> -->
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'finance' }" v-if="$permission.has('menu finance') && authUser.tenant_package_id > 1">
-              <router-link to="/finance" class="nav-submenu" active-class="active">
-                <i class="si si-wallet"/>
+            <li
+              v-if="$permission.has('menu finance') && authUser.tenant_package_id > 1"
+              :class="{ 'open' : firstUri === 'finance' }"
+            >
+              <router-link
+                to="/finance"
+                class="nav-submenu"
+                active-class="active"
+              >
+                <i class="si si-wallet" />
                 <span class="sidebar-mini-hide">{{ $t("finance") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read payment order')">
+                <li
+                  v-if="$permission.has('read payment order')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/finance/payment-order"
-                    active-class="active">{{ $t('payment order') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('payment order') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cash')">
+                <li
+                  v-if="$permission.has('read cash')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/finance/cash"
-                    active-class="active">{{ $t('cash') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('cash') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read bank')">
+                <li
+                  v-if="$permission.has('read bank')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/finance/bank"
-                    active-class="active">{{ $t('bank') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('bank') | uppercase }}
                   </router-link>
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'accounting' }" v-if="$permission.has('menu accounting') && authUser.tenant_package_id > 1">
-              <router-link to="/accounting" class="nav-submenu" active-class="active">
-                <i class="si si-folder-alt"/>
+            <li
+              v-if="$permission.has('menu accounting') && authUser.tenant_package_id > 1"
+              :class="{ 'open' : firstUri === 'accounting' }"
+            >
+              <router-link
+                to="/accounting"
+                class="nav-submenu"
+                active-class="active"
+              >
+                <i class="si si-folder-alt" />
                 <span class="sidebar-mini-hide">{{ $t("accounting") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read chart of account')">
+                <li
+                  v-if="$permission.has('read chart of account')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/accounting/chart-of-account"
-                    active-class="active">{{ $t('chart of account') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('chart of account') | uppercase }}
                   </router-link>
                 </li>
                 <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cut off')">
@@ -376,51 +604,85 @@
                     active-class="active">{{ $t('cut off') | uppercase }}
                   </router-link>
                 </li> -->
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read balance sheet')">
+                <li
+                  v-if="$permission.has('read balance sheet')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/accounting/balance-sheet"
-                    active-class="active">{{ $t('balance sheet') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('balance sheet') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read profit and loss')">
+                <li
+                  v-if="$permission.has('read profit and loss')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/accounting/profit-and-loss"
-                    active-class="active">{{ $t('profit and loss') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('profit and loss') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read ratio report')">
+                <li
+                  v-if="$permission.has('read ratio report')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/accounting/ratio-report"
-                    active-class="active">{{ $t('ratio report') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('ratio report') | uppercase }}
                   </router-link>
                 </li>
               </ul>
             </li>
-            <li :class="{ 'open' : firstUri === 'plugin' }" v-if="$permission.has('menu plugin')">
+            <li
+              v-if="$permission.has('menu plugin')"
+              :class="{ 'open' : firstUri === 'plugin' }"
+            >
               <router-link
                 to="/plugin"
                 class="nav-submenu"
-                active-class="active">
-                <i class="si si-puzzle"/>
+                active-class="active"
+              >
+                <i class="si si-puzzle" />
                 <span class="sidebar-mini-hide">{{ $t("plugin") | uppercase }}</span>
               </router-link>
               <ul>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$plugin.has('SCALE WEIGHT') && $permission.has('menu scale weight')">
+                <li
+                  v-if="$plugin.has('SCALE WEIGHT') && $permission.has('menu scale weight')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/plugin/scale-weight"
-                    active-class="active">{{ $t('scale weight') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('scale weight') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$plugin.has('PIN POINT') && $permission.has('menu pin point')">
+                <li
+                  v-if="$plugin.has('PIN POINT') && $permission.has('menu pin point')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/plugin/pin-point"
-                    active-class="active">{{'pin point' | uppercase }}
+                    active-class="active"
+                  >
+                    {{ 'pin point' | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('menu play book')">
+                <li
+                  v-if="$permission.has('menu play book')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/plugin/play-book"
-                    active-class="active">{{'play book' | uppercase }}
+                    active-class="active"
+                  >
+                    {{ 'play book' | uppercase }}
                   </router-link>
                 </li>
               </ul>

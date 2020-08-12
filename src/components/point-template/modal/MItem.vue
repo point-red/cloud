@@ -4,36 +4,72 @@
       :ref="'select-' + id"
       :title="$t('select item') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
-      <input type="text" ref="searchText" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      @close="onClose()"
+    >
+      <input
+        ref="searchText"
+        v-model="searchText"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        @keydown.enter.prevent=""
+      >
       <hr>
       <div v-if="isLoading">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
-      <div v-else class="list-group push">
-        <template v-for="(option, index) in options">
-        <a
-          :key="index"
-          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-          :class="{'active': option.id == mutableId }"
-          @click="choose(option)"
-          href="javascript:void(0)">
-          {{ option.label | uppercase }}
-        </a>
+      <div
+        v-else
+        class="list-group push"
+      >
+        <template v-for="(option, optionIndex) in options">
+          <a
+            :key="optionIndex"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            :class="{'active': option.id == mutableId }"
+            href="javascript:void(0)"
+            @click="choose(option)"
+          >
+            {{ option.label | uppercase }}
+          </a>
         </template>
       </div>
-      <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
+      <div
+        v-if="searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
         {{ $t('searching not found', [searchText]) | capitalize }}
       </div>
-      <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
+      <div
+        v-if="!searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
         {{ $t('you don\'t have any') | capitalize }} {{ $t('item') | capitalize }}
       </div>
       <div class="pull-right">
-        <button type="button" @click="$refs.addItem.open()" class="btn btn-sm btn-outline-secondary mr-5">{{ $t('create') | uppercase }}</button>
-        <button type="button" @click="clear()" class="btn btn-sm btn-outline-danger">{{ $t('clear') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary mr-5"
+          @click="$refs.addItem.open()"
+        >
+          {{ $t('create') | uppercase }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="clear()"
+        >
+          {{ $t('clear') | uppercase }}
+        </button>
       </div>
     </sweet-modal>
-    <m-add-item id="add-item" ref="addItem" @added="onAdded()"></m-add-item>
+    <m-add-item
+      id="add-item"
+      ref="addItem"
+      @added="onAdded()"
+    />
   </div>
 </template>
 
@@ -42,6 +78,20 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       index: null,
@@ -56,17 +106,6 @@ export default {
   computed: {
     ...mapGetters('masterItem', ['items', 'pagination'])
   },
-  props: {
-    id: {
-      type: String
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
-    }
-  },
   watch: {
     searchText: debounce(function () {
       this.search()
@@ -77,6 +116,9 @@ export default {
   },
   created () {
     this.search()
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('masterItem', ['get', 'create']),

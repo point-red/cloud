@@ -1,23 +1,38 @@
 <template>
   <div>
     <p-modal
-      ref="changeLanguageModalRef"
       :id="id"
-      :title="title">
+      ref="changeLanguageModalRef"
+      :title="title"
+    >
       <template slot="content">
         <div class="row gutters-tiny">
           <div class="col-6 col-sm-4 col-md-3 col-xl-2">
-            <a href="javascript:void(0)" class="block text-center" @click="setLang('en')">
+            <a
+              href="javascript:void(0)"
+              class="block text-center"
+              @click="setLang('en')"
+            >
               <div class="block-content ribbon ribbon-bookmark ribbon-crystal ribbon-left">
-                <country-flag country='us' size='big'/>
+                <country-flag
+                  country="us"
+                  size="big"
+                />
                 <p class="font-w600">ENGLISH</p>
               </div>
             </a>
           </div>
           <div class="col-6 col-sm-4 col-md-3 col-xl-2">
-            <a href="javascript:void(0)" class="block text-center" @click="setLang('id')">
+            <a
+              href="javascript:void(0)"
+              class="block text-center"
+              @click="setLang('id')"
+            >
               <div class="block-content ribbon ribbon-bookmark ribbon-crystal ribbon-left">
-                <country-flag country='id' size='big'/>
+                <country-flag
+                  country="id"
+                  size="big"
+                />
                 <p class="font-w600">INDONESIA</p>
               </div>
             </a>
@@ -27,7 +42,10 @@
       <template slot="footer">
         <button
           class="btn btn-danger"
-          @click="close">{{ $t('cancel') | uppercase }}</button>
+          @click="close"
+        >
+          {{ $t('cancel') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>
@@ -42,7 +60,8 @@ export default {
   },
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
       type: String,

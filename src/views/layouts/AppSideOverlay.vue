@@ -9,8 +9,9 @@
           <button
             type="button"
             class="btn btn-circle btn-dual-secondary align-v-r"
-            @click="toggleSideOverlay">
-            <i class="fa fa-times text-danger"/>
+            @click="toggleSideOverlay"
+          >
+            <i class="fa fa-times text-danger" />
           </button>
           <!-- END Close Side Overlay -->
 
@@ -18,15 +19,18 @@
           <div class="content-header-item">
             <a
               class="img-link mr-5"
-              href="javascript:void(0)">
+              href="javascript:void(0)"
+            >
               <img
                 class="img-avatar img-avatar32"
                 src="/assets/img/avatars/vesa-girl.jpg"
-                alt="">
+                alt=""
+              >
             </a>
             <a
               class="align-middle link-effect text-primary-dark font-w600"
-              href="javascript:void(0)">Vesa</a>
+              href="javascript:void(0)"
+            >Vesa</a>
           </div>
           <!-- END User Info -->
         </div>
@@ -43,32 +47,38 @@
               :key="index"
               :class="{
                 'rounded p-10 mb-10 animated fadeIn mr-50 bg-primary-lighter text-primary-darker': vesaChat.from === 'vesa',
-                'rounded p-10 mb-10 animated fadeIn ml-50 bg-flat-lighter': vesaChat.from === 'user' }">
+                'rounded p-10 mb-10 animated fadeIn ml-50 bg-flat-lighter': vesaChat.from === 'user' }"
+            >
               {{ vesaChat.message }}
             </div>
             <div
               v-show="vesaChats.length === 1"
-              class="rounded p-10 mb-10 animated fadeIn ml-50 bg-flat-lighter">
+              class="rounded p-10 mb-10 animated fadeIn ml-50 bg-flat-lighter"
+            >
               <div class="text-center">
                 <button
                   class="btn btn-sm btn-primary"
-                  @click="vesaTalk">
+                  @click="vesaTalk"
+                >
                   Okay, I understand
                 </button>
               </div>
             </div>
             <div
               v-show="vesaChats.length === 3"
-              class="rounded p-10 mb-10 animated fadeIn ml-50 bg-flat-lighter">
+              class="rounded p-10 mb-10 animated fadeIn ml-50 bg-flat-lighter"
+            >
               <div class="text-center">
                 <button
                   class="btn btn-sm btn-primary"
-                  @click="vesaTalk('yes')">
+                  @click="vesaTalk('yes')"
+                >
                   Yes, please notice me
                 </button>
                 <button
                   class="btn btn-sm btn-danger"
-                  @click="vesaTalk('no')">
+                  @click="vesaTalk('no')"
+                >
                   No
                 </button>
               </div>

@@ -1,52 +1,65 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link to="/manufacture/process" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        to="/manufacture/process"
+        class="breadcrumb-item"
+      >
+        {{ $t('process') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ process.name | uppercase }}</span>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <router-link
-            :to="{ path: '/manufacture/process/create' }"
             v-if="$permission.has('update manufacture process')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            :to="{ path: '/manufacture/process/create' }"
+            class="btn btn-sm btn-outline-secondary mr-5"
+          >
             {{ $t('create') | uppercase }}
           </router-link>
           <router-link
-            :to="{ path: '/manufacture/process/' + process.id + '/edit', params: { id: process.id }}"
             v-if="$permission.has('update manufacture process')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            :to="{ path: '/manufacture/process/' + process.id + '/edit', params: { id: process.id }}"
+            class="btn btn-sm btn-outline-secondary mr-5"
+          >
             {{ $t('edit') | uppercase }}
           </router-link>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete manufacture process')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="process.name"
             :label="$t('name')"
             name="name"
-            v-model="process.name"
-            readonly/>
+            readonly
+          />
 
           <p-form-row
             id="notes"
+            v-model="process.notes"
             :label="$t('notes')"
             name="notes"
-            v-model="process.notes"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
@@ -75,6 +88,16 @@ export default {
   computed: {
     ...mapGetters('manufactureProcess', ['process'])
   },
+  created () {
+    this.isLoading = true
+    this.find({ id: this.id })
+      .then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+  },
   methods: {
     ...mapActions('manufactureProcess', ['find', 'delete']),
     onDelete () {
@@ -92,16 +115,6 @@ export default {
           })
       })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.find({ id: this.id })
-      .then(response => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
   }
 }
 </script>

@@ -1,53 +1,71 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <router-link to="/master/service-group" class="breadcrumb-item">{{ $t('service group') | uppercase }}</router-link>
+      <breadcrumb-master />
+      <router-link
+        to="/master/service-group"
+        class="breadcrumb-item"
+      >
+        {{ $t('service group') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ group.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <button
-            type="button"
-            @click="$refs.addServiceGroup.open()"
             v-if="$permission.has('create service')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addServiceGroup.open()"
+          >
             <span>{{ $t('create') | uppercase }}</span>
           </button>
           <button
-            type="button"
-            @click="$refs.editServiceGroup.open(group)"
             v-if="$permission.has('update service')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editServiceGroup.open(group)"
+          >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete service')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="data.name"
             label="Name"
             name="name"
-            v-model="data.name"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-service-group ref="addServiceGroup" @added="onAddedServiceGroup($event)"></m-add-service-group>
-    <m-edit-service-group ref="editServiceGroup" @updated="onUpdatedServiceGroup($event)"></m-edit-service-group>
+    <m-add-service-group
+      ref="addServiceGroup"
+      @added="onAddedServiceGroup($event)"
+    />
+    <m-edit-service-group
+      ref="editServiceGroup"
+      @updated="onUpdatedServiceGroup($event)"
+    />
   </div>
 </template>
 
@@ -77,6 +95,18 @@ export default {
   },
   computed: {
     ...mapGetters('masterServiceGroup', ['group'])
+  },
+  created () {
+    this.isLoading = true
+    this.find({
+      id: this.id
+    }).then(response => {
+      this.isLoading = false
+      this.data.name = response.data.name
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   },
   methods: {
     ...mapActions('masterServiceGroup', ['find', 'delete']),
@@ -117,18 +147,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.find({
-      id: this.id
-    }).then(response => {
-      this.isLoading = false
-      this.data.name = response.data.name
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
   }
 }
 </script>

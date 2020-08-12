@@ -1,31 +1,52 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-manufacture/>
-      <router-link :to="'/manufacture/processing/' + id" class="breadcrumb-item">{{ $t('process') | uppercase }}</router-link>
-      <router-link :to="'/manufacture/processing/' + id + '/output'" class="breadcrumb-item">{{ $t('output') | uppercase }}</router-link>
+      <breadcrumb-manufacture />
+      <router-link
+        :to="'/manufacture/processing/' + id"
+        class="breadcrumb-item"
+      >
+        {{ $t('process') | uppercase }}
+      </router-link>
+      <router-link
+        :to="'/manufacture/processing/' + id + '/output'"
+        class="breadcrumb-item"
+      >
+        {{ $t('output') | uppercase }}
+      </router-link>
       <template v-if="output.form.number">
         <span class="breadcrumb-item active">{{ output.form.number | uppercase }}</span>
       </template>
       <template v-else>
-        <router-link v-if="output.origin" :to="{ name: 'manufacture.process.io.output.show', params: { id: id, outputId: output.origin.id }}" class="breadcrumb-item">
+        <router-link
+          v-if="output.origin"
+          :to="{ name: 'manufacture.process.io.output.show', params: { id: id, outputId: output.origin.id }}"
+          class="breadcrumb-item"
+        >
           {{ output.form.edited_number | uppercase }}
         </router-link>
       </template>
     </breadcrumb>
 
-    <manufacture-menu/>
+    <manufacture-menu />
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('output')" :header="true">
+      <p-block
+        :title="$t('output')"
+        :header="true"
+      >
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="number"
             name="number"
-            :label="$t('number')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('number')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <template v-if="output.form.number">
                 {{ output.form.number }}
               </template>
@@ -39,8 +60,12 @@
           <p-form-row
             id="date"
             name="date"
-            :label="$t('date')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('date')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               {{ output.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
             </div>
           </p-form-row>
@@ -48,8 +73,12 @@
           <p-form-row
             id="machine"
             name="machine"
-            :label="$t('machine')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('machine')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <template v-if="output.manufacture_machine">
                 {{ output.manufacture_machine.name }}
               </template>
@@ -59,13 +88,17 @@
           <p-form-row
             id="notes"
             name="notes"
-            :label="$t('notes')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('notes')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               {{ output.notes }}
             </div>
           </p-form-row>
 
-          <p-separator></p-separator>
+          <p-separator />
 
           <h5>{{ $t('finished goods') | titlecase }}</h5>
 
@@ -73,13 +106,21 @@
             <point-table>
               <tr slot="p-head">
                 <th>#</th>
-                <th style="min-width: 120px">Item</th>
+                <th style="min-width: 120px">
+                  Item
+                </th>
                 <th>Estimation</th>
                 <th>&nbsp;</th>
                 <th>Output</th>
-                <th style="min-width: 120px">Warehouse</th>
+                <th style="min-width: 120px">
+                  Warehouse
+                </th>
               </tr>
-              <tr slot="p-body" v-for="(row, index) in finished_goods_temporary" :key="index">
+              <tr
+                v-for="(row, index) in finished_goods_temporary"
+                slot="p-body"
+                :key="index"
+              >
                 <th>{{ index + 1 }}</th>
                 <td>
                   <router-link :to="{ name: 'item.show', params: { id: row.item.id }}">
@@ -91,12 +132,13 @@
                 </td>
                 <td>
                   <m-inventory
+                    v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"
                     :id="'inventory-' + index"
-                    :itemUnit="row.unit"
+                    :item-unit="row.unit"
                     :inventories="row.inventories"
-                    :requireExpiryDate="row.item.require_expiry_date"
-                    :requireProductionNumber="row.item.require_production_number"
-                    v-if="(row.item.require_expiry_date === 1 || row.item.require_production_number === 1)"/>
+                    :require-expiry-date="row.item.require_expiry_date"
+                    :require-production-number="row.item.require_production_number"
+                  />
                 </td>
                 <td>
                   {{ row.quantity | numberFormat }} {{ row.unit }}
@@ -110,9 +152,11 @@
             </point-table>
           </p-block-inner>
 
-          <p-separator></p-separator>
+          <p-separator />
 
-          <h5 class="">Approver</h5>
+          <h5 class="">
+            Approver
+          </h5>
 
           <point-table>
             <tr slot="p-head">
@@ -122,7 +166,11 @@
               <th>Requested To</th>
               <th>Approval Status</th>
             </tr>
-            <tr slot="p-body" v-for="(approval, index) in output.form.approvals" :key="index">
+            <tr
+              v-for="(approval, index) in output.form.approvals"
+              slot="p-body"
+              :key="index"
+            >
               <th>{{ index + 1 }}</th>
               <td>
                 {{ approval.requested_at | dateFormat('DD MMMM YYYY HH:mm') }}
@@ -135,8 +183,14 @@
               </td>
               <td>
                 <template v-if="approval.approval_at">
-                  <span v-if="approval.approved == true" class="badge badge-primary">{{ $t('approved') }}</span>
-                  <span v-if="approval.approved == false" class="badge badge-danger">{{ $t('rejected') }}</span>
+                  <span
+                    v-if="approval.approved == true"
+                    class="badge badge-primary"
+                  >{{ $t('approved') }}</span>
+                  <span
+                    v-if="approval.approved == false"
+                    class="badge badge-danger"
+                  >{{ $t('rejected') }}</span>
                   {{ approval.approval_at | dateFormat('DD MMMM YYYY HH:mm') }}
                 </template>
                 <template v-else>
@@ -146,9 +200,11 @@
             </tr>
           </point-table>
 
-          <p-separator></p-separator>
+          <p-separator />
 
-          <h5 v-if="output.archives != undefined && output.archives.length > 0">Archives</h5>
+          <h5 v-if="output.archives != undefined && output.archives.length > 0">
+            Archives
+          </h5>
 
           <point-table v-if="output.archives != undefined && output.archives.length > 0">
             <tr slot="p-head">
@@ -156,7 +212,11 @@
               <th>Edited Date</th>
               <th>Edited Reason</th>
             </tr>
-            <tr slot="p-body" v-for="(archived, index) in output.archives" :key="index">
+            <tr
+              v-for="(archived, index) in output.archives"
+              slot="p-body"
+              :key="index"
+            >
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'manufacture.process.io.output.show', params: { id: id, outputId: archived.id }}">
@@ -170,13 +230,22 @@
           </point-table>
 
           <router-link
-            :to="{ path: '/manufacture/processing/' + id + '/output/' + output.id + '/edit', params: { id: id, outputId: output.id }}"
             v-if="$permission.has('update manufacture') && $formRules.allowedToUpdate(output.form)"
-            class="btn btn-sm btn-primary mr-5">
+            :to="{ path: '/manufacture/processing/' + id + '/output/' + output.id + '/edit', params: { id: id, outputId: output.id }}"
+            class="btn btn-sm btn-primary mr-5"
+          >
             {{ $t('edit') | uppercase }}
           </router-link>
-          <button type="submit" class="btn btn-sm btn-danger mr-5" :disabled="isDeleting" @click="onDelete">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('cancel') | uppercase }}
+          <button
+            type="submit"
+            class="btn btn-sm btn-danger mr-5"
+            :disabled="isDeleting"
+            @click="onDelete"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('cancel') | uppercase }}
           </button>
         </p-block-inner>
       </p-block>
@@ -219,6 +288,9 @@ export default {
         this.manufactureOutputRequest()
       }
     }
+  },
+  created () {
+    this.manufactureOutputRequest()
   },
   methods: {
     ...mapActions('manufactureOutput', ['find', 'delete']),
@@ -285,9 +357,6 @@ export default {
         this.form.errors.record(error.errors)
       })
     }
-  },
-  created () {
-    this.manufactureOutputRequest()
   }
 }
 </script>

@@ -1,53 +1,56 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <breadcrumb-play-book></breadcrumb-play-book>
-      <breadcrumb-procedure></breadcrumb-procedure>
+      <breadcrumb-plugin />
+      <breadcrumb-play-book />
+      <breadcrumb-procedure />
     </breadcrumb>
 
     <div class="row">
       <p-block>
         <div class="input-group block mb-5">
           <a
-            href="javascript:void(0)"
-            @click="$refs.modalAddProcedure.open()"
             v-if="$permission.has('create play book procedure')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.modalAddProcedure.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <procedure-code-item
             v-for="(procedure, i) in procedures"
-            :i="(++i) + ((page - 1) * limit)"
             :key="procedure.id"
+            :i="(++i) + ((page - 1) * limit)"
             :procedure="procedure"
             :with-add-button="true"
             @added="$router.push('/plugin/play-book/approval/procedure/send')"
-            ></procedure-code-item>
+          />
         </p-block-inner>
         <p-pagination
           :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
     <m-add-procedure
       ref="modalAddProcedure"
-      @added="$router.push('/plugin/play-book/approval/procedure/send')"></m-add-procedure>
+      @added="$router.push('/plugin/play-book/approval/procedure/send')"
+    />
   </div>
 </template>
 
@@ -58,7 +61,6 @@ import BreadcrumbPlayBook from '@/views/plugin/play-book/Breadcrumb'
 import BreadcrumbProcedure from '@/views/plugin/play-book/procedure/components/Breadcrumb'
 import ProcedureCodeItem from './components/ProcedureCodeItem'
 import debounce from 'lodash/debounce'
-import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -67,8 +69,7 @@ export default {
     BreadcrumbPlugin,
     BreadcrumbPlayBook,
     BreadcrumbProcedure,
-    ProcedureCodeItem,
-    PointTable
+    ProcedureCodeItem
   },
   data () {
     return {
@@ -84,6 +85,15 @@ export default {
   },
   computed: {
     ...mapGetters('pluginPlayBookProcedure', ['procedures', 'pagination'])
+  },
+  mounted () {
+    this.getProcedures()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('pluginPlayBookProcedure', [
@@ -118,15 +128,6 @@ export default {
       this.page = value
       this.getProcedures()
     }
-  },
-  mounted () {
-    this.getProcedures()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

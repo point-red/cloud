@@ -1,67 +1,85 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <router-link
         to="/human-resource/job-location"
-        class="breadcrumb-item">{{ $t('job location') | uppercase }}</router-link>
+        class="breadcrumb-item"
+      >
+        {{ $t('job location') | uppercase }}
+      </router-link>
       <router-link
         :to="'/human-resource/job-location/' + jobLocation.id"
-        class="breadcrumb-item">{{ jobLocation.name | uppercase }}</router-link>
+        class="breadcrumb-item"
+      >
+        {{ jobLocation.name | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
-    <form class="row" @submit.prevent="onSubmit">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
       <p-block
         :is-loading="isLoading"
         :header="true"
         :title="$t('job location')"
-        column="col-sm-12">
+        column="col-sm-12"
+      >
         <div class="row">
           <div class="col-sm-6">
             <p-form-row
               id="name"
+              v-model="form.name"
               name="name"
               :label="$t('name')"
               :disabled="isSaving"
-              v-model="form.name"
               :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)">
-            </p-form-row>
+              @errors="form.errors.set('name', null)"
+            />
           </div>
-          <div class="col-sm-6">
-          </div>
+          <div class="col-sm-6" />
           <div class="col-sm-6">
             <p-form-row
               id="base_salary"
               name="base_salary"
-              :label="$t('base salary')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('base salary')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-number
                   v-model="form.base_salary"
                   :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('base_salary')"
-                  @errors="form.errors.set('base_salary', null)"/>
+                  @errors="form.errors.set('base_salary', null)"
+                />
               </div>
             </p-form-row>
           </div>
-          <div class="col-sm-6">
-          </div>
+          <div class="col-sm-6" />
           <div class="col-sm-6">
             <p-form-row
               id="multiplier_kpi"
               name="multiplier_kpi"
-              :label="$t('multiplier kpi')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('multiplier kpi')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-number
                   v-model="form.multiplier_kpi"
                   :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('multiplier_kpi')"
-                  @errors="form.errors.set('multiplier_kpi', null)"/>
+                  @errors="form.errors.set('multiplier_kpi', null)"
+                />
               </div>
             </p-form-row>
           </div>
@@ -72,13 +90,18 @@
             <button
               type="submit"
               :disabled="isSaving"
-              class="btn btn-sm btn-primary mr-5">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+              class="btn btn-sm btn-primary mr-5"
+            >
+              <i
+                v-show="isSaving"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('update') | uppercase }}
             </button>
             <button
               type="button"
               class="btn btn-sm btn-outline-danger"
-              @click="$router.push('/human-resource/job-location/' + id)">
+              @click="$router.push('/human-resource/job-location/' + id)"
+            >
               {{ $t('close') | uppercase }}
             </button>
           </div>

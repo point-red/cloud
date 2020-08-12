@@ -4,21 +4,34 @@
       :ref="'select-' + id"
       :title="$t('select') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
-      <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
+      @close="onClose()"
+    >
+      <input
+        v-model="searchText"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        @keydown.enter.prevent=""
+      >
       <hr>
       <div v-if="isLoadingSupplier || isLoadingCustomer || isLoadingEmployee">
-        <h3 class="text-center">Loading ...</h3>
+        <h3 class="text-center">
+          Loading ...
+        </h3>
       </div>
       <template v-else>
-        <div class="list-group push" v-if="optionSuppliers">
+        <div
+          v-if="optionSuppliers"
+          class="list-group push"
+        >
           <template v-for="(optionSupplier, index) in optionSuppliers">
             <a
               :key="'supplier-' + index"
               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
               :class="{'active': optionSupplier.id == mutableId && type == 'supplier' }"
+              href="javascript:void(0)"
               @click="choose(optionSupplier)"
-              href="javascript:void(0)">
+            >
               [SUPPLIER] {{ optionSupplier.label | uppercase }}
             </a>
           </template>
@@ -27,8 +40,9 @@
               :key="'customer-' + index"
               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
               :class="{'active': optionCustomer.id == mutableId && type == 'customer' }"
+              href="javascript:void(0)"
               @click="choose(optionCustomer)"
-              href="javascript:void(0)">
+            >
               [CUSTOMER] {{ optionCustomer.label | uppercase }}
             </a>
           </template>
@@ -37,20 +51,30 @@
               :key="'employee-' + index"
               class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
               :class="{'active': optionEmployee.id == mutableId && type == 'employee' }"
+              href="javascript:void(0)"
               @click="choose(optionEmployee)"
-              href="javascript:void(0)">
+            >
               [EMPLOYEE] {{ optionEmployee.label | uppercase }}
             </a>
           </template>
         </div>
 
-        <div class="list-group push" v-if="searchText && !isLoadingEmployee && !isLoadingCustomer && !isLoadingSupplier && optionEmployees.length == 0 && optionCustomers.length == 0 && optionSuppliers.length == 0">
+        <div
+          v-if="searchText && !isLoadingEmployee && !isLoadingCustomer && !isLoadingSupplier && optionEmployees.length == 0 && optionCustomers.length == 0 && optionSuppliers.length == 0"
+          class="list-group push"
+        >
           <div class="alert alert-info text-center">
             {{ $t('searching not found', [searchText]) | capitalize }}
           </div>
         </div>
       </template>
-      <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-danger"
+        @click="close()"
+      >
+        {{ $t('close') | uppercase }}
+      </button>
     </sweet-modal>
   </div>
 </template>
@@ -60,6 +84,24 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: null
+    },
+    label: {
+      type: String,
+      default: null
+    },
+    type: {
+      type: String,
+      default: null
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -80,21 +122,6 @@ export default {
     ...mapGetters('masterCustomer', ['customers']),
     ...mapGetters('humanResourceEmployee', ['employees'])
   },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
-    },
-    type: {
-      type: String
-    }
-  },
   watch: {
     searchText: debounce(function () {
       this.search()
@@ -105,6 +132,9 @@ export default {
   },
   created () {
     this.search()
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('masterSupplier', {

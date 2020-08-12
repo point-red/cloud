@@ -1,28 +1,50 @@
 <template>
   <div>
-    <div class="input-group" style="min-width: 180px">
+    <div
+      class="input-group"
+      style="min-width: 180px"
+    >
       <cleave
-        :readonly="readonly || disabled"
         v-model="number"
+        :readonly="readonly || disabled"
         :options="options"
         class="form-control form-number"
         :class="{
           'text-right' : isTextRight,
           'bg-gray-light' : disabled,
           'bg-white' : !disabled
-        }"/>
-      <div class="input-group-append" @click="onClickUnit">
+        }"
+      />
+      <div
+        class="input-group-append"
+        @click="onClickUnit"
+      >
         <span class="input-group-text">
           {{ mutableUnit.label | uppercase }}
         </span>
-        <button v-show="showAddReduceButtons" class="btn btn-sm btn-outline-secondary" type="button" @click="add">+</button>
-        <button v-show="showAddReduceButtons" class="btn btn-sm btn-outline-secondary" type="button" @click="reduce">-</button>
+        <button
+          v-show="showAddReduceButtons"
+          class="btn btn-sm btn-outline-secondary"
+          type="button"
+          @click="add"
+        >
+          +
+        </button>
+        <button
+          v-show="showAddReduceButtons"
+          class="btn btn-sm btn-outline-secondary"
+          type="button"
+          @click="reduce"
+        >
+          -
+        </button>
       </div>
     </div>
     <m-quantity-unit
       :id="'quantity-unit-'+itemId+'-'+Math.random()"
       ref="quantityUnit"
-      @choosen="chooseUnit($event)"/>
+      @choosen="chooseUnit($event)"
+    />
   </div>
 </template>
 
@@ -32,6 +54,56 @@ import Cleave from 'vue-cleave-component'
 export default {
   components: {
     Cleave
+  },
+  props: {
+    readonly: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    unsigned: {
+      type: Boolean,
+      default: false
+    },
+    disableUnitSelection: {
+      type: Boolean,
+      default: false
+    },
+    isTextRight: {
+      type: Boolean,
+      default: true
+    },
+    unit: {
+      type: Object,
+      default: null
+    },
+    value: {
+      type: [Number, String],
+      default: null
+    },
+    itemId: {
+      type: Number,
+      default: null
+    },
+    units: {
+      type: Array,
+      default: null
+    },
+    showAddReduceButtons: {
+      type: Boolean,
+      default: false
+    },
+    min: {
+      type: Number,
+      default: 0
+    },
+    max: {
+      type: Number,
+      default: Number.MAX_SAFE_INTEGER
+    }
   },
   data () {
     return {
@@ -72,52 +144,6 @@ export default {
           this.$emit('input', this.max)
         }
       })
-    }
-  },
-  props: {
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    unsigned: {
-      type: Boolean,
-      default: false
-    },
-    disableUnitSelection: {
-      type: Boolean,
-      default: false
-    },
-    isTextRight: {
-      type: Boolean,
-      default: true
-    },
-    unit: {
-      type: Object
-    },
-    value: {
-      type: [Number, String]
-    },
-    itemId: {
-      type: Number
-    },
-    units: {
-      type: Array
-    },
-    showAddReduceButtons: {
-      type: Boolean,
-      default: false
-    },
-    min: {
-      type: Number,
-      default: 0
-    },
-    max: {
-      type: Number,
-      default: Number.MAX_SAFE_INTEGER
     }
   },
   methods: {

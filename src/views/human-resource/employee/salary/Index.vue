@@ -1,22 +1,31 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <router-link
         to="/human-resource/employee"
-        class="breadcrumb-item">{{ $t('employee') | titlecase }}</router-link>
+        class="breadcrumb-item"
+      >
+        {{ $t('employee') | titlecase }}
+      </router-link>
       <router-link
         :to="'/human-resource/employee/' + employee.id"
-        class="breadcrumb-item">{{ employee.name | titlecase }}</router-link>
+        class="breadcrumb-item"
+      >
+        {{ employee.name | titlecase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ title | titlecase }}</span>
     </breadcrumb>
 
-    <employee-widget :id="id"></employee-widget>
+    <employee-widget :id="id" />
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block
+        :title="title"
+        :header="true"
+      >
         <div class="text-right">
           <a href="javascript:void(0)" class="btn btn-square btn-outline-secondary" :class="{ 'active': reportType == 'all' }" @click="chooseType('all')">All</a>
           <a href="javascript:void(0)" class="btn btn-square btn-outline-secondary" :class="{ 'active': reportType == 'weekly' }" @click="chooseType('weekly')">Weekly</a>
@@ -27,12 +36,15 @@
           <p-table>
             <tr slot="p-head">
               <th>{{ $t('date') }}</th>
-              <th class="text-center">{{ $t('salary') }}</th>
+              <th class="text-center">
+                {{ $t('salary') }}
+              </th>
             </tr>
             <tr
               v-for="salary in salaries"
               :key="salary.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <td>
                 <template v-if="reportType == 'all'">
                   <router-link :to="{ name: 'humanResourceEmployeeSalaryShow', params: { id: employee.id, salaryId: salary.id }}" v-if="$permission.has('read employee salary')">
@@ -87,23 +99,33 @@
 
     <p-modal
       id="modal-delete"
+      ref="delete"
       title="Confirmation"
-      ref="delete">
-      <div slot="content"><p>Are you sure want to delete the Salary Form?</p></div>
+    >
+      <div slot="content">
+        <p>Are you sure want to delete the Salary Form?</p>
+      </div>
       <div slot="footer">
         <button
           type="button"
           class="btn btn-alt-secondary"
+          data-dismiss="modal"
           @click="$refs.delete.close()"
-          data-dismiss="modal">{{ $t('cancel') | uppercase }}</button>
+        >
+          {{ $t('cancel') | uppercase }}
+        </button>
         &nbsp;
         <button
-          type="button"
-          @click="onDelete()"
           v-if="$permission.has('delete employee salary')"
+          type="button"
           :disabled="isSaving"
-          class="btn btn-danger">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+          class="btn btn-danger"
+          @click="onDelete()"
+        >
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          /> {{ $t('delete') | uppercase }}
         </button>
       </div>
     </p-modal>
@@ -138,15 +160,15 @@ export default {
       lastPage: 1
     }
   },
+  computed: {
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeSalary', ['salaries', 'pagination'])
+  },
   created () {
     this.getEmployeeSalaryRequest()
   },
   updated () {
     this.lastPage = this.pagination.last_page
-  },
-  computed: {
-    ...mapGetters('humanResourceEmployee', ['employee']),
-    ...mapGetters('humanResourceEmployeeSalary', ['salaries', 'pagination'])
   },
   methods: {
     ...mapActions('humanResourceEmployeeSalary', {

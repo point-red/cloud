@@ -1,14 +1,19 @@
 <template>
   <div>
-    <p-loading-block v-show="isLoading"/>
+    <p-loading-block v-show="isLoading" />
     <breadcrumb>
-      <router-link to="/account/project" class="breadcrumb-item">{{ $t('project') | uppercase }}</router-link>
+      <router-link
+        to="/account/project"
+        class="breadcrumb-item"
+      >
+        {{ $t('project') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ project.code | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
-    <project-widget :project="project"></project-widget>
+    <project-widget :project="project" />
 
     <hr>
 
@@ -17,14 +22,21 @@
     <hr>
 
     <div class="row gutters-tiny">
-      <div class="col-md-6 col-xl-3" v-for="packageErp in packages" :key="packageErp.code">
+      <div
+        v-for="packageErp in packages"
+        :key="packageErp.code"
+        class="col-md-6 col-xl-3"
+      >
         <div class="block block-link-shadow">
           <div class="block-content block-content-full clearfix">
             <div class="font-size-h5 font-w600">
               {{ packageErp.name }}
             </div>
             <hr>
-            <div class="font-size-sm plugin-description" style="height:70px">
+            <div
+              class="font-size-sm plugin-description"
+              style="height:70px"
+            >
               <pre>{{ packageErp.description }}</pre>
             </div>
             <hr>
@@ -33,8 +45,22 @@
             </div>
             <hr>
             <div class="font-size-sm font-w600 text-uppercase text-muted">
-              <button type="button" @click="choosePackage(packageErp, 'unsubscribe')" v-if="project.package_id == packageErp.id" class="btn btn-sm btn-primary">SUBSCRIBED</button>
-              <button type="button" @click="choosePackage(packageErp, 'subscribe')" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+              <button
+                v-if="project.package_id == packageErp.id"
+                type="button"
+                class="btn btn-sm btn-primary"
+                @click="choosePackage(packageErp, 'unsubscribe')"
+              >
+                SUBSCRIBED
+              </button>
+              <button
+                v-else
+                type="button"
+                class="btn btn-sm btn-secondary"
+                @click="choosePackage(packageErp, 'subscribe')"
+              >
+                SUBSCRIBE
+              </button>
             </div>
           </div>
         </div>
@@ -49,7 +75,11 @@
 
     <div class="row gutters-tiny">
       <template v-for="(plugin, index) in plugins">
-        <div class="col-md-6 col-xl-3" :key="index" v-if="plugin.is_active">
+        <div
+          v-if="plugin.is_active"
+          :key="index"
+          class="col-md-6 col-xl-3"
+        >
           <div class="block block-link-shadow">
             <div class="block-content block-content-full clearfix">
               <div class="font-size-h5 font-w600">
@@ -61,14 +91,37 @@
               </div>
               <hr>
               <div class="text-uppercase">
-                <span class="font-size-lg" v-if="plugin.price != 0">IDR {{ plugin.price | numberFormat }}</span> <small v-if="plugin.is_monthly_price">/ month</small>
-                <span class="font-size-lg" v-if="plugin.price_per_user != 0">IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
-                <span class="font-size-lg" v-if="plugin.price == 0 && plugin.price_per_user == 0">FREE</span>
+                <span
+                  v-if="plugin.price != 0"
+                  class="font-size-lg"
+                >IDR {{ plugin.price | numberFormat }}</span> <small v-if="plugin.is_monthly_price">/ month</small>
+                <span
+                  v-if="plugin.price_per_user != 0"
+                  class="font-size-lg"
+                >IDR {{ plugin.price_per_user | numberFormat }}</span> <small v-if="plugin.is_monthly_price_per_user">/ user / month</small>
+                <span
+                  v-if="plugin.price == 0 && plugin.price_per_user == 0"
+                  class="font-size-lg"
+                >FREE</span>
               </div>
               <hr>
               <div class="font-size-sm font-w600 text-uppercase text-muted">
-                <button type="button" @click="choosePlugin(plugin, 'unsubscribe')" v-if="project.plugins.length > 0 && project.plugins.findIndex(element => element.id == plugin.id) >= 0" class="btn btn-sm btn-primary">SUBSCRIBED</button>
-                <button type="button" @click="choosePlugin(plugin, 'subscribe')" v-else class="btn btn-sm btn-secondary">SUBSCRIBE</button>
+                <button
+                  v-if="project.plugins.length > 0 && project.plugins.findIndex(element => element.id == plugin.id) >= 0"
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  @click="choosePlugin(plugin, 'unsubscribe')"
+                >
+                  SUBSCRIBED
+                </button>
+                <button
+                  v-else
+                  type="button"
+                  class="btn btn-sm btn-secondary"
+                  @click="choosePlugin(plugin, 'subscribe')"
+                >
+                  SUBSCRIBE
+                </button>
               </div>
             </div>
           </div>
@@ -76,8 +129,14 @@
       </template>
     </div>
 
-    <sweet-modal ref="subscribed" icon="success">
-      Thankyou for subscribe, please click this <a href="javascript:void(0)" @click="redirectToPluginUrl()">LINK</a> to open the app
+    <sweet-modal
+      ref="subscribed"
+      icon="success"
+    >
+      Thankyou for subscribe, please click this <a
+        href="javascript:void(0)"
+        @click="redirectToPluginUrl()"
+      >LINK</a> to open the app
     </sweet-modal>
   </div>
 </template>
@@ -90,6 +149,11 @@ import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    TabMenu,
+    ProjectWidget
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -102,11 +166,6 @@ export default {
       }),
       plugin_url: ''
     }
-  },
-  components: {
-    Breadcrumb,
-    TabMenu,
-    ProjectWidget
   },
   computed: {
     ...mapGetters('accountProject', ['project']),

@@ -1,12 +1,17 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
-      <router-link to="/human-resource/employee-status" class="breadcrumb-item">{{ $t('employee status') | uppercase }}</router-link>
+      <breadcrumb-human-resource />
+      <router-link
+        to="/human-resource/employee-status"
+        class="breadcrumb-item"
+      >
+        {{ $t('employee status') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ status.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>

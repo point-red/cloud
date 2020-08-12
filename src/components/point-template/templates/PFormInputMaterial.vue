@@ -1,33 +1,43 @@
 <template>
   <div
     :class="{ 'is-invalid' : errors }"
-    class="form-group row">
+    class="form-group row"
+  >
     <div class="col-12">
       <div
         :class="{ 'open' : value }"
-        class="form-material">
+        class="form-material"
+      >
         <input
+          :id="id"
           :type="type"
           :value="value"
           :class="{ 'js-masked-time' : maskedTimeFormat }"
-          :id="id"
           :name="name"
           :placeholder="placeholder"
           :readonly="readonly"
           class="form-control"
-          @input="updateValue($event.target.value)">
+          @input="updateValue($event.target.value)"
+        >
         <label
           v-show="label"
-          :for="name">{{ label }}</label>
+          :for="name"
+        >{{ label }}</label>
       </div>
 
       <div
         v-for="(error, index) in errors"
         :key="index"
-        class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
+        class="invalid-input"
+      >
+        <i class="fa fa-warning" /> {{ error }}
+      </div>
       <div
         v-show="help"
-        class="form-text text-muted">{{ help }}</div>
+        class="form-text text-muted"
+      >
+        {{ help }}
+      </div>
     </div>
   </div>
 </template>
@@ -48,10 +58,12 @@ export default {
       required: true
     },
     value: {
-      type: String
+      type: String,
+      default: null
     },
     placeholder: {
-      type: String
+      type: String,
+      default: null
     },
     type: {
       type: String,
@@ -70,10 +82,12 @@ export default {
       default: true
     },
     help: {
-      type: String
+      type: String,
+      default: null
     },
     errors: {
-      type: Array
+      type: Array,
+      default: null
     }
   },
   data () {

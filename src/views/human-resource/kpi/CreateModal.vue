@@ -2,35 +2,45 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmit">
+      @submit.prevent="onSubmit"
+    >
       <p-modal
-        ref="create"
         :id="id"
-        :title="title | uppercase">
+        ref="create"
+        :title="title | uppercase"
+      >
         <template slot="content">
           <p-form-row
             id="name"
+            v-model="form.name"
             name="name"
             label="name"
             :disabled="isSaving"
-            v-model="form.name"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)">
-          </p-form-row>
+            @errors="form.errors.set('name', null)"
+          />
         </template>
         <template slot="footer">
           <button
             :disabled="isSaving"
             type="submit"
-            class="btn btn-sm btn-primary">
+            class="btn btn-sm btn-primary"
+          >
             <i
               v-show="isSaving"
-              class="fa fa-asterisk fa-spin"/> {{ $t('add') | uppercase }}
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('add') | uppercase }}
           </button>
-          <button :disabled="isSaving" type="button" class="btn btn-sm btn-outline-danger" @click="close">
+          <button
+            :disabled="isSaving"
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="close"
+          >
             <i
               v-show="isSaving"
-              class="fa fa-asterisk fa-spin"/> {{ $t('close') | uppercase }}
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>
@@ -45,7 +55,8 @@ import { mapActions } from 'vuex'
 export default {
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
       type: String,

@@ -1,13 +1,23 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-purchase/>
-      <router-link :to="{ name: 'purchase.order.index' }" class="breadcrumb-item">{{ $t('purchase order') | uppercase }}</router-link>
-      <router-link :to="{ name: 'purchase.order.show', params: { id: id }}" class="breadcrumb-item">{{ purchaseOrder.form.number | uppercase }}</router-link>
+      <breadcrumb-purchase />
+      <router-link
+        :to="{ name: 'purchase.order.index' }"
+        class="breadcrumb-item"
+      >
+        {{ $t('purchase order') | uppercase }}
+      </router-link>
+      <router-link
+        :to="{ name: 'purchase.order.show', params: { id: id }}"
+        class="breadcrumb-item"
+      >
+        {{ purchaseOrder.form.number | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
-    <purchase-menu/>
+    <purchase-menu />
 
     <form @submit.prevent="onSubmit">
       <div class="row">
@@ -18,21 +28,30 @@
                 <h4>{{ $t('purchase order') | uppercase }}</h4>
                 <table class="table table-sm table-bordered">
                   <tr>
-                    <td class="font-weight-bold">{{ $t('form number') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('form number') | uppercase }}
+                    </td>
                     <td>
                       {{ purchaseOrder.form.number }}
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('date') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('date') | uppercase }}
+                    </td>
                     <td>
                       {{ purchaseOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
                     </td>
                   </tr>
                   <tr>
-                    <td class="font-weight-bold">{{ $t('purchase request') | uppercase }}</td>
+                    <td class="font-weight-bold">
+                      {{ $t('purchase request') | uppercase }}
+                    </td>
                     <td>
-                      <span @click="$refs.selectPurchaseRequest.open()" class="select-link">
+                      <span
+                        class="select-link"
+                        @click="$refs.selectPurchaseRequest.open()"
+                      >
                         <template v-if="purchaseRequest && purchaseRequest.form.number != null">
                           {{ purchaseRequest.form.number }}
                         </template>
@@ -46,16 +65,27 @@
               </div>
               <div class="col-sm-6 text-right">
                 <div class="mb-30">
-                  <h6 class="mb-0">{{ authUser.tenant_name | uppercase }}</h6>
+                  <h6 class="mb-0">
+                    {{ authUser.tenant_name | uppercase }}
+                  </h6>
                   <template v-if="authUser.branch">
                     {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
                     {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
                   </template>
                 </div>
                 <div>
-                  <h6 class="mb-0">{{ $t('to') | uppercase }}: <span @click="$refs.supplier.open()" class="select-link">{{ form.supplier_label || $t('select') | uppercase }}</span></h6>
-                  <div v-if="form.supplier_address"><i class="fa fa-home fa-fw"></i> {{ form.supplier_address | uppercase }}</div>
-                  <div v-if="form.supplier_phone"><i class="fa fa-phone fa-fw"></i> {{ form.supplier_phone | uppercase }}</div>
+                  <h6 class="mb-0">
+                    {{ $t('to') | uppercase }}: <span
+                      class="select-link"
+                      @click="$refs.supplier.open()"
+                    >{{ form.supplier_label || $t('select') | uppercase }}</span>
+                  </h6>
+                  <div v-if="form.supplier_address">
+                    <i class="fa fa-home fa-fw" /> {{ form.supplier_address | uppercase }}
+                  </div>
+                  <div v-if="form.supplier_phone">
+                    <i class="fa fa-phone fa-fw" /> {{ form.supplier_phone | uppercase }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -63,31 +93,43 @@
             <point-table>
               <tr slot="p-head">
                 <th>#</th>
-                <th style="min-width: 120px">Item</th>
+                <th style="min-width: 120px">
+                  Item
+                </th>
                 <th>Quantity</th>
                 <th>Price</th>
                 <th>Discount</th>
                 <th>Total</th>
                 <th>
-                  <button type="button" class="btn btn-sm btn-outline-secondary" @click="toggleMore()">
-                    <i class="fa fa-ellipsis-h"/>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    @click="toggleMore()"
+                  >
+                    <i class="fa fa-ellipsis-h" />
                   </button>
                 </th>
               </tr>
               <template v-for="(row, index) in form.items">
-                <tr slot="p-body" :key="index">
+                <tr
+                  slot="p-body"
+                  :key="index"
+                >
                   <th>{{ index + 1 }}</th>
                   <td>
-                    <span @click="$refs.item.open(index)" class="select-link">
+                    <span
+                      class="select-link"
+                      @click="$refs.item.open(index)"
+                    >
                       {{ row.item_label || $t('select') | uppercase }}
                     </span>
                   </td>
                   <td>
                     <p-quantity
                       :id="'quantity' + index"
+                      v-model="row.quantity"
                       :name="'quantity' + index"
                       :disabled="row.item_id == null"
-                      v-model="row.quantity"
                       :item-id="row.item_id"
                       :units="row.units"
                       :unit="{
@@ -95,14 +137,16 @@
                         label: row.unit,
                         converter: row.converter
                       }"
-                      @choosen="chooseUnit($event, row)"/>
+                      @choosen="chooseUnit($event, row)"
+                    />
                   </td>
                   <td>
                     <p-form-number
                       :id="'price' + index"
-                      :name="'price' + index"
                       v-model.number="row.price"
-                      :readonly="row.item_id == null"/>
+                      :name="'price' + index"
+                      :readonly="row.item_id == null"
+                    />
                   </td>
                   <td>
                     <p-discount
@@ -111,161 +155,231 @@
                       :readonly="row.item_id == null"
                       :base-value="row.price"
                       :discount-percent.sync="row.discount_percent"
-                      :discount-value.sync="row.discount_value"/>
+                      :discount-value.sync="row.discount_value"
+                    />
                   </td>
                   <td>
                     <p-form-number
                       :id="'total-' + index"
                       :name="'total-' + index"
                       :readonly="true"
-                      :value="row.quantity * (row.price - row.discount_value)"/>
+                      :value="row.quantity * (row.price - row.discount_value)"
+                    />
                   </td>
                   <td>
-                    <button type="button"
+                    <button
+                      v-if="!isSaving"
+                      type="button"
                       class="btn btn-sm btn-outline-secondary"
                       @click="row.more = !row.more"
-                      v-if="!isSaving">
-                      <i class="fa fa-ellipsis-h"/>
+                    >
+                      <i class="fa fa-ellipsis-h" />
                     </button>
                   </td>
                 </tr>
                 <template v-if="row.more && row.item_id">
-                  <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
-                    <th class="bg-gray-light"></th>
+                  <tr
+                    slot="p-body"
+                    :key="'ext-'+index"
+                    class="bg-gray-light"
+                  >
+                    <th class="bg-gray-light" />
                     <td colspan="4">
                       <p-form-row
                         id="allocation"
                         name="allocation"
-                        :label="$t('allocation')">
-                        <div slot="body" class="col-lg-9 mt-5">
-                          <span @click="$refs.allocation.open(index)" class="select-link">
+                        :label="$t('allocation')"
+                      >
+                        <div
+                          slot="body"
+                          class="col-lg-9 mt-5"
+                        >
+                          <span
+                            class="select-link"
+                            @click="$refs.allocation.open(index)"
+                          >
                             {{ row.allocation_name || $t('select') | uppercase }}
                           </span>
                         </div>
                       </p-form-row>
                     </td>
-                    <td></td>
-                    <td></td>
+                    <td />
+                    <td />
                   </tr>
-                  <tr slot="p-body" :key="'ext-'+index" class="bg-gray-light">
-                    <th class="bg-gray-light"></th>
+                  <tr
+                    slot="p-body"
+                    :key="'ext-'+index"
+                    class="bg-gray-light"
+                  >
+                    <th class="bg-gray-light" />
                     <td colspan="4">
                       <p-form-row
                         id="notes"
-                        name="notes"
                         v-model="row.notes"
-                        :label="$t('notes')">
-                      </p-form-row>
+                        name="notes"
+                        :label="$t('notes')"
+                      />
                     </td>
-                    <td></td>
-                    <td></td>
+                    <td />
+                    <td />
                   </tr>
                 </template>
               </template>
               <tr slot="p-body">
-                <th></th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <th />
+                <td />
+                <td />
+                <td />
+                <td />
                 <td>
                   <p-form-number
                     :id="'subtotal'"
                     :name="'subtotal'"
                     :readonly="true"
-                    :value="subtotal"/>
+                    :value="subtotal"
+                  />
                 </td>
               </tr>
             </point-table>
 
             <div class="row">
               <div class="col-sm-6">
-                <textarea rows="14" class="form-control" placeholder="Notes" v-model="form.notes"></textarea>
+                <textarea
+                  v-model="form.notes"
+                  rows="14"
+                  class="form-control"
+                  placeholder="Notes"
+                />
               </div>
               <div class="col-sm-6">
                 <p-form-row
                   id="discount"
                   name="discount"
-                  :label="$t('discount')">
-                  <div slot="body" class="col-lg-9 mt-5">
+                  :label="$t('discount')"
+                >
+                  <div
+                    slot="body"
+                    class="col-lg-9 mt-5"
+                  >
                     <p-discount
                       id="discount"
                       name="discount"
                       :base-value="subtotal"
                       :discount-percent.sync="form.discount_percent"
-                      :discount-value.sync="form.discount_value"/>
+                      :discount-value.sync="form.discount_value"
+                    />
                   </div>
                 </p-form-row>
                 <p-form-row
                   id="tax-base"
                   name="tax-base"
-                  :label="$t('tax base')">
-                  <div slot="body" class="col-lg-9 mt-5">
+                  :label="$t('tax base')"
+                >
+                  <div
+                    slot="body"
+                    class="col-lg-9 mt-5"
+                  >
                     <p-form-number
                       :id="'tax-base'"
                       :name="'tax-base'"
                       :readonly="true"
-                      :value="tax_base"/>
+                      :value="tax_base"
+                    />
                   </div>
                 </p-form-row>
                 <p-form-row
                   name="tax"
-                  :label="$t('tax')">
-                  <div slot="body" class="col-lg-9">
+                  :label="$t('tax')"
+                >
+                  <div
+                    slot="body"
+                    class="col-lg-9"
+                  >
                     <p-form-check-box
                       class="mb-0"
                       style="float:left"
                       name="tax"
-                      @click.native="chooseTax('include')"
                       :checked="form.type_of_tax == 'include'"
-                      :description="$t('include tax')"/>
+                      :description="$t('include tax')"
+                      @click.native="chooseTax('include')"
+                    />
                     <p-form-check-box
                       name="tax"
-                      @click.native="chooseTax('exclude')"
                       :checked="form.type_of_tax == 'exclude'"
-                      :description="$t('exclude tax')"/>
+                      :description="$t('exclude tax')"
+                      @click.native="chooseTax('exclude')"
+                    />
                     <p-form-number
                       :id="'tax-value'"
                       :name="'tax-value'"
                       :readonly="true"
-                      :value="tax"/>
+                      :value="tax"
+                    />
                   </div>
                 </p-form-row>
                 <p-form-row
                   id="total"
                   name="total"
-                  :label="$t('total')">
-                  <div slot="body" class="col-lg-9 mt-5">
+                  :label="$t('total')"
+                >
+                  <div
+                    slot="body"
+                    class="col-lg-9 mt-5"
+                  >
                     <p-form-number
                       :id="'total'"
                       :name="'total'"
                       :readonly="true"
-                      :value="grandTotal"/>
+                      :value="grandTotal"
+                    />
                   </div>
                 </p-form-row>
               </div>
             </div>
             <hr>
             <div class="row">
-              <div class="col-sm-6">
-              </div>
+              <div class="col-sm-6" />
               <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('requested by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">{{ Date.now() | dateFormat('DD MMMM YYYY') }}</div>
+                <h6 class="mb-0">
+                  {{ $t('requested by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  {{ Date.now() | dateFormat('DD MMMM YYYY') }}
+                </div>
                 {{ requestedBy | uppercase }}
-                <div class="d-sm-block d-md-none mt-10"></div>
+                <div class="d-sm-block d-md-none mt-10" />
               </div>
               <div class="col-sm-3 text-center">
-                <h6 class="mb-0">{{ $t('approved by') | uppercase }}</h6>
-                <div class="mb-50" style="font-size:11px">_______________</div>
-                <span @click="$refs.approver.open()" class="select-link">{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <h6 class="mb-0">
+                  {{ $t('approved by') | uppercase }}
+                </h6>
+                <div
+                  class="mb-50"
+                  style="font-size:11px"
+                >
+                  _______________
+                </div>
+                <span
+                  class="select-link"
+                  @click="$refs.approver.open()"
+                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
                 <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
                 <hr>
-                <button type="submit" class="btn btn-block btn-sm btn-primary" :disabled="isSaving">
-                  <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('update') | uppercase }}
+                <button
+                  type="submit"
+                  class="btn btn-block btn-sm btn-primary"
+                  :disabled="isSaving"
+                >
+                  <i
+                    v-show="isSaving"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('update') | uppercase }}
                 </button>
               </div>
             </div>
@@ -273,11 +387,26 @@
         </p-block>
       </div>
     </form>
-    <m-supplier ref="supplier" @choosen="chooseSupplier"/>
-    <m-item ref="item" @choosen="chooseItem"/>
-    <m-user ref="approver" @choosen="chooseApprover"/>
-    <m-allocation ref="allocation" @choosen="chooseAllocation($event)"/>
-    <select-purchase-request ref="selectPurchaseRequest" @choosen="choosePurchaseRequest"></select-purchase-request>
+    <m-supplier
+      ref="supplier"
+      @choosen="chooseSupplier"
+    />
+    <m-item
+      ref="item"
+      @choosen="chooseItem"
+    />
+    <m-user
+      ref="approver"
+      @choosen="chooseApprover"
+    />
+    <m-allocation
+      ref="allocation"
+      @choosen="chooseAllocation($event)"
+    />
+    <select-purchase-request
+      ref="selectPurchaseRequest"
+      @choosen="choosePurchaseRequest"
+    />
   </div>
 </template>
 
@@ -358,6 +487,44 @@ export default {
         return this.subtotal - this.form.discount_value + this.tax
       }
     }
+  },
+  created () {
+    this.isLoading = true
+    this.find({
+      id: this.$route.params.id,
+      params: {
+        includes: 'form.requestApprovalTo;supplier;items.item.units;items.allocation;purchaseRequest.form'
+      }
+    }).then(response => {
+      this.isLoading = false
+      if (response.data.purchase_request) {
+        this.form.purchase_request_id = response.data.purchase_request.id
+      }
+      this.form.date = response.data.form.date
+      this.form.supplier_id = response.data.supplier_id
+      this.form.supplier_name = response.data.supplier_name
+      this.form.supplier_label = response.data.supplier.label
+      this.form.discount_percent = response.data.discount_percent
+      this.form.discount_value = response.data.discount_value
+      this.form.notes = response.data.form.notes
+      this.form.type_of_tax = response.data.type_of_tax
+      this.form.amount = response.data.amount
+      this.form.discount_value = response.data.discount_value
+      this.form.discount_percent = response.data.discount_percent
+      this.form.items = response.data.items
+      this.form.request_approval_to = response.data.form.request_approval_to.id
+      this.form.approver_name = response.data.form.request_approval_to.full_name
+      this.form.approver_email = response.data.form.request_approval_to.email
+      this.form.items.forEach(el => {
+        el.item_label = el.item.label
+        el.units = el.item.units
+      })
+      this.purchaseRequest = response.data.purchase_request
+      this.addItemRow()
+    }).catch(error => {
+      this.isLoading = false
+      this.$notification.error(error.message)
+    })
   },
   methods: {
     ...mapActions('purchaseOrder', ['find', 'update']),
@@ -498,44 +665,6 @@ export default {
         this.form.errors.record(error.errors)
       })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.find({
-      id: this.$route.params.id,
-      params: {
-        includes: 'form.requestApprovalTo;supplier;items.item.units;items.allocation;purchaseRequest.form'
-      }
-    }).then(response => {
-      this.isLoading = false
-      if (response.data.purchase_request) {
-        this.form.purchase_request_id = response.data.purchase_request.id
-      }
-      this.form.date = response.data.form.date
-      this.form.supplier_id = response.data.supplier_id
-      this.form.supplier_name = response.data.supplier_name
-      this.form.supplier_label = response.data.supplier.label
-      this.form.discount_percent = response.data.discount_percent
-      this.form.discount_value = response.data.discount_value
-      this.form.notes = response.data.form.notes
-      this.form.type_of_tax = response.data.type_of_tax
-      this.form.amount = response.data.amount
-      this.form.discount_value = response.data.discount_value
-      this.form.discount_percent = response.data.discount_percent
-      this.form.items = response.data.items
-      this.form.request_approval_to = response.data.form.request_approval_to.id
-      this.form.approver_name = response.data.form.request_approval_to.full_name
-      this.form.approver_email = response.data.form.request_approval_to.email
-      this.form.items.forEach(el => {
-        el.item_label = el.item.label
-        el.units = el.item.units
-      })
-      this.purchaseRequest = response.data.purchase_request
-      this.addItemRow()
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
   }
 }
 </script>

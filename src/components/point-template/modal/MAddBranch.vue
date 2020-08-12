@@ -4,43 +4,55 @@
       ref="modal"
       :title="$t('add branch') | uppercase"
       overlay-theme="dark"
-      @close="onClose()">
+      @close="onClose()"
+    >
       <div class="row">
         <div class="col-sm-12">
           <p-form-row
             id="name"
+            ref="name"
             v-model="form.name"
             :disabled="isSaving"
             :label="$t('name')"
             name="name"
-            ref="name"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)"/>
+            @errors="form.errors.set('name', null)"
+          />
 
           <p-form-row
             id="address"
+            ref="address"
             v-model="form.address"
             :disabled="isSaving"
             :label="$t('address')"
             name="address"
-            ref="address"
             :errors="form.errors.get('address')"
-            @errors="form.errors.set('address', null)"/>
+            @errors="form.errors.set('address', null)"
+          />
 
           <p-form-row
             id="phone"
+            ref="phone"
             v-model="form.phone"
             :disabled="isSaving"
             :label="$t('phone')"
             name="phone"
-            ref="phone"
             :errors="form.errors.get('phone')"
-            @errors="form.errors.set('phone', null)"/>
+            @errors="form.errors.set('phone', null)"
+          />
         </div>
       </div>
       <div class="pull-right">
-        <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving" @click="onSubmit">
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+        <button
+          type="submit"
+          class="btn btn-sm btn-primary"
+          :disabled="isSaving"
+          @click="onSubmit"
+        >
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          /> {{ $t('save') | uppercase }}
         </button>
       </div>
     </sweet-modal>
@@ -65,6 +77,9 @@ export default {
   },
   computed: {
     ...mapGetters('masterBranch', ['branch'])
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('masterBranch', ['create']),

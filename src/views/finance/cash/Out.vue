@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-finance/>
+      <breadcrumb-finance />
       <span class="breadcrumb-item active">
         <router-link to="/finance/cash">{{ $t('cash') | uppercase }}</router-link>
       </span>
@@ -13,39 +13,59 @@
         <div class="input-group block">
           <p-form-input
             id="search-text"
+            ref="searchText"
             name="search-text"
             placeholder="Search"
-            ref="searchText"
             class="btn-block"
             :value="searchText"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <div class="text-center font-size-sm mb-10">
-          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down"></i>
+          <a
+            href="javascript:void(0)"
+            @click="isAdvanceFilter = !isAdvanceFilter"
+          >
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div class="card" :class="{ 'fadeIn': isAdvanceFilter }" v-show="isAdvanceFilter">
+        <div
+          v-show="isAdvanceFilter"
+          class="card"
+          :class="{ 'fadeIn': isAdvanceFilter }"
+        >
           <div class="row">
             <div class="col-sm-6 text-center">
-              <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+              <p-form-row
+                id="date-start"
+                name="date-start"
+                :label="$t('date start')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.start"
                     name="date"
                     label="date"
-                    v-model="date.start"/>
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-6 text-center">
-              <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+              <p-form-row
+                id="date-end"
+                name="date-end"
+                :label="$t('date end')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
                   <p-date-picker
                     id="date"
+                    v-model="date.end"
                     name="date"
                     label="date"
-                    v-model="date.end"/>
+                  />
                 </div>
               </p-form-row>
             </div>
@@ -60,30 +80,46 @@
               <th>To</th>
               <th>Account</th>
               <th>Notes</th>
-              <th class="text-right">Amount</th>
-              <th class="text-center"></th>
+              <th class="text-right">
+                Amount
+              </th>
+              <th class="text-center" />
             </tr>
             <template v-for="(paymentOrder, index) in paymentOrders">
               <template v-for="(paymentOrderDetail, index2) in paymentOrder.details">
-              <tr :key="'payment-order-' + index + '-' + index2" slot="p-body">
-                <th>
-                  <router-link :to="{ name: 'finance.payment-order.show', params: { id: paymentOrder.id }}">
-                    {{ paymentOrder.form.number }}
-                  </router-link>
-                </th>
-                <td>{{ paymentOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                <td>{{ paymentOrder.paymentable.name }}</td>
-                <td>{{ paymentOrderDetail.account.label }}</td>
-                <td>{{ paymentOrderDetail.notes }}</td>
-                <td class="text-right">{{ paymentOrderDetail.amount | numberFormat }}</td>
-                <td class="text-center">
-                  <button type="button" class="btn btn-sm btn-primary" @click="payPaymentOrder(paymentOrder)">{{ $t('pay') | uppercase }}</button>
-                </td>
-              </tr>
+                <tr
+                  :key="'payment-order-' + index + '-' + index2"
+                  slot="p-body"
+                >
+                  <th>
+                    <router-link :to="{ name: 'finance.payment-order.show', params: { id: paymentOrder.id }}">
+                      {{ paymentOrder.form.number }}
+                    </router-link>
+                  </th>
+                  <td>{{ paymentOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                  <td>{{ paymentOrder.paymentable.name }}</td>
+                  <td>{{ paymentOrderDetail.account.label }}</td>
+                  <td>{{ paymentOrderDetail.notes }}</td>
+                  <td class="text-right">
+                    {{ paymentOrderDetail.amount | numberFormat }}
+                  </td>
+                  <td class="text-center">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-primary"
+                      @click="payPaymentOrder(paymentOrder)"
+                    >
+                      {{ $t('pay') | uppercase }}
+                    </button>
+                  </td>
+                </tr>
               </template>
             </template>
             <template v-for="(downPayment, index) in downPayments">
-              <tr :key="'purchase-down-payment-' + index" slot="p-body">
+              <tr
+                :key="'purchase-down-payment-' + index"
+                slot="p-body"
+              >
                 <th>
                   <router-link :to="{ name: 'purchase.down-payment.show', params: { id: downPayment.id }}">
                     {{ downPayment.form.number }}
@@ -93,9 +129,17 @@
                 <td>{{ downPayment.supplier.name }}</td>
                 <td>{{ downPaymentAccountLabel }}</td>
                 <td>{{ downPayment.form.notes }}</td>
-                <td class="text-right">{{ downPayment.amount | numberFormat }}</td>
+                <td class="text-right">
+                  {{ downPayment.amount | numberFormat }}
+                </td>
                 <td class="text-center">
-                  <button type="button" class="btn btn-sm btn-primary" @click="payDownPayment(downPayment)">{{ $t('pay') | uppercase }}</button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-primary"
+                    @click="payDownPayment(downPayment)"
+                  >
+                    {{ $t('pay') | uppercase }}
+                  </button>
                 </td>
               </tr>
             </template>
@@ -104,8 +148,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>
@@ -141,6 +185,10 @@ export default {
       limit: 100
     }
   },
+  computed: {
+    ...mapGetters('financePaymentOrder', ['paymentOrders', 'pagination']),
+    ...mapGetters('purchaseDownPayment', ['downPayments'])
+  },
   watch: {
     date: function () {
       this.$router.push({
@@ -153,9 +201,11 @@ export default {
       this.search()
     }
   },
-  computed: {
-    ...mapGetters('financePaymentOrder', ['paymentOrders', 'pagination']),
-    ...mapGetters('purchaseDownPayment', ['downPayments'])
+  created () {
+    this.search()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('financePaymentOrder', {
@@ -182,8 +232,8 @@ export default {
       this.$store.commit('financePayment/FETCH_OBJECT', {
         data: {
           reference_form_id: paymentOrder.form.id,
-          reference_id: paymentOrder.id,
-          reference_type: 'PaymentOrder',
+          referenceable_id: paymentOrder.id,
+          referenceable_type: 'PaymentOrder',
           reference_number: paymentOrder.form.number,
           paymentable_name: paymentOrder.paymentable.name,
           paymentable_type: paymentOrder.paymentable_type,
@@ -205,8 +255,8 @@ export default {
       this.$store.commit('financePayment/FETCH_OBJECT', {
         data: {
           reference_form_id: downPayment.form.id,
-          reference_id: downPayment.id,
-          reference_type: 'PurchaseDownPayment',
+          referenceable_id: downPayment.id,
+          referenceable_type: 'PurchaseDownPayment',
           reference_number: downPayment.form.number,
           paymentable_name: downPayment.supplier.name,
           paymentable_type: 'Supplier',
@@ -298,12 +348,6 @@ export default {
       this.currentPage = value
       this.search()
     }
-  },
-  created () {
-    this.search()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

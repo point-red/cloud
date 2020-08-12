@@ -11,6 +11,10 @@ const getters = {
     return state.instruction
   },
   instructionHistory: state => {
+    if (!state.instruction) {
+      return []
+    }
+
     const longestIndex = Math.max(
       state.instruction.name.length, state.instruction.number.length
     )
@@ -81,7 +85,7 @@ const mutations = {
 
 const actions = {
   async get ({ commit, state }, instructionId) {
-    let { instruction } = await api.get(`${url}/${instructionId}/histories`)
+    const { instruction } = await api.get(`${url}/${instructionId}/histories`)
 
     commit('SET_INSTRUCTION', instruction)
   }

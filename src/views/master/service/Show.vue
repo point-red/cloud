@@ -1,52 +1,70 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <router-link to="/master/service" class="breadcrumb-item">{{ $t('service') | uppercase }}</router-link>
+      <breadcrumb-master />
+      <router-link
+        to="/master/service"
+        class="breadcrumb-item"
+      >
+        {{ $t('service') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ service.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addService.open()"
             v-if="$permission.has('create service')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addService.open()"
+          >
             {{ $t('create') | uppercase }}
           </a>
           <a
-            href="javascript:void(0)"
-            @click="$refs.editService.open(service.id)"
             v-if="$permission.has('update service')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            href="javascript:void(0)"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editService.open(service.id)"
+          >
             {{ $t('edit') | uppercase }}
           </a>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete service')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="data.name"
             label="Name"
             name="name"
-            v-model="data.name"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
-    <m-add-service ref="addService" @added="onAddedService($event)"></m-add-service>
-    <m-edit-service ref="editService" @updated="onUpdatedService($event)"></m-edit-service>
+    <m-add-service
+      ref="addService"
+      @added="onAddedService($event)"
+    />
+    <m-edit-service
+      ref="editService"
+      @updated="onUpdatedService($event)"
+    />
   </div>
 </template>
 
@@ -74,6 +92,9 @@ export default {
   },
   computed: {
     ...mapGetters('masterService', ['service'])
+  },
+  created () {
+    this.findService()
   },
   methods: {
     ...mapActions('masterService', ['find', 'delete']),
@@ -109,9 +130,6 @@ export default {
           this.$notification.error(error.message)
         })
     }
-  },
-  created () {
-    this.findService()
   }
 }
 </script>

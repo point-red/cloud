@@ -1,26 +1,35 @@
 <template>
   <div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="edit inventory">
+    <p-modal
+      :id="'select-' + id"
+      :ref="'select-' + id"
+      title="edit inventory"
+    >
       <template slot="content">
-        <form class="row" @submit.prevent="onSubmit">
+        <form
+          class="row"
+          @submit.prevent="onSubmit"
+        >
           <p-block>
             <p-form-row
               id="code"
+              v-model="form.code"
               name="code"
               :label="$t('code')"
-              v-model="form.code"
               :disabled="isSaving"
               :errors="form.errors.get('code')"
-              @errors="form.errors.set('code', null)"/>
+              @errors="form.errors.set('code', null)"
+            />
 
             <p-form-row
               id="name"
+              v-model="form.name"
               name="name"
               :label="$t('name')"
-              v-model="form.name"
               :disabled="isSaving"
               :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"/>
+              @errors="form.errors.set('name', null)"
+            />
 
             <p-form-row
               id="account"
@@ -28,25 +37,31 @@
               :label="$t('account')"
               :disabled="isSaving"
               :errors="form.errors.get('account')"
-              @errors="form.errors.set('account', null)">
-              <div slot="body" class="col-lg-9 mt-5">
+              @errors="form.errors.set('account', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 mt-5"
+              >
                 <m-chart-of-account
                   id="edit-chart-of-account"
-                  :label="form.chart_of_account_name"
                   v-model="form.chart_of_account_id"
-                  sub-ledger="inventory"/>
+                  :label="form.chart_of_account_name"
+                  sub-ledger="inventory"
+                />
                 <p>{{ $t('create item helper - chart of account') }}</p>
               </div>
             </p-form-row>
 
             <p-form-row
               id="unit"
+              v-model="form.unit"
               name="unit"
               :label="$t('unit')"
-              v-model="form.unit"
               :disabled="isSaving"
               :errors="form.errors.get('unit')"
-              @errors="form.errors.set('unit', null)"/>
+              @errors="form.errors.set('unit', null)"
+            />
 
             <h5>{{ $t('stock dna') | uppercase }}</h5>
 
@@ -57,26 +72,36 @@
             <p-form-row
               id="require-production-number"
               name="require-production-number"
-              :label="$t('production number')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('production number')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-check-box
+                  id="require-production-number"
                   class="mb-0"
                   style="float:left"
-                  id="require-production-number"
                   name="require-production-number"
-                  :checked="form.require_production_number"/>
+                  :checked="form.require_production_number"
+                />
               </div>
             </p-form-row>
 
             <p-form-row
               id="require-expiry-date"
               name="require-expiry-date"
-              :label="$t('expiry date')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('expiry date')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-check-box
                   id="require-expiry-date"
                   name="require-expiry-date"
-                  :checked="form.require_expiry_date"/>
+                  :checked="form.require_expiry_date"
+                />
               </div>
             </p-form-row>
 
@@ -88,60 +113,86 @@
                   <th>Quantity</th>
                   <th>Price</th>
                   <th>Value</th>
-                  <th v-if="form.require_expiry_date">Expiry Date</th>
-                  <th v-if="form.require_production_number">Production No.</th>
+                  <th v-if="form.require_expiry_date">
+                    Expiry Date
+                  </th>
+                  <th v-if="form.require_production_number">
+                    Production No.
+                  </th>
                 </tr>
                 <tr slot="p-body">
                   <th>-</th>
                   <td>
-                    <m-warehouse :id="'edit-warehouse-'" v-model="form.warehouse_id" :label="form.warehouse_name"/>
+                    <m-warehouse
+                      :id="'edit-warehouse-'"
+                      v-model="form.warehouse_id"
+                      :label="form.warehouse_name"
+                    />
                   </td>
                   <td>
                     <p-form-number
                       :id="'quantity'"
+                      v-model="form.quantity"
                       :name="'quantity'"
                       @keyup.native="calculate()"
-                      v-model="form.quantity"/>
+                    />
                   </td>
                   <td>
                     <p-form-number
                       :id="'price'"
+                      v-model="form.price"
                       :name="'price'"
                       @keyup.native="calculate()"
-                      v-model="form.price"/>
+                    />
                   </td>
                   <td>
                     <p-form-number
                       :id="'value'"
+                      v-model="form.value"
                       :name="'value'"
                       :readonly="true"
-                      v-model="form.value"/>
+                    />
                   </td>
                   <td v-if="form.require_expiry_date">
                     <p-date-picker
                       id="expiry-date"
+                      v-model="form.expiry_date"
                       name="expiry-date"
-                      v-model="form.expiry_date"/>
+                    />
                   </td>
                   <td v-if="form.require_production_number">
                     <p-form-input
                       id="production-number"
-                      :disabled="isSaving"
                       v-model="form.production_number"
-                      name="production-number"/>
+                      :disabled="isSaving"
+                      name="production-number"
+                    />
                   </td>
                 </tr>
               </p-table>
             </p-block-inner>
 
-            <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> {{ $t('save') | uppercase }}
+            <button
+              type="submit"
+              class="btn btn-sm btn-primary"
+              :disabled="isSaving"
+            >
+              <i
+                v-show="isSaving"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('save') | uppercase }}
             </button>
           </p-block>
         </form>
       </template>
       <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-sm btn-outline-danger">{{ $t('close') | uppercase }}</button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="close()"
+        >
+          {{ $t('close') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>
@@ -153,6 +204,20 @@ import debounce from 'lodash/debounce'
 import { mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       isSaving: false,
@@ -190,18 +255,6 @@ export default {
         require_expiry_date: false,
         require_production_number: false
       })
-    }
-  },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
     }
   },
   watch: {

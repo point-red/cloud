@@ -1,22 +1,23 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
+      <breadcrumb-master />
       <span class="breadcrumb-item active">{{ $t('role & permission') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <a
-            href="javascript:void(0)"
-            @click="$refs.addRole.open()"
             v-if="$permission.has('create role')"
-            class="input-group-prepend">
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addRole.open()"
+          >
             <span class="input-group-text">
-              <i class="fa fa-plus"></i>
+              <i class="fa fa-plus" />
             </span>
           </a>
           <p-form-input
@@ -25,20 +26,24 @@
             placeholder="Search"
             :value="searchText"
             class="btn-block"
-            @input="filterSearch"/>
+            @input="filterSearch"
+          />
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th style="width:50px">#</th>
+              <th style="width:50px">
+                #
+              </th>
               <th>Role</th>
               <th>User</th>
             </tr>
             <tr
               v-for="(role, index) in roles"
               :key="role.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'role.show', params: { id: role.id }}">
@@ -47,8 +52,11 @@
               </td>
               <td>
                 <template v-for="(user, index2) in role.users">
-                  <span class="mr-10" :key="'role-user-' + index2">
-                    <i class="si si-user"></i> {{ user.full_name }}
+                  <span
+                    :key="'role-user-' + index2"
+                    class="mr-10"
+                  >
+                    <i class="si si-user" /> {{ user.full_name }}
                   </span>
                 </template>
               </td>
@@ -58,12 +66,15 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <m-add-role ref="addRole" @added="onAdded"></m-add-role>
+    <m-add-role
+      ref="addRole"
+      @added="onAdded"
+    />
   </div>
 </template>
 

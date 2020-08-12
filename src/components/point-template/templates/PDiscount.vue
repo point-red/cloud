@@ -1,36 +1,71 @@
 <template>
   <div class="input-group">
     <p-form-number
+      v-if="isPercent"
+      ref="formDiscount"
       width="100%"
       style="width:100%"
-      ref="formDiscount"
-      v-if="isPercent"
       :readonly="readonly"
       :value="discountPercent"
       :options="options"
       :is-text-right="isTextRight"
       :max="100"
-      @input="discountPercentChanged"/>
+      @input="discountPercentChanged"
+    />
     <p-form-number
+      v-else
+      ref="formDiscount"
       width="100%"
       style="width:100%"
-      ref="formDiscount"
-      v-else
       :readonly="readonly"
       :value="discountValue"
       :options="options"
       :is-text-right="isTextRight"
       :max="baseValue"
-      @input="discountValueChanged"/>
-    <div class="input-group-append" @click="togglePercent">
-      <div v-if="isPercent" class="input-group-text">%</div>
-      <div v-else class="input-group-text"></div>
+      @input="discountValueChanged"
+    />
+    <div
+      class="input-group-append"
+      @click="togglePercent"
+    >
+      <div
+        v-if="isPercent"
+        class="input-group-text"
+      >
+        %
+      </div>
+      <div
+        v-else
+        class="input-group-text"
+      />
     </div>
   </div>
 </template>
 
 <script>
 export default {
+  props: {
+    readonly: {
+      type: Boolean,
+      default: false
+    },
+    isTextRight: {
+      type: Boolean,
+      default: true
+    },
+    discountPercent: {
+      type: Number,
+      default: 0
+    },
+    discountValue: {
+      type: Number,
+      default: 0
+    },
+    baseValue: {
+      type: Number,
+      required: true
+    }
+  },
   data () {
     return {
       number: this.value,
@@ -64,28 +99,6 @@ export default {
       } else if (this.discountPercent == 0 && this.discountValue != 0) {
         this.isPercent = false
       }
-    }
-  },
-  props: {
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    isTextRight: {
-      type: Boolean,
-      default: true
-    },
-    discountPercent: {
-      type: Number,
-      default: 0
-    },
-    discountValue: {
-      type: Number,
-      default: 0
-    },
-    baseValue: {
-      type: Number,
-      required: true
     }
   },
   methods: {

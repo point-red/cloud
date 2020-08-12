@@ -1,53 +1,71 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <router-link to="/master/supplier-group" class="breadcrumb-item">{{ $t('supplier group') | uppercase }}</router-link>
+      <breadcrumb-master />
+      <router-link
+        to="/master/supplier-group"
+        class="breadcrumb-item"
+      >
+        {{ $t('supplier group') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ group.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
       <p-block>
         <div class="text-right">
           <button
-            type="button"
-            @click="$refs.addSupplierGroup.open()"
             v-if="$permission.has('create supplier')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addSupplierGroup.open()"
+          >
             <span>{{ $t('create') | uppercase }}</span>
           </button>
           <button
-            type="button"
-            @click="$refs.editSupplierGroup.open(group)"
             v-if="$permission.has('update supplier')"
-            class="btn btn-sm btn-outline-secondary mr-5">
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editSupplierGroup.open(group)"
+          >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            type="button"
-            @click="onDelete()"
             v-if="$permission.has('delete supplier')"
+            type="button"
             :disabled="isDeleting"
-            class="btn btn-sm btn-outline-secondary">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> {{ $t('delete') | uppercase }}
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="data.name"
             label="Name"
             name="name"
-            v-model="data.name"
-            readonly/>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-supplier-group ref="addSupplierGroup" @added="onAddedSupplierGroup($event)"></m-add-supplier-group>
-    <m-edit-supplier-group ref="editSupplierGroup" @updated="onUpdatedSupplierGroup($event)"></m-edit-supplier-group>
+    <m-add-supplier-group
+      ref="addSupplierGroup"
+      @added="onAddedSupplierGroup($event)"
+    />
+    <m-edit-supplier-group
+      ref="editSupplierGroup"
+      @updated="onUpdatedSupplierGroup($event)"
+    />
   </div>
 </template>
 
@@ -77,6 +95,9 @@ export default {
   },
   computed: {
     ...mapGetters('masterSupplierGroup', ['group'])
+  },
+  created () {
+    this.findSupplierGroup()
   },
   methods: {
     ...mapActions('masterSupplierGroup', ['find', 'delete']),
@@ -117,9 +138,6 @@ export default {
         this.$notification.error(error.message)
       })
     }
-  },
-  created () {
-    this.findSupplierGroup()
   }
 }
 </script>
