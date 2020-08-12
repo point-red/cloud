@@ -7,6 +7,7 @@
   "create customer helper - credit limit" : "To inform maximum credit limit for each customer so that when making a sale user can know the maximum credit amount must be given.",
   "create customer helper - group" : "Groups in the master customer are useful to facilitate the search and grouping of companies in certain groups is desired by the company. Example: can be grouped by City, Type of Business, and others.",
   "create customer helper - pricing group" : "Pricing group in the customer master is useful for companies in providing selling prices in accordance with a predetermined group. Example: can be grouped based on the number of sales such as Wholesaler, Distributor, Retail and others.",
+  "create supplier helper - group" : "Groups in the master supplier are useful to facilitate the search and grouping of companies in certain groups is desired by the company. Example: can be grouped by City, Type of Business, and others.",
   "set warehouse helper" : "Right of access for each user to be able to receive / buy item from the warehouse. This feature is required to make a purchase / sale / all features related to receiving or buying item from the warehouse.",
   "branch - set as default" : "Check the branch as default, so all user input can be related to this branch."
 }

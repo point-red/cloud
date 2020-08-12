@@ -75,6 +75,17 @@
             name="phone"
             readonly
           />
+
+          <p-separator />
+
+          <h5>{{ $t('group') | uppercase }}</h5>
+          <p>{{ $t('create supplier helper - group') }}</p>
+          <ul
+            v-for="(group, index) in supplier.groups"
+            :key="index"
+          >
+            <li>{{ group.name }}</li>
+          </ul>
         </p-block-inner>
       </p-block>
     </div>
@@ -125,7 +136,10 @@ export default {
     findSupplier () {
       this.isLoading = true
       this.find({
-        id: this.id
+        id: this.id,
+        params: {
+          includes: 'addresses;phones;emails;groups'
+        }
       }).then(response => {
         this.isLoading = false
         this.data.name = response.data.name
