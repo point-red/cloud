@@ -501,7 +501,7 @@ export default {
 
                 this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'automated_code', indicator.automated_code)
               } else if (indicator.selected) {
-                score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected['score'] || 0
+                score = this.form.template.groups[groupIndex].indicators[indicatorIndex].selected.score || 0
                 scorePercentage = score / target * indicator.weight || 0
               }
 

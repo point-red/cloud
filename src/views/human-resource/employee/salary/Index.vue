@@ -55,11 +55,31 @@
                 >
                   <i class="si si-note" /> {{ $t('edit') | uppercase }}
                 </router-link>
-                <button :disabled="isExporting.includes(salary.id)" type="submit" class="btn btn-sm btn-primary" @click="exportDataPDF(salary.id)" style="margin-left:12px" v-if="$permission.has('export employee salary pdf')">
-                  <i v-show="isExporting.includes(salary.id)" class="fa fa-asterisk fa-spin" /> PDF
+                <button
+                  v-if="$permission.has('export employee salary pdf')"
+                  :disabled="isExporting.includes(salary.id)"
+                  type="submit"
+                  class="btn btn-sm btn-primary"
+                  style="margin-left:12px"
+                  @click="exportDataPDF(salary.id)"
+                >
+                  <i
+                    v-show="isExporting.includes(salary.id)"
+                    class="fa fa-asterisk fa-spin"
+                  /> PDF
                 </button>
-                <button :disabled="isExporting.includes(salary.id)" type="submit" class="btn btn-sm btn-primary" @click="exportDataExcel(salary.id)" style="margin-left:12px" v-if="$permission.has('export employee salary excel')">
-                  <i v-show="isExporting.includes(salary.id)" class="fa fa-asterisk fa-spin" /> Excel
+                <button
+                  v-if="$permission.has('export employee salary excel')"
+                  :disabled="isExporting.includes(salary.id)"
+                  type="submit"
+                  class="btn btn-sm btn-primary"
+                  style="margin-left:12px"
+                  @click="exportDataExcel(salary.id)"
+                >
+                  <i
+                    v-show="isExporting.includes(salary.id)"
+                    class="fa fa-asterisk fa-spin"
+                  /> Excel
                 </button>
                 &nbsp;
                 <i
