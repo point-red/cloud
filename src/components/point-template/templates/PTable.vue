@@ -1,12 +1,15 @@
 <template>
   <div class="table-responsive">
-    <table class="table table-hover" :class="{'table-bordered': isBordered}">
+    <table
+      class="table table-sm table-hover"
+      :class="{'table-bordered': isBordered}"
+    >
       <thead>
-        <slot name="p-head"/>
-        <slot name="p-filter"/>
+        <slot name="p-head" />
+        <slot name="p-filter" />
       </thead>
       <tbody>
-        <slot name="p-body"/>
+        <slot name="p-body" />
       </tbody>
     </table>
   </div>

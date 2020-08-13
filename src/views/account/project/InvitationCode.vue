@@ -1,33 +1,34 @@
 <template>
   <div>
-    <p-loading-block :message="loadingMessage" v-show="isLoading||isSaving"/>
+    <p-loading-block
+      v-show="isLoading||isSaving"
+      :message="loadingMessage"
+    />
     <breadcrumb>
-      <router-link to="/account/project" class="breadcrumb-item">Project</router-link>
+      <router-link
+        to="/account/project"
+        class="breadcrumb-item"
+      >
+        {{ $t('project') | uppercase }}
+      </router-link>
       <span class="breadcrumb-item active">{{ project.code | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item">
-        <router-link
-          :to="'/account/project/' + id"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span>Project</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu />
 
-    <project-widget :project="project"></project-widget>
+    <project-widget :project="project" />
 
     <hr>
 
     <div class="row">
-      <p-block column="col-sm-3" class="text-center">
+      <p-block
+        column="col-sm-3"
+        class="text-center"
+      >
         <div class="font-size-h5 font-w300 text-center">
           {{ $t('invitation code') | titlecase }}
         </div>
-        <hr/>
+        <hr>
         <div class="font-w300 mt-30">
           <p>
             {{ $t('invitation code intro') | capitalize }}
@@ -36,42 +37,63 @@
         <p-form-check-box
           id="subscibe"
           name="subscibe"
-          @click.native="invitationCodeToggle"
           :checked="form.invitation_code_enabled"
-          :description="invitationCodeStatus"/>
-        <hr v-show="form.invitation_code_enabled && !isSaving"/>
-        <div class="text-center mb-30" v-show="form.invitation_code_enabled && !isSaving">
+          :description="invitationCodeStatus"
+          @click.native="invitationCodeToggle"
+        />
+        <hr v-show="form.invitation_code_enabled && !isSaving">
+        <div
+          v-show="form.invitation_code_enabled && !isSaving"
+          class="text-center mb-30"
+        >
           <p
             id="referralCode"
-            class="btn btn-outline-secondary"
+            class="btn btn-sm btn-outline-secondary"
             :value="form.invitation_code"
-            @click="copyToClipboard">{{ form.invitation_code }}</p>
-        </div>        
+            @click="copyToClipboard"
+          >
+            {{ form.invitation_code }}
+          </p>
+        </div>
       </p-block>
       <p-block column="col-sm-9">
-        <p-block-inner :is-loading="isLoading" v-show="requestJoinProjects.length > 0">
-          <h3>Pending Request</h3>
+        <p-block-inner
+          v-show="requestJoinProjects.length > 0"
+          :is-loading="isLoading"
+        >
+          <h5>Pending Request</h5>
           <point-table>
             <tr slot="p-head">
               <th>#</th>
               <th>Username</th>
               <th>Email</th>
-              <th></th>
+              <th />
             </tr>
             <tr
               v-for="(requestJoinProject, index) in requestJoinProjects"
               :key="index"
-              slot="p-body">
+              slot="p-body"
+            >
               <td>{{ index + 1 }}.</td>
               <td>{{ requestJoinProject.user_name | titlecase }}</td>
               <td>{{ requestJoinProject.user_email | lowercase }}</td>
               <td class="text-right">
-                <button class="btn btn-sm btn-primary mr-5" @click="acceptRequest(requestJoinProject)">Accept</button>
-                <button class="btn btn-sm btn-danger" @click="rejectRequest(requestJoinProject)">Reject</button>
+                <button
+                  class="btn btn-sm btn-primary mr-5"
+                  @click="acceptRequest(requestJoinProject)"
+                >
+                  Accept
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  @click="rejectRequest(requestJoinProject)"
+                >
+                  Reject
+                </button>
               </td>
             </tr>
           </point-table>
-          <p-separator></p-separator>
+          <p-separator />
         </p-block-inner>
         <p-block-inner :is-loading="isLoading">
           <point-table>
@@ -81,23 +103,34 @@
               <th>Full Name</th>
               <th>Email</th>
               <th>Phone</th>
+              <th style="width:50px" />
             </tr>
             <tr
               v-for="(user, index) in project.users"
               :key="user.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <template>
-              <th>{{ index + 1 }}</th>
-              <td>
-                <router-link :to="{ name: 'UserShow', params: { id: user.id }}">
-                  {{ user.name | titlecase }}
-                </router-link>
-              </td>
-              <td>{{ user.first_name | lowercase }} {{ user.last_name | lowercase }}</td>
-              <td>{{ user.email | lowercase }}</td>
-              <td>{{ user.phone }}</td>
+                <th>{{ index + 1 }}</th>
+                <td>
+                  <router-link :to="{ name: 'UserShow', params: { id: user.id }}">
+                    {{ user.name | titlecase }}
+                  </router-link>
+                </td>
+                <td>{{ user.first_name | lowercase }} {{ user.last_name | lowercase }}</td>
+                <td>{{ user.email | lowercase }}</td>
+                <td>{{ user.phone }}</td>
+                <td>
+                  <button
+                    v-if="index > 0"
+                    class="btn btn-sm btn-outline-danger"
+                    @click="onDeleteProjectUser(user.id)"
+                  >
+                    {{ $t('delete') | uppercase }}
+                  </button>
+                </td>
               </template>
-            </tr>            
+            </tr>
           </point-table>
         </p-block-inner>
       </p-block>
@@ -114,6 +147,12 @@ import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    TabMenu,
+    ProjectWidget,
+    PointTable
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -129,12 +168,6 @@ export default {
       invitationCodeStatus: '',
       loadingMessage: 'Checking invitation code status'
     }
-  },
-  components: {
-    Breadcrumb,
-    TabMenu,
-    ProjectWidget,
-    PointTable
   },
   computed: {
     ...mapGetters('accountProject', ['project']),
@@ -173,11 +206,48 @@ export default {
       findProject: 'find',
       updateProject: 'update'
     }),
+    ...mapActions('accountProjectUser', {
+      deleteProjectUser: 'delete'
+    }),
     ...mapActions('accountRequestJoinProject', {
       getRequest: 'get',
       updateRequest: 'update',
       deleteRequest: 'delete'
     }),
+    onDeleteProjectUser (userId) {
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isLoading = true
+        this.deleteProjectUser({
+          user_id: userId,
+          project_id: this.id
+        }).then(response => {
+          this.findProject({ id: this.id })
+            .then(response => {
+              this.form = this.project
+              this.updateCheckBoxDescription()
+              this.isLoading = false
+            }).catch(error => {
+              this.$router.replace('/account/whoops')
+              this.isLoading = false
+              this.$notification.error(error.message)
+            })
+          this.getRequest({
+            params: {
+              project_id: this.id
+            }
+          }).then(response => {
+            //
+          }).catch(error => {
+            this.$router.replace('/account/whoops')
+            this.$notification.error(error.message)
+          })
+          this.isLoading = false
+        }).catch(response => {
+          this.isLoading = false
+          this.$notification.error('cannot delete')
+        })
+      })
+    },
     updateCheckBoxDescription () {
       if (this.project.invitation_code_enabled == true) {
         this.invitationCodeStatus = 'Invitation Active'

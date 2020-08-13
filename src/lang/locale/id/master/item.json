@@ -1,5 +1,14 @@
 {
   "unit" : "unit",
   "stock" : "stock",
-  "opening stock" : "stok awal"
+  "opening stock" : "stok awal",
+  "price list" : "daftar harga jual",
+  "pricing group" : "pricing group",
+  "stock history" : "mutasi stok",
+  "stock dna" : "stock dna",
+  "convert to" : "convert to",
+  "production number" : "production number",
+  "expiry date" : "expiry date",
+  "require production number" : "require production number",
+  "require expiry date" : "require expiry date"
 }

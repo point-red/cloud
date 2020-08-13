@@ -2,45 +2,57 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmit">
+      @submit.prevent="onSubmit"
+    >
       <p-modal
-        ref="templateModal"
         :id="id"
-        :title="title | uppercase">
+        ref="templateModal"
+        :title="title | uppercase"
+      >
         <template slot="content">
           <p-form-row
             id="name"
+            v-model="form.name"
             name="name"
             label="name"
-            :disabled="loadingSaveButton"
-            v-model="form.name"
+            :disabled="isSaving"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)">
-          </p-form-row>
+            @errors="form.errors.set('name', null)"
+          />
         </template>
         <template slot="footer">
           <button
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             type="submit"
-            class="btn btn-primary">
+            class="btn btn-sm btn-primary"
+          >
             <i
-              v-show="loadingSaveButton"
-              class="fa fa-asterisk fa-spin"/> Update
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('update') | uppercase }}
           </button>
           <button
-            :disabled="loadingSaveButton"
-            type="button"
-            class="btn btn-danger"
             v-if="$permission.has('delete employee kpi')"
-            @click="remove">
+            :disabled="isSaving"
+            type="button"
+            class="btn btn-sm btn-danger"
+            @click="remove"
+          >
             <i
-              v-show="loadingSaveButton"
-              class="fa fa-asterisk fa-spin"/> Delete
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
           </button>
-          <button :disabled="loadingSaveButton" type="button" class="btn btn-outline-danger" @click="close">
+          <button
+            :disabled="isSaving"
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="close"
+          >
             <i
-              v-show="loadingSaveButton"
-              class="fa fa-asterisk fa-spin"/> Close
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>
@@ -55,24 +67,25 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
       type: String,
       required: true
     }
   },
-  computed: {
-    ...mapGetters('humanResourceKpiTemplate', {
-      template: 'template'
-    })
-  },
   data () {
     return {
       form: new Form(),
       isCreateMode: true,
-      loadingSaveButton: false
+      isSaving: false
     }
+  },
+  computed: {
+    ...mapGetters('humanResourceKpiTemplate', {
+      template: 'template'
+    })
   },
   methods: {
     ...mapMutations('humanResourceKpiTemplate', {
@@ -84,7 +97,7 @@ export default {
     }),
     show (template) {
       this.fetchKpiTemplate(template)
-      for (let field in template) {
+      for (const field in template) {
         this.$set(this.form, field, template[field])
       }
       this.$refs.templateModal.show()
@@ -94,31 +107,31 @@ export default {
     },
     onSubmit () {
       console.log(JSON.stringify(this.form))
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.updateKpiTemplate(this.form)
         .then(
           (response) => {
             this.$notification.success('Update success')
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.close()
           },
           (error) => {
             this.$notification.error('Update failed', error.message)
             this.form.errors.record(error.errors)
-            this.loadingSaveButton = false
+            this.isSaving = false
           })
     },
     remove () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.deleteKpiTemplate(this.form)
         .then(response => {
           this.$notification.success('Delete success')
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.close()
         })
         .catch(error => {
           this.$notification.error('Delete failed', error.message)
-          this.loadingSaveButton = false
+          this.isSaving = false
         })
     }
   }

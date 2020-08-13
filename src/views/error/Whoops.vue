@@ -2,15 +2,19 @@
   <div>
     <div class="content content-full">
       <div class="text-center">
-        <div class="display-3 text-danger">
-        </div>
-        <h1 class="h2 font-w700 mt-30 mb-10 text-danger"><i class="fa fa-warning"/> {{ title }}</h1>
-        <h2 class="h3 font-w400 text-muted mb-50">{{ message }}</h2>
+        <div class="display-3 text-danger" />
+        <h1 class="h2 font-w700 mt-30 mb-10 text-danger">
+          <i class="fa fa-warning" /> {{ title }}
+        </h1>
+        <h2 class="h3 font-w400 text-muted mb-50">
+          {{ message }}
+        </h2>
         <a
           href="javascript:void(0)"
           class="btn btn-hero btn-rounded btn-alt-secondary"
-          @click="back">
-          <i class="fa fa-arrow-left mr-10"/> Back
+          @click="back"
+        >
+          <i class="fa fa-arrow-left mr-10" /> Back
         </a>
       </div>
     </div>

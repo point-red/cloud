@@ -1,26 +1,43 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <span class="breadcrumb-item active">Item</span>
+      <breadcrumb-master />
+      <span class="breadcrumb-item active">{{ $t('item') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          ref="searchText"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block>
+        <div class="input-group block">
+          <a
+            v-if="$permission.has('create item')"
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addItem.open()"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-plus" />
+            </span>
+          </a>
+          <p-form-input
+            id="search-text"
+            ref="searchText"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"
+          />
+        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">
+                #
+              </th>
+              <th>Code</th>
               <th>Name</th>
               <th>Account</th>
               <th>Stock</th>
@@ -28,8 +45,14 @@
             <tr
               v-for="(item, index) in items"
               :key="item.id"
-              slot="p-body">
-              <th>{{ index + 1 }}</th>
+              slot="p-body"
+            >
+              <th>{{ ++index }}</th>
+              <td>
+                <router-link :to="{ name: 'item.show', params: { id: item.id }}">
+                  {{ item.code }}
+                </router-link>
+              </td>
               <td>
                 <router-link :to="{ name: 'item.show', params: { id: item.id }}">
                   {{ item.name }}
@@ -37,7 +60,7 @@
               </td>
               <td>
                 <template v-if="item.account">
-                  {{ item.account.number }} - {{ item.account.name | titlecase }}
+                  {{ item.account.number }} - {{ item.account.name }}
                 </template>
               </td>
               <td>
@@ -51,10 +74,14 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
+    <m-add-item
+      ref="addItem"
+      @added="onAdded"
+    />
   </div>
 </template>
 
@@ -84,13 +111,25 @@ export default {
   computed: {
     ...mapGetters('masterItem', ['items', 'pagination'])
   },
+  created () {
+    this.search()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('masterItem', ['get']),
+    onAdded () {
+      this.search()
+    },
     updatePage (value) {
       this.currentPage = value
-      this.getItemRequest()
+      this.search()
     },
-    getItemRequest () {
+    search () {
       this.isLoading = true
       this.get({
         params: {
@@ -98,8 +137,8 @@ export default {
           limit: 20,
           sort_by: 'name',
           filter_like: {
-            'code': this.searchText,
-            'name': this.searchText
+            code: this.searchText,
+            name: this.searchText
           },
           includes: 'account;units'
         }
@@ -113,15 +152,8 @@ export default {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.getItemRequest()
+      this.search()
     }, 300)
-  },
-  created () {
-    this.isLoading = true
-    this.getItemRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

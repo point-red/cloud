@@ -3,27 +3,31 @@
     <router-link
       to="/human-resource/employee/create"
       class="btn btn-sm btn-secondary float-right"
-      exact-active-class="active">
-      <i class="fa fa-plus mr-5"/> Create
+      exact-active-class="active"
+    >
+      <i class="fa fa-plus mr-5" /> Create
     </router-link>
     <router-link
       to="/human-resource/employee"
       class="btn btn-sm btn-secondary float-right"
-      exact-active-class="active">
-      <i class="fa fa-list mr-5"/> List
+      exact-active-class="active"
+    >
+      <i class="fa fa-list mr-5" /> List
     </router-link>
     <div
       :class="{ 'd-none': !showDropdown }"
       class="btn-group btn-group-sm"
-      role="group">
+      role="group"
+    >
       <button
         type="button"
         class="btn btn-secondary"
-        data-toggle="dropdown">
-        <i class="fa fa-angle-down"/>
+        data-toggle="dropdown"
+      >
+        <i class="fa fa-angle-down" />
       </button>
       <div class="dropdown-menu dropdown-menu-right">
-        <slot/>
+        <slot />
       </div>
     </div>
   </div>

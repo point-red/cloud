@@ -1,4 +1,8 @@
 {
   "employee" : "employee",
+  "select employee" : "select employee",
+  "add employee" : "add employee",
+  "edit employee" : "edit employee",
+  "delete employee" : "delete employee",
   "kpi template" : "kpi template"
 }

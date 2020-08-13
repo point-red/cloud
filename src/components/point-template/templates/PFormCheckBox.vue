@@ -1,14 +1,18 @@
 <template>
-  <div class="form-group row">
-    <div class="col-12">
-      <label class="css-control css-control-primary css-checkbox" @click.prevent>
+  <div :class="{ 'form-group row': isForm }">
+    <div :class="{ 'col-12': isForm }">
+      <label
+        class="css-control css-control-primary css-checkbox"
+        @click.prevent
+      >
         <input
           :id="id"
           :name="name"
           :checked="mutableChecked"
           class="css-control-input"
-          type="checkbox">
-        <span class="css-control-indicator"></span>{{ description }}
+          type="checkbox"
+        >
+        <span class="css-control-indicator" />{{ description }}
       </label>
     </div>
   </div>
@@ -16,32 +20,32 @@
 
 <script>
 export default {
+  props: {
+    description: {
+      type: String,
+      default: ''
+    },
+    id: {
+      type: String,
+      default: ''
+    },
+    name: {
+      type: String,
+      default: ''
+    },
+    checked: {
+      type: [Boolean, Number],
+      default: false
+    },
+    isForm: {
+      type: Boolean,
+      default: true
+    }
+  },
   data () {
     return {
       mutableChecked: false
     }
-  },
-  props: {
-    description: {
-      type: String
-    },
-    id: {
-      type: String
-    },
-    name: {
-      type: String
-    },
-    checked: {
-      type: [Boolean, Number]
-    }
-  },
-  methods: {
-    togglePerm () {
-      this.mutableChecked = !this.mutableChecked
-    }
-  },
-  mounted () {
-    this.mutableChecked = this.checked
   },
   watch: {
     'mutableChecked' () {
@@ -49,6 +53,14 @@ export default {
     },
     'checked' () {
       this.mutableChecked = this.checked
+    }
+  },
+  mounted () {
+    this.mutableChecked = this.checked
+  },
+  methods: {
+    togglePerm () {
+      this.mutableChecked = !this.mutableChecked
     }
   }
 }

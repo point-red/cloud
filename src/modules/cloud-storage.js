@@ -91,6 +91,19 @@ const actions = {
           reject(error)
         })
     })
+  },
+  upload (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/upload', payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(response => {
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }
 

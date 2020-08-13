@@ -3,7 +3,20 @@ import api from '@/api'
 const url = '/accounting/cut-offs'
 
 const state = {
-  cutOff: {},
+  cutOff: {
+    form: {
+      number: null,
+      notes: null,
+      created_by: {
+        full_name: null
+      }
+    },
+    approvers: [{
+      requested_to: {
+        full_name: null
+      }
+    }]
+  },
   cutOffs: []
 }
 
@@ -35,9 +48,9 @@ const mutations = {
 }
 
 const actions = {
-  get ({ commit }) {
+  get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url)
+      api.get(url, payload)
         .then(response => {
           commit('FETCH_ARRAY', response)
           resolve(response)
@@ -48,7 +61,7 @@ const actions = {
   },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.id)
+      api.get(url + '/' + payload.id, payload)
         .then(response => {
           commit('FETCH_OBJECT', response)
           resolve(response)

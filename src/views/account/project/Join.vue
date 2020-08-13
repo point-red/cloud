@@ -3,19 +3,21 @@
     <breadcrumb>
       <router-link
         to="/account/project"
-        class="breadcrumb-item">Project
+        class="breadcrumb-item"
+      >
+        {{ $t('project') | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">Join</span>
+      <span class="breadcrumb-item active">{{ $t('join') | uppercase }}</span>
     </breadcrumb>
-    
-    <tab-menu></tab-menu>
+
+    <tab-menu />
 
     <div class="row">
       <p-block column="col-sm-12 offset-md-2 col-md-8">
         <div class="font-size-h5 font-w300 text-center">
           {{ $t('join to company') | titlecase }}
         </div>
-        <hr/>
+        <hr>
         <div class="font-w300 mt-30">
           <p>
             {{ $t('join to company intro') | capitalize }}
@@ -23,21 +25,25 @@
           <form @submit.prevent="onSubmit">
             <p-form-row
               id="invitation-code"
-              name="invitation_code"
               v-model="form.invitation_code"
+              name="invitation_code"
               mask="XXXXXXXXXXXX"
               :label="$t('invitation code')"
               :errors="form.errors.get('invitation_code')"
-              @errors="form.errors.set('invitation_code', null)">
-            </p-form-row>
+              @errors="form.errors.set('invitation_code', null)"
+            />
 
             <div class="form-group row">
               <div class="col-md-9 offset-3">
                 <button
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   type="submit"
-                  class="btn btn-sm btn-primary">
-                  <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> {{ $t('request to join') | titlecase }}
+                  class="btn btn-sm btn-primary"
+                >
+                  <i
+                    v-show="isSaving"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('request to join') | titlecase }}
                 </button>
               </div>
             </div>
@@ -55,17 +61,17 @@ import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    TabMenu
+  },
   data () {
     return {
       form: new Form({
         invitation_code: null
       }),
-      loadingSaveButton: false
+      isSaving: false
     }
-  },
-  components: {
-    Breadcrumb,
-    TabMenu
   },
   computed: {
     ...mapGetters('accountProject', ['project'])
@@ -84,17 +90,17 @@ export default {
   methods: {
     ...mapActions('accountRequestJoinProject', ['create']),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.create(this.form)
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.form.reset()
             this.$notification.success('Create success')
             this.$router.push('/account/project')
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             if (error.message) {
               this.$notification.error(error.message)
             } else {

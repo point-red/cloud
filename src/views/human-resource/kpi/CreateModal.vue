@@ -2,35 +2,45 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmit">
+      @submit.prevent="onSubmit"
+    >
       <p-modal
-        ref="create"
         :id="id"
-        :title="title | uppercase">
+        ref="create"
+        :title="title | uppercase"
+      >
         <template slot="content">
           <p-form-row
             id="name"
+            v-model="form.name"
             name="name"
             label="name"
-            :disabled="loadingSaveButton"
-            v-model="form.name"
+            :disabled="isSaving"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)">
-          </p-form-row>
+            @errors="form.errors.set('name', null)"
+          />
         </template>
         <template slot="footer">
           <button
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             type="submit"
-            class="btn btn-primary">
+            class="btn btn-sm btn-primary"
+          >
             <i
-              v-show="loadingSaveButton"
-              class="fa fa-asterisk fa-spin"/> Add
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('add') | uppercase }}
           </button>
-          <button :disabled="loadingSaveButton" type="button" class="btn btn-outline-danger" @click="close">
+          <button
+            :disabled="isSaving"
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="close"
+          >
             <i
-              v-show="loadingSaveButton"
-              class="fa fa-asterisk fa-spin"/> Close
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>
@@ -45,7 +55,8 @@ import { mapActions } from 'vuex'
 export default {
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
       type: String,
@@ -57,7 +68,7 @@ export default {
       form: new Form({
         name: ''
       }),
-      loadingSaveButton: false
+      isSaving: false
     }
   },
   methods: {
@@ -71,19 +82,19 @@ export default {
       this.$refs.create.close()
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.createKpiTemplate(this.form)
         .then(
           (response) => {
             this.$notification.success('Create success')
             this.form.reset()
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.close()
           },
           (error) => {
             this.$notification.success('Create failed')
             this.form.errors.record(error.errors)
-            this.loadingSaveButton = false
+            this.isSaving = false
           })
     }
   }

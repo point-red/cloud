@@ -1,3 +1,17 @@
 {
-  "account type" : "account type"
+  "account type" : "account type",
+  "is sub ledger account" : "is sub ledger account ",
+  "account payable" : "account payable",
+  "account receivable" : "account receivable",
+  "purchase down payment" : "purchase down payment",
+  "sales down payment" : "sales down payment",
+  "generate account" : "generate account",
+  "position" : "position",
+  "sub ledger" : "sub ledger",
+  "cash flow" : "cash flow",
+  "cash flow position" : "cash flow position",
+  "operation" : "operation",
+  "investation" : "investation",
+  "funding" : "funding",
+  "balance" : "balance"
 }

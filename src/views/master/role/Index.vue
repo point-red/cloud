@@ -1,37 +1,64 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <span class="breadcrumb-item active">Role & Permission</span>
+      <breadcrumb-master />
+      <span class="breadcrumb-item active">{{ $t('role & permission') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
-
-    <br>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('role and permission')" :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          ref="searchText"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block>
+        <div class="input-group block">
+          <a
+            v-if="$permission.has('create role')"
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addRole.open()"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-plus" />
+            </span>
+          </a>
+          <p-form-input
+            id="search-text"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"
+          />
+        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>Name</th>
+              <th style="width:50px">
+                #
+              </th>
+              <th>Role</th>
+              <th>User</th>
             </tr>
             <tr
-              v-for="role in roles"
+              v-for="(role, index) in roles"
               :key="role.id"
-              slot="p-body">
+              slot="p-body"
+            >
+              <th>{{ index + 1 }}</th>
               <td>
-                <router-link :to="{ name: 'RoleShow', params: { id: role.id }}">
-                  {{ role.name | titlecase }}
+                <router-link :to="{ name: 'role.show', params: { id: role.id }}">
+                  {{ role.name }}
                 </router-link>
+              </td>
+              <td>
+                <template v-for="(user, index2) in role.users">
+                  <span
+                    :key="'role-user-' + index2"
+                    class="mr-10"
+                  >
+                    <i class="si si-user" /> {{ user.full_name }}
+                  </span>
+                </template>
               </td>
             </tr>
           </point-table>
@@ -39,10 +66,15 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
+
+    <m-add-role
+      ref="addRole"
+      @added="onAdded"
+    />
   </div>
 </template>
 
@@ -66,6 +98,7 @@ export default {
       isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1
     }
   },
@@ -87,13 +120,13 @@ export default {
       this.isLoading = true
       this.getRoles({
         params: {
-          limit: 20,
+          limit: this.limit,
           sort_by: 'name',
           filter_like: {
-            'name': this.searchText
+            name: this.searchText
           },
           filter_min: {
-            'id': 2
+            id: 2
           },
           page: this.currentPage
         }
@@ -109,7 +142,10 @@ export default {
       this.searchText = value
       this.currentPage = 1
       this.getRoleRequest()
-    }, 300)
+    }, 300),
+    onAdded () {
+      this.getRoleRequest()
+    }
   }
 }
 </script>

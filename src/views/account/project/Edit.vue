@@ -3,129 +3,142 @@
     <breadcrumb>
       <router-link
         to="/account/project"
-        class="breadcrumb-item">Project
+        class="breadcrumb-item"
+      >
+        {{ $t('project') | uppercase }}
       </router-link>
       <router-link
         :to="{ path: '/account/project/' + project.id, params: { id: project.id }}"
-        class="breadcrumb-item">
-        {{ project.code | titlecase }}
+        class="breadcrumb-item"
+      >
+        {{ project.code | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">Edit</span>
+      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
-      <p-block
-        :header="true"
-        :is-loading="loading"
-        title="Project">
+      <p-block :is-loading="isLoading">
         <form @submit.prevent="onSubmit">
           <p-form-row
-            id="group"
-            name="group"
-            v-model="form.group"
-            :disabled="loadingSaveButton"
-            :label="$t('company group')"
-            :errors="form.errors.get('group')"
-            @errors="form.errors.set('group', null)">
-          </p-form-row>
-
-          <p-form-row
             id="code"
-            name="code"
             v-model="form.code"
+            name="code"
             :disabled="true"
             :label="$t('company identifier')"
             :errors="form.errors.get('code')"
-            @errors="form.errors.set('code', null)">
-          </p-form-row>
+            @errors="form.errors.set('code', null)"
+          />
 
           <p-form-row
             id="name"
-            name="name"
             v-model="form.name"
-            :disabled="loadingSaveButton"
+            name="name"
+            :disabled="isSaving"
             :label="$t('company name')"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)">
-          </p-form-row>
+            @errors="form.errors.set('name', null)"
+          />
+
+          <p-separator />
+
+          <p-form-row
+            id="group"
+            v-model="form.group"
+            name="group"
+            :disabled="isSaving"
+            :label="$t('company group')"
+            :errors="form.errors.get('group')"
+            @errors="form.errors.set('group', null)"
+          />
 
           <p-form-row
             id="address"
-            name="address"
             v-model="form.address"
-            :disabled="loadingSaveButton"
-            :label="$t('company address')">
-          </p-form-row>
+            name="address"
+            :disabled="isSaving"
+            :label="$t('company address')"
+          />
 
           <p-form-row
             id="phone"
-            name="phone"
             v-model="form.phone"
-            :disabled="loadingSaveButton"
-            :label="$t('company phone')">
-          </p-form-row>
+            name="phone"
+            :disabled="isSaving"
+            :label="$t('company phone')"
+          />
 
           <p-form-row
             id="whatsapp"
-            name="whatsapp"
             v-model="form.whatsapp"
-            :disabled="loadingSaveButton"
-            :label="$t('company whatsapp')">
-          </p-form-row>
+            name="whatsapp"
+            :disabled="isSaving"
+            :label="$t('company whatsapp')"
+          />
 
           <p-form-row
             id="website"
-            name="website"
             v-model="form.website"
-            :disabled="loadingSaveButton"
-            :label="$t('company website')">
-          </p-form-row>
+            name="website"
+            :disabled="isSaving"
+            :label="$t('company website')"
+          />
 
           <p-form-row
             id="marketplace-notes"
-            name="marketplace-notes"
             v-model="form.marketplace_notes"
-            :disabled="loadingSaveButton"
-            :label="$t('marketplace notes')">
-          </p-form-row>
+            name="marketplace-notes"
+            :disabled="isSaving"
+            :label="$t('marketplace notes')"
+          />
 
           <p-form-row
             id="vat-id-number"
-            name="vat_id_number"
             v-model="form.vat_id_number"
-            :disabled="loadingSaveButton"
-            :label="$t('vat identification number')">
-          </p-form-row>
+            name="vat_id_number"
+            :disabled="isSaving"
+            :label="$t('vat identification number')"
+          />
 
           <p-form-row
             id="timezone"
             name="timezone"
-            :label="$t('timezone')">
-            <div slot="body" class="col-lg-9">
+            :label="$t('timezone')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 mt-5"
+            >
               <p-select-modal
                 id="timezone"
                 :title="'select timezone'"
                 :value="form.timezone"
                 :options="timezoneOptions"
                 @choosen="chooseTimezone"
-                @search="searchTimezone"/>
+                @search="searchTimezone"
+              />
             </div>
           </p-form-row>
 
+          <hr>
+
           <div class="form-group row">
-            <div class="col-md-9 offset-3">
+            <div class="col md-3" />
+            <div class="col-md-9">
               <button
-                :disabled="loadingSaveButton"
+                :disabled="isSaving"
                 type="submit"
-                class="btn btn-sm btn-primary mr-5">
+                class="btn btn-sm btn-primary mr-5"
+              >
                 <i
-                  v-show="loadingSaveButton"
-                  class="fa fa-asterisk fa-spin"/> Update
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('update') | uppercase }}
               </button>
               <router-link
-                :to="{path: '/account/project/' + this.id}"
-                class="btn btn-sm btn-danger">
-                Cancel
+                :to="{path: '/account/project/' + id}"
+                class="btn btn-sm btn-danger"
+              >
+                {{ $t('cancel') | uppercase }}
               </router-link>
             </div>
           </div>
@@ -141,6 +154,9 @@ import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb
+  },
   data () {
     return {
       id: this.$route.params.id,
@@ -156,19 +172,16 @@ export default {
         invitation_code_enabled: null,
         timezone: null
       }),
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
       timezoneOptions: []
     }
-  },
-  components: {
-    Breadcrumb
   },
   computed: {
     ...mapGetters('accountProject', ['project'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.getAvailableTimezone()
     this.findProject({ id: this.id })
       .then((response) => {
@@ -185,10 +198,10 @@ export default {
         this.form.vat_id_number = this.project.vat_id_number
         this.form.invitation_code = this.project.invitation_code
         this.form.invitation_code_enabled = this.project.invitation_code_enabled
-        this.loading = false
+        this.isLoading = false
       }, (error) => {
         this.$notification.error(error.message)
-        this.loading = false
+        this.isLoading = false
       })
   },
   methods: {
@@ -200,7 +213,7 @@ export default {
       var tzNames = this.$moment.tz.names()
       this.timezoneOptions = []
       for (var i in tzNames) {
-        let tz = '(GMT' + this.$moment.tz(tzNames[i]).format('Z') + ') ' + tzNames[i]
+        const tz = '(GMT' + this.$moment.tz(tzNames[i]).format('Z') + ') ' + tzNames[i]
         this.timezoneOptions.push({
           id: tzNames[i],
           label: tz
@@ -226,17 +239,17 @@ export default {
       this.form.timezone = value.id
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.update(this.form)
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.form.reset()
             this.$notification.success('Update success')
             this.$router.push('/account/project/' + this.id)
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.error('Update failed')
             this.form.errors.record(error.errors)
           }

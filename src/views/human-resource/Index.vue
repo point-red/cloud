@@ -1,29 +1,21 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Human Resource</span>
+      <span class="breadcrumb-item active">{{ $t('human resource') | uppercase }}</span>
     </breadcrumb>
     <div class="row gutters-tiny">
       <p-box
-        name="Employee"
         v-if="$permission.has('read employee') || $permission.has('create employee assessment') || $permission.has('read employee assessment')"
+        name="Employee"
         link="/human-resource/employee"
-        icon="si si-people"/>
+        icon="si si-people"
+      />
       <p-box
+        v-if="$plugin.has('KPI') && $permission.has('read employee kpi')"
         name="Kpi Template"
-        v-if="$permission.has('read employee kpi')"
         link="/human-resource/kpi"
-        icon="si si-badge"/>
-      <p-box
-        name="Job Locations"
-        v-if="$permission.has('read employee')"
-        link="/human-resource/job-location"
-        icon="si si-badge"/>
-      <p-box
-        name="Employee Status"
-        v-if="$permission.has('read employee')"
-        link="/human-resource/employee-status"
-        icon="si si-badge"/>
+        icon="si si-badge"
+      />
     </div>
   </div>
 </template>

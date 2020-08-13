@@ -1,34 +1,51 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <span class="breadcrumb-item active">{{ $t('allocation') | titlecase }}</span>
+      <breadcrumb-master />
+      <span class="breadcrumb-item active">{{ $t('allocation') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('allocation')" :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          ref="searchText"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block>
+        <div class="input-group block">
+          <a
+            v-if="$permission.has('create allocation')"
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addAllocation.open()"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-plus" />
+            </span>
+          </a>
+          <p-form-input
+            id="search-text"
+            ref="searchText"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"
+          />
+        </div>
 
-        <hr/>
+        <hr>
 
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Name</th>
             </tr>
             <tr
               v-for="(allocation, index) in allocations"
               :key="allocation.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <th>{{ index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'allocation.show', params: { id: allocation.id }}">
@@ -39,12 +56,16 @@
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
+    <m-add-allocation
+      ref="addAllocation"
+      @added="onAdded"
+    />
   </div>
 </template>
 
@@ -67,17 +88,27 @@ export default {
     return {
       isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1
     }
   },
   computed: {
     ...mapGetters('masterAllocation', ['allocations', 'pagination'])
   },
+  created () {
+    this.getAllocationRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('masterAllocation', ['get']),
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
       this.getAllocationRequest()
     },
     getAllocationRequest () {
@@ -85,11 +116,11 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          limit: 20,
-          page: this.currentPage,
+          limit: this.limit,
+          page: this.page,
           filter_like: {
-            'code': this.searchText,
-            'name': this.searchText
+            code: this.searchText,
+            name: this.searchText
           }
         }
       }).then(response => {
@@ -101,15 +132,12 @@ export default {
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
+      this.page = 1
       this.getAllocationRequest()
-    }, 300)
-  },
-  created () {
-    this.getAllocationRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
+    }, 300),
+    onAdded () {
+      this.getAllocationRequest()
+    }
   }
 }
 </script>

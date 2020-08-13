@@ -18,12 +18,9 @@ gulp.task('js', function () {
     'resources/js/core/jquery.scrollLock.min.js',
     'resources/js/core/jquery.appear.min.js',
     'resources/js/core/jquery.countTo.min.js',
-    'resources/js/core/jquery.cookie.min.js',
     'resources/js/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js',
     'resources/js/plugins/jquery-auto-complete/jquery.auto-complete.min.js',
-    'resources/js/plugins/masked-inputs/jquery.maskedinput.min.js',
-    'resources/js/plugins/ion-rangeslider/js/ion.rangeSlider.min.js',
-    'resources/js/plugins/dropzonejs/min/dropzone.min.js'
+    'resources/js/plugins/masked-inputs/jquery.maskedinput.min.js'
   ])
     .pipe(concat('core.min.js'))
     .pipe(uglify())
@@ -33,10 +30,9 @@ gulp.task('js', function () {
 gulp.task('styles', function () {
   return gulp.src([
     'resources/js/plugins/jquery-auto-complete/jquery.auto-complete.min.css',
-    'resources/js/plugins/ion-rangeslider/css/ion.rangeSlider.min.css',
-    'resources/js/plugins/ion-rangeslider/css/ion.rangeSlider.skinHTML5.min.css',
-    'resources/js/plugins/dropzonejs/min/dropzone.min.css',
-    'resources/css/codebase.css'
+    'resources/css/codebase.css',
+    'resources/css/bootstrap-social.css',
+    'resources/css/custom.css'
   ])
     .pipe(concat('core.min.css'))
     .pipe(minifyCSS())
@@ -44,7 +40,7 @@ gulp.task('styles', function () {
     .pipe(gulp.dest('public/assets/css'))
 })
 
-gulp.task('default', ['styles', 'js'])
+gulp.task('default', gulp.series('styles', 'js'))
 
 gulp.task('lang-en', function () {
   return gulp.src([
@@ -66,4 +62,4 @@ gulp.task('lang-id', function () {
     .pipe(gulp.dest('src/lang/locale'))
 })
 
-gulp.task('lang', ['lang-en', 'lang-id'])
+gulp.task('lang', gulp.series('lang-en', 'lang-id'))

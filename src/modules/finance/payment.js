@@ -3,7 +3,15 @@ import api from '@/api'
 const url = '/finance/payments'
 
 const state = {
-  payment: {},
+  payment: {
+    form: {
+      number: null
+    },
+    payment_account: {
+      label: null
+    },
+    details: []
+  },
   payments: [],
   pagination: {}
 }

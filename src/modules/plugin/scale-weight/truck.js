@@ -4,7 +4,8 @@ const url = '/plugin/scale-weight/trucks'
 
 const state = {
   scaleWeight: {},
-  scaleWeights: []
+  scaleWeights: [],
+  pagination: {}
 }
 
 const getters = {
@@ -13,12 +14,16 @@ const getters = {
   },
   scaleWeights: state => {
     return state.scaleWeights
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.scaleWeights = payload
+    state.scaleWeights = payload.data
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     state.scaleWeight = payload
@@ -49,7 +54,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.get(url, payload)
         .then((response) => {
-          commit('FETCH_ARRAY', response.data)
+          commit('FETCH_ARRAY', response)
           resolve(response)
         }, (error) => {
           reject(error)

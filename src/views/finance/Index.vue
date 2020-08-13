@@ -1,37 +1,38 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-finance/>
+      <span class="breadcrumb-item active">{{ $t('finance') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row gutters-tiny">
       <p-box
-        :name="$t('payment order')"
         v-if="$permission.has('read payment order')"
+        :name="$t('payment order')"
         link="/finance/payment-order"
-        icon="si si-doc"/>
+        icon="si si-doc"
+      />
       <p-box
-        :name="$t('cash')"
         v-if="$permission.has('read cash')"
+        :name="$t('cash')"
         link="/finance/cash"
-        icon="si si-wallet"/>
+        icon="si si-wallet"
+      />
       <p-box
-        :name="$t('bank')"
         v-if="$permission.has('read bank')"
+        :name="$t('bank')"
         link="/finance/bank"
-        icon="si si-credit-card"/>
+        icon="si si-credit-card"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import BreadcrumbFinance from './Breadcrumb'
 import Breadcrumb from '@/views/Breadcrumb'
 
 export default {
   components: {
-    Breadcrumb,
-    BreadcrumbFinance
+    Breadcrumb
   }
 }
 </script>

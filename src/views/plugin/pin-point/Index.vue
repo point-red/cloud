@@ -1,20 +1,22 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-plugin></breadcrumb-plugin>
-      <span class="breadcrumb-item active">Pin Point</span>
+      <breadcrumb-plugin />
+      <span class="breadcrumb-item active">{{ $t('pin point') | uppercase }}</span>
     </breadcrumb>
     <div class="row gutters-tiny">
       <p-box
-        :name="$t('sales visitation') | titlecase"
         v-if="$permission.has('create pin point sales visitation form') || $permission.has('read pin point sales visitation form')"
+        :name="$t('sales visitation') | titlecase"
         link="/plugin/pin-point/sales-visitation-form"
-        icon="fa fa-opencart"/>
+        icon="fa fa-opencart"
+      />
       <p-box
-        :name="$t('report') | titlecase"
         v-if="$permission.has('read pin point sales visitation form report')"
+        :name="$t('report') | titlecase"
         link="/plugin/pin-point/report/performance"
-        icon="fa fa-book"/>
+        icon="fa fa-book"
+      />
     </div>
   </div>
 </template>

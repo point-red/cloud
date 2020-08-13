@@ -2,11 +2,12 @@
   <div
     id="app"
     style="heigth: 900px"
-    @click="closeHeaderDropdown($event)">
+    @click="closeHeaderDropdown($event)"
+  >
     <network>
       <span slot="online">
         <transition name="fade">
-          <router-view/>
+          <router-view />
         </transition>
       </span>
       <span slot="offline">
@@ -15,7 +16,7 @@
             <div class="content content-full">
               <div class="py-30 text-center">
                 <div class="display-3 text-danger">
-                  <i class="fa fa-plug"/>
+                  <i class="fa fa-plug" />
                 </div>
                 <h1 class="h2 font-w700 mt-30 mb-10 text-danger">Oops.. You are not connected to the internet..</h1>
                 <h2 class="h3 font-w400 text-muted mb-50">Please connect to the internet..</h2>
@@ -29,7 +30,8 @@
       :max="3"
       :duration="5000"
       group="notification"
-      position="bottom right" />
+      position="bottom right"
+    />
     <p-loading-block v-show="isLoadingBlock" />
   </div>
 </template>
@@ -76,46 +78,59 @@ export default {
     },
     handleResize (event) {
       document.getElementById('app').style.minHeight = window.innerHeight + 'px'
-    },
-    closeModal () {
-      const els = document.getElementsByClassName('modal open')
-      Array.prototype.forEach.call(els, function (el) {
-        el.classList.remove('open')
-        el.style.display = 'none'
-      })
-      document.body.classList.remove('modal-open')
     }
   }
 }
 </script>
 
 <style>
-  .no-wrap {
-    white-space: nowrap;
-  }
-  .vue-notification.info {
-    background: #0c80df;
-    border-left-color: #0073d1;
-  }
-  .full-width {
-    width: 100%;
-  }
-  .block.block-mode-loading::after {
-    top: 50px;
-  }
+.no-wrap {
+  white-space: nowrap;
+}
+.vue-notification.info {
+  background: #0c80df;
+  border-left-color: #0073d1;
+}
+.full-width {
+  width: 100%;
+}
+.block.block-mode-loading::after {
+  top: 50px;
+}
 
-  .block-content-inner {
-    padding: 0px !important;
-  }
-  /* .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.5s;
-  }
+.block-content-inner {
+  padding: 0px !important;
+}
+/* .fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
 
-  .fade-enter,
-  .fade-leave-to
-  {
-    opacity: 0;
-    transition: opacity;
-  } */
+.fade-enter,
+.fade-leave-to
+{
+  opacity: 0;
+  transition: opacity;
+} */
+
+.card {
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+}
+
+/* On mouse-over, add a deeper shadow */
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.invalid-input {
+  display: block;
+  margin-top: .25rem;
+  font-size: .875rem;
+  color: #ef5350;
+}
+.swal2-container {
+  z-index: 9060 !important;
+}
 </style>

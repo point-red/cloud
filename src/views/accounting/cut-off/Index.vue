@@ -1,74 +1,118 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-accounting/>
-      <span class="breadcrumb-item active">{{ $t('cut off') | titlecase }}</span>
+      <breadcrumb-accounting />
+      <span class="breadcrumb-item active">{{ $t('cut off') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
-
     <div class="row">
-      <div class="col-sm-12">
-        <form class="row" @submit.prevent="onSubmit">
-          <p-block :title="$t('cut off')" :header="true">
-            <p-block-inner :is-loading="loading">
-              <p-table>
-                <tr slot="p-head">
-                  <th>Date</th>
-                  <th>Cut Off</th>
-                </tr>
-                <tr
-                  v-for="(cutOff, index) in cutOffs"
-                  :key="index"
-                  slot="p-body">
-                  <td>{{ cutOff.date | dateFormat('DD MMM YYYY') }}</td>
-                  <td>
-                    <router-link :to="{ name: 'AccountingCutOffShow', params: { id: cutOff.id }}">
-                      {{ cutOff.number }}
-                    </router-link>
-                  </td>
-                </tr>
-              </p-table>
-            </p-block-inner>
-          </p-block>
-        </form>
-      </div>
+      <p-block
+        :title="$t('cut off')"
+        :header="false"
+      >
+        <div class="input-group block">
+          <router-link
+            v-if="$permission.has('create cut off')"
+            to="/accounting/cut-off/create"
+            class="input-group-prepend"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-plus" />
+            </span>
+          </router-link>
+          <p-form-input
+            id="search-text"
+            ref="searchText"
+            name="search-text"
+            placeholder="Search"
+            class="btn-block"
+            :value="searchText"
+            @input="filterSearch"
+          />
+        </div>
+        <p-block-inner :is-loading="isLoading">
+          <p-table />
+        </p-block-inner>
+      </p-block>
     </div>
   </div>
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  data () {
-    return {
-      loading: false
-    }
-  },
   components: {
     Breadcrumb,
-    BreadcrumbAccounting,
-    TabMenu
+    BreadcrumbAccounting
+  },
+  data () {
+    return {
+      isLoading: false,
+      searchText: this.$route.query.search,
+      currentPage: this.$route.query.page * 1 || 1,
+      lastPage: 1,
+      limit: 10,
+      isAdvanceFilter: false,
+      checkedRow: [],
+      formStatus: {
+        id: null,
+        label: null,
+        value: 'notArchived'
+      },
+      formApprovalStatus: {
+        id: null,
+        label: null,
+        value: null
+      },
+      date: {
+        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
+        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
+      }
+    }
   },
   computed: {
     ...mapGetters('accountingCutOff', ['cutOffs'])
   },
-  methods: {
-    ...mapActions('accountingCutOff', ['get'])
-  },
   created () {
-    this.loading = true
-    this.get()
-      .then((response) => {
-        this.loading = false
+    this.getCutOffs()
+  },
+  methods: {
+    ...mapActions('accountingCutOff', ['get']),
+    filterSearch () {
+
+    },
+    getCutOffs () {
+      this.isLoading = true
+      console.log('getting data')
+      this.get({
+        params: {
+          join: 'form',
+          fields: 'cut_offs.*',
+          sort_by: '-forms.number',
+          filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
+          filter_like: {
+            'form.number': this.searchText
+          },
+          filter_min: {
+            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
+          },
+          filter_max: {
+            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+          },
+          limit: 10,
+          includes: 'form.createdBy',
+          page: this.currentPage
+        }
+      }).then((response) => {
+        this.isLoading = false
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
+    }
   }
 }
 </script>

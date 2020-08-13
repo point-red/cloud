@@ -9,18 +9,20 @@ const instance = axios.create({
   baseURL: process.env.VUE_APP_API_ENDPOINT,
   timeout: 600 * 2 * 1000, // 2 minutes
   headers: {
-    'Accept': 'application/json',
+    Accept: 'application/json',
     'Content-Type': 'application/json',
-    'Tenant': window.location.host.split('.')[0]
+    Tenant: window.location.host.split('.')[0]
   }
 })
 
-instance.defaults.headers.common['Authorization'] = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
-instance.defaults.headers.common['Timezone'] = Intl.DateTimeFormat().resolvedOptions().timeZone
+instance.defaults.headers.common.Authorization = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
+instance.defaults.headers.common.Timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
 instance.interceptors.request.use((config) => {
-  console.log('Request: ', config.url)
-  console.log('Request: ', config)
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('Request: ', config.url)
+    console.log('Request: ', config)
+  }
   return config
 }, function (error) {
   console.log('Response Error: ', error.response)
@@ -28,13 +30,15 @@ instance.interceptors.request.use((config) => {
 })
 
 instance.interceptors.response.use((response) => {
-  console.log('Response: ', response.config.url)
-  console.log('Response: ', response.data)
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('Response: ', response.config.url)
+    console.log('Response: ', response.data)
+  }
   return response
 }, function (error) {
   if (!error.response) {
     // Network error
-    router.replace('/503')
+    // router.replace('/503')
     return Promise.reject(error)
   } else {
     // If reponse is unauthorized (401) then redirect user to login page

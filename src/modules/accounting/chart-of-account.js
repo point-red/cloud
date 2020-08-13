@@ -3,7 +3,14 @@ import api from '@/api'
 const url = '/accounting/chart-of-accounts'
 
 const state = {
-  chartOfAccount: {},
+  chartOfAccount: {
+    number: '',
+    name: '',
+    type: {
+      name: '',
+      alias: ''
+    }
+  },
   chartOfAccounts: []
 }
 

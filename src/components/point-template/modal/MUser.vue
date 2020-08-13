@@ -1,43 +1,57 @@
 <template>
   <div>
-    <span @click="show" class="link"><i class="fa fa-list mr-5"></i>{{ mutableLabel || 'SELECT'}}</span>
-    <div
-      v-for="(error, index) in errors"
-      :key="index"
-      class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
-    <div
-      v-show="help"
-      class="form-text text-muted">{{ help }}</div>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select user">
-      <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
-        <hr>
-        <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
-        </div>
-        <div v-else class="list-group push">
-          <template v-for="(option, index) in options">
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select user') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()"
+    >
+      <input
+        v-model="searchText"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        @keydown.enter.prevent=""
+      >
+      <hr>
+      <div v-if="isLoading">
+        <h3 class="text-center">
+          Loading ...
+        </h3>
+      </div>
+      <div
+        v-else
+        class="list-group push"
+      >
+        <template v-for="(option, index) in options">
           <a
             :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-left"
             :class="{'active': option.id == mutableId }"
+            href="javascript:void(0)"
             @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label }}
+          >
+            {{ option.label | uppercase }} <br>
+            <span style="font-size:10px">{{ option.email | uppercase }}</span>
           </a>
-          </template>
-        </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
-          {{ $t('searching not found', [searchText]) | capitalize }} <br>
-        </div>
-        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('allocation') | capitalize }}
-        </div>
-      </template>
-      <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-outline-danger">Close</button>
-      </template>
-    </p-modal>
+        </template>
+      </div>
+      <div
+        v-if="searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
+        {{ $t('searching not found', [searchText]) | capitalize }} <br>
+      </div>
+      <div class="pull-right">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="clear()"
+        >
+          {{ $t('clear') | uppercase }}
+        </button>
+      </div>
+    </sweet-modal>
   </div>
 </template>
 
@@ -46,6 +60,28 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    },
+    permission: {
+      type: String,
+      default: ''
+    },
+    help: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -59,38 +95,22 @@ export default {
   computed: {
     ...mapGetters('masterUser', ['users', 'pagination'])
   },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
-    },
-    help: {
-      type: String
-    },
-    errors: {
-      type: Array,
-      default: null
-    }
-  },
   watch: {
     searchText: debounce(function () {
       this.search()
     }, 300),
     label () {
       this.mutableLabel = this.label
+    },
+    value () {
+      this.mutableId = this.value
     }
   },
-  created () {
-    this.search()
+  beforeDestroy () {
+    this.close()
   },
   methods: {
-    ...mapActions('masterUser', ['get', 'create']),
+    ...mapActions('masterUser', ['get']),
     search () {
       this.isLoading = true
       this.get({
@@ -99,19 +119,23 @@ export default {
           limit: 50,
           filter_like: {
             name: this.searchText
-          }
+          },
+          filter_permission: this.permission
         }
       }).then(response => {
         this.options = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
-            'id': key['id'],
-            'label': key['name']
+            id: key.id,
+            label: key.first_name + ' ' + key.last_name,
+            email: key.email,
+            firstName: key.first_name,
+            lastName: key.last_name,
+            fullName: key.first_name + ' ' + key.last_name
           })
 
-          if (this.value == key['id']) {
-            this.mutableLabel = key['name']
+          if (this.value == key.id) {
+            this.mutableLabel = key.first_name + ' ' + key.last_name
           }
         })
         this.isLoading = false
@@ -119,37 +143,33 @@ export default {
         this.isLoading = false
       })
     },
-    add () {
-      this.isSaving = true
-      this.create({
-        name: this.searchText
-      }).then(response => {
-        this.search()
-        this.isSaving = false
-      }).catch(error => {
-        this.$notification.error(error.message)
-        this.isSaving = false
-      })
-    },
     choose (option) {
       this.mutableId = option.id
       this.mutableLabel = option.label
-      this.$emit('input', option.id)
-      this.$emit('choosen', option.label)
+      this.$emit('choosen', option)
       this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    clear () {
+      this.mutableId = null
+      this.mutableLabel = null
+      this.$emit('choosen', '')
+      this.close()
+    },
+    open () {
+      this.$refs['select-' + this.id].open()
+      this.search()
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 input:readonly {
   background-color: white
 }
@@ -157,7 +177,8 @@ input {
   min-width: 200px;
 }
 .link {
-  border-bottom: dotted 1px blueviolet;
+  border-bottom: dotted 1px #2196f3;
+  color: #2196f3;
   cursor: pointer;
 }
 </style>

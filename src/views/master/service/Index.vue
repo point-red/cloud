@@ -1,35 +1,53 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <span class="breadcrumb-item active">{{ $t('service') | titlecase }}</span>
+      <breadcrumb-master />
+      <span class="breadcrumb-item active">{{ $t('service') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('service')" :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
-        <hr/>
+      <p-block>
+        <div class="input-group block">
+          <a
+            v-if="$permission.has('create service')"
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addService.open()"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-plus" />
+            </span>
+          </a>
+          <p-form-input
+            id="search-text"
+            ref="searchText"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"
+          />
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Name</th>
             </tr>
             <tr
               v-for="(service, index) in services"
               :key="service.id"
-              slot="p-body">
-              <th>{{ index + 1 }}</th>
+              slot="p-body"
+            >
+              <th>{{ ++index }}</th>
               <td>
                 <router-link :to="{ name: 'service.show', params: { id: service.id }}">
-                  {{ service.name | titlecase }}
+                  {{ service.name }}
                 </router-link>
               </td>
             </tr>
@@ -38,10 +56,14 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
+    <m-add-service
+      ref="addService"
+      @added="onAdded"
+    />
   </div>
 </template>
 
@@ -65,11 +87,18 @@ export default {
       isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1
     }
   },
   computed: {
     ...mapGetters('masterService', ['services'])
+  },
+  created () {
+    this.getServiceRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
   },
   methods: {
     ...mapActions('masterService', ['get']),
@@ -83,12 +112,12 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'services.*',
+          fields: 'service.*',
           sort_by: 'name',
           filter_like: {
-            'name': this.searchText
+            name: this.searchText
           },
-          limit: 10,
+          limit: this.limit,
           page: this.currentPage
         }
       }).then(response => {
@@ -100,10 +129,10 @@ export default {
     updatePage (value) {
       this.currentPage = value
       this.getServiceRequest()
+    },
+    onAdded () {
+      this.getServiceRequest()
     }
-  },
-  created () {
-    this.getServiceRequest()
   }
 }
 </script>

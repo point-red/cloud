@@ -7,46 +7,56 @@
         'block-mode-pinned' : pinned,
         'block-mode-hidden' : hidden
       }"
-      class="block">
+      class="block"
+    >
       <div
         v-show="header"
-        class="block-header bg-gray-lighter">
-        <h3 class="block-title">{{ title | uppercase }}</h3>
+        class="block-header bg-gray-lighter"
+      >
+        <h3 class="block-title">
+          {{ title | uppercase }}
+        </h3>
         <div
           v-show="showOptions"
-          class="block-options">
+          class="block-options"
+        >
+          <slot name="header" />
           <button
             v-show="showFullscreenButton"
             type="button"
             class="btn-block-option"
-            @click="toggleFullscreen">
-            <i :class="{ 'si si-size-fullscreen' : !fullscreen, 'si si-size-actual' : fullscreen }"/>
+            @click="toggleFullscreen"
+          >
+            <i :class="{ 'si si-size-fullscreen' : !fullscreen, 'si si-size-actual' : fullscreen }" />
           </button>
           <button
             v-show="showPrinterButton && fullscreen"
             type="button"
             class="btn-block-option"
-            @click="printBlock">
-            <i class="si si-printer"/> Print
+            @click="printBlock"
+          >
+            <i class="si si-printer" /> {{ $t('print') | uppercase }}
           </button>
           <button
             v-show="showPinnedButton"
             type="button"
             class="btn-block-option"
-            @click="togglePinned">
-            <i class="si si-pin"/>
+            @click="togglePinned"
+          >
+            <i class="si si-pin" />
           </button>
           <button
             v-show="showHiddenButton"
             type="button"
             class="btn-block-option"
-            @click="toggleHidden">
-            <i :class="{ 'si si-arrow-up' : !hidden, 'si si-arrow-down' : hidden }"/>
+            @click="toggleHidden"
+          >
+            <i :class="{ 'si si-arrow-up' : !hidden, 'si si-arrow-down' : hidden }" />
           </button>
         </div>
       </div>
       <div class="block-content">
-        <slot/>
+        <slot />
       </div>
     </div>
   </div>
@@ -68,10 +78,22 @@ export default {
       type: Boolean,
       default: false
     },
-    isLoading: false,
-    isFullscreen: false,
-    isPinned: false,
-    isHidden: false,
+    isLoading: {
+      type: Boolean,
+      default: false
+    },
+    isFullscreen: {
+      type: Boolean,
+      default: false
+    },
+    isPinned: {
+      type: Boolean,
+      default: false
+    },
+    isHidden: {
+      type: Boolean,
+      default: false
+    },
     showOptions: {
       type: Boolean,
       default: true
@@ -86,7 +108,7 @@ export default {
     },
     showHiddenButton: {
       type: Boolean,
-      default: true
+      default: false
     },
     showPrinterButton: {
       type: Boolean,

@@ -5,7 +5,7 @@ export default {
         return new Promise((resolve) => {
           Vue.prototype.$nextTick(() => {
             Vue.swal.fire({
-              type: options.type,
+              icon: options.type,
               title: options.title,
               html: options.text,
               footer: options.footer,
@@ -53,6 +53,25 @@ export default {
         return new Promise((resolve, reject) => {
           this.custom({ title, text, type: 'error' }).then(() => {
             resolve()
+          })
+        })
+      },
+      confirm (title = 'Are you sure?', text = '') {
+        return new Promise((resolve, reject) => {
+          Vue.swal.fire({
+            title: Vue.upperCase(title),
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirm'
+          }).then((result) => {
+            if (result.value) {
+              resolve()
+            } else {
+              reject(new Error('fail'))
+            }
           })
         })
       }

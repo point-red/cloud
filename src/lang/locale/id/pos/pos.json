@@ -1,0 +1,14 @@
+{
+  "pos" : "pos",
+  "open bill" : "open bill",
+  "closed bill" : "closed bill",
+  "edit bill": "edit bill",
+  "bill" : "bill",
+  "money received" : "money received",
+  "money change" : "change",
+  "total items" : "total items",
+  "sub total" : "sub total",
+  "save without order" : "simpan (tanpa penjualan)",
+  "save with order - cash" : "simpan (penjualan - tunai)",
+  "save with order - credit" : "simpan (penjualan - tempo)"
+}

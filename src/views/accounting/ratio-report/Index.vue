@@ -1,15 +1,15 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-accounting/>
-      <span class="breadcrumb-item active">{{ $t('ratio report') | titlecase }}</span>
+      <breadcrumb-accounting />
+      <span class="breadcrumb-item active">{{ $t('ratio report') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
       <div class="col-xl-3">
         <div class="block block-rounded block-themed">
           <div class="block-header bg-gray-darker">
-            <h3 class="block-title"></h3>
+            <h5 class="block-title" />
           </div>
           <div class="block-content block-content-full block-content-sm">
             <ul class="nav nav-pills flex-column push">
@@ -19,18 +19,30 @@
                 </span>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="currentRatio">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Current Ratio</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="currentRatio"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Current Ratio</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="cashRatio">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Cash Ratio</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="cashRatio"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Cash Ratio</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="acidTestRatio">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Acid Test Ratio</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="acidTestRatio"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Acid Test Ratio</span>
                 </a>
               </li>
               <li class="nav-item">
@@ -39,28 +51,48 @@
                 </span>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="grossProfitRatio">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Gross Profit Ratio</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="grossProfitRatio"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Gross Profit Ratio</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="netProfitMargin">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Net Profit Margin</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="netProfitMargin"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Net Profit Margin</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="rateOfReturnInvestment">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Rate of Return Investment (ROI)</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="rateOfReturnInvestment"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Rate of Return Investment (ROI)</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="returnOnEquity">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Return on Equity (ROE)</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="returnOnEquity"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Return on Equity (ROE)</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="rateOfReturnOnNetWorth">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Rate of Return on Net Worth</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="rateOfReturnOnNetWorth"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Rate of Return on Net Worth</span>
                 </a>
               </li>
               <li class="nav-item">
@@ -69,13 +101,21 @@
                 </span>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="totalDebtToAssetRatio">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Total Debt to Asset Ratio</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="totalDebtToAssetRatio"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Total Debt to Asset Ratio</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="totalDebtToEquityRatio">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Total Debt to Equity Ratio</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="totalDebtToEquityRatio"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Total Debt to Equity Ratio</span>
                 </a>
               </li>
               <li class="nav-item">
@@ -84,27 +124,47 @@
                 </span>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="totalAssetTurnOver">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Total Asset Turn Over</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="totalAssetTurnOver"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Total Asset Turn Over</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="workingCapitalTurnOver">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Working Capital Turn Over</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="workingCapitalTurnOver"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Working Capital Turn Over</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="fixedAssetTurnOver">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Fixed Asset Turn Over</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="fixedAssetTurnOver"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Fixed Asset Turn Over</span>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="inventoryTurnOver">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Inventory Turn Over</span>
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="inventoryTurnOver"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Inventory Turn Over</span>
                 </a>
-                <li class="nav-item">
-                <a href="javascript:void(0)" class="nav-link d-flex align-items-center" @click="averageCollectionPeriodRatio">
-                  <i class="fa fa-angle-right fa-fw mr-5"/><span>Average Collection Period Ratio</span>
+              </li><li class="nav-item">
+                <a
+                  href="javascript:void(0)"
+                  class="nav-link d-flex align-items-center"
+                  @click="averageCollectionPeriodRatio"
+                >
+                  <i class="fa fa-angle-right fa-fw mr-5" /><span>Average Collection Period Ratio</span>
                 </a>
               </li>
             </ul>
@@ -114,23 +174,34 @@
       <p-block
         title="Ratio Report"
         :header="true"
-        column="col-xl-9">
+        column="col-xl-9"
+      >
         <p-form-row
           id="date-from"
-          :label="$t('date from')">
-          <div slot="body" class="col-lg-9">
+          :label="$t('date from')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <p-month-picker
+              v-model="date"
               name="date"
-              v-model="date"/>
+            />
           </div>
         </p-form-row>
         <p-form-row
           id="date-to"
-          :label="$t('date to')">
-          <div slot="body" class="col-lg-9">
+          :label="$t('date to')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <p-month-picker
+              v-model="dateB"
               name="date"
-              v-model="dateB"/>
+            />
           </div>
         </p-form-row>
         <hr>
@@ -142,7 +213,8 @@
           ref="linechart"
           chart-box="Ratio"
           :chart-label="chartLabel"
-          :chart-data="chartData"/>
+          :chart-data="chartData"
+        />
         <hr>
         <p>{{ ratioResult }}</p>
       </p-block>
@@ -157,9 +229,14 @@ import LineChart from '@/components/point-chart/LineChart'
 import { mapActions } from 'vuex'
 
 export default {
+  components: {
+    Breadcrumb,
+    BreadcrumbAccounting,
+    LineChart
+  },
   data () {
     return {
-      loading: false,
+      isLoading: false,
       date: new Date(),
       dateB: new Date(),
       chartLabel: [],
@@ -168,11 +245,6 @@ export default {
       ratioDescription: '',
       ratioResult: ''
     }
-  },
-  components: {
-    Breadcrumb,
-    BreadcrumbAccounting,
-    LineChart
   },
   mounted () {
     this.date.setMonth(this.date.getMonth() - 6)

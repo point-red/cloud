@@ -1,15 +1,15 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Notification</span>
+      <span class="breadcrumb-item active">{{ $t('notification') | uppercase }}</span>
     </breadcrumb>
-    
+
     <div class="row">
       <p-block>
         <p-block-inner>
           <p-table>
             <tr slot="p-head">
-              <th></th>
+              <th />
               <th>Push Notification</th>
               <th>Email Notification</th>
             </tr>
@@ -19,11 +19,20 @@
                 <!-- <template v-for="(project, index) in projects">
                   <p-form-check-box :key="index" :ref="'push-notification-employee-contract-' + project.code" @click.native="togglePermission('push-notification', 'employee-contract', project.code)" :description="project.code"/>
                 </template> -->
-                <p-form-check-box ref="abc-def" @click.native="togglePermission('abc-def', '', '')" :description="'abc'"/>
+                <p-form-check-box
+                  ref="abc-def"
+                  :description="'abc'"
+                  @click.native="togglePermission('abc-def', '', '')"
+                />
               </td>
               <td>
                 <template v-for="(project, index) in projects">
-                  <p-form-check-box :key="index" :ref="'email-notification-employee-contract-' + project.code" @click.native="togglePermission('email-notification', 'employee-contract', project.code)" :description="project.code"/>
+                  <p-form-check-box
+                    :key="index"
+                    :ref="'email-notification-employee-contract-' + project.code"
+                    :description="project.code"
+                    @click.native="togglePermission('email-notification', 'employee-contract', project.code)"
+                  />
                 </template>
               </td>
             </tr>
@@ -51,6 +60,9 @@ export default {
   computed: {
     ...mapGetters('accountProject', ['projects'])
   },
+  created () {
+    this.getProject()
+  },
   methods: {
     ...mapActions('accountProject', {
       getProject: 'get'
@@ -59,9 +71,6 @@ export default {
       var ref = notificationMethod + '-' + feature + '-' + projectCode
       this.$refs[ref].togglePerm()
     }
-  },
-  created () {
-    this.getProject()
   }
 }
 </script>

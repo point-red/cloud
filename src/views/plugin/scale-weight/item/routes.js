@@ -1,5 +1,5 @@
-import ScaleWeightItem from './Index'
+import ScaleWeightItemIndex from './Index'
 
 export default [
-  { path: '/plugin/scale-weight/item', name: 'ScaleWeightItem', component: ScaleWeightItem }
+  { path: '/plugin/scale-weight/item', name: 'plugin.scale-weight.item.index', component: ScaleWeightItemIndex }
 ]

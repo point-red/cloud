@@ -1,68 +1,71 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Profile</span>
+      <span class="breadcrumb-item active">{{ $t('profile') | uppercase }}</span>
     </breadcrumb>
     <div class="row">
       <div class="col-xl-3">
-        <side-menu/>
+        <side-menu />
       </div>
       <p-block
         :header="true"
-        :is-loading="loading"
         title="Profile"
-        column="col-xl-9">
-        <form
-          class="px-30"
-          @submit.prevent="onSubmit">
+        :is-loading="isLoading"
+        column="col-xl-9"
+      >
+        <form @submit.prevent="onSubmit">
           <p-form-row
             id="name"
+            v-model="form.name"
             name="name"
             :label="$t('name')"
-            :disabled="loadingSaveButton"
-            v-model="form.name"
+            :disabled="isSaving"
             :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)">
-          </p-form-row>
+            @errors="form.errors.set('name', null)"
+          />
 
           <p-form-row
             id="email"
+            v-model="form.email"
             name="email"
             :label="$t('email')"
-            :disabled="loadingSaveButton"
-            v-model="form.email"
+            :disabled="isSaving"
             :errors="form.errors.get('email')"
-            @errors="form.errors.set('email', null)">
-          </p-form-row>
+            @errors="form.errors.set('email', null)"
+          />
 
           <p-form-row
             id="address"
+            v-model="form.address"
             name="address"
             :label="$t('address')"
-            :disabled="loadingSaveButton"
-            v-model="form.address"
+            :disabled="isSaving"
             :errors="form.errors.get('address')"
-            @errors="form.errors.set('address', null)">
-          </p-form-row>
+            @errors="form.errors.set('address', null)"
+          />
 
           <p-form-row
             id="phone"
+            v-model="form.phone"
             name="phone"
             :label="$t('phone')"
-            :disabled="loadingSaveButton"
-            v-model="form.phone"
+            :disabled="isSaving"
             :errors="form.errors.get('phone')"
-            @errors="form.errors.set('phone', null)">
-          </p-form-row>
+            @errors="form.errors.set('phone', null)"
+          />
 
           <div class="form-group row">
             <div class="col-md-9 offset-3">
               <button
-                :disabled="loadingSaveButton"
+                :disabled="isSaving"
                 type="submit"
-                class="btn btn-sm btn-primary"><i
-                  v-show="loadingSaveButton"
-                  class="fa fa-asterisk fa-spin"/> Save</button>
+                class="btn btn-sm btn-primary"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
+              </button>
             </div>
           </div>
         </form>
@@ -82,9 +85,6 @@ export default {
     SideMenu,
     Breadcrumb
   },
-  computed: {
-    ...mapGetters('auth', ['authUser'])
-  },
   data () {
     return {
       showSubmitButton: false,
@@ -95,39 +95,42 @@ export default {
         address: null,
         phone: null
       }),
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
-  methods: {
-    ...mapActions('auth', ['updateProfile', 'tryAutoLogin']),
-    onSubmit () {
-      this.loadingSaveButton = true
-      this.updateProfile(this.form)
-        .then((response) => {
-          this.loadingSaveButton = false
-          this.$notification.success('Update success')
-        }, (error) => {
-          this.loadingSaveButton = false
-          this.$notification.error(error.message)
-          this.form.errors.record(error.errors)
-        })
-    }
+  computed: {
+    ...mapGetters('auth', ['authUser'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.tryAutoLogin()
       .then((response) => {
-        this.loading = false
+        this.isLoading = false
         this.form.id = this.authUser.id
         this.form.name = this.authUser.name
         this.form.email = this.authUser.email
         this.form.address = this.authUser.address
         this.form.phone = this.authUser.phone
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
+  },
+  methods: {
+    ...mapActions('auth', ['updateProfile', 'tryAutoLogin']),
+    onSubmit () {
+      this.isSaving = true
+      this.updateProfile(this.form)
+        .then((response) => {
+          this.isSaving = false
+          this.$notification.success('Update success')
+        }, (error) => {
+          this.isSaving = false
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        })
+    }
   }
 }
 </script>

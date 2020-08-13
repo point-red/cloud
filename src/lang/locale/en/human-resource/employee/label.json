@@ -8,6 +8,8 @@
   "personal id" : "personal id",
   "phone" : "phone",
   "email" : "email",
+  "company email" : "company email",
+  "add social media" : "add social media",
   "social media" : "social media",
   "last education" : "last education",
   "birth date" : "birth date",
@@ -44,6 +46,7 @@
   "no" : "no",
   "weight" : "weight",
   "target" : "target",
+  "add scorer" : "add scorer",
   "score" : "score",
   "score percentage" : "score percentage",
   "key performance indicator" : "key performance indicator",
@@ -88,5 +91,6 @@
   "weekly sales": "weekly sales",
   "wa daily report": "wa daily report",
   "amount received difference": "amount received difference",
-  "if kpi 100%": "if kpi 100%"
+  "if kpi 100%": "if kpi 100%",
+  "allowance": "allowance"
 }

@@ -2,26 +2,41 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmit">
+      @submit.prevent="onSubmit"
+    >
       <p-modal
-        ref="group"
         :id="id"
-        :isLoading="loading"
-        :title="'Kpi Template Group' | uppercase">
+        ref="group"
+        :is-loading="isLoading"
+        :title="'Kpi Template Group' | uppercase"
+      >
         <template slot="content">
           <p-table>
-            <tr slot="p-head" v-show="groups.length > 0" class="bg-info-light">
+            <tr
+              v-show="groups.length > 0"
+              slot="p-head"
+              class="bg-info-light"
+            >
               <th>Name</th>
-              <th></th>
+              <th style="width:100px" />
             </tr>
             <tr
               v-for="group in groups"
               slot="p-body"
-              :key="group.id">
+              :key="group.id"
+            >
               <td>{{ group.name }}</td>
               <td>
-                <a href="javascript:void(0)" class="badge badge-primary" @click="edit(group)"><i class="fa fa-pencil"></i></a>
-                <a href="javascript:void(0)" class="badge badge-danger" @click="remove(group.id)"><i class="fa fa-close"></i></a>
+                <a
+                  href="javascript:void(0)"
+                  class="badge badge-primary mr-5"
+                  @click="edit(group)"
+                ><i class="fa fa-pencil" /></a>
+                <a
+                  href="javascript:void(0)"
+                  class="badge badge-danger"
+                  @click="remove(group.id)"
+                ><i class="fa fa-close" /></a>
               </td>
             </tr>
           </p-table>
@@ -30,26 +45,40 @@
 
           <p-form-row
             id="name"
+            v-model="form.name"
             name="name"
             label="name"
-            :disabled="loadingSaveButton"
-            v-model="form.name">
-          </p-form-row>
+            :disabled="isSaving"
+          />
         </template>
         <template slot="footer">
           <button
-                :disabled="loadingSaveButton"
-                type="submit"
-                class="btn btn-primary">
-                <i
-                  v-show="loadingSaveButton"
-                  class="fa fa-asterisk fa-spin"/>
-                <template v-if="isCreateMode">Add</template>
-                <template v-if="!isCreateMode">Update</template>
+            :disabled="isSaving"
+            type="submit"
+            class="btn btn-sm btn-primary"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            />
+            <template v-if="isCreateMode">
+              {{ $t('add') | uppercase }}
+            </template>
+            <template v-if="!isCreateMode">
+              {{ $t('update') | uppercase }}
+            </template>
           </button>
-          <button type="button" class="btn btn-outline-danger" @click="cancel">
-            <template v-if="isCreateMode">Close</template>
-            <template v-if="!isCreateMode">Cancel</template>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="cancel"
+          >
+            <template v-if="isCreateMode">
+              {{ $t('close') | uppercase }}
+            </template>
+            <template v-if="!isCreateMode">
+              {{ $t('cancel') | uppercase }}
+            </template>
           </button>
         </template>
       </p-modal>
@@ -72,8 +101,8 @@ export default {
     return {
       form: new Form(),
       isCreateMode: true,
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
   computed: {
@@ -104,18 +133,18 @@ export default {
       this.$refs.group.close()
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       if (this.isCreateMode) {
         this.createGroup(this.form)
           .then(
             (response) => {
               this.$notification.success('Create success')
               this.form.reset()
-              this.loadingSaveButton = false
+              this.isSaving = false
             },
             (error) => {
               this.$notification.error('Create failed', error.message)
-              this.loadingSaveButton = false
+              this.isSaving = false
             })
       } else {
         this.updateGroup(this.form)
@@ -123,17 +152,17 @@ export default {
             (response) => {
               this.$notification.success('Update success')
               this.form.reset()
-              this.loadingSaveButton = false
+              this.isSaving = false
               this.isCreateMode = true
             },
             (error) => {
               this.$notification.error('Update failed', error.message)
-              this.loadingSaveButton = false
+              this.isSaving = false
             })
       }
     },
     edit (group) {
-      for (let field in group) {
+      for (const field in group) {
         this.$set(this.form, field, group[field])
       }
       this.isCreateMode = false

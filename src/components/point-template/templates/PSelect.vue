@@ -1,44 +1,21 @@
 <template>
   <div>
     <v-selectmenu
+      ref="select"
+      :key="options.length"
+      v-model="selectedValue"
       :data="options"
       key-field="id"
       show-field="label"
       position="left"
       :multiple="multiple"
       :max-selected="maxSelected"
-      :key="options.length"
-      v-model="selectedValue">
-    </v-selectmenu>
+    />
   </div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-      selectedValue: ''
-    }
-  },
-  computed: {
-    selected: {
-      get: function () {
-        if (this.value !== undefined) {
-          return ''
-        }
-
-        if (this.value !== null) {
-          return ''
-        }
-
-        return this.value.toString()
-      },
-      set: function (newValue) {
-        console.log(newValue)
-        this.selectedValue = newValue
-      }
-    }
-  },
   props: {
     keyField: {
       type: String,
@@ -49,14 +26,16 @@ export default {
       default: 'label'
     },
     options: {
-      type: Array
+      type: Array,
+      default: null
     },
     placeholder: {
       type: String,
       default: 'SELECT'
     },
     value: {
-      type: [String, Number, Boolean]
+      type: [String, Number, Boolean],
+      default: null
     },
     multiple: {
       type: Boolean,
@@ -67,9 +46,9 @@ export default {
       default: 0 // 0 = unlimited
     }
   },
-  created () {
-    if (this.value !== undefined && this.value !== null) {
-      this.selectedValue = this.value.toString()
+  data () {
+    return {
+      selectedValue: ''
     }
   },
   watch: {
@@ -77,7 +56,16 @@ export default {
       this.$emit('input', this.selectedValue)
     },
     'value' () {
-      this.selected = this.value.toString()
+      if (this.value) {
+        this.selectedValue = this.value.toString()
+      } else {
+        this.$refs.select.clear()
+      }
+    }
+  },
+  created () {
+    if (this.value !== undefined && this.value !== null) {
+      this.selectedValue = this.value.toString()
     }
   }
 }
@@ -97,5 +85,10 @@ export default {
 }
 .v-dropdown-container {
   max-width: 75%;
+}
+</style>
+<style>
+.v-dropdown-container {
+  z-index: 10950 !important;
 }
 </style>

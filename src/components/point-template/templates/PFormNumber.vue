@@ -1,16 +1,29 @@
 <template>
   <div>
-    <cleave :readonly="readonly" v-model="number" :options="options" :disabled="disabled" class="form-control form-number"
+    <cleave
+      ref="formNumber"
+      v-model="number"
+      :readonly="readonly"
+      :options="options"
+      :disabled="disabled"
+      class="form-control form-number"
       :class="{
         'text-right' : isTextRight
-      }"></cleave>
+      }"
+    />
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
+      class="invalid-input"
+    >
+      <i class="fa fa-warning" /> {{ error }}
+    </div>
     <div
       v-show="help"
-      class="form-text text-muted">{{ help }}</div>
+      class="form-text text-muted"
+    >
+      {{ help }}
+    </div>
   </div>
 </template>
 
@@ -20,24 +33,6 @@ import Cleave from 'vue-cleave-component'
 export default {
   components: {
     Cleave
-  },
-  data () {
-    return {
-      number: this.value,
-      options: {
-        numeral: true,
-        numeralDecimalScale: 15,
-        numeralPositiveOnly: this.unsigned
-      }
-    }
-  },
-  watch: {
-    value () {
-      this.number = this.value
-    },
-    number () {
-      this.$emit('input', this.number)
-    }
   },
   props: {
     readonly: {
@@ -61,11 +56,51 @@ export default {
       default: 0
     },
     help: {
-      type: String
+      type: String,
+      default: null
     },
     errors: {
       type: Array,
       default: null
+    },
+    min: {
+      type: Number,
+      default: 0
+    },
+    max: {
+      type: Number,
+      default: Number.MAX_SAFE_INTEGER
+    }
+  },
+  data () {
+    return {
+      number: this.value,
+      options: {
+        numeral: true,
+        numeralDecimalScale: 15,
+        numeralPositiveOnly: this.unsigned
+      }
+    }
+  },
+  watch: {
+    value () {
+      this.number = this.value
+    },
+    number () {
+      this.$emit('input', this.number)
+
+      this.$nextTick(() => {
+        if (this.number < this.min) {
+          this.$emit('input', this.min)
+        } else if (this.number > this.max) {
+          this.$emit('input', this.max)
+        }
+      })
+    }
+  },
+  methods: {
+    setFocus () {
+      this.$refs.formNumber.$el.select()
     }
   }
 }

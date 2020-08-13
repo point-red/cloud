@@ -1,190 +1,162 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-accounting/>
-      <span class="breadcrumb-item active">
-        <router-link to="/accounting/cut-off" class="breadcrumb-item">{{ $t('cut off') | titlecase }}</router-link>
+      <breadcrumb-accounting />
+      <span class="breadcrumb-item">
+        <router-link
+          to="/accounting/cut-off"
+          class="breadcrumb-item"
+        >{{ $t('cut off') | uppercase }}</router-link>
       </span>
-      <span class="breadcrumb-item active">Create</span>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
-
-    <tab-menu/>
 
     <div class="row">
       <div class="col-sm-12">
-        <form
-          class="row"
-          @submit.prevent="onSubmit">
-          <p-block :title="$t('cut off')" :header="true">
-            <p-block-inner :is-loading="loading">
-              <p-form-row
-                id="date"
-                :label="$t('date')">
-                <div slot="body" class="col-lg-9">
-                  <p-date-picker
+        <div class="row">
+          <p-block class="text-center">
+            <nav
+              class="breadcrumb bg-white text-center"
+              style="display:block !important"
+            >
+              <span class="breadcrumb-item active">{{ $t('start') | uppercase }}</span>
+              <span class="breadcrumb-item">{{ $t('account') | uppercase }}</span>
+              <span class="breadcrumb-item">{{ $t('inventory') | uppercase }}</span>
+              <span class="breadcrumb-item">{{ $t('account payable') | uppercase }}</span>
+              <span class="breadcrumb-item">{{ $t('purchase down payment') | uppercase }}</span>
+              <span class="breadcrumb-item">{{ $t('account receivable') | uppercase }}</span>
+              <span class="breadcrumb-item">{{ $t('sales down payment') | uppercase }}</span>
+              <span class="breadcrumb-item">{{ $t('review') | uppercase }}</span>
+            </nav>
+            <hr>
+            <h5>CUT OFF</h5>
+            <p-block-inner :is-loading="isLoading">
+              <div class="col-sm-6 offset-sm-3 text-left">
+                <form @submit.prevent="onSubmit">
+                  <p>{{ $t('cut off helper - info') }}</p>
+                  <p-form-row
+                    v-if="!isLoading"
+                    id="date"
                     name="date"
-                    v-model="form.date"/>
-                </div>
-              </p-form-row>
-              <hr>
-              <p-table>
-                <tr slot="p-head">
-                  <th>Number</th>
-                  <th>Name</th>
-                  <th>Debit</th>
-                  <th>Credit</th>
-                </tr>
-                <tr
-                  v-for="(chartOfAccount, index) in chartOfAccounts"
-                  :key="index"
-                  slot="p-body">
-                  <td>{{ chartOfAccount.number }}</td>
-                  <td>{{ chartOfAccount.name }}</td>
-                  <td>
-                    <p-form-number
-                      :id="'debit-' + index"
-                      value="0"
-                      @input.native="debit($event, index)"
-                      :disabled="loadingSaveButton"
-                      :is-text-right="true"
-                      name="debit[]"/>
-                  </td>
-                  <td>
-                    <p-form-number
-                      :id="'credit-' + index"
-                      value="0"
-                      @input.native="credit($event, index)"
-                      :disabled="loadingSaveButton"
-                      :is-text-right="true"
-                      name="credit[]"/>
-                  </td>
-                </tr>
-                <tr slot="p-body">
-                  <td></td>
-                  <td></td>
-                  <td>
-                    <p-form-number
-                      id="total-debit"
-                      v-model="totalDebit"
-                      :disabled="true"
-                      :is-text-right="true"
-                      name="total_debit"
-                      :errors="form.errors.get('total_debit')"
-                      @errors="form.errors.set('total_debit', null)"/>
-                  </td>
-                  <td>
-                    <p-form-number
-                      id="total-credit"
-                      v-model="totalCredit"
-                      :disabled="true"
-                      :is-text-right="true"
-                      name="total_credit"
-                      :errors="form.errors.get('total_credit')"
-                      @errors="form.errors.set('total_credit', null)"/>
-                  </td>
-                </tr>
-              </p-table>
-              <button class="btn btn-sm btn-primary mb-10" :disabled="loadingSaveButton">
-                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
-              </button>
+                    :label="$t('date')"
+                  >
+                    <div
+                      slot="body"
+                      class="col-lg-9"
+                    >
+                      <p-date-picker
+                        id="date"
+                        v-model="form.date"
+                        name="date"
+                        :label="$t('date')"
+                        :errors="form.errors.get('date')"
+                        @errors="form.errors.set('date', null)"
+                      />
+                    </div>
+                  </p-form-row>
+                  <hr>
+                  <p-form-row
+                    v-if="!isLoading"
+                    id="start"
+                    name="start"
+                    label=""
+                  >
+                    <div
+                      slot="body"
+                      class="col-lg-9"
+                    >
+                      <button
+                        type="submit"
+                        class="btn btn-sm btn-primary mb-15"
+                        :disabled="isSaving"
+                      >
+                        <i
+                          v-show="isSaving"
+                          class="fa fa-asterisk fa-spin"
+                        /> {{ $t('start') | uppercase }}
+                      </button>
+                    </div>
+                  </p-form-row>
+                </form>
+              </div>
             </p-block-inner>
           </p-block>
-        </form>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
 import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  data () {
-    return {
-      loading: false,
-      loadingSaveButton: false,
-      form: new Form({
-        increment_group: this.$moment().format('YYYYMM'),
-        date: this.$moment().format('YYYY-MM-DD'),
-        details: []
-      }),
-      totalDebit: 0,
-      totalCredit: 0
-    }
-  },
   components: {
     Breadcrumb,
-    BreadcrumbAccounting,
-    TabMenu
+    BreadcrumbAccounting
   },
-  computed: {
-    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts'])
-  },
-  methods: {
-    ...mapActions('accountingChartOfAccount', {
-      getChartOfAccounts: 'get'
-    }),
-    ...mapActions('accountingCutOff', {
-      storeCutOff: 'create'
-    }),
-    debit (event, index) {
-      this.form.details[index].debit = event.target.value.split(',').join('')
-      this.calculate()
-    },
-    credit (event, index) {
-      var chartOfAccountIndex = event.target.id.split('-')[1]
-      this.form.details[index].credit = event.target.value.split(',').join('')
-      this.calculate()
-    },
-    onSubmit () {
-      this.loadingSaveButton = true
-      if (this.totalDebit === this.totalCredit) {
-        // Balance
-        this.storeCutOff(this.form)
-          .then((response) => {
-            this.loadingSaveButton = false
-            this.getChartOfAccounts()
-              .then((response) => {
-                this.$set(this.form, 'details', response.data)
-              })
-            this.form.reset()
-            this.totalDebit = 0
-            this.totalCredit = 0
-            this.$notification.success('Create success')
-            this.$router.replace('/accounting/cut-off/' + response.data.id)
-          }, (error) => {
-            this.loadingSaveButton = false
-            this.$notification.error(error.message)
-          })
-      } else {
-        // Unbalance
-        this.loadingSaveButton = false
-        this.$notification.error('Journal unbalance')
-      }
-    },
-    calculate () {
-      this.totalDebit = 0
-      this.totalCredit = 0
-      this.form.details.forEach(element => {
-        this.totalCredit += parseFloat(element.credit)
-        this.totalDebit += parseFloat(element.debit)
+  data () {
+    return {
+      isSaving: false,
+      isLoading: false,
+      isCutOffStarted: false,
+      form: new Form({
+        date: this.$moment().format('YYYY-MM-DD')
       })
     }
   },
+  computed: {
+    ...mapGetters('accountingCutOff', ['cutOffs'])
+  },
   created () {
-    this.loading = true
-    this.getChartOfAccounts()
-      .then((response) => {
-        this.loading = false
-        this.$set(this.form, 'details', response.data)
-      }, (error) => {
-        this.loading = false
-        this.$notification.error(error.message)
-      })
+    this.isLoading = true
+    this.get({
+      params: {
+        includes: 'form'
+      }
+    }).then(response => {
+      if (this.cutOffs.length > 0) {
+        this.cutOffs.forEach(element => {
+          this.form.date = element.form.date
+          this.form.id = element.id
+        })
+        this.isCutOffStarted = true
+      }
+      this.isLoading = false
+    }).catch(error => {
+      this.isLoading = false
+    })
+  },
+  methods: {
+    ...mapActions('accountingCutOff', ['create', 'update', 'get']),
+    onSubmit () {
+      if (this.isCutOffStarted) {
+        this.isSaving = true
+        this.$router.push('/accounting/cut-off/create/account')
+        this.update(this.form).then(response => {
+          this.isSaving = false
+          Object.assign(this.$data, this.$options.data.call(this))
+          this.$router.push('/accounting/cut-off/create/account')
+        }).catch(error => {
+          this.isSaving = false
+          this.$notification.error(error.message)
+        })
+      } else {
+        this.isSaving = true
+        this.create(this.form)
+          .then(response => {
+            this.isSaving = false
+            Object.assign(this.$data, this.$options.data.call(this))
+            this.$router.push('/accounting/cut-off/create/account')
+          }).catch(error => {
+            this.isSaving = false
+            this.$notification.error(error.message)
+          })
+      }
+    }
   }
 }
 </script>

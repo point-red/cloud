@@ -1,52 +1,51 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Master</span>
+      <span class="breadcrumb-item active">{{ $t('master') | uppercase }}</span>
     </breadcrumb>
     <div class="row gutters-tiny">
       <p-box
-        name="User"
         v-if="$permission.has('read user')"
+        name="User"
         link="/master/user"
-        icon="si si-people"/>
+        icon="si si-people"
+      />
       <p-box
-        name="Role & Permission"
-        v-if="$permission.has('read role')"
-        link="/master/role"
-        icon="si si-equalizer"/>
-    </div>
-    <hr>
-    <div class="row gutters-tiny">
-      <p-box
-        name="Customer"
         v-if="$permission.has('read customer')"
+        name="Customer"
         link="/master/customer"
-        icon="si si-user"/>
+        icon="si si-user"
+      />
       <p-box
-        name="Supplier"
         v-if="$permission.has('read supplier')"
+        name="Supplier"
         link="/master/supplier"
-        icon="si si-user"/>
+        icon="si si-user"
+      />
       <p-box
-        name="Warehouse"
         v-if="$permission.has('read warehouse')"
+        name="Warehouse"
         link="/master/warehouse"
-        icon="si si-home"/>
+        icon="si si-home"
+      />
       <p-box
-        name="Allocation"
         v-if="$permission.has('read allocation')"
+        name="Allocation"
         link="/master/allocation"
-        icon="si si-list"/>
+        icon="si si-list"
+      />
       <p-box
-        name="Service"
         v-if="$permission.has('read service')"
+        name="Service"
         link="/master/service"
-        icon="si si-briefcase"/>
+        icon="si si-briefcase"
+      />
       <p-box
-        name="Item"
         v-if="$permission.has('read item')"
+        name="Item"
         link="/master/item"
-        icon="si si-grid"/>
+        icon="si si-grid"
+      />
     </div>
   </div>
 </template>

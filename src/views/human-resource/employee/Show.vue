@@ -1,20 +1,54 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <router-link
         to="/human-resource/employee"
-        class="breadcrumb-item">{{ $t('employee') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ employee.name | titlecase }}</span>
+        class="breadcrumb-item"
+      >
+        {{ $t('employee') | uppercase }}
+      </router-link>
+      <span class="breadcrumb-item active">{{ employee.name | uppercase }}</span>
     </breadcrumb>
 
-    <employee-widget :id="id"></employee-widget>
+    <employee-widget :id="id" />
 
-    <tab-menu></tab-menu>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('employee')" :header="true">
+      <p-block>
         <p-block-inner :is-loading="isLoading">
+          <div class="text-right">
+            <button
+              v-if="$permission.has('create employee')"
+              type="button"
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="$refs.addEmployee.open()"
+            >
+              {{ $t('create') | uppercase }}
+            </button>
+            <button
+              v-if="$permission.has('update employee')"
+              type="button"
+              class="btn btn-sm btn-outline-secondary mr-5"
+              @click="$refs.editEmployee.open(employee)"
+            >
+              {{ $t('edit') | uppercase }}
+            </button>
+            <button
+              v-if="$permission.has('delete employee')"
+              type="button"
+              :disabled="isDeleting"
+              class="btn btn-sm btn-outline-secondary"
+              @click="onDelete()"
+            >
+              <i
+                v-show="isDeleting"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('delete') | uppercase }}
+            </button>
+          </div>
+          <br>
           <div class="row">
             <div class="col-sm-6">
               <p-table>
@@ -30,37 +64,34 @@
                   <tr v-if="$permission.has('read employee')">
                     <td><span class="font-w700">{{ $t('address') | titlecase }}</span></td>
                     <td>
-                      <ul>
-                        <li
-                          v-for="(employeeAddress, index) in employee.addresses"
-                          :key="index">
-                          {{ employeeAddress.address }}
-                        </li>
-                      </ul>
+                      <span
+                        v-for="(employeeAddress, index) in employee.addresses"
+                        :key="index"
+                      >
+                        {{ employeeAddress.address }}
+                      </span>
                     </td>
                   </tr>
                   <tr v-if="$permission.has('read employee')">
                     <td><span class="font-w700">{{ $t('phone') | titlecase }}</span></td>
                     <td>
-                      <ul>
-                        <li
-                          v-for="(employeePhone, index) in employee.phones"
-                          :key="index">
-                          {{ employeePhone.phone }}
-                        </li>
-                      </ul>
+                      <span
+                        v-for="(employeePhone, index) in employee.phones"
+                        :key="index"
+                      >
+                        {{ employeePhone.number }}
+                      </span>
                     </td>
                   </tr>
                   <tr v-if="$permission.has('read employee')">
                     <td><span class="font-w700">{{ $t('email') | titlecase }}</span></td>
                     <td>
-                      <ul>
-                        <li
-                          v-for="(employeeEmail, index) in employee.emails"
-                          :key="index">
-                          {{ employeeEmail.email }}
-                        </li>
-                      </ul>
+                      <span
+                        v-for="(employeeEmail, index) in employee.emails"
+                        :key="index"
+                      >
+                        {{ employeeEmail.email }}
+                      </span>
                     </td>
                   </tr>
                   <tr v-if="$permission.has('read employee')">
@@ -69,7 +100,8 @@
                       <ul>
                         <li
                           v-for="(employeeEmployeeAssessment, index) in employee.social_media"
-                          :key="index">
+                          :key="index"
+                        >
                           {{ employeeEmployeeAssessment.type }}
                           {{ employeeEmployeeAssessment.account }}
                         </li>
@@ -148,7 +180,8 @@
                       <ul>
                         <li
                           v-for="(employeeEmail, index) in employee.company_emails"
-                          :key="index">
+                          :key="index"
+                        >
                           {{ employeeEmail.email }}
                         </li>
                       </ul>
@@ -160,7 +193,8 @@
                       <ul>
                         <li
                           v-for="(employeeContract, index) in employee.contracts"
-                          :key="index">
+                          :key="index"
+                        >
                           {{ employeeContract.contract_begin | dateFormat('DD MMM YYYY') }} - {{ employeeContract.contract_end | dateFormat('DD MMM YYYY') }}
                           <br>{{ employeeContract.notes }}
                         </li>
@@ -173,7 +207,8 @@
                       <ul>
                         <li
                           v-for="(employeeSalaryHistory, index) in employee.salary_histories"
-                          :key="index">
+                          :key="index"
+                        >
                           <b>{{ $t('date') | titlecase }}</b> {{ employeeSalaryHistory.date | dateFormat('DD MMM YYYY') }}
                           <br>
                           <b>{{ $t('salary') | titlecase }}</b> {{ employeeSalaryHistory.salary | numberFormat }}
@@ -197,7 +232,10 @@
                     <td><span class="font-w700">{{ $t('employee scorer') | titlecase }}</span></td>
                     <td>
                       <ul>
-                        <li v-for="(employeeScorer, index) in employee.scorers" :key="index">
+                        <li
+                          v-for="(employeeScorer, index) in employee.scorers"
+                          :key="index"
+                        >
                           {{ employeeScorer.first_name | titlecase }} {{ employeeScorer.last_name | titlecase }}
                         </li>
                       </ul>
@@ -207,34 +245,65 @@
                     <td><span class="font-w700">{{ $t('user account') | titlecase }}</span></td>
                     <td>
                       <template v-if="employee.user">
-                      {{ employee.user.first_name | titlecase }} {{ employee.user.last_name | titlecase }}
+                        {{ employee.user.first_name | titlecase }} {{ employee.user.last_name | titlecase }}
                       </template>
                     </td>
                   </tr>
                 </template>
               </p-table>
             </div>
-            <div class="col-sm-12 mb-20">
-              <hr>
-              <router-link
-                :to="{ path: '/human-resource/employee/' + employee.id + '/edit', params: { id: employee.id }}"
-                v-if="$permission.has('update employee')"
-                class="btn btn-sm btn-primary mr-5">
-                Edit
-              </router-link>
-              <button
-                type="button"
-                @click="onDelete()"
-                v-if="$permission.has('delete employee')"
-                :disabled="isDeleting"
-                class="btn btn-sm btn-danger">
-                <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
-              </button>
+          </div>
+        </p-block-inner>
+      </p-block>
+      <p-block
+        v-if="$permission.has('read employee')"
+        :header="true"
+        :title="$t('attachment')"
+        column="col-sm-12"
+      >
+        <p-block-inner :is-loading="isLoading">
+          <div class="row">
+            <div
+              v-for="cloudStorage in cloudStorages"
+              :key="cloudStorage.id"
+              class="col-md-6 col-xl-3 mb-15"
+            >
+              <div class="card block-rounded block-link-shadow text-center">
+                <div
+                  v-if="cloudStorage.preview"
+                  class="block-content block-content-full bg-image"
+                  :style="'background-image: url(' + cloudStorage.preview + '); height: 130px'"
+                />
+                <div
+                  v-else
+                  class="block-content block-content-full bg-image"
+                  :style="'height: 130px'"
+                />
+                <div
+                  class="block-content block-content-full block-content-sm"
+                  style="height:50px;overflow: auto"
+                >
+                  <div class="font-size-sm">
+                    {{ cloudStorage.notes }}
+                  </div>
+                </div>
+                <div class="p-5">
+                  <a :href="cloudStorage.download_url"><i class="fa fa-download" /></a>
+                </div>
+              </div>
             </div>
           </div>
         </p-block-inner>
       </p-block>
     </div>
+    <m-add-employee
+      ref="addEmployee"
+      @added="onAdded"
+    />
+    <m-edit-employee
+      ref="editEmployee"
+      @updated="onUpdated"
+    />
   </div>
 </template>
 
@@ -262,35 +331,71 @@ export default {
   },
   computed: {
     ...mapGetters('humanResourceEmployee', ['employee', 'employees']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    ...mapGetters('cloudStorage', ['cloudStorages'])
   },
   created () {
-    this.isLoading = true
-    this.findEmployee({ id: this.id }).then(response => {
-      if (this.employee.scorers) {
-        this.employee.scorers.find((element) => {
-          if (element.id == this.authUser.id) {
-            this.isScorer = true
-          }
-        })
-      }
-      this.isLoading = false
-    }).catch(error => {
-      console.log(JSON.stringify(error))
-    })
+    this.findEmployeeRequest()
   },
   methods: {
     ...mapActions('humanResourceEmployee', { findEmployee: 'find', deleteEmployee: 'delete' }),
+    ...mapActions('cloudStorage', { getAttachment: 'get' }),
+    onAdded (employee) {
+      this.$router.push('/human-resource/employee/' + employee.id)
+      this.id = employee.id
+      this.findEmployeeRequest()
+    },
+    onUpdated (employee) {
+      this.id = employee.id
+      this.findEmployeeRequest()
+    },
+    findEmployeeRequest () {
+      this.isLoading = true
+      this.findEmployee({ id: this.id }).then(response => {
+        if (this.employee.scorers) {
+          this.employee.scorers.find((element) => {
+            if (element.id == this.authUser.id) {
+              this.isScorer = true
+            }
+          })
+        }
+        this.isLoading = false
+      }).catch(error => {
+        console.log(JSON.stringify(error))
+      })
+      this.getAttachmentRequest()
+    },
     onDelete () {
-      this.isDeleting = true
-      this.deleteEmployee({ id: this.id })
-        .then(response => {
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.deleteEmployee({
+          id: this.id
+        }).then(response => {
           this.isDeleting = false
           this.$router.push('/human-resource/employee')
-        }).catch(error => {
+        }).catch(response => {
           this.isDeleting = false
-          console.log(JSON.stringify(error))
+          this.$notification.error('cannot delete this employee')
         })
+      })
+    },
+    getAttachmentRequest () {
+      this.isLoading = true
+      this.getAttachment({
+        params: {
+          filter_equal: {
+            is_user_protected: false,
+            feature: 'employee',
+            feature_id: this.id
+          },
+          is_project_protected: true,
+          sort_by: '-id'
+        }
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+      })
     }
   }
 }

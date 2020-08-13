@@ -37,5 +37,11 @@ export default {
       }
       return transform
     })
+    Vue.upperCase = function (value, transformValue = true) {
+      if (!value) return ''
+      if (!transformValue) return value
+      value = value.toString()
+      return value.toUpperCase()
+    }
   }
 }

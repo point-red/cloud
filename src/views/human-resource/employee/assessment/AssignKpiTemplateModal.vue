@@ -2,44 +2,60 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmit">
+      @submit.prevent="onSubmit"
+    >
       <p-modal
         id="assign-assessment-modal"
         ref="assignKpiTemplate"
-        title="Assign Kpi Template">
+        title="Assign Kpi Template"
+      >
         <template slot="content">
-          <div class="list-group mb-20">
-            <template v-for="(template, index) in templates" v-if="templates.length > 0">
+          <div
+            v-if="templates.length > 0"
+            class="list-group mb-20"
+          >
+            <template v-for="(templateKpi, templateIndex) in templates">
               <a
-                :key="index"
-                @click="choose(template, index)"
-                @dblclick="chooseAndSubmit(template, index)"
+                :key="templateIndex"
                 class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
                 :class="{
-                  'active': selectedIndex === index
+                  'active': selectedIndex === templateIndex
                 }"
-                href="javascript:void(0)">
-                  <span><i class="fa fa-fw fa-hand-o-right mr-5"></i> {{ template.name }}</span>
+                href="javascript:void(0)"
+                @click="choose(templateKpi, templateIndex)"
+                @dblclick="chooseAndSubmit(templateKpi, templateIndex)"
+              >
+                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ templateKpi.name }}</span>
               </a>
             </template>
-            <template v-if="templates.length === 0">
-              <h3 class="text-center">KPI Template not found</h3>
-              <router-link
-                to="/human-resource/kpi"
-                class="btn btn-primary">Create new KPI Template
-              </router-link>
-            </template>
+          </div>
+          <div v-else>
+            <h5 class="text-center">
+              KPI Template not found
+            </h5>
+            <router-link
+              to="/human-resource/kpi"
+              class="btn btn-primary"
+            >
+              Create new KPI Template
+            </router-link>
           </div>
         </template>
         <template slot="footer">
-          <div v-if="templates.length > 0 && !loading">
-            <button type="submit" class="btn btn-primary">Add</button>
+          <div v-if="templates.length > 0 && !isLoading">
+            <button
+              type="submit"
+              class="btn btn-sm btn-primary"
+            >
+              Add
+            </button>
           </div>
           <button
             type="button"
-            class="btn btn-outline-danger"
-            @click="$refs.assignKpiTemplate.close()">
-            Close
+            class="btn btn-sm btn-outline-danger"
+            @click="$refs.assignKpiTemplate.close()"
+          >
+            {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>
@@ -56,7 +72,7 @@ export default {
       employeeId: null,
       template: null,
       selectedIndex: null,
-      loading: false
+      isLoading: false
     }
   },
   computed: {
@@ -85,8 +101,8 @@ export default {
     },
     onSubmit () {
       this.assignAssessment({
-        'employee_id': this.employeeId,
-        'kpi_template_id': this.template.id
+        employee_id: this.employeeId,
+        kpi_template_id: this.template.id
       }).then((response) => {
         this.template = null
         this.$emit('assigned', response.data.kpi_template_id)
@@ -96,8 +112,8 @@ export default {
     chooseAndSubmit (template, index) {
       this.choose(template, index)
       this.assignAssessment({
-        'employee_id': this.employeeId,
-        'kpi_template_id': this.template.id
+        employee_id: this.employeeId,
+        kpi_template_id: this.template.id
       }).then((response) => {
         this.template = null
         this.$emit('assigned', response.data.kpi_template_id)

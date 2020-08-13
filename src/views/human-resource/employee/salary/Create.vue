@@ -1,64 +1,97 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <router-link
         to="/human-resource/employee"
-        class="breadcrumb-item">{{ $t('employee') | titlecase }}</router-link>
+        class="breadcrumb-item"
+      >
+        {{ $t('employee') | titlecase }}
+      </router-link>
       <router-link
         :to="'/human-resource/employee/' + employee.id"
-        class="breadcrumb-item">{{ employee.name | titlecase }}</router-link>
+        class="breadcrumb-item"
+      >
+        {{ employee.name | titlecase }}
+      </router-link>
       <router-link
         :to="'/human-resource/employee/' + employee.id + '/salary'"
-        class="breadcrumb-item">Salary</router-link>
+        class="breadcrumb-item"
+      >
+        Salary
+      </router-link>
       <span class="breadcrumb-item active">Create</span>
     </breadcrumb>
 
-    <employee-widget :id="id"></employee-widget>
+    <employee-widget :id="id" />
 
-    <tab-menu/>
+    <tab-menu />
 
-    <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('employee salary')" :header="true">
-        <p-block-inner :is-loading="loading">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
+      <p-block
+        :title="$t('employee salary')"
+        :header="true"
+      >
+        <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
               <p-form-row
                 id="name"
-                :label="$t('name')">
-                <div slot="body" class="col-lg-9 col-form-label">
+                :label="$t('name')"
+              >
+                <div
+                  slot="body"
+                  class="col-lg-9 col-form-label"
+                >
                   {{ employee.name }}
                 </div>
               </p-form-row>
               <p-form-row
                 id="job-location"
-                :label="$t('location')">
-                <div slot="body" class="col-lg-9 col-form-label">
+                :label="$t('location')"
+              >
+                <div
+                  slot="body"
+                  class="col-lg-9 col-form-label"
+                >
                   {{ form.job_location }}
                 </div>
               </p-form-row>
               <p-form-row
                 id="salary-date"
-                :label="$t('period')">
-                <div slot="body" class="col-lg-9">
+                :label="$t('period')"
+              >
+                <div
+                  slot="body"
+                  class="col-lg-9"
+                >
                   <p-date-range-picker
+                    v-model="form.date"
                     name="assessment-date"
                     :help="$t('assessment date help')"
-                    v-model="form.date"/>
+                  />
                 </div>
               </p-form-row>
               <p-form-row
                 id="active-days-in-month"
                 name="active-days-in-month"
-                :label="$t('active days / month')">
-                <div slot="body" class="col-lg-3">
+                :label="$t('active days / month')"
+              >
+                <div
+                  slot="body"
+                  class="col-lg-3"
+                >
                   <p-form-number
                     v-model="form.active_days_in_month"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('active-days-in-month')"
-                    @errors="form.errors.set('active-days-in-month', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('active-days-in-month', null)"
+                  />
                 </div>
               </p-form-row>
             </div>
@@ -66,85 +99,126 @@
 
           <p-table>
             <tr slot="p-head">
-              <th class="font-size-h6 font-w700"></th>
-              <th class="font-size-h6 font-w700"></th>
-              <th class="font-size-h6 font-w700">{{ 'W1' }}</th>
-              <th class="font-size-h6 font-w700">{{ 'W2' }}</th>
-              <th class="font-size-h6 font-w700">{{ 'W3' }}</th>
-              <th class="font-size-h6 font-w700">{{ 'W4' }}</th>
-              <th class="font-size-h6 font-w700">{{ 'W5' }}</th>
-              <th class="font-size-h6 font-w700">{{ $t('weight') }}</th>
+              <th class="font-size-h6 font-w700" />
+              <th class="font-size-h6 font-w700" />
+              <th class="font-size-h6 font-w700">
+                {{ 'W1' }}
+              </th>
+              <th class="font-size-h6 font-w700">
+                {{ 'W2' }}
+              </th>
+              <th class="font-size-h6 font-w700">
+                {{ 'W3' }}
+              </th>
+              <th class="font-size-h6 font-w700">
+                {{ 'W4' }}
+              </th>
+              <th class="font-size-h6 font-w700">
+                {{ 'W5' }}
+              </th>
+              <th class="font-size-h6 font-w700">
+                {{ $t('weight') }}
+              </th>
             </tr>
 
             <tr slot="p-body">
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700">{{ $t('active days') | uppercase }}</td>
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700">
+                {{ $t('active days') | uppercase }}
+              </td>
               <td class="font-size-h6 font-w700">
                 <p-form-number
                   v-model="form.active_days_week_1"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('active-days-week-1')"
-                  @errors="form.errors.set('active-days-week-1', null)"/>
+                  @errors="form.errors.set('active-days-week-1', null)"
+                />
               </td>
               <td class="font-size-h6 font-w700">
                 <p-form-number
                   v-model="form.active_days_week_2"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('active-days-week-2')"
-                  @errors="form.errors.set('active-days-week-2', null)"/>
+                  @errors="form.errors.set('active-days-week-2', null)"
+                />
               </td>
               <td class="font-size-h6 font-w700">
                 <p-form-number
                   v-model="form.active_days_week_3"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('active-days-week-3')"
-                  @errors="form.errors.set('active-days-week-3', null)"/>
+                  @errors="form.errors.set('active-days-week-3', null)"
+                />
               </td>
               <td class="font-size-h6 font-w700">
                 <p-form-number
                   v-model="form.active_days_week_4"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('active-days-week-4')"
-                  @errors="form.errors.set('active-days-week-4', null)"/>
+                  @errors="form.errors.set('active-days-week-4', null)"
+                />
               </td>
               <td class="font-size-h6 font-w700">
                 <p-form-number
                   v-model="form.active_days_week_5"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('active-days-week-5')"
-                  @errors="form.errors.set('active-days-week-5', null)"/>
+                  @errors="form.errors.set('active-days-week-5', null)"
+                />
               </td>
-              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700" />
             </tr>
 
             <tr slot="p-body">
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700">{{ $t('minimum component') | uppercase }}</td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700">
+                {{ $t('minimum component') | uppercase }}
+              </td>
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
             </tr>
 
-            <tr slot="p-body" v-for="(indicator, indicatorIndex) in form.salary_assessment.indicators" :key="'indicator' + indicator.id">
+            <tr
+              v-for="(indicator, indicatorIndex) in form.salary_assessment.indicators"
+              slot="p-body"
+              :key="'indicator' + indicator.id"
+            >
               <td>{{ indicatorIndex + 1 }}</td>
               <td>{{ indicator.name }}</td>
               <td>{{ indicator.score_percentage.week1 | numberFormat }}%</td>
@@ -155,45 +229,80 @@
               <td>
                 <p-form-input
                   id="indicator-weight"
-                  name="indicator-weight"
                   v-model="indicator.weight"
-                  :disabled="loadingSaveButton"
+                  name="indicator-weight"
+                  :disabled="isSaving"
+                  :is-text-right="false"
                   @input="salaryAssessmentWeight"
-                  :is-text-right="false"/>
+                />
               </td>
             </tr>
 
             <tr slot="p-body">
-              <td class="text-center font-w700"><span class=""></span></td>
-              <td class="font-size-h6 font-w700">{{ $t('minimum component score') | uppercase }}</td>
-              <td class="font-w700"><span class="">{{ form.salary_assessment.total.week1 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ form.salary_assessment.total.week2 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ form.salary_assessment.total.week3 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ form.salary_assessment.total.week4 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ form.salary_assessment.total.week5 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ average_minimum_component_score | numberFormat }}%</span></td>
+              <td class="text-center font-w700">
+                <span class="" />
+              </td>
+              <td class="font-size-h6 font-w700">
+                {{ $t('minimum component score') | uppercase }}
+              </td>
+              <td class="font-w700">
+                <span class="">{{ form.salary_assessment.total.week1 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ form.salary_assessment.total.week2 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ form.salary_assessment.total.week3 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ form.salary_assessment.total.week4 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ form.salary_assessment.total.week5 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ average_minimum_component_score | numberFormat }}%</span>
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700">{{ $t('additional component') | uppercase }}</td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700">
+                {{ $t('additional component') | uppercase }}
+              </td>
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
             </tr>
 
             <tr slot="p-body">
@@ -207,11 +316,12 @@
               <td>
                 <p-form-input
                   id="balance-weight"
-                  name="balance-weight"
                   v-model="form.salary_achievement.automated.balance.weight"
-                  :disabled="loadingSaveButton"
+                  name="balance-weight"
+                  :disabled="isSaving"
+                  :is-text-right="false"
                   @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
+                />
               </td>
             </tr>
 
@@ -226,11 +336,12 @@
               <td>
                 <p-form-input
                   id="call-national-achievement-weight"
-                  name="call-national-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_national_call.weight"
-                  :disabled="loadingSaveButton"
+                  name="call-national-achievement-weight"
+                  :disabled="isSaving"
+                  :is-text-right="false"
                   @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
+                />
               </td>
             </tr>
 
@@ -245,11 +356,12 @@
               <td>
                 <p-form-input
                   id="effective-call-national-achievement-weight"
-                  name="effective-call-national-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_national_effective_call.weight"
-                  :disabled="loadingSaveButton"
+                  name="effective-call-national-achievement-weight"
+                  :disabled="isSaving"
+                  :is-text-right="false"
                   @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
+                />
               </td>
             </tr>
 
@@ -264,11 +376,12 @@
               <td>
                 <p-form-input
                   id="value-national-achievement-weight"
-                  name="value-national-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_national_value.weight"
-                  :disabled="loadingSaveButton"
+                  name="value-national-achievement-weight"
+                  :disabled="isSaving"
+                  :is-text-right="false"
                   @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
+                />
               </td>
             </tr>
 
@@ -283,11 +396,12 @@
               <td>
                 <p-form-input
                   id="call-area-achievement-weight"
-                  name="call-area-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_area_call.weight"
-                  :disabled="loadingSaveButton"
+                  name="call-area-achievement-weight"
+                  :disabled="isSaving"
+                  :is-text-right="false"
                   @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
+                />
               </td>
             </tr>
 
@@ -302,11 +416,12 @@
               <td>
                 <p-form-input
                   id="effective-call-area-achievement-weight"
-                  name="effective-call-area-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_area_effective_call.weight"
-                  :disabled="loadingSaveButton"
+                  name="effective-call-area-achievement-weight"
+                  :disabled="isSaving"
+                  :is-text-right="false"
                   @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
+                />
               </td>
             </tr>
 
@@ -321,524 +436,646 @@
               <td>
                 <p-form-input
                   id="value-area-achievement-weight"
-                  name="value-area-achievement-weight"
                   v-model="form.salary_achievement.automated.achievement_area_value.weight"
-                  :disabled="loadingSaveButton"
+                  name="value-area-achievement-weight"
+                  :disabled="isSaving"
+                  :is-text-right="false"
                   @input="salaryAchievementWeight"
-                  :is-text-right="false"/>
+                />
               </td>
             </tr>
 
             <tr slot="p-body">
-              <td class="text-center font-w700"><span class=""></span></td>
-              <td class="font-size-h6 font-w700">{{ $t('additional component score') | uppercase }}</td>
-              <td class="font-w700"><span class="">{{ form.salary_achievement.total.week1 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ form.salary_achievement.total.week2 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ form.salary_achievement.total.week3 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ form.salary_achievement.total.week4 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ form.salary_achievement.total.week5 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ average_additional_component_score | numberFormat }}%</span></td>
+              <td class="text-center font-w700">
+                <span class="" />
+              </td>
+              <td class="font-size-h6 font-w700">
+                {{ $t('additional component score') | uppercase }}
+              </td>
+              <td class="font-w700">
+                <span class="">{{ form.salary_achievement.total.week1 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ form.salary_achievement.total.week2 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ form.salary_achievement.total.week3 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ form.salary_achievement.total.week4 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ form.salary_achievement.total.week5 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ average_additional_component_score | numberFormat }}%</span>
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
-              <td class="font-size-h6 font-w700">{{ $t('final score') | uppercase }}</td>
-              <td class="font-w700"><span class="">{{ salary_final_score.week1 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ salary_final_score.week2 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ salary_final_score.week3 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ salary_final_score.week4 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ salary_final_score.week5 | numberFormat }}%</span></td>
-              <td class="font-w700"><span class="">{{ average_final_score | numberFormat }}%</span></td>
+              <td />
+              <td class="font-size-h6 font-w700">
+                {{ $t('final score') | uppercase }}
+              </td>
+              <td class="font-w700">
+                <span class="">{{ salary_final_score.week1 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ salary_final_score.week2 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ salary_final_score.week3 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ salary_final_score.week4 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ salary_final_score.week5 | numberFormat }}%</span>
+              </td>
+              <td class="font-w700">
+                <span class="">{{ average_final_score | numberFormat }}%</span>
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
-              <td class="font-size-h6 font-w700"><br/><br/></td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
+              <td class="font-size-h6 font-w700">
+                <br><br>
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('minimum component amount') | titlecase }}</td>
               <td><span class="">Rp {{ minimum_component_amount_week_1 | numberFormat }}</span></td>
               <td><span class="">Rp {{ minimum_component_amount_week_2 | numberFormat }}</span></td>
               <td><span class="">Rp {{ minimum_component_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ minimum_component_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ minimum_component_amount_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('additional component amount') | titlecase }}</td>
               <td><span class="">Rp {{ additional_component_amount_week_1 | numberFormat }}</span></td>
               <td><span class="">Rp {{ additional_component_amount_week_2 | numberFormat }}</span></td>
               <td><span class="">Rp {{ additional_component_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ additional_component_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ additional_component_amount_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('total amount') | titlecase }}</td>
               <td><span class="">Rp {{ total_component_amount_week_1 | numberFormat }}</span></td>
               <td><span class="">Rp {{ total_component_amount_week_2 | numberFormat }}</span></td>
               <td><span class="">Rp {{ total_component_amount_week_3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ total_component_amount_week_4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ total_component_amount_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
-              <td class="font-size-h6 font-w700">{{ $t('total amount with allowance') | titlecase }}</td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_week_1 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_week_2 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_week_3 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_week_4 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_week_5 | numberFormat }}</span></td>
-              <td class="font-w700"><span class=""></span></td>
+              <td />
+              <td class="font-size-h6 font-w700">
+                {{ $t('total amount with allowance') | titlecase }}
+              </td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_week_1 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_week_2 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_week_3 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_week_4 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_week_5 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="" />
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('receivable cut > 60 days') | titlecase }}</td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.receivable_cut_60_days_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('receivable-cut-60-days-week-1')"
-                    @errors="form.errors.set('receivable-cut-60-days-week-1', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('receivable-cut-60-days-week-1', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.receivable_cut_60_days_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('receivable-cut-60-days-week-2')"
-                    @errors="form.errors.set('receivable-cut-60-days-week-2', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('receivable-cut-60-days-week-2', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.receivable_cut_60_days_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('receivable-cut-60-days-week-3')"
-                    @errors="form.errors.set('receivable-cut-60-days-week-3', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('receivable-cut-60-days-week-3', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.receivable_cut_60_days_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('receivable-cut-60-days-week-4')"
-                    @errors="form.errors.set('receivable-cut-60-days-week-4', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('receivable-cut-60-days-week-4', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.receivable_cut_60_days_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('receivable-cut-60-days-week-5')"
-                    @errors="form.errors.set('receivable-cut-60-days-week-5', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('receivable-cut-60-days-week-5', null)"
+                  />
                 </span>
               </td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
-              <td class="font-size-h6 font-w700">{{ $t('total amount received') | titlecase }}</td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_received_week_1 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_received_week_2 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_received_week_3 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_received_week_4 | numberFormat }}</span></td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_received_week_5 | numberFormat }}</span></td>
-              <td class="font-w700"><span class=""></span></td>
+              <td />
+              <td class="font-size-h6 font-w700">
+                {{ $t('total amount received') | titlecase }}
+              </td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_received_week_1 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_received_week_2 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_received_week_3 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_received_week_4 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_received_week_5 | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="" />
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-w700"><span class="">Rp {{ total_amount_received | numberFormat }}</span></td>
-              <td class="font-w700"><span class=""></span></td>
+              <td />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-w700">
+                <span class="">Rp {{ total_amount_received | numberFormat }}</span>
+              </td>
+              <td class="font-w700">
+                <span class="" />
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
-              <td class="font-size-h6 font-w700">{{ $t('maximum amount receivable') | titlecase }}</td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
+              <td />
+              <td class="font-size-h6 font-w700">
+                {{ $t('maximum amount receivable') | titlecase }}
+              </td>
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.maximum_salary_amount"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('maximum-salary-amount')"
-                    @errors="form.errors.set('maximum-salary-amount', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('maximum-salary-amount', null)"
+                  />
                 </span>
               </td>
-              <td class="font-size-h6 font-w700">{{ $t('if kpi 100%') | titlecase }}</td>
+              <td class="font-size-h6 font-w700">
+                {{ $t('if kpi 100%') | titlecase }}
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
-              <td class="font-size-h6 font-w700">{{ $t('amount received difference') | titlecase }}</td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700"></td>
-              <td class="font-size-h6 font-w700">Rp {{ amount_received_difference | numberFormat }}</td>
-              <td class="font-w700"><span class=""></span></td>
+              <td />
+              <td class="font-size-h6 font-w700">
+                {{ $t('amount received difference') | titlecase }}
+              </td>
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700" />
+              <td class="font-size-h6 font-w700">
+                Rp {{ amount_received_difference | numberFormat }}
+              </td>
+              <td class="font-w700">
+                <span class="" />
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('company profit') | titlecase }}</td>
               <td><span class="">Rp {{ company_profit_week_1 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_week_2 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_week_3 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_week_4 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_week_5 | numberFormat }}</span></td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('overdue receivable') | titlecase }}</td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.overdue_receivable_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('overdue-receivable-week-1')"
-                    @errors="form.errors.set('overdue-receivable-week-1', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('overdue-receivable-week-1', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.overdue_receivable_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('overdue-receivable-week-2')"
-                    @errors="form.errors.set('overdue-receivable-week-2', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('overdue-receivable-week-2', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.overdue_receivable_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('overdue-receivable-week-3')"
-                    @errors="form.errors.set('overdue-receivable-week-3', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('overdue-receivable-week-3', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.overdue_receivable_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('overdue-receivable-week-4')"
-                    @errors="form.errors.set('overdue-receivable-week-4', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('overdue-receivable-week-4', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.overdue_receivable_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('overdue-receivable-week-5')"
-                    @errors="form.errors.set('overdue-receivable-week-5', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('overdue-receivable-week-5', null)"
+                  />
                 </span>
               </td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('payment from marketing') | titlecase }}</td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_marketing_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-marketing-week-1')"
-                    @errors="form.errors.set('payment-from-marketing-week-1', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-marketing-week-1', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_marketing_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-marketing-week-2')"
-                    @errors="form.errors.set('payment-from-marketing-week-2', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-marketing-week-2', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_marketing_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-marketing-week-3')"
-                    @errors="form.errors.set('payment-from-marketing-week-3', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-marketing-week-3', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_marketing_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-marketing-week-4')"
-                    @errors="form.errors.set('payment-from-marketing-week-4', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-marketing-week-4', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_marketing_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-marketing-week-5')"
-                    @errors="form.errors.set('payment-from-marketing-week-5', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-marketing-week-5', null)"
+                  />
                 </span>
               </td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('payment from sales') | titlecase }}</td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_sales_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-sales-week-1')"
-                    @errors="form.errors.set('payment-from-sales-week-1', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-sales-week-1', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_sales_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-sales-week-2')"
-                    @errors="form.errors.set('payment-from-sales-week-2', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-sales-week-2', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_sales_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-sales-week-3')"
-                    @errors="form.errors.set('payment-from-sales-week-3', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-sales-week-3', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_sales_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-sales-week-4')"
-                    @errors="form.errors.set('payment-from-sales-week-4', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-sales-week-4', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_sales_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-sales-week-5')"
-                    @errors="form.errors.set('payment-from-sales-week-5', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-sales-week-5', null)"
+                  />
                 </span>
               </td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('payment from spg') | titlecase }}</td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_spg_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-spg-week-1')"
-                    @errors="form.errors.set('payment-from-spg-week-1', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-spg-week-1', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_spg_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-spg-week-2')"
-                    @errors="form.errors.set('payment-from-spg-week-2', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-spg-week-2', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_spg_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-spg-week-3')"
-                    @errors="form.errors.set('payment-from-spg-week-3', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-spg-week-3', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_spg_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-spg-week-4')"
-                    @errors="form.errors.set('payment-from-spg-week-4', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-spg-week-4', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.payment_from_spg_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('payment-from-spg-week-5')"
-                    @errors="form.errors.set('payment-from-spg-week-5', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('payment-from-spg-week-5', null)"
+                  />
                 </span>
               </td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('received cash payment') | titlecase }}</td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.cash_payment_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('cash-payment-week-1')"
-                    @errors="form.errors.set('cash-payment-week-1', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('cash-payment-week-1', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.cash_payment_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('cash-payment-week-2')"
-                    @errors="form.errors.set('cash-payment-week-2', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('cash-payment-week-2', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.cash_payment_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('cash-payment-week-3')"
-                    @errors="form.errors.set('cash-payment-week-3', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('cash-payment-week-3', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.cash_payment_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('cash-payment-week-4')"
-                    @errors="form.errors.set('cash-payment-week-4', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('cash-payment-week-4', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.cash_payment_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('cash-payment-week-5')"
-                    @errors="form.errors.set('cash-payment-week-5', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('cash-payment-week-5', null)"
+                  />
                 </span>
               </td>
-              <td class="font-w700"><span class="">Rp {{ total_payment | numberFormat }}</span></td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_payment | numberFormat }}</span>
+              </td>
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('settlement difference minus amount') | titlecase }}</td>
               <td><span class="">Rp {{ settlement_difference_minus_amount_week_1 | numberFormat }}</span></td>
               <td><span class="">Rp {{ settlement_difference_minus_amount_week_2 | numberFormat }}</span></td>
@@ -849,7 +1086,7 @@
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('company profit difference minus amount') | titlecase }}</td>
               <td><span class="">Rp {{ company_profit_difference_minus_amount_week_1 | numberFormat }}</span></td>
               <td><span class="">Rp {{ company_profit_difference_minus_amount_week_2 | numberFormat }}</span></td>
@@ -860,7 +1097,7 @@
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('weekly sales') | titlecase }}</td>
               <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week1 | numberFormat }}</span></td>
               <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week2 | numberFormat }}</span></td>
@@ -871,80 +1108,90 @@
             </tr>
 
             <tr slot="p-body">
-              <td></td>
+              <td />
               <td>{{ $t('wa daily report') | titlecase }}</td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.wa_daily_report_week_1"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('wa-daily-report-week-1')"
-                    @errors="form.errors.set('wa-daily-report-week-1', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('wa-daily-report-week-1', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.wa_daily_report_week_2"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('wa-daily-report-week-2')"
-                    @errors="form.errors.set('wa-daily-report-week-2', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('wa-daily-report-week-2', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.wa_daily_report_week_3"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('wa-daily-report-week-3')"
-                    @errors="form.errors.set('wa-daily-report-week-3', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('wa-daily-report-week-3', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.wa_daily_report_week_4"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('wa-daily-report-week-4')"
-                    @errors="form.errors.set('wa-daily-report-week-4', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('wa-daily-report-week-4', null)"
+                  />
                 </span>
               </td>
               <td>
                 <span class="">
                   <p-form-number
                     v-model="form.wa_daily_report_week_5"
-                    :disabled="loadingSaveButton"
+                    :disabled="isSaving"
                     :is-text-right="false"
-                    @input="calculate"
                     :errors="form.errors.get('wa-daily-report-week-5')"
-                    @errors="form.errors.set('wa-daily-report-week-5', null)"/>
+                    @input="calculate"
+                    @errors="form.errors.set('wa-daily-report-week-5', null)"
+                  />
                 </span>
               </td>
-              <td><span class=""></span></td>
+              <td><span class="" /></td>
             </tr>
           </p-table>
           <div class="form-group row">
             <div class="col-md-12">
               <hr>
               <button
-                :disabled="loadingSaveButton"
+                :disabled="isSaving"
                 type="submit"
-                class="btn btn-sm btn-primary mr-5">
-                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+                class="btn btn-sm btn-primary mr-5"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
               </button>
               <button
                 type="button"
+                class="btn btn-sm btn-outline-danger"
                 @click="cancel"
-                class="btn btn-sm btn-outline-danger">
-                Cancel
+              >
+                {{ $t('cancel') | uppercase }}
               </button>
             </div>
           </div>
@@ -968,6 +1215,12 @@ export default {
     Breadcrumb,
     BreadcrumbHumanResource,
     EmployeeWidget
+  },
+  props: {
+    name: {
+      type: String,
+      default: ''
+    }
   },
   data () {
     return {
@@ -1107,8 +1360,8 @@ export default {
       company_profit_difference_minus_amount_week_3: 0,
       company_profit_difference_minus_amount_week_4: 0,
       company_profit_difference_minus_amount_week_5: 0,
-      loading: true,
-      loadingSaveButton: false,
+      isLoading: true,
+      isSaving: false,
       previousSalaryAchievement: {},
       average_minimum_component_score: 0,
       average_additional_component_score: 0,
@@ -1120,56 +1373,51 @@ export default {
       amount_received_difference: 0
     }
   },
-  props: {
-    name: {
-      type: String
-    }
-  },
-  watch: {
-    'form.date' () {
-      if (!this.loadingSaveButton && this.form.date.start && this.form.date.end) {
-        this.loading = true
-        this.getAssessment()
-      }
-    },
-    'form.activeDaysInMonth' () {
-      if (!this.loading) {
-        this.calculate()
-      }
-    },
-    'form.active_days_week_1' () {
-      if (!this.loading) {
-        this.calculate()
-      }
-    },
-    'form.active_days_week_2' () {
-      if (!this.loading) {
-        this.calculate()
-      }
-    },
-    'form.active_days_week_3' () {
-      if (!this.loading) {
-        this.calculate()
-      }
-    },
-    'form.active_days_week_4' () {
-      if (!this.loading) {
-        this.calculate()
-      }
-    },
-    'form.active_days_week_5' () {
-      if (!this.loading) {
-        this.calculate()
-      }
-    }
-  },
   computed: {
     ...mapGetters('humanResourceEmployee', ['employee']),
     ...mapGetters('humanResourceEmployeeAssessment', ['assessment']),
     ...mapGetters('humanResourceEmployeeSalary', ['salary', 'salaryAssessment', 'salaryAchievement'])
   },
+  watch: {
+    'form.date' () {
+      if (!this.isSaving && this.form.date.start && this.form.date.end) {
+        this.isLoading = true
+        this.getAssessment()
+      }
+    },
+    'form.activeDaysInMonth' () {
+      if (!this.isLoading) {
+        this.calculate()
+      }
+    },
+    'form.active_days_week_1' () {
+      if (!this.isLoading) {
+        this.calculate()
+      }
+    },
+    'form.active_days_week_2' () {
+      if (!this.isLoading) {
+        this.calculate()
+      }
+    },
+    'form.active_days_week_3' () {
+      if (!this.isLoading) {
+        this.calculate()
+      }
+    },
+    'form.active_days_week_4' () {
+      if (!this.isLoading) {
+        this.calculate()
+      }
+    },
+    'form.active_days_week_5' () {
+      if (!this.isLoading) {
+        this.calculate()
+      }
+    }
+  },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.findEmployee({ id: this.id })
       .then((response) => {
         this.form.daily_transport_allowance = Number(this.employee.daily_transport_allowance) || 0
@@ -1182,7 +1430,7 @@ export default {
         }
         this.getAssessment()
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         console.log(JSON.stringify(error))
       })
   },
@@ -1199,16 +1447,16 @@ export default {
       this.$router.go(-1)
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.createEmployeeSalary({ employeeId: this.employee.id, form: this.form })
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.success('Create success')
             this.$router.push('/human-resource/employee/' + this.employee.id + '/salary/' + response.data.id)
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.error('Create failed', error.message)
             this.form.errors.record(error.errors)
           }
@@ -1228,7 +1476,7 @@ export default {
           this.getAchievement()
         },
         (error) => {
-          this.loading = false
+          this.isLoading = false
           console.log(JSON.stringify(error))
         }
       )
@@ -1254,10 +1502,10 @@ export default {
 
           this.$set(this, 'previousSalaryAchievement', this.salaryAchievement.automated)
           this.calculate()
-          this.loading = false
+          this.isLoading = false
         },
         (error) => {
-          this.loading = false
+          this.isLoading = false
           console.log(JSON.stringify(error))
         }
       )
@@ -1277,7 +1525,7 @@ export default {
         }
       })
 
-      if (!this.loading) {
+      if (!this.isLoading) {
         this.calculate()
       }
     },
@@ -1303,7 +1551,7 @@ export default {
         }
       }
 
-      if (!this.loading) {
+      if (!this.isLoading) {
         this.calculate()
       }
     },
@@ -1317,7 +1565,7 @@ export default {
       this.form.active_days_in_month = this.form.active_days_in_month || 0
 
       if (Number(this.form.active_days_in_month) != 0) {
-        let baseSalaryPerWeek = (this.form.base_salary || 0) / Number(this.form.active_days_in_month || 0)
+        const baseSalaryPerWeek = (this.form.base_salary || 0) / Number(this.form.active_days_in_month || 0)
 
         if (this.form.salary_assessment.indicators.length != 0) {
           this.base_salary_week_1 = baseSalaryPerWeek * Number(this.form.active_days_week_1 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week1 || 0)) / 100)

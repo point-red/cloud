@@ -6,9 +6,13 @@
       :class="{
         'block-mode-loading' : loading,
         'block-mode-hidden' : hidden
-      }">
+      }"
+      :style="{
+        'background-color' : background
+      }"
+    >
       <div class="block-content block-content-inner">
-        <slot/>
+        <slot />
       </div>
     </div>
   </div>
@@ -17,13 +21,24 @@
 <script>
 export default {
   props: {
-    isLoading: false,
-    isHidden: false
+    isLoading: {
+      type: Boolean,
+      default: false
+    },
+    isHidden: {
+      type: Boolean,
+      default: false
+    },
+    backgroundColor: {
+      type: String,
+      default: 'white'
+    }
   },
   data () {
     return {
       loading: this.isLoading,
-      hidden: this.isHidden
+      hidden: this.isHidden,
+      background: this.backgroundColor
     }
   },
   watch: {

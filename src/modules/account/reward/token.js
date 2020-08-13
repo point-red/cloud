@@ -35,7 +35,7 @@ const mutations = {
 
 const actions = {
   async get ({ commit }, payload) {
-    let { data, links, meta } = await api.get(url, { params: payload })
+    const { data, links, meta } = await api.get(url, { params: payload })
 
     commit('SET_TOKENS', data)
     commit('SET_LINKS', links)

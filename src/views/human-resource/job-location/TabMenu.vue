@@ -1,28 +1,60 @@
 <template>
-  <div class="mb-20">
-    <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
-      <slot></slot>
-      <li class="nav-item ml-auto" v-if="$permission.has('create employee')">
-        <router-link
-          to="/human-resource/job-location/create"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-plus"></i> Add</span>
-        </router-link>
-      </li>
-      <li class="nav-item" v-if="$permission.has('read employee')">
-        <router-link
-          to="/human-resource/job-location"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span><i class="si si-docs"></i> List</span>
-        </router-link>
-      </li>
-      <slot name="right"></slot>
-    </ul>
-  </div>
+  <ul
+    class="nav nav-tabs nav-tabs-alt mb-10"
+    data-toggle="tabs"
+    role="tablist"
+  >
+    <slot />
+    <li
+      v-if="$permission.has('read employee')"
+      class="nav-item"
+    >
+      <router-link
+        to="/human-resource/employee"
+        class="nav-link"
+        active-class="active"
+      >
+        <span>{{ $t('employee') | uppercase }}</span>
+      </router-link>
+    </li>
+    <li
+      v-if="$permission.has('read employee')"
+      class="nav-item"
+    >
+      <router-link
+        to="/human-resource/employee-group"
+        class="nav-link"
+        active-class="active"
+      >
+        <span>{{ $t('group') | uppercase }}</span>
+      </router-link>
+    </li>
+    <li
+      v-if="$permission.has('read employee')"
+      class="nav-item"
+    >
+      <router-link
+        to="/human-resource/job-location"
+        class="nav-link"
+        active-class="active"
+      >
+        <span>{{ $t('job location') | uppercase }}</span>
+      </router-link>
+    </li>
+    <li
+      v-if="$permission.has('read employee')"
+      class="nav-item"
+    >
+      <router-link
+        to="/human-resource/employee-status"
+        class="nav-link"
+        active-class="active"
+      >
+        <span>{{ $t('employee status') | uppercase }}</span>
+      </router-link>
+    </li>
+    <slot name="right" />
+  </ul>
 </template>
 
 <script>

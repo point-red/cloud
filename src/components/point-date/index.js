@@ -2,7 +2,7 @@ import momentjs from 'moment-timezone'
 
 export default {
   install: (Vue) => {
-    let moment = momentjs
+    const moment = momentjs
     Vue.prototype.$moment = moment
     Vue.moment = moment
 
@@ -20,14 +20,28 @@ export default {
 
     Vue.mixin({
       methods: {
-        serverDate (string) {
+        formattedDate (string) {
           if (string) {
-            return this.$moment(string).tz('UTC').format('YYYY-MM-DD')
+            return this.$moment(string).format('DD-MM-YYYY')
           }
         },
-        serverDateTime (string) {
+        formattedDateTime (string) {
           if (string) {
-            return this.$moment(string).tz('UTC').format('YYYY-MM-DD HH:mm:ss')
+            return this.$moment(string).format('DD-MM-YYYY HH:mm')
+          }
+        },
+        serverDate (string = new Date()) {
+          if (string) {
+            return this.$moment(string).format('YYYY-MM-DD')
+          }
+        },
+        serverDateTime (string = new Date(), time = 'now') {
+          if (string && time == 'now') {
+            return this.$moment(string).format('YYYY-MM-DD HH:mm:ss')
+          } else if (string && time == 'start') {
+            return this.$moment(string).format('YYYY-MM-DD 00:00:00')
+          } else if (string && time == 'end') {
+            return this.$moment(string).format('YYYY-MM-DD 23:59:59')
           }
         }
       }

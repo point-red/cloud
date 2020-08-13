@@ -1,32 +1,33 @@
 <template>
   <div>
     <date-picker
-      :name="name"
-      :overlay="true"
-      :format="format"
-      :formatted="formatted"
-      :auto-close="autoClose"
-      :min-date="minDate"
-      :max-date="maxDate"
-      :only-date="onlyDate"
-      color="#343A40"
-      button-color="#343A40"
-      v-model="time">
-    </date-picker>
+      v-model="date"
+      v-mask="mask"
+      format="DD-MM-YYYY"
+      type="date"
+      :shortcuts="shortcuts"
+      value-type="YYYY-MM-DD"
+    />
 
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-feedback">{{ error }}</div>
+      class="invalid-feedback"
+    >
+      {{ error }}
+    </div>
     <div
       v-show="help"
-      class="form-text text-muted">{{ help }}</div>
+      class="form-text text-muted"
+    >
+      {{ help }}
+    </div>
   </div>
 </template>
 
 <script>
-import DatePicker from 'vue-ctk-date-time-picker'
-import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css'
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
 
 export default {
   components: {
@@ -35,66 +36,106 @@ export default {
   props: {
     name: {
       type: String,
-      required: false
-    },
-    type: {
-      type: String,
-      default: 'date'
+      default: null
     },
     value: {
-      type: [Object, String]
-    },
-    readonly: {
-      type: Boolean,
-      default: false
-    },
-    minDate: {
-      type: String,
-      default: null
-    },
-    maxDate: {
-      type: String,
-      default: null
-    },
-    onlyDate: {
-      type: Boolean,
-      default: true
+      type: [Date, String],
+      default: new Date()
     },
     help: {
-      type: String
+      type: String,
+      default: null
     },
     errors: {
-      type: Array
+      type: Array,
+      default: null
     }
   },
   data () {
     return {
-      time: this.value,
-      format: 'YYYY-MM-DD HH:mm:ss',
-      formatted: 'DD MMM YYYY HH:mm',
-      defaultMinDate: this.$moment('2000-01-01').format('YYYY-MM-DD'),
-      defaultMaxDate: this.$moment().format('YYYY-MM-DD'),
-      autoClose: true
+      mask: '##-##-####',
+      date: this.value,
+      shortcuts: [
+        {
+          text: 'Today',
+          onClick () {
+            const date = new Date()
+            return date
+          }
+        },
+        {
+          text: 'First',
+          onClick () {
+            const date = new Date()
+            date.setDate(1)
+            return date
+          }
+        },
+        {
+          text: 'Last',
+          onClick () {
+            const date = new Date()
+            date.setMonth(date.getMonth() + 1)
+            date.setDate(0)
+            return date
+          }
+        },
+        {
+          text: 'Yesterday',
+          onClick () {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24)
+            return date
+          }
+        },
+        {
+          text: 'Last Week',
+          onClick () {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+            return date
+          }
+        },
+        {
+          text: 'Last Month',
+          onClick () {
+            const date = new Date()
+            date.setMonth(date.getMonth() - 1)
+            return date
+          }
+        },
+        {
+          text: 'Last Year',
+          onClick () {
+            const date = new Date()
+            date.setYear(date.getFullYear() - 1)
+            return date
+          }
+        }
+      ]
     }
   },
   watch: {
-    time () {
-      this.$emit('input', this.time)
-    },
     value () {
-      this.time = this.value
-    }
-  },
-  mounted () {
-    if (this.type === 'date') {
-      this.format = 'YYYY-MM-DD HH:mm:ss'
-      this.formatted = 'DD MMM YYYY'
-      this.autoClose = true
-    } else {
-      this.format = 'YYYY-MM-DD HH:mm:ss'
-      this.formatted = 'DD MMM YYYY HH:mm'
-      this.autoClose = false
+      if (this.date != this.value) {
+        this.date = this.value
+      }
+    },
+    date () {
+      this.$emit('input', this.date)
     }
   }
 }
 </script>
+
+<style>
+.mx-datepicker-popup {
+  z-index: 9050 !important;
+}
+.mx-input {
+  min-width: 160px !important;
+}
+.mx-datepicker {
+  width: 170px !important;
+}
+</style>

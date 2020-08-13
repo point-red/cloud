@@ -7,7 +7,8 @@ const state = {
     code: '',
     name: ''
   },
-  groups: []
+  groups: [],
+  pagination: {}
 }
 
 const getters = {
@@ -16,12 +17,17 @@ const getters = {
   },
   groups: state => {
     return state.groups
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.groups = payload.data
+    state.pagination = payload.meta
+    console.log(state.pagination)
   },
   'FETCH_OBJECT' (state, payload) {
     state.group = payload.data

@@ -1,58 +1,81 @@
 <template>
   <div>
-    <span @click="show" class="link"><i class="fa fa-list mr-5"></i>{{ mutableLabel || 'SELECT'}}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select">
-      <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
-        <hr>
-        <div v-if="isLoadingSupplier || isLoadingCustomer || isLoadingEmployee">
-          <h3 class="text-center">Loading ...</h3>
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()"
+    >
+      <input
+        v-model="searchText"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        @keydown.enter.prevent=""
+      >
+      <hr>
+      <div v-if="isLoadingSupplier || isLoadingCustomer || isLoadingEmployee">
+        <h3 class="text-center">
+          Loading ...
+        </h3>
+      </div>
+      <template v-else>
+        <div
+          v-if="optionSuppliers"
+          class="list-group push"
+        >
+          <template v-for="(optionSupplier, index) in optionSuppliers">
+            <a
+              :key="'supplier-' + index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': optionSupplier.id == mutableId && type == 'supplier' }"
+              href="javascript:void(0)"
+              @click="choose(optionSupplier)"
+            >
+              [SUPPLIER] {{ optionSupplier.label | uppercase }}
+            </a>
+          </template>
+          <template v-for="(optionCustomer, index) in optionCustomers">
+            <a
+              :key="'customer-' + index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': optionCustomer.id == mutableId && type == 'customer' }"
+              href="javascript:void(0)"
+              @click="choose(optionCustomer)"
+            >
+              [CUSTOMER] {{ optionCustomer.label | uppercase }}
+            </a>
+          </template>
+          <template v-for="(optionEmployee, index) in optionEmployees">
+            <a
+              :key="'employee-' + index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': optionEmployee.id == mutableId && type == 'employee' }"
+              href="javascript:void(0)"
+              @click="choose(optionEmployee)"
+            >
+              [EMPLOYEE] {{ optionEmployee.label | uppercase }}
+            </a>
+          </template>
         </div>
-        <template v-else>
-          <div class="list-group push" v-if="optionSuppliers">
-            <template v-for="(optionSupplier, index) in optionSuppliers">
-              <a
-                :key="'supplier-' + index"
-                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                :class="{'active': optionSupplier.id == mutableId && type == 'supplier' }"
-                @click="choose(optionSupplier)"
-                href="javascript:void(0)">
-                [Supplier] {{ optionSupplier.label }}
-              </a>
-            </template>
-            <template v-for="(optionCustomer, index) in optionCustomers">
-              <a
-                :key="'customer-' + index"
-                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                :class="{'active': optionCustomer.id == mutableId && type == 'customer' }"
-                @click="choose(optionCustomer)"
-                href="javascript:void(0)">
-                [Customer] {{ optionCustomer.label }}
-              </a>
-            </template>
-            <template v-for="(optionEmployee, index) in optionEmployees">
-              <a
-                :key="'employee-' + index"
-                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                :class="{'active': optionEmployee.id == mutableId && type == 'employee' }"
-                @click="choose(optionEmployee)"
-                href="javascript:void(0)">
-                [Employee] {{ optionEmployee.label }}
-              </a>
-            </template>
-          </div>
 
-          <div class="list-group push" v-if="searchText && !isLoadingEmployee && !isLoadingCustomer && !isLoadingSupplier && optionEmployees.length == 0 && optionCustomers.length == 0 && optionSuppliers.length == 0">
-            <div class="alert alert-info text-center">
-              {{ $t('searching not found', [searchText]) | capitalize }}
-            </div>
+        <div
+          v-if="searchText && !isLoadingEmployee && !isLoadingCustomer && !isLoadingSupplier && optionEmployees.length == 0 && optionCustomers.length == 0 && optionSuppliers.length == 0"
+          class="list-group push"
+        >
+          <div class="alert alert-info text-center">
+            {{ $t('searching not found', [searchText]) | capitalize }}
           </div>
-        </template>
+        </div>
       </template>
-      <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-outline-danger">Close</button>
-      </template>
-    </p-modal>
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-danger"
+        @click="close()"
+      >
+        {{ $t('close') | uppercase }}
+      </button>
+    </sweet-modal>
   </div>
 </template>
 
@@ -61,6 +84,24 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      required: true
+    },
+    value: {
+      type: [String, Number],
+      default: null
+    },
+    label: {
+      type: String,
+      default: null
+    },
+    type: {
+      type: String,
+      default: null
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -81,21 +122,6 @@ export default {
     ...mapGetters('masterCustomer', ['customers']),
     ...mapGetters('humanResourceEmployee', ['employees'])
   },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
-    },
-    type: {
-      type: String
-    }
-  },
   watch: {
     searchText: debounce(function () {
       this.search()
@@ -106,6 +132,9 @@ export default {
   },
   created () {
     this.search()
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('masterSupplier', {
@@ -129,16 +158,15 @@ export default {
         }
       }).then(response => {
         this.optionSuppliers = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.optionSuppliers.push({
-            'id': key['id'],
-            'label': key['name'],
-            'type': 'Supplier'
+            id: key.id,
+            label: key.name,
+            type: 'Supplier'
           })
 
-          if (this.value == key['id'] && this.type == 'Supplier') {
-            this.mutableLabel = key['name']
+          if (this.value == key.id && this.type == 'Supplier') {
+            this.mutableLabel = key.name
           }
         })
         this.isLoadingSupplier = false
@@ -157,16 +185,15 @@ export default {
         }
       }).then(response => {
         this.optionCustomers = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.optionCustomers.push({
-            'id': key['id'],
-            'label': key['name'],
-            'type': 'Customer'
+            id: key.id,
+            label: key.name,
+            type: 'Customer'
           })
 
-          if (this.value == key['id'] && this.type == 'Customer') {
-            this.mutableLabel = key['name']
+          if (this.value == key.id && this.type == 'Customer') {
+            this.mutableLabel = key.name
           }
         })
         this.isLoadingCustomer = false
@@ -185,16 +212,15 @@ export default {
         }
       }).then(response => {
         this.optionEmployees = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.optionEmployees.push({
-            'id': key['id'],
-            'label': key['name'],
-            'type': 'Employee'
+            id: key.id,
+            label: key.name,
+            type: 'Employee'
           })
 
-          if (this.value == key['id'] && this.type == 'Employee') {
-            this.mutableLabel = key['name']
+          if (this.value == key.id && this.type == 'Employee') {
+            this.mutableLabel = key.name
           }
         })
         this.isLoadingEmployee = false
@@ -221,18 +247,21 @@ export default {
       this.$emit('choosen', option)
       this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    open () {
+      this.$refs['select-' + this.id].open()
+      this.search()
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 input:readonly {
   background-color: white
 }
@@ -240,7 +269,8 @@ input {
   min-width: 200px;
 }
 .link {
-  border-bottom: dotted 1px blueviolet;
+  border-bottom: dotted 1px #2196f3;
+  color: #2196f3;
   cursor: pointer;
 }
 </style>

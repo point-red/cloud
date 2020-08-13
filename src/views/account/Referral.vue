@@ -1,7 +1,7 @@
 <template>
   <div>
     <breadcrumb>
-      <span class="breadcrumb-item active">Referral</span>
+      <span class="breadcrumb-item active">{{ $t('referral') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
@@ -9,7 +9,7 @@
         <div class="font-size-h5 font-w300 text-center">
           Refer Point.RED and earn $10 per paid signup!
         </div>
-        <hr/>
+        <hr>
         <div class="font-w300 mt-30">
           <ol>
             <li>$10 earned for every new unique paid user you refer.</li>
@@ -18,15 +18,16 @@
             <li>Your referral link below uniquely identifies your account. Use this code when linking to point.red and start earning today!</li>
           </ol>
         </div>
-        <hr/>
+        <hr>
         <div class="text-center mb-30">
           <input
             id="referralCode"
             type="text"
             name="referralCode"
-            class="btn btn-outline-secondary"
+            class="btn btn-sm btn-outline-secondary"
             value="SAMPLECODE"
-            @click="copyToClipboard" >
+            @click="copyToClipboard"
+          >
         </div>
       </p-block>
     </div>
@@ -37,13 +38,13 @@
 import Breadcrumb from '@/views/account/Breadcrumb'
 
 export default {
+  components: {
+    Breadcrumb
+  },
   data () {
     return {
       //
     }
-  },
-  components: {
-    Breadcrumb
   },
   methods: {
     copyToClipboard () {

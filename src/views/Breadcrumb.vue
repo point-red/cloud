@@ -3,8 +3,11 @@
     <nav class="breadcrumb bg-white push">
       <router-link
         to="/menu"
-        class="breadcrumb-item">Menu</router-link>
-      <slot/>
+        class="breadcrumb-item"
+      >
+        {{ $t('menu') | uppercase }}
+      </router-link>
+      <slot />
     </nav>
   </div>
 </template>

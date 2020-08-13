@@ -1,62 +1,91 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
+      <breadcrumb-master />
       <router-link
         to="/master/supplier"
-        class="breadcrumb-item">{{ $t('supplier') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ supplier.name }}</span>
+        class="breadcrumb-item"
+      >
+        {{ $t('supplier') | uppercase }}
+      </router-link>
+      <span class="breadcrumb-item active">{{ supplier.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('supplier')" :header="true">
+      <p-block>
+        <div class="text-right">
+          <button
+            v-if="$permission.has('create supplier')"
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addSupplier.open()"
+          >
+            {{ $t('create') | uppercase }}
+          </button>
+          <button
+            v-if="$permission.has('update supplier')"
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editSupplier.open(supplier.id)"
+          >
+            {{ $t('edit') | uppercase }}
+          </button>
+          <button
+            v-if="$permission.has('delete supplier')"
+            type="button"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
+          </button>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
+            v-model="data.name"
             label="Name"
             name="name"
-            v-model="data.name"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="email"
+            v-model="data.email"
             label="Email"
             name="email"
-            v-model="data.email"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="address"
+            v-model="data.address"
             label="Address"
             name="address"
-            v-model="data.address"
-            readonly/>
+            readonly
+          />
           <p-form-row
             id="phone"
+            v-model="data.phone"
             label="Phone"
             name="phone"
-            v-model="data.phone"
-            readonly/>
-
-          <hr>
-
-          <router-link
-            :to="{ path: '/master/supplier/' + supplier.id + '/edit', params: { id: supplier.id }}"
-            v-if="$permission.has('update supplier')"
-            class="btn btn-sm btn-primary mr-5">
-            Edit
-          </router-link>
-          <button
-            type="button"
-            @click="onDelete()"
-            v-if="$permission.has('delete supplier')"
-            :disabled="isDeleting"
-            class="btn btn-sm btn-danger">
-            <i v-show="isDeleting" class="fa fa-asterisk fa-spin"/> Delete
-          </button>
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
+    <m-add-supplier
+      ref="addSupplier"
+      @added="onAddedSupplier($event)"
+    />
+    <m-edit-supplier
+      ref="editSupplier"
+      @updated="onUpdatedSupplier($event)"
+    />
   </div>
 </template>
 
@@ -88,44 +117,48 @@ export default {
   computed: {
     ...mapGetters('masterSupplier', ['supplier'])
   },
+  created () {
+    this.findSupplier()
+  },
   methods: {
     ...mapActions('masterSupplier', ['find', 'delete']),
-    onDelete () {
-      this.isDeleting = true
-      this.delete({
+    findSupplier () {
+      this.isLoading = true
+      this.find({
         id: this.id
       }).then(response => {
-        this.isDeleting = false
-        this.$router.push('/master/supplier')
-      }).catch(response => {
-        this.isDeleting = false
-        this.$notification.error('cannot delete this supplier')
+        this.isLoading = false
+        this.data.name = response.data.name
+        this.data.email = response.data.email
+        this.data.address = response.data.address
+        this.data.phone = response.data.phone
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    },
+    onAddedSupplier (supplier) {
+      this.$router.push('/master/supplier/' + supplier.id)
+      this.id = supplier.id
+      this.findSupplier()
+    },
+    onUpdatedSupplier (supplier) {
+      this.findSupplier()
+    },
+    onDelete () {
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({
+          id: this.id
+        }).then(response => {
+          this.isDeleting = false
+          this.$router.push('/master/supplier')
+        }).catch(response => {
+          this.isDeleting = false
+          this.$notification.error('cannot delete this supplier')
+        })
       })
     }
-  },
-  created () {
-    this.isLoading = true
-    this.find({
-      id: this.id,
-      params: {
-        includes: 'addresses;phones;emails'
-      }
-    }).then(response => {
-      this.isLoading = false
-      this.data.name = response.data.name
-      if (response.data.emails.length > 0) {
-        this.data.email = response.data.emails[0].email
-      }
-      if (response.data.addresses.length > 0) {
-        this.data.address = response.data.addresses[0].address
-      }
-      if (response.data.phones.length > 0) {
-        this.data.phone = response.data.phones[0].number
-      }
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
   }
 }
 </script>

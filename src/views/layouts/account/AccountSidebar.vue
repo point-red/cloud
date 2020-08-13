@@ -1,10 +1,10 @@
 <template>
-  <nav
-    id="sidebar"
-    ref="sidebarRef">
+  <nav id="sidebar">
     <!-- Sidebar Scroll Container -->
-    <!-- v-slimscroll="options" -->
-    <div id="sidebar-scroll" v-slimscroll="options">
+    <div
+      id="sidebar-scroll"
+      :v-scroll-lock="true"
+    >
       <!-- Sidebar Content -->
       <div class="sidebar-content">
         <!-- Side Header -->
@@ -26,8 +26,9 @@
             <button
               type="button"
               class="btn btn-circle btn-dual-secondary d-lg-none align-v-r"
-              @click="toggleLeftSidebar">
-              <i class="fa fa-times text-danger"/>
+              @click="toggleLeftSidebar"
+            >
+              <i class="fa fa-times text-danger" />
             </button>
             <!-- END Close Sidebar -->
 
@@ -35,8 +36,9 @@
             <div class="content-header-item">
               <a
                 class="link-effect font-w700"
-                href="javascript:void(0)">
-                <span class="font-size-xl text-dual-primary-dark">POINT.</span><span class="font-size-xl text-primary"/>
+                href="javascript:void(0)"
+              >
+                <span class="font-size-xl text-dual-primary-dark">POINT.</span><span class="font-size-xl text-primary" />
               </a>
             </div>
             <!-- END Logo -->
@@ -52,7 +54,8 @@
             <img
               class="img-avatar img-avatar32"
               src="/assets/img/avatars/avatar0.jpg"
-              alt="">
+              alt=""
+            >
           </div>
           <!-- END Visible only in mini mode -->
 
@@ -60,24 +63,21 @@
           <div class="sidebar-mini-hidden-b text-center">
             <router-link
               to="/account"
-              class="img-link">
+              class="img-link"
+            >
               <img
                 class="img-avatar"
                 src="/assets/img/avatars/avatar0.jpg"
-                alt="">
+                alt=""
+              >
             </router-link>
             <ul class="list-inline mt-3 mb-0">
               <li class="list-inline-item">
                 <a
                   :href="accountPage + '/profile'"
-                  class="link-effect text-dual-primary-dark font-size-xs font-w600 text-uppercase">
+                  class="link-effect text-dual-primary-dark font-size-xs font-w600 text-uppercase"
+                >
                   {{ userName }}
-                </a>
-              </li>
-              <li class="list-inline-item">
-                |
-                <a href="/account/reward" class="link-effect text-dual-primary-dark">
-                  {{ balance || 0 }} <i class="si si-disc"></i>
                 </a>
               </li>
             </ul>
@@ -93,43 +93,52 @@
               <router-link
                 to="/account/profile"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-user"/> {{ $t("profile") | titlecase }}</router-link>
+                class="sidebar-mini-hide"
+              >
+                <i class="si si-user" /> {{ $t("profile") | uppercase }}
+              </router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/project"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-notebook"/> {{ $t("project") | titlecase }}</router-link>
+                class="sidebar-mini-hide"
+              >
+                <i class="si si-notebook" /> {{ $t("project") | uppercase }}
+              </router-link>
             </li>
             <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/billing"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-doc"/> {{ $t("billing") | titlecase }}</router-link>
+                class="sidebar-mini-hide"
+              >
+                <i class="si si-doc" /> {{ $t("billing") | uppercase }}
+              </router-link>
             </li>
             <!-- <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/notification"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-info"/> {{ $t("notification") | titlecase }}</router-link>
+                class="sidebar-mini-hide"><i class="si si-info"/> {{ $t("notification") | uppercase }}</router-link>
             </li> -->
-            <li @click="toggleLeftSidebar('close-xs')">
+            <!-- <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/reward"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-diamond"/> {{ $t("reward") | titlecase }}</router-link>
-            </li>
-            <li @click="toggleLeftSidebar('close-xs')">
+                class="sidebar-mini-hide"><i class="si si-diamond"/> {{ $t("reward") | uppercase }}</router-link>
+            </li> -->
+            <!-- <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/referral"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-share"/> {{ $t("referral") | titlecase }}</router-link>
-            </li>
+                class="sidebar-mini-hide"><i class="si si-share"/> {{ $t("referral") | uppercase }}</router-link>
+            </li> -->
             <!-- <li @click="toggleLeftSidebar('close-xs')">
               <router-link
                 to="/account/email-subscription"
                 active-class="active"
-                class="sidebar-mini-hide"><i class="si si-envelope"/> {{ $t("email subscription") | titlecase }}</router-link>
+                class="sidebar-mini-hide"><i class="si si-envelope"/> {{ $t("email subscription") | uppercase }}</router-link>
             </li> -->
           </ul>
         </div>
@@ -142,7 +151,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   props: {
@@ -158,37 +167,19 @@ export default {
   data () {
     return {
       userName: localStorage.getItem('userName'),
-      accountPage: '//' + process.env.VUE_APP_DOMAIN + '/account',
-      options: {
-        height: window.innerHeight
-      }
+      accountPage: '//' + process.env.VUE_APP_DOMAIN + '/account'
     }
-  },
-  computed: {
-    ...mapGetters('accountRewardToken', [
-      'balance'
-    ])
   },
   methods: {
-    ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSidebarInverse']),
-    handleResize (event) {
-      this.options.height = window.innerHeight + 'px'
-      document.getElementById('sidebar-scroll').style.height = window.innerHeight + 'px'
-      document.getElementById('sidebar-scroll').parentElement.style.height = window.innerHeight + 'px'
-    }
-  },
-  beforeDestroy: function () {
-    window.removeEventListener('resize', this.handleResize)
-  },
-  mounted () {
-    window.addEventListener('resize', this.handleResize)
+    ...mapActions('uiHandler', ['toggleLeftSidebar', 'toggleSidebarInverse'])
   }
 }
 </script>
 
 <style scoped>
 #sidebar-scroll {
-  overflow-y: auto
+  overflow-y: auto;
+  height: 100% !important;
 }
 #page-container.sidebar-inverse #sidebar {
   background-color: #212121;

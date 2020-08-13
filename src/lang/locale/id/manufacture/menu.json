@@ -1,0 +1,18 @@
+{
+  "machine" : "machine",
+  "formula" : "formula",
+  "process" : "process",
+  "processing" : "processing",
+  "processing input" : "processing input",
+  "processing output" : "processing output",
+  "input" : "input",
+  "output" : "output",
+  "raw material" : "raw material",
+  "raw materials" : "raw materials",
+  "material" : "material",
+  "quantity produced" : "quantity produced",
+  "quantity used" : "quantity used",
+  "finished good" : "finished good",
+  "finished goods" : "finished goods",
+  "start production" : "start production"
+}

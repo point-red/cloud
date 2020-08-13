@@ -1,92 +1,154 @@
 <template>
   <div>
     <breadcrumb>
-      <router-link to="/account/project" class="breadcrumb-item">Project</router-link>
-      <span class="breadcrumb-item active">{{ project.code }}</span>
+      <router-link
+        to="/account/project"
+        class="breadcrumb-item"
+      >
+        {{ $t('project') | uppercase }}
+      </router-link>
+      <span class="breadcrumb-item active">{{ project.code | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu>
-      <li class="nav-item">
-        <router-link
-          :to="'/account/project/' + id"
-          exact
-          class="nav-link"
-          active-class="active">
-          <span>Project</span>
-        </router-link>
-      </li>
-    </tab-menu>
+    <tab-menu />
 
-    <project-widget :project="project"></project-widget>
+    <project-widget :project="project" />
 
     <hr>
 
     <div class="row">
-      <p-block :is-loading="loading">
-        <h2>Project</h2>
-        <p-table>
-          <tr slot="p-body">
-            <td class="font-w700" width="300">{{ $t('company group') | titlecase }}</td>
-            <td>{{ project.group }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company identifier') | titlecase }}</td>
-            <td>{{ project.code | uppercase }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company name') | titlecase }}</td>
-            <td>{{ project.name }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company address') | titlecase }}</td>
-            <td>{{ project.address }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company phone') | titlecase }}</td>
-            <td>{{ project.phone }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company whatsapp') | titlecase }}</td>
-            <td>{{ project.whatsapp }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('company website') | titlecase }}</td>
-            <td>{{ project.website }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('marketplace notes') | titlecase }}</td>
-            <td>{{ project.marketplace_notes }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('vat identification number') | titlecase }}</td>
-            <td>{{ project.vat_id_number }}</td>
-          </tr>
-          <tr slot="p-body">
-            <td class="font-w700">{{ $t('timezone') | titlecase }}</td>
-            <td>{{ project.timezone }}</td>
-          </tr>
-        </p-table>
-        <div class="mb-20">
+      <p-block :is-loading="isLoading">
+        <div class="text-right">
           <button
-            class="btn btn-sm btn-primary mr-5"
-            @click="redirectToProject(project)">
-            <i class="fa fa-globe"/> OPEN
+            v-if="project.is_generated == true"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="redirectToProject(project)"
+          >
+            <i class="fa fa-globe" /> {{ $t('open') | uppercase }}
           </button>
           <router-link
             tag="button"
+            :to="{ path: '/account/project/create' }"
+            class="btn btn-sm btn-outline-secondary mr-5"
+          >
+            {{ $t('create') | uppercase }}
+          </router-link>
+          <router-link
+            tag="button"
             :to="{ path: '/account/project/' + project.id + '/edit', params: { id: project.id }}"
-            class="btn btn-sm btn-primary mr-5">
-            <i class="fa fa-edit"/> EDIT
+            class="btn btn-sm btn-outline-secondary mr-5"
+          >
+            {{ $t('edit') | uppercase }}
           </router-link>
           <button
             type="button"
+            :disabled="isSaving"
+            class="btn btn-sm btn-outline-secondary"
             @click="onDelete()"
-            :disabled="loadingSaveButton"
-            class="btn btn-sm btn-danger">
-            <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/>
-            <i v-show="!loadingSaveButton" class="fa fa-trash"/> DELETE
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            />
+            {{ $t('delete') | uppercase }}
           </button>
         </div>
+        <hr>
+        <p-form-row
+          id="code"
+          v-model="project.code"
+          name="code"
+          :disabled="true"
+          :label="$t('company identifier')"
+          :help="'WEBSITE URL : ' + project.code + '.cloud.point.red'"
+        />
+
+        <p-form-row
+          id="name"
+          v-model="project.name"
+          name="name"
+          :disabled="true"
+          :label="$t('company name')"
+        />
+
+        <p-form-row
+          id="total-user"
+          v-model="project.total_user"
+          name="total-user"
+          :disabled="true"
+          :label="$t('total user')"
+        />
+
+        <p-separator />
+
+        <p-form-row
+          id="group"
+          v-model="project.group"
+          name="group"
+          :disabled="true"
+          :label="$t('company group')"
+        />
+
+        <p-form-row
+          id="address"
+          v-model="project.address"
+          name="address"
+          :disabled="true"
+          :label="$t('company address')"
+        />
+
+        <p-form-row
+          id="phone"
+          v-model="project.phone"
+          name="phone"
+          :disabled="true"
+          :label="$t('company phone')"
+        />
+
+        <p-form-row
+          id="whatsapp"
+          v-model="project.whatsapp"
+          name="whatsapp"
+          :disabled="true"
+          :label="$t('company whatsapp')"
+        />
+
+        <p-form-row
+          id="website"
+          v-model="project.website"
+          name="website"
+          :disabled="true"
+          :label="$t('company website')"
+        />
+
+        <p-form-row
+          id="marketplace-notes"
+          v-model="project.marketplace_notes"
+          name="marketplace-notes"
+          :disabled="true"
+          :label="$t('marketplace notes')"
+        />
+
+        <p-form-row
+          id="vat-id-number"
+          v-model="project.vat_id_number"
+          name="vat_id_number"
+          :disabled="true"
+          :label="$t('vat identification number')"
+        />
+
+        <p-form-row
+          id="timezone"
+          name="timezone"
+          :label="$t('timezone')"
+        >
+          <div
+            slot="body"
+            class="col-form-label col-lg-9"
+          >
+            {{ project.timezone }}
+          </div>
+        </p-form-row>
       </p-block>
     </div>
   </div>
@@ -99,43 +161,43 @@ import ProjectWidget from './Widget'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  data () {
-    return {
-      id: this.$route.params.id,
-      loading: false,
-      loadingSaveButton: false
-    }
-  },
   components: {
     Breadcrumb,
     TabMenu,
     ProjectWidget
   },
+  data () {
+    return {
+      id: this.$route.params.id,
+      isLoading: false,
+      isSaving: false
+    }
+  },
   computed: {
     ...mapGetters('accountProject', ['project', 'projects'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     // Without parsing this.id into int it will always return false
     // Even this.id should be int already
     if (this.project.id === parseInt(this.id)) {
-      this.loading = false
+      this.isLoading = false
     }
     this.projects.find((element) => {
       // Without parsing this.id into int it will always return false
       // Even this.id should be int already
       if (element.id === parseInt(this.id)) {
         this.$store.commit('accountProject/FETCH_OBJECT', element)
-        this.loading = false
+        this.isLoading = false
       }
     })
     // Fetch new data
     this.findProject({ id: this.id })
       .then((response) => {
-        this.loading = false
+        this.isLoading = false
       }, (error) => {
         this.$router.replace('/account/whoops')
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
   },
@@ -150,17 +212,20 @@ export default {
       localStorage.setItem('tenantName', project.name)
     },
     onDelete () {
-      this.loadingSaveButton = true
-      this.deleteProject({ id: this.id })
-        .then(response => {
-          this.loadingSaveButton = false
-          this.$notification.success('Delete success')
-          this.$router.push('/account/project')
-        }).catch(error => {
-          this.$notification.error('Delete failed')
-          this.form.errors.record(error.errors)
-          this.loadingSaveButton = false
-        })
+      this.$alert.confirm('DELETE').then(response => {
+        this.isSaving = true
+        this.deleteProject({ id: this.id })
+          .then(response => {
+            this.$notification.success('delete success')
+            this.isSaving = false
+            this.$router.push('/account/project')
+          }).catch(error => {
+            this.isSaving = false
+          })
+      }).catch(error => {
+        this.$alert.error(error.message)
+        this.isSaving = false
+      })
     }
   }
 }

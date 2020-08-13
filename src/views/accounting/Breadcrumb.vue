@@ -1,3 +1,8 @@
 <template>
-  <router-link to="/accounting" class="breadcrumb-item">Accounting</router-link>
+  <router-link
+    to="/accounting"
+    class="breadcrumb-item"
+  >
+    {{ $t('accounting') | uppercase }}
+  </router-link>
 </template>

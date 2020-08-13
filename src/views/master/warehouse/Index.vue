@@ -1,47 +1,79 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <span class="breadcrumb-item active">{{ $t('warehouse') | titlecase }}</span>
+      <breadcrumb-master />
+      <span class="breadcrumb-item active">{{ $t('warehouse') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('warehouse')" :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
-        <hr/>
+      <p-block>
+        <div class="input-group block">
+          <a
+            v-if="$permission.has('create warehouse')"
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addWarehouse.open()"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-plus" />
+            </span>
+          </a>
+          <p-form-input
+            id="search-text"
+            ref="searchText"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"
+          />
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Name</th>
+              <th>Branch</th>
+              <th>Address</th>
+              <th>Phone</th>
             </tr>
             <tr
               v-for="(warehouse, index) in warehouses"
               :key="warehouse.id"
-              slot="p-body">
-              <th>{{ index + 1 }}</th>
+              slot="p-body"
+            >
+              <th>{{ (page - 1) * limit + (index + 1) }}</th>
               <td>
                 <router-link :to="{ name: 'warehouse.show', params: { id: warehouse.id }}">
-                  {{ warehouse.name | titlecase }}
+                  {{ warehouse.name }}
                 </router-link>
               </td>
+              <td>
+                <template v-if="warehouse.branch">
+                  {{ warehouse.branch.name }}
+                </template>
+              </td>
+              <td>{{ warehouse.address }}</td>
+              <td>{{ warehouse.phone }}</td>
             </tr>
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
+    <m-add-warehouse
+      ref="addWarehouse"
+      @added="onAdded"
+    />
   </div>
 </template>
 
@@ -64,32 +96,43 @@ export default {
     return {
       isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      page: this.$route.query.page * 1 || 1,
+      lastPage: 1,
+      limit: 10
     }
   },
   computed: {
     ...mapGetters('masterWarehouse', ['warehouses', 'pagination'])
+  },
+  created () {
+    this.getWarehouseRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('masterWarehouse', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
+      this.page = 1
       this.getWarehouseRequest()
     }, 300),
     getWarehouseRequest () {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'warehouses.*',
-          sort_by: 'name',
+          fields: 'warehouse.*',
+          sort_by: 'warehouse.name',
           filter_like: {
-            'name': this.searchText
+            'warehouse.name': this.searchText
           },
-          limit: 10,
-          page: this.currentPage
+          includes: 'branch',
+          limit: this.limit,
+          page: this.page
         }
       }).then(response => {
         this.isLoading = false
@@ -98,16 +141,12 @@ export default {
       })
     },
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
+      this.getWarehouseRequest()
+    },
+    onAdded () {
       this.getWarehouseRequest()
     }
-  },
-  created () {
-    this.isLoading = true
-    this.getWarehouseRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

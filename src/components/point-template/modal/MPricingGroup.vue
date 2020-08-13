@@ -1,98 +1,136 @@
 <template>
   <div>
-    <p-modal :ref="'pricing-group-' + id" :id="'pricing-group-' + id" title="pricing group">
-      <form class="row" @submit.prevent="onSubmit">
-        <p-block :title="'Create Pricing Group'" :header="true">
-          <p-form-row
-            id="name"
-            v-model="form.name"
-            :disabled="isSaving"
-            :label="$t('name')"
-            name="name"
-            :errors="form.errors.get('name')"
-            @errors="form.errors.set('name', null)"/>
-
-          <div class="form-group row">
-            <div class="col-md-3"></div>
-            <div class="col-md-9">
-              <button type="submit" class="btn btn-sm btn-primary" :disabled="isSaving">
-                <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
-              </button>
-            </div>
-          </div>
-        </p-block>
-      </form>
-    </p-modal>
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select pricing group') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()"
+    >
+      <div v-if="isLoading">
+        <h3 class="text-center">
+          Loading ...
+        </h3>
+      </div>
+      <div
+        v-else
+        class="list-group push"
+      >
+        <input
+          v-model="searchText"
+          type="text"
+          class="form-control"
+          placeholder="Search..."
+          @keydown.enter.prevent=""
+        >
+        <hr>
+        <div v-if="isLoading">
+          <h3 class="text-center">
+            Loading ...
+          </h3>
+        </div>
+        <div
+          v-else
+          class="list-group push"
+        >
+          <template v-for="(option, index) in options">
+            <a
+              :key="index"
+              class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+              :class="{'active': option.id == mutableId }"
+              href="javascript:void(0)"
+              @click="choose(option)"
+            >
+              {{ option.label | uppercase }}
+            </a>
+          </template>
+        </div>
+      </div>
+      <div class="pull-right">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="clear()"
+        >
+          {{ $t('clear') | uppercase }}
+        </button>
+      </div>
+    </sweet-modal>
   </div>
 </template>
 
 <script>
 import debounce from 'lodash/debounce'
-import Form from '@/utils/Form'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       searchText: '',
       options: [],
+      limit: 10,
       mutableId: this.value,
       mutableLabel: this.label,
       isSaving: false,
-      isLoading: false,
-      form: new Form({
-        name: ''
-      })
+      isLoading: false
     }
   },
   computed: {
-    ...mapGetters('masterPricingGroup', ['pricingGroups', 'pagination'])
-  },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
-    }
+    ...mapGetters('masterPricingGroup', ['groups', 'pagination'])
   },
   watch: {
+    value () {
+      this.mutableId = this.value
+    },
+    label () {
+      this.mutableLabel = this.label
+    },
     searchText: debounce(function () {
       this.search()
-    }, 300),
-    value () {
-      this.search()
-    }
+    }, 300)
   },
   created () {
     this.search()
   },
+  beforeDestroy () {
+    this.close()
+  },
   methods: {
-    ...mapActions('masterPricingGroup', ['get', 'create']),
+    ...mapActions('masterPricingGroup', ['get']),
     search () {
       this.isLoading = true
       this.get({
         params: {
-          sort_by: 'name',
-          limit: 50,
+          sort_by: 'label',
+          limit: this.limit,
           filter_like: {
-            name: this.searchText
+            label: this.searchText
           }
         }
       }).then(response => {
         this.options = []
+        this.mutableLabel = ''
         response.data.map((key, value) => {
           this.options.push({
-            'id': key['id'],
-            'label': key['name']
+            id: key.id,
+            label: key.label
           })
 
-          if (this.value == key['id']) {
-            this.mutableLabel = key['number'] + ' - ' + key['alias']
+          if (this.value == key.id) {
+            this.mutableLabel = key.label
           }
         })
         this.isLoading = false
@@ -100,31 +138,34 @@ export default {
         this.isLoading = false
       })
     },
-    add () {
-      this.isSaving = true
-      this.create({
-        code: this.searchText,
-        name: this.searchText
-      }).then(response => {
-        this.search()
-        this.isSaving = false
-      }).catch(error => {
-        this.$notification.error(error.message)
-        this.isSaving = false
-      })
+    choose (option) {
+      this.mutableId = option.id
+      this.mutableLabel = option.label
+      this.$emit('input', option.id)
+      this.$emit('choosen', option)
+      this.close()
     },
-    show () {
-      this.$refs['pricing-group-' + this.id].show()
+    clear () {
+      this.mutableId = null
+      this.mutableLabel = null
+      this.$emit('input', null)
+      this.$emit('choosen', '')
+      this.close()
+    },
+    onClose () {
+      this.$emit('close')
+    },
+    open () {
+      this.$refs['select-' + this.id].open()
     },
     close () {
-      this.$refs['pricing-group-' + this.id].close()
-      this.$emit('close', true)
+      this.$refs['select-' + this.id].close()
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 input:readonly {
   background-color: white
 }
@@ -132,7 +173,8 @@ input {
   min-width: 200px;
 }
 .link {
-  border-bottom: dotted 1px blueviolet;
+  border-bottom: dotted 1px #2196f3;
+  color: #2196f3;
   cursor: pointer;
 }
 </style>

@@ -3,23 +3,31 @@
     <vue-autosuggest
       ref="autoSuggest"
       :suggestions="vSuggestions"
-      @selected="onSelected"
       :limit="10"
-      :input-props="inputProps">
+      :input-props="inputProps"
+      @selected="onSelected"
+    >
       <template slot-scope="{suggestion}">
         {{ suggestion.label.name }}
       </template>
     </vue-autosuggest>
     <i
       :class="{ 'si si-refresh fa-spin': loading }"
-      style="position: absolute; right: 25px; top: 10px"></i>
+      style="position: absolute; right: 25px; top: 10px"
+    />
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-input"><i class="fa fa-warning"></i> {{ error }}</div>
+      class="invalid-input"
+    >
+      <i class="fa fa-warning" /> {{ error }}
+    </div>
     <div
       v-show="help"
-      class="form-text text-muted">{{ help }}</div>
+      class="form-text text-muted"
+    >
+      {{ help }}
+    </div>
   </div>
 </template>
 
@@ -32,10 +40,12 @@ export default {
   },
   props: {
     initialValue: {
-      type: String
+      type: String,
+      default: ''
     },
     suggestions: {
-      type: Array
+      type: Array,
+      default: null
     },
     disabled: {
       type: Boolean,
@@ -46,7 +56,8 @@ export default {
       default: false
     },
     help: {
-      type: String
+      type: String,
+      default: null
     },
     errors: {
       type: Array,

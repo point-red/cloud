@@ -1,31 +1,48 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
-      <span class="breadcrumb-item active">{{ 'employee status' | titlecase }}</span>
+      <breadcrumb-human-resource />
+      <span class="breadcrumb-item active">{{ 'employee status' | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('employee status')" :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block :title="$t('employee status')">
+        <div class="input-group block mb-5">
+          <router-link
+            v-if="$permission.has('create employee')"
+            to="/human-resource/employee-status/create"
+            class="input-group-prepend"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-plus" />
+            </span>
+          </router-link>
+          <p-form-input
+            id="search-text"
+            ref="searchText"
+            name="search-text"
+            placeholder="Search"
+            class="btn-block"
+            :value="searchText"
+            @input="filterSearch"
+          />
+        </div>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="100%">{{ $t('name') }}</th>
+              <th width="100%">
+                {{ $t('name') }}
+              </th>
             </tr>
             <template v-if="$permission.has('read employee')">
               <tr
                 v-for="status in statuses"
                 :key="status.id"
-                slot="p-body">
+                slot="p-body"
+              >
                 <td>
                   <router-link :to="{ name: 'EmployeeStatusShow', params: { id: status.id }}">
                     {{ status.name }}
@@ -38,8 +55,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>
@@ -62,7 +79,7 @@ export default {
   },
   data () {
     return {
-      loading: false,
+      isLoading: false,
       listStatus: this.statuses,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
@@ -71,6 +88,12 @@ export default {
   },
   computed: {
     ...mapGetters('humanResourceEmployeeStatus', ['statuses', 'pagination'])
+  },
+  created () {
+    this.getStatusesRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('humanResourceEmployeeStatus', { getStatuses: 'get' }),
@@ -85,29 +108,23 @@ export default {
       this.getStatusesRequest()
     }, 300),
     getStatusesRequest () {
-      this.loading = true
+      this.isLoading = true
       this.getStatuses({
         params: {
           filter_like: {
-            'name': this.searchText
+            name: this.searchText
           },
           limit: 10,
           page: this.currentPage,
           sort_by: 'name'
         }
       }).then((response) => {
-        this.loading = false
+        this.isLoading = false
       }, (errors) => {
-        this.loading = false
+        this.isLoading = false
         console.log(errors.data)
       })
     }
-  },
-  created () {
-    this.getStatusesRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

@@ -3,6 +3,7 @@ import api from '@/api'
 import Vue from 'vue'
 import axios from '@/axios'
 import router from '@/router'
+import device from 'mobile-device-detect'
 
 const profileUrl = '/account/profiles'
 const passwordUrl = '/account/password'
@@ -44,7 +45,16 @@ const actions = {
     return new Promise((resolve, reject) => {
       axios.post('/auth/login', {
         username: payload.username,
-        password: payload.password
+        password: payload.password,
+        is_mobile: device.isMobile,
+        os_name: device.osName,
+        os_version: device.osVersion,
+        browser_name: device.browserName,
+        browser_version: device.browserVersion,
+        mobile_vendor: device.mobileVendor,
+        mobile_model: device.mobileModel,
+        engine_name: device.engineName,
+        engine_version: device.engineVersion
       }).then(response => {
         var axiosData = response.data // axios wrap response with data
         var apiData = axiosData.data
@@ -65,14 +75,16 @@ const actions = {
           Vue.cookie.set('TAT', apiData.access_token, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
           Vue.cookie.set('TED', apiData.token_expires_at, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
         }
-
         localStorage.setItem('userId', apiData.id)
         localStorage.setItem('userName', apiData.name)
         localStorage.setItem('userEmail', apiData.email)
+        localStorage.setItem('fullName', apiData.full_name)
         localStorage.setItem('tenantCode', apiData.tenant_code)
         localStorage.setItem('tenantName', apiData.tenant_name)
+        localStorage.setItem('tenantAddress', apiData.tenant_address)
+        localStorage.setItem('tenantPhone', apiData.tenant_phone)
         commit('storeUser', apiData)
-        axios.defaults.headers.common['Authorization'] = apiData.token_type + ' ' + apiData.access_token
+        axios.defaults.headers.common.Authorization = apiData.token_type + ' ' + apiData.access_token
         resolve(response)
       }).catch(error => {
         reject(error)
@@ -86,6 +98,10 @@ const actions = {
       Vue.cookie.delete('TAT')
       Vue.cookie.delete('TED')
     } else {
+      Vue.cookie.delete('TID')
+      Vue.cookie.delete('TTT')
+      Vue.cookie.delete('TAT')
+      Vue.cookie.delete('TED')
       Vue.cookie.delete('TID', { domain: '.' + process.env.VUE_APP_DOMAIN })
       Vue.cookie.delete('TTT', { domain: '.' + process.env.VUE_APP_DOMAIN })
       Vue.cookie.delete('TAT', { domain: '.' + process.env.VUE_APP_DOMAIN })
@@ -97,6 +113,7 @@ const actions = {
     localStorage.removeItem('userEmail')
     localStorage.removeItem('userPhone')
     localStorage.removeItem('userAddress')
+    localStorage.removeItem('defaultWarehouse')
     router.replace('/auth/signin')
   },
   tryAutoLogin ({ commit }) {
@@ -118,7 +135,7 @@ const actions = {
         expirationDate: Vue.cookie.get('TED')
       })
 
-      axios.defaults.headers.common['Authorization'] = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
+      axios.defaults.headers.common.Authorization = Vue.cookie.get('TTT') + ' ' + Vue.cookie.get('TAT')
       axios.post('/auth/fetch', {
         access_token: accessToken
       }).then((response) => {
@@ -141,50 +158,42 @@ const actions = {
   updateProfile (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(profileUrl + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            context.dispatch('tryAutoLogin')
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          context.dispatch('tryAutoLogin')
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   resetPasswordRequest (context, payload) {
     return new Promise((resolve, reject) => {
       api.get(resetPasswordRequestUrl, { params: payload })
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   resetPassword (context, payload) {
     return new Promise((resolve, reject) => {
       api.get(resetPasswordUrl, { params: payload })
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
   updatePassword (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(passwordUrl + '/' + payload.id, payload)
-        .then(
-          (response) => {
-            resolve(response)
-          },
-          (error) => {
-            reject(error)
-          })
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
     })
   }
 }

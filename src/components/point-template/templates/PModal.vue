@@ -1,42 +1,52 @@
 <template>
   <div>
-    <div :class="{ 'modal-backdrop show': backdrop }"/>
+    <div :class="{ 'modal-backdrop show': backdrop }" />
     <div
       :id="id"
       class="modal"
       tabindex="-1"
-      role="dialog">
+      role="dialog"
+    >
       <div
         class="modal-dialog modal-lg modal-dialog-popout modal-dialog-centered"
-        role="document">
+        role="document"
+      >
         <div
           class="modal-content"
-          :class="{'block block-mode-fullscreen': isFullscreen}">
-          <div class="block block-themed block-transparent mb-0"
-            :class="{'block-mode-loading': isLoading}">
+          :class="{'block block-mode-fullscreen': isFullscreen}"
+        >
+          <div
+            class="block block-themed block-transparent mb-0"
+            :class="{'block-mode-loading': isLoading}"
+          >
             <div class="block-header bg-primary-dark">
-              <h3 class="block-title">{{ title | uppercase }}</h3>
+              <h3 class="block-title">
+                {{ title | uppercase }}
+              </h3>
               <div class="block-options">
                 <button
                   type="button"
                   class="btn-block-option"
-                  @click="toggleFullscreen">
-                  <i :class="{ 'si si-size-fullscreen' : !isFullscreen, 'si si-size-actual' : isFullscreen }"/>
+                  @click="toggleFullscreen"
+                >
+                  <i :class="{ 'si si-size-fullscreen' : !isFullscreen, 'si si-size-actual' : isFullscreen }" />
                 </button>
                 <button
+                  v-if="showClose"
                   type="button"
                   class="btn-block-option"
-                  @click="close">
-                  <i class="si si-close"/>
+                  @click="close"
+                >
+                  <i class="si si-close" />
                 </button>
               </div>
             </div>
             <div class="block-content">
-              <slot name="content"/>
+              <slot name="content" />
             </div>
           </div>
           <div class="modal-footer">
-            <slot name="footer"/>
+            <slot name="footer" />
           </div>
         </div>
       </div>
@@ -46,23 +56,29 @@
 
 <script>
 export default {
-  data () {
-    return {
-      isFullscreen: false,
-      backdrop: false
-    }
-  },
   props: {
     id: {
       type: String,
       required: true
     },
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     isLoading: {
       type: Boolean,
       default: false
+    },
+    canClose: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data () {
+    return {
+      isFullscreen: false,
+      backdrop: false,
+      showClose: this.canClose
     }
   },
   methods: {
@@ -76,7 +92,10 @@ export default {
     close () {
       document.getElementById(this.id).style.display = 'none'
       document.getElementById(this.id).classList.remove('open')
-      document.body.classList.remove('modal-open')
+      const elements = document.getElementsByClassName('modal open')
+      if (!elements[0]) {
+        document.body.classList.remove('modal-open')
+      }
       document.removeEventListener('keydown', this.onEscListener)
       this.backdrop = false
     },

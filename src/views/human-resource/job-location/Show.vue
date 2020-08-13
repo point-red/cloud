@@ -1,18 +1,24 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <router-link
         to="/human-resource/job-location"
-        class="breadcrumb-item">{{ $t('job location') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ jobLocation.name | titlecase }}</span>
+        class="breadcrumb-item"
+      >
+        {{ $t('job location') | uppercase }}
+      </router-link>
+      <span class="breadcrumb-item active">{{ jobLocation.name | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('job location')" :header="true">
-        <p-block-inner :is-loading="loading">
+      <p-block
+        :title="$t('job location')"
+        :header="true"
+      >
+        <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-6">
               <p-table>
@@ -35,18 +41,23 @@
             <div class="col-sm-12 mb-20">
               <hr>
               <router-link
-                :to="{ path: '/human-resource/job-location/' + jobLocation.id + '/edit', params: { id: jobLocation.id }}"
                 v-if="$permission.has('update employee')"
-                class="btn btn-sm btn-primary mr-5">
-                Edit
+                :to="{ path: '/human-resource/job-location/' + jobLocation.id + '/edit', params: { id: jobLocation.id }}"
+                class="btn btn-sm btn-primary mr-5"
+              >
+                {{ $t('edit') | uppercase }}
               </router-link>
               <button
-                type="button"
-                @click="onDelete()"
                 v-if="$permission.has('delete employee')"
-                :disabled="loadingSaveButton"
-                class="btn btn-sm btn-danger">
-                <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Delete
+                type="button"
+                :disabled="isSaving"
+                class="btn btn-sm btn-danger"
+                @click="onDelete()"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('delete') | uppercase }}
               </button>
             </div>
           </div>
@@ -71,17 +82,17 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
   computed: {
     ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocation', 'jobLocations'])
   },
   created () {
-    this.loading = true
+    this.isLoading = true
     this.findJobLocation({ id: this.id }).then((response) => {
-      this.loading = false
+      this.isLoading = false
     }, (error) => {
       console.log(JSON.stringify(error))
     })
@@ -89,13 +100,13 @@ export default {
   methods: {
     ...mapActions('humanResourceEmployeeJobLocation', { findJobLocation: 'find', deleteJobLocation: 'delete' }),
     onDelete () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.deleteJobLocation({ id: this.id })
         .then((response) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$router.push('/human-resource/job-location')
         }, (error) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           console.log(JSON.stringify(error))
         })
     }

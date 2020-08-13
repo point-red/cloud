@@ -2,31 +2,56 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmit">
+      @submit.prevent="onSubmit"
+    >
       <p-modal
-        ref="indicator"
         :id="id"
-        :isLoading="loading"
+        ref="indicator"
+        :is-loading="isLoading"
         :title="'Kpi Template Indicator' | uppercase"
-        :hidden="selectingAutomatedIndicator">
+        :hidden="selectingAutomatedIndicator"
+      >
         <template slot="content">
           <p-table>
-            <tr slot="p-head" v-show="indicators.length > 0" class="bg-info-light">
+            <tr
+              v-show="indicators.length > 0"
+              slot="p-head"
+              class="bg-info-light"
+            >
               <th>Name</th>
-              <th class="text-center">Weight</th>
-              <th class="text-center">Target</th>
-              <th></th>
+              <th class="text-center">
+                Weight
+              </th>
+              <th class="text-center">
+                Target
+              </th>
+              <th style="width:100px" />
             </tr>
             <tr
               v-for="indicator in indicators"
               slot="p-body"
-              :key="indicator.id">
+              :key="indicator.id"
+            >
               <td>{{ indicator.name }}</td>
-              <td class="text-center">{{ indicator.weight }}%</td>
-              <td class="text-center"><template v-if="!indicator.automated_code">{{ indicator.target }}</template></td>
+              <td class="text-center">
+                {{ indicator.weight }}%
+              </td>
+              <td class="text-center">
+                <template v-if="!indicator.automated_code">
+                  {{ indicator.target }}
+                </template>
+              </td>
               <td>
-                <a href="javascript:void(0)" class="badge badge-primary" @click="edit(indicator)"><i class="fa fa-pencil"></i></a>
-                <a href="javascript:void(0)" class="badge badge-danger" @click="remove(indicator)"><i class="fa fa-close"></i></a>
+                <a
+                  href="javascript:void(0)"
+                  class="badge badge-primary mr-5"
+                  @click="edit(indicator)"
+                ><i class="fa fa-pencil" /></a>
+                <a
+                  href="javascript:void(0)"
+                  class="badge badge-danger"
+                  @click="remove(indicator)"
+                ><i class="fa fa-close" /></a>
               </td>
             </tr>
           </p-table>
@@ -36,21 +61,39 @@
           <p-form-check-box
             id="automated-indicator-check"
             name="automated-indicator-check"
-            @click.native="toggleAutomatedIndicator()"
             :description="'Use Automated Indicator'"
             :checked="automatedIndicatorChecked"
-            :hidden="!isCreateMode">
-          </p-form-check-box>
+            :hidden="!isCreateMode"
+            @click.native="toggleAutomatedIndicator()"
+          />
 
           <p-form-row
             id="automated-indicator"
             :label="$t('automated indicator')"
-            :hidden="!automatedIndicatorChecked">
-            <div slot="body" class="col-lg-9 col-form-label" v-if="form.automated_indicator">
-              <a href="javascript:void(0)" @click="showAutomatedIndicatorModal(id)">{{ form.automated_indicator.label }}</a>
+            :hidden="!automatedIndicatorChecked"
+          >
+            <div
+              v-if="form.automated_indicator"
+              slot="body"
+              class="col-lg-9 col-form-label"
+            >
+              <a
+                href="javascript:void(0)"
+                @click="showAutomatedIndicatorModal(id)"
+              >{{ form.automated_indicator.label }}</a>
             </div>
-            <div slot="body" class="col-lg-9" v-else @click="showAutomatedIndicatorModal(id)">
-              <button type="button" class="btn btn-sm btn-primary">Assign Automated Indicator</button>
+            <div
+              v-else
+              slot="body"
+              class="col-lg-9"
+              @click="showAutomatedIndicatorModal(id)"
+            >
+              <button
+                type="button"
+                class="btn btn-sm btn-primary"
+              >
+                Assign Automated Indicator
+              </button>
             </div>
           </p-form-row>
 
@@ -58,47 +101,64 @@
 
           <p-form-row
             id="name"
+            v-model="form.name"
             name="name"
             label="name"
-            :disabled="loadingSaveButton"
-            v-model="form.name">
-          </p-form-row>
+            :disabled="isSaving"
+          />
           <p-form-row
             id="weight"
+            v-model="form.weight"
             name="weight"
             label="weight"
-            :disabled="loadingSaveButton"
-            v-model="form.weight">
-          </p-form-row>
+            :disabled="isSaving"
+          />
           <p-form-row
             id="target"
+            v-model="form.target"
             name="target"
             label="target"
-            :disabled="loadingSaveButton || automatedIndicatorChecked || !canEditTarget"
-            v-model="form.target"
-            :hidden="automatedIndicatorChecked || !canEditTarget">
-          </p-form-row>
+            :disabled="isSaving || automatedIndicatorChecked || !canEditTarget"
+            :hidden="automatedIndicatorChecked || !canEditTarget"
+          />
         </template>
         <template slot="footer">
           <button
-            :disabled="loadingSaveButton"
+            :disabled="isSaving"
             type="submit"
-            class="btn btn-primary">
+            class="btn btn-sm btn-primary"
+          >
             <i
-              v-show="loadingSaveButton"
-              class="fa fa-asterisk fa-spin"/>
-            <template v-if="isCreateMode">Add</template>
-            <template v-if="!isCreateMode">Update</template>
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            />
+            <template v-if="isCreateMode">
+              {{ $t('add') | uppercase }}
+            </template>
+            <template v-if="!isCreateMode">
+              {{ $t('update') | uppercase }}
+            </template>
           </button>
-          <button type="button" class="btn btn-outline-danger" @click="cancel">
-            <template v-if="isCreateMode">Close</template>
-            <template v-if="!isCreateMode">Cancel</template>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="cancel"
+          >
+            <template v-if="isCreateMode">
+              {{ $t('close') | uppercase }}
+            </template>
+            <template v-if="!isCreateMode">
+              {{ $t('cancel') | uppercase }}
+            </template>
           </button>
         </template>
       </p-modal>
     </form>
 
-    <assign-automated-indicator-modal ref="assignAutomatedIndicator" @assigned="closeAutomatedIndicatorModal"/>
+    <assign-automated-indicator-modal
+      ref="assignAutomatedIndicator"
+      @assigned="closeAutomatedIndicatorModal"
+    />
   </div>
 </template>
 
@@ -108,14 +168,14 @@ import AssignAutomatedIndicatorModal from './AssignAutomatedIndicatorModal'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
+  components: {
+    AssignAutomatedIndicatorModal
+  },
   props: {
     id: {
       type: String,
       required: true
     }
-  },
-  components: {
-    AssignAutomatedIndicatorModal
   },
   data () {
     return {
@@ -128,8 +188,8 @@ export default {
         target: ''
       }),
       isCreateMode: true,
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
       automatedIndicatorChecked: false,
       selectingAutomatedIndicator: false,
       canEditTarget: true
@@ -173,17 +233,17 @@ export default {
             this.form.target = 0
           }
 
-          this.loadingSaveButton = true
+          this.isSaving = true
           this.createIndicator(this.form)
             .then(
               (response) => {
                 this.$notification.success('Create success')
                 this.form.reset()
-                this.loadingSaveButton = false
+                this.isSaving = false
               },
               (error) => {
                 this.$notification.error('Create failed', error.message)
-                this.loadingSaveButton = false
+                this.isSaving = false
               })
         } else {
           this.$notification.error('Please Select one Automated Indicator')
@@ -194,17 +254,17 @@ export default {
             this.form.target = 0
           }
 
-          this.loadingSaveButton = true
+          this.isSaving = true
           this.updateIndicator(this.form)
             .then(
               (response) => {
                 this.$notification.success('Update success')
-                this.loadingSaveButton = false
+                this.isSaving = false
                 this.isCreateMode = false
               },
               (error) => {
                 this.$notification.error('Update failed', error.message)
-                this.loadingSaveButton = false
+                this.isSaving = false
               })
         } else {
           this.$notification.error('Please Select one Automated Indicator')
@@ -212,7 +272,7 @@ export default {
       }
     },
     edit (indicator) {
-      for (let field in indicator) {
+      for (const field in indicator) {
         this.$set(this.form, field, indicator[field])
       }
 

@@ -1,43 +1,84 @@
 <template>
   <div>
-    <span @click="show" class="link"><i class="fa fa-list mr-5"></i>{{ mutableLabel || 'SELECT'}}</span>
-    <p-modal :ref="'select-' + id" :id="'select-' + id" title="select supplier">
-      <template slot="content">
-        <input type="text" class="form-control" v-model="searchText" placeholder="Search..." @keydown.enter.prevent="">
-        <hr>
-        <div v-if="isLoading">
-          <h3 class="text-center">Loading ...</h3>
-        </div>
-        <div v-else class="list-group push">
-          <template v-for="(option, index) in options">
-          <a
+    <sweet-modal
+      :ref="'select-' + id"
+      :title="$t('select supplier') | uppercase"
+      overlay-theme="dark"
+      @close="onClose()"
+    >
+      <input
+        ref="searchText"
+        v-model="searchText"
+        type="text"
+        class="form-control"
+        placeholder="Search..."
+        @keydown.enter.prevent=""
+      >
+      <hr>
+      <div v-if="isLoading">
+        <h3 class="text-center">
+          Loading ...
+        </h3>
+      </div>
+      <div
+        v-else
+        class="list-group push"
+      >
+        <template v-for="(option, index) in options">
+          <div
             :key="index"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            class="list-group-item list-group-item-action justify-content-between align-items-center"
             :class="{'active': option.id == mutableId }"
+            href="javascript:void(0)"
             @click="choose(option)"
-            href="javascript:void(0)">
-            {{ option.label }}
-          </a>
-          </template>
-        </div>
-        <div class="alert alert-info text-center" v-if="searchText && options.length == 0 && !isLoading">
-          {{ $t('searching not found', [searchText]) | capitalize }} <br>
-          {{ $t('click') }} <span class="link" @click="add"><i class="fa fa-xs" :class="{
-            'fa-refresh fa-spin': isSaving,
-            'fa-plus': !isSaving
-          }"></i> Add</span> {{ $t('to add new data') }}
-        </div>
-        <div class="alert alert-info text-center" v-if="!searchText && options.length == 0 && !isLoading">
-          {{ $t('you don\'t have any') | capitalize }} {{ $t('supplier') | capitalize }}, <br/> {{ $t('you can create') }}
-          <router-link :to="'/master/supplier/create'">
-            <span>{{ $t('new one') }}</span>
-          </router-link>
-        </div>
-      </template>
-      <template slot="footer">
-        <button type="button" @click="close()" class="btn btn-outline-danger">Close</button>
-      </template>
-    </p-modal>
+          >
+            {{ option.label | uppercase }}
+            <div
+              v-if="option.address"
+              style="font-size:11px"
+            >
+              <i class="fa fa-home fa-fw" /> {{ option.address | uppercase }}
+            </div>
+            <div
+              v-if="option.phone"
+              style="font-size:11px"
+            >
+              <i class="fa fa-phone fa-fw" /> {{ option.phone | uppercase }}
+            </div>
+          </div>
+        </template>
+      </div>
+      <div
+        v-if="searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
+        {{ $t('searching not found', [searchText]) | capitalize }} <br>
+      </div>
+      <div class="pull-left">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary mr-5"
+          @click="$refs.addSupplier.open()"
+        >
+          {{ $t('create new') | uppercase }}
+        </button>
+      </div>
+      <div class="pull-right">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="clear()"
+        >
+          {{ $t('clear') | uppercase }}
+        </button>
+      </div>
+    </sweet-modal>
+
+    <m-add-supplier
+      id="add-supplier"
+      ref="addSupplier"
+      @added="onAdded()"
+    />
   </div>
 </template>
 
@@ -46,6 +87,20 @@ import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  props: {
+    id: {
+      type: String,
+      default: ''
+    },
+    value: {
+      type: [String, Number],
+      default: ''
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       searchText: '',
@@ -59,28 +114,22 @@ export default {
   computed: {
     ...mapGetters('masterSupplier', ['suppliers', 'pagination'])
   },
-  props: {
-    id: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number]
-    },
-    label: {
-      type: String
-    }
-  },
   watch: {
     searchText: debounce(function () {
       this.search()
     }, 300),
     label () {
       this.mutableLabel = this.label
+    },
+    value () {
+      this.mutableId = this.value
     }
   },
   created () {
     this.search()
+  },
+  beforeDestroy () {
+    this.close()
   },
   methods: {
     ...mapActions('masterSupplier', ['get', 'create']),
@@ -89,22 +138,35 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          limit: 50,
+          limit: 10,
+          includes: 'addresses;phones;emails',
           filter_like: {
             name: this.searchText
           }
         }
       }).then(response => {
         this.options = []
-        this.mutableLabel = ''
         response.data.map((key, value) => {
+          const obj = {
+            id: key.id,
+            name: key.name,
+            label: key.label
+          }
+          if (key.addresses.length > 0) {
+            obj.address = key.addresses[0].address
+          }
+          if (key.emails.length > 0) {
+            obj.email = key.emails[0].email
+          }
+          if (key.phones.length > 0) {
+            obj.phone = key.phones[0].number
+          }
           this.options.push({
-            'id': key['id'],
-            'label': key['name']
+            ...obj
           })
 
-          if (this.value == key['id']) {
-            this.mutableLabel = key['name']
+          if (this.value == key.id) {
+            this.mutableLabel = key.name
           }
         })
         this.isLoading = false
@@ -112,7 +174,10 @@ export default {
         this.isLoading = false
       })
     },
-    add () {
+    onAdded () {
+      this.search()
+    },
+    save () {
       this.isSaving = true
       this.create({
         name: this.searchText
@@ -124,33 +189,39 @@ export default {
         this.isSaving = false
       })
     },
+    open () {
+      this.$refs['select-' + this.id].open()
+      this.$nextTick(() => {
+        this.$refs.searchText.focus()
+      })
+    },
     choose (option) {
       this.mutableId = option.id
-      this.mutableLabel = option.label
-      this.$emit('input', option.id)
-      this.$emit('choosen', option.label)
+      this.$emit('choosen', option)
       this.close()
     },
-    show () {
-      this.$refs['select-' + this.id].show()
+    clear () {
+      this.mutableId = null
+      this.mutableLabel = null
+      this.$emit('input', null)
+      this.$emit('choosen', '')
+      this.close()
     },
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
       this.$emit('close', true)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
 input:readonly {
   background-color: white
 }
 input {
   min-width: 200px;
-}
-.link {
-  border-bottom: dotted 1px blueviolet;
-  cursor: pointer;
 }
 </style>

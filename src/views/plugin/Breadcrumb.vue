@@ -1,5 +1,8 @@
 <template>
   <router-link
     to="/plugin"
-    class="breadcrumb-item">Plugin</router-link>
+    class="breadcrumb-item"
+  >
+    {{ $t('plugin') | uppercase }}
+  </router-link>
 </template>

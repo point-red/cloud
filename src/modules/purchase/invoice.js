@@ -3,20 +3,20 @@ import api from '@/api'
 const url = '/purchase/invoices'
 
 const state = {
-  invoice: {
+  purchaseInvoice: {
     form: {},
     supplier: {}
   },
-  invoices: [],
+  purchaseInvoices: [],
   pagination: {}
 }
 
 const getters = {
-  invoice: state => {
-    return state.invoice
+  purchaseInvoice: state => {
+    return state.purchaseInvoice
   },
-  invoices: state => {
-    return state.invoices
+  purchaseInvoices: state => {
+    return state.purchaseInvoices
   },
   pagination: state => {
     return state.pagination
@@ -25,20 +25,20 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.invoices = payload.data
+    state.purchaseInvoices = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.invoice = payload.data
+    state.purchaseInvoice = payload.data
   },
   'CREATE' (state, payload) {
-    state.invoice = payload
+    state.purchaseInvoice = payload
   },
   'UPDATE' (state, payload) {
-    state.invoice = payload
+    state.purchaseInvoice = payload
   },
   'DELETE' (state, payload) {
-    state.invoice = {}
+    state.purchaseInvoice = {}
   }
 }
 
@@ -88,6 +88,46 @@ const actions = {
   delete (context, payload) {
     return new Promise((resolve, reject) => {
       api.delete(url + '/' + payload.id, payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  approve (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/approve', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  reject (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/reject', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationApprove (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-approve', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationReject (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-reject', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

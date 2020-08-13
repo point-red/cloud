@@ -1,55 +1,79 @@
 <template>
   <div>
-    <p-loading-block v-show="isLoading" :message="loadingMessage"/>
+    <p-loading-block
+      v-show="isLoading"
+      :message="loadingMessage"
+    />
 
     <breadcrumb>
-      <breadcrumb-plugin/>
-      <breadcrumb-pin-point/>
+      <breadcrumb-plugin />
+      <breadcrumb-pin-point />
       <router-link
         to="/plugin/pin-point/sales-visitation-form"
-        class="breadcrumb-item">{{ $t('sales visitation') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Create</span>
+        class="breadcrumb-item"
+      >
+        {{ $t('sales visitation') | uppercase }}
+      </router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
-    <form class="row" @submit.prevent="onSubmit">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
       <p-block
         :is-loading="isLoading"
-        :header="true"
+        :header="false"
         :title="$t('sales visitation')"
-        column="col-sm-12">
+        column="col-sm-12"
+      >
+        <h5>{{ $t('sales visitation') | uppercase }}</h5>
 
-        <p-form-row :label="$t('date')">
-          <div slot="body" class="col-lg-9">
-            <p-date-picker
-              id="date"
-              name="date"
-              label="date"
-              v-model="form.date"
-              type="datetime"
-              format="YYYY-MM-DD HH:mm:ss"
-              :errors="form.errors.get('date')"
-              @errors="form.errors.set('date', null)"/>
+        <hr>
+
+        <p-form-row :label="$t('photo')">
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <p-camera
+              :image="form.image"
+              @onCaptured="onCaptured($event)"
+            />
           </div>
         </p-form-row>
 
         <p-form-row
           id="customer"
+          v-model="form.customer"
           name="customer"
           :label="$t('customer')"
           :disabled="isSaving"
-          v-model="form.customer"
           :errors="form.errors.get('customer')"
-          @errors="form.errors.set('customer', null)">
-          <div class="col-lg-9" slot="body">
-            <m-customer id="customer" v-model="form.customer_id" @choosen="chooseCustomer" :label="form.customer_name"/>
+          @errors="form.errors.set('customer', null)"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.customer.open()"
+            >{{ form.customer_name || $t('select') | uppercase }}</span>
           </div>
         </p-form-row>
 
         <p-form-row :label="'group'">
-          <div class="col-lg-9" slot="body">
-            <m-group id="group" v-model="form.group_id" @choosen="chooseGroup" :label="form.group_name" class-reference="Customer"/>
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.group.open()"
+            >{{ form.group_name || $t('select') | uppercase }}</span>
           </div>
         </p-form-row>
 
@@ -57,14 +81,20 @@
           id="gmap"
           name="gmap"
           :label="'Google Map - ' + $t('address')"
-          :placeholder="'' + $t('address')">
-          <div slot="body" class="col-lg-9">
-            <gmap-autocomplete :value="description"
-              @place_changed="setPlace"
-              v-on:keypress.enter.prevent
+          :placeholder="'' + $t('address')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <gmap-autocomplete
+              :value="description"
               :disabled="true"
-              class="form-control">
-            </gmap-autocomplete>
+              class="form-control"
+              @place_changed="setPlace"
+              @keypress.enter.prevent
+            />
+
             <gmap-map
               id="map"
               ref="map"
@@ -92,156 +122,157 @@
                   }
                 ]
               }"
-              style="width: 100%; height: 200px">
-                <gmap-marker
-                  :key="index"
-                  v-for="(m, index) in markers"
-                  :position="center = m.position"
-                  :clickable="true"
-                  :draggable="true"
-                  @click="center=m.position"></gmap-marker>
+              style="width: 100%; height: 200px"
+            >
+              <gmap-marker
+                v-for="(m, index) in markers"
+                :key="index"
+                :position="center = m.position"
+                :clickable="true"
+                :draggable="true"
+                @click="center=m.position"
+              />
             </gmap-map>
           </div>
         </p-form-row>
 
         <p-form-row
           id="address"
+          v-model="form.address"
           name="address"
           :label="$t('address')"
           :placeholder="$t('address')"
           :disabled="isSaving"
-          v-model="form.address"
           :errors="form.errors.get('address')"
-          @errors="form.errors.set('address', null)">
-        </p-form-row>
+          @errors="form.errors.set('address', null)"
+        />
 
         <p-form-row
           id="district"
+          v-model="form.district"
           name="district"
           :placeholder="$t('district')"
           :disabled="isSaving"
-          v-model="form.district"
           :errors="form.errors.get('district')"
-          @errors="form.errors.set('district', null)">
-        </p-form-row>
+          @errors="form.errors.set('district', null)"
+        />
 
         <p-form-row
           id="sub_district"
+          v-model="form.sub_district"
           name="sub_district"
           :placeholder="$t('sub district')"
           :disabled="isSaving"
-          v-model="form.sub_district"
           :errors="form.errors.get('sub_district')"
-          @errors="form.errors.set('sub_district', null)">
-        </p-form-row>
+          @errors="form.errors.set('sub_district', null)"
+        />
 
         <p-form-row
           id="phone"
+          v-model="form.phone"
           name="phone"
           :label="$t('phone')"
           :disabled="isSaving"
-          v-model="form.phone"
           :errors="form.errors.get('phone')"
-          @errors="form.errors.set('phone', null)">
-        </p-form-row>
+          @errors="form.errors.set('phone', null)"
+        />
 
         <p-form-row
           id="similar-product"
           name="similar_product"
-          :label="$t('similar product') | titlecase">
-          <div slot="body" class="col-lg-9">
-            <p-select
-              id="similar-product"
-              name="similar_product"
-              :multiple="true"
-              :key-field="'label'"
-              :disabled="isSaving"
-              v-model="form.similar_product"
-              :options="similarProductList"
-              :errors="form.errors.get('similar_product')"
-              @errors="form.errors.set('similar_product', null)"/>
+          :label="$t('similar product') | titlecase"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.similarProduct.open(form.similar_products)"
+            >
+              <template v-if="form.similar_products.length == 0">{{ $t('select') | uppercase }}</template>
+              <template v-for="(similarProduct, index) in form.similar_products">
+                {{ similarProduct.name | uppercase }}<template v-if="index + 1 != form.similar_products.length">,</template>
+              </template>
+            </span>
           </div>
-        </p-form-row>
-
-        <p-form-row
-          id="other-similar-product"
-          name="other_similar_product"
-          :label="$t('')"
-          placeholder="..."
-          :disabled="isSaving"
-          v-model="form.other_similar_product"
-          :errors="form.errors.get('other_similar_product')"
-          @errors="form.errors.set('other_similar_product', null)">
         </p-form-row>
 
         <p-form-row
           id="interest"
           name="interest"
-          :label="$t('interest reason') | titlecase">
-          <div slot="body" class="col-lg-9">
-            <p-select
-              id="interest"
-              name="interest"
-              :multiple="true"
-              :key-field="'label'"
-              :disabled="isSaving"
-              v-model="form.interest_reason"
-              :options="interestedList"
-              :errors="form.errors.get('interest')"
-              @errors="form.errors.set('interest', null)"/>
+          :label="$t('interest reason') | titlecase"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.interestReason.open(form.interest_reasons)"
+            >
+              <template v-if="form.interest_reasons.length == 0">{{ $t('select') | uppercase }}</template>
+              <template v-for="(interestReason, index) in form.interest_reasons">
+                {{ interestReason.name | uppercase }}<template v-if="index + 1 != form.interest_reasons.length">,</template>
+              </template>
+            </span>
           </div>
         </p-form-row>
 
         <p-form-row
-          id="other-interest-reason"
-          name="other_interest_reason"
-          :label="$t('')"
-          placeholder="..."
-          :disabled="isSaving"
-          v-model="form.other_interest_reason"
-          :errors="form.errors.get('other_interest_reason')"
-          @errors="form.errors.set('other_interest_reason', null)">
-        </p-form-row>
-
-        <p-form-row
-          id="not-interest"
-          name="not_interest"
-          :label="$t('no interest reason')">
-          <div slot="body" class="col-lg-9">
-            <p-select
-              id="not-interest"
-              name="not_interest"
-              :multiple="true"
-              :disabled="isSaving"
-              v-model="form.not_interest_reason"
-              :options="notInterestedList"
-              :errors="form.errors.get('not_interest')"
-              @errors="form.errors.set('not_interest', null)"/>
+          id="no-interest"
+          name="no_interest"
+          :label="$t('no interest reason')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.noInterestReason.open(form.no_interest_reasons)"
+            >
+              <template v-if="form.no_interest_reasons.length == 0">{{ $t('select') | uppercase }}</template>
+              <template v-for="(noInterestReason, index) in form.no_interest_reasons">
+                {{ noInterestReason.name | uppercase }}<template v-if="index + 1 != form.no_interest_reasons.length">,</template>
+              </template>
+            </span>
           </div>
-        </p-form-row>
-
-        <p-form-row
-          id="other-not-interest-reason"
-          name="other_not_interest_reason"
-          :label="$t('')"
-          placeholder="..."
-          :disabled="isSaving"
-          v-model="form.other_not_interest_reason"
-          :errors="form.errors.get('other_not_interest_reason')"
-          @errors="form.errors.set('other_not_interest_reason', null)">
         </p-form-row>
 
         <p-form-row
           id="notes"
+          v-model="form.notes"
           name="notes"
           :label="'notes'"
           :disabled="isSaving"
-          v-model="form.notes"
           :errors="form.errors.get('notes')"
-          @errors="form.errors.set('notes', null)">
-        </p-form-row>
+          @errors="form.errors.set('notes', null)"
+        />
 
-        <hr/>
+        <p-separator />
+
+        <h5>{{ $t('form sales') | uppercase }}</h5>
+
+        <hr>
+
+        <p-form-row :label="$t('date')">
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <p-date-picker
+              id="date"
+              v-model="form.date"
+              name="date"
+              label="date"
+              type="datetime"
+              format="YYYY-MM-DD HH:mm:ss"
+              :errors="form.errors.get('date')"
+              @errors="form.errors.set('date', null)"
+            />
+          </div>
+        </p-form-row>
 
         <p-table>
           <tr slot="p-head">
@@ -250,115 +281,201 @@
             <th>Harga Satuan</th>
             <th>Total</th>
           </tr>
-          <tr slot="p-body" v-for="(row, index) in rows" :key="row">
+          <tr
+            v-for="(row, index) in form.items"
+            slot="p-body"
+            :key="'row-' + index"
+          >
             <td>
-              <p-select
-                id="item"
-                :disabled="isSaving"
-                v-model="form.item[index]"
-                @input="updateItem(row)"
-                :options="itemList"
-                :errors="form.errors.get('item_id')"
-                @errors="form.errors.set('item_id', null)"/>
+              <span
+                class="select-link"
+                @click="$refs.item.open(index)"
+              >
+                {{ row.item_label || $t('select') | uppercase }}
+              </span>
+            </td>
+            <td>
+              <p-quantity
+                :id="'quantity' + index"
+                v-model="row.quantity"
+                :name="'quantity' + index"
+                :disabled="row.item_id == null"
+                :item-id="row.item_id"
+                :units="row.units"
+                :unit="{
+                  name: row.unit,
+                  label: row.unit,
+                  converter: row.converter
+                }"
+                @keyup.native="calculate"
+                @choosen="chooseUnit($event, row)"
+              />
             </td>
             <td>
               <p-form-number
-                v-model="form.quantity[index]"
-                @keyup.native="calculate()"
-                :disabled="isSaving"
-                :is-text-right="true"/>
+                :id="'price' + index"
+                v-model="row.price"
+                :name="'price' + index"
+                :disabled="row.item_id == null"
+                @keyup.native="calculate"
+              />
             </td>
             <td>
               <p-form-number
-                v-model="form.price[index]"
-                @keyup.native="calculate()"
-                :disabled="isSaving"
-                :is-text-right="true"/>
-            </td>
-            <td>
-              <p-form-number
-                v-model="form.total[index]"
+                :id="'total' + index"
+                v-model="row.total"
+                :name="'total' + index"
                 :disabled="true"
-                :readonly="true"
-                :is-text-right="true"/>
+              />
             </td>
           </tr>
           <tr slot="p-body">
-            <td></td>
-            <td></td>
+            <td />
+            <td />
             <td>Total</td>
             <td>
               <p-form-number
-                v-model="form.grandTotal"
+                v-model="form.total_price"
                 :readonly="true"
-                :is-text-right="true"/>
+                :is-text-right="true"
+              />
             </td>
           </tr>
         </p-table>
 
-        <hr/>
+        <hr>
 
         <p-form-row :label="$t('payment method') | titlecase">
-          <div slot="body" class="col-lg-9">
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <label class="css-control css-control-primary css-radio">
-              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'cash'">
-              <span class="css-control-indicator"></span> Tunai
+              <input
+                v-model="form.payment_method"
+                type="radio"
+                class="css-control-input"
+                name="radio-group2"
+                :value="'cash'"
+              >
+              <span class="css-control-indicator" /> Tunai
             </label>
             <label class="css-control css-control-primary css-radio">
-              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'credit'">
-              <span class="css-control-indicator"></span> Tempo
+              <input
+                v-model="form.payment_method"
+                type="radio"
+                class="css-control-input"
+                name="radio-group2"
+                :value="'credit'"
+              >
+              <span class="css-control-indicator" /> Tempo
             </label>
             <label class="css-control css-control-primary css-radio">
-              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'taking-order'">
-              <span class="css-control-indicator"></span> Taking Order
+              <input
+                v-model="form.payment_method"
+                type="radio"
+                class="css-control-input"
+                name="radio-group2"
+                :value="'taking-order'"
+              >
+              <span class="css-control-indicator" /> Taking Order
             </label>
             <label class="css-control css-control-primary css-radio">
-              <input type="radio" class="css-control-input" name="radio-group2" v-model="form.payment_method" :value="'sell-out'">
-              <span class="css-control-indicator"></span> Sell Out
+              <input
+                v-model="form.payment_method"
+                type="radio"
+                class="css-control-input"
+                name="radio-group2"
+                :value="'sell-out'"
+              >
+              <span class="css-control-indicator" /> Sell Out
             </label>
           </div>
         </p-form-row>
 
         <p-form-row
+          v-show="form.payment_method === 'credit'"
           id="date"
           name="date"
-          v-show="form.payment_method === 'credit'"
-          :label="$t('due date')">
-          <div slot="body" class="col-lg-9">
+          :label="$t('due date')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <p-date-picker
               id="date"
+              v-model="form.due_date"
               name="date"
               label="date"
-              v-model="form.due_date"
               :errors="form.errors.get('date')"
-              @errors="form.errors.set('date', null)"/>
+              @errors="form.errors.set('date', null)"
+            />
           </div>
         </p-form-row>
 
-        <p-form-row :label="$t('payment received') | titlecase" v-show="form.payment_method === 'credit'">
-          <div slot="body" class="col-lg-9">
+        <p-form-row
+          v-show="form.payment_method === 'credit'"
+          :label="$t('payment received') | titlecase"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
             <p-form-number
               id="payment-received"
-              name="payment_received"
               v-model="form.payment_received"
+              name="payment_received"
               :disabled="isSaving"
               :errors="form.errors.get('payment_received')"
+              :is-text-right="false"
               @errors="form.errors.set('payment_received', null)"
-              :is-text-right="false"/>
+            />
           </div>
         </p-form-row>
 
-        <hr/>
+        <hr>
 
         <div class="form-group row">
           <div class="col-md-12">
-            <button :disabled="isSaving" type="submit" class="btn btn-sm btn-primary">
-              <i v-show="isSaving" class="fa fa-asterisk fa-spin"/> Save
+            <button
+              :disabled="isSaving"
+              type="submit"
+              class="btn btn-sm btn-primary"
+            >
+              <i
+                v-show="isSaving"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('save') | uppercase }}
             </button>
           </div>
         </div>
       </p-block>
     </form>
+    <m-customer
+      ref="customer"
+      @choosen="chooseCustomer"
+    />
+    <m-customer-group
+      ref="group"
+      @choosen="chooseGroup"
+    />
+    <m-item
+      ref="item"
+      @choosen="chooseItem($event)"
+    />
+    <m-m-interest-reason
+      ref="interestReason"
+      @choosen="chooseInterestReason($event)"
+    />
+    <m-m-no-interest-reason
+      ref="noInterestReason"
+      @choosen="chooseNoInterestReason($event)"
+    />
+    <m-m-similar-product
+      ref="similarProduct"
+      @choosen="chooseSimilarProduct($event)"
+    />
   </div>
 </template>
 
@@ -369,6 +486,9 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPlugin from '@/views/plugin/Breadcrumb'
 import BreadcrumbPinPoint from '@/views/plugin/pin-point/Breadcrumb'
 import Form from '@/utils/Form'
+import MMInterestReason from './MMInterestReason'
+import MMNoInterestReason from './MMNoInterestReason'
+import MMSimilarProduct from './MMSimilarProduct'
 import { mapActions } from 'vuex'
 
 export default {
@@ -376,16 +496,19 @@ export default {
     TabMenu,
     Breadcrumb,
     BreadcrumbPlugin,
-    BreadcrumbPinPoint
+    BreadcrumbPinPoint,
+    MMInterestReason,
+    MMNoInterestReason,
+    MMSimilarProduct
   },
   data () {
     return {
       isLoading: false,
       loadingMessage: 'Loading...',
       isSaving: false,
-      rows: 1,
       form: new Form({
-        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        date: this.serverDateTime(),
+        image: null,
         customer_id: null,
         customer_name: this.$route.query.name || '',
         address: this.$route.query.address || '',
@@ -397,53 +520,15 @@ export default {
         group_name: null,
         phone: '',
         notes: '',
-        similar_product: '',
-        interest_reason: '',
-        other_interest_reason: '',
-        not_interest_reason: '',
-        other_not_interest_reason: '',
-        item: [''],
-        quantity: [0],
-        price: [0],
-        total: [0],
-        grandTotal: 0,
+        interest_reasons: [],
+        no_interest_reasons: [],
+        similar_products: [],
+        items: [],
+        total_price: 0,
         payment_method: 'cash',
-        due_date: '',
+        due_date: null,
         received_payment: 0
       }),
-      notInterestedList: [
-        { id: 'Harga terlalu mahal', label: 'Harga terlalu mahal' },
-        { id: 'Belum Bertemu dengan Pemilik Toko / Istri (Suami)', label: 'Belum Bertemu dengan Pemilik Toko / Istri (Suami)' },
-        { id: 'Masih ada stok kopi lain', label: 'Masih ada stok kopi lain' },
-        { id: 'Masih ada stok kopi bara', label: 'Masih ada stok kopi bara' },
-        { id: 'Belum berminat (lain kali)', label: 'Belum berminat (lain kali)' },
-        { id: 'Memiliki racikan kopi sendiri', label: 'Memiliki racikan kopi sendiri' },
-        { id: 'Memakai biji kopi', label: 'Memakai biji kopi' },
-        { id: 'Minta mix dengan gula', label: 'Minta mix dengan gula' },
-        { id: 'Masih baru / belum dikenal', label: 'Masih baru / belum dikenal' },
-        { id: 'Lain Lain', label: 'Lain Lain' }
-      ],
-      interestedList: [
-        { id: 'Kemasan bagus', label: 'Kemasan bagus' },
-        { id: 'Cocok dengan rasanya', label: 'Cocok dengan rasanya' },
-        { id: 'Dicari oleh pembeli', label: 'Dicari oleh pembeli' },
-        { id: 'Tertarik dengan promosi', label: 'Tertarik dengan promosi' },
-        { id: 'Mudah dipakai untuk resep', label: 'Mudah dipakai untuk resep' },
-        { id: 'Lain Lain', label: 'Lain Lain' }
-      ],
-      similarProductList: [
-        { id: 'Kapal Api', label: 'Kapal Api' },
-        { id: 'Torabika', label: 'Torabika' },
-        { id: 'Top Coffee', label: 'Top Coffee' },
-        { id: 'Luwak White Coffee', label: 'Luwak White Coffee' },
-        { id: 'Good Day', label: 'Good Day' },
-        { id: 'Kopi ABC', label: 'Kopi ABC' },
-        { id: 'Kopi Ya', label: 'Kopi Ya' },
-        { id: 'Nescafe', label: 'Nescafe' },
-        { id: 'Kopi Bara', label: 'Kopi Bara' },
-        { id: 'Kopi Racikan Sendiri', label: 'Kopi Racikan Sendiri' },
-        { id: 'Lain Lain', label: 'Lain Lain' }
-      ],
       groupList: [
         { id: 'Hotel', label: 'Hotel' },
         { id: 'Resto', label: 'Resto' },
@@ -467,9 +552,9 @@ export default {
         { id: 'Y007 NEW GEN BULK PACK 1KG', label: 'Y007 NEW GEN BULK PACK 1KG' }
       ],
       // Google Map
-      center: {lat: 23.8103, lng: 90.4125},
+      center: { lat: 23.8103, lng: 90.4125 },
       markers: [
-          {position: {lat: 10.0, lng: 10.0}}
+        { position: { lat: 10.0, lng: 10.0 } }
       ],
       addressComponent: {},
       getMap: this.$root.mapping,
@@ -481,48 +566,33 @@ export default {
   mounted () {
     this.isLoading = false
     this.loadingMessage = 'Searching current location'
-    // Check for Geolocation API permissions
-    navigator.permissions.query({
-      name:'geolocation'
-    }).then(permissionStatus => {
-      console.log('geolocation permission state is ', permissionStatus.state)
-      if (permissionStatus.state == 'granted') {
-        this.getLocation()
-      } else if (permissionStatus.state == 'prompt') {
-        this.loadingMessage = 'Please allow location permission request'
-        this.getLocation()
-      } else if (permissionStatus.state == 'denied') {
-        this.loadingMessage = 'Permission denied'
-        this.isLoading = false
-        this.$alert.error('Permissions Denied', 'Requesting location permissions denied, If you using google chrome you can refer this guide to allow permission request <a href="https://support.google.com/chrome/answer/142065?hl=en" target="_blank">https://support.google.com/chrome/answer/142065</a>')
-      }
-
-      permissionStatus.onchange = () => {
-        console.log('geolocation permission state has changed to ', this.state)
-        if (permissionStatus.state == 'denied') {
-          this.isLoading = false
-          this.loadingMessage = 'Permission denied'
-          this.$alert.error('Permissions Denied', 'Requesting location permissions denied, If you using google chrome you can refer this guide to allow permission request <a href="https://support.google.com/chrome/answer/142065?hl=en" target="_blank">https://support.google.com/chrome/answer/142065</a>')
-        }
-      }
-    })
+    this.getLocation()
+  },
+  created () {
+    this.addItemRow()
   },
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['create']),
+    onCaptured (value) {
+      this.form.image = value
+    },
     getLocation () {
-      if (navigator.geolocation) {              
+      if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
-          let pos = {
+          const pos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           }
           this.center.lat = pos.lat
           this.center.lng = pos.lng
+          this.form.latitude = pos.lat
+          this.form.longitude = pos.lng
           this.markers[0].position.lat = pos.lat
           this.markers[0].position.lng = pos.lng
           this.$refs.map.$mapPromise.then(() => {
             this.isLoading = false
-            this.geocodeLatLng(new google.maps.Geocoder, pos, google.maps.InfoWindow)
+            // eslint-disable-next-line no-undef
+            this.geocodeLatLng(new google.maps.Geocoder(), pos, google.maps.InfoWindow)
           }).catch(error => {
             this.isLoading = false
           })
@@ -531,18 +601,25 @@ export default {
         this.loadingMessage = 'Geolocation not available, please update your browser or using another browser'
       }
     },
-    chooseCustomer (value) {
-      this.form.customer_name = value
+    addMoreSimilarProduct () {
+      this.form.similar_products.push({
+        id: null,
+        name: null
+      })
     },
-    chooseGroup (value) {
-      this.form.group_name = value
+    chooseCustomer (option) {
+      this.form.customer_id = option.id
+      this.form.customer_name = option.name
+    },
+    chooseGroup (option) {
+      this.form.group_id = option.id
+      this.form.group_name = option.name
     },
     // [Start] Google Map
     setDescription (description) {
       this.description = description
     },
     setPlace (place) {
-      console.log(place)
       this.center.lat = place.geometry.location.lat()
       this.center.lng = place.geometry.location.lng()
       this.markers[0].position.lat = place.geometry.location.lat()
@@ -564,10 +641,9 @@ export default {
         }
       })
     },
-    geocodeLatLng (geocoder, map, infowindow){
+    geocodeLatLng (geocoder, map, infowindow) {
       var self = this
-      geocoder.geocode({'location':this.center}, function (results, status) {
-        console.log(results)
+      geocoder.geocode({ location: this.center }, function (results, status) {
         if (status == 'OK') {
           self.addressComponent = results[0]
           self.setDescription(self.addressComponent.formatted_address)
@@ -587,23 +663,87 @@ export default {
       })
     },
     // [End] Google Map
-    updateItem (row) {
-      if (this.rows === row) {
-        this.rows++
+    addItemRow () {
+      this.form.items.push({
+        item_id: null,
+        item_name: null,
+        item_label: null,
+        unit: null,
+        converter: null,
+        quantity: null,
+        price: null,
+        allocation_id: null,
+        notes: null,
+        more: false,
+        units: [{
+          label: '',
+          name: '',
+          converter: null
+        }]
+      })
+    },
+    chooseItem (item) {
+      const row = this.form.items[item.index]
+      if (item.id == null) {
+        this.clearItem(row)
+      } else {
+        row.item_id = item.id
+        row.item_name = item.name
+        row.item_label = item.label
+        row.units = item.units
+        row.units.forEach((unit, keyUnit) => {
+          if (unit.id == item.unit_default_purchase) {
+            row.unit = unit.label
+            row.converter = unit.converter
+          }
+        })
+        let isNeedNewRow = true
+        this.form.items.forEach(element => {
+          if (element.item_id == null) {
+            isNeedNewRow = false
+          }
+        })
+        if (isNeedNewRow) {
+          this.addItemRow()
+        }
       }
       this.calculate()
     },
-    calculate: debounce(function () {
-      this.form.grandTotal = 0
-      for (var i = 0; i < this.form.item.length; i++) {
-        if (this.form.item[i] && this.form.quantity[i] && this.form.price[i]) {
-          this.$set(this.form.total, i, parseFloat(this.form.quantity[i]) * parseFloat(this.form.price[i]))
-          this.form.grandTotal += parseFloat(this.form.total[i])
-        } else {
-          this.$set(this.form.total, i, parseFloat(0))
-        }
+    clearItem (row) {
+      row.item_id = null
+      row.item_name = null
+      row.item_label = null
+      row.unit = null
+      row.converter = null
+      row.quantity = null
+      row.price = null
+      row.allocation_id = null
+      row.notes = null
+      row.more = false
+      row.units = []
+      if (this.form.items.length > 1) {
+        this.form.items = this.form.items.filter(item => item.item_id !== null)
+        this.addItemRow()
       }
-    }, 500),
+    },
+    chooseInterestReason (interestReasons) {
+      this.form.interest_reasons = interestReasons
+    },
+    chooseNoInterestReason (noInterestReasons) {
+      this.form.no_interest_reasons = noInterestReasons
+    },
+    chooseSimilarProduct (similarProducts) {
+      this.form.similar_products = similarProducts
+    },
+    calculate: debounce(function (value) {
+      this.form.total_price = 0
+      this.form.items.forEach((item) => {
+        if (item.price > 0 && item.quantity > 0) {
+          item.total = item.quantity * item.price
+          this.form.total_price += parseFloat(item.total)
+        }
+      })
+    }, 100),
     onSubmit () {
       this.isSaving = true
       this.create(this.form)
@@ -614,7 +754,7 @@ export default {
           this.$router.push('/plugin/pin-point/sales-visitation-form')
         }).catch(error => {
           this.isSaving = false
-          this.$notification.error(error)
+          this.$notification.error(error.message)
           if (error.errors) {
             this.form.errors.record(error.errors)
           }

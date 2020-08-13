@@ -13,6 +13,10 @@ import MainMenu from '@/views/MainMenu'
 import Master from '@/views/master/routes'
 import HumanResource from '@/views/human-resource/routes'
 import Purchase from '@/views/purchase/routes'
+import Sales from '@/views/sales/routes'
+import Inventory from '@/views/inventory/routes'
+import Manufacture from '@/views/manufacture/routes'
+import POS from '@/views/pos/routes'
 import Finance from '@/views/finance/routes'
 import Accounting from '@/views/accounting/routes'
 import Account from '@/views/account/routes'
@@ -46,20 +50,25 @@ export default new Router({
       ],
       beforeEnter: (to, from, next) => {
         // redirect to sign in page if not authenticated
-        if (!store.state.auth['user']) {
+        if (!store.state.auth.user) {
           if (Vue.cookie.get('TAT') !== null && Vue.cookie.get('TTT') !== null) {
             store.dispatch('reloadVuex')
+              .then(response => {
+                next()
+              }).catch(error => {
+                next('/503')
+              })
             next()
           } else {
             next({ path: '/auth/signin', query: { r: to.fullPath } })
-            return
           }
-        }
-        // redirect to account route if host is not tenant subdomain
-        if (window.location.host !== process.env.VUE_APP_DOMAIN) {
-          next('/')
         } else {
-          next()
+          // redirect to account route if host is not tenant subdomain
+          if (window.location.host !== process.env.VUE_APP_DOMAIN) {
+            next('/')
+          } else {
+            next()
+          }
         }
       }
     },
@@ -74,26 +83,38 @@ export default new Router({
         ...Master,
         ...HumanResource,
         ...Purchase,
+        ...Sales,
+        ...Inventory,
+        ...Manufacture,
+        ...POS,
         ...Finance,
         ...Accounting,
         ...Plugin
       ],
       beforeEnter: (to, from, next) => {
         // redirect to sign in page if not authenticated
-        if (!store.state.auth['user']) {
+        if (!store.state.auth.user) {
           if (Vue.cookie.get('TAT') !== null) {
             store.dispatch('reloadVuex')
-            next()
+              .then(response => {
+                if (window.location.host == process.env.VUE_APP_DOMAIN) {
+                  next('/account')
+                } else {
+                  next()
+                }
+              }).catch(error => {
+                next('/503')
+              })
           } else {
             next({ path: '/auth/signin', query: { r: to.fullPath } })
-            return
           }
-        }
-        // redirect to account route if host is not tenant subdomain
-        if (window.location.host == process.env.VUE_APP_DOMAIN) {
-          next('/account')
         } else {
-          next()
+          // redirect to account route if host is not tenant subdomain
+          if (window.location.host == process.env.VUE_APP_DOMAIN) {
+            next('/account')
+          } else {
+            next()
+          }
         }
       }
     },

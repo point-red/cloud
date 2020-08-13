@@ -1,117 +1,209 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <router-link
         to="/human-resource/employee"
-        class="breadcrumb-item">{{ $t('employee') | titlecase }}</router-link>
+        class="breadcrumb-item"
+      >
+        {{ $t('employee') | uppercase }}
+      </router-link>
       <router-link
         :to="'/human-resource/employee/' + employee.id"
-        class="breadcrumb-item">{{ employee.name | titlecase }}</router-link>
-      <span class="breadcrumb-item active">{{ title | titlecase }}</span>
+        class="breadcrumb-item"
+      >
+        {{ employee.name | uppercase }}
+      </router-link>
+      <span class="breadcrumb-item active">{{ title | uppercase }}</span>
     </breadcrumb>
 
-    <employee-widget :id="id"></employee-widget>
+    <employee-widget :id="id" />
 
-    <tab-menu/>
+    <tab-menu />
 
-    <div class="row" v-show="!hideChart">
+    <div
+      v-show="!hideChart"
+      class="row"
+    >
       <p-block
         :title="$t('kpi graph')"
         :header="true"
-        column="col-lg-12">
+        column="col-lg-12"
+      >
         <line-chart
           ref="linechart"
           :chart-title="$t('kpi') | uppercase"
           :chart-label="chartLabel"
-          :chart-data="chartData"/>
+          :chart-data="chartData"
+        />
       </p-block>
     </div>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block
+        :title="title"
+        :header="true"
+      >
         <div class="text-right">
-          <a href="javascript:void(0)" class="btn btn-square btn-outline-secondary" :class="{ 'active': reportType == 'all' }" @click="chooseType('all')">All</a>
-          <a href="javascript:void(0)" class="btn btn-square btn-outline-secondary" :class="{ 'active': reportType == 'daily' }" @click="chooseType('daily')">Daily</a>
-          <a href="javascript:void(0)" class="btn btn-square btn-outline-secondary" :class="{ 'active': reportType == 'weekly' }" @click="chooseType('weekly')">Weekly</a>
-          <a href="javascript:void(0)" class="btn btn-square btn-outline-secondary" :class="{ 'active': reportType == 'monthly' }" @click="chooseType('monthly')">Monthly</a>
-          <a href="javascript:void(0)" class="btn btn-square btn-outline-secondary" :class="{ 'active': reportType == 'yearly' }" @click="chooseType('yearly')">Yearly</a>
+          <a
+            href="javascript:void(0)"
+            class="btn btn-square btn-outline-secondary"
+            :class="{ 'active': reportType == 'all' }"
+            @click="chooseType('all')"
+          >All</a>
+          <a
+            href="javascript:void(0)"
+            class="btn btn-square btn-outline-secondary"
+            :class="{ 'active': reportType == 'daily' }"
+            @click="chooseType('daily')"
+          >Daily</a>
+          <a
+            href="javascript:void(0)"
+            class="btn btn-square btn-outline-secondary"
+            :class="{ 'active': reportType == 'weekly' }"
+            @click="chooseType('weekly')"
+          >Weekly</a>
+          <a
+            href="javascript:void(0)"
+            class="btn btn-square btn-outline-secondary"
+            :class="{ 'active': reportType == 'monthly' }"
+            @click="chooseType('monthly')"
+          >Monthly</a>
+          <a
+            href="javascript:void(0)"
+            class="btn btn-square btn-outline-secondary"
+            :class="{ 'active': reportType == 'yearly' }"
+            @click="chooseType('yearly')"
+          >Yearly</a>
         </div>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <p-table>
             <tr slot="p-head">
               <th>{{ $t('date') }}</th>
-              <th class="text-center">{{ $t('weight') }}</th>
-              <th class="text-center">{{ $t('target') }}</th>
-              <th class="text-center">{{ $t('score') }}</th>
-              <th class="text-center">{{ $t('value') }}</th>
+              <th class="text-center">
+                {{ $t('weight') }}
+              </th>
+              <th class="text-center">
+                {{ $t('target') }}
+              </th>
+              <th class="text-center">
+                {{ $t('score') }}
+              </th>
+              <th class="text-center">
+                {{ $t('value') }}
+              </th>
             </tr>
             <tr
               v-for="assessment in assessments"
               :key="assessment.id"
-              slot="p-body">
+              slot="p-body"
+            >
               <td>
                 <template v-if="reportType == 'all'">
                   <router-link :to="{ name: 'humanResourceEmployeeAssessmentShow', params: { id: id, kpiId: assessment.id }}">
                     {{ assessment.date | dateFormat('DD MMMM YYYY') }}
-                    <template v-if="$permission.has('read employee kpi')"> - {{ assessment.scorer.first_name + ' ' + assessment.scorer.last_name | titlecase }}</template>
+                    <template v-if="$permission.has('read employee kpi')">
+                      - {{ assessment.scorer.first_name + ' ' + assessment.scorer.last_name | titlecase }}
+                    </template>
                   </router-link>
                 </template>
                 <template v-else>
                   <template v-if="reportType == 'weekly'">
-                    {{ assessment.date | dateFormat('MMMM YYYY [(][Week] WW[)]') }}
+                    <template v-if="$permission.has('read employee assessment')">
+                      <router-link :to="{ name: 'humanResourceEmployeeAssessmentShowBy', params: { id: id, type: 'weekly', value: assessment.id }}">
+                        {{ assessment.date | dateFormat('MMMM YYYY [(][Week] WW[)]') }}
+                      </router-link>
+                    </template>
+                    <template v-else>
+                      {{ assessment.date | dateFormat('MMMM YYYY [(][Week] WW[)]') }}
+                    </template>
                   </template>
                   <template v-if="reportType == 'monthly'">
-                    {{ assessment.date | dateFormat('MMMM YYYY') }}
+                    <template v-if="$permission.has('read employee assessment')">
+                      <router-link :to="{ name: 'humanResourceEmployeeAssessmentShowBy', params: { id: id, type: 'monthly', value: assessment.id }}">
+                        {{ assessment.date | dateFormat('MMMM YYYY') }}
+                      </router-link>
+                    </template>
+                    <template v-else>
+                      {{ assessment.date | dateFormat('MMMM YYYY') }}
+                    </template>
                   </template>
                   <template v-if="reportType == 'yearly'">
-                    {{ assessment.date | dateFormat('YYYY') }}
+                    {{ assessment.date | dateFormat('YYYY') }} - {{ assessment.scorer.first_name + ' ' + assessment.scorer.last_name | titlecase }}
                   </template>
                   <template v-if="reportType == 'daily'">
                     {{ assessment.date | dateFormat('DD MMMM YYYY') }}
                   </template>
                 </template>
               </td>
-              <td class="text-center">{{ assessment.weight | numberFormat }}</td>
-              <td class="text-center">{{ assessment.target | numberFormat }}</td>
-              <td class="text-center">{{ assessment.score | numberFormat }}</td>
-              <td class="text-center">{{ assessment.score_percentage | numberFormat }}</td>
+              <td class="text-center">
+                {{ assessment.weight | numberFormat }}
+              </td>
+              <td class="text-center">
+                {{ assessment.target | numberFormat }}
+              </td>
+              <td class="text-center">
+                {{ assessment.score | numberFormat }}
+              </td>
+              <td class="text-center">
+                {{ assessment.score_percentage | numberFormat }}
+              </td>
               <td class="text-right">
                 <router-link
-                  :to="{ path: '/human-resource/employee/' + employee.id + '/assessment/' + assessment.id + '/edit', params: { id: employee.id, kpiId: assessment.id }}"
                   v-if="authUser.id == assessment.scorer.id && $permission.has('update employee assessment') && reportType == 'all'"
-                  class="btn btn-sm btn-secondary mr-5">
-                  <i class="si si-note"></i> Edit
+                  :to="{ path: '/human-resource/employee/' + employee.id + '/assessment/' + assessment.id + '/edit', params: { id: employee.id, kpiId: assessment.id }}"
+                  class="btn btn-sm btn-secondary mr-5"
+                >
+                  <i class="si si-note" /> {{ $t('edit') | uppercase }}
                 </router-link>
                 &nbsp;
-                <i class="fa fa-close" v-show="authUser.id == assessment.scorer.id && $permission.has('delete employee assessment') && reportType == 'all'" @click="deleteAssessment(assessment.id)"/>
+                <i
+                  v-show="authUser.id == assessment.scorer.id && $permission.has('delete employee assessment') && reportType == 'all'"
+                  class="fa fa-close"
+                  @click="deleteAssessment(assessment.id)"
+                />
               </td>
             </tr>
           </p-table>
         </p-block-inner>
+        <p-pagination
+          :current-page="page"
+          :last-page="lastPage"
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
     <p-modal
       id="modal-delete"
+      ref="delete"
       title="Confirmation"
-      ref="delete">
-      <div slot="content"><p>Are you sure want to delete the KPI?</p></div>
+    >
+      <div slot="content">
+        <p>Are you sure want to delete the KPI?</p>
+      </div>
       <div slot="footer">
         <button
           type="button"
           class="btn btn-alt-secondary"
+          data-dismiss="modal"
           @click="$refs.delete.close()"
-          data-dismiss="modal">Cancel</button>
+        >
+          {{ $t('cancel') | uppercase }}
+        </button>
         &nbsp;
         <button
-          type="button"
-          @click="onDelete()"
           v-if="$permission.has('delete employee assessment')"
-          :disabled="loadingSaveButton"
-          class="btn btn-danger">
-          <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Delete
+          type="button"
+          :disabled="isSaving"
+          class="btn btn-danger"
+          @click="onDelete()"
+        >
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          /> {{ $t('delete') | uppercase }}
         </button>
       </div>
     </p-modal>
@@ -138,41 +230,22 @@ export default {
     return {
       id: this.$route.params.id,
       title: 'Assessment',
-      loading: true,
+      isLoading: true,
       chartLabel: [],
       chartData: [],
       isScorer: false,
       hideChart: false,
       reportType: 'all',
-      loadingSaveButton: false,
-      selectedAsessementId: ''
-    }
-  },
-  created () {
-    this.loading = true
-    this.getEmployeeAssessment({
-      employeeId: this.id,
-      params: {
-        type: this.reportType
-      }
-    }).then(response => {
-      this.loading = false
-    }).catch(error => {
-      this.loading = false
-      console.log(JSON.stringify(error))
-    })
-    if (this.employee.scorers) {
-      this.employee.scorers.find((element) => {
-        if (element.id == this.authUser.id) {
-          this.isScorer = true
-        }
-      })
+      isSaving: false,
+      selectedAsessementId: '',
+      page: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {
     ...mapGetters('auth', ['authUser']),
     ...mapGetters('humanResourceEmployee', ['employee']),
-    ...mapGetters('humanResourceEmployeeAssessment', ['assessments', 'dataSet'])
+    ...mapGetters('humanResourceEmployeeAssessment', ['assessments', 'dataSet', 'pagination'])
   },
   watch: {
     dataSet: function (val) {
@@ -180,13 +253,19 @@ export default {
         this.hideChart = false
         this.chartLabel.splice(0, this.chartLabel.length)
         this.chartData.splice(0, this.chartData.length)
-        Array.prototype.push.apply(this.chartLabel, val.dates)
-        Array.prototype.push.apply(this.chartData, val.scores)
+        Array.prototype.push.apply(this.chartLabel, val.dates.reverse())
+        Array.prototype.push.apply(this.chartData, val.scores.reverse())
         this.$refs.linechart.updateData()
       } else {
         this.hideChart = true
       }
     }
+  },
+  created () {
+    this.getEmployeeAssessmentRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('humanResourceEmployeeAssessment', {
@@ -194,17 +273,22 @@ export default {
       deleteEmployeeAssessment: 'delete'
     }),
     chooseType (type) {
-      this.loading = true
       this.reportType = type
+      this.page = 1
+      this.getEmployeeAssessmentRequest()
+    },
+    getEmployeeAssessmentRequest () {
+      this.isLoading = true
       this.getEmployeeAssessment({
         employeeId: this.id,
         params: {
-          type: type
+          page: this.page,
+          type: this.reportType
         }
       }).then((response) => {
-        this.loading = false
+        this.isLoading = false
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         console.log(JSON.stringify(error))
       })
       if (this.employee.scorers) {
@@ -219,14 +303,18 @@ export default {
       this.selectedAsessementId = assessmentId
       this.$refs.delete.show()
     },
+    updatePage (value) {
+      this.page = value
+      this.getEmployeeAssessmentRequest()
+    },
     onDelete () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.deleteEmployeeAssessment({ id: this.selectedAsessementId, employeeId: this.id })
         .then((response) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$refs.delete.close()
         }, (error) => {
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.$notification.error('Delete failed', error.message)
           console.log(JSON.stringify(error))
         })

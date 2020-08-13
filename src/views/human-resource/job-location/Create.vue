@@ -1,46 +1,57 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <router-link
         to="/human-resource/job-location"
-        class="breadcrumb-item">{{ $t('job location') | titlecase }}</router-link>
-      <span class="breadcrumb-item active">Create</span>
+        class="breadcrumb-item"
+      >
+        {{ $t('job location') | uppercase }}
+      </router-link>
+      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
-    <form class="row" @submit.prevent="onSubmit">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
       <p-block
-        :is-loading="loading"
+        :is-loading="isLoading"
         :header="true"
         :title="$t('job location')"
-        column="col-sm-12">
-
+        column="col-sm-12"
+      >
         <div class="row">
           <div class="col-sm-12">
             <p-form-row
               id="name"
+              v-model="form.name"
               name="name"
               :label="$t('name')"
-              v-model="form.name"
-              :disabled="loadingSaveButton"
+              :disabled="isSaving"
               :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)">
-            </p-form-row>
+              @errors="form.errors.set('name', null)"
+            />
           </div>
           <div class="col-sm-12">
             <p-form-row
               id="base_salary"
               name="base_salary"
-              :label="$t('base salary')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('base salary')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-number
                   v-model="form.base_salary"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('base_salary')"
-                  @errors="form.errors.set('base_salary', null)"/>
+                  @errors="form.errors.set('base_salary', null)"
+                />
               </div>
             </p-form-row>
           </div>
@@ -48,22 +59,34 @@
             <p-form-row
               id="multiplier_kpi"
               name="multiplier_kpi"
-              :label="$t('multiplier kpi')">
-              <div slot="body" class="col-lg-9">
+              :label="$t('multiplier kpi')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
                 <p-form-number
                   v-model="form.multiplier_kpi"
-                  :disabled="loadingSaveButton"
+                  :disabled="isSaving"
                   :is-text-right="false"
                   :errors="form.errors.get('multiplier_kpi')"
-                  @errors="form.errors.set('multiplier_kpi', null)"/>
+                  @errors="form.errors.set('multiplier_kpi', null)"
+                />
               </div>
             </p-form-row>
           </div>
         </div>
         <div class="form-group row">
           <div class="col-md-12">
-            <button :disabled="loadingSaveButton" type="submit" class="btn btn-sm btn-primary">
-              <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+            <button
+              :disabled="isSaving"
+              type="submit"
+              class="btn btn-sm btn-primary"
+            >
+              <i
+                v-show="isSaving"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('save') | uppercase }}
             </button>
           </div>
         </div>
@@ -87,8 +110,8 @@ export default {
   },
   data () {
     return {
-      loading: false,
-      loadingSaveButton: false,
+      isLoading: false,
+      isSaving: false,
       form: new Form({
         name: '',
         base_salary: null,
@@ -101,16 +124,16 @@ export default {
       createEmployeeJobLocation: 'create'
     }),
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.createEmployeeJobLocation(this.form)
         .then(
           (response) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.success('Create success')
             this.$router.push('/human-resource/job-location/' + response.data.id)
           },
           (error) => {
-            this.loadingSaveButton = false
+            this.isSaving = false
             this.$notification.error('Create failed', error.message)
             this.form.errors.record(error.errors)
           }

@@ -1,15 +1,40 @@
 <template>
   <div>
-    <form class="row" @submit.prevent="onSubmit">
-      <p-modal ref="target" :id="id" :is-loading="loading" :title="'Target' | uppercase">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
+      <p-modal
+        :id="id"
+        ref="target"
+        :is-loading="isLoading"
+        :title="'Target' | uppercase"
+      >
         <template slot="content">
-          <p-form-row id="date" name="date" :label="$t('period')">
-            <div slot="body" class="col-lg-9">
-              <p-date-picker id="date" name="date" type="date" v-model="date" @input="changeDate"/>
+          <p-form-row
+            id="date"
+            name="date"
+            :label="$t('period')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
+              <p-date-picker
+                id="date"
+                v-model="date"
+                name="date"
+                type="date"
+                @input="changeDate"
+              />
             </div>
           </p-form-row>
           <p-table>
-            <tr slot="p-head" v-show="targets.length > 0" class="bg-info-light">
+            <tr
+              v-show="targets.length > 0"
+              slot="p-head"
+              class="bg-info-light"
+            >
               <th>Sales</th>
               <th>Call</th>
               <th>Effective Call</th>
@@ -18,8 +43,11 @@
             <tr
               v-for="target in form.targets"
               slot="p-body"
-              :key="target.id">
-              <td class="no-wrap">{{ target.first_name }} {{ target.last_name }}</td>
+              :key="target.id"
+            >
+              <td class="no-wrap">
+                {{ target.first_name }} {{ target.last_name }}
+              </td>
               <td>
                 <p-form-number
                   id="call"
@@ -27,7 +55,8 @@
                   :is-text-right="true"
                   name="call"
                   :errors="form.errors.get('call')"
-                  @errors="form.errors.set('call', null)"/>
+                  @errors="form.errors.set('call', null)"
+                />
               </td>
               <td>
                 <p-form-number
@@ -36,7 +65,8 @@
                   :is-text-right="true"
                   name="effectiveCall"
                   :errors="form.errors.get('effectiveCall')"
-                  @errors="form.errors.set('effectiveCall', null)"/>
+                  @errors="form.errors.set('effectiveCall', null)"
+                />
               </td>
               <td>
                 <p-form-number
@@ -45,17 +75,34 @@
                   :is-text-right="true"
                   name="value"
                   :errors="form.errors.get('value')"
-                  @errors="form.errors.set('value', null)"/>
+                  @errors="form.errors.set('value', null)"
+                />
               </td>
             </tr>
           </p-table>
         </template>
         <template slot="footer">
-          <button type="submit" class="btn btn-primary" :disabled="loadingSaveButton" v-show="!loading">
-            <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Save
+          <button
+            v-show="!isLoading"
+            type="submit"
+            class="btn btn-primary"
+            :disabled="isSaving"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('save') | uppercase }}
           </button>
-          <button :disabled="loadingSaveButton" type="button" class="btn btn-outline-danger" @click="close">
-            <i v-show="loadingSaveButton" class="fa fa-asterisk fa-spin"/> Close
+          <button
+            :disabled="isSaving"
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            @click="close"
+          >
+            <i
+              v-show="isSaving"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('close') | uppercase }}
           </button>
         </template>
       </p-modal>
@@ -83,8 +130,8 @@ export default {
       date: this.$moment(),
       dateFrom: this.$moment(),
       dateTo: this.$moment(),
-      loading: false,
-      loadingSaveButton: false
+      isLoading: false,
+      isSaving: false
     }
   },
   computed: {
@@ -99,7 +146,7 @@ export default {
       getReport: 'get'
     }),
     show (dateFrom, dateTo) {
-      this.loading = true
+      this.isLoading = true
       this.dateFrom = dateFrom
       this.dateTo = dateTo
       this.get({
@@ -115,9 +162,9 @@ export default {
           element.date = this.date
           element.value = parseFloat(element.value)
         })
-        this.loading = false
+        this.isLoading = false
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error('Create failed', error.message)
       })
       this.$refs.target.show()
@@ -127,11 +174,11 @@ export default {
       this.$refs.target.close()
     },
     onSubmit () {
-      this.loadingSaveButton = true
+      this.isSaving = true
       this.create(this.form)
         .then((response) => {
           this.$notification.success('Set target success')
-          this.loadingSaveButton = false
+          this.isSaving = false
           this.form.reset()
           this.getReport({
             params: {
@@ -141,11 +188,11 @@ export default {
           })
         }, (error) => {
           this.$notification.error('Set target failed', error.message)
-          this.loadingSaveButton = false
+          this.isSaving = false
         })
     },
     changeDate () {
-      this.loading = true
+      this.isLoading = true
       this.get({
         params: {
           date: this.date
@@ -159,9 +206,9 @@ export default {
           element.date = this.date
           element.value = parseFloat(element.value)
         })
-        this.loading = false
+        this.isLoading = false
       }, (error) => {
-        this.loading = false
+        this.isLoading = false
         this.$notification.error(error.message)
       })
     }

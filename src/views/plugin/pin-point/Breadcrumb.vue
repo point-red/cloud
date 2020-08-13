@@ -1,5 +1,8 @@
 <template>
   <router-link
     to="/plugin/pin-point"
-    class="breadcrumb-item">Pin Point</router-link>
+    class="breadcrumb-item"
+  >
+    {{ $t('pin point') | uppercase }}
+  </router-link>
 </template>

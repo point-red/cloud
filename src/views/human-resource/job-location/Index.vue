@@ -1,33 +1,54 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
-      <span class="breadcrumb-item active">{{ 'job location' | titlecase }}</span>
+      <breadcrumb-human-resource />
+      <span class="breadcrumb-item active">{{ 'job location' | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('job location')" :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
+      <p-block :title="$t('job location')">
+        <div class="input-group block mb-5">
+          <router-link
+            v-if="$permission.has('create employee')"
+            to="/human-resource/job-location/create"
+            class="input-group-prepend"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-plus" />
+            </span>
+          </router-link>
+          <p-form-input
+            id="search-text"
+            ref="searchText"
+            name="search-text"
+            placeholder="Search"
+            class="btn-block"
+            :value="searchText"
+            @input="filterSearch"
+          />
+        </div>
         <hr>
-        <p-block-inner :is-loading="loading">
+        <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="33%">{{ $t('name') }}</th>
-              <th width="33%">{{ $t('base salary') }}</th>
-              <th width="33%">{{ $t('multiplier kpi') }}</th>
+              <th width="33%">
+                {{ $t('name') }}
+              </th>
+              <th width="33%">
+                {{ $t('base salary') }}
+              </th>
+              <th width="33%">
+                {{ $t('multiplier kpi') }}
+              </th>
             </tr>
             <template v-if="$permission.has('read employee')">
               <tr
                 v-for="jobLocation in jobLocations"
                 :key="jobLocation.id"
-                slot="p-body">
+                slot="p-body"
+              >
                 <td>
                   <router-link :to="{ name: 'JobLocationShow', params: { id: jobLocation.id }}">
                     {{ jobLocation.name }}
@@ -42,8 +63,8 @@
         <p-pagination
           :current-page="currentPage"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>
@@ -66,7 +87,7 @@ export default {
   },
   data () {
     return {
-      loading: false,
+      isLoading: false,
       listJobLocation: this.jobLocations,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
@@ -75,6 +96,12 @@ export default {
   },
   computed: {
     ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocations', 'pagination'])
+  },
+  created () {
+    this.getJobLocationsRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('humanResourceEmployeeJobLocation', { getJobLocations: 'get' }),
@@ -89,29 +116,23 @@ export default {
       this.getJobLocationsRequest()
     }, 300),
     getJobLocationsRequest () {
-      this.loading = true
+      this.isLoading = true
       this.getJobLocations({
         params: {
           filter_like: {
-            'name': this.searchText
+            name: this.searchText
           },
           limit: 10,
           page: this.currentPage,
           sort_by: 'name'
         }
       }).then((response) => {
-        this.loading = false
+        this.isLoading = false
       }, (errors) => {
-        this.loading = false
+        this.isLoading = false
         console.log(errors.data)
       })
     }
-  },
-  created () {
-    this.getJobLocationsRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

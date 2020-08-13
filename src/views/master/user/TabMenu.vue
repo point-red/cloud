@@ -1,25 +1,47 @@
 <template>
-  <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
-    <slot></slot>
-    <li class="nav-item ml-auto" v-if="$permission.has('create user')">
-      <router-link
-        to="/master/user/create"
-        exact
-        class="nav-link"
-        active-class="active">
-        <span><i class="si si-plus"></i> Add</span>
-      </router-link>
-    </li>
-    <li class="nav-item" v-if="$permission.has('read user')">
+  <ul
+    class="nav nav-tabs nav-tabs-alt mb-10"
+    data-toggle="tabs"
+    role="tablist"
+  >
+    <slot />
+    <li
+      v-if="$permission.has('read user')"
+      class="nav-item"
+    >
       <router-link
         to="/master/user"
-        exact
         class="nav-link"
-        active-class="active">
-        <span><i class="si si-docs"></i> List</span>
+        active-class="active"
+      >
+        <span>{{ $t('user') | uppercase }}</span>
       </router-link>
     </li>
-    <slot name="right"></slot>
+    <li
+      v-if="$permission.has('read role')"
+      class="nav-item"
+    >
+      <router-link
+        to="/master/role"
+        class="nav-link"
+        active-class="active"
+      >
+        <span>{{ $t('role & permission') | uppercase }}</span>
+      </router-link>
+    </li>
+    <li
+      v-if="$permission.has('read branch')"
+      class="nav-item"
+    >
+      <router-link
+        to="/master/branch"
+        class="nav-link"
+        active-class="active"
+      >
+        <span>{{ $t('branch') | uppercase }}</span>
+      </router-link>
+    </li>
+    <slot name="right" />
   </ul>
 </template>
 

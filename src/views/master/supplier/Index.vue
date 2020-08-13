@@ -1,59 +1,76 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-master/>
-      <span class="breadcrumb-item active">{{ $t('supplier') | titlecase }}</span>
+      <breadcrumb-master />
+      <span class="breadcrumb-item active">{{ $t('supplier') | uppercase }}</span>
     </breadcrumb>
 
-    <tab-menu/>
+    <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('supplier')" :header="true">
-        <p-form-input
-          id="search-text"
-          name="search-text"
-          placeholder="Search"
-          :value="searchText"
-          @input="filterSearch"/>
-        <hr/>
+      <p-block>
+        <div class="input-group block">
+          <a
+            v-if="$permission.has('create supplier')"
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="$refs.addSupplier.open()"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-plus" />
+            </span>
+          </a>
+          <p-form-input
+            id="search-text"
+            ref="searchText"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"
+          />
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>#</th>
+              <th width="50px">
+                #
+              </th>
               <th>Name</th>
+              <th>Email</th>
               <th>Address</th>
               <th>Phone</th>
             </tr>
             <tr
               v-for="(supplier, index) in suppliers"
               :key="supplier.id"
-              slot="p-body">
-              <th>{{ index + 1 }}</th>
+              slot="p-body"
+            >
+              <th>{{ (page - 1) * 10 + index + 1 }}</th>
               <td>
                 <router-link :to="{ name: 'supplier.show', params: { id: supplier.id }}">
-                  {{ supplier.name | titlecase }}
+                  {{ supplier.name }}
                 </router-link>
               </td>
-              <td>
-                <template v-for="supplierAddress in supplier.addresses">
-                  {{ supplierAddress.address | lowercase }}
-                </template>
-              </td>
-              <td>
-                <template v-for="supplierPhone in supplier.phones">
-                  {{ supplierPhone.number | lowercase }}
-                </template>
-              </td>
+              <td>{{ supplier.email }}</td>
+              <td>{{ supplier.address }}</td>
+              <td>{{ supplier.phone }}</td>
             </tr>
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
-          @updatePage="updatePage">
-        </p-pagination>
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
+
+    <m-add-supplier
+      ref="addSupplier"
+      @added="onAdded"
+    />
   </div>
 </template>
 
@@ -76,37 +93,45 @@ export default {
     return {
       isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
   },
   computed: {
     ...mapGetters('masterSupplier', ['suppliers', 'pagination'])
   },
+  created () {
+    this.getSupplierRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('masterSupplier', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
+      this.page = 1
       this.getSupplierRequest()
     }, 300),
     getSupplierRequest () {
       this.isLoading = true
       this.get({
         params: {
-          fields: 'suppliers.*',
+          fields: 'supplier.*',
           sort_by: 'name',
           filter_like: {
-            'name': this.searchText,
-            'addresses.address': this.searchText,
-            'phones.number': this.searchText,
-            'emails.email': this.searchText
+            'supplier.name': this.searchText,
+            'supplier.address': this.searchText,
+            'supplier.phone': this.searchText,
+            'supplier.email': this.searchText
           },
-          join: 'addresses,phones,emails',
-          includes: 'addresses;phones;emails;groups',
+          includes: 'groups',
           limit: 10,
-          page: this.currentPage
+          page: this.page
         }
       }).then(response => {
         this.isLoading = false
@@ -115,15 +140,12 @@ export default {
       })
     },
     updatePage (value) {
-      this.currentPage = value
+      this.page = value
+      this.getSupplierRequest()
+    },
+    onAdded () {
       this.getSupplierRequest()
     }
-  },
-  created () {
-    this.getSupplierRequest()
-  },
-  updated () {
-    this.lastPage = this.pagination.last_page
   }
 }
 </script>

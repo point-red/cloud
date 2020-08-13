@@ -1,37 +1,67 @@
 <template>
   <div>
     <p-modal
-      ref="changeLanguageModalRef"
       :id="id"
-      :title="title">
+      ref="changeLanguageModalRef"
+      :title="title"
+    >
       <template slot="content">
         <div class="row gutters-tiny">
-          <p-box
-            :name="$t('english') | titlecase"
-            @click.native="setLang('en')"
-            background-color="bg-gray-lighter"
-            icon="flag-icon flag-icon-us"/>
-          <p-box
-            :name="$t('indonesia') | titlecase"
-            @click.native="setLang('id')"
-            background-color="bg-gray-lighter"
-            icon="flag-icon flag-icon-id"/>
+          <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+            <a
+              href="javascript:void(0)"
+              class="block text-center"
+              @click="setLang('en')"
+            >
+              <div class="block-content ribbon ribbon-bookmark ribbon-crystal ribbon-left">
+                <country-flag
+                  country="us"
+                  size="big"
+                />
+                <p class="font-w600">ENGLISH</p>
+              </div>
+            </a>
+          </div>
+          <div class="col-6 col-sm-4 col-md-3 col-xl-2">
+            <a
+              href="javascript:void(0)"
+              class="block text-center"
+              @click="setLang('id')"
+            >
+              <div class="block-content ribbon ribbon-bookmark ribbon-crystal ribbon-left">
+                <country-flag
+                  country="id"
+                  size="big"
+                />
+                <p class="font-w600">INDONESIA</p>
+              </div>
+            </a>
+          </div>
         </div>
       </template>
       <template slot="footer">
         <button
           class="btn btn-danger"
-          @click="close">Cancel</button>
+          @click="close"
+        >
+          {{ $t('cancel') | uppercase }}
+        </button>
       </template>
     </p-modal>
   </div>
 </template>
 
 <script>
+import CountryFlag from 'vue-country-flag'
+
 export default {
+  components: {
+    CountryFlag
+  },
   props: {
     title: {
-      type: String
+      type: String,
+      default: ''
     },
     id: {
       type: String,
@@ -45,7 +75,7 @@ export default {
     close () {
       this.$refs.changeLanguageModalRef.close()
     },
-    setLang (lang) {
+    setLang (lang = 'en') {
       this.$store.dispatch('lang/setLang', lang)
       this.close()
     }

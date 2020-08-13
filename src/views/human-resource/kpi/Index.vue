@@ -1,101 +1,231 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-human-resource/>
+      <breadcrumb-human-resource />
       <span class="breadcrumb-item active">{{ $t('kpi') | titlecase }}</span>
     </breadcrumb>
 
     <div class="mb-20">
-      <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
-        <slot></slot>
-        <li class="nav-item ml-auto" v-if="$permission.has('create employee kpi')">
+      <ul
+        class="nav nav-tabs nav-tabs-alt"
+        data-toggle="tabs"
+        role="tablist"
+      >
+        <slot />
+        <li
+          v-if="$permission.has('create employee kpi')"
+          class="nav-item ml-auto"
+        >
           <router-link
             to=""
+            class="nav-link"
             @click.native="$refs.create.show()"
-            class="nav-link">
-            <span><i class="si si-plus"></i> Add</span>
+          >
+            <span>{{ $t('add') | uppercase }}</span>
           </router-link>
         </li>
-        <li class="nav-item" v-if="$permission.has('create employee kpi') || $permission.has('update employee kpi')">
-          <router-link
-            to=""
-            @click.native="$refs.result.show()"
-            class="nav-link">
-            <span><i class="si si-magic-wand"></i> KPI Result</span>
-          </router-link>
+        <li
+          v-if="$permission.has('create employee kpi')"
+          class="nav-item"
+        >
+          <a
+            href="javascript:void(0)"
+            class="nav-link"
+            @click="addFiles()"
+          ><i class="si si-cloud-upload" /> {{ $t('import') | uppercase }}</a>
+          <input
+            id="file"
+            ref="file"
+            type="file"
+            style="display:none"
+            @change="onFileChange"
+          >
         </li>
-        <li class="nav-item" v-if="$permission.has('create employee kpi')">
-          <a href="javascript:void(0)" class="nav-link" @click="addFiles()"><i class="si si-cloud-upload"></i> Import</a>
-          <input type="file" id="file" ref="file" v-on:change="onFileChange" style="display:none" />
-        </li>
-        <slot name="right"></slot>
+        <slot name="right" />
       </ul>
     </div>
 
     <div class="row">
-      <p-block :title="title" :header="true">
-        <p-block-inner :is-loading="loading">
-          <p-table>
+      <p-block
+        :title="title"
+        :header="true"
+      >
+        <hr>
+        <div class="text-center font-size-sm mb-10">
+          <a
+            href="javascript:void(0)"
+            @click="isAdvanceFilter = !isAdvanceFilter"
+          >
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
+          </a>
+        </div>
+        <div
+          v-show="isAdvanceFilter"
+          class="card"
+          :class="{ 'fadeIn': isAdvanceFilter }"
+        >
+          <div class="row">
+            <div class="col-sm-3 text-center">
+              <p-form-row
+                id="status"
+                name="status"
+                :label="$t('status')"
+                :is-horizontal="false"
+              >
+                <div slot="body">
+                  <span
+                    class="select-link"
+                    @click="$refs.status.open({ id: statusId, label: statusLabel })"
+                  >
+                    {{ statusLabel || $t('select') | uppercase }}
+                  </span>
+                </div>
+              </p-form-row>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div
+          v-show="checkedRow.length > 0"
+          class="mr-15 animated fadeIn"
+        >
+          <button
+            type="button"
+            class="btn btn-secondary mr-5"
+            @click="bulkArchiveKpiTemplate()"
+          >
+            {{ $t('archive') | uppercase }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary mr-5"
+            @click="bulkActivateKpiTemplate()"
+          >
+            {{ $t('activate') | uppercase }}
+          </button>
+        </div>
+        <p-block-inner :is-loading="isLoading">
+          <point-table>
             <tr slot="p-head">
+              <th>#</th>
+              <th>
+                <p-form-check-box
+                  id="subscibe"
+                  name="subscibe"
+                  :is-form="false"
+                  :checked="isRowsChecked(templates, checkedRow)"
+                  class="text-center"
+                  @click.native="toggleCheckRows()"
+                />
+              </th>
               <th>Kpi Category</th>
-              <th class="text-center">Total Weight</th>
-              <th></th>
+              <th class="text-center">
+                Total Weight
+              </th>
+              <th class="text-right" />
             </tr>
             <tr
-              v-for="template in templates"
+              v-for="(template, index) in templates"
               slot="p-body"
-              :key="template.id">
+              :key="template.id"
+            >
+              <th>{{ ++index }}</th>
+              <td>
+                <p-form-check-box
+                  id="subscibe"
+                  :is-form="false"
+                  :checked="isRowChecked(template.id)"
+                  name="subscibe"
+                  class="text-center"
+                  @click.native="toggleCheckRow(template.id)"
+                />
+              </td>
               <td>
                 <router-link :to="{ name: 'KpiShow', params: { id: template.id }}">
                   {{ template.name }}
                 </router-link>
               </td>
-              <td class="text-center">{{ template.weight | numberFormat }}%</td>
+              <td class="text-center">
+                {{ template.weight | numberFormat }}%
+              </td>
               <td>
                 <a
-                  href="javascript:void(0)"
                   v-if="$permission.has('update employee kpi')"
-                  class="btn btn-sm btn-secondary" @click="$refs.edit.show(template)"><i class="si si-note"></i> Edit</a>
-                <button :disabled="isExporting.includes(template.id)" type="submit" class="btn btn-sm btn-primary" @click="exportData(template.id)" style="margin-left:12px">
-                  <i v-show="isExporting.includes(template.id)" class="fa fa-asterisk fa-spin" /> Export
+                  href="javascript:void(0)"
+                  class="btn btn-sm btn-secondary"
+                  @click="$refs.edit.show(template)"
+                >
+                  {{ $t('rename') | uppercase }}
+                </a>
+                <button
+                  :disabled="isExporting.includes(template.id)"
+                  type="submit"
+                  class="btn btn-sm btn-secondary"
+                  style="margin-left:12px"
+                  @click="exportData(template.id)"
+                >
+                  <i
+                    v-show="isExporting.includes(template.id)"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('export') | uppercase }}
+                </button>
+                <button
+                  v-if="$permission.has('create employee kpi')"
+                  :disabled="isDuplicating"
+                  type="submit"
+                  class="btn btn-sm btn-secondary"
+                  style="margin-left:12px"
+                  @click="duplicate(template.id)"
+                >
+                  <i
+                    v-show="isDuplicating"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('duplicate') | uppercase }}
+                </button>
+                <button
+                  v-if="$permission.has('delete employee kpi')"
+                  :disabled="isRemoving"
+                  type="submit"
+                  class="btn btn-sm btn-secondary"
+                  style="margin-left:12px"
+                  @click="remove(template.id)"
+                >
+                  <i
+                    v-show="isRemoving"
+                    class="fa fa-spinner fa-spin"
+                  /> {{ $t('remove') | uppercase }}
                 </button>
               </td>
             </tr>
-          </p-table>
-          <nav v-show="pagination.last_page > 1">
-            <ul class="pagination justify-content-center">
-              <li class="page-item" v-show="pagination.current_page > 1">
-                <a class="page-link" href="javascript:void(0)" tabindex="-1" aria-label="Previous" @click="paginate(1)">
-                  <span aria-hidden="true">
-                    <i class="fa fa-angle-double-left"></i>
-                  </span>
-                  <span class="sr-only">Previous</span>
-                </a>
-              </li>
-              <li
-                class="page-item"
-                :class="{ 'active': pagination.current_page === n }"
-                v-for="n in pagination.last_page"
-                :key="n">
-                <a class="page-link" href="javascript:void(0)" @click="paginate(n)">{{ n }}</a>
-              </li>
-              <li class="page-item" v-show="pagination.current_page < pagination.last_page">
-                <a class="page-link" href="javascript:void(0)" aria-label="Next" @click="paginate(pagination.last_page)">
-                  <span aria-hidden="true">
-                    <i class="fa fa-angle-double-right"></i>
-                  </span>
-                  <span class="sr-only">Next</span>
-                </a>
-              </li>
-            </ul>
-          </nav>
+          </point-table>
         </p-block-inner>
+        <p-pagination
+          :current-page="page"
+          :last-page="lastPage"
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
 
-    <result-modal id="result" ref="result" :title="'Kpi Result'"/>
-    <create-modal id="create" ref="create" :title="'KPI CATEGORY'"/>
-    <edit-modal id="edit" ref="edit" :title="'KPI CATEGORY'"/>
+    <result-modal
+      id="result"
+      ref="result"
+      :title="'KPI RESULT'"
+    />
+    <create-modal
+      id="create"
+      ref="create"
+      :title="'KPI CATEGORY'"
+    />
+    <edit-modal
+      id="edit"
+      ref="edit"
+      :title="'KPI CATEGORY'"
+    />
+    <m-status
+      ref="status"
+      @choosen="onChoosenStatus"
+    />
   </div>
 </template>
 
@@ -105,6 +235,7 @@ import EditModal from './EditModal'
 import ResultModal from './ResultModal'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 import axios from '@/axios'
 
@@ -114,23 +245,108 @@ export default {
     EditModal,
     ResultModal,
     Breadcrumb,
-    BreadcrumbHumanResource
+    BreadcrumbHumanResource,
+    PointTable
   },
   data () {
     return {
       title: 'kpi template',
-      loading: false,
-      isExporting: []
+      isLoading: false,
+      isDuplicating: false,
+      isRemoving: false,
+      isExporting: [],
+      checkedRow: [],
+      page: this.$route.query.page * 1 || 1,
+      limit: 10,
+      lastPage: 1,
+      isAdvanceFilter: false,
+      statusId: this.$route.query.statusId,
+      statusLabel: null
     }
   },
   computed: {
     ...mapGetters('humanResourceKpiTemplate', ['templates', 'pagination'])
   },
+  created () {
+    this.getKpiTemplatesRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('humanResourceKpiTemplate', {
       getKpiTemplates: 'get',
-      export: 'export'
+      export: 'export',
+      duplicateKpiTemplate: 'duplicate',
+      deleteKpiTemplate: 'delete',
+      bulkArchive: 'bulkArchive',
+      bulkActivate: 'bulkActivate',
+      bulkDelete: 'bulkDelete'
     }),
+    toggleCheckRow (id) {
+      if (!this.isRowChecked(id)) {
+        this.checkedRow.push({ id })
+      } else {
+        this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(id), 1)
+      }
+    },
+    toggleCheckRows () {
+      if (!this.isRowsChecked(this.templates, this.checkedRow)) {
+        this.templates.forEach(element => {
+          if (!this.isRowChecked(element.id)) {
+            const id = element.id
+            this.checkedRow.push({ id })
+          }
+        })
+      } else {
+        this.templates.forEach(element => {
+          this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(element.id), 1)
+        })
+      }
+    },
+    isRowChecked (id) {
+      return this.checkedRow.some(element => {
+        return element.id == id
+      })
+    },
+    isRowsChecked (haystack, needles) {
+      if (needles.length == 0) {
+        return false
+      }
+      for (let i = 0; i < haystack.length; i++) {
+        const found = needles.some(element => {
+          return element.id == haystack[i].id
+        })
+        if (!found) {
+          return false
+        }
+      }
+      return true
+    },
+    duplicate (id) {
+      console.log('duplicate kpi template')
+      this.isDuplicating = true
+      this.duplicateKpiTemplate({
+        kpi_template_id: id
+      }).then((response) => {
+        this.isDuplicating = false
+        this.getKpiTemplatesRequest()
+      }, (error) => {
+        console.log(error)
+      })
+    },
+    remove (id) {
+      console.log('removing kpi template')
+      if (confirm('do you want remove ?')) {
+        this.isRemoving = true
+        this.deleteKpiTemplate({
+          id: id
+        }).then((response) => {
+          this.isRemoving = false
+          this.getKpiTemplatesRequest()
+        })
+      }
+    },
     exportData (value) {
       this.isExporting.push(value)
       this.export({
@@ -148,15 +364,15 @@ export default {
       this.$refs.file.click()
     },
     onFileChange (e) {
-      let files = e.target.files || e.dataTransfer.files
+      const files = e.target.files || e.dataTransfer.files
       if (!files.length) {
         console.log('no files')
       }
 
-      let data = new FormData()
+      const data = new FormData()
       data.append('file', files[0])
       var self = this
-      self.loading = true
+      self.isLoading = true
       axios.post('/human-resource/kpi/templates/import/check', data, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -164,7 +380,7 @@ export default {
       }).then(function (response, data) {
         if (response.data.message == 'exist') {
           if (confirm('Data KPI ' + response.data.name + ' exist, do you want replace ?')) {
-            let data = new FormData()
+            const data = new FormData()
             data.append('file', files[0])
             data.append('replace', response.data.replace)
             axios.post('/human-resource/kpi/templates/import', data, {
@@ -173,44 +389,82 @@ export default {
               }
             })
               .then(function (response) {
-                console.log(response)
                 document.getElementById('file').value = ''
-                self.getKpiTemplates()
-                self.loading = false
+                self.getKpiTemplatesRequest()
+                self.isLoading = false
               })
               .catch(function (error) {
                 console.log(error)
               })
           } else {
             document.getElementById('file').value = ''
-            self.loading = false
+            self.isLoading = false
           }
         } else {
           document.getElementById('file').value = ''
-          self.getKpiTemplates()
-          self.loading = false
+          self.getKpiTemplatesRequest()
+          self.isLoading = false
         }
       }).catch(function (error) {
         console.log(error)
       })
     },
     paginate (page) {
-      this.getKpiTemplates({
-        limit: 20,
-        page: page
+      this.getKpiTemplatesRequest()
+    },
+    bulkArchiveKpiTemplate () {
+      this.bulkArchive({
+        templates: this.checkedRow
       }).then(response => {
-      }).catch(errors => {
+        this.checkedRow = []
+        this.getKpiTemplatesRequest()
+      })
+    },
+    bulkActivateKpiTemplate () {
+      this.bulkActivate({
+        templates: this.checkedRow
+      }).then(response => {
+        this.checkedRow = []
+        this.getKpiTemplatesRequest()
+      })
+    },
+    bulkDeleteKpiTemplate () {
+      this.bulkDelete({
+        templates: this.checkedRow
+      }).then(response => {
+        this.checkedRow = []
+        this.getKpiTemplatesRequest()
+      })
+    },
+    onChoosenStatus (option) {
+      this.statusId = option.id
+      this.statusLabel = option.label
+      this.$router.push({
+        query: {
+          search: this.searchText,
+          statusId: this.statusId
+        }
+      })
+      this.getKpiTemplatesRequest()
+    },
+    getKpiTemplatesRequest () {
+      this.isLoading = true
+      console.log('statusId : ' + this.statusId)
+      this.getKpiTemplates({
+        is_archived: this.statusId,
+        limit: this.limit,
+        page: this.page
+      }).then((response) => {
+        this.isLoading = false
+      }, (errors) => {
+        this.isLoading = false
         console.log(errors.data)
       })
+    },
+    updatePage (value) {
+      this.page = value
+      this.getKpiTemplatesRequest()
     }
-  },
-  created () {
-    if (this.templates.length === 0) {
-      this.loading = true
-    }
-    this.getKpiTemplates().then((response) => {
-      this.loading = false
-    })
   }
 }
 </script>
