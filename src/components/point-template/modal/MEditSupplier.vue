@@ -16,6 +16,17 @@
           <div class="row">
             <div class="col-sm-12">
               <p-form-row
+                id="code"
+                ref="code"
+                v-model="form.code"
+                :disabled="isSaving"
+                :label="$t('code')"
+                name="code"
+                :errors="form.errors.get('code')"
+                @errors="form.errors.set('code', null)"
+              />
+
+              <p-form-row
                 id="name"
                 ref="name"
                 v-model="form.name"
@@ -108,6 +119,7 @@ export default {
       isFailed: false,
       form: new Form({
         id: null,
+        code: null,
         name: null,
         email: null,
         address: null,
@@ -141,6 +153,7 @@ export default {
         }
       }).then(response => {
         this.isLoading = false
+        this.form.code = this.supplier.code
         this.form.name = this.supplier.name
         this.form.address = this.supplier.address
         this.form.phone = this.supplier.phone

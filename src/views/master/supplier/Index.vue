@@ -37,6 +37,7 @@
               <th width="50px">
                 #
               </th>
+              <th>Code</th>
               <th>Name</th>
               <th>Email</th>
               <th>Address</th>
@@ -48,6 +49,7 @@
               slot="p-body"
             >
               <th>{{ (page - 1) * 10 + index + 1 }}</th>
+              <td>{{ supplier.code }}</td>
               <td>
                 <router-link :to="{ name: 'supplier.show', params: { id: supplier.id }}">
                   {{ supplier.name }}
