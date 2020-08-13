@@ -7,6 +7,7 @@
   "create customer helper - credit limit" : "Memberikan informasi batas maximal credit limit setiap customer agar pada saat melakukan penjualan user bisa tahu Jumlah credit maximal Yang harus diberikan.",
   "create customer helper - group" : "Grup dalam master customer berguna untuk mempermudah pencarian dan pengelompokan perusahaan pada kelompok-kelompok tertentu sesuai dengan yang dikehendaki oleh perusahaan. Contoh : dapat dikelompokan berdasarkan Kota, Jenis Usaha, dan lain-lain.",
   "create customer helper - pricing group" : "Kelompok penetapan harga pada customer master berguna bagi perusahaan dalam memberikan harga jual sesuai dengan kelompok yang telah ditentukan. Contoh: dapat dikelompokkan berdasarkan jumlah penjualan seperti Grosir, Distributor, Eceran dan lain-lain.",
+  "create supplier helper - group" : "Grup dalam master supplier berguna untuk mempermudah pencarian dan pengelompokan perusahaan pada kelompok-kelompok tertentu sesuai dengan yang dikehendaki oleh perusahaan. Contoh : dapat dikelompokan berdasarkan Kota, Jenis Usaha, dan lain-lain.",
   "set warehouse helper" : "Hak akses untuk masing-masing user agar dapat melakukan penerimaan/pengeluaran barang dari gudang, fitur ini dibutuhkan untuk melakukan pembelian/penjualan/semua fitur yang berhubungan dengan penerimaan atau pengeluaran barang dari gudang.",
   "branch - set as default" : "Centang cabang sebagai default, sehingga semua inputan user dapat berelasi ke cabang ini."
 }

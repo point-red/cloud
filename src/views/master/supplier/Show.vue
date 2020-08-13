@@ -48,33 +48,51 @@
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
+            id="code"
+            v-model="code"
+            label="Name"
+            name="code"
+            readonly
+          />
+          <p-form-row
             id="name"
-            v-model="data.name"
+            v-model="name"
             label="Name"
             name="name"
             readonly
           />
           <p-form-row
             id="email"
-            v-model="data.email"
+            v-model="email"
             label="Email"
             name="email"
             readonly
           />
           <p-form-row
             id="address"
-            v-model="data.address"
+            v-model="address"
             label="Address"
             name="address"
             readonly
           />
           <p-form-row
             id="phone"
-            v-model="data.phone"
+            v-model="phone"
             label="Phone"
             name="phone"
             readonly
           />
+
+          <p-separator />
+
+          <h5>{{ $t('group') | uppercase }}</h5>
+          <p>{{ $t('create supplier helper - group') }}</p>
+          <ul
+            v-for="(group, index) in supplier.groups"
+            :key="index"
+          >
+            <li>{{ group.name }}</li>
+          </ul>
         </p-block-inner>
       </p-block>
     </div>
@@ -106,12 +124,11 @@ export default {
       id: this.$route.params.id,
       isLoading: false,
       isDeleting: false,
-      data: {
-        name: null,
-        email: null,
-        address: null,
-        phone: null
-      }
+      code: null,
+      name: null,
+      email: null,
+      address: null,
+      phone: null
     }
   },
   computed: {
@@ -125,13 +142,17 @@ export default {
     findSupplier () {
       this.isLoading = true
       this.find({
-        id: this.id
+        id: this.id,
+        params: {
+          includes: 'addresses;phones;emails;groups'
+        }
       }).then(response => {
         this.isLoading = false
-        this.data.name = response.data.name
-        this.data.email = response.data.email
-        this.data.address = response.data.address
-        this.data.phone = response.data.phone
+        this.code = response.data.code
+        this.name = response.data.name
+        this.email = response.data.email
+        this.address = response.data.address
+        this.phone = response.data.phone
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
