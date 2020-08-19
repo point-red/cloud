@@ -1,15 +1,15 @@
 import api from '@/api'
 
-const url = '/human-resource/employee/job-locations'
+const url = '/human-resource/employee/additional-components'
 
 const state = {
-  jobLocation: {
+  additionalComponent: {
     name: '',
-    base_salary: null,
-    multiplier_kpi: null
+    weight: null,
+    automated_code: null
   },
-  jobLocations: [],
-  jobLocationList: [],
+  additionalComponents: [],
+  additionalComponentList: [],
   pagination: {
     current_page: null,
     from: null,
@@ -22,14 +22,14 @@ const state = {
 }
 
 const getters = {
-  jobLocation: state => {
-    return state.jobLocation
+  additionalComponent: state => {
+    return state.additionalComponent
   },
-  jobLocations: state => {
-    return state.jobLocations
+  additionalComponents: state => {
+    return state.additionalComponents
   },
-  jobLocationList: state => {
-    return state.jobLocationList
+  additionalComponentList: state => {
+    return state.additionalComponentList
   },
   pagination: state => {
     return state.pagination
@@ -38,7 +38,7 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.jobLocations = payload.data
+    state.additionalComponents = payload.data
     state.pagination.current_page = payload.meta.current_page
     state.pagination.from = payload.meta.from
     state.pagination.to = payload.meta.to
@@ -55,19 +55,19 @@ const mutations = {
         label: element.name
       })
     })
-    state.jobLocationList = array
+    state.additionalComponentList = array
   },
   'FETCH_OBJECT' (state, payload) {
-    state.jobLocation = payload.data
+    state.additionalComponent = payload.data
   },
   'CREATE' (state, payload) {
-    state.jobLocation = payload
+    state.additionalComponent = payload
   },
   'UPDATE' (state, payload) {
-    state.jobLocation = payload
+    state.additionalComponent = payload
   },
   'DELETE' (state, payload) {
-    state.jobLocation = {}
+    state.additionalComponent = {}
   }
 }
 

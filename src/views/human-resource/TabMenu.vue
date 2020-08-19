@@ -53,6 +53,18 @@
         <span>{{ $t('employee status') | uppercase }}</span>
       </router-link>
     </li>
+    <li
+      v-if="$permission.has('read employee salary additional component')"
+      class="nav-item"
+    >
+      <router-link
+        to="/human-resource/additional-component"
+        class="nav-link"
+        active-class="active"
+      >
+        <span>{{ $t('additional component') | uppercase }}</span>
+      </router-link>
+    </li>
     <slot name="right" />
   </ul>
 </template>

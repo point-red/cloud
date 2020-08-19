@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-human-resource />
-      <span class="breadcrumb-item active">{{ $t('employee status') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('additional component') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu />
@@ -11,11 +11,10 @@
       <p-block>
         <div class="input-group block">
           <a
-            v-if="$permission.has('create employee')"
+            v-if="$permission.has('create employee salary additional component')"
             href="javascript:void(0)"
-            to="/human-resource/employee-status/create"
             class="input-group-prepend"
-            @click="$refs.addEmployeeStatus.open()"
+            @click="$refs.addAdditionalComponent.open()"
           >
             <span class="input-group-text">
               <i class="fa fa-plus" />
@@ -26,8 +25,8 @@
             ref="searchText"
             name="search-text"
             placeholder="Search"
-            class="btn-block"
             :value="searchText"
+            class="btn-block"
             @input="filterSearch"
           />
         </div>
@@ -38,19 +37,29 @@
               <th width="50px">
                 #
               </th>
-              <th>Name</th>
+              <th width="50%">
+                {{ $t('name') }}
+              </th>
+              <th width="40%">
+                {{ $t('source') }}
+              </th>
+              <th width="10%">
+                {{ $t('weight') }}
+              </th>
             </tr>
             <tr
-              v-for="(status, index) in statuses"
+              v-for="(additionalComponent, index) in additionalComponents"
               :key="index"
               slot="p-body"
             >
               <th>{{ (page - 1) * limit + index + 1 }}</th>
               <td>
-                <router-link :to="{ name: 'employee-status.show', params: { id: status.id }}">
-                  {{ status.name }}
+                <router-link :to="{ name: 'additional-component.show', params: { id: additionalComponent.id }}">
+                  {{ additionalComponent.name }}
                 </router-link>
               </td>
+              <td>{{ additionalComponent.automated_code_name }}</td>
+              <td>{{ additionalComponent.weight | numberFormat }}%</td>
             </tr>
           </point-table>
         </p-block-inner>
@@ -62,8 +71,8 @@
       </p-block>
     </div>
 
-    <m-add-employee-status
-      ref="addEmployeeStatus"
+    <m-add-additional-component
+      ref="addAdditionalComponent"
       @added="onAdded"
     />
   </div>
@@ -95,10 +104,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('humanResourceEmployeeStatus', ['statuses', 'pagination'])
+    ...mapGetters('humanResourceEmployeeAdditionalComponent', ['additionalComponents', 'pagination'])
   },
   created () {
-    this.getStatusesRequest()
+    this.getAdditionalComponentRequest()
     this.$nextTick(() => {
       this.$refs.searchText.setFocus()
     })
@@ -107,20 +116,21 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('humanResourceEmployeeStatus', {
-      getStatus: 'get'
+    ...mapActions('humanResourceEmployeeAdditionalComponent', {
+      getAdditionalComponent: 'get'
     }),
     updatePage (value) {
       this.page = value
-      this.getStatusRequest()
+      this.getAdditionalComponentRequest()
     },
-    getStatusRequest () {
+    getAdditionalComponentRequest () {
       this.isLoading = true
-      this.getStatus({
+      this.getAdditionalComponent({
         params: {
           sort_by: 'name',
           filter_like: {
-            name: this.searchText
+            name: this.searchText,
+            automated_code_name: this.searchText
           },
           limit: this.limit,
           page: this.page
@@ -136,11 +146,11 @@ export default {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.page = 1
-      this.getStatusRequest()
+      this.getAdditionalComponentRequest()
     }, 300),
-    onAdded (status) {
-      this.searchText = status.name
-      this.getStatusRequest()
+    onAdded (additionalComponent) {
+      this.searchText = additionalComponent.name
+      this.getAdditionalComponentRequest()
     }
   }
 }

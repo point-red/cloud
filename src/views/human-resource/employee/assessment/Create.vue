@@ -286,7 +286,8 @@
 import Form from '@/utils/Form'
 import AssignScoreModal from './AssignScoreModal'
 import AssignKpiTemplateModal from './AssignKpiTemplateModal'
-import TabMenu from '../TabMenu'
+import TabMenu from '@/views/human-resource/TabMenu'
+
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import EmployeeWidget from '../EmployeeWidget'
@@ -312,8 +313,8 @@ export default {
       id: this.$route.params.id,
       form: new Form({
         date: {
-          start: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-          end: this.$moment().format('YYYY-MM-DD HH:mm:ss')
+          start: this.$moment().format('YYYY-MM-DD 00:00:00'),
+          end: this.$moment().format('YYYY-MM-DD 23:59:59')
         },
         template: {
           groups: [],
@@ -433,8 +434,8 @@ export default {
         return
       }
       this.isSaving = true
-      this.form.date.start = this.serverDateTime(this.$moment(this.form.date.start))
-      this.form.date.end = this.serverDateTime(this.$moment(this.form.date.end))
+      this.form.date.start = this.serverDateTime(this.form.date.start, 'start')
+      this.form.date.end = this.serverDateTime(this.form.date.end, 'end')
       this.createEmployeeAssessment({ employeeId: this.employee.id, form: this.form })
         .then(response => {
           this.isSaving = false
@@ -467,7 +468,7 @@ export default {
       automatedIDs = [...new Set(automatedIDs)]
 
       if (automatedIDs.length > 0 && this.form.date.start && this.form.date.end) {
-        this.getAutomatedData({ startDate: this.serverDateTime(this.$moment(this.form.date.start)), endDate: this.serverDateTime(this.$moment(this.form.date.end)), automated_codes: automatedIDs, employeeId: this.id })
+        this.getAutomatedData({ startDate: this.serverDateTime(this.form.date.start, 'start'), endDate: this.serverDateTime(this.form.date.end, 'end'), automated_codes: automatedIDs, employeeId: this.id })
           .then((response) => {
             this.isLoading = false
 

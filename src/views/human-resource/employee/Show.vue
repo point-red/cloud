@@ -308,7 +308,8 @@
 </template>
 
 <script>
-import TabMenu from './TabMenu'
+import TabMenu from '@/views/human-resource/TabMenu'
+
 import EmployeeWidget from './EmployeeWidget'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'

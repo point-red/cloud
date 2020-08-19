@@ -14,53 +14,64 @@
     <tab-menu />
 
     <div class="row">
-      <p-block
-        :title="$t('employee status')"
-        :header="true"
-      >
+      <p-block>
+        <div class="text-right">
+          <button
+            v-if="$permission.has('create employee')"
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.addEmployeeStatus.open()"
+          >
+            <span>{{ $t('create') | uppercase }}</span>
+          </button>
+          <button
+            v-if="$permission.has('update employee')"
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="$refs.editEmployeeStatus.open(status)"
+          >
+            {{ $t('edit') | uppercase }}
+          </button>
+          <button
+            v-if="$permission.has('delete employee')"
+            type="button"
+            :disabled="isDeleting"
+            class="btn btn-sm btn-outline-secondary"
+            @click="onDelete()"
+          >
+            <i
+              v-show="isDeleting"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('delete') | uppercase }}
+          </button>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
-          <div class="row">
-            <div class="col-sm-6">
-              <p-table>
-                <template slot="p-body">
-                  <tr>
-                    <td><span class="font-w700">{{ $t('name') | titlecase }}</span></td>
-                    <td>{{ status.name }}</td>
-                  </tr>
-                </template>
-              </p-table>
-            </div>
-            <div class="col-sm-12 mb-20">
-              <hr>
-              <router-link
-                v-if="$permission.has('update employee')"
-                :to="{ path: '/human-resource/employee-status/' + status.id + '/edit', params: { id: status.id }}"
-                class="btn btn-sm btn-primary mr-5"
-              >
-                {{ $t('edit') | uppercase }}
-              </router-link>
-              <button
-                v-if="$permission.has('delete employee')"
-                type="button"
-                :disabled="isSaving"
-                class="btn btn-sm btn-danger"
-                @click="onDelete()"
-              >
-                <i
-                  v-show="isSaving"
-                  class="fa fa-asterisk fa-spin"
-                /> {{ $t('delete') | uppercase }}
-              </button>
-            </div>
-          </div>
+          <p-form-row
+            id="name"
+            v-model="status.name"
+            label="Name"
+            name="name"
+            readonly
+          />
         </p-block-inner>
       </p-block>
     </div>
+
+    <m-add-employee-status
+      ref="addEmployeeStatus"
+      @added="onAddedEmployeeStatus($event)"
+    />
+    <m-edit-employee-status
+      ref="editEmployeeStatus"
+      @updated="onUpdatedEmployeeStatus($event)"
+    />
   </div>
 </template>
 
 <script>
-import TabMenu from './TabMenu'
+import TabMenu from '@/views/human-resource/TabMenu'
+
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
@@ -75,32 +86,54 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: false,
-      isSaving: false
+      isDeleting: false,
+      page: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {
-    ...mapGetters('humanResourceEmployeeStatus', ['status', 'statuses'])
+    ...mapGetters('humanResourceEmployeeStatus', ['status'])
   },
   created () {
-    this.isLoading = true
-    this.findStatus({ id: this.id }).then((response) => {
-      this.isLoading = false
-    }, (error) => {
-      console.log(JSON.stringify(error))
-    })
+    this.findEmployeeStatus()
   },
   methods: {
-    ...mapActions('humanResourceEmployeeStatus', { findStatus: 'find', deleteStatus: 'delete' }),
+    ...mapActions('humanResourceEmployeeStatus', ['find', 'delete']),
+    updatePage (value) {
+      this.page = value
+    },
+    onAddedEmployeeStatus (status) {
+      this.$router.push('/human-resource/employee-status/' + status.id)
+      this.id = status.id
+      this.findEmployeeStatus()
+    },
+    onUpdatedEmployeeStatus (status) {
+      this.findEmployeeStatus()
+    },
     onDelete () {
-      this.isSaving = true
-      this.deleteStatus({ id: this.id })
-        .then((response) => {
-          this.isSaving = false
+      this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
+        this.isDeleting = true
+        this.delete({
+          id: this.id
+        }).then(response => {
+          this.isDeleting = false
           this.$router.push('/human-resource/employee-status')
-        }, (error) => {
-          this.isSaving = false
-          console.log(JSON.stringify(error))
+        }).catch(response => {
+          this.isDeleting = false
+          this.$notification.error('cannot delete this employee')
         })
+      })
+    },
+    findEmployeeStatus () {
+      this.isLoading = true
+      this.find({
+        id: this.id
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
     }
   }
 }

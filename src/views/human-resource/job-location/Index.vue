@@ -2,23 +2,25 @@
   <div>
     <breadcrumb>
       <breadcrumb-human-resource />
-      <span class="breadcrumb-item active">{{ 'job location' | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('job location') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu />
 
     <div class="row">
-      <p-block :title="$t('job location')">
-        <div class="input-group block mb-5">
-          <router-link
+      <p-block>
+        <div class="input-group block">
+          <a
             v-if="$permission.has('create employee')"
+            href="javascript:void(0)"
             to="/human-resource/job-location/create"
             class="input-group-prepend"
+            @click="$refs.addJobLocation.open()"
           >
             <span class="input-group-text">
               <i class="fa fa-plus" />
             </span>
-          </router-link>
+          </a>
           <p-form-input
             id="search-text"
             ref="searchText"
@@ -33,45 +35,53 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
+              <th width="50px">
+                #
+              </th>
               <th width="33%">
                 {{ $t('name') }}
               </th>
               <th width="33%">
-                {{ $t('base salary') }}
+                {{ $t('area value') }}
               </th>
               <th width="33%">
                 {{ $t('multiplier kpi') }}
               </th>
             </tr>
-            <template v-if="$permission.has('read employee')">
-              <tr
-                v-for="jobLocation in jobLocations"
-                :key="jobLocation.id"
-                slot="p-body"
-              >
-                <td>
-                  <router-link :to="{ name: 'JobLocationShow', params: { id: jobLocation.id }}">
-                    {{ jobLocation.name }}
-                  </router-link>
-                </td>
-                <td>{{ jobLocation.base_salary | numberFormat }}</td>
-                <td>{{ jobLocation.multiplier_kpi | numberFormat }}</td>
-              </tr>
-            </template>
+            <tr
+              v-for="(jobLocation, index) in jobLocations"
+              :key="index"
+              slot="p-body"
+            >
+              <th>{{ (page - 1) * limit + index + 1 }}</th>
+              <td>
+                <router-link :to="{ name: 'job-location.show', params: { id: jobLocation.id }}">
+                  {{ jobLocation.name }}
+                </router-link>
+              </td>
+              <td>{{ jobLocation.base_salary | numberFormat }}</td>
+              <td>{{ jobLocation.multiplier_kpi | numberFormat }}</td>
+            </tr>
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="currentPage"
+          :current-page="page"
           :last-page="lastPage"
           @updatePage="updatePage"
         />
       </p-block>
     </div>
+
+    <m-add-job-location
+      ref="addJobLocation"
+      @added="onAdded"
+    />
   </div>
 </template>
 
 <script>
-import TabMenu from './TabMenu'
+import TabMenu from '@/views/human-resource/TabMenu'
+
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import PointTable from 'point-table-vue'
@@ -87,10 +97,10 @@ export default {
   },
   data () {
     return {
-      isLoading: false,
-      listJobLocation: this.jobLocations,
+      isLoading: true,
       searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      page: this.$route.query.page * 1 || 1,
+      limit: 10,
       lastPage: 1
     }
   },
@@ -99,39 +109,48 @@ export default {
   },
   created () {
     this.getJobLocationsRequest()
+    this.$nextTick(() => {
+      this.$refs.searchText.setFocus()
+    })
   },
   updated () {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('humanResourceEmployeeJobLocation', { getJobLocations: 'get' }),
+    ...mapActions('humanResourceEmployeeJobLocation', {
+      getJobLocation: 'get'
+    }),
     updatePage (value) {
-      this.currentPage = value
-      this.getJobLocationsRequest()
+      this.page = value
+      this.getJobLocationRequest()
+    },
+    getJobLocationRequest () {
+      this.isLoading = true
+      this.getJobLocation({
+        params: {
+          sort_by: 'name',
+          filter_like: {
+            name: this.searchText
+          },
+          limit: this.limit,
+          page: this.page
+        }
+      }).then((response) => {
+        this.isLoading = false
+      }).catch(error => {
+        this.isLoading = false
+        this.$notifications.error(error.message)
+      })
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
-      this.currentPage = 1
-      this.getJobLocationsRequest()
+      this.page = 1
+      this.getJobLocationRequest()
     }, 300),
-    getJobLocationsRequest () {
-      this.isLoading = true
-      this.getJobLocations({
-        params: {
-          filter_like: {
-            name: this.searchText
-          },
-          limit: 10,
-          page: this.currentPage,
-          sort_by: 'name'
-        }
-      }).then((response) => {
-        this.isLoading = false
-      }, (errors) => {
-        this.isLoading = false
-        console.log(errors.data)
-      })
+    onAdded (jobLocation) {
+      this.searchText = jobLocation.name
+      this.getJobLocationRequest()
     }
   }
 }

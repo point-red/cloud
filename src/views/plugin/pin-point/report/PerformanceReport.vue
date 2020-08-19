@@ -25,6 +25,24 @@
             />
           </div>
         </p-form-row>
+        <p-form-row
+          id="branch"
+          v-model="branch"
+          name="branch"
+          :label="$t('branch')"
+        >
+          <div
+            slot="body"
+            class="col-lg-9"
+          >
+            <span
+              class="select-link"
+              @click="$refs.branch.open()"
+            >
+              {{ branchName || $t('select') | uppercase }}
+            </span>
+          </div>
+        </p-form-row>
         <p-form-row>
           <div
             slot="body"
@@ -284,6 +302,75 @@
                   {{ getItemSoldQty(item.id, report.items) | numberFormat }}
                 </td>
               </tr>
+              <tr slot="p-body">
+                <td
+                  class="text-center"
+                  colspan="2"
+                >
+                  {{ $t('total') | titlecase }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-success text-white': isColorful}"
+                >
+                  {{ dataSet.totals.target_call || 0 }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-success text-white': isColorful}"
+                >
+                  {{ dataSet.totals.target_effective_call || 0 }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-success text-white': isColorful}"
+                >
+                  {{ dataSet.totals.target_value || 0 | numberFormat }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-danger text-white': isColorful}"
+                >
+                  {{ dataSet.totals.call || 0 }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-danger text-white': isColorful}"
+                >
+                  {{ dataSet.totals.effective_call || 0 }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-danger text-white': isColorful}"
+                >
+                  {{ dataSet.totals.value || 0 | numberFormat }}
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-primary text-white': isColorful}"
+                >
+                  {{ percentage(dataSet.totals.call, dataSet.totals.target_call) | numberFormat }}%
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-primary text-white': isColorful}"
+                >
+                  {{ percentage(dataSet.totals.effective_call, dataSet.totals.target_effective_call) | numberFormat }}%
+                </td>
+                <td
+                  class="text-center"
+                  :class="{'bg-primary text-white': isColorful}"
+                >
+                  {{ dataSet.totals.value / dataSet.totals.target_value * 100 | numberFormat }}%
+                </td>
+                <td
+                  v-for="(item, index) in items"
+                  :key="index"
+                  class="text-center"
+                >
+                  {{ getItemSoldQty(item.id, dataSet.totals.items) | numberFormat }}
+                </td>
+              </tr>
             </p-table>
           </div>
         </p-block-inner>
@@ -293,6 +380,10 @@
       id="target"
       ref="target"
       :title="'Target'"
+    />
+    <m-branch
+      ref="branch"
+      @choosen="chooseBranch"
     />
   </div>
 </template>
@@ -319,6 +410,9 @@ export default {
         start: this.$moment().format('YYYY-MM-DD 00:00:00'),
         end: this.$moment().format('YYYY-MM-DD 23:59:59')
       },
+      branch: {},
+      branchId: null,
+      branchName: '',
       isLoading: false,
       isExporting: false,
       isColorful: false,
@@ -326,7 +420,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('pluginPinPointReportPerformance', ['reports', 'items']),
+    ...mapGetters('pluginPinPointReportPerformance', ['reports', 'items', 'dataSet']),
     dateView: function () {
       if (this.date.start == this.date.end) {
         return this.$moment(this.date.start).format('D MMM Y')
@@ -358,12 +452,17 @@ export default {
     toggleColor () {
       this.isColorful = !this.isColorful
     },
+    chooseBranch (option) {
+      this.branchId = option.id
+      this.branchName = option.name
+    },
     search () {
       this.isLoading = true
       this.get({
         params: {
           date_from: this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'),
-          date_to: this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59')
+          date_to: this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'),
+          branch_id: this.branchId
         }
       }).then((response) => {
         this.isLoading = false
@@ -376,7 +475,8 @@ export default {
       this.isExporting = true
       this.export({
         date_from: this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'),
-        date_to: this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59')
+        date_to: this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'),
+        branch_id: this.branchId
       }).then(response => {
         this.isExporting = false
         this.downloadFiles = response.data.files

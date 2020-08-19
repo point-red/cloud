@@ -4,6 +4,7 @@ import Employee from './employee/routes'
 import JobLocation from './job-location/routes'
 import EmployeeStatus from './employee-status/routes'
 import EmployeeGroup from './employee-group/routes'
+import AdditionalComponent from './additional-component/routes'
 
 export default [
   { path: '/human-resource', name: 'HumanResource', component: HumanResource },
@@ -11,5 +12,6 @@ export default [
   ...Employee,
   ...JobLocation,
   ...EmployeeStatus,
-  ...EmployeeGroup
+  ...EmployeeGroup,
+  ...AdditionalComponent
 ]

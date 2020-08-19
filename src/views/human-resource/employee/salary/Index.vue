@@ -26,6 +26,27 @@
         :title="title"
         :header="true"
       >
+        <div class="text-right">
+          <a
+            href="javascript:void(0)"
+            class="btn btn-square btn-outline-secondary"
+            :class="{ 'active': reportType == 'all' }"
+            @click="chooseType('all')"
+          >All</a>
+          <a
+            href="javascript:void(0)"
+            class="btn btn-square btn-outline-secondary"
+            :class="{ 'active': reportType == 'weekly' }"
+            @click="chooseType('weekly')"
+          >Weekly</a>
+          <a
+            href="javascript:void(0)"
+            class="btn btn-square btn-outline-secondary"
+            :class="{ 'active': reportType == 'monthly' }"
+            @click="chooseType('monthly')"
+          >Monthly</a>
+        </div>
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <p-table>
             <tr slot="p-head">
@@ -35,27 +56,58 @@
               </th>
             </tr>
             <tr
-              v-for="(salary, salaryIndex) in salaries"
+              v-for="salary in salaries"
               :key="salary.id"
               slot="p-body"
             >
               <td>
-                <router-link :to="{ name: 'humanResourceEmployeeSalaryShow', params: { id: employee.id, salaryId: salary.id }}">
-                  {{ dataSet.startDates[salaryIndex] | dateFormat('DD MMMM YYYY') }} - {{ dataSet.endDates[salaryIndex] | dateFormat('DD MMMM YYYY') }}
-                </router-link>
+                <template v-if="reportType == 'all'">
+                  <router-link
+                    v-if="$permission.has('read employee salary')"
+                    :to="{ name: 'humanResourceEmployeeSalaryShow', params: { id: employee.id, salaryId: salary.id }}"
+                  >
+                    {{ salary.start_date | dateFormat('DD MMMM YYYY') }} - {{ salary.end_date | dateFormat('DD MMMM YYYY') }}
+                  </router-link>
+                  <template v-else>
+                    {{ salary.start_date | dateFormat('DD MMMM YYYY') }} - {{ salary.end_date | dateFormat('DD MMMM YYYY') }}
+                  </template>
+                </template>
+                <template v-else>
+                  <template v-if="reportType == 'weekly'">
+                    <template v-if="$permission.has('read employee salary')">
+                      <router-link :to="{ name: 'humanResourceEmployeeSalaryShowBy', params: { id: employee.id, type: 'weekly', value: salary.id }}">
+                        {{ salary.end_date | dateFormat('MMMM YYYY') }} (Week {{ getWeekOfMonth(salary.end_date) }})
+                      </router-link>
+                    </template>
+                    <template v-else>
+                      {{ salary.end_date | dateFormat('MMMM YYYY [(][Week] WW[)]') }}
+                    </template>
+                  </template>
+                  <template v-if="reportType == 'monthly'">
+                    <template v-if="$permission.has('read employee salary')">
+                      <router-link :to="{ name: 'humanResourceEmployeeSalaryShowBy', params: { id: employee.id, type: 'monthly', value: salary.id }}">
+                        {{ salary.end_date | dateFormat('MMMM YYYY') }}
+                      </router-link>
+                    </template>
+                    <template v-else>
+                      {{ salary.end_date | dateFormat('MMMM YYYY') }}
+                    </template>
+                  </template>
+                </template>
               </td>
               <td class="text-center">
-                Rp {{ dataSet.scores[salaryIndex] | numberFormat }}
+                {{ salary.amount_received | numberFormat }}
               </td>
               <td class="text-right">
                 <router-link
-                  v-if="$permission.has('update employee salary')"
+                  v-if="$permission.has('update employee salary') && reportType == 'all'"
                   :to="{ path: '/human-resource/employee/' + employee.id + '/salary/' + salary.id + '/edit', params: { id: employee.id, kpiId: salary.id }}"
                   class="btn btn-sm btn-secondary"
                 >
                   <i class="si si-note" /> {{ $t('edit') | uppercase }}
                 </router-link>
                 <button
+                  v-if="$permission.has('print employee salary') && reportType == 'all'"
                   :disabled="isExporting.includes(salary.id)"
                   type="submit"
                   class="btn btn-sm btn-primary"
@@ -69,7 +121,7 @@
                 </button>
                 &nbsp;
                 <i
-                  v-show="$permission.has('delete employee salary')"
+                  v-show="$permission.has('delete employee salary') && reportType == 'all'"
                   class="fa fa-close"
                   @click="deleteSalary(salary.id)"
                 />
@@ -116,7 +168,8 @@
 </template>
 
 <script>
-import TabMenu from '../TabMenu'
+import TabMenu from '@/views/human-resource/TabMenu'
+
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import EmployeeWidget from '../EmployeeWidget'
@@ -134,24 +187,23 @@ export default {
       id: this.$route.params.id,
       title: 'Salary',
       isLoading: true,
+      isExporting: [],
+      reportType: 'all',
       isSaving: false,
       selectedSalaryId: '',
-      isExporting: []
+      page: this.$route.query.page * 1 || 1,
+      lastPage: 1
     }
   },
   computed: {
     ...mapGetters('humanResourceEmployee', ['employee']),
-    ...mapGetters('humanResourceEmployeeSalary', ['salaries', 'dataSet'])
+    ...mapGetters('humanResourceEmployeeSalary', ['salaries', 'pagination'])
   },
   created () {
-    this.isLoading = true
-    this.getEmployeeSalary({
-      employeeId: this.id
-    }).then((response) => {
-      this.isLoading = false
-    }, (error) => {
-      console.log(JSON.stringify(error))
-    })
+    this.getEmployeeSalaryRequest()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('humanResourceEmployeeSalary', {
@@ -159,6 +211,35 @@ export default {
       deleteEmployeeSalary: 'delete',
       export: 'export'
     }),
+    getWeekOfMonth (date) {
+      const dateObject = new Date(date)
+      const adjustedDate = dateObject.getDate() + dateObject.getDay()
+      const prefixes = ['0', '1', '2', '3', '4', '5']
+      return (parseInt(prefixes[0 | adjustedDate / 7]) + 1)
+    },
+    chooseType (type) {
+      this.reportType = type
+      this.page = 1
+      this.getEmployeeSalaryRequest()
+    },
+    getEmployeeSalaryRequest () {
+      this.isLoading = true
+      this.getEmployeeSalary({
+        employeeId: this.id,
+        params: {
+          page: this.page,
+          type: this.reportType
+        }
+      }).then((response) => {
+        this.isLoading = false
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+    },
+    updatePage (value) {
+      this.page = value
+      this.getEmployeeSalaryRequest()
+    },
     deleteSalary (salaryId) {
       this.selectedSalaryId = salaryId
       this.$refs.delete.show()

@@ -3,12 +3,12 @@
     <breadcrumb>
       <breadcrumb-human-resource />
       <router-link
-        to="/human-resource/employee-group"
+        to="/human-resource/additional-component"
         class="breadcrumb-item"
       >
-        {{ $t('employee group') | uppercase }}
+        {{ $t('additional component') | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">{{ group.name | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ additionalComponent.name | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu />
@@ -17,23 +17,23 @@
       <p-block>
         <div class="text-right">
           <button
-            v-if="$permission.has('create employee')"
+            v-if="$permission.has('create employee salary additional component')"
             type="button"
             class="btn btn-sm btn-outline-secondary mr-5"
-            @click="$refs.addEmployeeGroup.open()"
+            @click="$refs.addAdditionalComponent.open()"
           >
             <span>{{ $t('create') | uppercase }}</span>
           </button>
           <button
-            v-if="$permission.has('update employee')"
+            v-if="$permission.has('update employee salary additional component')"
             type="button"
             class="btn btn-sm btn-outline-secondary mr-5"
-            @click="$refs.editEmployeeGroup.open(group)"
+            @click="$refs.editAdditionalComponent.open(additionalComponent)"
           >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            v-if="$permission.has('delete employee')"
+            v-if="$permission.has('delete employee salary additional component')"
             type="button"
             :disabled="isDeleting"
             class="btn btn-sm btn-outline-secondary"
@@ -49,22 +49,49 @@
         <p-block-inner :is-loading="isLoading">
           <p-form-row
             id="name"
-            v-model="group.name"
+            v-model="additionalComponent.name"
             label="Name"
             name="name"
+            readonly
+          />
+          <p-form-row
+            id="weight"
+            name="weight"
+            :label="$t('weight')"
+            readonly
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
+              <p-form-number
+                id="weight"
+                v-model="additionalComponent.weight"
+                name="weight"
+                :is-text-right="false"
+                :disabled="true"
+                :label="$t('weight')"
+              />
+            </div>
+          </p-form-row>
+          <p-form-row
+            id="automated-code-name"
+            v-model="additionalComponent.automated_code_name"
+            label="Source"
+            name="automated-code-name"
             readonly
           />
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-employee-group
-      ref="addEmployeeGroup"
-      @added="onAddedEmployeeGroup($event)"
+    <m-add-additional-component
+      ref="addAdditionalComponent"
+      @added="onAddedAdditionalComponent($event)"
     />
-    <m-edit-employee-group
-      ref="editEmployeeGroup"
-      @updated="onUpdatedEmployeeGroup($event)"
+    <m-edit-additional-component
+      ref="editAdditionalComponent"
+      @updated="onUpdatedAdditionalComponent($event)"
     />
   </div>
 </template>
@@ -92,23 +119,23 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('humanResourceEmployeeGroup', ['group'])
+    ...mapGetters('humanResourceEmployeeAdditionalComponent', ['additionalComponent'])
   },
   created () {
-    this.findEmployeeGroup()
+    this.findAdditionalComponent()
   },
   methods: {
-    ...mapActions('humanResourceEmployeeGroup', ['find', 'delete']),
+    ...mapActions('humanResourceEmployeeAdditionalComponent', ['find', 'delete']),
     updatePage (value) {
       this.page = value
     },
-    onAddedEmployeeGroup (group) {
-      this.$router.push('/human-resource/employee-group/' + group.id)
-      this.id = group.id
-      this.findEmployeeGroup()
+    onAddedAdditionalComponent (additionalComponent) {
+      this.$router.push('/human-resource/additional-component/' + additionalComponent.id)
+      this.id = additionalComponent.id
+      this.findAdditionalComponent()
     },
-    onUpdatedEmployeeGroup (group) {
-      this.findEmployeeGroup()
+    onUpdatedAdditionalComponent (additionalComponent) {
+      this.findAdditionalComponent()
     },
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
@@ -117,14 +144,14 @@ export default {
           id: this.id
         }).then(response => {
           this.isDeleting = false
-          this.$router.push('/human-resource/employee-group')
+          this.$router.push('/human-resource/additional-component')
         }).catch(response => {
           this.isDeleting = false
-          this.$notification.error('cannot delete this employee')
+          this.$notification.error('cannot delete this additional component')
         })
       })
     },
-    findEmployeeGroup () {
+    findAdditionalComponent () {
       this.isLoading = true
       this.find({
         id: this.id

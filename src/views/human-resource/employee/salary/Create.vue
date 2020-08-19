@@ -305,142 +305,26 @@
               <td class="font-size-h6 font-w700" />
             </tr>
 
-            <tr slot="p-body">
-              <td>1</td>
-              <td>{{ $t('balance Sku area') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.balance.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.balance.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.balance.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.balance.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.balance.week5 | numberFormat }}%</td>
+            <tr
+              v-for="automated in form.salary_achievement.automated"
+              slot="p-body"
+              :key="'automated' + automated.id"
+            >
+              <td>{{ automated.id }}</td>
+              <td>{{ automated.name }}</td>
+              <td>{{ automated.week1 | numberFormat }}%</td>
+              <td>{{ automated.week2 | numberFormat }}%</td>
+              <td>{{ automated.week3 | numberFormat }}%</td>
+              <td>{{ automated.week4 | numberFormat }}%</td>
+              <td>{{ automated.week5 | numberFormat }}%</td>
               <td>
                 <p-form-input
-                  id="balance-weight"
-                  v-model="form.salary_achievement.automated.balance.weight"
-                  name="balance-weight"
+                  id="automated-weight"
+                  v-model="automated.weight"
+                  name="automated-weight"
                   :disabled="isSaving"
                   :is-text-right="false"
-                  @input="salaryAchievementWeight"
-                />
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>2</td>
-              <td>{{ $t('%C national achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_call.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_call.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_call.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_call.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_call.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="call-national-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_national_call.weight"
-                  name="call-national-achievement-weight"
-                  :disabled="isSaving"
-                  :is-text-right="false"
-                  @input="salaryAchievementWeight"
-                />
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>3</td>
-              <td>{{ $t('%EC national achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_effective_call.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_effective_call.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_effective_call.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_effective_call.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_effective_call.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="effective-call-national-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_national_effective_call.weight"
-                  name="effective-call-national-achievement-weight"
-                  :disabled="isSaving"
-                  :is-text-right="false"
-                  @input="salaryAchievementWeight"
-                />
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>4</td>
-              <td>{{ $t('%value national achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_value.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_value.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_value.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_value.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_national_value.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="value-national-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_national_value.weight"
-                  name="value-national-achievement-weight"
-                  :disabled="isSaving"
-                  :is-text-right="false"
-                  @input="salaryAchievementWeight"
-                />
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>5</td>
-              <td>{{ $t('%C area achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_call.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_call.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_call.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_call.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_call.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="call-area-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_area_call.weight"
-                  name="call-area-achievement-weight"
-                  :disabled="isSaving"
-                  :is-text-right="false"
-                  @input="salaryAchievementWeight"
-                />
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>6</td>
-              <td>{{ $t('%EC area achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_effective_call.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_effective_call.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_effective_call.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_effective_call.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_effective_call.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="effective-call-area-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_area_effective_call.weight"
-                  name="effective-call-area-achievement-weight"
-                  :disabled="isSaving"
-                  :is-text-right="false"
-                  @input="salaryAchievementWeight"
-                />
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td>7</td>
-              <td>{{ $t('%value area achievement') | titlecase }}</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_value.week1 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_value.week2 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_value.week3 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_value.week4 | numberFormat }}%</td>
-              <td>{{ form.salary_achievement.automated.achievement_area_value.week5 | numberFormat }}%</td>
-              <td>
-                <p-form-input
-                  id="value-area-achievement-weight"
-                  v-model="form.salary_achievement.automated.achievement_area_value.weight"
-                  name="value-area-achievement-weight"
-                  :disabled="isSaving"
-                  :is-text-right="false"
-                  @input="salaryAchievementWeight"
+                  @input="salaryAssessmentWeight"
                 />
               </td>
             </tr>
@@ -526,35 +410,116 @@
 
             <tr slot="p-body">
               <td />
-              <td>{{ $t('minimum component amount') | titlecase }}</td>
-              <td><span class="">Rp {{ minimum_component_amount_week_1 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ minimum_component_amount_week_2 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ minimum_component_amount_week_3 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ minimum_component_amount_week_4 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ minimum_component_amount_week_5 | numberFormat }}</span></td>
+              <td>{{ $t('area value') | titlecase }}</td>
+              <td><span class="">Rp {{ form.base_salary | numberFormat }}</span></td>
+              <td><span class="">Rp {{ form.base_salary | numberFormat }}</span></td>
+              <td><span class="">Rp {{ form.base_salary | numberFormat }}</span></td>
+              <td><span class="">Rp {{ form.base_salary | numberFormat }}</span></td>
+              <td><span class="">Rp {{ form.base_salary | numberFormat }}</span></td>
               <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
               <td />
-              <td>{{ $t('additional component amount') | titlecase }}</td>
-              <td><span class="">Rp {{ additional_component_amount_week_1 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ additional_component_amount_week_2 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ additional_component_amount_week_3 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ additional_component_amount_week_4 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ additional_component_amount_week_5 | numberFormat }}</span></td>
+              <td>{{ $t('area value per week') | titlecase }}</td>
+              <td><span class="">{{ base_salary_week_1 | numberFormat }}</span></td>
+              <td><span class="">{{ base_salary_week_2 | numberFormat }}</span></td>
+              <td><span class="">{{ base_salary_week_3 | numberFormat }}</span></td>
+              <td><span class="">{{ base_salary_week_4 | numberFormat }}</span></td>
+              <td><span class="">{{ base_salary_week_5 | numberFormat }}</span></td>
+              <td><span class="" /></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td />
+              <td>{{ $t('daily transport') | titlecase }}</td>
+              <td><span class="">{{ form.daily_transport_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.daily_transport_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.daily_transport_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.daily_transport_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.daily_transport_allowance | numberFormat }}</span></td>
+              <td><span class="" /></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td />
+              <td>{{ $t('real transport received') | titlecase }}</td>
+              <td><span class="">{{ real_transport_allowance_week_1 | numberFormat }}</span></td>
+              <td><span class="">{{ real_transport_allowance_week_2 | numberFormat }}</span></td>
+              <td><span class="">{{ real_transport_allowance_week_3 | numberFormat }}</span></td>
+              <td><span class="">{{ real_transport_allowance_week_4 | numberFormat }}</span></td>
+              <td><span class="">{{ real_transport_allowance_week_5 | numberFormat }}</span></td>
+              <td class="font-w700">
+                <span class="">{{ real_transport_allowance_total | numberFormat }}</span>
+              </td>
+            </tr>
+
+            <tr slot="p-body">
+              <td />
+              <td>{{ $t('minimum component') | titlecase }}</td>
+              <td><span class="">{{ minimum_component_amount_week_1 | numberFormat }}</span></td>
+              <td><span class="">{{ minimum_component_amount_week_2 | numberFormat }}</span></td>
+              <td><span class="">{{ minimum_component_amount_week_3 | numberFormat }}</span></td>
+              <td><span class="">{{ minimum_component_amount_week_4 | numberFormat }}</span></td>
+              <td><span class="">{{ minimum_component_amount_week_5 | numberFormat }}</span></td>
+              <td><span class="" /></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td />
+              <td>{{ $t('multiplier kpi') | titlecase }}</td>
+              <td><span class="">{{ form.multiplier_kpi | numberFormat }}</span></td>
+              <td><span class="">{{ form.multiplier_kpi | numberFormat }}</span></td>
+              <td><span class="">{{ form.multiplier_kpi | numberFormat }}</span></td>
+              <td><span class="">{{ form.multiplier_kpi | numberFormat }}</span></td>
+              <td><span class="">{{ form.multiplier_kpi | numberFormat }}</span></td>
+              <td><span class="" /></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td />
+              <td>{{ $t('multiplier kpi (weekly result)') | titlecase }}</td>
+              <td><span class="">{{ multiplier_kpi_week_1 | numberFormat }}</span></td>
+              <td><span class="">{{ multiplier_kpi_week_2 | numberFormat }}</span></td>
+              <td><span class="">{{ multiplier_kpi_week_3 | numberFormat }}</span></td>
+              <td><span class="">{{ multiplier_kpi_week_4 | numberFormat }}</span></td>
+              <td><span class="">{{ multiplier_kpi_week_5 | numberFormat }}</span></td>
+              <td><span class="" /></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td />
+              <td>{{ $t('additional point') | titlecase }}</td>
+              <td><span class="">{{ additional_component_point_week_1 | numberFormat }}</span></td>
+              <td><span class="">{{ additional_component_point_week_2 | numberFormat }}</span></td>
+              <td><span class="">{{ additional_component_point_week_3 | numberFormat }}</span></td>
+              <td><span class="">{{ additional_component_point_week_4 | numberFormat }}</span></td>
+              <td><span class="">{{ additional_component_point_week_5 | numberFormat }}</span></td>
+              <td><span class="" /></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td />
+              <td>{{ $t('additional component') | titlecase }}</td>
+              <td><span class="">{{ additional_component_amount_week_1 | numberFormat }}</span></td>
+              <td><span class="">{{ additional_component_amount_week_2 | numberFormat }}</span></td>
+              <td><span class="">{{ additional_component_amount_week_3 | numberFormat }}</span></td>
+              <td><span class="">{{ additional_component_amount_week_4 | numberFormat }}</span></td>
+              <td><span class="">{{ additional_component_amount_week_5 | numberFormat }}</span></td>
               <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
               <td />
               <td>{{ $t('total amount') | titlecase }}</td>
-              <td><span class="">Rp {{ total_component_amount_week_1 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ total_component_amount_week_2 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ total_component_amount_week_3 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ total_component_amount_week_4 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ total_component_amount_week_5 | numberFormat }}</span></td>
-              <td><span class="" /></td>
+              <td><span class="">{{ total_component_amount_week_1 | numberFormat }}</span></td>
+              <td><span class="">{{ total_component_amount_week_2 | numberFormat }}</span></td>
+              <td><span class="">{{ total_component_amount_week_3 | numberFormat }}</span></td>
+              <td><span class="">{{ total_component_amount_week_4 | numberFormat }}</span></td>
+              <td><span class="">{{ total_component_amount_week_5 | numberFormat }}</span></td>
+              <td class="font-w700">
+                <span class="">Rp {{ total_component_amount | numberFormat }}</span>
+              </td>
             </tr>
 
             <tr slot="p-body">
@@ -563,22 +528,22 @@
                 {{ $t('total amount with allowance') | titlecase }}
               </td>
               <td class="font-w700">
-                <span class="">Rp {{ total_amount_week_1 | numberFormat }}</span>
+                <span class="">{{ total_amount_received_week_1 | numberFormat }}</span>
               </td>
               <td class="font-w700">
-                <span class="">Rp {{ total_amount_week_2 | numberFormat }}</span>
+                <span class="">{{ total_amount_received_week_2 | numberFormat }}</span>
               </td>
               <td class="font-w700">
-                <span class="">Rp {{ total_amount_week_3 | numberFormat }}</span>
+                <span class="">{{ total_amount_received_week_3 | numberFormat }}</span>
               </td>
               <td class="font-w700">
-                <span class="">Rp {{ total_amount_week_4 | numberFormat }}</span>
+                <span class="">{{ total_amount_received_week_4 | numberFormat }}</span>
               </td>
               <td class="font-w700">
-                <span class="">Rp {{ total_amount_week_5 | numberFormat }}</span>
+                <span class="">{{ total_amount_received_week_5 | numberFormat }}</span>
               </td>
               <td class="font-w700">
-                <span class="" />
+                <span class="">Rp {{ total_amount_received | numberFormat }}</span>
               </td>
             </tr>
 
@@ -653,28 +618,6 @@
               <td class="font-size-h6 font-w700">
                 {{ $t('total amount received') | titlecase }}
               </td>
-              <td class="font-w700">
-                <span class="">Rp {{ total_amount_received_week_1 | numberFormat }}</span>
-              </td>
-              <td class="font-w700">
-                <span class="">Rp {{ total_amount_received_week_2 | numberFormat }}</span>
-              </td>
-              <td class="font-w700">
-                <span class="">Rp {{ total_amount_received_week_3 | numberFormat }}</span>
-              </td>
-              <td class="font-w700">
-                <span class="">Rp {{ total_amount_received_week_4 | numberFormat }}</span>
-              </td>
-              <td class="font-w700">
-                <span class="">Rp {{ total_amount_received_week_5 | numberFormat }}</span>
-              </td>
-              <td class="font-w700">
-                <span class="" />
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td />
               <td class="font-size-h6 font-w700" />
               <td class="font-size-h6 font-w700" />
               <td class="font-size-h6 font-w700" />
@@ -683,62 +626,16 @@
               <td class="font-w700">
                 <span class="">Rp {{ total_amount_received | numberFormat }}</span>
               </td>
-              <td class="font-w700">
-                <span class="" />
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td />
-              <td class="font-size-h6 font-w700">
-                {{ $t('maximum amount receivable') | titlecase }}
-              </td>
-              <td class="font-size-h6 font-w700" />
-              <td class="font-size-h6 font-w700" />
-              <td class="font-size-h6 font-w700" />
-              <td class="font-size-h6 font-w700" />
-              <td>
-                <span class="">
-                  <p-form-number
-                    v-model="form.maximum_salary_amount"
-                    :disabled="isSaving"
-                    :is-text-right="false"
-                    :errors="form.errors.get('maximum-salary-amount')"
-                    @input="calculate"
-                    @errors="form.errors.set('maximum-salary-amount', null)"
-                  />
-                </span>
-              </td>
-              <td class="font-size-h6 font-w700">
-                {{ $t('if kpi 100%') | titlecase }}
-              </td>
-            </tr>
-
-            <tr slot="p-body">
-              <td />
-              <td class="font-size-h6 font-w700">
-                {{ $t('amount received difference') | titlecase }}
-              </td>
-              <td class="font-size-h6 font-w700" />
-              <td class="font-size-h6 font-w700" />
-              <td class="font-size-h6 font-w700" />
-              <td class="font-size-h6 font-w700" />
-              <td class="font-size-h6 font-w700">
-                Rp {{ amount_received_difference | numberFormat }}
-              </td>
-              <td class="font-w700">
-                <span class="" />
-              </td>
             </tr>
 
             <tr slot="p-body">
               <td />
               <td>{{ $t('company profit') | titlecase }}</td>
-              <td><span class="">Rp {{ company_profit_week_1 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ company_profit_week_2 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ company_profit_week_3 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ company_profit_week_4 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ company_profit_week_5 | numberFormat }}</span></td>
+              <td><span class="">{{ company_profit_week_1 | numberFormat }}</span></td>
+              <td><span class="">{{ company_profit_week_2 | numberFormat }}</span></td>
+              <td><span class="">{{ company_profit_week_3 | numberFormat }}</span></td>
+              <td><span class="">{{ company_profit_week_4 | numberFormat }}</span></td>
+              <td><span class="">{{ company_profit_week_5 | numberFormat }}</span></td>
               <td><span class="" /></td>
             </tr>
 
@@ -1070,41 +967,118 @@
                 </span>
               </td>
               <td class="font-w700">
-                <span class="">Rp {{ total_payment | numberFormat }}</span>
+                <span class="">{{ total_payment | numberFormat }}</span>
               </td>
             </tr>
 
             <tr slot="p-body">
               <td />
               <td>{{ $t('settlement difference minus amount') | titlecase }}</td>
-              <td><span class="">Rp {{ settlement_difference_minus_amount_week_1 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ settlement_difference_minus_amount_week_2 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ settlement_difference_minus_amount_week_3 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ settlement_difference_minus_amount_week_4 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ settlement_difference_minus_amount_week_5 | numberFormat }}</span></td>
-              <td><span class="font-w700">Rp {{ total_settlement_difference_minus_amount | numberFormat }}</span></td>
+              <td><span class="">{{ settlement_difference_minus_amount_week_1 | numberFormat }}</span></td>
+              <td><span class="">{{ settlement_difference_minus_amount_week_2 | numberFormat }}</span></td>
+              <td><span class="">{{ settlement_difference_minus_amount_week_3 | numberFormat }}</span></td>
+              <td><span class="">{{ settlement_difference_minus_amount_week_4 | numberFormat }}</span></td>
+              <td><span class="">{{ settlement_difference_minus_amount_week_5 | numberFormat }}</span></td>
+              <td><span class="font-w700">{{ total_settlement_difference_minus_amount | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
               <td />
               <td>{{ $t('company profit difference minus amount') | titlecase }}</td>
-              <td><span class="">Rp {{ company_profit_difference_minus_amount_week_1 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ company_profit_difference_minus_amount_week_2 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ company_profit_difference_minus_amount_week_3 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ company_profit_difference_minus_amount_week_4 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ company_profit_difference_minus_amount_week_5 | numberFormat }}</span></td>
-              <td><span class="font-w700">Rp {{ total_company_profit_difference_minus_amount | numberFormat }}</span></td>
+              <td><span class="">{{ company_profit_difference_minus_amount_week_1 | numberFormat }}</span></td>
+              <td><span class="">{{ company_profit_difference_minus_amount_week_2 | numberFormat }}</span></td>
+              <td><span class="">{{ company_profit_difference_minus_amount_week_3 | numberFormat }}</span></td>
+              <td><span class="">{{ company_profit_difference_minus_amount_week_4 | numberFormat }}</span></td>
+              <td><span class="">{{ company_profit_difference_minus_amount_week_5 | numberFormat }}</span></td>
+              <td><span class="font-w700">{{ total_company_profit_difference_minus_amount | numberFormat }}</span></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td />
+              <td>{{ $t('communication allowance') | titlecase }}</td>
+              <td><span class="">{{ form.communication_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.communication_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.communication_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.communication_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.communication_allowance | numberFormat }}</span></td>
+              <td><span class="" /></td>
+            </tr>
+
+            <tr slot="p-body">
+              <td />
+              <td>{{ $t('functional allowance') | titlecase }}</td>
+              <td><span class="">{{ form.functional_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.functional_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.functional_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.functional_allowance | numberFormat }}</span></td>
+              <td><span class="">{{ form.functional_allowance | numberFormat }}</span></td>
+              <td><span class="" /></td>
             </tr>
 
             <tr slot="p-body">
               <td />
               <td>{{ $t('weekly sales') | titlecase }}</td>
-              <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week1 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week2 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week3 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week4 | numberFormat }}</span></td>
-              <td><span class="">Rp {{ form.salary_achievement.weekly_sales.week5 | numberFormat }}</span></td>
-              <td><span class="font-w700">Rp {{ total_weekly_sales | numberFormat }}</span></td>
+              <td>
+                <span class="">
+                  <p-form-number
+                    v-model="form.weekly_sales_week_1"
+                    :disabled="isSaving"
+                    :is-text-right="false"
+                    :errors="form.errors.get('weekly-sales-week-1')"
+                    @input="calculate"
+                    @errors="form.errors.set('weekly-sales-week-1', null)"
+                  />
+                </span>
+              </td>
+              <td>
+                <span class="">
+                  <p-form-number
+                    v-model="form.weekly_sales_week_2"
+                    :disabled="isSaving"
+                    :is-text-right="false"
+                    :errors="form.errors.get('weekly-sales-week-2')"
+                    @input="calculate"
+                    @errors="form.errors.set('weekly-sales-week-2', null)"
+                  />
+                </span>
+              </td>
+              <td>
+                <span class="">
+                  <p-form-number
+                    v-model="form.weekly_sales_week_3"
+                    :disabled="isSaving"
+                    :is-text-right="false"
+                    :errors="form.errors.get('weekly-sales-week-3')"
+                    @input="calculate"
+                    @errors="form.errors.set('weekly-sales-week-3', null)"
+                  />
+                </span>
+              </td>
+              <td>
+                <span class="">
+                  <p-form-number
+                    v-model="form.weekly_sales_week_4"
+                    :disabled="isSaving"
+                    :is-text-right="false"
+                    :errors="form.errors.get('weekly-sales-week-4')"
+                    @input="calculate"
+                    @errors="form.errors.set('weekly-sales-week-4', null)"
+                  />
+                </span>
+              </td>
+              <td>
+                <span class="">
+                  <p-form-number
+                    v-model="form.weekly_sales_week_5"
+                    :disabled="isSaving"
+                    :is-text-right="false"
+                    :errors="form.errors.get('weekly-sales-week-5')"
+                    @input="calculate"
+                    @errors="form.errors.set('weekly-sales-week-5', null)"
+                  />
+                </span>
+              </td>
+              <td><span class="font-w700">{{ total_weekly_sales | numberFormat }}</span></td>
             </tr>
 
             <tr slot="p-body">
@@ -1203,7 +1177,8 @@
 
 <script>
 import Form from '@/utils/Form'
-import TabMenu from '../TabMenu'
+import TabMenu from '@/views/human-resource/TabMenu'
+
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import EmployeeWidget from '../EmployeeWidget'
@@ -1227,8 +1202,8 @@ export default {
       id: this.$route.params.id,
       form: new Form({
         date: {
-          start: this.$moment(),
-          end: this.$moment()
+          start: this.$moment().format('YYYY-MM-DD 00:00:00'),
+          end: this.$moment().format('YYYY-MM-DD 23:59:59')
         },
         job_location: '',
         base_salary: 0,
@@ -1241,16 +1216,7 @@ export default {
           total: {}
         },
         salary_achievement: {
-          automated: {
-            balance: {},
-            achievement_national_call: {},
-            achievement_national_effective_call: {},
-            achievement_national_value: {},
-            achievement_area_call: {},
-            achievement_area_effective_call: {},
-            achievement_area_value: {}
-          },
-          cash_payment: {},
+          automated: {},
           weekly_sales: {},
           total: {}
         },
@@ -1295,20 +1261,31 @@ export default {
         wa_daily_report_week_3: 0,
         wa_daily_report_week_4: 0,
         wa_daily_report_week_5: 0,
+        weekly_sales_week_1: 0,
+        weekly_sales_week_2: 0,
+        weekly_sales_week_3: 0,
+        weekly_sales_week_4: 0,
+        weekly_sales_week_5: 0,
         maximum_salary_amount: 0
       }),
       title: 'Salary',
+      active_days_percentage_week_1: 0,
+      active_days_percentage_week_2: 0,
+      active_days_percentage_week_3: 0,
+      active_days_percentage_week_4: 0,
+      active_days_percentage_week_5: 0,
       base_salary_week_1: 0,
       base_salary_week_2: 0,
       base_salary_week_3: 0,
       base_salary_week_4: 0,
-      base_salary_eek_5: 0,
+      base_salary_week_5: 0,
       salary_final_score: {},
       real_transport_allowance_week_1: 0,
       real_transport_allowance_week_2: 0,
       real_transport_allowance_week_3: 0,
       real_transport_allowance_week_4: 0,
       real_transport_allowance_week_5: 0,
+      real_transport_allowance_total: 0,
       minimum_component_amount_week_1: 0,
       minimum_component_amount_week_2: 0,
       minimum_component_amount_week_3: 0,
@@ -1334,6 +1311,7 @@ export default {
       total_component_amount_week_3: 0,
       total_component_amount_week_4: 0,
       total_component_amount_week_5: 0,
+      total_component_amount: 0,
       total_amount_week_1: 0,
       total_amount_week_2: 0,
       total_amount_week_3: 0,
@@ -1345,6 +1323,11 @@ export default {
       total_amount_received_week_4: 0,
       total_amount_received_week_5: 0,
       total_amount_received: 0,
+      receivable_week_1: 0,
+      receivable_week_2: 0,
+      receivable_week_3: 0,
+      receivable_week_4: 0,
+      receivable_week_5: 0,
       company_profit_week_1: 0,
       company_profit_week_2: 0,
       company_profit_week_3: 0,
@@ -1362,7 +1345,6 @@ export default {
       company_profit_difference_minus_amount_week_5: 0,
       isLoading: true,
       isSaving: false,
-      previousSalaryAchievement: {},
       average_minimum_component_score: 0,
       average_additional_component_score: 0,
       average_final_score: 0,
@@ -1466,8 +1448,8 @@ export default {
       this.getSalaryAssessment({
         employeeId: this.id,
         params: {
-          startDate: this.serverDateTime(this.$moment(this.form.date.start)),
-          endDate: this.serverDateTime(this.$moment(this.form.date.end))
+          startDate: this.serverDateTime(this.form.date.start, 'start'),
+          endDate: this.serverDateTime(this.form.date.end, 'end')
         }
       }).then(
         (response) => {
@@ -1485,22 +1467,13 @@ export default {
       this.getSalaryAchievement({
         employeeId: this.id,
         params: {
-          startDate: this.$moment(this.form.date.start).format('YYYY-MM-DD 00:00:00'),
-          endDate: this.$moment(this.form.date.end).format('YYYY-MM-DD 23:59:59')
+          startDate: this.serverDateTime(this.form.date.start, 'start'),
+          endDate: this.serverDateTime(this.form.date.end, 'end')
         }
       }).then(
         (response) => {
           this.$set(this.form, 'salary_achievement', this.salaryAchievement)
-
-          if (Object.keys(this.previousSalaryAchievement).length !== 0) {
-            for (const key in this.form.salary_achievement.automated) {
-              this.form.salary_achievement.automated[key].weight = this.previousSalaryAchievement[key].weight || 0
-            }
-
-            this.salaryAchievementWeight()
-          }
-
-          this.$set(this, 'previousSalaryAchievement', this.salaryAchievement.automated)
+          this.salaryAchievementWeight()
           this.calculate()
           this.isLoading = false
         },
@@ -1555,6 +1528,12 @@ export default {
         this.calculate()
       }
     },
+    getWeekOfMonth (date) {
+      const dateObject = new Date(date)
+      const adjustedDate = dateObject.getDate() + dateObject.getDay()
+      const prefixes = ['0', '1', '2', '3', '4', '5']
+      return (parseInt(prefixes[0 | adjustedDate / 7]) + 1)
+    },
     calculate () {
       this.salary_final_score.week1 = ((this.form.salary_assessment.total.week1 || 0) + (this.form.salary_achievement.total.week1 || 0)) / 2
       this.salary_final_score.week2 = ((this.form.salary_assessment.total.week2 || 0) + (this.form.salary_achievement.total.week2 || 0)) / 2
@@ -1565,26 +1544,41 @@ export default {
       this.form.active_days_in_month = this.form.active_days_in_month || 0
 
       if (Number(this.form.active_days_in_month) != 0) {
-        const baseSalaryPerWeek = (this.form.base_salary || 0) / Number(this.form.active_days_in_month || 0)
+        const baseSalaryPerWeek = (this.form.active_days_in_month || 0) != 0 ? (this.form.base_salary || 0) / Number(this.form.active_days_in_month || 0) : 0
+        const baseMultiplierKpiPerWeek = (this.form.active_days_in_month || 0) != 0 ? (this.form.multiplier_kpi || 0) / Number(this.form.active_days_in_month || 0) : 0
 
         if (this.form.salary_assessment.indicators.length != 0) {
-          this.base_salary_week_1 = baseSalaryPerWeek * Number(this.form.active_days_week_1 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week1 || 0)) / 100)
-          this.base_salary_week_2 = baseSalaryPerWeek * Number(this.form.active_days_week_2 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week2 || 0)) / 100)
-          this.base_salary_week_3 = baseSalaryPerWeek * Number(this.form.active_days_week_3 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week3 || 0)) / 100)
-          this.base_salary_week_4 = baseSalaryPerWeek * Number(this.form.active_days_week_4 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week4 || 0)) / 100)
-          this.base_salary_week_5 = baseSalaryPerWeek * Number(this.form.active_days_week_5 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week5 || 0)) / 100)
+          const percentageCallWeek1 = (Number(this.form.salary_assessment.indicators[0].score_percentage.week1 || 0)) / 100
+          const percentageCallWeek2 = (Number(this.form.salary_assessment.indicators[0].score_percentage.week2 || 0)) / 100
+          const percentageCallWeek3 = (Number(this.form.salary_assessment.indicators[0].score_percentage.week3 || 0)) / 100
+          const percentageCallWeek4 = (Number(this.form.salary_assessment.indicators[0].score_percentage.week4 || 0)) / 100
+          const percentageCallWeek5 = (Number(this.form.salary_assessment.indicators[0].score_percentage.week5 || 0)) / 100
 
-          this.real_transport_allowance_week_1 = this.form.daily_transport_allowance * Number(this.form.active_days_week_1 || 0) * (Number(this.form.salary_assessment.indicators[0].score_percentage.week1 || 0) / 100)
-          this.real_transport_allowance_week_2 = this.form.daily_transport_allowance * Number(this.form.active_days_week_2 || 0) * (Number(this.form.salary_assessment.indicators[0].score_percentage.week2 || 0) / 100)
-          this.real_transport_allowance_week_3 = this.form.daily_transport_allowance * Number(this.form.active_days_week_3 || 0) * (Number(this.form.salary_assessment.indicators[0].score_percentage.week3 || 0) / 100)
-          this.real_transport_allowance_week_4 = this.form.daily_transport_allowance * Number(this.form.active_days_week_4 || 0) * (Number(this.form.salary_assessment.indicators[0].score_percentage.week4 || 0) / 100)
-          this.real_transport_allowance_week_5 = this.form.daily_transport_allowance * Number(this.form.active_days_week_5 || 0) * (Number(this.form.salary_assessment.indicators[0].score_percentage.week5 || 0) / 100)
+          this.active_days_percentage_week_1 = percentageCallWeek1 * Number(this.form.active_days_week_1 || 0)
+          this.active_days_percentage_week_2 = percentageCallWeek2 * Number(this.form.active_days_week_2 || 0)
+          this.active_days_percentage_week_3 = percentageCallWeek3 * Number(this.form.active_days_week_3 || 0)
+          this.active_days_percentage_week_4 = percentageCallWeek4 * Number(this.form.active_days_week_4 || 0)
+          this.active_days_percentage_week_5 = percentageCallWeek5 * Number(this.form.active_days_week_5 || 0)
 
-          this.multiplier_kpi_week_1 = (Number(this.form.multiplier_kpi || 0) * Number(this.form.active_days_week_1 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week1 || 0)) / 100) / Number(this.form.active_days_in_month || 0)) || 0
-          this.multiplier_kpi_week_2 = (Number(this.form.multiplier_kpi || 0) * Number(this.form.active_days_week_2 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week2 || 0)) / 100) / Number(this.form.active_days_in_month || 0)) || 0
-          this.multiplier_kpi_week_3 = (Number(this.form.multiplier_kpi || 0) * Number(this.form.active_days_week_3 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week3 || 0)) / 100) / Number(this.form.active_days_in_month || 0)) || 0
-          this.multiplier_kpi_week_4 = (Number(this.form.multiplier_kpi || 0) * Number(this.form.active_days_week_4 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week4 || 0)) / 100) / Number(this.form.active_days_in_month || 0)) || 0
-          this.multiplier_kpi_week_5 = (Number(this.form.multiplier_kpi || 0) * Number(this.form.active_days_week_5 || 0) * ((Number(this.form.salary_assessment.indicators[0].score_percentage.week5 || 0)) / 100) / Number(this.form.active_days_in_month || 0)) || 0
+          this.base_salary_week_1 = baseSalaryPerWeek * this.active_days_percentage_week_1
+          this.base_salary_week_2 = baseSalaryPerWeek * this.active_days_percentage_week_2
+          this.base_salary_week_3 = baseSalaryPerWeek * this.active_days_percentage_week_3
+          this.base_salary_week_4 = baseSalaryPerWeek * this.active_days_percentage_week_4
+          this.base_salary_week_5 = baseSalaryPerWeek * this.active_days_percentage_week_5
+
+          this.real_transport_allowance_week_1 = this.form.daily_transport_allowance * this.active_days_percentage_week_1
+          this.real_transport_allowance_week_2 = this.form.daily_transport_allowance * this.active_days_percentage_week_2
+          this.real_transport_allowance_week_3 = this.form.daily_transport_allowance * this.active_days_percentage_week_3
+          this.real_transport_allowance_week_4 = this.form.daily_transport_allowance * this.active_days_percentage_week_4
+          this.real_transport_allowance_week_5 = this.form.daily_transport_allowance * this.active_days_percentage_week_5
+
+          this.real_transport_allowance_total = this.real_transport_allowance_week_1 + this.real_transport_allowance_week_2 + this.real_transport_allowance_week_3 + this.real_transport_allowance_week_4 + this.real_transport_allowance_week_5
+
+          this.multiplier_kpi_week_1 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_1
+          this.multiplier_kpi_week_2 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_2
+          this.multiplier_kpi_week_3 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_3
+          this.multiplier_kpi_week_4 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_4
+          this.multiplier_kpi_week_5 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_5
         }
       }
 
@@ -1612,37 +1606,49 @@ export default {
       this.total_component_amount_week_4 = Number(this.minimum_component_amount_week_4 || 0) + Number(this.additional_component_amount_week_4 || 0)
       this.total_component_amount_week_5 = Number(this.minimum_component_amount_week_5 || 0) + Number(this.additional_component_amount_week_5 || 0)
 
+      this.total_component_amount = Number(this.total_component_amount_week_1 || 0) + Number(this.total_component_amount_week_2 || 0) + Number(this.total_component_amount_week_3 || 0) + Number(this.total_component_amount_week_4 || 0) + Number(this.total_component_amount_week_5 || 0)
+
       this.total_amount_week_1 = Number(this.total_component_amount_week_1 || 0) + Number(this.real_transport_allowance_week_1 || 0)
       this.total_amount_week_2 = Number(this.total_component_amount_week_2 || 0) + Number(this.real_transport_allowance_week_2 || 0)
       this.total_amount_week_3 = Number(this.total_component_amount_week_3 || 0) + Number(this.real_transport_allowance_week_3 || 0)
       this.total_amount_week_4 = Number(this.total_component_amount_week_4 || 0) + Number(this.real_transport_allowance_week_4 || 0)
       this.total_amount_week_5 = Number(this.total_component_amount_week_5 || 0) + Number(this.real_transport_allowance_week_5 || 0)
 
-      this.total_amount_received_week_1 = Number(this.total_amount_week_1 || 0) + Number(this.form.communication_allowance || 0) + Number(this.form.functional_allowance || 0)
+      this.total_amount_received_week_1 = Number(this.total_amount_week_1 || 0)
       this.total_amount_received_week_2 = Number(this.total_amount_week_2 || 0)
       this.total_amount_received_week_3 = Number(this.total_amount_week_3 || 0)
       this.total_amount_received_week_4 = Number(this.total_amount_week_4 || 0)
       this.total_amount_received_week_5 = Number(this.total_amount_week_5 || 0)
 
+      if (this.getWeekOfMonth(this.form.date.start) === 1) {
+        this.total_amount_received_week_1 = this.total_amount_received_week_1 + Number(this.form.communication_allowance || 0) + Number(this.form.functional_allowance || 0)
+      }
+
       this.total_amount_received = Number(this.total_amount_received_week_1 || 0) + Number(this.total_amount_received_week_2 || 0) + Number(this.total_amount_received_week_3 || 0) + Number(this.total_amount_received_week_4 || 0) + Number(this.total_amount_received_week_5 || 0)
 
-      this.company_profit_week_1 = 0.05 * (Number(this.form.payment_from_marketing_week_1 || 0) + Number(this.form.payment_from_sales_week_1 || 0) + Number(this.form.payment_from_spg_week_1 || 0) + Number(this.form.cash_payment_week_1 || 0))
-      this.company_profit_week_2 = 0.05 * (Number(this.form.payment_from_marketing_week_2 || 0) + Number(this.form.payment_from_sales_week_2 || 0) + Number(this.form.payment_from_spg_week_2 || 0) + Number(this.form.cash_payment_week_2 || 0))
-      this.company_profit_week_3 = 0.05 * (Number(this.form.payment_from_marketing_week_3 || 0) + Number(this.form.payment_from_sales_week_3 || 0) + Number(this.form.payment_from_spg_week_3 || 0) + Number(this.form.cash_payment_week_3 || 0))
-      this.company_profit_week_4 = 0.05 * (Number(this.form.payment_from_marketing_week_4 || 0) + Number(this.form.payment_from_sales_week_4 || 0) + Number(this.form.payment_from_spg_week_4 || 0) + Number(this.form.cash_payment_week_4 || 0))
-      this.company_profit_week_5 = 0.05 * (Number(this.form.payment_from_marketing_week_5 || 0) + Number(this.form.payment_from_sales_week_5 || 0) + Number(this.form.payment_from_spg_week_5 || 0) + Number(this.form.cash_payment_week_5 || 0))
+      this.receivable_week_1 = Number(this.form.payment_from_marketing_week_1 || 0) + Number(this.form.payment_from_sales_week_1 || 0) + Number(this.form.payment_from_spg_week_1 || 0) + Number(this.form.cash_payment_week_1 || 0)
+      this.receivable_week_2 = Number(this.form.payment_from_marketing_week_2 || 0) + Number(this.form.payment_from_sales_week_2 || 0) + Number(this.form.payment_from_spg_week_2 || 0) + Number(this.form.cash_payment_week_2 || 0)
+      this.receivable_week_3 = Number(this.form.payment_from_marketing_week_3 || 0) + Number(this.form.payment_from_sales_week_3 || 0) + Number(this.form.payment_from_spg_week_3 || 0) + Number(this.form.cash_payment_week_3 || 0)
+      this.receivable_week_4 = Number(this.form.payment_from_marketing_week_4 || 0) + Number(this.form.payment_from_sales_week_4 || 0) + Number(this.form.payment_from_spg_week_4 || 0) + Number(this.form.cash_payment_week_4 || 0)
+      this.receivable_week_5 = Number(this.form.payment_from_marketing_week_5 || 0) + Number(this.form.payment_from_sales_week_5 || 0) + Number(this.form.payment_from_spg_week_5 || 0) + Number(this.form.cash_payment_week_5 || 0)
 
-      this.settlement_difference_minus_amount_week_1 = Number(this.form.payment_from_marketing_week_1 || 0) + Number(this.form.payment_from_sales_week_1 || 0) + Number(this.form.payment_from_spg_week_1 || 0) + Number(this.form.cash_payment_week_1 || 0) - Number(this.total_amount_received_week_1 || 0)
-      this.settlement_difference_minus_amount_week_2 = Number(this.form.payment_from_marketing_week_2 || 0) + Number(this.form.payment_from_sales_week_2 || 0) + Number(this.form.payment_from_spg_week_2 || 0) + Number(this.form.cash_payment_week_2 || 0) - Number(this.total_amount_received_week_2 || 0)
-      this.settlement_difference_minus_amount_week_3 = Number(this.form.payment_from_marketing_week_3 || 0) + Number(this.form.payment_from_sales_week_3 || 0) + Number(this.form.payment_from_spg_week_3 || 0) + Number(this.form.cash_payment_week_3 || 0) - Number(this.total_amount_received_week_3 || 0)
-      this.settlement_difference_minus_amount_week_4 = Number(this.form.payment_from_marketing_week_4 || 0) + Number(this.form.payment_from_sales_week_4 || 0) + Number(this.form.payment_from_spg_week_4 || 0) + Number(this.form.cash_payment_week_4 || 0) - Number(this.total_amount_received_week_4 || 0)
-      this.settlement_difference_minus_amount_week_5 = Number(this.form.payment_from_marketing_week_5 || 0) + Number(this.form.payment_from_sales_week_5 || 0) + Number(this.form.payment_from_spg_week_5 || 0) + Number(this.form.cash_payment_week_5 || 0) - Number(this.total_amount_received_week_5 || 0)
+      this.company_profit_week_1 = 0.05 * this.receivable_week_1
+      this.company_profit_week_2 = 0.05 * this.receivable_week_2
+      this.company_profit_week_3 = 0.05 * this.receivable_week_3
+      this.company_profit_week_4 = 0.05 * this.receivable_week_4
+      this.company_profit_week_5 = 0.05 * this.receivable_week_5
 
-      this.company_profit_difference_minus_amount_week_1 = Number(this.company_profit_week_1 || 0) - Number(this.total_amount_week_1 || 0)
-      this.company_profit_difference_minus_amount_week_2 = Number(this.company_profit_week_2 || 0) - Number(this.total_amount_week_2 || 0)
-      this.company_profit_difference_minus_amount_week_3 = Number(this.company_profit_week_3 || 0) - Number(this.total_amount_week_3 || 0)
-      this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4 || 0) - Number(this.total_amount_week_4 || 0)
-      this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5 || 0) - Number(this.total_amount_week_5 || 0)
+      this.settlement_difference_minus_amount_week_1 = this.receivable_week_1 - Number(this.total_amount_received_week_1 || 0)
+      this.settlement_difference_minus_amount_week_2 = this.receivable_week_2 - Number(this.total_amount_received_week_2 || 0)
+      this.settlement_difference_minus_amount_week_3 = this.receivable_week_3 - Number(this.total_amount_received_week_3 || 0)
+      this.settlement_difference_minus_amount_week_4 = this.receivable_week_4 - Number(this.total_amount_received_week_4 || 0)
+      this.settlement_difference_minus_amount_week_5 = this.receivable_week_5 - Number(this.total_amount_received_week_5 || 0)
+
+      this.company_profit_difference_minus_amount_week_1 = Number(this.company_profit_week_1 || 0) - Number(this.total_amount_received_week_1 || 0)
+      this.company_profit_difference_minus_amount_week_2 = Number(this.company_profit_week_2 || 0) - Number(this.total_amount_received_week_2 || 0)
+      this.company_profit_difference_minus_amount_week_3 = Number(this.company_profit_week_3 || 0) - Number(this.total_amount_received_week_3 || 0)
+      this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4 || 0) - Number(this.total_amount_received_week_4 || 0)
+      this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5 || 0) - Number(this.total_amount_received_week_5 || 0)
 
       var dayAverageDivisor = 0
       var totalMinimumComponentScore = 0
@@ -1684,13 +1690,13 @@ export default {
       this.average_additional_component_score = dayAverageDivisor != 0 ? totalAdditionalComponentScore / dayAverageDivisor : 0
       this.average_final_score = dayAverageDivisor != 0 ? totalFinalScore / dayAverageDivisor : 0
 
-      this.total_payment = Number(this.form.payment_from_marketing_week_1 || 0) + Number(this.form.payment_from_sales_week_1 || 0) + Number(this.form.payment_from_spg_week_1 || 0) + Number(this.form.cash_payment_week_1 || 0) + Number(this.form.payment_from_marketing_week_2 || 0) + Number(this.form.payment_from_sales_week_2 || 0) + Number(this.form.payment_from_spg_week_2 || 0) + Number(this.form.cash_payment_week_2 || 0) + Number(this.form.payment_from_marketing_week_3 || 0) + Number(this.form.payment_from_sales_week_3 || 0) + Number(this.form.payment_from_spg_week_3 || 0) + Number(this.form.cash_payment_week_3 || 0) + Number(this.form.payment_from_marketing_week_4 || 0) + Number(this.form.payment_from_sales_week_4 || 0) + Number(this.form.payment_from_spg_week_4 || 0) + Number(this.form.cash_payment_week_4 || 0) + Number(this.form.payment_from_marketing_week_5 || 0) + Number(this.form.payment_from_sales_week_5 || 0) + Number(this.form.payment_from_spg_week_5 || 0) + Number(this.form.cash_payment_week_5 || 0)
+      this.total_payment = this.receivable_week_1 + this.receivable_week_2 + this.receivable_week_3 + this.receivable_week_4 + this.receivable_week_5
 
       this.total_settlement_difference_minus_amount = this.settlement_difference_minus_amount_week_1 + this.settlement_difference_minus_amount_week_2 + this.settlement_difference_minus_amount_week_3 + this.settlement_difference_minus_amount_week_4 + this.settlement_difference_minus_amount_week_5
 
       this.total_company_profit_difference_minus_amount = this.company_profit_difference_minus_amount_week_1 + this.company_profit_difference_minus_amount_week_2 + this.company_profit_difference_minus_amount_week_3 + this.company_profit_difference_minus_amount_week_4 + this.company_profit_difference_minus_amount_week_5
 
-      this.total_weekly_sales = this.form.salary_achievement.weekly_sales.week1 + this.form.salary_achievement.weekly_sales.week2 + this.form.salary_achievement.weekly_sales.week3 + this.form.salary_achievement.weekly_sales.week4 + this.form.salary_achievement.weekly_sales.week5
+      this.total_weekly_sales = Number(this.form.weekly_sales_week_1 || 0) + Number(this.form.weekly_sales_week_2 || 0) + Number(this.form.weekly_sales_week_3 || 0) + Number(this.form.weekly_sales_week_4 || 0) + Number(this.form.weekly_sales_week_5 || 0)
 
       this.amount_received_difference = this.form.maximum_salary_amount - this.total_amount_received
     }
