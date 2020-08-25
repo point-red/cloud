@@ -82,7 +82,7 @@
                 </div>
                 <div>
                   <h6 class="mb-0">
-                    {{ $t('to') | uppercase }}:
+                    {{ $t('from') | uppercase }}:
                     <template v-if="form.customer_code">
                       [{{ form.customer_code | uppercase }}]
                     </template>

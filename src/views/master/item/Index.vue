@@ -60,7 +60,7 @@
               </td>
               <td>
                 <template v-if="item.account">
-                  {{ item.account.number }} - {{ item.account.name }}
+                  {{ item.account.number }} - {{ item.account.alias }}
                 </template>
               </td>
               <td>

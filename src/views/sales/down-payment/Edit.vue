@@ -80,7 +80,7 @@
                 </div>
                 <div>
                   <h6 class="mb-0">
-                    {{ $t('to') | uppercase }}: {{ form.customer_label | uppercase }}
+                    {{ $t('from') | uppercase }}: {{ form.customer_label | uppercase }}
                   </h6>
                   <div v-if="form.customer_address">
                     <i class="fa fa-home fa-fw" /> {{ form.customer_address | uppercase }}

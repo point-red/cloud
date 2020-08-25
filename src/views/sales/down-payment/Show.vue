@@ -110,7 +110,7 @@
                 {{ downPayment.form.branch.phone | uppercase }} <br v-if="downPayment.form.branch.phone">
               </template>
               <h6 class="mt-30 mb-0">
-                {{ $t('to') | uppercase }}: {{ downPayment.customer_name | uppercase }}
+                {{ $t('from') | uppercase }}: {{ downPayment.customer_name | uppercase }}
               </h6>
               <div v-if="downPayment.customer_address">
                 <i class="fa fa-home fa-fw" /> {{ downPayment.customer_address | uppercase }}
