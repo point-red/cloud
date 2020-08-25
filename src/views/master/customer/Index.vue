@@ -397,6 +397,7 @@ export default {
           join: 'address,phone,email',
           sort_by: 'customer.name',
           filter_like: {
+            'customer.code': this.searchText,
             'customer.name': this.searchText,
             'customer.address': this.searchText,
             'customer.email': this.searchText,

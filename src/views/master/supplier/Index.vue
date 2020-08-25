@@ -126,6 +126,7 @@ export default {
           fields: 'supplier.*',
           sort_by: 'name',
           filter_like: {
+            'supplier.code': this.searchText,
             'supplier.name': this.searchText,
             'supplier.address': this.searchText,
             'supplier.phone': this.searchText,
