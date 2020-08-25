@@ -138,9 +138,10 @@ export default {
       this.get({
         params: {
           sort_by: 'name',
-          limit: 10,
+          limit: 50,
           includes: 'addresses;phones;emails',
           filter_like: {
+            code: this.searchText,
             name: this.searchText
           }
         }
