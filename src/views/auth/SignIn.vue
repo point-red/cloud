@@ -156,12 +156,12 @@ export default {
             console.log(error)
           }).then(() => {
             this.isLoading = false
-            this.$store.dispatch('accountRewardPoint/get')
+            this.$store.dispatch('reloadVuex')
             this.$router.replace(this.redirectTo)
           })
         } else {
           this.isLoading = false
-          this.$store.dispatch('accountRewardPoint/get')
+          this.$store.dispatch('reloadVuex')
           this.$router.replace(this.redirectTo)
         }
       }).catch(error => {
