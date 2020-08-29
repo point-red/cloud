@@ -287,7 +287,6 @@
             :key="'row-' + index"
           >
             <td>
-              {{ row }}
               <span
                 class="select-link"
                 @click="$refs.item.open(index)"
@@ -791,7 +790,7 @@ export default {
           this.isSaving = false
           this.$notification.success('Create success')
           this.$store.dispatch('accountRewardPoint/get')
-          // this.$router.push('/plugin/pin-point/sales-visitation-form')
+          this.$router.push('/plugin/pin-point/sales-visitation-form')
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)
