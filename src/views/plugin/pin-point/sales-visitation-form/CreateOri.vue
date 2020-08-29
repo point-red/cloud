@@ -287,7 +287,6 @@
             :key="'row-' + index"
           >
             <td>
-              {{ row }}
               <span
                 class="select-link"
                 @click="$refs.item.open(index)"
@@ -300,6 +299,7 @@
                 :id="'quantity' + index"
                 v-model="row.quantity"
                 :name="'quantity' + index"
+                :disabled="row.item_id == null"
                 :item-id="row.item_id"
                 :units="row.units"
                 :unit="{
@@ -307,10 +307,8 @@
                   label: row.unit,
                   converter: row.converter
                 }"
-                :max="row.quantity_pending * 1"
-                :readonly="onClickUnit(row)"
+                @keyup.native="calculate"
                 @choosen="chooseUnit($event, row)"
-                @click.native="onClickQuantity(row, index)"
               />
             </td>
             <td>
@@ -454,17 +452,6 @@
         </div>
       </p-block>
     </form>
-    <m-inventory-out
-      :id="'inventory'"
-      ref="inventory"
-      :disable-unit-selection="true"
-      @updated="updateDna($event)"
-    />
-    <m-warehouse
-      id="warehouse_id"
-      ref="warehouse"
-      @choosen="chooseWarehouse($event)"
-    />
     <m-customer
       ref="customer"
       @choosen="chooseCustomer"
@@ -502,7 +489,7 @@ import Form from '@/utils/Form'
 import MMInterestReason from './MMInterestReason'
 import MMNoInterestReason from './MMNoInterestReason'
 import MMSimilarProduct from './MMSimilarProduct'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   components: {
@@ -519,14 +506,10 @@ export default {
       isLoading: false,
       loadingMessage: 'Loading...',
       isSaving: false,
-      warehouseId: null,
-      warehouseName: null,
       form: new Form({
         date: this.serverDateTime(),
         image: null,
         customer_id: null,
-        branch_id: null,
-        warehouse_id: null,
         customer_name: this.$route.query.name || '',
         address: this.$route.query.address || '',
         district: this.$route.query.district || '',
@@ -546,6 +529,28 @@ export default {
         due_date: null,
         received_payment: 0
       }),
+      groupList: [
+        { id: 'Hotel', label: 'Hotel' },
+        { id: 'Resto', label: 'Resto' },
+        { id: 'Cafe', label: 'Cafe' },
+        { id: 'Toko', label: 'Toko' },
+        { id: 'Warung', label: 'Warung' },
+        { id: 'Agen', label: 'Agen' },
+        { id: 'Grosir', label: 'Grosir' },
+        { id: 'Mini Market', label: 'Mini Market' }
+      ],
+      itemList: [
+        { id: 'B001 REGULER BUBUK 250GR', label: 'B001 REGULER BUBUK 250GR' },
+        { id: 'B005 REGULER KOPI GULA 20GR', label: 'B005 REGULER KOPI GULA 20GR' },
+        { id: 'B008 REGULER CUP HOREKA 1KG', label: 'B008 REGULER CUP HOREKA 1KG' },
+        { id: 'B011 REGULER 3 IN 1 BULK 1KG', label: 'B011 REGULER 3 IN 1 BULK 1KG' },
+        { id: 'R001 PREMIUM PACK 70GR', label: 'R001 PREMIUM PACK 70GR' },
+        { id: 'R002 PREMIUM PACK 5GR', label: 'R002 PREMIUM PACK 5GR' },
+        { id: 'R003 PREMIUM CUP KOPI GULA', label: 'R003 PREMIUM CUP KOPI GULA' },
+        { id: 'R008 PREMIUM BIJI SEAL PACK 1KG', label: 'R008 PREMIUM BIJI SEAL PACK 1KG' },
+        { id: 'R012 PREMIUM PACK HOREKA 1KG', label: 'R012 PREMIUM PACK HOREKA 1KG' },
+        { id: 'Y007 NEW GEN BULK PACK 1KG', label: 'Y007 NEW GEN BULK PACK 1KG' }
+      ],
       // Google Map
       center: { lat: 23.8103, lng: 90.4125 },
       markers: [
@@ -558,9 +563,6 @@ export default {
       place: null
     }
   },
-  computed: {
-    ...mapGetters('auth', ['authUser'])
-  },
   mounted () {
     this.isLoading = false
     this.loadingMessage = 'Searching current location'
@@ -568,43 +570,9 @@ export default {
   },
   created () {
     this.addItemRow()
-    this.form.branch_id = this.authUser.branch.id
-    this.form.warehouse_id = this.authUser.warehouse.id
-    this.warehouseId = this.authUser.warehouse.id
-    this.warehouseName = this.authUser.warehouse.name
   },
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['create']),
-    chooseWarehouse (option) {
-      this.warehouseId = option.id
-      this.warehouseName = option.name
-      this.form.warehouse_id = option.id
-    },
-    onClickQuantity (row, index) {
-      if (row.require_expiry_date == 1 || row.require_production_number == 1) {
-        row.warehouse_id = this.warehouseId
-        row.index = index
-        this.$refs.inventory.open(row, row.quantity)
-      }
-    },
-    onClickUnit (row) {
-      console.log(row)
-      if (row.item || row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
-        return true
-      }
-      return false
-    },
-    chooseUnit (unit, row) {
-      row.unit = unit.label
-      row.converter = unit.converter
-    },
-    updateDna (e) {
-      console.log(e)
-      this.form.items[e.index].dna = e.dna
-      this.form.items[e.index].quantity = e.quantity
-      this.form.items[e.index].unit = e.unit
-      this.form.items[e.index].converter = e.converter
-    },
     onCaptured (value) {
       this.form.image = value
     },
@@ -700,15 +668,11 @@ export default {
         item_id: null,
         item_name: null,
         item_label: null,
-        chart_of_account_id: null,
-        chart_of_account_name: null,
-        require_expiry_date: null,
-        require_production_number: null,
         unit: null,
         converter: null,
         quantity: null,
+        price: null,
         allocation_id: null,
-        allocation_name: null,
         notes: null,
         more: false,
         units: [{
@@ -719,33 +683,29 @@ export default {
       })
     },
     chooseItem (item) {
-      if (item.id == null) {
-        this.clearItem(item.index)
-        return
-      }
-
       const row = this.form.items[item.index]
-      row.item = item
-      row.item_id = item.id
-      row.item_name = item.name
-      row.item_label = item.label
-      row.require_production_number = item.require_production_number
-      row.require_expiry_date = item.require_expiry_date
-      row.units = item.units
-      row.units.forEach((unit, keyUnit) => {
-        if (unit.id == item.unit_default_sales) {
-          row.unit = unit.label
-          row.converter = unit.converter
+      if (item.id == null) {
+        this.clearItem(row)
+      } else {
+        row.item_id = item.id
+        row.item_name = item.name
+        row.item_label = item.label
+        row.units = item.units
+        row.units.forEach((unit, keyUnit) => {
+          if (unit.id == item.unit_default_purchase) {
+            row.unit = unit.label
+            row.converter = unit.converter
+          }
+        })
+        let isNeedNewRow = true
+        this.form.items.forEach(element => {
+          if (element.item_id == null) {
+            isNeedNewRow = false
+          }
+        })
+        if (isNeedNewRow) {
+          this.addItemRow()
         }
-      })
-      let isNeedNewRow = true
-      this.form.items.forEach(element => {
-        if (element.item_id == null) {
-          isNeedNewRow = false
-        }
-      })
-      if (isNeedNewRow) {
-        this.addItemRow()
       }
       this.calculate()
     },
@@ -791,7 +751,7 @@ export default {
           this.isSaving = false
           this.$notification.success('Create success')
           this.$store.dispatch('accountRewardPoint/get')
-          // this.$router.push('/plugin/pin-point/sales-visitation-form')
+          this.$router.push('/plugin/pin-point/sales-visitation-form')
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)

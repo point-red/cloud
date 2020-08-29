@@ -129,7 +129,7 @@
                         converter: row.converter
                       }"
                       :max="row.quantity_pending * 1"
-                      :readonly="onClickUnit(row)"
+                      :readonly="false"
                       @choosen="chooseUnit($event, row)"
                       @click.native="onClickQuantity(row, index)"
                     />
@@ -408,12 +408,6 @@ export default {
         row.index = index
         this.$refs.inventory.open(row, row.quantity)
       }
-    },
-    onClickUnit (row) {
-      if (row.item || row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
-        return true
-      }
-      return false
     },
     chooseUnit (unit, row) {
       row.unit = unit.label
