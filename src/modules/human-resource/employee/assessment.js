@@ -114,9 +114,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       api.delete(url(payload.employeeId) + '/' + payload.id, payload)
         .then(response => {
-          context.dispatch('get', {
-            employeeId: response.data.employee.id
-          })
           resolve(response)
         }).catch(error => {
           reject(error)

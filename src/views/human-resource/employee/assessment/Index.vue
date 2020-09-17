@@ -313,6 +313,7 @@ export default {
       this.deleteEmployeeAssessment({ id: this.selectedAsessementId, employeeId: this.id })
         .then((response) => {
           this.isSaving = false
+          this.getEmployeeAssessmentRequest()
           this.$refs.delete.close()
         }, (error) => {
           this.isSaving = false

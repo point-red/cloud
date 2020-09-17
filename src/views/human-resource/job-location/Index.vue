@@ -108,7 +108,7 @@ export default {
     ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocations', 'pagination'])
   },
   created () {
-    this.getJobLocationsRequest()
+    this.getJobLocationRequest()
     this.$nextTick(() => {
       this.$refs.searchText.setFocus()
     })

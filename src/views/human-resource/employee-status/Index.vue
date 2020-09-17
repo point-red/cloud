@@ -98,7 +98,7 @@ export default {
     ...mapGetters('humanResourceEmployeeStatus', ['statuses', 'pagination'])
   },
   created () {
-    this.getStatusesRequest()
+    this.getStatusRequest()
     this.$nextTick(() => {
       this.$refs.searchText.setFocus()
     })
