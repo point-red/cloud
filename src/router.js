@@ -98,7 +98,8 @@ export default new Router({
             store.dispatch('reloadVuex')
               .then(response => {
                 if (window.location.host == process.env.VUE_APP_DOMAIN) {
-                  next('/account')
+                  // next('/account')
+                  next()
                 } else {
                   next()
                 }
@@ -111,7 +112,10 @@ export default new Router({
         } else {
           // redirect to account route if host is not tenant subdomain
           if (window.location.host == process.env.VUE_APP_DOMAIN) {
-            next('/account')
+            // next('/account')
+            // next sementara
+            // next('/account')
+            next()
           } else {
             next()
           }
