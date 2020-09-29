@@ -24,7 +24,7 @@
             v-model="form.code"
             name="code"
             :disabled="true"
-            :label="$t('company identifier')"
+            :label="$t('domain')"
             :errors="form.errors.get('code')"
             @errors="form.errors.set('code', null)"
           />
@@ -34,7 +34,7 @@
             v-model="form.name"
             name="name"
             :disabled="isSaving"
-            :label="$t('company name')"
+            :label="$t('project name')"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"
           />

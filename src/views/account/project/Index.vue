@@ -32,7 +32,7 @@
           <p-table>
             <tr slot="p-head">
               <th>Company Id</th>
-              <th>Company Name</th>
+              <th>project name</th>
               <th class="text-center">
                 Max User
               </th>

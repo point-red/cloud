@@ -36,7 +36,7 @@
             v-model="form.name"
             name="name"
             :disabled="isSaving"
-            :label="$t('company name')"
+            :label="$t('project name')"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"
           />

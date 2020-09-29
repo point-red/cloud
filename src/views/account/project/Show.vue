@@ -59,7 +59,7 @@
           v-model="project.code"
           name="code"
           :disabled="true"
-          :label="$t('company identifier')"
+          :label="$t('domain')"
           :help="'WEBSITE URL : ' + project.code + '.cloud.point.red'"
         />
 
@@ -68,7 +68,7 @@
           v-model="project.name"
           name="name"
           :disabled="true"
-          :label="$t('company name')"
+          :label="$t('project name')"
         />
 
         <p-form-row

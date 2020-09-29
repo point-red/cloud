@@ -6,7 +6,7 @@
         to="/human-resource/employee-group"
         class="breadcrumb-item"
       >
-        {{ $t('employee group') | uppercase }}
+        {{ $t('department') | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ group.name | uppercase }}</span>
     </breadcrumb>

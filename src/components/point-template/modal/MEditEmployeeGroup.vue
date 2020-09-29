@@ -2,7 +2,7 @@
   <form @submit.prevent="onSubmit">
     <sweet-modal
       ref="modal"
-      :title="$t('edit employee group') | uppercase"
+      :title="$t('edit department') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >

@@ -217,7 +217,7 @@
             <p-form-row
               id="group"
               name="group"
-              :label="$t('employee group')"
+              :label="$t('department')"
             >
               <div
                 slot="body"

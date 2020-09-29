@@ -109,7 +109,7 @@
               </th>
               <th>{{ $t('name') }}</th>
               <th>{{ $t('job title') }}</th>
-              <th>{{ $t('employee group') }}</th>
+              <th>{{ $t('department') }}</th>
             </tr>
             <template v-for="(employee, index) in employees">
               <tr

@@ -147,7 +147,7 @@
               <p-table v-if="$permission.has('read employee')">
                 <template slot="p-body">
                   <tr>
-                    <td><span class="font-w700">{{ $t('employee group') | titlecase }}</span></td>
+                    <td><span class="font-w700">{{ $t('department') | titlecase }}</span></td>
                     <td><span v-if="employee.group">{{ employee.group.name }}</span></td>
                   </tr>
                   <tr>
