@@ -129,7 +129,7 @@
               slot="p-body"
               :key="template.id"
             >
-              <th>{{ ++index }}</th>
+              <th>{{ ( page - 1 ) * limit + index + 1 }}</th>
               <td>
                 <p-form-check-box
                   id="subscibe"
