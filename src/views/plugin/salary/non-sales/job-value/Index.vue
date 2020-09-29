@@ -70,6 +70,7 @@
                     <button
                       type="button"
                       class="btn border-black btn-default btn-sm"
+                      @click="$refs.addFactorCriteria.open(factor.criterias, factor.id)"
                     >
                       Level
                     </button>
@@ -94,7 +95,10 @@
     />
     <m-add-group-factor
       ref="addGroupFactor"
-      :data="groupList"
+      @added="onAdded"
+    />
+    <m-add-factor-criteria
+      ref="addFactorCriteria"
       @added="onAdded"
     />
     <m-edit
@@ -111,6 +115,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSalary from '@/views/plugin/salary/Breadcrumb'
 import MAddGroup from '@/views/plugin/salary/non-sales/job-value/MAddGroup'
 import MAddGroupFactor from '@/views/plugin/salary/non-sales/job-value/MAddGroupFactor'
+import MAddFactorCriteria from '@/views/plugin/salary/non-sales/job-value/MAddFactorCriteria'
 import MEdit from '@/views/plugin/salary/non-sales/job-location/MEdit'
 // import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
@@ -124,6 +129,7 @@ export default {
     // PointTable,
     MAddGroup,
     MAddGroupFactor,
+    MAddFactorCriteria,
     MEdit
   },
   data () {

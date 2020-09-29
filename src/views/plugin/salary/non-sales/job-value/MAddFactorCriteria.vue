@@ -12,30 +12,34 @@
             <table class="table">
               <thead class="thead-light">
                 <tr>
-                  <th>Name</th>
+                  <th>Level</th>
+                  <th>Level Description</th>
+                  <th>Score</th>
                   <th style="width: 20%">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tr
-                v-for="(groupFactor, index) in data"
-                :key="groupFactor.id"
+                v-for="(factorCriteria, index) in data"
+                :key="factorCriteria.id"
               >
-                <td>{{ groupFactor.name }}</td>
+                <td>{{ factorCriteria.level }}</td>
+                <td>{{ factorCriteria.description }}</td>
+                <td>{{ factorCriteria.score }}</td>
                 <td>
                   <button
                     type="button"
                     class="btn btn-default btn-sm"
                     style="margin-right: 5px"
-                    @click="() => onEdit(groupFactor)"
+                    @click="() => onEdit(factorCriteria)"
                   >
                     <i class="fa fa-pencil" />
                   </button>
                   <button
                     type="button"
                     class="btn btn-default btn-sm"
-                    @click="() => onDelete(groupFactor,index)"
+                    @click="() => onDelete(factorCriteria,index)"
                   >
                     <i class="fa fa-trash" />
                   </button>
@@ -44,15 +48,50 @@
               <tbody />
             </table>
             <p-form-row
-              id="name"
-              ref="name"
-              v-model="form.name"
+              id="level"
+              ref="level"
+              v-model="form.level"
               :disabled="isSaving"
-              :label="$t('name')"
-              name="name"
-              :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"
+              :label="$t('level')"
+              name="level"
+              :errors="form.errors.get('level')"
+              @errors="form.errors.set('level', null)"
             />
+            <p-form-row
+              id="description"
+              ref="description"
+              v-model="form.description"
+              :disabled="isSaving"
+              :label="$t('description')"
+              name="description"
+              :errors="form.errors.get('description')"
+              @errors="form.errors.set('description', null)"
+            />
+            <p-form-row
+              id="score"
+              v-model="form.score"
+              name="score"
+              :disabled="isSaving"
+              :label="$t('score')"
+              :errors="form.errors.get('score')"
+              @errors="form.errors.set('score', null)"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
+                <p-form-number
+                  id="score"
+                  v-model="form.score"
+                  name="score"
+                  :is-text-right="false"
+                  :disabled="isSaving"
+                  :label="$t('score')"
+                  :errors="form.errors.get('score')"
+                  @errors="form.errors.set('score', null)"
+                />
+              </div>
+            </p-form-row>
             <div
               v-if="isEdit"
               class="text-center"
@@ -95,19 +134,21 @@ export default {
       isEdit: false,
       selectedData: {},
       data: [],
-      group_id: null,
+      factor_id: null,
       form: new Form({
         id: null,
-        name: null,
-        group_id: null
+        level: null,
+        description: null,
+        score: null,
+        factor_id: null
       })
     }
   },
   computed: {
-    ...mapGetters('pluginSalarySalaryNonSalesGroupFactor', ['groupFactor'])
+    ...mapGetters('pluginSalarySalaryNonSalesFactorCriteria', ['factorCriteria'])
   },
   methods: {
-    ...mapActions('pluginSalarySalaryNonSalesGroupFactor', ['create', 'delete', 'update']),
+    ...mapActions('pluginSalarySalaryNonSalesFactorCriteria', ['create', 'delete', 'update']),
     onClose () {
       this.isFailed = false
       Object.assign(this.$data, this.$options.data.call(this))
@@ -143,17 +184,19 @@ export default {
           })
       }
     },
-    open (data = [], groupId) {
+    open (data = [], factorId) {
       if (window._.isEmpty(data)) {
         this.data = []
       } else {
         this.data = data
       }
-      this.group_id = groupId
+      this.factor_id = factorId
       this.form = new Form({
         id: null,
-        name: null,
-        group_id: groupId
+        level: null,
+        description: null,
+        score: null,
+        factor_id: factorId
       })
       this.$refs.modal.open()
 
@@ -164,18 +207,20 @@ export default {
     close () {
       this.$refs.modal.close()
     },
-    onEdit (groupFactor) {
+    onEdit (factorCriteria) {
       this.isEdit = true
       this.form = new Form({
-        id: groupFactor.id,
-        name: groupFactor.name,
-        group_id: this.group_id
+        id: factorCriteria.id,
+        level: factorCriteria.level,
+        description: factorCriteria.description,
+        score: factorCriteria.score,
+        factor_id: this.factor_id
       })
     },
-    onDelete (groupFactor, index) {
+    onDelete (factorCriteria, index) {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
         this.isLoading = true
-        this.delete(groupFactor).then(response => {
+        this.delete(factorCriteria).then(response => {
           this.$notification.success('delete success')
           this.data = this.data.filter((v, i) => i !== index)
           this.$emit('added', response.data)
@@ -190,8 +235,10 @@ export default {
       this.isEdit = false
       this.form = new Form({
         id: null,
-        name: null,
-        group_id: this.group_id
+        level: null,
+        description: null,
+        score: null,
+        factor_id: this.factor_id
       })
     }
   }
