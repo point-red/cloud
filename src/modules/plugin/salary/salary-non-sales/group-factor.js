@@ -4,7 +4,8 @@ const url = '/plugin/salary-non-sales/group-factors'
 
 const state = {
   groupFactor: {
-    name: ''
+    name: '',
+    gruop_id: null
   },
   groupFactors: [],
   groupFactorList: [],
