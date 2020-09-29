@@ -51,6 +51,7 @@
                     <button
                       type="button"
                       class="border-black btn btn-default btn-sm"
+                      @click="$refs.addGroupFactor.open(group.factors, group.id)"
                     >
                       Factors
                     </button>
@@ -91,6 +92,11 @@
       :data="groupList"
       @added="onAdded"
     />
+    <m-add-group-factor
+      ref="addGroupFactor"
+      :data="groupList"
+      @added="onAdded"
+    />
     <m-edit
       ref="editJobLocation"
       @added="onAdded"
@@ -104,6 +110,7 @@ import TabMenu from '@/views/plugin/salary/non-sales/TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSalary from '@/views/plugin/salary/Breadcrumb'
 import MAddGroup from '@/views/plugin/salary/non-sales/job-value/MAddGroup'
+import MAddGroupFactor from '@/views/plugin/salary/non-sales/job-value/MAddGroupFactor'
 import MEdit from '@/views/plugin/salary/non-sales/job-location/MEdit'
 // import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
@@ -116,6 +123,7 @@ export default {
     BreadcrumbSalary,
     // PointTable,
     MAddGroup,
+    MAddGroupFactor,
     MEdit
   },
   data () {
