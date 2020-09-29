@@ -9,7 +9,7 @@
       class="btn btn-rounded btn-dual-secondary"
       @click="toggle"
     >
-      <i class="fa fa-flag mr-5" />
+      <i class="fa fa-bell mr-5" />
       <!-- <span class="badge badge-danger badge-pill">1</span> -->
     </button>
     <div
@@ -54,7 +54,7 @@
         class="dropdown-item text-center mb-0"
         href="javascript:void(0)"
       >
-        <i class="fa fa-flag mr-5" /> View All
+        <i class="fa fa-bell mr-5" /> View All
       </a>
     </div>
   </div>
