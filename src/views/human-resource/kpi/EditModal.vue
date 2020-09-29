@@ -32,18 +32,6 @@
             /> {{ $t('update') | uppercase }}
           </button>
           <button
-            v-if="$permission.has('delete employee kpi')"
-            :disabled="isSaving"
-            type="button"
-            class="btn btn-sm btn-danger"
-            @click="remove"
-          >
-            <i
-              v-show="isSaving"
-              class="fa fa-asterisk fa-spin"
-            /> {{ $t('delete') | uppercase }}
-          </button>
-          <button
             :disabled="isSaving"
             type="button"
             class="btn btn-sm btn-outline-danger"
@@ -92,8 +80,7 @@ export default {
       fetchKpiTemplate: 'FETCH_OBJECT'
     }),
     ...mapActions('humanResourceKpiTemplate', {
-      updateKpiTemplate: 'update',
-      deleteKpiTemplate: 'delete'
+      updateKpiTemplate: 'update'
     }),
     show (template) {
       this.fetchKpiTemplate(template)
@@ -120,19 +107,6 @@ export default {
             this.form.errors.record(error.errors)
             this.isSaving = false
           })
-    },
-    remove () {
-      this.isSaving = true
-      this.deleteKpiTemplate(this.form)
-        .then(response => {
-          this.$notification.success('Delete success')
-          this.isSaving = false
-          this.close()
-        })
-        .catch(error => {
-          this.$notification.error('Delete failed', error.message)
-          this.isSaving = false
-        })
     }
   }
 }

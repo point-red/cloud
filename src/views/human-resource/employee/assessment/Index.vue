@@ -158,11 +158,18 @@
                   <i class="si si-note" /> {{ $t('edit') | uppercase }}
                 </router-link>
                 &nbsp;
-                <i
-                  v-show="authUser.id == assessment.scorer.id && $permission.has('delete employee assessment') && reportType == 'all'"
-                  class="fa fa-close"
-                  @click="deleteAssessment(assessment.id)"
-                />
+                <template
+                  v-if="authUser.id == assessment.scorer.id && $permission.has('delete employee assessment') && reportType == 'all'"
+                >
+                  <div
+                    class="btn btn-sm btn-danger"
+                    @click="deleteAssessment(assessment.id)"
+                  >
+                    <i
+                      class="fa fa-close"
+                    /> DELETE
+                  </div>
+                </template>
               </td>
             </tr>
           </p-table>
@@ -203,7 +210,7 @@
           <i
             v-show="isSaving"
             class="fa fa-asterisk fa-spin"
-          /> {{ $t('delete') | uppercase }}
+          /> {{ $t('confirm') | uppercase }}
         </button>
       </div>
     </p-modal>
