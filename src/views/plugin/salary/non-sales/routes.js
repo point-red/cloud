@@ -1,4 +1,5 @@
 import JobLocation from './job-location/routes'
+import JobValue from './job-value/routes'
 
 export default [
   {
@@ -8,5 +9,6 @@ export default [
       next('/plugin/salary/salary-non-sales/job-location')
     }
   },
-  ...JobLocation
+  ...JobLocation,
+  ...JobValue
 ]
