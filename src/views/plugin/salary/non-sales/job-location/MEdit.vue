@@ -44,27 +44,27 @@
             </div>
           </p-form-row>
           <p-form-row
-            id="multiplier-kpi"
-            v-model="form.multiplier_kpi"
-            name="multiplier-kpi"
+            id="job-value"
+            v-model="form.job_value"
+            name="job-value"
             :disabled="isSaving"
             :label="$t('job value')"
-            :errors="form.errors.get('multiplier_kpi')"
-            @errors="form.errors.set('multiplier_kpi', null)"
+            :errors="form.errors.get('job_value')"
+            @errors="form.errors.set('job_value', null)"
           >
             <div
               slot="body"
               class="col-lg-9"
             >
               <p-form-number
-                id="multiplier-kpi"
-                v-model="form.multiplier_kpi"
-                name="multiplier-kpi"
+                id="job-value"
+                v-model="form.job_value"
+                name="job-value"
                 :is-text-right="false"
                 :disabled="isSaving"
                 :label="$t('job value')"
-                :errors="form.errors.get('multiplier_kpi')"
-                @errors="form.errors.set('multiplier_kpi', null)"
+                :errors="form.errors.get('job_value')"
+                @errors="form.errors.set('job_value', null)"
               />
             </div>
           </p-form-row>
@@ -100,7 +100,7 @@ export default {
         id: null,
         name: null,
         base_salary: null,
-        multiplier_kpi: null
+        job_value: null
       })
     }
   },
@@ -108,7 +108,7 @@ export default {
     ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocation'])
   },
   methods: {
-    ...mapActions('humanResourceEmployeeJobLocation', ['update']),
+    ...mapActions('pluginSalarySalaryNonSalesJobLocation', ['update']),
     onClose () {
       this.isFailed = false
       Object.assign(this.$data, this.$options.data.call(this))
@@ -135,7 +135,7 @@ export default {
         id: data.id,
         name: data.name,
         base_salary: Number(data.base_salary),
-        multiplier_kpi: Number(data.multiplier_kpi)
+        job_value: Number(data.job_value)
       })
       this.$nextTick(() => {
         this.$refs.name.setFocus()
@@ -147,7 +147,7 @@ export default {
         id: null,
         name: null,
         base_salary: null,
-        multiplier_kpi: null
+        job_value: null
       })
     }
   }

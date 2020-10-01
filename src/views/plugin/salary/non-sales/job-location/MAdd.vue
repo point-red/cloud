@@ -44,27 +44,27 @@
             </div>
           </p-form-row>
           <p-form-row
-            id="multiplier-kpi"
-            v-model="form.multiplier_kpi"
-            name="multiplier-kpi"
+            id="job-value"
+            v-model="form.job_value"
+            name="job-value"
             :disabled="isSaving"
             :label="$t('job value')"
-            :errors="form.errors.get('multiplier_kpi')"
-            @errors="form.errors.set('multiplier_kpi', null)"
+            :errors="form.errors.get('job_value')"
+            @errors="form.errors.set('job_value', null)"
           >
             <div
               slot="body"
               class="col-lg-9"
             >
               <p-form-number
-                id="multiplier-kpi"
-                v-model="form.multiplier_kpi"
-                name="multiplier-kpi"
+                id="job-value"
+                v-model="form.job_value"
+                name="job-value"
                 :is-text-right="false"
                 :disabled="isSaving"
                 :label="$t('job value')"
-                :errors="form.errors.get('multiplier_kpi')"
-                @errors="form.errors.set('multiplier_kpi', null)"
+                :errors="form.errors.get('job_value')"
+                @errors="form.errors.set('job_value', null)"
               />
             </div>
           </p-form-row>
@@ -99,7 +99,7 @@ export default {
       form: new Form({
         name: null,
         base_salary: null,
-        multiplier_kpi: null
+        job_value: null
       })
     }
   },

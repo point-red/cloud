@@ -62,7 +62,7 @@
                 </router-link>
               </td>
               <td>{{ jobLocation.base_salary | numberFormat }}</td>
-              <td>{{ jobLocation.multiplier_kpi | numberFormat }}</td>
+              <td>{{ jobLocation.job_value | numberFormat }}</td>
               <td>
                 <button
                   type="button"
