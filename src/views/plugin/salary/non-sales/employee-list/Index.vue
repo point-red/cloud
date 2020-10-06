@@ -27,41 +27,29 @@
               <th width="50px">
                 #
               </th>
-              <th>{{ $t('name') }}</th>
-              <th>{{ $t('job location') }}</th>
-              <th>{{ $t('job value') }}</th>
-              <th>{{ $t('salary') }}</th>
-              <th>{{ $t('action') }}</th>
+              <th>Name</th>
+              <th>Job Location</th>
+              <th>Job Value</th>
+              <th>Salary</th>
+              <th>Actions</th>
             </tr>
             <template v-for="(employee, index) in employees">
               <tr
-                v-if="($permission.has('create employee assessment') && isShow(employee.scorers)) || $permission.has('read employee')"
                 :key="employee.id"
                 slot="p-body"
-                :class="{
-                  'bg-gray': employee.archived_at != null,
-                  'bg-primary-lighter': isRowChecked(employee.id)
-                }"
               >
-                <th
-                  :class="{
-                    'bg-gray': employee.archived_at != null,
-                    'bg-primary-lighter': isRowChecked(employee.id)
-                  }"
-                >
+                <th>
                   {{ getNumberIndex(index) }}
                 </th>
                 <td>
-                  <router-link :to="{ name: 'EmployeeShow', params: { id: employee.id }}">
-                    {{ employee.name }}
-                  </router-link>
+                  {{ employee.name }}
                 </td>
-                <td>{{ employee.job_location.name }}</td>
+                <td>{{ employee.job_location ? employee.job_location.name : '' }}</td>
                 <td>
-                  {{ employee.job_location.name }}
+                  {{ employee.job_location ? employee.job_location.name : '' }}
                 </td>
                 <td>
-                  {{ employee.job_location.job_value }}
+                  {{ employee.job_location ? (employee.job_location.job_value | numberFormat) : '' }}
                 </td>
                 <td>
                   <div style="display:flex">
@@ -81,7 +69,16 @@
                       class="btn-wrapper"
                       style="padding-left: 14px;"
                     >
-                      <button class="btn btn-default">
+                      <!-- <router-link
+                        class="btn btn-default"
+                        :to="{ name: 'EmployeeShow', params: { id: employee.id }}"
+                      >
+                        <i class="fa fa-history" />
+                      </router-link> -->
+                      <button
+                        class="btn btn-default"
+                        @click="$router.push({name: 'nonsales.employee-list.show', params: {id: employee.id}})"
+                      >
                         <i class="fa fa-history" />
                       </button>
                     </div>
@@ -100,10 +97,6 @@
     </div>
     <m-employee-fee
       ref="addEmployeeFee"
-    />
-    <m-status
-      ref="status"
-      @choosen="onChoosenStatus"
     />
   </div>
 </template>
@@ -140,8 +133,7 @@ export default {
   },
   computed: {
     ...mapGetters('auth', ['authUser']),
-    ...mapGetters('humanResourceEmployee', ['employees', 'pagination']),
-    ...mapGetters('humanResourceEmployeeGroup', ['groupList'])
+    ...mapGetters('humanResourceEmployee', ['employees', 'pagination'])
   },
   created () {
     this.getEmployeesRequest()
@@ -166,88 +158,8 @@ export default {
     onAdded () {
       this.getEmployeesRequest()
     },
-    toggleCheckRow (id) {
-      if (!this.isRowChecked(id)) {
-        this.checkedRow.push({ id })
-      } else {
-        this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(id), 1)
-      }
-    },
-    toggleCheckRows () {
-      if (!this.isRowsChecked(this.employees, this.checkedRow)) {
-        this.employees.forEach(element => {
-          if (!this.isRowChecked(element.id)) {
-            const id = element.id
-            this.checkedRow.push({ id })
-          }
-        })
-      } else {
-        this.employees.forEach(element => {
-          this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(element.id), 1)
-        })
-      }
-    },
-    isRowChecked (id) {
-      return this.checkedRow.some(element => {
-        return element.id == id
-      })
-    },
-    isRowsChecked (haystack, needles) {
-      if (needles.length == 0) {
-        return false
-      }
-      for (let i = 0; i < haystack.length; i++) {
-        const found = needles.some(element => {
-          return element.id == haystack[i].id
-        })
-        if (!found) {
-          return false
-        }
-      }
-      return true
-    },
-    bulkArchiveEmployee () {
-      this.bulkArchive({
-        employees: this.checkedRow
-      }).then(response => {
-        this.checkedRow = []
-        this.getEmployeesRequest()
-      })
-    },
-    bulkActivateEmployee () {
-      this.bulkActivate({
-        employees: this.checkedRow
-      }).then(response => {
-        this.checkedRow = []
-        this.getEmployeesRequest()
-      })
-    },
-    bulkDeleteEmployee () {
-      this.bulkDelete({
-        employees: this.checkedRow
-      }).then(response => {
-        this.checkedRow = []
-        this.getEmployeesRequest()
-      })
-    },
-    isShow (scorers) {
-      return scorers.some(element => {
-        return element.id == this.authUser.id
-      })
-    },
     updatePage (value) {
       this.page = value
-      this.getEmployeesRequest()
-    },
-    onChoosenStatus (option) {
-      this.statusId = option.id
-      this.statusLabel = option.label
-      this.$router.push({
-        query: {
-          search: this.searchText,
-          statusId: this.statusId
-        }
-      })
       this.getEmployeesRequest()
     },
     filterSearch: debounce(function (value) {

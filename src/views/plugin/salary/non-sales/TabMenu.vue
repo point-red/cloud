@@ -13,7 +13,7 @@
         class="nav-link"
         active-class="active"
       >
-        <span>{{ $t('employee list') | uppercase }}</span>
+        <span>{{ 'employee list' | uppercase }}</span>
       </router-link>
     </li>
     <li
@@ -24,7 +24,7 @@
         class="nav-link"
         active-class="active"
       >
-        <span>{{ $t('job location') | uppercase }}</span>
+        <span>{{ 'job location' | uppercase }}</span>
       </router-link>
     </li>
     <li
@@ -35,7 +35,7 @@
         class="nav-link"
         active-class="active"
       >
-        <span>{{ $t('job value') | uppercase }}</span>
+        <span>{{ 'job value' | uppercase }}</span>
       </router-link>
     </li>
     <slot name="right" />

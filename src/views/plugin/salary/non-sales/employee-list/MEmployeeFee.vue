@@ -2,7 +2,7 @@
   <form @submit.prevent="onSubmit">
     <sweet-modal
       ref="modal"
-      :title="$t('Employee Fee') | uppercase"
+      :title="'Employee Fee' | uppercase"
       overlay-theme="dark"
       width="80vw"
       @close="onClose()"
@@ -30,17 +30,17 @@
                 <div class="col-lg-9">
                   <div style="display:flex">
                     <p-date-picker
-                      id="date"
-                      v-model="date.start"
-                      name="date"
-                      label="date"
+                      id="start_period"
+                      v-model="form.start_period"
+                      name="start_period"
+                      label="start_period"
                     />
                     <div style="margin-left: 20px">
                       <p-date-picker
-                        id="date"
-                        v-model="date.start"
-                        name="date"
-                        label="date"
+                        id="end_period"
+                        v-model="form.end_period"
+                        name="end_period"
+                        label="end_period"
                       />
                     </div>
                   </div>
@@ -52,7 +52,7 @@
                 ref="fee"
                 v-model="form.fee"
                 :disabled="isSaving"
-                :label="$t('fee')"
+                label="Fee"
                 name="fee"
                 :errors="form.errors.get('fee')"
                 readonly
@@ -61,31 +61,27 @@
             </div>
             <div class="row">
               <p-block>
-                <div style="display:flex; justify-content: space-between; align-items: center">
-                  <h3>{{ $t('Factor Criteria') }}</h3>
+                <div
+                  style="display:flex; justify-content: space-between; align-items: center"
+                >
+                  <h3>Factor Criteria</h3>
                 </div>
                 <p-block-inner :is-loading="isLoading">
                   <div class="table-responsive">
                     <table
-                      v-for="(group) in dataGroup"
+                      v-for="group in dataGroup"
                       :key="group.id"
                       class="table table-hover"
                     >
                       <thead class="thead-light">
-                        <tr
-                          slot="p-head"
-                        >
-                          <th
-                            width="10%"
-                          >
+                        <tr slot="p-head">
+                          <th width="10%">
                             <b>No</b>
                           </th>
                           <th>
-                            <b>{{ $t(group.name) }}</b>
+                            <b>{{ group.name }}</b>
                           </th>
-                          <th
-                            width="100px"
-                          >
+                          <th width="100px">
                             Score
                           </th>
                         </tr>
@@ -96,10 +92,13 @@
                           :key="factor.id"
                           slot="p-body"
                         >
-                          <th>{{ index+1 }}</th>
+                          <th>{{ index + 1 }}</th>
                           <th>{{ factor.name }}</th>
                           <td>
-                            <span v-if="factor.score">{{ factor.score }}</span>
+                            <span
+                              v-if="factor.score"
+                              @click="isEdit ? handleOpenCriteria(factor, factor.selected_criteria) : null"
+                            >{{ factor.score }}</span>
                             <button
                               v-else
                               type="button"
@@ -116,20 +115,11 @@
                 </p-block-inner>
               </p-block>
             </div>
-            <div
-              v-if="isEdit"
-              class="text-center"
-            >
-              <a
-                href="#"
-                @click="onCancelEdit"
-              >Cancel Edit</a>
-            </div>
           </div>
         </div>
         <div class="pull-right">
           <button
-            type="submit"
+            type="button"
             class="btn btn-sm btn-primary text-right"
             :disabled="isSaving"
             @click="onSubmit"
@@ -152,7 +142,11 @@
           v-for="criteria in selectedFactor.criterias"
           :key="criteria.id"
           type="button"
-          :class="selectedCriteria.id === criteria.id ? 'list-group-item list-group-item-action list-group-item-dark font-weight-bold' : 'list-group-item list-group-item-action'"
+          :class="
+            selectedCriteria.id === criteria.id
+              ? 'list-group-item list-group-item-action list-group-item-dark font-weight-bold'
+              : 'list-group-item list-group-item-action'
+          "
           style="cursor:pointer; outline: none"
           @click="handleSelectCriteria(criteria)"
         >
@@ -199,16 +193,14 @@ export default {
         criterias: []
       },
       form: new Form({
-        employee_id: null,
         id: null,
-        name: null,
-        assestmentPeriod: null,
-        fee: null
-      }),
-      date: {
-        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
-        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
-      }
+        employee_id: null,
+        fee: null,
+        score: null,
+        start_period: this.$moment().format('YYYY-MM-01 00:00:00'),
+        end_period: this.$moment().format('YYYY-MM-DD 23:59:59'),
+        criterias: []
+      })
     }
   },
   computed: {
@@ -217,12 +209,22 @@ export default {
       return _.sumBy(this.scores, 'score')
     },
     totalFee () {
-      const umk = Number(this.selectedJobLocation.base_salary)
-      const jobValue = 1
-      return (umk / jobValue) * this.totalScore
+      console.log('totalFee -> this.selectedJobLocation', this)
+      console.log('totalFee -> this.selectedJobLocation', this.selectedJobLocation)
+      const umk = this.selectedJobLocation.base_salary
+      const jobValue = this.selectedJobLocation.job_value
+      const hitung = (Number(umk) / Number(jobValue))
+
+      if (!this.totalScore) {
+        return 0
+      }
+      return hitung * this.totalScore
     }
   },
   watch: {
+    dataGroup () {
+      console.log('DATA GROUP', this.dataGroup)
+    },
     groupList () {
       this.setGroup()
     },
@@ -231,30 +233,46 @@ export default {
     },
     scores () {
       this.scores.map(score => {
-        const groupIndex = _.findIndex(this.dataGroup, { factors: [{ id: score.factor_id }] })
-        const factorIndex = _.findIndex(this.dataGroup[groupIndex].factors, { id: score.factor_id })
+        const groupIndex = _.findIndex(this.dataGroup, {
+          factors: [{ id: score.factor_id }]
+        })
+        const factorIndex = _.findIndex(this.dataGroup[groupIndex].factors, {
+          id: score.factor_id
+        })
 
         // set factor to group data
         const tempFactors = [...this.dataGroup[groupIndex].factors]
         tempFactors[factorIndex] = {
           ...tempFactors[factorIndex],
-          score: score.score
+          score: Number(score.score),
+          selected_criteria: score.criteria_id
         }
 
-        this.dataGroup[groupIndex] = Object.assign({}, {
-          ...this.dataGroup[groupIndex],
-          factors: tempFactors
-        })
+        this.dataGroup[groupIndex] = Object.assign(
+          {},
+          {
+            ...this.dataGroup[groupIndex],
+            factors: tempFactors
+          }
+        )
       })
+
       this.$forceUpdate()
+      console.log('scores -> this.totalScore', this.totalScore)
+      console.log('scores -> sum score', _.sumBy(this.scores, 'score'))
+      this.form.fee = this.totalFee
+    }
+  },
+  created () {
+    if (_.isEmpty(this.groupList)) {
+      this.getGroup()
     }
   },
   methods: {
-    ...mapActions('pluginSalarySalaryNonSalesGroup', [
-      'create',
-      'delete',
-      'update'
-    ]),
+    ...mapActions('pluginSalarySalaryNonSalesEmployeeFee', ['save']),
+    ...mapActions('pluginSalarySalaryNonSalesGroup', {
+      getGroup: 'get'
+    }),
     onClose () {
       this.isFailed = false
       Object.assign(this.$data, this.$options.data.call(this))
@@ -263,41 +281,49 @@ export default {
       this.scores = []
     },
     onSubmit () {
+      this.form.criterias = this.scores
+      console.log('FORM', this.form)
       this.isSaving = true
-      if (this.isEdit) {
-        this.update(this.form)
-          .then(response => {
-            this.isSaving = false
-            this.$notification.success('update success')
-            Object.assign(this.$data, this.$options.data.call(this))
-            this.$emit('added', response.data)
-            this.close()
-          })
-          .catch(error => {
-            this.isSaving = false
-            this.isFailed = true
-            this.form.errors.record(error.errors)
-          })
-      } else {
-        this.create(this.form)
-          .then(response => {
-            this.isSaving = false
+      // if (this.isEdit) {
+      //   this.update(this.form)
+      //     .then(response => {
+      //       this.isSaving = false
+      //       this.$notification.success('update success')
+      //       Object.assign(this.$data, this.$options.data.call(this))
+      //       this.$emit('added', response.data)
+      //       this.close()
+      //     })
+      //     .catch(error => {
+      //       this.isSaving = false
+      //       this.isFailed = true
+      //       this.form.errors.record(error.errors)
+      //     })
+      // } else {
+      this.save(this.form)
+        .then(response => {
+          this.isSaving = false
+          if (this.isEdit) {
+            this.$notification.success('saved success')
+            this.$emit('updated', response.data)
+          } else {
             this.$notification.success('create success')
-            Object.assign(this.$data, this.$options.data.call(this))
             this.$emit('added', response.data)
-            this.close()
-          })
-          .catch(error => {
-            this.isSaving = false
-            this.isFailed = true
-            this.form.errors.record(error.errors)
-          })
-      }
+          }
+          Object.assign(this.$data, this.$options.data.call(this))
+          this.close()
+        })
+        .catch(error => {
+          this.isSaving = false
+          this.isFailed = true
+          this.form.errors.record(error.errors)
+        })
+      // }
     },
     setGroup () {
       console.log('setGroup -> this.dataGroup called', this.dataGroup)
       if (_.isEmpty(this.dataGroup)) {
         console.log('setGroup DISINI')
+        console.log('groupList DISINI', this.groupList)
         this.dataGroup = this.groupList.map(group => {
           group.factors = group.factors.map(f => {
             f.score = 0
@@ -307,14 +333,32 @@ export default {
         })
       }
     },
-    open (employee) {
+    open (employee, isEdit = false) {
       this.$refs.modal.open()
       this.dataGroup = []
-      this.scores = []
-      console.log('SCORE', this.scores)
-      this.form.name = employee.name
-      this.selectedJobLocation = employee.job_location
+      if (isEdit) {
+        console.log('open -> employee', employee)
+        this.form.id = employee.id
+        this.form.name = employee.employee.name
+        this.form.employee_id = employee.employee.id
+        this.form.fee = employee.fee
+        this.scores = employee.factors.map(f => Object.assign({}, {
+          ...f.pivot,
+          score: Number(f.pivot.score)
+        }))
+        this.selectedJobLocation = employee.employee.job_location
+      } else {
+        this.scores = []
+        this.form.id = null
+        this.form.name = employee.name
+        this.form.employee_id = employee.id
+        this.form.fee = null
+        this.selectedJobLocation = employee.job_location
+      }
+
       this.setGroup()
+      this.isEdit = isEdit
+
       this.$nextTick(() => {
         this.$refs.name.setFocus()
       })
@@ -354,23 +398,40 @@ export default {
         name: null
       })
     },
-    handleOpenCriteria (factor) {
+    handleOpenCriteria (factor, selectedCriteriaId = null) {
+      console.log('handleOpenCriteria -> selected_criteria_id', selectedCriteriaId)
       this.selectedFactor = factor
       this.$refs.selectedFactor.open()
+      this.selectedCriteria.id = selectedCriteriaId
     },
     handleSelectCriteria (criteria) {
+      console.log('CHECKING => select criteria', criteria)
       this.selectedCriteria = criteria
     },
     handleSetScore () {
-      const check = _.findIndex(this.scores, { factor_id: this.selectedCriteria.factor_id })
+      const check = _.findIndex(this.scores, {
+        factor_id: this.selectedCriteria.factor_id
+      })
+      console.log('CHECKING => check', check)
+      console.log('CHECKING -> this.selectedCriteria', this.selectedCriteria)
       const data = {
         score: this.selectedCriteria.score,
-        factor_id: this.selectedCriteria.factor_id
+        factor_id: this.selectedCriteria.factor_id,
+        criteria_id: this.selectedCriteria.id
       }
       if (check < 0) {
         this.scores.push(data)
+        console.log('CHECKING => push score', data)
       } else {
-        this.scores[check] = data
+        console.log('CHECKING => data', data)
+        this.scores = [...this.scores].map((v, index) => {
+          if (index === check) {
+            return data
+          }
+
+          return Object.assign({}, v)
+        })
+        console.log('CHECKING => this.scores[check]', this.scores[check])
       }
 
       this.$refs.selectedFactor.close()
@@ -389,6 +450,6 @@ h2 {
   padding: 30px;
 }
 .box .form-group.row {
-    max-width: 700px;
+  max-width: 700px;
 }
 </style>

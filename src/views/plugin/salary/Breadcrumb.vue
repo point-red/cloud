@@ -3,6 +3,6 @@
     to="/plugin/salary"
     class="breadcrumb-item"
   >
-    {{ $t('Salary') | uppercase }}
+    {{ 'Salary' | uppercase }}
   </router-link>
 </template>

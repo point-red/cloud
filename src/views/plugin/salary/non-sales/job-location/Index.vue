@@ -10,16 +10,6 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <a
-            href="javascript:void(0)"
-            to="/human-resource/job-location/create"
-            class="input-group-prepend"
-            @click="$refs.addJobLocation.open()"
-          >
-            <span class="input-group-text">
-              <i class="fa fa-plus" />
-            </span>
-          </a>
           <p-form-input
             id="search-text"
             ref="searchText"
