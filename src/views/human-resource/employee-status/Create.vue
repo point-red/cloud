@@ -6,7 +6,7 @@
         to="/human-resource/employee-status"
         class="breadcrumb-item"
       >
-        {{ $t('employee status') | uppercase }}
+        {{ $t('employment contract') | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
@@ -20,7 +20,7 @@
       <p-block
         :is-loading="isLoading"
         :header="true"
-        :title="$t('employee status')"
+        :title="$t('employment contract')"
         column="col-sm-12"
       >
         <div class="row">

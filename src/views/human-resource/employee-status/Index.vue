@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-human-resource />
-      <span class="breadcrumb-item active">{{ $t('employee status') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('employment contract') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu />

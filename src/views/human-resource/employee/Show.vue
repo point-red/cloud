@@ -171,7 +171,7 @@
                     <td><span>{{ employee.job_location.multiplier_kpi | numberFormat }}</span></td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('status') | titlecase }}</span></td>
+                    <td><span class="font-w700">{{ $t('employment contract') | titlecase }}</span></td>
                     <td><span v-if="employee.status">{{ employee.status.name }}</span></td>
                   </tr>
                   <tr>

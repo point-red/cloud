@@ -2,7 +2,7 @@
   <form @submit.prevent="onSubmit">
     <sweet-modal
       ref="modal"
-      :title="$t('edit employee status') | uppercase"
+      :title="$t('edit employment contract') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >

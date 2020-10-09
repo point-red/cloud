@@ -50,7 +50,7 @@
         class="nav-link"
         active-class="active"
       >
-        <span>{{ $t('employee status') | uppercase }}</span>
+        <span>{{ $t('employment contract') | uppercase }}</span>
       </router-link>
     </li>
     <li

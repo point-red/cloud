@@ -6,7 +6,7 @@
         to="/human-resource/employee-status"
         class="breadcrumb-item"
       >
-        {{ $t('employee status') | uppercase }}
+        {{ $t('employment contract') | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ status.name | uppercase }}</span>
     </breadcrumb>
