@@ -26,7 +26,7 @@
         class="nav-link"
         active-class="active"
       >
-        <span>{{ $t('group') | uppercase }}</span>
+        <span>{{ $t('department') | uppercase }}</span>
       </router-link>
     </li>
     <li
