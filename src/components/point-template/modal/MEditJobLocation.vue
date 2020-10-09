@@ -86,7 +86,7 @@
             <i
               v-show="isSaving"
               class="fa fa-asterisk fa-spin"
-            /> {{ $t('save') | uppercase }}
+            /> {{ $t('update') | uppercase }}
           </button>
         </div>
       </template>

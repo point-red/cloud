@@ -65,7 +65,7 @@
           </div>
         </p-form-row>
 
-        <p-form-row :label="'group'">
+        <p-form-row :label="'customer group'">
           <div
             slot="body"
             class="col-lg-9"
