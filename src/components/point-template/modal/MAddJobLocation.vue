@@ -13,7 +13,7 @@
             ref="name"
             v-model="form.name"
             :disabled="isSaving"
-            :label="$t('name')"
+            :label="$t('location name')"
             name="name"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"
