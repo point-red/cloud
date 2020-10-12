@@ -85,7 +85,7 @@
 
           <p-separator />
 
-          <h5>{{ $t('group') | uppercase }}</h5>
+          <h5>{{ $t('supplier group') | uppercase }}</h5>
           <p>{{ $t('create supplier helper - group') }}</p>
           <ul
             v-for="(group, index) in supplier.groups"

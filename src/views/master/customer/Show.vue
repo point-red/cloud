@@ -125,7 +125,7 @@
 
           <p-separator />
 
-          <h5>{{ $t('group') | uppercase }}</h5>
+          <h5>{{ $t('customer group') | uppercase }}</h5>
           <p>{{ $t('create customer helper - group') }}</p>
           <ul
             v-for="(group, index) in customer.groups"
