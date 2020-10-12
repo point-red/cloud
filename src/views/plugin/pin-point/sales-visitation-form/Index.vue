@@ -197,7 +197,7 @@
                   :key="index + '-' + index2"
                 >
                   <th>
-                    {{ ((page - 1) * limit) + index + 1 }}<template v-if="form.details.length > 1">
+                    {{ (page * limit) - limit + index + 1 }}<template v-if="form.details.length > 1">
                       .{{ ++index2 }}
                     </template>
                   </th>
@@ -360,6 +360,7 @@ export default {
       isDropdown: false,
       downloadLink: '',
       searchText: '',
+      limit: 10,
       page: this.$route.query.page * 1 || 1,
       lastPage: 1
     }
@@ -424,7 +425,7 @@ export default {
             'sales_visitation.phone': this.searchText,
             'sales_visitation.notes': this.searchText
           },
-          limit: 20,
+          limit: this.limit,
           page: this.page
         }
       }).then(response => {
