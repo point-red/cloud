@@ -197,7 +197,7 @@
                   :key="index + '-' + index2"
                 >
                   <th>
-                    {{ index + 1 }}<template v-if="form.details.length > 1">
+                    {{ ((page - 1) * limit) + index + 1 }}<template v-if="form.details.length > 1">
                       .{{ ++index2 }}
                     </template>
                   </th>
