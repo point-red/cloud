@@ -327,7 +327,7 @@
 
             <p-form-row
               id="contract"
-              :label="$t('contract')"
+              :label="$t('contract period')"
             >
               <div
                 slot="body"
@@ -339,7 +339,7 @@
                   :disabled="isSaving"
                   @click="$refs.contractModal.open()"
                 >
-                  <i class="fa fa-plus" /> {{ $t('contract') | titlecase }}
+                  <i class="fa fa-plus" /> {{ $t('contract period') | titlecase }}
                 </button>
                 <p-table>
                   <tr slot="p-head" />

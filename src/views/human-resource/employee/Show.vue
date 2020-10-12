@@ -188,7 +188,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('contract') | titlecase }}</span></td>
+                    <td><span class="font-w700">{{ $t('contract period') | titlecase }}</span></td>
                     <td>
                       <ul>
                         <li
