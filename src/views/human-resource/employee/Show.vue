@@ -217,15 +217,15 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('daily transport allowance') | titlecase }}</span></td>
+                    <td><span class="font-w700">{{ $t('transport allowance (daily)') | titlecase }}</span></td>
                     <td>{{ employee.daily_transport_allowance | numberFormat }}</td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('functional allowance') | titlecase }}</span></td>
+                    <td><span class="font-w700">{{ $t('functional allowance (monthly)') | titlecase }}</span></td>
                     <td>{{ employee.functional_allowance | numberFormat }}</td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('communication allowance') | titlecase }}</span></td>
+                    <td><span class="font-w700">{{ $t('communication allowance (monthly)') | titlecase }}</span></td>
                     <td>{{ employee.communication_allowance | numberFormat }}</td>
                   </tr>
                   <tr>

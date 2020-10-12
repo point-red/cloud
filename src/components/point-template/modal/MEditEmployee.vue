@@ -456,7 +456,7 @@
             <p-form-row
               id="daily-transport-allowance"
               name="daily-transport-allowance"
-              :label="$t('daily transport allowance')"
+              :label="$t('transport allowance (daily)')"
             >
               <div
                 slot="body"
@@ -475,7 +475,7 @@
             <p-form-row
               id="functional-allowance"
               name="functional-allowance"
-              :label="$t('functional allowance')"
+              :label="$t('functional allowance (monthly)')"
             >
               <div
                 slot="body"
@@ -494,7 +494,7 @@
             <p-form-row
               id="communication-allowance"
               name="communication-allowance"
-              :label="$t('communication allowance')"
+              :label="$t('communication allowance (monthly)')"
             >
               <div
                 slot="body"
