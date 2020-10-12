@@ -267,7 +267,7 @@
                   slot="p-body"
                   :key="index"
                 >
-                  <th>{{ index + 1 }}</th>
+                  <th>{{ (page * limit) - limit + index + 1 }}</th>
                   <td>
                     <template v-if="form.photo">
                       <img
