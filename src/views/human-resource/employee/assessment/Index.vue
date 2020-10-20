@@ -166,7 +166,7 @@
                     @click="deleteAssessment(assessment.id)"
                   >
                     <i
-                      class="fa fa-close"
+                      class="fa fa-trash"
                     /> DELETE
                   </div>
                 </template>

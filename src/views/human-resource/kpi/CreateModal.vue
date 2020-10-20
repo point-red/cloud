@@ -29,7 +29,7 @@
             <i
               v-show="isSaving"
               class="fa fa-asterisk fa-spin"
-            /> {{ $t('add') | uppercase }}
+            /> {{ $t('save') | uppercase }}
           </button>
           <button
             :disabled="isSaving"
