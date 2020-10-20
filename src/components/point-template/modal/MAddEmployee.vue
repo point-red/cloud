@@ -238,7 +238,7 @@
               id="code"
               v-model="form.code"
               name="code"
-              :label="$t('code')"
+              :label="$t('employee code')"
               :disabled="isSaving"
               :errors="form.errors.get('code')"
               @errors="form.errors.set('code', null)"

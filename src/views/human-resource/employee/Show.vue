@@ -58,7 +58,7 @@
                     <td>{{ employee.name }}</td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('code') | titlecase }}</span></td>
+                    <td><span class="font-w700">{{ $t('employee code') | titlecase }}</span></td>
                     <td>{{ employee.code }}</td>
                   </tr>
                   <tr v-if="$permission.has('read employee')">
