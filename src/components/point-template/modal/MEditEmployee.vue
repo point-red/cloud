@@ -399,7 +399,7 @@
             </p-form-row>
             <p-form-row
               id="scorer"
-              :label="$t('employee scorer')"
+              :label="$t('employee assessor')"
             >
               <div
                 slot="body"
@@ -411,7 +411,7 @@
                   :disabled="isSaving"
                   @click="$refs.scorerModal.open()"
                 >
-                  <i class="fa fa-plus" /> {{ $t('employee scorer') | titlecase }}
+                  <i class="fa fa-plus" /> {{ $t('employee assessor') | titlecase }}
                 </button>
                 <p-table>
                   <tr slot="p-head" />

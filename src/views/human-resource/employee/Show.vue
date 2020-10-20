@@ -229,7 +229,7 @@
                     <td>{{ employee.communication_allowance | numberFormat }}</td>
                   </tr>
                   <tr>
-                    <td><span class="font-w700">{{ $t('employee scorer') | titlecase }}</span></td>
+                    <td><span class="font-w700">{{ $t('employee assessor') | titlecase }}</span></td>
                     <td>
                       <ul>
                         <li
