@@ -1,10 +1,10 @@
 {
   "name": "point-cloud",
-  "version": "0.15.39",
+  "version": "0.15.40",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "yarn;vue-cli-service build --dest build/0.15.39",
+    "build": "yarn;vue-cli-service build --dest build/0.15.40",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint"
