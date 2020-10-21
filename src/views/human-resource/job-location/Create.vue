@@ -39,7 +39,7 @@
             <p-form-row
               id="base_salary"
               name="base_salary"
-              :label="$t('base salary')"
+              :label="$t('area value')"
             >
               <div
                 slot="body"
