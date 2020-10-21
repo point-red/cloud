@@ -212,7 +212,7 @@
 
             <p-separator />
 
-            <h5>{{ $t('job info') | uppercase }}</h5>
+            <h5>{{ $t('employee information') | uppercase }}</h5>
             <hr>
             <p-form-row
               id="group"
