@@ -46,7 +46,7 @@
             type="submit"
             class="btn btn-sm btn-primary"
           >
-            {{ $t('add') | uppercase }}
+            {{ $t('save') | uppercase }}
           </button>
         </div>
       </sweet-modal>
