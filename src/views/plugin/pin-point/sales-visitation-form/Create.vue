@@ -274,76 +274,6 @@
           </div>
         </p-form-row>
 
-        <p-table>
-          <tr slot="p-head">
-            <th>Item</th>
-            <th>Jumlah</th>
-            <th>Harga Satuan</th>
-            <th>Total</th>
-          </tr>
-          <tr
-            v-for="(row, index) in form.items"
-            slot="p-body"
-            :key="'row-' + index"
-          >
-            <td>
-              <span
-                class="select-link"
-                @click="$refs.item.open(index)"
-              >
-                {{ row.item_label || $t('select') | uppercase }}
-              </span>
-            </td>
-            <td>
-              <p-quantity
-                :id="'quantity' + index"
-                v-model="row.quantity"
-                :name="'quantity' + index"
-                :item-id="row.item_id"
-                :units="row.units"
-                :unit="{
-                  name: row.unit,
-                  label: row.unit,
-                  converter: row.converter
-                }"
-                :max="row.quantity_pending * 1"
-                :readonly="onClickUnit(row)"
-                @choosen="chooseUnit($event, row)"
-                @click.native="onClickQuantity(row, index)"
-              />
-            </td>
-            <td>
-              <p-form-number
-                :id="'price' + index"
-                v-model="row.price"
-                :name="'price' + index"
-                :disabled="row.item_id == null"
-                @keyup.native="calculate"
-              />
-            </td>
-            <td>
-              <p-form-number
-                :id="'total' + index"
-                v-model="row.total"
-                :name="'total' + index"
-                :disabled="true"
-              />
-            </td>
-          </tr>
-          <tr slot="p-body">
-            <td />
-            <td />
-            <td>Total</td>
-            <td>
-              <p-form-number
-                v-model="form.total_price"
-                :readonly="true"
-                :is-text-right="true"
-              />
-            </td>
-          </tr>
-        </p-table>
-
         <hr>
 
         <p-form-row :label="$t('payment method') | titlecase">
@@ -434,6 +364,76 @@
             />
           </div>
         </p-form-row>
+
+        <p-table>
+          <tr slot="p-head">
+            <th>Item</th>
+            <th>Jumlah</th>
+            <th>Harga Satuan</th>
+            <th>Total</th>
+          </tr>
+          <tr
+            v-for="(row, index) in form.items"
+            slot="p-body"
+            :key="'row-' + index"
+          >
+            <td>
+              <span
+                class="select-link"
+                @click="$refs.item.open(index)"
+              >
+                {{ row.item_label || $t('select') | uppercase }}
+              </span>
+            </td>
+            <td>
+              <p-quantity
+                :id="'quantity' + index"
+                v-model="row.quantity"
+                :name="'quantity' + index"
+                :item-id="row.item_id"
+                :units="row.units"
+                :unit="{
+                  name: row.unit,
+                  label: row.unit,
+                  converter: row.converter
+                }"
+                :max="row.quantity_pending * 1"
+                :readonly="onClickUnit(row)"
+                @choosen="chooseUnit($event, row)"
+                @click.native="onClickQuantity(row, index)"
+              />
+            </td>
+            <td>
+              <p-form-number
+                :id="'price' + index"
+                v-model="row.price"
+                :name="'price' + index"
+                :disabled="row.item_id == null"
+                @keyup.native="calculate"
+              />
+            </td>
+            <td>
+              <p-form-number
+                :id="'total' + index"
+                v-model="row.total"
+                :name="'total' + index"
+                :disabled="true"
+              />
+            </td>
+          </tr>
+          <tr slot="p-body">
+            <td />
+            <td />
+            <td>Total</td>
+            <td>
+              <p-form-number
+                v-model="form.total_price"
+                :readonly="true"
+                :is-text-right="true"
+              />
+            </td>
+          </tr>
+        </p-table>
 
         <hr>
 
@@ -580,6 +580,9 @@ export default {
       this.form.warehouse_id = option.id
     },
     onClickQuantity (row, index) {
+      if (this.form.payment_method == 'sell-out' || this.form.payment_method == 'taking-order') {
+        return
+      }
       if (row.require_expiry_date == 1 || row.require_production_number == 1) {
         row.warehouse_id = this.warehouseId
         row.index = index
@@ -587,7 +590,10 @@ export default {
       }
     },
     onClickUnit (row) {
-      console.log(row)
+      if (this.form.payment_method == 'sell-out' || this.form.payment_method == 'taking-order') {
+        return false
+      }
+
       if (row.item || row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
         return true
       }
