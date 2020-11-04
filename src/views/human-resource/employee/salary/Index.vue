@@ -250,6 +250,7 @@ export default {
         .then((response) => {
           this.isSaving = false
           this.$refs.delete.close()
+          this.getEmployeeSalaryRequest()
         }, (error) => {
           this.isSaving = false
           this.$notification.error('Delete failed', error.message)

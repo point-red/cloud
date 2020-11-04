@@ -50,13 +50,25 @@
               </div>
             </p-form-row>
             <p-form-row
-              id="automated-code-name"
-              ref="automated-code-name"
-              v-model="form.automated_code_name"
-              :label="$t('source')"
-              name="automated-code-name"
-              readonly
-            />
+              id="automated-code-2"
+              name="automated-code-2"
+              label="Source"
+            >
+              <div
+                slot="body"
+                class="col-form-label col-lg-9"
+              >
+                <p-select-modal
+                  id="automated-code-2"
+                  :title="'select source'"
+                  :value="form.automated_code_name"
+                  :choosen="form.automated_code_name"
+                  :options="automatedCodeOptions"
+                  @choosen="chooseAutomatedCode"
+                  @search="searchAutomatedCode"
+                />
+              </div>
+            </p-form-row>
           </div>
         </div>
         <div class="pull-right">
@@ -93,7 +105,17 @@ export default {
         weight: null,
         automated_code: null,
         automated_code_name: null
-      })
+      }),
+      automatedCodeOptionsTemplate: [
+        { id: 'balance', label: 'Balance SKU Area' },
+        { id: 'achievement_national_call', label: '%C National Achievement' },
+        { id: 'achievement_national_effective_call', label: '%EC National Achievement' },
+        { id: 'achievement_national_value', label: '%Value National Achievement' },
+        { id: 'achievement_area_call', label: '%C Area Achievement' },
+        { id: 'achievement_area_effective_call', label: '%EC Area Achievement' },
+        { id: 'achievement_area_value', label: '%Value Area Achievement' }
+      ],
+      automatedCodeOptions: []
     }
   },
   computed: {
@@ -101,6 +123,34 @@ export default {
   },
   methods: {
     ...mapActions('humanResourceEmployeeAdditionalComponent', ['update', 'find']),
+    getAvailableAutomatedCode () {
+      this.automatedCodeOptions = []
+      for (var i in this.automatedCodeOptionsTemplate) {
+        this.automatedCodeOptions.push({
+          id: this.automatedCodeOptionsTemplate[i].id,
+          label: this.automatedCodeOptionsTemplate[i].label
+        })
+      }
+    },
+    chooseAutomatedCode (value) {
+      this.form.automated_code = value.id
+      this.form.automated_code_name = value.label
+    },
+    searchAutomatedCode (value) {
+      this.getAvailableAutomatedCode()
+
+      var filtered = this.automatedCodeOptions.filter((str) => {
+        return str.label.toLowerCase().indexOf(value.toLowerCase()) >= 0
+      })
+
+      this.automatedCodeOptions = []
+      for (var i = 0; i < filtered.length; i++) {
+        this.automatedCodeOptions.push({
+          id: filtered[i].id,
+          label: filtered[i].label
+        })
+      }
+    },
     findAdditionalComponent () {
       this.isLoading = true
       this.find({
@@ -140,6 +190,7 @@ export default {
         })
     },
     open (additionalComponent) {
+      this.getAvailableAutomatedCode()
       this.$refs.modal.open()
       this.form.id = additionalComponent.id
       this.findAdditionalComponent()
