@@ -133,7 +133,15 @@
                 <th class="text-center">
                   {{ index + 1 }}
                 </th>
-                <td>{{ row.item.label }}</td>
+                <td>
+                  {{ row.item.label }}
+                  <template v-if="row.production_number">
+                    (PID: {{ row.production_number }})
+                  </template>
+                  <template v-if="row.item.require_expiry_date">
+                    (E/D: {{ row.expiry_date | dateFormat('DD MMMM YYYY') }})
+                  </template>
+                </td>
                 <td class="text-right">
                   {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
