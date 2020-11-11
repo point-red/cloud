@@ -14,6 +14,14 @@
         @keydown.enter.prevent=""
       >
       <hr>
+      <button
+        type="button"
+        class="btn btn-sm btn-block btn-primary"
+        @click="update()"
+      >
+        {{ $t('update') | uppercase }}
+      </button>
+      <hr>
       <div v-if="isLoading">
         <h3 class="text-center">
           Loading ...
