@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div
-      v-if="($permission.has('create employee assessment') && isShow(employee.scorers) || $permission.has('read employee assessment'))"
+      v-if="$plugin.has('KPI') && ($permission.has('create employee assessment') && isShow(employee.scorers) || $permission.has('read employee assessment'))"
       class="col-sm-6 col-xl-3"
     >
       <div class="block block-themed text-center">
