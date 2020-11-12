@@ -138,7 +138,6 @@ export default {
       this.getGroupRequest()
     }, 300),
     onAdded (group) {
-      this.searchText = group.name
       this.getGroupRequest()
     }
   }

@@ -149,7 +149,6 @@ export default {
       this.getJobLocationRequest()
     }, 300),
     onAdded (jobLocation) {
-      this.searchText = jobLocation.name
       this.getJobLocationRequest()
     }
   }

@@ -139,7 +139,6 @@ export default {
       this.getStatusRequest()
     }, 300),
     onAdded (status) {
-      this.searchText = status.name
       this.getStatusRequest()
     }
   }
