@@ -10,35 +10,42 @@
         title="Assign Kpi Template"
       >
         <template slot="content">
-          <div
-            v-if="templates.length > 0"
-            class="list-group mb-20"
-          >
-            <template v-for="(templateKpi, templateIndex) in templates">
-              <a
-                :key="templateIndex"
-                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-                :class="{
-                  'active': selectedIndex === templateIndex
-                }"
-                href="javascript:void(0)"
-                @click="choose(templateKpi, templateIndex)"
-                @dblclick="chooseAndSubmit(templateKpi, templateIndex)"
-              >
-                <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ templateKpi.name }}</span>
-              </a>
-            </template>
+          <div v-if="isLoading">
+            <h3 class="text-center">
+              Loading ...
+            </h3>
           </div>
           <div v-else>
-            <h5 class="text-center">
-              KPI Template not found
-            </h5>
-            <router-link
-              to="/human-resource/kpi"
-              class="btn btn-primary"
+            <div
+              v-if="templates.length > 0"
+              class="list-group mb-20"
             >
-              Create new KPI Template
-            </router-link>
+              <template v-for="(templateKpi, templateIndex) in templates">
+                <a
+                  :key="templateIndex"
+                  class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                  :class="{
+                    'active': selectedIndex === templateIndex
+                  }"
+                  href="javascript:void(0)"
+                  @click="choose(templateKpi, templateIndex)"
+                  @dblclick="chooseAndSubmit(templateKpi, templateIndex)"
+                >
+                  <span><i class="fa fa-fw fa-hand-o-right mr-5" /> {{ templateKpi.name }}</span>
+                </a>
+              </template>
+            </div>
+            <div v-else>
+              <h5 class="text-center">
+                KPI Template not found
+              </h5>
+              <router-link
+                to="/human-resource/kpi"
+                class="btn btn-primary"
+              >
+                Create new KPI Template
+              </router-link>
+            </div>
           </div>
         </template>
         <template slot="footer">
@@ -79,9 +86,11 @@ export default {
     ...mapGetters('humanResourceKpiTemplate', ['templates'])
   },
   created () {
+    this.isLoading = true
     this.getKpiTemplates().then(response => {
-      //
+      this.isLoading = false
     }).catch(error => {
+      this.isLoading = false
       console.log(JSON.stringify(error))
     })
   },
