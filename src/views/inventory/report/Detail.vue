@@ -276,7 +276,7 @@ export default {
       searchText: this.$route.query.search,
       page: this.$route.query.page * 1 || 1,
       lastPage: 1,
-      limit: 10,
+      limit: 500,
       item_label: null,
       warehouseId: this.$route.params.warehouseId,
       warehouseName: null,
