@@ -129,6 +129,7 @@
               <th>Number</th>
               <th>Date</th>
               <th>Supplier</th>
+              <th>Warehouse</th>
               <th>Item</th>
               <th>Notes</th>
               <th class="text-right">
@@ -162,6 +163,7 @@
                     {{ purchaseReceive.supplier.name }}
                   </template>
                 </td>
+                <td>{{ purchaseReceive.warehouse_name }}</td>
                 <td>{{ purchaseReceiveItem.item.name }}</td>
                 <td>{{ purchaseReceiveItem.notes }}</td>
                 <td class="text-right">

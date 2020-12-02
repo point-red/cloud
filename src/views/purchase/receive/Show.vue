@@ -82,6 +82,12 @@
                 </tr>
                 <tr v-if="purchaseReceive.driver">
                   <td class="font-weight-bold">
+                    {{ $t('warehouse') | uppercase }}
+                  </td>
+                  <td>{{ purchaseReceive.warehouse.name }}</td>
+                </tr>
+                <tr v-if="purchaseReceive.driver">
+                  <td class="font-weight-bold">
                     {{ $t('driver') | uppercase }}
                   </td>
                   <td>{{ purchaseReceive.driver }}</td>
