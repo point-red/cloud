@@ -81,6 +81,13 @@
           <hr>
           <div class="row">
             <div class="col-sm-12 ml-10 mb-10">
+              BRANCH :
+              <span
+                class="select-link mr-10"
+                @click="$refs.branch.open()"
+              >
+                {{ branchName || $t('select') | uppercase }}
+              </span>
               <button
                 type="button"
                 :disabled="isExporting"
@@ -328,6 +335,10 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-branch
+      ref="branch"
+      @choosen="chooseBranch"
+    />
   </div>
 </template>
 
@@ -354,6 +365,9 @@ export default {
         start: this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00'),
         end: this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59')
       },
+      branch: {},
+      branchId: null,
+      branchName: '',
       isFilterOpen: false,
       isLoading: false,
       isExporting: false,
@@ -366,7 +380,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('pluginPinPointSalesVisitationForm', ['forms', 'pagination'])
+    ...mapGetters('pluginPinPointSalesVisitationForm', ['forms', 'pagination']),
+    ...mapGetters('auth', ['authUser'])
   },
   watch: {
     date: {
@@ -385,6 +400,8 @@ export default {
   },
   created () {
     this.search()
+    this.branchId = this.authUser.branch.id
+    this.branchName = this.authUser.branch.name
   },
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),
@@ -407,6 +424,14 @@ export default {
     check (form) {
       this.$alert.error('', form.photo)
     },
+    chooseBranch (option) {
+      this.authUser.branches.forEach(element => {
+        if (option.id == element.id) {
+          this.branchId = option.id
+          this.branchName = option.name
+        }
+      })
+    },
     search () {
       this.isLoading = true
       this.get({
@@ -423,7 +448,8 @@ export default {
             'sales_visitation.district': this.searchText,
             'sales_visitation.sub_district': this.searchText,
             'sales_visitation.phone': this.searchText,
-            'sales_visitation.notes': this.searchText
+            'sales_visitation.notes': this.searchText,
+            'sales_visitation.branch_id': this.branchId
           },
           limit: this.limit,
           page: this.page
@@ -441,7 +467,8 @@ export default {
       this.export({
         date_from: this.date.start,
         date_to: this.date.end,
-        file_export: file
+        file_export: file,
+        branch_id: this.branchId
       }).then(response => {
         this.downloadLink = response.data.url
       }).catch(error => {
