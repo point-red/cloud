@@ -311,6 +311,7 @@
                 :readonly="onClickUnit(row)"
                 @choosen="chooseUnit($event, row)"
                 @click.native="onClickQuantity(row, index)"
+                @keyup.native="calculate"
               />
             </td>
             <td>
