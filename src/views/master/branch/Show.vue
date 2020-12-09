@@ -199,6 +199,7 @@ export default {
           this.branch.users.push({
             id: userId
           })
+          this.findBranch()
         }).finally(() => {
           this.isUpdating = false
         })

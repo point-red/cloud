@@ -209,6 +209,7 @@ export default {
           this.warehouse.users.push({
             id: userId
           })
+          this.findWarehouse()
         })
       }
     },
