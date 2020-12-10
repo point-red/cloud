@@ -154,13 +154,29 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterCustomer', ['customer'])
+    ...mapGetters('masterCustomer', ['customer']),
+    ...mapGetters('masterPricingGroup', ['groups'])
   },
   beforeDestroy () {
     this.close()
   },
+  mounted () {
+    this.get({
+      params: {
+        limit: 1
+      }
+    }).then(response => {
+      this.options = []
+      this.mutableLabel = ''
+      response.data.map((key, value) => {
+        this.form.pricing_group_id = key.id
+        this.form.pricing_group_label = key.label
+      })
+    })
+  },
   methods: {
     ...mapActions('masterCustomer', ['create']),
+    ...mapActions('masterPricingGroup', ['get']),
     onClose () {
       this.isFailed = false
       Object.assign(this.$data, this.$options.data.call(this))
