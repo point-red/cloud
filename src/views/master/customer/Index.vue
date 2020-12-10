@@ -148,6 +148,7 @@
               <th>Email</th>
               <th>Address</th>
               <th>Phone</th>
+              <th>Branch</th>
               <th>Group</th>
               <th>Pricing Group</th>
             </tr>
@@ -191,6 +192,7 @@
               <td>{{ customer.email }}</td>
               <td>{{ customer.address }}</td>
               <td>{{ customer.phone }}</td>
+              <td><span v-if="customer.branch">{{ customer.branch.name }}</span></td>
               <td>
                 <template v-for="(group, index) in customer.groups">
                   {{ group.name }}<template v-if="customer.groups.length != index + 1">
@@ -408,7 +410,7 @@ export default {
             'customer_group.id': this.groupId
           },
           is_archived: this.statusId,
-          includes: 'groups;pricingGroup',
+          includes: 'groups;pricingGroup;branch',
           limit: this.limit,
           page: this.page
         }
