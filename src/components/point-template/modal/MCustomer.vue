@@ -135,7 +135,7 @@ export default {
         params: {
           sort_by: 'name',
           limit: 50,
-          includes: 'addresses;phones;emails',
+          includes: 'addresses;phones;emails;groups',
           filter_like: {
             code: this.searchText,
             name: this.searchText
@@ -148,7 +148,8 @@ export default {
             id: key.id,
             pricing_group_id: key.pricing_group_id || 1,
             name: key.name,
-            label: key.label
+            label: key.label,
+            groups: key.groups
           }
           if (key.addresses.length > 0) {
             obj.address = key.addresses[0].address

@@ -25,7 +25,7 @@
       />
       <p-box
         v-if="$permission.has('read play book instruction') || $permission.has('read play book procedure')"
-        name="Aproval"
+        name="Approval"
         link="/plugin/play-book/approval/procedure"
         icon="fa fa-check-square"
       />

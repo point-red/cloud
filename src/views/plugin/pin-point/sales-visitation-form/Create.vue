@@ -646,6 +646,10 @@ export default {
       })
     },
     chooseCustomer (option) {
+      if (option.groups.length >= 1) {
+        this.form.group_id = option.groups[0].id
+        this.form.group_name = option.groups[0].name
+      }
       this.form.customer_id = option.id
       this.form.customer_name = option.name
     },

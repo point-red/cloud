@@ -85,13 +85,13 @@
                 {{ $t('weight') }}
               </th>
               <th class="text-center">
-                {{ $t('target') }}
+                {{ $t('max score') }}
               </th>
               <th class="text-center">
                 {{ $t('score') }}
               </th>
               <th class="text-center">
-                {{ $t('value') }}
+                %
               </th>
             </tr>
             <tr

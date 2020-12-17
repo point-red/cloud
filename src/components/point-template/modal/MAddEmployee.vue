@@ -3,7 +3,7 @@
     <sweet-modal
       ref="modal"
       width="100%"
-      :title="$t('add employee') | uppercase"
+      :title="$t('employee information') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >
@@ -212,7 +212,7 @@
 
             <p-separator />
 
-            <h5>{{ $t('employee information') | uppercase }}</h5>
+            <h5>{{ $t('job information') | uppercase }}</h5>
             <hr>
             <p-form-row
               id="group"
