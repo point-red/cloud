@@ -81,6 +81,7 @@
           <p-table>
             <tr slot="p-head">
               <th>{{ $t('date') }}</th>
+              <th>{{ $t('kpi template') }}</th>
               <th class="text-center">
                 {{ $t('weight') }}
               </th>
@@ -136,6 +137,9 @@
                     {{ assessment.date | dateFormat('DD MMMM YYYY') }}
                   </template>
                 </template>
+              </td>
+              <td class="text-center">
+                {{ assessment.name }}
               </td>
               <td class="text-center">
                 {{ assessment.weight | numberFormat }}
