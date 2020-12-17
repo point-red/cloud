@@ -138,7 +138,7 @@
                   </template>
                 </template>
               </td>
-              <td class="text-center">
+              <td>
                 {{ assessment.name }}
               </td>
               <td class="text-center">
