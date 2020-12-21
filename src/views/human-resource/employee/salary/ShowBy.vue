@@ -996,16 +996,16 @@
                 <span class="">{{ salariesBy.communication_allowance | numberFormat }}</span>
               </td>
               <td v-if="showColumnWeek2">
-                <span class="">{{ salariesBy.communication_allowance | numberFormat }}</span>
+                <span class="" />
               </td>
               <td v-if="showColumnWeek3">
-                <span class="">{{ salariesBy.communication_allowance | numberFormat }}</span>
+                <span class="" />
               </td>
               <td v-if="showColumnWeek4">
-                <span class="">{{ salariesBy.communication_allowance | numberFormat }}</span>
+                <span class="" />
               </td>
               <td v-if="showColumnWeek5">
-                <span class="">{{ salariesBy.communication_allowance | numberFormat }}</span>
+                <span class="" />
               </td>
               <td><span class="" /></td>
             </tr>
@@ -1017,16 +1017,16 @@
                 <span class="">{{ salariesBy.functional_allowance | numberFormat }}</span>
               </td>
               <td v-if="showColumnWeek2">
-                <span class="">{{ salariesBy.functional_allowance | numberFormat }}</span>
+                <span class="" />
               </td>
               <td v-if="showColumnWeek3">
-                <span class="">{{ salariesBy.functional_allowance | numberFormat }}</span>
+                <span class="" />
               </td>
               <td v-if="showColumnWeek4">
-                <span class="">{{ salariesBy.functional_allowance | numberFormat }}</span>
+                <span class="" />
               </td>
               <td v-if="showColumnWeek5">
-                <span class="">{{ salariesBy.functional_allowance | numberFormat }}</span>
+                <span class="" />
               </td>
               <td><span class="" /></td>
             </tr>
@@ -1196,7 +1196,17 @@ export default {
       total_settlement_difference_minus_amount: 0,
       total_company_profit_difference_minus_amount: 0,
       total_weekly_sales: 0,
-      amount_received_difference: 0
+      amount_received_difference: 0,
+      communication_allowance_week_1: 0,
+      communication_allowance_week_2: 0,
+      communication_allowance_week_3: 0,
+      communication_allowance_week_4: 0,
+      communication_allowance_week_5: 0,
+      functional_allowance_week_1: 0,
+      functional_allowance_week_2: 0,
+      functional_allowance_week_3: 0,
+      functional_allowance_week_4: 0,
+      functional_allowance_week_5: 0
     }
   },
   computed: {
@@ -1211,7 +1221,6 @@ export default {
       type: this.type
     }).then(
       (response) => {
-        this.isLoading = false
         if (this.type === 'monthly') {
           this.showColumnWeek1 = true
           this.showColumnWeek2 = true
@@ -1238,6 +1247,17 @@ export default {
         }
         this.$set(this, 'salaryData', this.salariesBy)
         this.$set(this, 'additionalData', this.additionalBy)
+        this.communication_allowance_week_1 = this.salariesBy.communication_allowance
+        this.communication_allowance_week_2 = 0
+        this.communication_allowance_week_3 = 0
+        this.communication_allowance_week_4 = 0
+        this.communication_allowance_week_5 = 0
+        this.functional_allowance_week_1 = this.salariesBy.functional_allowance
+        this.functional_allowance_week_2 = 0
+        this.functional_allowance_week_3 = 0
+        this.functional_allowance_week_4 = 0
+        this.functional_allowance_week_5 = 0
+        this.isLoading = false
         this.calculate()
       },
       (error) => {
@@ -1342,11 +1362,7 @@ export default {
       this.total_amount_received_week_4 = Number(this.total_amount_week_4 || 0)
       this.total_amount_received_week_5 = Number(this.total_amount_week_5 || 0)
 
-      if (this.getWeekOfMonth(this.salariesBy.start_date) === 1) {
-        this.total_amount_received_week_1 = this.total_amount_received_week_1 + Number(this.salariesBy.communication_allowance || 0) + Number(this.salariesBy.functional_allowance || 0)
-      }
-
-      this.total_amount_received = Number(this.total_amount_received_week_1 || 0) + Number(this.total_amount_received_week_2 || 0) + Number(this.total_amount_received_week_3 || 0) + Number(this.total_amount_received_week_4 || 0) + Number(this.total_amount_received_week_5 || 0)
+      this.total_amount_received = Number(this.total_amount_received_week_1 || 0) + Number(this.total_amount_received_week_2 || 0) + Number(this.total_amount_received_week_3 || 0) + Number(this.total_amount_received_week_4 || 0) + Number(this.total_amount_received_week_5 || 0) + Number(this.communication_allowance_week_1 || 0) + Number(this.functional_allowance_week_1 || 0) + Number(this.communication_allowance_week_2 || 0) + Number(this.functional_allowance_week_2 || 0) + Number(this.communication_allowance_week_3 || 0) + Number(this.functional_allowance_week_3 || 0) + Number(this.communication_allowance_week_4 || 0) + Number(this.functional_allowance_week_4 || 0) + Number(this.communication_allowance_week_5 || 0) + Number(this.functional_allowance_week_5 || 0)
 
       this.receivable_week_1 = Number(this.salariesBy.payment_from_marketing_week1 || 0) + Number(this.salariesBy.payment_from_sales_week1 || 0) + Number(this.salariesBy.payment_from_spg_week1 || 0) + Number(this.salariesBy.cash_payment_week1 || 0)
       this.receivable_week_2 = Number(this.salariesBy.payment_from_marketing_week2 || 0) + Number(this.salariesBy.payment_from_sales_week2 || 0) + Number(this.salariesBy.payment_from_spg_week2 || 0) + Number(this.salariesBy.cash_payment_week2 || 0)
@@ -1360,17 +1376,17 @@ export default {
       this.company_profit_week_4 = 0.05 * this.receivable_week_4
       this.company_profit_week_5 = 0.05 * this.receivable_week_5
 
-      this.settlement_difference_minus_amount_week_1 = this.receivable_week_1 - Number(this.total_amount_received_week_1 || 0)
-      this.settlement_difference_minus_amount_week_2 = this.receivable_week_2 - Number(this.total_amount_received_week_2 || 0)
-      this.settlement_difference_minus_amount_week_3 = this.receivable_week_3 - Number(this.total_amount_received_week_3 || 0)
-      this.settlement_difference_minus_amount_week_4 = this.receivable_week_4 - Number(this.total_amount_received_week_4 || 0)
-      this.settlement_difference_minus_amount_week_5 = this.receivable_week_5 - Number(this.total_amount_received_week_5 || 0)
+      this.settlement_difference_minus_amount_week_1 = this.receivable_week_1 - Number(this.total_amount_received_week_1 || 0) - Number(this.communication_allowance_week_1 || 0) - Number(this.functional_allowance_week_1 || 0)
+      this.settlement_difference_minus_amount_week_2 = this.receivable_week_2 - Number(this.total_amount_received_week_2 || 0) - Number(this.communication_allowance_week_2 || 0) - Number(this.functional_allowance_week_2 || 0)
+      this.settlement_difference_minus_amount_week_3 = this.receivable_week_3 - Number(this.total_amount_received_week_3 || 0) - Number(this.communication_allowance_week_3 || 0) - Number(this.functional_allowance_week_3 || 0)
+      this.settlement_difference_minus_amount_week_4 = this.receivable_week_4 - Number(this.total_amount_received_week_4 || 0) - Number(this.communication_allowance_week_4 || 0) - Number(this.functional_allowance_week_4 || 0)
+      this.settlement_difference_minus_amount_week_5 = this.receivable_week_5 - Number(this.total_amount_received_week_5 || 0) - Number(this.communication_allowance_week_5 || 0) - Number(this.functional_allowance_week_5 || 0)
 
-      this.company_profit_difference_minus_amount_week_1 = Number(this.company_profit_week_1 || 0) - Number(this.total_amount_received_week_1 || 0)
-      this.company_profit_difference_minus_amount_week_2 = Number(this.company_profit_week_2 || 0) - Number(this.total_amount_received_week_2 || 0)
-      this.company_profit_difference_minus_amount_week_3 = Number(this.company_profit_week_3 || 0) - Number(this.total_amount_received_week_3 || 0)
-      this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4 || 0) - Number(this.total_amount_received_week_4 || 0)
-      this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5 || 0) - Number(this.total_amount_received_week_5 || 0)
+      this.company_profit_difference_minus_amount_week_1 = Number(this.company_profit_week_1 || 0) - Number(this.total_amount_received_week_1 || 0) - Number(this.communication_allowance_week_1 || 0) - Number(this.functional_allowance_week_1 || 0)
+      this.company_profit_difference_minus_amount_week_2 = Number(this.company_profit_week_2 || 0) - Number(this.total_amount_received_week_2 || 0) - Number(this.communication_allowance_week_2 || 0) - Number(this.functional_allowance_week_2 || 0)
+      this.company_profit_difference_minus_amount_week_3 = Number(this.company_profit_week_3 || 0) - Number(this.total_amount_received_week_3 || 0) - Number(this.communication_allowance_week_3 || 0) - Number(this.functional_allowance_week_3 || 0)
+      this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4 || 0) - Number(this.total_amount_received_week_4 || 0) - Number(this.communication_allowance_week_4 || 0) - Number(this.functional_allowance_week_4 || 0)
+      this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5 || 0) - Number(this.total_amount_received_week_5 || 0) - Number(this.communication_allowance_week_5 || 0) - Number(this.functional_allowance_week_5 || 0)
 
       var dayAverageDivisor = 0
       var totalMinimumComponentScore = 0

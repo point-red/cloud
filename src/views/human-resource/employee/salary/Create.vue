@@ -324,7 +324,7 @@
                   name="automated-weight"
                   :disabled="isSaving"
                   :is-text-right="false"
-                  @input="salaryAssessmentWeight"
+                  @input="salaryAchievementWeight"
                 />
               </td>
             </tr>
@@ -997,10 +997,10 @@
               <td />
               <td>{{ $t('communication allowance') | titlecase }}</td>
               <td><span class="">{{ form.communication_allowance | numberFormat }}</span></td>
-              <td><span class="">{{ form.communication_allowance | numberFormat }}</span></td>
-              <td><span class="">{{ form.communication_allowance | numberFormat }}</span></td>
-              <td><span class="">{{ form.communication_allowance | numberFormat }}</span></td>
-              <td><span class="">{{ form.communication_allowance | numberFormat }}</span></td>
+              <td><span class="" /></td>
+              <td><span class="" /></td>
+              <td><span class="" /></td>
+              <td><span class="" /></td>
               <td><span class="" /></td>
             </tr>
 
@@ -1008,10 +1008,10 @@
               <td />
               <td>{{ $t('functional allowance') | titlecase }}</td>
               <td><span class="">{{ form.functional_allowance | numberFormat }}</span></td>
-              <td><span class="">{{ form.functional_allowance | numberFormat }}</span></td>
-              <td><span class="">{{ form.functional_allowance | numberFormat }}</span></td>
-              <td><span class="">{{ form.functional_allowance | numberFormat }}</span></td>
-              <td><span class="">{{ form.functional_allowance | numberFormat }}</span></td>
+              <td><span class="" /></td>
+              <td><span class="" /></td>
+              <td><span class="" /></td>
+              <td><span class="" /></td>
               <td><span class="" /></td>
             </tr>
 
@@ -1210,7 +1210,17 @@ export default {
         multiplier_kpi: 0,
         daily_transport_allowance: 0,
         communication_allowance: 0,
+        communication_allowance_week_1: 0,
+        communication_allowance_week_2: 0,
+        communication_allowance_week_3: 0,
+        communication_allowance_week_4: 0,
+        communication_allowance_week_5: 0,
         functional_allowance: 0,
+        functional_allowance_week_1: 0,
+        functional_allowance_week_2: 0,
+        functional_allowance_week_3: 0,
+        functional_allowance_week_4: 0,
+        functional_allowance_week_5: 0,
         salary_assessment: {
           indicators: [],
           total: {}
@@ -1269,11 +1279,6 @@ export default {
         maximum_salary_amount: 0
       }),
       title: 'Salary',
-      active_days_percentage_week_1: 0,
-      active_days_percentage_week_2: 0,
-      active_days_percentage_week_3: 0,
-      active_days_percentage_week_4: 0,
-      active_days_percentage_week_5: 0,
       base_salary_week_1: 0,
       base_salary_week_2: 0,
       base_salary_week_3: 0,
@@ -1404,7 +1409,17 @@ export default {
       .then((response) => {
         this.form.daily_transport_allowance = Number(this.employee.daily_transport_allowance) || 0
         this.form.communication_allowance = Number(this.employee.communication_allowance) || 0
+        this.form.communication_allowance_week_1 = this.form.communication_allowance
+        this.form.communication_allowance_week_2 = 0
+        this.form.communication_allowance_week_3 = 0
+        this.form.communication_allowance_week_4 = 0
+        this.form.communication_allowance_week_5 = 0
         this.form.functional_allowance = Number(this.employee.functional_allowance) || 0
+        this.form.functional_allowance_week_1 = this.form.functional_allowance
+        this.form.functional_allowance_week_2 = 0
+        this.form.functional_allowance_week_3 = 0
+        this.form.functional_allowance_week_4 = 0
+        this.form.functional_allowance_week_5 = 0
         if (this.employee.job_location) {
           this.form.job_location = this.employee.job_location.name
           this.form.base_salary = Number(this.employee.job_location.base_salary) || 0
@@ -1544,41 +1559,26 @@ export default {
       this.form.active_days_in_month = this.form.active_days_in_month || 0
 
       if (Number(this.form.active_days_in_month) != 0) {
-        const baseSalaryPerWeek = (this.form.active_days_in_month || 0) != 0 ? (this.form.base_salary || 0) / Number(this.form.active_days_in_month || 0) : 0
-        const baseMultiplierKpiPerWeek = (this.form.active_days_in_month || 0) != 0 ? (this.form.multiplier_kpi || 0) / Number(this.form.active_days_in_month || 0) : 0
-
         if (this.form.salary_assessment.indicators.length != 0) {
-          const percentageCallWeek1 = (Number(this.form.salary_assessment.indicators[0].score_percentage.week1 || 0)) / 100
-          const percentageCallWeek2 = (Number(this.form.salary_assessment.indicators[0].score_percentage.week2 || 0)) / 100
-          const percentageCallWeek3 = (Number(this.form.salary_assessment.indicators[0].score_percentage.week3 || 0)) / 100
-          const percentageCallWeek4 = (Number(this.form.salary_assessment.indicators[0].score_percentage.week4 || 0)) / 100
-          const percentageCallWeek5 = (Number(this.form.salary_assessment.indicators[0].score_percentage.week5 || 0)) / 100
+          this.base_salary_week_1 = Number(this.form.base_salary / this.form.active_days_in_month * this.form.active_days_week_1 || 0)
+          this.base_salary_week_2 = Number(this.form.base_salary / this.form.active_days_in_month * this.form.active_days_week_2 || 0)
+          this.base_salary_week_3 = Number(this.form.base_salary / this.form.active_days_in_month * this.form.active_days_week_3 || 0)
+          this.base_salary_week_4 = Number(this.form.base_salary / this.form.active_days_in_month * this.form.active_days_week_4 || 0)
+          this.base_salary_week_5 = Number(this.form.base_salary / this.form.active_days_in_month * this.form.active_days_week_5 || 0)
 
-          this.active_days_percentage_week_1 = percentageCallWeek1 * Number(this.form.active_days_week_1 || 0)
-          this.active_days_percentage_week_2 = percentageCallWeek2 * Number(this.form.active_days_week_2 || 0)
-          this.active_days_percentage_week_3 = percentageCallWeek3 * Number(this.form.active_days_week_3 || 0)
-          this.active_days_percentage_week_4 = percentageCallWeek4 * Number(this.form.active_days_week_4 || 0)
-          this.active_days_percentage_week_5 = percentageCallWeek5 * Number(this.form.active_days_week_5 || 0)
-
-          this.base_salary_week_1 = baseSalaryPerWeek * this.active_days_percentage_week_1
-          this.base_salary_week_2 = baseSalaryPerWeek * this.active_days_percentage_week_2
-          this.base_salary_week_3 = baseSalaryPerWeek * this.active_days_percentage_week_3
-          this.base_salary_week_4 = baseSalaryPerWeek * this.active_days_percentage_week_4
-          this.base_salary_week_5 = baseSalaryPerWeek * this.active_days_percentage_week_5
-
-          this.real_transport_allowance_week_1 = this.form.daily_transport_allowance * this.active_days_percentage_week_1
-          this.real_transport_allowance_week_2 = this.form.daily_transport_allowance * this.active_days_percentage_week_2
-          this.real_transport_allowance_week_3 = this.form.daily_transport_allowance * this.active_days_percentage_week_3
-          this.real_transport_allowance_week_4 = this.form.daily_transport_allowance * this.active_days_percentage_week_4
-          this.real_transport_allowance_week_5 = this.form.daily_transport_allowance * this.active_days_percentage_week_5
+          this.real_transport_allowance_week_1 = Number(this.form.daily_transport_allowance * this.form.active_days_week_1 || 0)
+          this.real_transport_allowance_week_2 = Number(this.form.daily_transport_allowance * this.form.active_days_week_2 || 0)
+          this.real_transport_allowance_week_3 = Number(this.form.daily_transport_allowance * this.form.active_days_week_3 || 0)
+          this.real_transport_allowance_week_4 = Number(this.form.daily_transport_allowance * this.form.active_days_week_4 || 0)
+          this.real_transport_allowance_week_5 = Number(this.form.daily_transport_allowance * this.form.active_days_week_5 || 0)
 
           this.real_transport_allowance_total = this.real_transport_allowance_week_1 + this.real_transport_allowance_week_2 + this.real_transport_allowance_week_3 + this.real_transport_allowance_week_4 + this.real_transport_allowance_week_5
 
-          this.multiplier_kpi_week_1 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_1
-          this.multiplier_kpi_week_2 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_2
-          this.multiplier_kpi_week_3 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_3
-          this.multiplier_kpi_week_4 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_4
-          this.multiplier_kpi_week_5 = baseMultiplierKpiPerWeek * this.active_days_percentage_week_5
+          this.multiplier_kpi_week_1 = Number(this.form.multiplier_kpi / this.form.active_days_in_month * this.form.active_days_week_1 || 0)
+          this.multiplier_kpi_week_2 = Number(this.form.multiplier_kpi / this.form.active_days_in_month * this.form.active_days_week_2 || 0)
+          this.multiplier_kpi_week_3 = Number(this.form.multiplier_kpi / this.form.active_days_in_month * this.form.active_days_week_3 || 0)
+          this.multiplier_kpi_week_4 = Number(this.form.multiplier_kpi / this.form.active_days_in_month * this.form.active_days_week_4 || 0)
+          this.multiplier_kpi_week_5 = Number(this.form.multiplier_kpi / this.form.active_days_in_month * this.form.active_days_week_5 || 0)
         }
       }
 
@@ -1620,11 +1620,7 @@ export default {
       this.total_amount_received_week_4 = Number(this.total_amount_week_4 || 0)
       this.total_amount_received_week_5 = Number(this.total_amount_week_5 || 0)
 
-      if (this.getWeekOfMonth(this.form.date.start) === 1) {
-        this.total_amount_received_week_1 = this.total_amount_received_week_1 + Number(this.form.communication_allowance || 0) + Number(this.form.functional_allowance || 0)
-      }
-
-      this.total_amount_received = Number(this.total_amount_received_week_1 || 0) + Number(this.total_amount_received_week_2 || 0) + Number(this.total_amount_received_week_3 || 0) + Number(this.total_amount_received_week_4 || 0) + Number(this.total_amount_received_week_5 || 0)
+      this.total_amount_received = Number(this.total_amount_received_week_1 || 0) + Number(this.total_amount_received_week_2 || 0) + Number(this.total_amount_received_week_3 || 0) + Number(this.total_amount_received_week_4 || 0) + Number(this.total_amount_received_week_5 || 0) + Number(this.form.communication_allowance_week_1 || 0) + Number(this.form.functional_allowance_week_1 || 0) + Number(this.form.communication_allowance_week_2 || 0) + Number(this.form.functional_allowance_week_2 || 0) + Number(this.form.communication_allowance_week_3 || 0) + Number(this.form.functional_allowance_week_3 || 0) + Number(this.form.communication_allowance_week_4 || 0) + Number(this.form.functional_allowance_week_4 || 0) + Number(this.form.communication_allowance_week_5 || 0) + Number(this.form.functional_allowance_week_5 || 0)
 
       this.receivable_week_1 = Number(this.form.payment_from_marketing_week_1 || 0) + Number(this.form.payment_from_sales_week_1 || 0) + Number(this.form.payment_from_spg_week_1 || 0) + Number(this.form.cash_payment_week_1 || 0)
       this.receivable_week_2 = Number(this.form.payment_from_marketing_week_2 || 0) + Number(this.form.payment_from_sales_week_2 || 0) + Number(this.form.payment_from_spg_week_2 || 0) + Number(this.form.cash_payment_week_2 || 0)
@@ -1638,17 +1634,17 @@ export default {
       this.company_profit_week_4 = 0.05 * this.receivable_week_4
       this.company_profit_week_5 = 0.05 * this.receivable_week_5
 
-      this.settlement_difference_minus_amount_week_1 = this.receivable_week_1 - Number(this.total_amount_received_week_1 || 0)
-      this.settlement_difference_minus_amount_week_2 = this.receivable_week_2 - Number(this.total_amount_received_week_2 || 0)
-      this.settlement_difference_minus_amount_week_3 = this.receivable_week_3 - Number(this.total_amount_received_week_3 || 0)
-      this.settlement_difference_minus_amount_week_4 = this.receivable_week_4 - Number(this.total_amount_received_week_4 || 0)
-      this.settlement_difference_minus_amount_week_5 = this.receivable_week_5 - Number(this.total_amount_received_week_5 || 0)
+      this.settlement_difference_minus_amount_week_1 = this.receivable_week_1 - Number(this.total_amount_received_week_1 || 0) - Number(this.form.communication_allowance_week_1 || 0) - Number(this.form.functional_allowance_week_1 || 0)
+      this.settlement_difference_minus_amount_week_2 = this.receivable_week_2 - Number(this.total_amount_received_week_2 || 0) - Number(this.form.communication_allowance_week_2 || 0) - Number(this.form.functional_allowance_week_2 || 0)
+      this.settlement_difference_minus_amount_week_3 = this.receivable_week_3 - Number(this.total_amount_received_week_3 || 0) - Number(this.form.communication_allowance_week_3 || 0) - Number(this.form.functional_allowance_week_3 || 0)
+      this.settlement_difference_minus_amount_week_4 = this.receivable_week_4 - Number(this.total_amount_received_week_4 || 0) - Number(this.form.communication_allowance_week_4 || 0) - Number(this.form.functional_allowance_week_4 || 0)
+      this.settlement_difference_minus_amount_week_5 = this.receivable_week_5 - Number(this.total_amount_received_week_5 || 0) - Number(this.form.communication_allowance_week_5 || 0) - Number(this.form.functional_allowance_week_5 || 0)
 
-      this.company_profit_difference_minus_amount_week_1 = Number(this.company_profit_week_1 || 0) - Number(this.total_amount_received_week_1 || 0)
-      this.company_profit_difference_minus_amount_week_2 = Number(this.company_profit_week_2 || 0) - Number(this.total_amount_received_week_2 || 0)
-      this.company_profit_difference_minus_amount_week_3 = Number(this.company_profit_week_3 || 0) - Number(this.total_amount_received_week_3 || 0)
-      this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4 || 0) - Number(this.total_amount_received_week_4 || 0)
-      this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5 || 0) - Number(this.total_amount_received_week_5 || 0)
+      this.company_profit_difference_minus_amount_week_1 = Number(this.company_profit_week_1 || 0) - Number(this.total_amount_received_week_1 || 0) - Number(this.form.communication_allowance_week_1 || 0) - Number(this.form.functional_allowance_week_1 || 0)
+      this.company_profit_difference_minus_amount_week_2 = Number(this.company_profit_week_2 || 0) - Number(this.total_amount_received_week_2 || 0) - Number(this.form.communication_allowance_week_2 || 0) - Number(this.form.functional_allowance_week_2 || 0)
+      this.company_profit_difference_minus_amount_week_3 = Number(this.company_profit_week_3 || 0) - Number(this.total_amount_received_week_3 || 0) - Number(this.form.communication_allowance_week_3 || 0) - Number(this.form.functional_allowance_week_3 || 0)
+      this.company_profit_difference_minus_amount_week_4 = Number(this.company_profit_week_4 || 0) - Number(this.total_amount_received_week_4 || 0) - Number(this.form.communication_allowance_week_4 || 0) - Number(this.form.functional_allowance_week_4 || 0)
+      this.company_profit_difference_minus_amount_week_5 = Number(this.company_profit_week_5 || 0) - Number(this.total_amount_received_week_5 || 0) - Number(this.form.communication_allowance_week_5 || 0) - Number(this.form.functional_allowance_week_5 || 0)
 
       var dayAverageDivisor = 0
       var totalMinimumComponentScore = 0
