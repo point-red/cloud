@@ -50,6 +50,19 @@
         :title="title"
         :header="true"
       >
+        <!-- Search -->
+        <div class="input-group block mb-5">
+          <p-form-input
+            id="search-text"
+            ref="searchText"
+            v-model="searchText"
+            name="search-text"
+            placeholder="Search"
+            class="btn-block"
+            @input="filterSearch"
+          />
+        </div>
+        <!-- End Search -->
         <hr>
         <div class="text-center font-size-sm mb-10">
           <a
@@ -82,26 +95,6 @@
                 </div>
               </p-form-row>
             </div>
-            <!-- Search -->
-            <div class="col-sm-3 text-center">
-              <p-form-row
-                id="search"
-                name="search"
-                :label="$t('search')"
-                :is-horizontal="false"
-              >
-                <div slot="body">
-                  <input
-                    v-model="searchText"
-                    class="search"
-                    type="text"
-                    placeholder="Search KPI CATEGORY"
-                    @keyup.enter="searchKpi"
-                  >
-                </div>
-              </p-form-row>
-            </div>
-            <!-- End Search -->
           </div>
         </div>
         <hr>
@@ -258,6 +251,7 @@ import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 import axios from '@/axios'
+import debounce from 'lodash/debounce'
 
 export default {
   components: {
@@ -281,7 +275,8 @@ export default {
       lastPage: 1,
       isAdvanceFilter: false,
       statusId: this.$route.query.statusId,
-      statusLabel: null
+      statusLabel: null,
+      searchText: ''
     }
   },
   computed: {
@@ -485,7 +480,7 @@ export default {
       this.page = value
       this.getKpiTemplatesRequest()
     },
-    searchKpi () {
+    filterSearch: debounce(function (value) {
       this.isLoading = true
       this.getKpiTemplates({
         search: this.searchText,
@@ -497,7 +492,7 @@ export default {
         this.isLoading = false
         console.log(errors.data)
       })
-    }
+    }, 300)
   }
 }
 </script>
