@@ -34,6 +34,17 @@ const actions = {
           reject(error)
         })
     })
+  },
+  getAll ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/' + payload.itemId + '/all', payload)
+        .then(response => {
+          commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 
