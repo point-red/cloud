@@ -167,15 +167,13 @@
               <th>Form</th>
               <th>Date</th>
               <th>Item</th>
+              <th>Production Number</th>
               <th>Notes</th>
               <th class="text-right">
                 Quantity
               </th>
               <th class="text-center">
                 Approval Status
-              </th>
-              <th class="text-center">
-                Form Status
               </th>
             </tr>
             <template v-for="(inventoryAudit, index) in inventoryAudits">
@@ -206,6 +204,7 @@
                 </td>
                 <td>{{ inventoryAudit.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>{{ inventoryAuditItem.item.name }}</td>
+                <td>{{ inventoryAuditItem.production_number }}</td>
                 <td>{{ inventoryAuditItem.notes }}</td>
                 <td class="text-right">
                   {{ inventoryAuditItem.quantity | numberFormat }}
@@ -228,26 +227,6 @@
                     class="badge badge-success"
                   >
                     {{ $t('approved') | uppercase }}
-                  </div>
-                </td>
-                <td class="text-center">
-                  <div
-                    v-if="inventoryAudit.form.canceled == null && inventoryAudit.form.done == 0"
-                    class="badge badge-primary"
-                  >
-                    {{ $t('pending') | uppercase }}
-                  </div>
-                  <div
-                    v-if="inventoryAudit.form.canceled == null && inventoryAudit.form.done == 1"
-                    class="badge badge-success"
-                  >
-                    {{ $t('done') | uppercase }}
-                  </div>
-                  <div
-                    v-if="inventoryAudit.form.canceled == 1"
-                    class="badge badge-danger"
-                  >
-                    {{ $t('canceled') | uppercase }}
                   </div>
                 </td>
               </tr>
