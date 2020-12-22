@@ -82,6 +82,26 @@
                 </div>
               </p-form-row>
             </div>
+            <!-- Search -->
+            <div class="col-sm-3 text-center">
+              <p-form-row
+                id="search"
+                name="search"
+                :label="$t('search')"
+                :is-horizontal="false"
+              >
+                <div slot="body">
+                  <input
+                    v-model="searchText"
+                    class="search"
+                    type="text"
+                    placeholder="Search KPI CATEGORY"
+                    @keyup.enter="searchKpi"
+                  >
+                </div>
+              </p-form-row>
+            </div>
+            <!-- End Search -->
           </div>
         </div>
         <hr>
@@ -464,6 +484,19 @@ export default {
     updatePage (value) {
       this.page = value
       this.getKpiTemplatesRequest()
+    },
+    searchKpi () {
+      this.isLoading = true
+      this.getKpiTemplates({
+        search: this.searchText,
+        limit: this.limit,
+        page: this.page
+      }).then((response) => {
+        this.isLoading = false
+      }, (errors) => {
+        this.isLoading = false
+        console.log(errors.data)
+      })
     }
   }
 }
