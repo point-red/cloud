@@ -162,6 +162,17 @@
                   </router-link>
                 </li>
                 <li
+                  v-if="$permission.has('read expedition')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/master/expedition"
+                    active-class="active"
+                  >
+                    {{ $t('expedition') | uppercase }}
+                  </router-link>
+                </li>
+                <li
                   v-if="$permission.has('read warehouse')"
                   @click="toggleLeftSidebar('close-xs')"
                 >

@@ -3,6 +3,7 @@ import User from './user/routes'
 import Role from './role/routes'
 import Customer from './customer/routes'
 import CustomerGroup from './customer-group/routes'
+import Expedition from './expedition/routes'
 import Supplier from './supplier/routes'
 import SupplierGroup from './supplier-group/routes'
 import Allocation from './allocation/routes'
@@ -21,6 +22,7 @@ export default [
   ...Role,
   ...Customer,
   ...CustomerGroup,
+  ...Expedition,
   ...Supplier,
   ...SupplierGroup,
   ...Allocation,
