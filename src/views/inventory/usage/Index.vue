@@ -174,9 +174,6 @@
               <th class="text-center">
                 Approval Status
               </th>
-              <th class="text-center">
-                Form Status
-              </th>
             </tr>
             <template v-for="(inventoryUsage, index) in inventoryUsages">
               <tr
@@ -228,26 +225,6 @@
                     class="badge badge-success"
                   >
                     {{ $t('approved') | uppercase }}
-                  </div>
-                </td>
-                <td class="text-center">
-                  <div
-                    v-if="inventoryUsage.form.canceled == null && inventoryUsage.form.done == 0"
-                    class="badge badge-primary"
-                  >
-                    {{ $t('pending') | uppercase }}
-                  </div>
-                  <div
-                    v-if="inventoryUsage.form.canceled == null && inventoryUsage.form.done == 1"
-                    class="badge badge-success"
-                  >
-                    {{ $t('done') | uppercase }}
-                  </div>
-                  <div
-                    v-if="inventoryUsage.form.canceled == 1"
-                    class="badge badge-danger"
-                  >
-                    {{ $t('canceled') | uppercase }}
                   </div>
                 </td>
               </tr>
