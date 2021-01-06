@@ -1,7 +1,7 @@
 <template>
   <sweet-modal
     ref="modal"
-    :title="'select sales order' | uppercase"
+    :title="'select delivery order' | uppercase"
     overlay-theme="dark"
     @close="onClose()"
   >
@@ -110,13 +110,13 @@ export default {
     }, 300)
   },
   methods: {
-    ...mapActions('salesOrder', ['get']),
+    ...mapActions('salesDeliveryOrder', ['get']),
     search () {
       this.isLoading = true
       this.get({
         params: {
           join: 'form,items,item',
-          fields: 'sales_order.*',
+          fields: 'sales_delivery_order.*',
           sort_by: '-form.number',
           group_by: 'form.id',
           filter_form: 'activePending;approvalApproved',

@@ -18,6 +18,9 @@ const state = {
     },
     customer: {
       name: null
+    },
+    warehouse: {
+      name: null
     }
   },
   deliveryNotes: [],

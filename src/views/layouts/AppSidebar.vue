@@ -395,6 +395,17 @@
                   </router-link>
                 </li>
                 <li
+                  v-if="$permission.has('read sales delivery note')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/sales/delivery-note"
+                    active-class="active"
+                  >
+                    {{ $t('delivery note') | uppercase }}
+                  </router-link>
+                </li>
+                <li
                   v-if="$permission.has('read sales order')"
                   @click="toggleLeftSidebar('close-xs')"
                 >
