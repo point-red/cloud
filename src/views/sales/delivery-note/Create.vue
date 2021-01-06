@@ -65,6 +65,36 @@
                       >{{ form.warehouse_name || $t('select') | uppercase }}</span>
                     </td>
                   </tr>
+                  <tr>
+                    <td class="font-weight-bold">
+                      {{ $t('driver') | uppercase }}
+                    </td>
+                    <td>
+                      <p-form-input
+                        id="driver"
+                        v-model="form.driver"
+                        name="driver"
+                        :label="$t('driver')"
+                        :errors="form.errors.get('driver')"
+                        @errors="form.errors.set('driver', null)"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">
+                      {{ $t('license plate') | uppercase }}
+                    </td>
+                    <td>
+                      <p-form-input
+                        id="license plate"
+                        v-model="form.license_plate"
+                        name="license plate"
+                        :label="$t('license plate')"
+                        :errors="form.errors.get('license_plate')"
+                        @errors="form.errors.set('license_plate', null)"
+                      />
+                    </td>
+                  </tr>
                 </table>
               </div>
               <div class="col-sm-6 text-right">
@@ -225,6 +255,8 @@ export default {
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        driver: null,
+        license_plate: null,
         warehouse_id: null,
         warehouse_name: null,
         customer_id: null,

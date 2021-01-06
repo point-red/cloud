@@ -121,6 +121,8 @@
               <th>Number</th>
               <th>Date</th>
               <th>Customer</th>
+              <th>Driver</th>
+              <th>License Plate</th>
               <th>Item</th>
               <th class="text-right">
                 Quantity
@@ -147,6 +149,8 @@
                     {{ deliveryNote.customer.name }}
                   </template>
                 </td>
+                <td>{{ deliveryNote.driver }}</td>
+                <td>{{ deliveryNote.license_plate }}</td>
                 <td>{{ deliveryNoteItem.item.name }}</td>
                 <td class="text-right">
                   {{ deliveryNoteItem.quantity | numberFormat }} {{ deliveryNoteItem.unit }}

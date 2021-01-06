@@ -80,6 +80,18 @@
                   </td>
                   <td>{{ deliveryNote.warehouse.name }}</td>
                 </tr>
+                <tr>
+                  <td class="font-weight-bold">
+                    {{ $t('driver') | uppercase }}
+                  </td>
+                  <td>{{ deliveryNote.driver }}</td>
+                </tr>
+                <tr>
+                  <td class="font-weight-bold">
+                    {{ $t('license plate') | uppercase }}
+                  </td>
+                  <td>{{ deliveryNote.license_plate }}</td>
+                </tr>
               </table>
             </div>
             <div class="col-sm-6 text-right">
