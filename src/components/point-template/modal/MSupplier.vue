@@ -151,6 +151,8 @@ export default {
           const obj = {
             id: key.id,
             name: key.name,
+            address: key.address,
+            phone: key.phone,
             label: key.label
           }
           if (key.addresses.length > 0) {
