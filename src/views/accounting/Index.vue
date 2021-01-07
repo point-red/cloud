@@ -29,6 +29,11 @@
         link="/accounting/ratio-report"
         icon="si si-notebook"
       />
+      <p-box
+        :name="$t('journal')"
+        link="/accounting/journal"
+        icon="si si-notebook"
+      />
     </div>
   </div>
 </template>

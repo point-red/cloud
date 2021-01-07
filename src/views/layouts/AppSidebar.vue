@@ -669,6 +669,17 @@
                     {{ $t('ratio report') | uppercase }}
                   </router-link>
                 </li>
+                <li
+                  v-if="$permission.has('read ratio report')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/accounting/journal"
+                    active-class="active"
+                  >
+                    {{ $t('journal') | uppercase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li
