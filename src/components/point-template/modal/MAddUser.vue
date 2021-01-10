@@ -13,7 +13,7 @@
             ref="name"
             v-model="form.user_name"
             :disabled="isSaving"
-            :label="$t('name')"
+            :label="$t('username')"
             name="name"
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"
@@ -28,6 +28,7 @@
             :errors="form.errors.get('email')"
             @errors="form.errors.set('email', null)"
           />
+          <div>*) email must match the email address used during registration</div>
         </div>
       </div>
       <div class="pull-right">
@@ -40,7 +41,7 @@
           <i
             v-show="isSaving"
             class="fa fa-asterisk fa-spin"
-          /> {{ $t('save') | uppercase }}
+          /> {{ $t('invite') | uppercase }}
         </button>
       </div>
     </sweet-modal>

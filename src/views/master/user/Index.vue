@@ -30,6 +30,79 @@
           />
         </div>
         <hr>
+        <!-- Filter -->
+        <div class="text-center font-size-sm mb-10">
+          <a
+            href="javascript:void(0)"
+            @click="isAdvanceFilter = !isAdvanceFilter"
+          >
+            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
+          </a>
+        </div>
+        <div
+          v-show="isAdvanceFilter"
+          class="card"
+          :class="{ 'fadeIn': isAdvanceFilter }"
+        >
+          <div class="row">
+            <!-- Filter Branch -->
+            <div class="col-sm-3 text-center">
+              <p-form-row
+                id="branch"
+                name="branch"
+                :label="$t('branch')"
+                :is-horizontal="false"
+              >
+                <div slot="body">
+                  <span
+                    class="select-link"
+                    @click="$refs.branch.open({ id: branchId, label: branchLabel })"
+                  >
+                    {{ branchLabel || $t('select') | uppercase }}
+                  </span>
+                </div>
+              </p-form-row>
+            </div>
+            <!-- Filter Warehouse -->
+            <div class="col-sm-3 text-center">
+              <p-form-row
+                id="warehouse"
+                name="warehouse"
+                :label="$t('warehouse')"
+                :is-horizontal="false"
+              >
+                <div slot="body">
+                  <span
+                    class="select-link"
+                    @click="$refs.status.open({ id: statusId, label: statusLabel })"
+                  >
+                    {{ statusLabel || $t('select') | uppercase }}
+                  </span>
+                </div>
+              </p-form-row>
+            </div>
+            <!-- Filter Roles -->
+            <div class="col-sm-3 text-center">
+              <p-form-row
+                id="role"
+                name="role"
+                :label="$t('role')"
+                :is-horizontal="false"
+              >
+                <div slot="body">
+                  <span
+                    class="select-link"
+                    @click="$refs.status.open({ id: statusId, label: statusLabel })"
+                  >
+                    {{ statusLabel || $t('select') | uppercase }}
+                  </span>
+                </div>
+              </p-form-row>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <!-- End Filter -->
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
@@ -129,6 +202,10 @@
       ref="addUser"
       @added="onAdded"
     />
+    <m-branch
+      ref="branch"
+      @choosen="onChoosenBranch"
+    />
     <set-warehouse-modal
       id="setWarehouse"
       ref="setWarehouseModal"
@@ -160,7 +237,8 @@ export default {
       searchText: this.$route.query.search,
       page: this.$route.query.page * 1 || 1,
       limit: 10,
-      lastPage: 1
+      lastPage: 1,
+      isAdvanceFilter: false
     }
   },
   computed: {
@@ -221,6 +299,18 @@ export default {
       this.getUserRequest()
     }, 300),
     onAdded () {
+      this.getUserRequest()
+    },
+    onChoosenBranch (option) {
+      this.branchId = option.id
+      this.branchLabel = option.label
+      this.$router.push({
+        query: {
+          // search: this.searchText,
+          branchId: this.branchId
+          // statusId: this.statusId
+        }
+      })
       this.getUserRequest()
     }
   }
