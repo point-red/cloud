@@ -23,6 +23,12 @@
         icon="si si-user"
       />
       <p-box
+        v-if="$permission.has('read expedition')"
+        name="Expedition"
+        link="/master/expedition"
+        icon="si si-user"
+      />
+      <p-box
         v-if="$permission.has('read warehouse')"
         name="Warehouse"
         link="/master/warehouse"

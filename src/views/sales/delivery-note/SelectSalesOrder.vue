@@ -1,9 +1,9 @@
 <template>
   <sweet-modal
     ref="modal"
-    :title="'Select Purchase Order' | uppercase"
+    :title="'Select Sales Quotation' | uppercase"
     overlay-theme="dark"
-    @close="onClose"
+    @close="onClose()"
   >
     <input
       v-model="searchText"
@@ -24,20 +24,20 @@
     >
       <a
         v-for="(option, optionIndex) in options"
-        :key="'purchase-order-'+optionIndex"
+        :key="'request-'+optionIndex"
         class="list-group-item list-group-item-action"
         href="javascript:void(0)"
         @click="choose(option)"
       >
         <div class="d-flex justify-content-between align-items-center">
           <div>
-            <strong>{{ option.form.number }}</strong><br>
+            <strong>{{ option.form.number }}</strong>
           </div>
           <div
             style="font-size: 0.8em;"
             class="text-black-50 text-right"
           >
-            <span style="font-size: 0.8em">SUPPLIER : {{ option.supplier.name | uppercase }}</span><br>
+            Created by {{ option.form.created_by.name }}<br>
             {{ option.form.created_at | dateFormat('DD MMMM YYYY HH:mm') }}
           </div>
         </div>
@@ -79,7 +79,8 @@
 
 <script>
 import debounce from 'lodash/debounce'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   props: {
     id: {
@@ -100,40 +101,30 @@ export default {
       isLoading: false
     }
   },
+  computed: {
+    ...mapGetters('masterItem', ['items', 'pagination'])
+  },
   watch: {
     searchText: debounce(function () {
       this.search()
     }, 300)
   },
   methods: {
-    ...mapActions('purchaseOrder', ['get']),
+    ...mapActions('salesOrder', ['get']),
     search () {
       this.isLoading = true
       this.get({
         params: {
-          remaining_info: true,
-          join: 'form,supplier,items,item',
-          fields: 'purchase_order.*',
+          join: 'form,items,item',
+          fields: 'sales_order.*',
           sort_by: '-form.number',
           group_by: 'form.id',
-          filter_form: 'activeDone;approvalApproved',
+          filter_form: 'activePending;approvalApproved',
           filter_not_null: 'form.number',
-          filter_like: {
-            'supplier.name': this.searchText
-          },
-          includes: 'supplier;items.item.units;form.createdBy;purchaseReceives.items;purchaseReceives.form'
+          includes: 'customer;items.item.units;form.createdBy'
         }
       }).then(response => {
-        const purchaseOrders = response.data
-        purchaseOrders.forEach(purchaseOrder => {
-          purchaseOrder.purchase_receives.forEach(purchaseReceive => {
-            if (purchaseReceive.form.done == false) {
-              this.options.push(purchaseOrder)
-            }
-          })
-        })
-      }).catch(error => {
-        this.$notification.error(error.message)
+        this.options = response.data
       }).finally(() => {
         this.isLoading = false
       })
@@ -166,7 +157,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 input:readonly {
   background-color: white
 }

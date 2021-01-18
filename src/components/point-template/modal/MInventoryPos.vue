@@ -190,7 +190,7 @@ export default {
     },
     show (item, warehouseId) {
       if (!warehouseId) {
-        this.$alert.info('INPUT REQURED', this.$t('please select warehouse'))
+        this.$alert.info('INPUT REQUIRED', this.$t('please select warehouse'))
       } else if (!item) {
         this.$alert.info('ITEM REQUIRED', this.$t('please select item'))
       } else {

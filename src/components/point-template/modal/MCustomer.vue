@@ -148,6 +148,8 @@ export default {
             id: key.id,
             pricing_group_id: key.pricing_group_id || 1,
             name: key.name,
+            address: key.address,
+            phone: key.phone,
             label: key.label,
             groups: key.groups
           }

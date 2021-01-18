@@ -2,7 +2,7 @@
   <div>
     <sweet-modal
       :ref="'select-' + id"
-      :title="$t('select inventory') | uppercase"
+      :title="$t('Audit') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >
@@ -13,14 +13,6 @@
         placeholder="Search..."
         @keydown.enter.prevent=""
       >
-      <hr>
-      <button
-        type="button"
-        class="btn btn-sm btn-block btn-primary"
-        @click="update()"
-      >
-        {{ $t('update') | uppercase }}
-      </button>
       <hr>
       <div v-if="isLoading">
         <h3 class="text-center">
@@ -38,9 +30,6 @@
             </th>
             <th class="text-right">
               Quantity
-            </th>
-            <th class="text-right">
-              Stock
             </th>
           </tr>
           <tr
@@ -64,10 +53,6 @@
                 @input="calculate"
                 @choosen="updateUnit"
               />
-            </td>
-            <td class="text-right">
-              {{ option.remainingInUnit | numberFormat }}
-              {{ mutableItemUnit.label | uppercase }}
             </td>
           </tr>
           <tr slot="p-body">
@@ -151,10 +136,10 @@ export default {
     this.close()
   },
   methods: {
-    ...mapActions('inventoryInventoryDna', ['get', 'pagination']),
+    ...mapActions('inventoryInventoryDna', ['get', 'getAll', 'pagination']),
     init () {
       this.isLoading = true
-      this.get({
+      this.getAll({
         itemId: this.mutableItemId,
         params: {
           warehouse_id: this.mutableWarehouseId

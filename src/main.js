@@ -40,7 +40,7 @@ Vue.use(VScrollLock)
 
 Vue.use(GmapVue, {
   load: {
-    key: 'AIzaSyDxxNVTca2tPo-jSe_1O7fCP2e6A3QZFzI',
+    key: process.env.VUE_APP_GMAP_KEY,
     libraries: 'places' // This is required if you use the Autocomplete plugin
     // OR: libraries: 'places,drawing'
     // OR: libraries: 'places,drawing,visualization'

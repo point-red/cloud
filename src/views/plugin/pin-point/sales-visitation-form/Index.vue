@@ -400,8 +400,6 @@ export default {
   },
   created () {
     this.search()
-    this.branchId = this.authUser.branch.id
-    this.branchName = this.authUser.branch.name
   },
   methods: {
     ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),

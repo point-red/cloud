@@ -2,15 +2,15 @@
   <div>
     <breadcrumb>
       <breadcrumb-inventory />
-      <span class="breadcrumb-item active">{{ $t('inventory usage') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('inventory audit') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
       <p-block>
         <div class="input-group block">
           <router-link
-            v-if="$permission.has('create inventory usage')"
-            to="/inventory/usage/create"
+            v-if="$permission.has('create inventory audit')"
+            to="/inventory/audit/create"
             class="input-group-prepend"
           >
             <span class="input-group-text">
@@ -117,7 +117,7 @@
             <input
               type="checkbox"
               class="css-control-input"
-              :checked="isRowsChecked(inventoryUsages, checkedRow)"
+              :checked="isRowsChecked(inventoryAudits, checkedRow)"
               @click="toggleCheckRows()"
             >
             <span class="css-control-indicator" />
@@ -167,6 +167,7 @@
               <th>Form</th>
               <th>Date</th>
               <th>Item</th>
+              <th>Production Number</th>
               <th>Notes</th>
               <th class="text-right">
                 Quantity
@@ -175,14 +176,14 @@
                 Approval Status
               </th>
             </tr>
-            <template v-for="(inventoryUsage, index) in inventoryUsages">
+            <template v-for="(inventoryAudit, index) in inventoryAudits">
               <tr
-                v-for="(inventoryUsageItem, index2) in inventoryUsage.items"
+                v-for="(inventoryAuditItem, index2) in inventoryAudit.items"
                 :key="'pr-' + index + '-i-' + index2"
                 slot="p-body"
               >
                 <th>
-                  {{ ((currentPage - 1) * limit) + index + 1 }}<template v-if="inventoryUsage.items.length > 1">
+                  {{ ((currentPage - 1) * limit) + index + 1 }}<template v-if="inventoryAudit.items.length > 1">
                     .{{ index2 + 1 }}
                   </template>
                 </th>
@@ -191,37 +192,38 @@
                     id="check-box"
                     :is-form="false"
                     name="check-box"
-                    :checked="isRowChecked(inventoryUsage.id)"
+                    :checked="isRowChecked(inventoryAudit.id)"
                     class="text-center"
-                    @click.native="toggleCheckRow(inventoryUsage.id)"
+                    @click.native="toggleCheckRow(inventoryAudit.id)"
                   />
                 </td> -->
                 <td>
-                  <router-link :to="{ name: 'inventory.usage.show', params: { id: inventoryUsage.id }}">
-                    {{ inventoryUsage.form.number }}
+                  <router-link :to="{ name: 'inventory.audit.show', params: { id: inventoryAudit.id }}">
+                    {{ inventoryAudit.form.number }}
                   </router-link>
                 </td>
-                <td>{{ inventoryUsage.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                <td>{{ inventoryUsageItem.item.name }}</td>
-                <td>{{ inventoryUsageItem.notes }}</td>
+                <td>{{ inventoryAudit.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ inventoryAuditItem.item.name }}</td>
+                <td>{{ inventoryAuditItem.production_number }}</td>
+                <td>{{ inventoryAuditItem.notes }}</td>
                 <td class="text-right">
-                  {{ inventoryUsageItem.quantity | numberFormat }}
+                  {{ inventoryAuditItem.quantity | numberFormat }}
                 </td>
                 <td class="text-center">
                   <div
-                    v-if="inventoryUsage.form.approved == null"
+                    v-if="inventoryAudit.form.approved == null"
                     class="badge badge-primary"
                   >
                     {{ $t('pending') | uppercase }}
                   </div>
                   <div
-                    v-if="inventoryUsage.form.approved == 0"
+                    v-if="inventoryAudit.form.approved == 0"
                     class="badge badge-danger"
                   >
                     {{ $t('rejected') | uppercase }}
                   </div>
                   <div
-                    v-if="inventoryUsage.form.approved == 1"
+                    v-if="inventoryAudit.form.approved == 1"
                     class="badge badge-success"
                   >
                     {{ $t('approved') | uppercase }}
@@ -280,7 +282,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('inventoryUsage', ['inventoryUsages', 'pagination'])
+    ...mapGetters('inventoryAudit', ['inventoryAudits', 'pagination'])
   },
   watch: {
     date: {
@@ -292,7 +294,7 @@ export default {
             date_to: this.date.end
           }
         })
-        this.getInventoryUsage()
+        this.getInventoryAudit()
       },
       deep: true
     }
@@ -305,13 +307,13 @@ export default {
         date_to: this.date.end
       }
     })
-    this.getInventoryUsage()
+    this.getInventoryAudit()
   },
   updated () {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('inventoryUsage', ['get']),
+    ...mapActions('inventoryAudit', ['get']),
     toggleCheckRow (id) {
       if (!this.isRowChecked(id)) {
         this.checkedRow.push({ id })
@@ -320,15 +322,15 @@ export default {
       }
     },
     toggleCheckRows () {
-      if (!this.isRowsChecked(this.inventoryUsages, this.checkedRow)) {
-        this.inventoryUsages.forEach(element => {
+      if (!this.isRowsChecked(this.inventoryAudits, this.checkedRow)) {
+        this.inventoryAudits.forEach(element => {
           if (!this.isRowChecked(element.id)) {
             const id = element.id
             this.checkedRow.push({ id })
           }
         })
       } else {
-        this.inventoryUsages.forEach(element => {
+        this.inventoryAudits.forEach(element => {
           this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(element.id), 1)
         })
       }
@@ -354,21 +356,21 @@ export default {
     },
     bulkApprove () {
       this.bulkApprove({
-        inventoryUsages: this.checkedRow
+        inventoryAudits: this.checkedRow
       }).then(response => {
         this.checkedRow = []
-        this.getInventoryUsage()
+        this.getInventoryAudit()
       })
     },
     chooseFormStatus (option) {
       this.formStatus.label = option.label
       this.formStatus.value = option.value
-      this.getInventoryUsage()
+      this.getInventoryAudit()
     },
     chooseFormApprovalStatus (option) {
       this.formApprovalStatus.label = option.label
       this.formApprovalStatus.value = option.value
-      this.getInventoryUsage()
+      this.getInventoryAudit()
     },
     filterSearch: debounce(function (value) {
       this.$router.push({
@@ -379,29 +381,15 @@ export default {
       })
       this.searchText = value
       this.currentPage = 1
-      this.getInventoryUsage()
+      this.getInventoryAudit()
     }, 300),
-    getInventoryUsage () {
+    getInventoryAudit () {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form',
-          fields: 'inventory_usages.*',
-          sort_by: '-forms.number',
-          // filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
-          // filter_like: {
-          //   'form.number': this.searchText,
-          //   'warehouse.name': this.searchText,
-          //   'items.item.name': this.searchText,
-          //   'items.notes': this.searchText,
-          //   'items.quantity': this.searchText
-          // },
-          // filter_date_min: {
-          //   'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
-          // },
-          // filter_date_max: {
-          //   'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
-          // },
+          fields: 'inventory_audit.*',
+          join: 'form,warehouse',
+          is_archived: this.statusId,
           limit: 10,
           includes: 'form;warehouse;items.item',
           page: this.currentPage
@@ -415,7 +403,7 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getInventoryUsage()
+      this.getInventoryAudit()
     }
   }
 }

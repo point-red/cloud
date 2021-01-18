@@ -162,6 +162,17 @@
                   </router-link>
                 </li>
                 <li
+                  v-if="$permission.has('read expedition')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/master/expedition"
+                    active-class="active"
+                  >
+                    {{ $t('expedition') | uppercase }}
+                  </router-link>
+                </li>
+                <li
                   v-if="$permission.has('read warehouse')"
                   @click="toggleLeftSidebar('close-xs')"
                 >
@@ -384,6 +395,17 @@
                   </router-link>
                 </li>
                 <li
+                  v-if="$permission.has('read sales delivery note')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/sales/delivery-note"
+                    active-class="active"
+                  >
+                    {{ $t('delivery note') | uppercase }}
+                  </router-link>
+                </li>
+                <li
                   v-if="$permission.has('read sales order')"
                   @click="toggleLeftSidebar('close-xs')"
                 >
@@ -451,19 +473,29 @@
                     {{ $t('inventory usage') | uppercase }}
                   </router-link>
                 </li>
-                <!--
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read inventory audit')">
+                <li
+                  v-if="$permission.has('read inventory audit')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/inventory/audit"
-                    active-class="active">{{ $t('inventory audit') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('inventory audit') | uppercase }}
                   </router-link>
                 </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read stock correction')">
+                <!-- <li
+                  v-if="$permission.has('read stock correction')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/inventory/correction"
-                    active-class="active">{{ $t('stock correction') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('stock correction') | uppercase }}
                   </router-link>
-                </li>
+                </li> -->
+                <!--
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read transfer item')">
                   <router-link
                     to="/inventory/transfer"
@@ -635,6 +667,17 @@
                     active-class="active"
                   >
                     {{ $t('ratio report') | uppercase }}
+                  </router-link>
+                </li>
+                <li
+                  v-if="$permission.has('read ratio report')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/accounting/journal"
+                    active-class="active"
+                  >
+                    {{ $t('journal') | uppercase }}
                   </router-link>
                 </li>
               </ul>

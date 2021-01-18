@@ -1,7 +1,7 @@
 <template>
   <sweet-modal
     ref="modal"
-    :title="'Select Sales Quotation' | uppercase"
+    :title="'select sales order' | uppercase"
     overlay-theme="dark"
     @close="onClose()"
   >

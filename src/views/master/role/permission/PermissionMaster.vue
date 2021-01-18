@@ -435,6 +435,13 @@
         </td>
       </tr>
     </p-table>
+
+    <button
+      class="btn btn-primary"
+      @click="save()"
+    >
+      SAVE
+    </button>
   </div>
 </template>
 
@@ -453,6 +460,9 @@ export default {
   },
   methods: {
     ...mapActions('masterPermission', ['update', 'bulkUpdate']),
+    save () {
+      this.$alert.success('Save Success')
+    },
     togglePermission (permissionName) {
       var result = this.permissions.find((element) => {
         if (element.name === permissionName) {

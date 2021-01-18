@@ -4,6 +4,7 @@ import AccountingCutOff from './cut-off/routes'
 import AccountingBalanceSheet from './balance-sheet/routes'
 import AccountingProfitAndLoss from './profit-and-loss/routes'
 import AccountingRatioReport from './ratio-report/routes'
+import AccountingJournal from './journal/routes'
 
 export default [
   { path: '/accounting', name: 'AccountingMenu', component: AccountingMenu },
@@ -11,5 +12,6 @@ export default [
   ...AccountingCutOff,
   ...AccountingBalanceSheet,
   ...AccountingProfitAndLoss,
-  ...AccountingRatioReport
+  ...AccountingRatioReport,
+  ...AccountingJournal
 ]
