@@ -61,6 +61,18 @@
                     <td><span class="font-w700">{{ $t('employee code') | titlecase }}</span></td>
                     <td>{{ employee.code }}</td>
                   </tr>
+
+                  <!-- NPWP -->
+                  <tr>
+                    <td><span class="font-w700">{{ $t('NPWP') | titlecase }}</span></td>
+                    <td>{{ employee.npwp }}</td>
+                  </tr>
+                  <!-- BPJS -->
+                  <tr>
+                    <td><span class="font-w700">{{ $t('BPJS') | titlecase }}</span></td>
+                    <td>{{ employee.bpjs }}</td>
+                  </tr>
+
                   <tr v-if="$permission.has('read employee')">
                     <td><span class="font-w700">{{ $t('address') | titlecase }}</span></td>
                     <td>
@@ -153,6 +165,11 @@
                   <tr>
                     <td><span class="font-w700">{{ $t('join date') | titlecase }}</span></td>
                     <td><span v-if="employee.join_date">{{ employee.join_date | dateFormat('DD MMM YYYY') }}</span></td>
+                  </tr>
+                  <!-- Resign Date -->
+                  <tr>
+                    <td><span class="font-w700">{{ $t('resign date') | titlecase }}</span></td>
+                    <td><span v-if="employee.resign_date">{{ employee.resign_date | dateFormat('DD MMM YYYY') }}</span></td>
                   </tr>
                   <tr>
                     <td><span class="font-w700">{{ $t('job title') | titlecase }}</span></td>
