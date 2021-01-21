@@ -113,14 +113,6 @@
               <th class="font-size-h6 font-w700 text-center">
                 {{ $t('description') | uppercase }}
               </th>
-              <!-- Comment -->
-              <th class="font-size-h6 font-w700 text-center">
-                {{ $t('comment') | uppercase }}
-              </th>
-              <!-- Upload File -->
-              <th class="font-size-h6 font-w700 text-center">
-                {{ $t('upload file') | uppercase }}
-              </th>
               <th />
             </tr>
             <template
@@ -150,8 +142,7 @@
                   {{ group.score_percentage | numberFormat }}
                 </td>
                 <td class="text-center font-w600" />
-                <td class="text-center font-w600" />
-                <td class="text-center font-w600" />
+                <td />
               </tr>
               <tr
                 v-for="(indicator, index) in group.indicators"
@@ -203,39 +194,6 @@
                     {{ indicator.selected.description }}
                   </span>
                 </td>
-
-                <!-- Comment -->
-                <td class="text-center">
-                  <span v-if="indicator.selected">
-                    <input
-                      v-model="indicator.selected.comment"
-                      type="text"
-                    >
-                  </span>
-                  <span v-else>
-                    kosong
-                  </span>
-                </td>
-
-                <!-- Upload File -->
-                <td class="text-center">
-                  <span v-if="indicator.selected">
-                    <!-- <label>Upload File</label> -->
-                    <input
-                      type="file"
-                      multiple
-                      @change="fieldChange"
-                    >
-                    <!-- @change="fieldChange" -->
-                    <!-- @change="indicator.selected.uploadFiles = '123'" -->
-                    <!-- {{ indicator.selected.comment }} -->
-                    {{ indicator.selected.uploadFiles }}
-                  </span>
-                  <span v-else>
-                    file kosong
-                  </span>
-                </td>
-
                 <td class="text-center">
                   <span>
                     <button
@@ -265,8 +223,6 @@
               <td class="text-center font-w700">
                 <span class="">{{ template.score_percentage | numberFormat }}</span>
               </td>
-              <td />
-              <td />
               <td />
             </tr>
           </p-table>
@@ -323,23 +279,15 @@
       :title="$t('employee assessment')"
       @add="addedScore"
     />
-
-    <!-- Add Comment Description Score
-    <assign-comment-modal
-      id="employee-assessment"
-      ref="comment"
-      :title="$t('employee assessment')"
-      @add="addedScore"
-    /> -->
   </div>
 </template>
 
 <script>
 import Form from '@/utils/Form'
 import AssignScoreModal from './AssignScoreModal'
-// import AssignCommentModal from './AssignCommentModal.vue' // Add Comment Description Score
 import AssignKpiTemplateModal from './AssignKpiTemplateModal'
 import TabMenu from '@/views/human-resource/TabMenu'
+
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import EmployeeWidget from '../EmployeeWidget'
@@ -348,7 +296,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     AssignScoreModal,
-    // AssignCommentModal, // Add Comment Description Score
     AssignKpiTemplateModal,
     TabMenu,
     Breadcrumb,
@@ -372,11 +319,9 @@ export default {
         template: {
           groups: [],
           comment: null
-        },
-        // upload files
-        attachments: []
-      }),
+        }
 
+      }),
       title: 'Kpi',
       isLoading: true,
       isSaving: false,
@@ -460,8 +405,7 @@ export default {
       // remove selected score to template indicator
       this.$delete(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected')
     },
-    // addedScore ({ indicatorId, score, notes }) {
-    addedScore ({ indicatorId, score, notes, comment, uploadFiles }) {
+    addedScore ({ indicatorId, score, notes }) {
       // find index of template group
       const groupIndex = this.form.template.groups
         .findIndex(o => o.indicators
@@ -478,36 +422,12 @@ export default {
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected', score)
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'score_percentage', scorePercentage)
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'notes', notes)
-      // comment
-      this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'comment', comment)
-      // upload files
-      this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'uploadFiles', uploadFiles)
-
       this.$set(this.form.template.groups[groupIndex], 'score', score.score + (group.score || 0))
       this.$set(this.form.template.groups[groupIndex], 'score_percentage', scorePercentage + (group.score_percentage || 0))
       this.$set(this.form.template, 'score', score.score + (template.score || 0))
       this.$set(this.form.template, 'score_percentage', scorePercentage + (template.score_percentage || 0))
     },
-    // onSubmit () {
-    //   console.log('ini form isi groups: ' + this.form.template.groups)
-    // },
-
-    // upload files
-    fieldChange (e) {
-      const selectedFiels = e.target.files
-      this.form.attachments.push(selectedFiels)
-      console.log(this.form)
-      // this.form.attachments = selectedFiels
-      // console.log(this.form.attachments[0][0].name)
-    },
-    //
     onSubmit () {
-      // upload file
-      const form = new FormData()
-      form.append('attachments', this.form.attachments)
-
-      //
-
       this.$set(this.form.template, 'comment', this.form.template.comment)
       if (!this.form.date.start || !this.form.date.end) {
         this.$notification.error('Please select a valid date range')
