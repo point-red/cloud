@@ -15,10 +15,16 @@
         </div>
         <div class="block-content">
           <div class="row items-push">
-            <div
+            <!-- <div
               v-if="($permission.has('create employee assessment') && isShow(employee.scorers))"
               class="col-6"
+            > -->
+
+            <!-- Test -->
+            <div
+              class="col-6"
             >
+              <!-- Test -->
               <router-link
                 :to="'/human-resource/employee/' + id + '/assessment/create'"
                 exact
