@@ -50,6 +50,8 @@ export default {
       selectedScoreIndex: null,
       selectedScoreDescription: null,
       notes: '',
+      comment: '',
+      uploadFiles: '',
       options: []
     }
   },
@@ -80,7 +82,9 @@ export default {
       this.$emit('add', {
         indicatorId: this.indicatorId,
         score: this.score,
-        notes: this.notes
+        notes: this.notes,
+        comment: this.comment,
+        uploadFiles: this.uploadFiles
       })
       this.score = null
       this.notes = ''
@@ -92,7 +96,9 @@ export default {
       this.$emit('add', {
         indicatorId: this.indicatorId,
         score: this.score,
-        notes: this.notes
+        notes: this.notes,
+        comment: this.comment,
+        uploadFiles: this.uploadFiles
       })
       this.score = null
       this.notes = ''
