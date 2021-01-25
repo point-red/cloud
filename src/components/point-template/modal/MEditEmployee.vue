@@ -864,6 +864,8 @@ export default {
       }).then(response => {
         this.form.id = this.employee.id
         this.form.name = this.employee.name
+        this.form.npwp = this.employee.npwp
+        this.form.bpjs = this.employee.bpjs
         if (this.employee.emails.length > 0) {
           this.form.emails[0].email = this.employee.emails[0].email
         }
@@ -889,6 +891,7 @@ export default {
         this.form.employee_group_name = this.employee.employee_group_name
         this.form.job_title = this.employee.job_title
         this.form.join_date = this.employee.join_date
+        this.form.resign_date = this.employee.resign_date
         this.form.code = this.employee.code
         this.form.employee_status_id = this.employee.employee_status_id
         this.form.employee_job_location_id = this.employee.employee_job_location_id
