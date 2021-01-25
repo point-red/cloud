@@ -66,8 +66,23 @@
             <p-form-row
               id="address"
               v-model="form.addresses[0].address"
+              class=""
               :disabled="isSaving"
               :label="$t('address')"
+              :icon="'fa-plus'"
+              :icon-event="isAdditionalAddress"
+              name="address"
+              :errors="form.errors.get('address')"
+              @handleEvent="handleEvent($event)"
+              @errors="form.errors.set('address', null)"
+            />
+
+            <!-- additional address -->
+            <p-form-row
+              v-show="isAdditionalAddress"
+              id="address"
+              v-model="form.addresses[1].address"
+              :disabled="isSaving"
               name="address"
               :errors="form.errors.get('address')"
               @errors="form.errors.set('address', null)"
@@ -708,6 +723,7 @@ export default {
       isSaving: false,
       isLoading: false,
       isFailed: false,
+      isAdditionalAddress: false,
       editIndex: -1,
       form: new Form({
         name: null,
@@ -717,6 +733,9 @@ export default {
           email: null
         }],
         addresses: [{
+          address: null
+        },
+        {
           address: null
         }],
         phones: [{
@@ -952,6 +971,9 @@ export default {
     },
     close () {
       this.$refs.modal.close()
+    },
+    handleEvent (e) {
+      this.isAdditionalAddress = e
     }
   }
 }

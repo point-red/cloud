@@ -72,18 +72,22 @@
                     <td><span class="font-w700">{{ $t('BPJS') | titlecase }}</span></td>
                     <td>{{ employee.bpjs }}</td>
                   </tr>
-
-                  <tr v-if="$permission.has('read employee')">
-                    <td><span class="font-w700">{{ $t('address') | titlecase }}</span></td>
-                    <td>
-                      <span
-                        v-for="(employeeAddress, index) in employee.addresses"
-                        :key="index"
-                      >
+                  <!-- Address -->
+                  <tr
+                    v-for="(employeeAddress, index) in employee.addresses"
+                    :key="index"
+                  >
+                    <td v-if="index === 0">
+                      <span class="font-w700">{{ $t('address') | titlecase }}</span>
+                    </td>
+                    <td v-else />
+                    <td v-if="$permission.has('read employee')">
+                      <span>
                         {{ employeeAddress.address }}
                       </span>
                     </td>
                   </tr>
+
                   <tr v-if="$permission.has('read employee')">
                     <td><span class="font-w700">{{ $t('phone') | titlecase }}</span></td>
                     <td>
