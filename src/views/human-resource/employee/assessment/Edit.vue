@@ -143,7 +143,8 @@
                   {{ group.score_percentage | numberFormat }}
                 </td>
                 <td class="text-center font-w600" />
-                <td />
+                <td class="text-center font-w600" />
+                <td class="text-center font-w600" />
               </tr>
               <tr
                 v-for="(indicator, index) in group.indicators"
@@ -198,20 +199,51 @@
                 </td>
 
                 <!-- Comment -->
-                <td class="text-center">
+                <td
+                  class="text-center"
+                >
                   <span>
                     <input
+                      v-if="indicator.selected && indicator.selected.comment"
+                      v-model="indicator.selected.comment"
                       type="text"
-                      readonly
-                      :value="indicator.selected.comment"
+                    >
+                    <input
+                      v-else-if="indicator.selected"
+                      v-model="indicator.selected.comment"
+                      type="text"
                     >
                   </span>
                 </td>
 
                 <!-- Upload File -->
-                <td class="text-center">
+                <td
+                  v-if="indicator.selected && indicator.selected.uploadFiles"
+                  class="text-center"
+                >
+                  <span
+                    v-for="(file, indexFile) in indicator.selected.uploadFiles.split(',')"
+                    :key="indexFile"
+                  >
+                    <button
+                      :title="file"
+                      class="m-1"
+                    ><a :href="file">{{ indexFile + 1 }}</a></button>
+                  </span>
+                </td>
+
+                <td
+                  v-else-if="indicator.selected"
+                  class="text-center"
+                >
                   <span>
-                    {{ indicator.selected.upload_file }}
+                    <input
+                      id="files"
+                      ref="files"
+                      type="file"
+                      multiple
+                      @change="fieldChange($event.target.files, group, indicator)"
+                    >
                   </span>
                 </td>
 
@@ -334,7 +366,8 @@ export default {
       title: 'Kpi',
       isLoading: false,
       isSaving: false,
-      scoreModalTitle: ''
+      scoreModalTitle: '',
+      files: []
     }
   },
   computed: {
@@ -374,6 +407,9 @@ export default {
     ...mapActions('humanResourceKpiResult', {
       findKpiResult: 'findByScorePercentage'
     }),
+    ...mapActions('humanResourceEmployee', {
+      uploadFile: 'uploadFile' // Upload File
+    }),
     cancel () {
       this.$router.go(-1)
     },
@@ -384,7 +420,7 @@ export default {
         for (var indicatorIndex in group.indicators) {
           var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex]
 
-          if (!indicator.automated_code) {
+          if (!indicator.automated_code && indicator.score !== 0) {
             var score = indicator.scores.find(o => o.description === indicator.score_description && o.score === indicator.score && o.kpi_indicator_id === indicator.id)
             var scorePercentage = score.score / indicator.target * indicator.weight
 
@@ -414,7 +450,7 @@ export default {
       // remove selected score to template indicator
       this.$delete(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected')
     },
-    addedScore ({ indicatorId, score, notes }) {
+    addedScore ({ indicatorId, score, notes, comment, uploadFiles }) {
       // find index of template group
       const groupIndex = this.form.template.groups
         .findIndex(o => o.indicators
@@ -431,10 +467,43 @@ export default {
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected', score)
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'score_percentage', scorePercentage)
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'notes', notes)
+      // comment
+      this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'comment', comment)
+      // upload files
+      this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'uploadFiles', uploadFiles)
+
       this.$set(this.form.template.groups[groupIndex], 'score', score.score + (group.score || 0))
       this.$set(this.form.template.groups[groupIndex], 'score_percentage', scorePercentage + (group.score_percentage || 0))
       this.$set(this.form.template, 'score', score.score + (template.score || 0))
       this.$set(this.form.template, 'score_percentage', scorePercentage + (template.score_percentage || 0))
+    },
+    // upload files
+    fieldChange (e, group, indicator) {
+      const uploadFileName = []
+      const uploadFile = []
+
+      for (let i = 0; i < e.length; i++) {
+        const fileDate = Date.parse(new Date())
+        const fileName = process.env.VUE_APP_API_DOMAIN + 'storage/files/' + fileDate + '_' + e[i].name
+
+        uploadFile.push(fileName)
+        uploadFileName.push(fileDate + '_' + e[i].name)
+      }
+
+      // find index of template group
+      const groupIndex = this.form.template.groups.findIndex(o => o.indicators.find(o => o.id === indicator.id))
+
+      // find index of template indicator
+      const indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicator.id)
+
+      this.form.template.groups[groupIndex].indicators[indicatorIndex].selected.uploadFiles = uploadFile.join(',')
+
+      e.name = uploadFileName
+      this.files.push(e)
+
+      this.files.map((file) => {
+        console.log(file)
+      })
     },
     onSubmit () {
       this.isSaving = true
@@ -442,8 +511,30 @@ export default {
         .then(
           (response) => {
             this.isSaving = false
+
             this.$notification.success('Update success')
             this.$router.replace('/human-resource/employee/' + this.id + '/assessment/' + this.kpiId + '/edit')
+
+            // Upload File
+            this.files.map((file) => {
+              for (let i = 0; i < file.length; i++) {
+                const attachments = file[i]
+                const formData = new FormData()
+                formData.append('attachments', attachments)
+                formData.append('fileName', file.name[i])
+
+                this.uploadFile(formData, {
+                  headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+                })
+                  .then((res) => {
+                    console.log('upload file success')
+                  }).catch((err) => {
+                    console.log(err)
+                  })
+              }
+            })
           },
           (error) => {
             this.isSaving = false

@@ -86,6 +86,12 @@
             <th class="font-size-h6 font-w700 text-center">
               {{ $t('description') | uppercase }}
             </th>
+            <th class="font-size-h6 font-w700 text-center">
+              {{ $t('comment') | uppercase }}
+            </th>
+            <th class="font-size-h6 font-w700 text-center">
+              {{ $t('upload file') | uppercase }}
+            </th>
             <th />
           </tr>
           <template
@@ -115,6 +121,8 @@
                 {{ group.score_percentage | numberFormat }}
               </td>
               <td class="text-center font-w600" />
+              <td class="text-center font-w600" />
+              <td class="text-center font-w600" />
               <td />
             </tr>
             <tr
@@ -138,6 +146,34 @@
               <td class="text-center">
                 {{ indicator.score_description }}
               </td>
+
+              <!-- Comment -->
+              <td class="text-center">
+                <span>
+                  <input
+                    type="text"
+                    readonly
+                    :value="indicator.scores[index].comment"
+                  >
+                </span>
+              </td>
+
+              <!-- Upload File -->
+              <td
+                v-if="indicator.scores[index].uploadFiles"
+                class="text-center"
+              >
+                <span
+                  v-for="(file, indexFile) in indicator.scores[index].uploadFiles.split(',')"
+                  :key="indexFile"
+                >
+                  <button
+                    :title="file"
+                    class="m-1"
+                  ><a :href="file">{{ indexFile + 1 }}</a></button>
+                </span>
+              </td>
+
               <td class="text-center" />
             </tr>
           </template>

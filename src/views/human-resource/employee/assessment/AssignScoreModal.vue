@@ -50,10 +50,8 @@ export default {
       selectedScoreIndex: null,
       selectedScoreDescription: null,
       notes: '',
-      // comment
       comment: '',
-      // upload files
-      uploadFiles: 'test-upload',
+      uploadFiles: '',
       options: []
     }
   },
@@ -85,9 +83,7 @@ export default {
         indicatorId: this.indicatorId,
         score: this.score,
         notes: this.notes,
-        // comment
         comment: this.comment,
-        // upload files
         uploadFiles: this.uploadFiles
       })
       this.score = null
@@ -101,9 +97,7 @@ export default {
         indicatorId: this.indicatorId,
         score: this.score,
         notes: this.notes,
-        // comment
         comment: this.comment,
-        // upload files
         uploadFiles: this.uploadFiles
       })
       this.score = null
