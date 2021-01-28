@@ -202,18 +202,24 @@
                 <td
                   class="text-center"
                 >
-                  <span>
-                    <input
-                      v-if="indicator.selected && indicator.selected.comment"
-                      v-model="indicator.selected.comment"
-                      type="text"
-                    >
-                    <input
-                      v-else-if="indicator.selected"
-                      v-model="indicator.selected.comment"
-                      type="text"
-                    >
-                  </span>
+                  <textarea
+                    v-if="indicator.selected && indicator.selected.comment"
+                    id="comment"
+                    v-model="indicator.selected.comment"
+                    name="comment"
+                    cols="30"
+                    :rows="indicator.selected.rows"
+                    @input="handleComment(indicator.selected.comment, indicator)"
+                  />
+                  <textarea
+                    v-else-if="indicator.selected"
+                    id="comment"
+                    v-model="indicator.selected.comment"
+                    name="comment"
+                    cols="30"
+                    :rows="indicator.selected.rows"
+                    @input="handleComment(indicator.selected.comment, indicator)"
+                  />
                 </td>
 
                 <!-- Upload File -->
@@ -276,6 +282,8 @@
               <td class="text-center font-w700">
                 <span class="">{{ form.template.score_percentage | numberFormat }}</span>
               </td>
+              <td />
+              <td />
               <td />
             </tr>
           </p-table>
@@ -427,6 +435,24 @@ export default {
             this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected', score)
             this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'score_percentage', scorePercentage)
             this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'notes', '')
+
+            if (indicator.selected.comment) {
+              const rows = indicator.selected.comment.length / 30
+              if (rows !== 0) {
+                let enters = 0
+                indicator.selected.comment.split('').map((arr) => {
+                  if (arr === '\n') {
+                    enters += 1
+                  }
+                })
+
+                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'rows', Math.ceil(rows) + enters)
+              } else {
+                this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'rows', '1')
+              }
+            } else {
+              this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'rows', '1')
+            }
           }
         }
       }
@@ -469,6 +495,7 @@ export default {
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'notes', notes)
       // comment
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'comment', comment)
+      this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'rows', '1')
       // upload files
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'uploadFiles', uploadFiles)
 
@@ -542,6 +569,27 @@ export default {
             this.form.errors.record(error.errors)
           }
         )
+    },
+    handleComment (comment, indicator) {
+      // find index of template group
+      const groupIndex = this.form.template.groups.findIndex(o => o.indicators.find(o => o.id === indicator.id))
+
+      // find index of template indicator
+      const indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicator.id)
+
+      const rows = comment.length / 30
+      if (rows !== 0) {
+        let enters = 0
+        comment.split('').map((arr) => {
+          if (arr === '\n') {
+            enters += 1
+          }
+        })
+
+        this.form.template.groups[groupIndex].indicators[indicatorIndex].selected.rows = Math.ceil(rows) + enters
+      } else {
+        this.form.template.groups[groupIndex].indicators[indicatorIndex].selected.rows = '1'
+      }
     }
   }
 }

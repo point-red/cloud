@@ -206,12 +206,15 @@
 
                 <!-- Comment -->
                 <td class="text-center">
-                  <span v-if="indicator.selected">
-                    <input
-                      v-model="indicator.selected.comment"
-                      type="text"
-                    >
-                  </span>
+                  <textarea
+                    v-if="indicator.selected"
+                    id="comment"
+                    v-model="indicator.selected.comment"
+                    name="comment"
+                    cols="30"
+                    :rows="indicator.selected.rows"
+                    @input="handleComment(indicator.selected.comment, indicator)"
+                  />
                 </td>
 
                 <!-- Upload File -->
@@ -441,7 +444,6 @@ export default {
       // remove selected score to template indicator
       this.$delete(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected')
     },
-    // addedScore ({ indicatorId, score, notes }) {
     addedScore ({ indicatorId, score, notes, comment, uploadFiles }) {
       // find index of template group
       const groupIndex = this.form.template.groups
@@ -461,6 +463,8 @@ export default {
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'notes', notes)
       // comment
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'comment', comment)
+      this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'rows', '1')
+
       // upload files
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'uploadFiles', uploadFiles)
 
@@ -620,6 +624,27 @@ export default {
           })
       } else {
         this.isLoading = false
+      }
+    },
+    handleComment (comment, indicator) {
+      // find index of template group
+      const groupIndex = this.form.template.groups.findIndex(o => o.indicators.find(o => o.id === indicator.id))
+
+      // find index of template indicator
+      const indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicator.id)
+
+      const rows = comment.length / 30
+      if (rows !== 0) {
+        let enters = 0
+        comment.split('').map((arr) => {
+          if (arr === '\n') {
+            enters += 1
+          }
+        })
+
+        this.form.template.groups[groupIndex].indicators[indicatorIndex].selected.rows = Math.ceil(rows) + enters
+      } else {
+        this.form.template.groups[groupIndex].indicators[indicatorIndex].selected.rows = '1'
       }
     }
   }

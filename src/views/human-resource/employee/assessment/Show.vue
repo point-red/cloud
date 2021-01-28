@@ -149,13 +149,14 @@
 
               <!-- Comment -->
               <td class="text-center">
-                <span>
-                  <input
-                    type="text"
-                    readonly
-                    :value="indicator.scores[index].comment"
-                  >
-                </span>
+                <textarea
+                  id="comment"
+                  name="comment"
+                  cols="30"
+                  :rows="rows[index]"
+                  readonly
+                  :value="indicator.scores[0].comment"
+                />
               </td>
 
               <!-- Upload File -->
@@ -231,7 +232,8 @@ export default {
       id: this.$route.params.id,
       kpiId: this.$route.params.kpiId,
       title: 'Kpi',
-      isLoading: false
+      isLoading: false,
+      rows: []
     }
   },
   computed: {
@@ -246,6 +248,30 @@ export default {
     }).then(
       (response) => {
         this.isLoading = false
+        this.assessment.groups.map((group) => {
+          group.indicators.map((indicator) => {
+            console.log('ini indicator: ' + indicator.scores[0].comment)
+
+            if (indicator.scores[0].comment) {
+              console.log('ada score')
+              const rows = indicator.scores[0].comment.length / 30
+              if (rows !== 0) {
+                let enters = 0
+                indicator.scores[0].comment.split('').map((arr) => {
+                  if (arr === '\n') {
+                    enters += 1
+                  }
+                })
+                this.rows.push(Math.ceil(rows) + enters)
+              } else {
+                this.rows.push('1')
+              }
+            } else {
+              console.log('kosong score')
+              this.rows.push('1')
+            }
+          })
+        })
       },
       (error) => {
         console.log(JSON.stringify(error))
