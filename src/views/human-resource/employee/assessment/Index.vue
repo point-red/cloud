@@ -45,8 +45,13 @@
         :header="true"
       >
         <div class="row">
-          <!-- kpi reminder -->
-          <div class="col-sm-2 col-md-2 col-lg-1 p-1 pl-4">
+          <div class="col-sm-4 col-md-3 col-lg-3 mb-1 mr-sm-4 mr-md-0 mr-lg-0 select-date">
+            <p-date-range-picker
+              v-model="reminderDate"
+              name="reminder-date"
+            />
+          </div>
+          <div class="col-sm-1 col-md-2 col-lg-1 mb-1 p-1 pl-sm-2 pl-md-1 pl-lg-1 reminder">
             <button
               :disabled="isSending"
               class="btn btn-square btn-secondary"
@@ -58,14 +63,8 @@
               /> {{ $t('Reminder') | uppercase }}
             </button>
           </div>
-          <div class="col-sm-10 col-md-3 col-lg-3 mb-1">
-            <p-date-range-picker
-              v-model="reminderDate"
-              name="reminder-date"
-            />
-          </div>
 
-          <div class="col-sm-12 col-md-7 col-lg-8 text-right">
+          <div class="col-sm-7 col-md-7 col-lg-8 mb-1 text-right filter">
             <a
               href="javascript:void(0)"
               class="btn btn-square btn-outline-secondary"
@@ -98,6 +97,7 @@
             >Yearly</a>
           </div>
         </div>
+
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-table>
@@ -453,7 +453,7 @@ export default {
         })
         Toast.fire({
           icon: 'error',
-          title: 'Please enter the date'
+          title: 'Please enter date of periode'
         }).then(() => {
           this.isSending = false
         })
@@ -462,3 +462,22 @@ export default {
   }
 }
 </script>
+<style scoped>
+@media (max-width: 576px) {
+  .select-date {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+  }
+  .reminder {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+  }
+  .filter {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+}
+</style>
