@@ -100,7 +100,16 @@ const actions = {
         })
     })
   },
-  //
+  sendContractReminder (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/contract-reminder', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url, payload)

@@ -206,6 +206,9 @@ export default {
     ...mapGetters('humanResourceEmployeeGroup', ['groupList'])
   },
   created () {
+    setInterval(() => {
+      this.contractReminder()
+    }, 5000)
     this.getEmployeesRequest()
   },
   updated () {
@@ -216,7 +219,8 @@ export default {
       getEmployees: 'get',
       bulkArchive: 'bulkArchive',
       bulkActivate: 'bulkActivate',
-      bulkDelete: 'bulkDelete'
+      bulkDelete: 'bulkDelete',
+      sendContractReminder: 'sendContractReminder'
     }),
     getNumberIndex (index) {
       return (this.page * 10) - 10 + index + 1
@@ -333,6 +337,64 @@ export default {
         this.isLoading = false
       }, (errors) => {
         this.isLoading = false
+        console.log(errors.data)
+      })
+    },
+    // contract reminder
+    contractReminder () {
+      const oneDay = (24 * 60 * 60 * 1000)
+      const today = new Date().toISOString().slice(0, 10).replace(/-/g, '')
+      const year = []
+      const month = []
+      const day = []
+
+      for (let i = 0; i < today.split('').length; i++) {
+        if (i < 4) {
+          year.push(today.split('')[i])
+        }
+        if (i >= 4 && i < 6) {
+          month.push(today.split('')[i])
+        }
+        if (i >= 6 && i < 8) {
+          day.push(today.split('')[i])
+        }
+      }
+
+      const dateNow = `${year.join('')}-${month.join('')}-${day.join('')}`
+      let dateNowReminder = 0
+      dateNowReminder += ((Number(dateNow.split('-')[2]) * oneDay) + (Number(dateNow.split('-')[1] * oneDay * 30) + (Number(dateNow.split('-')[0] * oneDay * 365))))
+
+      this.getEmployees({
+        params: {
+          filter_like: {
+            name: this.searchText,
+            job_title: this.searchText
+          },
+          page: this.page,
+          is_archived: this.statusId,
+          sort_by: 'name',
+          includes: 'scorers',
+          additional: 'groups'
+        }
+      }).then((response) => {
+        this.employees.map((employee) => {
+          if (employee.contracts.length > 0) {
+            let contractEndReminder = 0
+            const contractEnd = employee.contracts.reverse()[0].contract_end.split(' ')[0]
+            contractEndReminder += ((Number(contractEnd.split('-')[2]) * oneDay) + (Number(contractEnd.split('-')[1] * oneDay * 30) + (Number(contractEnd.split('-')[0] * oneDay * 365))))
+
+            if (dateNowReminder >= contractEndReminder - (oneDay * 10) && dateNowReminder <= contractEndReminder) {
+              const contractDayEnd = Math.ceil(contractEndReminder - dateNowReminder) / oneDay
+
+              const data = {
+                user: this.authUser.id,
+                message: `kontrak kerja ${employee.name} berakhir ${contractDayEnd} hari lagi`
+              }
+              this.sendContractReminder(data)
+            }
+          }
+        })
+      }, (errors) => {
         console.log(errors.data)
       })
     }

@@ -10,7 +10,10 @@
       @click="toggle"
     >
       <i class="fa fa-bell mr-5" />
-      <!-- <span class="badge badge-danger badge-pill">1</span> -->
+      <span
+        v-if="notifications.length > 0"
+        class="badge badge-danger badge-pill"
+      >{{ notifications.length }}</span>
     </button>
     <div
       class="dropdown-menu dropdown-menu-right min-width-300"
@@ -64,12 +67,19 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 import { mapGetters } from 'vuex'
+import Echo from 'laravel-echo'
+window.io = require('socket.io-client')
 
 export default {
   data () {
     return {
       show: false,
-      notifications: []
+      notifications: [],
+      echo: new Echo({
+        broadcaster: 'socket.io',
+        // host: 'http://127.0.0.1:6001'
+        host: process.env.VUE_APP_API_SOCKET
+      })
     }
   },
   computed: {
@@ -98,8 +108,24 @@ export default {
       }
     }
   },
-  created () {
+  mounted () {
+    // Contract Reminder
+    this.echo.channel('EveryoneChannel')
+      .listen('.EveryoneMessage', (e) => {
+        const notifIndex = this.notifications
+          .findIndex(o => o.message === e.message)
 
+        if (this.authUser.id === e.user && notifIndex < 0) {
+          const data = {
+            type: 'reminder',
+            message: e.message,
+            clickAction: 'klik',
+            createdAt: new Date()
+          }
+
+          this.notifications.push(data)
+        }
+      })
   },
   methods: {
     toggle () {
