@@ -725,7 +725,7 @@ export default {
       form: new Form({
         id: null,
         name: null,
-        npwp: null,
+        tax_identification_number: null,
         bpjs: null,
         emails: [{
           email: null
@@ -860,7 +860,7 @@ export default {
       }).then(response => {
         this.form.id = this.employee.id
         this.form.name = this.employee.name
-        this.form.npwp = this.employee.npwp
+        this.form.tax_identification_number = this.employee.tax_identification_number
         this.form.bpjs = this.employee.bpjs
         if (this.employee.emails.length > 0) {
           this.form.emails[0].email = this.employee.emails[0].email
