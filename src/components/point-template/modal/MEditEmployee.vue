@@ -32,6 +32,26 @@
             />
 
             <p-form-row
+              id="tax_identification_number"
+              v-model="form.tax_identification_number"
+              name="tax_identification_number"
+              :label="$t('npwp')"
+              :disabled="isSaving"
+              :errors="form.errors.get('tax_identification_number')"
+              @errors="form.errors.set('tax_identification_number', null)"
+            />
+
+            <p-form-row
+              id="bpjs"
+              v-model="form.bpjs"
+              name="bpjs"
+              :label="$t('bpjs')"
+              :disabled="isSaving"
+              :errors="form.errors.get('bpjs')"
+              @errors="form.errors.set('bpjs', null)"
+            />
+
+            <p-form-row
               id="email"
               v-model="form.emails[0].email"
               :disabled="isSaving"
@@ -46,6 +66,19 @@
               v-model="form.addresses[0].address"
               :disabled="isSaving"
               :label="$t('address')"
+              :icon="'fa-plus'"
+              :icon-event="isAdditionalAddress"
+              name="address"
+              :errors="form.errors.get('address')"
+              @handleEvent="handleEvent($event)"
+              @errors="form.errors.set('address', null)"
+            />
+
+            <p-form-row
+              v-show="isAdditionalAddress"
+              id="address"
+              v-model="form.addresses[1].address"
+              :disabled="isSaving"
               name="address"
               :errors="form.errors.get('address')"
               @errors="form.errors.set('address', null)"
@@ -291,6 +324,28 @@
                   type="date"
                   :errors="form.errors.get('join_date')"
                   @errors="form.errors.set('join_date', null)"
+                />
+              </div>
+            </p-form-row>
+
+            <!-- Resign Date -->
+            <p-form-row
+              id="resign-date"
+              name="resign-date"
+              :label="$t('resign date')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
+                <p-date-picker
+                  id="resign-date"
+                  v-model="form.resign_date"
+                  name="resign-date"
+                  label="resign date"
+                  type="date"
+                  :errors="form.errors.get('resign_date')"
+                  @errors="form.errors.set('resign_date', null)"
                 />
               </div>
             </p-form-row>
@@ -665,14 +720,20 @@ export default {
       isSaving: false,
       isLoading: false,
       isFailed: false,
+      isAdditionalAddress: false,
       editIndex: -1,
       form: new Form({
         id: null,
         name: null,
+        npwp: null,
+        bpjs: null,
         emails: [{
           email: null
         }],
         addresses: [{
+          address: null
+        },
+        {
           address: null
         }],
         phones: [{
@@ -691,6 +752,7 @@ export default {
         employee_group_name: '',
         job_title: '',
         join_date: '',
+        resign_date: '',
         code: '',
         status: '',
         job_location: '',
@@ -798,11 +860,16 @@ export default {
       }).then(response => {
         this.form.id = this.employee.id
         this.form.name = this.employee.name
+        this.form.npwp = this.employee.npwp
+        this.form.bpjs = this.employee.bpjs
         if (this.employee.emails.length > 0) {
           this.form.emails[0].email = this.employee.emails[0].email
         }
         if (this.employee.addresses.length > 0) {
           this.form.addresses[0].address = this.employee.addresses[0].address
+        }
+        if (this.employee.addresses.length > 1) {
+          this.form.addresses[1].address = this.employee.addresses[1].address
         }
         if (this.employee.phones.length > 0) {
           this.form.phones[0].number = this.employee.phones[0].number
@@ -820,6 +887,7 @@ export default {
         this.form.employee_group_name = this.employee.employee_group_name
         this.form.job_title = this.employee.job_title
         this.form.join_date = this.employee.join_date
+        this.form.resign_date = this.employee.resign_date
         this.form.code = this.employee.code
         this.form.employee_status_id = this.employee.employee_status_id
         this.form.employee_job_location_id = this.employee.employee_job_location_id
@@ -960,6 +1028,9 @@ export default {
     },
     close () {
       this.$refs.modal.close()
+    },
+    handleEvent (e) {
+      this.isAdditionalAddress = e
     }
   }
 }
