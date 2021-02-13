@@ -383,7 +383,7 @@ export default {
             const contractEnd = employee.contracts.reverse()[0].contract_end.split(' ')[0]
             contractEndReminder += ((Number(contractEnd.split('-')[2]) * oneDay) + (Number(contractEnd.split('-')[1] * oneDay * 30) + (Number(contractEnd.split('-')[0] * oneDay * 365))))
 
-            if (dateNowReminder >= contractEndReminder - (oneDay * 10) && dateNowReminder <= contractEndReminder) {
+            if (dateNowReminder >= contractEndReminder - (oneDay * 30) && dateNowReminder <= contractEndReminder) {
               const contractDayEnd = Math.ceil(contractEndReminder - dateNowReminder) / oneDay
 
               const data = {
