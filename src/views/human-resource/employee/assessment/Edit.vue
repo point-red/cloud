@@ -359,7 +359,7 @@ export default {
         for (var indicatorIndex in group.indicators) {
           var indicator = this.form.template.groups[groupIndex].indicators[indicatorIndex]
 
-          if (!indicator.automated_code) {
+          if (!indicator.automated_code && indicator.score !== 0) {
             var score = indicator.scores.find(o => o.description === indicator.score_description && o.score === indicator.score && o.kpi_indicator_id === indicator.id)
             var scorePercentage = score.score / indicator.target * indicator.weight
 

@@ -27,17 +27,20 @@
               slot="p-body"
               :key="optionIndex"
             >
-              <td width="100px">
+              <td
+                v-if="requireExpiryDate"
+                width="100px"
+              >
                 <p-date-picker
-                  v-if="requireExpiryDate"
                   id="expiry-date"
                   v-model="option.expiry_date"
                   name="expiry-date"
                 />
               </td>
-              <td>
+              <td
+                v-if="requireProductionNumber"
+              >
                 <p-form-input
-                  v-if="requireProductionNumber"
                   id="production-number"
                   v-model="option.production_number"
                   name="production-number"

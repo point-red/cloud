@@ -11,7 +11,10 @@
       >{{ label | uppercase }}</label>
     </slot>
     <slot name="body">
-      <div :class="{'col-lg-9' : isHorizontal}">
+      <div
+        v-if="icon"
+        :class="{'col-10 col-lg-8' : isHorizontal}"
+      >
         <p-form-input
           :id="id"
           ref="input"
@@ -28,6 +31,39 @@
           :help="help"
           :errors="errors"
           @input="updateValue"
+        />
+      </div>
+
+      <div
+        v-else
+        :class="{'col-lg-9' : isHorizontal}"
+      >
+        <p-form-input
+          :id="id"
+          ref="input"
+          :name="name"
+          :type="type"
+          :disabled="disabled"
+          :value="value"
+          :placeholder="placeholder"
+          :readonly="readonly"
+          :masked-time-format="maskedTimeFormat"
+          :mask="mask"
+          :is-focus="isFocus"
+          :is-text-right="isTextRight"
+          :help="help"
+          :errors="errors"
+          @input="updateValue"
+        />
+      </div>
+    </slot>
+
+    <!-- icon -->
+    <slot v-if="icon">
+      <div class="col-1">
+        <i
+          :class="`fa ${icon} bg-dark text-white p-3`"
+          @click="handleEvent(iconEvent)"
         />
       </div>
     </slot>
@@ -105,6 +141,14 @@ export default {
     errors: {
       type: Array,
       default: null
+    },
+    icon: {
+      type: String,
+      default: null
+    },
+    iconEvent: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -118,6 +162,10 @@ export default {
     },
     setFocus () {
       this.$refs.input.setFocus()
+    },
+    // icon event
+    handleEvent (iconEvent) {
+      this.$emit('handleEvent', !iconEvent)
     }
   }
 }
