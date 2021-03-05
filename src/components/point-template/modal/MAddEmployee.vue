@@ -31,6 +31,28 @@
               @errors="form.errors.set('personal_identity', null)"
             />
 
+            <!-- NPWP -->
+            <p-form-row
+              id="npwp"
+              v-model="form.npwp"
+              name="npwp"
+              :label="$t('npwp')"
+              :disabled="isSaving"
+              :errors="form.errors.get('npwp')"
+              @errors="form.errors.set('npwp', null)"
+            />
+
+            <!-- BPJS -->
+            <p-form-row
+              id="bpjs"
+              v-model="form.bpjs"
+              name="bpjs"
+              :label="$t('bpjs')"
+              :disabled="isSaving"
+              :errors="form.errors.get('bpjs')"
+              @errors="form.errors.set('bpjs', null)"
+            />
+
             <p-form-row
               id="tax_identification_number"
               v-model="form.tax_identification_number"
