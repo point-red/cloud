@@ -39,51 +39,12 @@
 
             <hr>
 
-            <span>{{ form.chart_of_account_label || $t('select') | uppercase }}</span>
-
-            <p-separator />
-
-            <h5>{{ $t('stock dna') | uppercase }}</h5>
-
-            {{ $t('create item helper - stock dna') }}
-
-            <hr>
-
-            <p-form-row
-              id="require-production-number"
-              name="require-production-number"
-              :label="$t('production number')"
+            <span
+              class="select-link"
+              @click="$refs.chartOfAccountRef.open()"
             >
-              <div
-                slot="body"
-                class="col-lg-9"
-              >
-                <p-form-check-box
-                  id="require-production-number"
-                  class="mb-0"
-                  style="float:left"
-                  name="require-production-number"
-                  :checked="form.require_production_number"
-                />
-              </div>
-            </p-form-row>
-
-            <p-form-row
-              id="require-expiry-date"
-              name="require-expiry-date"
-              :label="$t('expiry date')"
-            >
-              <div
-                slot="body"
-                class="col-lg-9"
-              >
-                <p-form-check-box
-                  id="require-expiry-date"
-                  name="require-expiry-date"
-                  :checked="form.require_expiry_date"
-                />
-              </div>
-            </p-form-row>
+              {{ form.chart_of_account_label || $t('select') | uppercase }}
+            </span>
 
             <p-separator />
 
@@ -152,6 +113,50 @@
             >
               {{ form.groups.length > 0 ? form.groups[0].name : $t('select') | uppercase }}
             </span>
+
+            <p-separator />
+
+            <h5>{{ $t('stock dna') | uppercase }}</h5>
+
+            {{ $t('create item helper - stock dna') }}
+
+            <hr>
+
+            <p-form-row
+              id="require-production-number"
+              name="require-production-number"
+              :label="$t('production number')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
+                <p-form-check-box
+                  id="require-production-number"
+                  class="mb-0"
+                  style="float:left"
+                  name="require-production-number"
+                  :checked="form.require_production_number"
+                />
+              </div>
+            </p-form-row>
+
+            <p-form-row
+              id="require-expiry-date"
+              name="require-expiry-date"
+              :label="$t('expiry date')"
+            >
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
+                <p-form-check-box
+                  id="require-expiry-date"
+                  name="require-expiry-date"
+                  :checked="form.require_expiry_date"
+                />
+              </div>
+            </p-form-row>
           </div>
         </div>
         <div class="pull-right">
