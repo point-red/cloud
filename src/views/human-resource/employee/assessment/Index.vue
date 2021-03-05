@@ -97,6 +97,7 @@
             >Yearly</a>
           </div>
         </div>
+
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-table>
@@ -447,7 +448,7 @@ export default {
         })
         Toast.fire({
           icon: 'error',
-          title: 'Please enter the date'
+          title: 'Please enter date of periode'
         }).then(() => {
           this.isSending = false
         })
@@ -456,7 +457,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 @media (max-width: 576px) {
   .select-date {
