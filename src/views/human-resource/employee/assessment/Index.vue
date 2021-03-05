@@ -175,21 +175,6 @@
               <td class="text-center">
                 {{ assessment.score_percentage | numberFormat }}
               </td>
-
-              <!-- status -->
-              <td
-                v-if="assessment.groups[0].indicators[0].scores[0].status === 'COMPLETED'"
-                class="text-center text-success"
-              >
-                {{ assessment.groups[0].indicators[0].scores[0].status }}
-              </td>
-              <td
-                v-else
-                class="text-center text-warning"
-              >
-                {{ assessment.groups[0].indicators[0].scores[0].status }}
-              </td>
-
               <td class="text-right">
                 <router-link
                   v-if="authUser.id == assessment.scorer.id && $permission.has('update employee assessment') && reportType == 'all'"

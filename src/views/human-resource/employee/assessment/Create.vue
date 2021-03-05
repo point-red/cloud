@@ -113,14 +113,6 @@
               <th class="font-size-h6 font-w700 text-center">
                 {{ $t('description') | uppercase }}
               </th>
-              <!-- Comment -->
-              <th class="font-size-h6 font-w700 text-center">
-                {{ $t('comment') | uppercase }}
-              </th>
-              <!-- Upload File -->
-              <th class="font-size-h6 font-w700 text-center">
-                {{ $t('upload file') | uppercase }}
-              </th>
               <th />
             </tr>
             <template
@@ -150,8 +142,7 @@
                   {{ group.score_percentage | numberFormat }}
                 </td>
                 <td class="text-center font-w600" />
-                <td class="text-center font-w600" />
-                <td class="text-center font-w600" />
+                <td />
               </tr>
               <tr
                 v-for="(indicator, index) in group.indicators"
@@ -203,33 +194,6 @@
                     {{ indicator.selected.description }}
                   </span>
                 </td>
-
-                <!-- Comment -->
-                <td class="text-center">
-                  <textarea
-                    v-if="indicator.selected"
-                    id="comment"
-                    v-model="indicator.selected.comment"
-                    name="comment"
-                    cols="30"
-                    :rows="indicator.selected.rows"
-                    @input="handleComment(indicator.selected.comment, indicator)"
-                  />
-                </td>
-
-                <!-- Upload File -->
-                <td class="text-center">
-                  <span v-if="indicator.selected">
-                    <input
-                      id="files"
-                      ref="files"
-                      type="file"
-                      multiple
-                      @change="fieldChange($event.target.files, group, indicator)"
-                    >
-                  </span>
-                </td>
-
                 <td class="text-center">
                   <span>
                     <button
@@ -259,8 +223,6 @@
               <td class="text-center font-w700">
                 <span class="">{{ template.score_percentage | numberFormat }}</span>
               </td>
-              <td />
-              <td />
               <td />
             </tr>
           </p-table>
@@ -362,8 +324,7 @@ export default {
       title: 'Kpi',
       isLoading: true,
       isSaving: false,
-      scoreModalTitle: '',
-      files: []
+      scoreModalTitle: ''
     }
   },
   computed: {
@@ -396,8 +357,7 @@ export default {
   },
   methods: {
     ...mapActions('humanResourceEmployee', {
-      findEmployee: 'find',
-      uploadFile: 'uploadFile' // Upload File
+      findEmployee: 'find'
     }),
     ...mapActions('humanResourceKpiTemplate', {
       findKpiTemplate: 'find'
@@ -444,7 +404,7 @@ export default {
       // remove selected score to template indicator
       this.$delete(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected')
     },
-    addedScore ({ indicatorId, score, notes, comment, uploadFiles }) {
+    addedScore ({ indicatorId, score, notes }) {
       // find index of template group
       const groupIndex = this.form.template.groups
         .findIndex(o => o.indicators
@@ -461,45 +421,10 @@ export default {
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex], 'selected', score)
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'score_percentage', scorePercentage)
       this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'notes', notes)
-      // comment
-      this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'comment', comment)
-      this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'rows', '1')
-
-      // upload files
-      this.$set(this.form.template.groups[groupIndex].indicators[indicatorIndex].selected, 'uploadFiles', uploadFiles)
-
       this.$set(this.form.template.groups[groupIndex], 'score', score.score + (group.score || 0))
       this.$set(this.form.template.groups[groupIndex], 'score_percentage', scorePercentage + (group.score_percentage || 0))
       this.$set(this.form.template, 'score', score.score + (template.score || 0))
       this.$set(this.form.template, 'score_percentage', scorePercentage + (template.score_percentage || 0))
-    },
-    // upload files
-    fieldChange (e, group, indicator) {
-      const uploadFileName = []
-      const uploadFile = []
-
-      for (let i = 0; i < e.length; i++) {
-        const fileDate = Date.parse(new Date())
-        const fileName = process.env.VUE_APP_API_DOMAIN + 'storage/files/' + fileDate + '_' + e[i].name
-
-        uploadFile.push(fileName)
-        uploadFileName.push(fileDate + '_' + e[i].name)
-      }
-
-      // find index of template group
-      const groupIndex = this.form.template.groups.findIndex(o => o.indicators.find(o => o.id === indicator.id))
-
-      // find index of template indicator
-      const indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicator.id)
-
-      this.form.template.groups[groupIndex].indicators[indicatorIndex].selected.uploadFiles = uploadFile.join(',')
-
-      e.name = uploadFileName
-      this.files.push(e)
-
-      this.files.map((file) => {
-        console.log(file)
-      })
     },
     onSubmit () {
       this.$set(this.form.template, 'comment', this.form.template.comment)
@@ -523,27 +448,6 @@ export default {
             }).catch(error => {
               this.$router.push('/human-resource/employee/' + this.id + '/assessment')
             })
-
-          // Upload File
-          this.files.map((file) => {
-            for (let i = 0; i < file.length; i++) {
-              const attachments = file[i]
-              const formData = new FormData()
-              formData.append('attachments', attachments)
-              formData.append('fileName', file.name[i])
-
-              this.uploadFile(formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data'
-                }
-              })
-                .then((res) => {
-                  console.log('success')
-                }).catch((err) => {
-                  console.log(err)
-                })
-            }
-          })
         }).catch(error => {
           this.isSaving = false
           this.$notification.error('Create failed', error.message)
@@ -624,27 +528,6 @@ export default {
           })
       } else {
         this.isLoading = false
-      }
-    },
-    handleComment (comment, indicator) {
-      // find index of template group
-      const groupIndex = this.form.template.groups.findIndex(o => o.indicators.find(o => o.id === indicator.id))
-
-      // find index of template indicator
-      const indicatorIndex = this.form.template.groups[groupIndex].indicators.findIndex(o => o.id === indicator.id)
-
-      const rows = comment.length / 30
-      if (rows !== 0) {
-        let enters = 0
-        comment.split('').map((arr) => {
-          if (arr === '\n') {
-            enters += 1
-          }
-        })
-
-        this.form.template.groups[groupIndex].indicators[indicatorIndex].selected.rows = Math.ceil(rows) + enters
-      } else {
-        this.form.template.groups[groupIndex].indicators[indicatorIndex].selected.rows = '1'
       }
     }
   }

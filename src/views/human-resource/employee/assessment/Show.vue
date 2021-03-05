@@ -86,12 +86,6 @@
             <th class="font-size-h6 font-w700 text-center">
               {{ $t('description') | uppercase }}
             </th>
-            <th class="font-size-h6 font-w700 text-center">
-              {{ $t('comment') | uppercase }}
-            </th>
-            <th class="font-size-h6 font-w700 text-center">
-              {{ $t('upload file') | uppercase }}
-            </th>
             <th />
           </tr>
           <template
@@ -121,8 +115,6 @@
                 {{ group.score_percentage | numberFormat }}
               </td>
               <td class="text-center font-w600" />
-              <td class="text-center font-w600" />
-              <td class="text-center font-w600" />
               <td />
             </tr>
             <tr
@@ -146,35 +138,6 @@
               <td class="text-center">
                 {{ indicator.score_description }}
               </td>
-
-              <!-- Comment -->
-              <td class="text-center">
-                <textarea
-                  id="comment"
-                  name="comment"
-                  cols="30"
-                  :rows="rows[index]"
-                  readonly
-                  :value="indicator.scores[0].comment"
-                />
-              </td>
-
-              <!-- Upload File -->
-              <td
-                v-if="indicator.scores[index].uploadFiles"
-                class="text-center"
-              >
-                <span
-                  v-for="(file, indexFile) in indicator.scores[index].uploadFiles.split(',')"
-                  :key="indexFile"
-                >
-                  <button
-                    :title="file"
-                    class="m-1"
-                  ><a :href="file">{{ indexFile + 1 }}</a></button>
-                </span>
-              </td>
-
               <td class="text-center" />
             </tr>
           </template>
@@ -232,8 +195,7 @@ export default {
       id: this.$route.params.id,
       kpiId: this.$route.params.kpiId,
       title: 'Kpi',
-      isLoading: false,
-      rows: []
+      isLoading: false
     }
   },
   computed: {
@@ -248,30 +210,6 @@ export default {
     }).then(
       (response) => {
         this.isLoading = false
-        this.assessment.groups.map((group) => {
-          group.indicators.map((indicator) => {
-            console.log('ini indicator: ' + indicator.scores[0].comment)
-
-            if (indicator.scores[0].comment) {
-              console.log('ada score')
-              const rows = indicator.scores[0].comment.length / 30
-              if (rows !== 0) {
-                let enters = 0
-                indicator.scores[0].comment.split('').map((arr) => {
-                  if (arr === '\n') {
-                    enters += 1
-                  }
-                })
-                this.rows.push(Math.ceil(rows) + enters)
-              } else {
-                this.rows.push('1')
-              }
-            } else {
-              console.log('kosong score')
-              this.rows.push('1')
-            }
-          })
-        })
       },
       (error) => {
         console.log(JSON.stringify(error))

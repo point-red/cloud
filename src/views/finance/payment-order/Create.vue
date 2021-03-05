@@ -62,7 +62,7 @@
                 </tr>
               </table>
             </div>
-            <div class="text-right col-sm-6">
+            <div class="col-sm-6 text-right">
               <h6 class="mb-5">
                 {{ authUser.tenant_name | uppercase }}
               </h6>
@@ -70,7 +70,7 @@
                 <br v-if="authUser.branch.address">{{ authUser.branch.address | uppercase }}
                 <br v-if="authUser.branch.phone">{{ authUser.branch.phone | uppercase }}
               </template>
-              <h6 class="mb-5 mt-30">
+              <h6 class="mt-30 mb-5">
                 {{ $t('to') | uppercase }} :
               </h6>
               <span
@@ -110,6 +110,13 @@
                 >
                   {{ row.chart_of_account_name || $t('select') | uppercase }}
                 </span>
+                <m-chart-of-account
+                  :id="'item-' + index"
+                  v-model="row.item_id"
+                  :data-index="index"
+                  :label="row.item_name"
+                  @choosen="chooseAccount($event, row)"
+                />
               </td>
               <td>
                 <p-form-input
@@ -172,9 +179,9 @@
                 class="form-control"
                 placeholder="Notes"
               />
-              <div class="mt-10 d-sm-block d-md-none" />
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
-            <div class="text-center col-sm-3">
+            <div class="col-sm-3 text-center">
               <h6 class="mb-0">
                 {{ $t('requested by') | uppercase }}
               </h6>
@@ -185,9 +192,9 @@
                 {{ Date.now() | dateFormat('DD MMMM YYYY') }}
               </div>
               {{ requestedBy | uppercase }}
-              <div class="mt-10 d-sm-block d-md-none" />
+              <div class="d-sm-block d-md-none mt-10" />
             </div>
-            <div class="text-center col-sm-3">
+            <div class="col-sm-3 text-center">
               <h6 class="mb-0">
                 {{ $t('approved by') | uppercase }}
               </h6>
@@ -220,8 +227,9 @@
         </p-block-inner>
       </p-block>
     </form>
-    <Coa
+    <m-chart-of-account
       ref="chartOfAccountRef"
+      type="DIRECT EXPENSE"
       @choosen="onChoosenAccount"
     />
     <m-user
@@ -247,15 +255,13 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
-import Coa from './Coa'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     PointTable,
     Breadcrumb,
-    BreadcrumbFinance,
-    Coa
+    BreadcrumbFinance
   },
   data () {
     return {
