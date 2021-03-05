@@ -80,6 +80,16 @@ const actions = {
         })
     })
   },
+  uploadFile (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/upload', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url, payload)
