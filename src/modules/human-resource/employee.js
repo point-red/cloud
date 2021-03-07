@@ -80,26 +80,6 @@ const actions = {
         })
     })
   },
-  uploadFile (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/upload', payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  sendKpiReminder (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/kpi-reminder', payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
   sendContractReminder (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/contract-reminder', payload)
