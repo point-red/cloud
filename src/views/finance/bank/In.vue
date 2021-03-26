@@ -200,9 +200,8 @@
         </p-block-inner>
       </p-block>
     </form>
-    <m-chart-of-account
+    <Coa
       ref="chartOfAccountRef"
-      type="OTHER INCOME"
       @choosen="onChoosenAccount"
     />
     <m-chart-of-account
@@ -233,12 +232,14 @@ import BreadcrumbFinance from '../Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
+import Coa from './Coa'
 
 export default {
   components: {
     PointTable,
     Breadcrumb,
-    BreadcrumbFinance
+    BreadcrumbFinance,
+    Coa
   },
   data () {
     return {
