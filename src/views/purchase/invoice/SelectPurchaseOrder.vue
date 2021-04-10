@@ -116,7 +116,7 @@ export default {
           fields: 'purchase_order.*',
           sort_by: '-form.number',
           group_by: 'form.id',
-          filter_form: 'activeDone;approvalApproved',
+          filter_form: 'active;approvalApproved',
           filter_not_null: 'form.number',
           filter_like: {
             'supplier.name': this.searchText
@@ -125,6 +125,7 @@ export default {
         }
       }).then(response => {
         const purchaseOrders = response.data
+        this.options = []
         purchaseOrders.forEach(purchaseOrder => {
           purchaseOrder.purchase_receives.forEach(purchaseReceive => {
             if (purchaseReceive.form.done == false) {
