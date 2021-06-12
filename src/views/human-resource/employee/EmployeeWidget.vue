@@ -54,7 +54,7 @@
       </div>
     </div>
 
-    <div
+    <!-- <div
       v-if="$permission.has('create employee salary') || $permission.has('read employee salary')"
       class="col-sm-6 col-xl-3"
     >
@@ -106,7 +106,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
