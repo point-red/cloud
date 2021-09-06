@@ -571,6 +571,7 @@ export default {
       }
     },
     choosePurchaseOrder (purchaseOrder) {
+      this.form.items = []
       this.purchaseOrder = purchaseOrder
       this.form.purchase_order_id = purchaseOrder.id
       this.form.supplier_id = purchaseOrder.supplier_id
