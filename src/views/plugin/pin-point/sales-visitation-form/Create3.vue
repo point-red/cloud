@@ -479,6 +479,7 @@ export default {
   data () {
     return {
       mapboxApiKey: process.env.VUE_APP_MAPBOX_APIKEY,
+      mapboxResult: {},
       isLoading: false,
       loadingMessage: 'Loading...',
       isSaving: false,
@@ -528,17 +529,6 @@ export default {
     this.isLoading = false
     this.loadingMessage = 'Searching current location'
     await this.getLocation()
-    const mapboxResult = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${this.center.lng},${this.center.lat}.json?access_token=${this.mapboxApiKey}`)
-    this.setDescription(mapboxResult.data.features[0].place_name)
-    this.form.address = mapboxResult.data.features[0].place_name
-    mapboxResult.data.features[0].context.forEach(el => {
-      if (el.id.includes('locality')) {
-        this.form.district = el.text
-      }
-      if (el.id.includes('neighborhood')) {
-        this.form.sub_district = el.text
-      }
-    })
   },
   created () {
     this.addItemRow()
@@ -590,13 +580,24 @@ export default {
     },
     getLocation () {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {
+        navigator.geolocation.getCurrentPosition(async function (position) {
           const pos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           }
           this.center.lat = pos.lat
           this.center.lng = pos.lng
+          this.mapboxResult = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${this.center.lng},${this.center.lat}.json?access_token=${this.mapboxApiKey}`)
+          this.setDescription(this.mapboxResult.data.features[0].place_name)
+          this.form.address = this.mapboxResult.data.features[0].place_name
+          this.mapboxResult.data.features[0].context.forEach(el => {
+            if (el.id.includes('locality')) {
+              this.form.district = el.text
+            }
+            if (el.id.includes('neighborhood')) {
+              this.form.sub_district = el.text
+            }
+          })
           this.form.latitude = pos.lat
           this.form.longitude = pos.lng
           this.markers[0].position.lat = pos.lat
