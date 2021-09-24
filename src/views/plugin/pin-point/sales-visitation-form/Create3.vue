@@ -87,13 +87,6 @@
             slot="body"
             class="col-lg-9"
           >
-            <gmap-autocomplete
-              :value="description"
-              :disabled="true"
-              class="form-control"
-              @place_changed="setPlace"
-              @keypress.enter.prevent
-            />
             <iframe
               width="100%"
               height="250"
@@ -101,44 +94,6 @@
               title="Streets"
               style="border:none;"
             />
-            <!-- <gmap-map
-              id="map"
-              ref="map"
-              :center="center"
-              :zoom="15"
-              :options="{
-                disableDefaultUI: true,
-                styles: [
-                  {
-                    featureType: 'poi.business',
-                    stylers: [
-                      {
-                        visibility: 'off'
-                      }
-                    ]
-                  },
-                  {
-                    featureType: 'poi.park',
-                    elementType: 'labels.text',
-                    stylers: [
-                      {
-                        visibility: 'off'
-                      }
-                    ]
-                  }
-                ]
-              }"
-              style="width: 100%; height: 200px"
-            >
-              <gmap-marker
-                v-for="(m, index) in markers"
-                :key="index"
-                :position="center = m.position"
-                :clickable="true"
-                :draggable="true"
-                @click="center=m.position"
-              />
-            </gmap-map> -->
           </div>
         </p-form-row>
 
@@ -509,6 +464,7 @@ import MMInterestReason from './MMInterestReason'
 import MMNoInterestReason from './MMNoInterestReason'
 import MMSimilarProduct from './MMSimilarProduct'
 import { mapActions, mapGetters } from 'vuex'
+import axios from '@/axios'
 
 export default {
   components: {
@@ -572,6 +528,17 @@ export default {
     this.isLoading = false
     this.loadingMessage = 'Searching current location'
     await this.getLocation()
+    const mapboxResult = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${this.center.lng},${this.center.lat}.json?access_token=${this.mapboxApiKey}`)
+    this.setDescription(mapboxResult.data.features[0].place_name)
+    this.form.address = mapboxResult.data.features[0].place_name
+    mapboxResult.data.features[0].context.forEach(el => {
+      if (el.id.includes('locality')) {
+        this.form.district = el.text
+      }
+      if (el.id.includes('neighborhood')) {
+        this.form.sub_district = el.text
+      }
+    })
   },
   created () {
     this.addItemRow()
