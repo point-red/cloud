@@ -94,14 +94,7 @@
               @place_changed="setPlace"
               @keypress.enter.prevent
             />
-            <iframe
-              width="100%"
-              height="250"
-              :src="`https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${center.lng},${center.lat},16,0,0/800x250?access_token=${mapboxApiKey}`"
-              title="Streets"
-              style="border:none;"
-            />
-            <!-- <gmap-map
+            <gmap-map
               id="map"
               ref="map"
               :center="center"
@@ -138,7 +131,7 @@
                 :draggable="true"
                 @click="center=m.position"
               />
-            </gmap-map> -->
+            </gmap-map>
           </div>
         </p-form-row>
 
