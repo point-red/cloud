@@ -83,7 +83,7 @@
           <div class="block block-link-shadow">
             <div class="block-content block-content-full clearfix">
               <div class="font-size-h5 font-w600">
-                {{ plugin.name }}
+                {{ plugin.name === "PIN POINT" ? "SALES VISITATION" : plugin.name }}
               </div>
               <hr>
               <div class="font-size-sm plugin-description">

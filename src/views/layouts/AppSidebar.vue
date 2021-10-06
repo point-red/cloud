@@ -714,7 +714,7 @@
                     to="/plugin/pin-point"
                     active-class="active"
                   >
-                    {{ 'pin point' | uppercase }}
+                    {{ 'sales-visitation' | uppercase }}
                   </router-link>
                 </li>
                 <li

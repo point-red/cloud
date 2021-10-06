@@ -3,6 +3,6 @@
     to="/plugin/pin-point"
     class="breadcrumb-item"
   >
-    {{ $t('pin point') | uppercase }}
+    {{ $t('sales visitation') | uppercase }}
   </router-link>
 </template>

@@ -13,7 +13,7 @@
 
       <p-box
         v-if="$plugin.has('PIN POINT') && $permission.has('menu pin point')"
-        name="Pin Point"
+        name="Sales Visitation"
         link="/plugin/pin-point"
         icon="fa fa-map-marker"
       />
