@@ -51,21 +51,30 @@
     >
       <span>{{ $t('sales report') | uppercase }}</span>
     </router-link>
-    <!-- <router-link
+    <router-link
       to="/sales/invoice"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/sales/invoice')}"
-      active-class="btn-primary">
-      <span>{{ $t('invoice') | uppercase }}</span>
+      active-class="btn-primary"
+    >
+      <span>{{ $t('sales invoice') | uppercase }}</span>
     </router-link>
     <router-link
+      to="/sales/summary"
+      class="btn mr-5 mb-15"
+      :class="{'btn-secondary': !isMatch('/sales/summary')}"
+      active-class="btn-primary"
+    >
+      <span>{{ $t('sales summary') | uppercase }}</span>
+    </router-link>
+    <!-- <router-link
       to="/sales/return"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/sales/return')}"
       active-class="btn-primary">
       <span>{{ $t('return') | uppercase }}</span>
-    </router-link>
-    <router-link
+    </router-link> -->
+    <!-- <router-link
       to="/sales/payment-collection"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/sales/payment-collection')}"

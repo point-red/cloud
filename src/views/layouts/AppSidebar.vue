@@ -416,6 +416,28 @@
                     {{ $t('sales report') | uppercase }}
                   </router-link>
                 </li>
+                <li
+                  v-if="$permission.has('read sales invoice')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/sales/invoice"
+                    active-class="active"
+                  >
+                    {{ $t('sales invoice') | uppercase }}
+                  </router-link>
+                </li>
+                <li
+                  v-if="$permission.has('read sales invoice')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/sales/summary"
+                    active-class="active"
+                  >
+                    {{ $t('sales summary') | uppercase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <!-- <li :class="{ 'open' : firstUri === 'pos' }" v-if="$permission.has('menu pos')">
