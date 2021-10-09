@@ -143,7 +143,6 @@
                     type="submit"
                     class="btn btn-sm btn-primary"
                     :disabled="isSaving"
-                    @click="onSubmit"
                   >
                     <i
                       v-show="isSaving"
