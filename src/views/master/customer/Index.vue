@@ -14,11 +14,31 @@
             v-if="$permission.has('create customer')"
             href="javascript:void(0)"
             class="input-group-prepend"
+            title="add"
             @click="$refs.addCustomer.open()"
           >
             <span class="input-group-text">
               <i class="fa fa-plus" />
             </span>
+          </a>
+          <a
+            v-if="$permission.has('create customer')"
+            href="javascript:void(0)"
+            title="import"
+            class="input-group-prepend"
+            @click="$router.push('/master/customer/import')"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-upload" />
+            </span>
+
+            <input
+              id="file"
+              ref="file"
+              type="file"
+              style="display:none"
+              @change="onFileChange"
+            >
           </a>
           <p-form-input
             id="search-text"
@@ -192,7 +212,17 @@
               <td>{{ customer.email }}</td>
               <td>{{ customer.address }}</td>
               <td>{{ customer.phone }}</td>
-              <td><span v-if="customer.branch">{{ customer.branch.name }}</span></td>
+              <td>
+                <span v-if="customer.branch">
+                  <!-- <span
+                    class="select-link"
+                    @click="$refs.branch.open()"
+                  >
+                    {{ customer.branch_name || $t('select') | uppercase }}
+                  </span> -->
+                  {{ customer.branch.name || $t('select') | uppercase }}
+                </span>
+              </td>
               <td>
                 <template v-for="(group, index) in customer.groups">
                   {{ group.name }}<template v-if="customer.groups.length != index + 1">
@@ -221,6 +251,10 @@
       ref="status"
       @choosen="onChoosenStatus"
     />
+    <m-branch
+      ref="branch"
+      @choosen="onChoosenBranch"
+    />
     <m-pricing-group
       ref="pricingGroup"
       @choosen="onChoosenPricingGroup"
@@ -239,7 +273,7 @@ import BreadcrumbMaster from '@/views/master/Breadcrumb'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
-
+import axios from '@/axios'
 export default {
   components: {
     TabMenu,
@@ -278,6 +312,35 @@ export default {
   },
   methods: {
     ...mapActions('masterCustomer', ['get', 'bulkArchive', 'bulkActivate', 'bulkDelete']),
+    onChoosenBranch (branch) {
+
+    },
+    addFiles () {
+      this.$refs.file.click()
+    },
+    onFileChange (e) {
+      const files = e.target.files || e.dataTransfer.files
+      if (!files.length) {
+        console.log('no files')
+      }
+
+      const data = new FormData()
+      data.append('file', files[0])
+      var self = this
+      self.isLoading = true
+      axios.post('/master/customers/import', data, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(function (response, data) {
+        self.isLoading = false
+        self.getCustomerRequest()
+        console.log('Responded')
+      }).catch(function (error) {
+        self.isLoading = false
+        console.log(error)
+      })
+    },
     toggleCheckRow (id) {
       if (!this.isRowChecked(id)) {
         this.checkedRow.push({ id })

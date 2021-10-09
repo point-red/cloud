@@ -56,7 +56,7 @@ export default {
       this.$emit('input', this.selectedValue)
     },
     'value' () {
-      if (this.value) {
+      if (this.value == 0 || this.value) {
         this.selectedValue = this.value.toString()
       } else {
         this.$refs.select.clear()
