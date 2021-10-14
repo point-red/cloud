@@ -141,6 +141,17 @@ const actions = {
           reject(error)
         })
     })
+  },
+  sendReport (context, payload) {
+    const requestPayload = { email: payload.email, message: payload.message }
+    return new Promise((resolve, reject) => {
+      api.post(`${url}/${payload.id}/send-invoice`, requestPayload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 

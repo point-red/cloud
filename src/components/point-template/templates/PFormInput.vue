@@ -15,6 +15,7 @@
       }"
       :placeholder="placeholder"
       :readonly="readonly"
+      :required="required"
       autocomplete="off"
       class="form-control"
       @input="updateValue($event.target.value)"
@@ -38,6 +39,7 @@
       }"
       :placeholder="placeholder"
       :readonly="readonly"
+      :required="required"
       autocomplete="off"
       class="form-control"
       @input="updateValue($event.target.value)"
@@ -112,6 +114,10 @@ export default {
     errors: {
       type: Array,
       default: null
+    },
+    required: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {

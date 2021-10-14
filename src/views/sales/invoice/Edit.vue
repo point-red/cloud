@@ -511,7 +511,7 @@ export default {
           this.isSaving = false
           this.$notification.success('update success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/sales/invoice/' + response.data.salesInvoice.id)
+          this.$router.push('/sales/invoice/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)

@@ -41,6 +41,13 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="text-right">
+                <button
+                  class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                  title="Send sales invoice to customer"
+                  @click="() => $refs['send-report-modal'].open()"
+                >
+                  <i class="si si-paper-plane" />
+                </button>
                 <router-link
                   :to="{ name: 'sales.invoice.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
@@ -79,7 +86,7 @@
                   >
                     {{ $t('form number') | uppercase }}
                   </td>
-                  <td>{{ invoice.referenceable.form.number }}</td>
+                  <td>{{ invoice.form.number }}</td>
                 </tr>
                 <tr>
                   <td class="font-weight-bold">
@@ -277,6 +284,48 @@
       ref="formRequestDelete"
       @delete="onDelete($event)"
     />
+
+    <sweet-modal
+      ref="send-report-modal"
+      :title="$t('send invoice') | uppercase"
+      overlay-theme="dark"
+    >
+      <form @submit.prevent="sendInvoice">
+        <p-form-row
+          id="send-invoice-email"
+          ref="send-invoice-email"
+          v-model="sendInvoiceData.email"
+          type="email"
+          required
+          :label="$t('email') | uppercase"
+          :is-horizontal="false"
+        />
+        <div class="form-group">
+          <label
+            class="col-form-label"
+            for="send-invoice-message"
+          >{{ 'Message' | uppercase }}</label>
+          <div>
+            <textarea
+              id="send-invoice-message"
+              v-model="sendInvoiceData.message"
+              class="form-control"
+              name="send-invoice-message"
+              cols="30"
+              rows="10"
+            />
+          </div>
+        </div>
+        <div class="pull-right">
+          <button
+            type="submit"
+            class="btn btn-primary"
+          >
+            Send
+          </button>
+        </div>
+      </form>
+    </sweet-modal>
   </div>
 </template>
 
@@ -298,7 +347,11 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: false,
-      isDeleting: false
+      isDeleting: false,
+      sendInvoiceData: {
+        email: '',
+        message: ''
+      }
     }
   },
   computed: {
@@ -323,7 +376,8 @@ export default {
       approve: 'approve',
       reject: 'reject',
       cancellationApprove: 'cancellationApprove',
-      cancellationReject: 'cancellationReject'
+      cancellationReject: 'cancellationReject',
+      sendReport: 'sendReport'
     }),
     salesInvoiceRequest () {
       this.isLoading = true
@@ -414,6 +468,23 @@ export default {
       }).catch(error => {
         console.log(error.message)
       })
+    },
+    async sendInvoice () {
+      const { email, message } = this.sendInvoiceData
+      try {
+        await this.sendReport({
+          id: this.id,
+          email,
+          message
+        })
+
+        this.sendInvoiceData.email = ''
+        this.sendInvoiceData.message = ''
+        this.$refs['send-report-modal'].close()
+        this.$notification.success('sales invoice sent')
+      } catch (error) {
+        this.$notification.error(error.message)
+      }
     }
   }
 }

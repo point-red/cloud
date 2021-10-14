@@ -98,7 +98,8 @@ export default {
       this.get({
         params: {
           date: this.date,
-          includes: 'chartOfAccount;form'
+          includes: 'chartOfAccount;form',
+          limit: 1000
         }
       }).then(response => {
         this.isLoading = false

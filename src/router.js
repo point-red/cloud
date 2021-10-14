@@ -22,6 +22,7 @@ import Finance from '@/views/finance/routes'
 import Accounting from '@/views/accounting/routes'
 import Account from '@/views/account/routes'
 import Plugin from '@/views/plugin/routes'
+import Setting from '@/views/setting/routes'
 
 import store from '@/store'
 
@@ -90,7 +91,8 @@ export default new Router({
         ...POS,
         ...Finance,
         ...Accounting,
-        ...Plugin
+        ...Plugin,
+        ...Setting
       ],
       beforeEnter: (to, from, next) => {
         // redirect to sign in page if not authenticated

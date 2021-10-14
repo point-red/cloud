@@ -752,6 +752,18 @@
                 </li>
               </ul>
             </li>
+            <li
+              v-if="$permission.has('menu plugin')"
+              :class="{ 'open' : firstUri === 'setting' }"
+            >
+              <router-link
+                to="/setting"
+                active-class="active"
+              >
+                <i class="si si-settings" />
+                <span class="sidebar-mini-hide">{{ $t("setting") | uppercase }}</span>
+              </router-link>
+            </li>
           </ul>
         </div>
         <!-- END Side Navigation -->
