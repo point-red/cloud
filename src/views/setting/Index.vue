@@ -42,6 +42,7 @@
         </div>
         <div>
           <input
+            :disabled="!$permission.has('update setting')"
             class="mt-2"
             type="file"
             accept="image/png, image/jpeg"
@@ -51,7 +52,7 @@
         <div class="mt-3">
           <button
             class="btn btn-primary btn-sm"
-            :disabled="!localUrl || onLoadingLogo"
+            :disabled="!localUrl || onLoadingLogo || !$permission.has('update setting')"
             @click="uploadLogo"
           >
             {{ onLoadingLogo ? 'Loading...' : 'Save' }}
@@ -86,6 +87,7 @@
               <td>
                 <input
                   v-model="endNote[key]"
+                  :disabled="!$permission.has('update setting')"
                   type="text"
                   style="border: none;"
                 >
@@ -95,7 +97,7 @@
         </p-table>
         <button
           class="mt-3 btn btn-primary btn-sm"
-          :disabled="onLoadingEndNote"
+          :disabled="onLoadingEndNote || !$permission.has('update setting')"
           @click="updateSettingEndNote"
         >
           Save

@@ -48,6 +48,13 @@
                 >
                   <i class="si si-paper-plane" />
                 </button>
+                <button
+                  class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                  title="Print sales invoice"
+                  @click="() => $refs['print-invoice'].open()"
+                >
+                  <i class="si si-printer" />
+                </button>
                 <router-link
                   :to="{ name: 'sales.invoice.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
@@ -201,7 +208,7 @@
                 <b>{{ $t('tax base') | uppercase }}</b>
               </td>
               <td class="text-right">
-                <b>{{ invoice.amount - invoice.tax | numberFormat }}</b>
+                <b>{{ invoice.subtotal - invoice.discountValue | numberFormat }}</b>
               </td>
               <td />
             </tr>
@@ -326,6 +333,12 @@
         </div>
       </form>
     </sweet-modal>
+
+    <print-sales-invoice
+      ref="print-invoice"
+      :invoice="invoice"
+      :tax-base="tax"
+    />
   </div>
 </template>
 
@@ -334,6 +347,7 @@ import SalesMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSales from '../Breadcrumb'
 import PointTable from 'point-table-vue'
+import PrintSalesInvoice from './PrintSalesInvoice'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -341,7 +355,8 @@ export default {
     SalesMenu,
     Breadcrumb,
     BreadcrumbSales,
-    PointTable
+    PointTable,
+    PrintSalesInvoice
   },
   data () {
     return {

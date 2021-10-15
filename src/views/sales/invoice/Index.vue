@@ -244,6 +244,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSales from '@/views/sales/Breadcrumb'
 import PointTable from 'point-table-vue'
 import debounce from 'lodash/debounce'
+import axiosNode from '@/axiosNode'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
@@ -384,7 +385,7 @@ export default {
       try {
         const formStatus = this.formStatus.value ? this.formStatus.value.split(';')[1] || null : null
         const formApprovalStatus = this.formApprovalStatus.value || null
-        const { data: salesInvoices } = await this.get({
+        const { data: salesInvoices } = await axiosNode.get({
           params: {
             filter_form: formStatus + ';' + formApprovalStatus,
             filter_like: {
@@ -396,7 +397,7 @@ export default {
             filter_date_min: this.serverDateTime(this.date.start, 'start'),
             filter_date_max: this.serverDateTime(this.date.end, 'end'),
             limit: 10000,
-            page: this.currentPage
+            page: 1
           }
         })
 
