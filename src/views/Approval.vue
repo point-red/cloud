@@ -1,6 +1,9 @@
 <template>
   <div class="approval-container">
     <div class="approve-container">
+      <h1 class="text-center text-white">
+        {{ projectName }}
+      </h1>
       <div class="floating-approve">
         <div class="header">
           <strong>APPROVAL STATUS</strong>
@@ -47,7 +50,8 @@ export default {
     return {
       action: '',
       token: '',
-      salesInvoice: {}
+      salesInvoice: {},
+      projectName: ''
     }
   },
   created () {
@@ -63,18 +67,19 @@ export default {
         Tenant: this.tenant,
         Authorization: undefined
       }
-      let salesInvoice
+      let salesInvoice, projectName
       if (this.action === 'approve') {
-        ({ data: { data: salesInvoice } } = await axiosNode.post('/sales/invoices/approve-with-token', {
+        ({ data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/approve-with-token', {
           token: this.token
         }, { headers }))
       } else if (this.action === 'reject') {
-        ({ data: { data: salesInvoice } } = await axiosNode.post('/sales/invoices/reject-with-token', {
+        ({ data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/reject-with-token', {
           token: this.token
         }, { headers }))
       }
 
       this.salesInvoice = salesInvoice
+      this.projectName = projectName
     }
   }
 }
@@ -93,6 +98,7 @@ export default {
   width: 300px;
   height: 300px;
   margin: 20px;
+  margin-top: -100px;
 }
 
 .floating-approve {

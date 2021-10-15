@@ -753,7 +753,7 @@
               </ul>
             </li>
             <li
-              v-if="$permission.has('menu plugin')"
+              v-if="$permission.has('menu setting')"
               :class="{ 'open' : firstUri === 'setting' }"
             >
               <router-link

@@ -44,6 +44,7 @@
             :chart-title="'penjualan berdasarkan item' | uppercase"
             :chart-label="itemReportLabels"
             :chart-data="itemReportValues"
+            line-color="#409ce8"
           />
           <div
             v-show="showItemFilter"
@@ -199,6 +200,7 @@
             :chart-title="'penjualan berdasarkan customer' | uppercase"
             :chart-label="customerReportLabels"
             :chart-data="customerReportValues"
+            line-color="#409ce8"
           />
           <div
             v-show="showCustomerFilter"
@@ -354,6 +356,7 @@
             :chart-title="'penjualan berdasarkan allocation' | uppercase"
             :chart-label="allocationReportLabels"
             :chart-data="allocationReportValues"
+            line-color="#409ce8"
           />
           <div
             v-show="showAllocationFilter"

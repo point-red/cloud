@@ -18,6 +18,10 @@ export default {
     chartTitle: {
       type: String,
       default: 'Chart'
+    },
+    lineColor: {
+      type: String,
+      default: '#605103A6'
     }
   },
   data () {
@@ -25,7 +29,31 @@ export default {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        showAllTooltips: true
+        showAllTooltips: true,
+        tooltips: {
+          callbacks: {
+            label: (tooltipItem, data) => {
+              const label = data.datasets[tooltipItem.datasetIndex].label
+              const value = this.formatNumber(tooltipItem.yLabel)
+              return `${label}: ${value}`
+            }
+          }
+        },
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                callback: (value) => {
+                  return this.formatNumber(value)
+                },
+                beginAtZero: true
+              },
+              scaleLabel: {
+                display: true
+              }
+            }
+          ]
+        }
       }
     }
   },
@@ -49,7 +77,7 @@ export default {
         datasets: [
           {
             label: this.chartTitle,
-            backgroundColor: '#605103A6',
+            backgroundColor: this.lineColor,
             pointBackgroundColor: 'white',
             borderWidth: 1,
             pointBorderColor: '#249EBF2',
@@ -57,6 +85,9 @@ export default {
           }
         ]
       }, this.options)
+    },
+    formatNumber (value) {
+      return this.$options.filters.numberFormat(value)
     }
   }
 }
