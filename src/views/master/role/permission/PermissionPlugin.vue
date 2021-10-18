@@ -146,7 +146,7 @@
     </p-table>
     <p-separator />
     <h2 class="content-heading">
-      {{ $t('pin point') | uppercase }}
+      {{ $t('sales visitation') | uppercase }}
     </h2>
     <p-table>
       <tr slot="p-head">
@@ -166,7 +166,7 @@
             @click.native="togglePermission('menu pin point')"
           />
         </td>
-        <td><b>{{ $t('pin point') | uppercase }}</b></td>
+        <td><b>{{ $t('sales visitation') | uppercase }}</b></td>
         <td />
         <td />
         <td />

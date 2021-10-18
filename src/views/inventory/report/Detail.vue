@@ -177,7 +177,26 @@
             >
               <th>{{ ((parseInt($route.query.page) - 1) * limit) + index + 1 }}</th>
               <td>{{ row.form.date | dateFormat('DD MMMM YYYY HH:mm:ss') }}</td>
-              <td>{{ row.form.number }}</td>
+              <td>
+                <template
+                  v-if="row.form.number.toString().includes('PI')"
+                >
+                  <a
+                    target="_blank"
+                    :href="`/purchase/invoice/${row.form.formable_id}`"
+                  >{{ row.form.number }}</a>
+                </template>
+
+                <template
+                  v-else-if="row.form.number.toString().includes('SV')"
+                >
+                  {{ row.form.number }}
+                </template>
+
+                <template v-else>
+                  {{ row.form.number }}
+                </template>
+              </td>
               <td>{{ row.warehouse.name }}</td>
               <td v-if="item.require_production_number">
                 {{ row.production_number | uppercase }}
@@ -221,20 +240,6 @@
               </td>
               <td />
             </tr>
-            <tr slot="p-body">
-              <th />
-              <td v-if="item.require_production_number" />
-              <td v-if="item.require_expiry_date" />
-              <td
-                colspan="4"
-                class="text-right font-weight-bold"
-              >
-                {{ $t('ending') | uppercase }}
-              </td>
-              <td class="text-right font-weight-bold">
-                {{ endingBalance | numberFormat }}
-              </td>
-            </tr>
           </point-table>
         </p-block-inner>
         <p-pagination
@@ -276,7 +281,7 @@ export default {
       searchText: this.$route.query.search,
       page: this.$route.query.page * 1 || 1,
       lastPage: 1,
-      limit: 500,
+      limit: 999999,
       item_label: null,
       warehouseId: this.$route.params.warehouseId,
       warehouseName: null,
@@ -296,10 +301,7 @@ export default {
       handler: function () {
         this.$router.replace({
           query: {
-            ...this.$route.query,
-            page: 1,
-            date_from: this.date.start,
-            date_to: this.date.end
+            ...this.$route.query
           }
         })
         this.getInventoryRequest()
@@ -354,7 +356,6 @@ export default {
       this.$router.push({ query: { search: value, dateFrom: this.date_from, dateTo: this.date_to } })
       this.searchText = value
       this.$route.query.page = 1
-      this.getInventoryRequest()
     }, 300),
     chooseItem (option) {
       this.$router.replace({
@@ -392,9 +393,9 @@ export default {
       this.getWarehouseRequest()
       this.getInventoryRequest()
     },
-    getInventoryRequest () {
+    async getInventoryRequest () {
       this.isLoading = true
-      this.findInventory({
+      await this.findInventory({
         itemId: this.id,
         params: {
           includes: 'form;warehouse',
@@ -402,22 +403,14 @@ export default {
           fields: 'inventory.*',
           searchText: this.$route.query.search,
           page: parseInt(this.$route.query.page) || 1,
-          limit: this.limit,
+          limit: 9999999,
           warehouse_id: this.warehouseId,
-          date_from: this.date.start,
-          date_to: this.date.end,
           filter_like: {
             'form.number': this.searchText
-          },
-          filter_date_min: {
-            'form.date': this.serverDateTime(this.date.start, 'start')
-          },
-          filter_date_max: {
-            'form.date': this.serverDateTime(this.date.end, 'end')
           }
         }
       }).then(response => {
-        let total = this.openingBalanceCurrentPage
+        let total = 0
         this.inventories.forEach(element => {
           total += element.quantity
           element.total_quantity = total
@@ -431,7 +424,6 @@ export default {
     },
     updatePage (value) {
       this.$route.query.page = value
-      this.getInventoryRequest()
     }
   }
 }
