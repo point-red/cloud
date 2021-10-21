@@ -2,6 +2,7 @@ import api from '@/api'
 
 import Vue from 'vue'
 import axios from '@/axios'
+import axiosNode from '@/axiosNode'
 import router from '@/router'
 import device from 'mobile-device-detect'
 
@@ -85,6 +86,18 @@ const actions = {
         localStorage.setItem('tenantPhone', apiData.tenant_phone)
         commit('storeUser', apiData)
         axios.defaults.headers.common.Authorization = apiData.token_type + ' ' + apiData.access_token
+
+        axiosNode.post('/auth/get-token', {
+          accessToken: apiData.access_token,
+          email: apiData.email,
+          id: apiData.id
+        }).then(({ data }) => {
+          if (process.env.NODE_ENV === 'development') {
+            Vue.cookie.set('TNAT', data.token)
+          } else {
+            Vue.cookie.set('TNAT', data.token, { domain: '.' + process.env.VUE_APP_DOMAIN }, 30)
+          }
+        }).catch(error => {})
         resolve(response)
       }).catch(error => {
         reject(error)

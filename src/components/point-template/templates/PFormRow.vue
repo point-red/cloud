@@ -26,6 +26,7 @@
           :readonly="readonly"
           :masked-time-format="maskedTimeFormat"
           :mask="mask"
+          :required="required"
           :is-focus="isFocus"
           :is-text-right="isTextRight"
           :help="help"
@@ -49,6 +50,7 @@
           :readonly="readonly"
           :masked-time-format="maskedTimeFormat"
           :mask="mask"
+          :required="required"
           :is-focus="isFocus"
           :is-text-right="isTextRight"
           :help="help"
@@ -147,6 +149,10 @@ export default {
       default: null
     },
     iconEvent: {
+      type: Boolean,
+      default: false
+    },
+    required: {
       type: Boolean,
       default: false
     }

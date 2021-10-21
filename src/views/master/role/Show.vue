@@ -129,6 +129,14 @@
           @click="choose('plugin')"
         >{{ $t('plugin') | uppercase }}</a>
       </li>
+      <li class="nav-item">
+        <a
+          href="javascript:void(0)"
+          class="nav-link"
+          :class="{'active': choosen == 'setting'}"
+          @click="choose('setting')"
+        >{{ $t('setting') | uppercase }}</a>
+      </li>
     </ul>
 
     <div class="row">
@@ -170,6 +178,10 @@
             v-show="choosen === 'plugin'"
             :role-id="id"
           />
+          <permission-setting
+            v-show="choosen === 'setting'"
+            :role-id="id"
+          />
         </p-block-inner>
       </p-block>
     </div>
@@ -196,6 +208,7 @@ import PermissionFinance from './permission/PermissionFinance'
 import PermissionAccounting from './permission/PermissionAccounting'
 import PermissionHumanResource from './permission/PermissionHumanResource'
 import PermissionPlugin from './permission/PermissionPlugin'
+import PermissionSetting from './permission/PermissionSetting'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
@@ -212,12 +225,13 @@ export default {
     PermissionAccounting,
     PermissionHumanResource,
     PermissionPlugin,
+    PermissionSetting,
     Breadcrumb,
     BreadcrumbMaster
   },
   data () {
     return {
-      id: this.$route.params.id,
+      id: parseInt(this.$route.params.id, 10),
       isLoading: true,
       isDeleting: false,
       isArchiving: false,

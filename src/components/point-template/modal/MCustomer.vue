@@ -52,6 +52,7 @@
       </div>
       <div class="pull-left">
         <button
+          v-if="createButton"
           type="button"
           class="btn btn-sm btn-outline-secondary mr-5"
           @click="$refs.addCustomer.open()"
@@ -95,6 +96,10 @@ export default {
     label: {
       type: String,
       default: ''
+    },
+    createButton: {
+      type: Boolean,
+      default: true
     }
   },
   data () {

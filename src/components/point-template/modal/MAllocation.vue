@@ -44,6 +44,7 @@
       </div>
       <div class="pull-right">
         <button
+          v-if="createButton"
           type="button"
           class="btn btn-sm btn-outline-secondary mr-5"
           @click="add()"
@@ -85,6 +86,10 @@ export default {
     label: {
       type: String,
       default: ''
+    },
+    createButton: {
+      type: Boolean,
+      default: true
     }
   },
   data () {

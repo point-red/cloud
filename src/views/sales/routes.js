@@ -5,6 +5,8 @@ import SalesDeliveryOrder from './delivery-order/routes'
 import SalesDeliveryNote from './delivery-note/routes'
 import SalesDownPayment from './down-payment/routes'
 import SalesReport from './report/routes'
+import SalesInvoice from './invoice/routes'
+import SalesSummary from './summary/routes'
 
 export default [
   { path: '/sales', name: 'Sales', component: Sales },
@@ -13,5 +15,7 @@ export default [
   ...SalesDownPayment,
   ...SalesDeliveryOrder,
   ...SalesDeliveryNote,
-  ...SalesReport
+  ...SalesReport,
+  ...SalesInvoice,
+  ...SalesSummary
 ]

@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import GuestLayout from './views/layouts/GuestLayout.vue'
 import AuthLayout from '@/views/layouts/AuthLayout'
 import AccountLayout from '@/views/layouts/account/AccountLayout'
+import Approval from '@/views/Approval.vue'
 // Authentication Pages
 import E404 from '@/views/error/404'
 import E503 from '@/views/error/503'
@@ -21,6 +22,7 @@ import Finance from '@/views/finance/routes'
 import Accounting from '@/views/accounting/routes'
 import Account from '@/views/account/routes'
 import Plugin from '@/views/plugin/routes'
+import Setting from '@/views/setting/routes'
 
 import store from '@/store'
 
@@ -89,7 +91,8 @@ export default new Router({
         ...POS,
         ...Finance,
         ...Accounting,
-        ...Plugin
+        ...Plugin,
+        ...Setting
       ],
       beforeEnter: (to, from, next) => {
         // redirect to sign in page if not authenticated
@@ -117,6 +120,10 @@ export default new Router({
           }
         }
       }
+    },
+    {
+      path: '/approval',
+      component: Approval
     },
     {
       path: '/404',
