@@ -95,7 +95,7 @@
                     {{ row.itemName || $t('select') | uppercase }}
                   </td>
                   <td>
-                    <p-quantity
+                    <p-quantity-custom
                       :id="'quantity' + index"
                       v-model="row.quantity"
                       :name="'quantity' + index"

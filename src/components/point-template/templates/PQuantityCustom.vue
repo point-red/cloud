@@ -6,7 +6,7 @@
     >
       <cleave
         v-model="number"
-        :readonly="false"
+        :readonly="readonly"
         :options="options"
         class="form-control form-number"
         :class="{
