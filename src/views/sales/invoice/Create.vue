@@ -118,7 +118,7 @@
                       :id="'price' + index"
                       v-model.number="row.price"
                       :name="'price' + index"
-                      :readonly="true"
+                      :readonly="false"
                     />
                   </td>
                   <td>
