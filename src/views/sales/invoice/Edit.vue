@@ -115,7 +115,7 @@
                       :id="'price' + index"
                       v-model.number="row.price"
                       :name="'price' + index"
-                      :readonly="true"
+                      :readonly="false"
                     />
                   </td>
                   <td>
@@ -493,7 +493,8 @@ export default {
           salesInvoiceItemId: item.id,
           allocationId: item.allocationId,
           discountPercent: item.discountPercent,
-          discountValue: item.discountValue
+          discountValue: item.discountValue,
+          price: item.price
         }
       })
       const requestPayload = {
