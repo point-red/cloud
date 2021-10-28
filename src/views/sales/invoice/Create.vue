@@ -95,7 +95,7 @@
                 >
                   <th>{{ index + 1 }}</th>
                   <td>
-                    {{ row.item_label || $t('select') | uppercase }}
+                    {{ row.itemLabel || $t('select') | uppercase }}
                   </td>
                   <td>
                     <p-quantity-custom
@@ -419,23 +419,23 @@ export default {
       this.form.customerName = reference.customer.name
       this.form.customerLabel = reference.customer.label
 
-      this.form.items = reference.items.map(item => {
+      this.form.items = reference.items.map(referenceItem => {
         return {
-          referenceItemId: item.id,
-          itemId: item.itemId,
-          item_name: item.itemName,
-          item_label: item.itemName,
+          referenceItemId: referenceItem.id,
+          itemId: referenceItem.itemId,
+          itemName: referenceItem.item.name,
+          itemLabel: referenceItem.item.name,
           more: false,
-          unit: item.unit,
-          converter: item.converter,
-          quantity: item.quantity,
-          price: item.price,
-          discountPercent: item.discountPercent,
-          discountValue: item.discountValue,
-          total: item.quantity * (item.price - item.discountValue),
-          allocationId: item.allocation && item.allocation.id,
-          allocationName: item.allocation && item.allocation.name,
-          notes: item.notes
+          unit: referenceItem.unit,
+          converter: referenceItem.converter,
+          quantity: referenceItem.quantity,
+          price: referenceItem.price,
+          discountPercent: referenceItem.discountPercent,
+          discountValue: referenceItem.discountValue,
+          total: referenceItem.quantity * (referenceItem.price - referenceItem.discountValue),
+          allocationId: referenceItem.allocation && referenceItem.allocation.id,
+          allocationName: referenceItem.allocation && referenceItem.allocation.name,
+          notes: referenceItem.notes
         }
       })
     },
