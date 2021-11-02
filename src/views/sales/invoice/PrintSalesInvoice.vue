@@ -7,7 +7,7 @@
   >
     <div
       id="print-sales-invoice"
-      class="print-sales-invoice-container border m-2 mb-4"
+      class="print-sales-invoice-container m-2 mb-4 mx-auto"
     >
       <div
         class="d-flex justify-content-between"
@@ -41,7 +41,7 @@
           </p>
         </div>
       </div>
-      <div style="width: 100%; height: 20px; margin-top: 10px; margin-bottom: 10px; background-color: gray;" />
+      <hr style="height:10px; border:none; color:gray; background-color:gray;">
       <div
         class="d-flex justify-content-between"
         style="margin-top: 10px;"
@@ -103,7 +103,7 @@
           <td class="text-right">
             {{ row.discountValue | numberFormat }}
           </td>
-          <td class="text-right">
+          <td class="text-left">
             {{ row.quantity * (row.price - row.discountValue) | numberFormat }}
           </td>
         </tr>
@@ -114,7 +114,7 @@
           >
             Sub total
           </td>
-          <td>{{ invoice.subtotal | numberFormat }}</td>
+          <td>{{ $attrs.subtotal | numberFormat }}</td>
         </tr>
         <tr>
           <td
@@ -254,9 +254,8 @@ export default {
 
 <style scoped>
 .print-sales-invoice-container {
-  width: 700px;
+  width: 90%;
   padding: 30px;
-  margin: auto;
 }
 .d-flex {
   display: flex;

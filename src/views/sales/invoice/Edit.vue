@@ -73,7 +73,7 @@
               </div>
             </div>
             <hr>
-            <point-table v-if="form.reference_id">
+            <point-table v-if="form.referenceId">
               <tr slot="p-head">
                 <th>#</th>
                 <th style="min-width: 120px">
@@ -137,19 +137,17 @@
                     />
                   </td>
                   <td>
-                    <p-form-input
-                      id="allocation"
-                      name="allocation"
-                      disabled
-                      :value="row.allocation && row.allocation.name"
-                    />
+                    <span
+                      class="select-link"
+                      @click="referenceType !== 'salesDeliveryNote' && $refs.allocation.open(index)"
+                    >{{ (row.allocation && row.allocation.name) || $t('select') | uppercase }}</span><br>
                   </td>
                 </tr>
               </template>
             </point-table>
 
             <div
-              v-if="form.reference_id"
+              v-if="form.referenceId"
               class="row"
             >
               <div class="col-sm-6">
@@ -181,8 +179,8 @@
                   </div>
                 </p-form-row>
                 <p-form-row
-                  id="tax_base"
-                  name="tax_base"
+                  id="taxBase"
+                  name="taxBase"
                   :label="$t('tax base')"
                 >
                   <div
@@ -190,10 +188,10 @@
                     class="col-lg-9 mt-5"
                   >
                     <p-form-number
-                      :id="'tax_base'"
-                      :name="'tax_base'"
+                      :id="'taxBase'"
+                      :name="'taxBase'"
                       :readonly="true"
-                      :value="tax_base"
+                      :value="taxBase"
                     />
                   </div>
                 </p-form-row>
@@ -246,9 +244,9 @@
                 </p-form-row>
               </div>
             </div>
-            <hr v-if="form.reference_id">
+            <hr v-if="form.referenceId">
             <div
-              v-if="form.reference_id"
+              v-if="form.referenceId"
               class="row"
             >
               <div class="col-sm-6" />
@@ -305,9 +303,9 @@
       permission="approve sales invoice"
       @choosen="chooseApprover"
     />
-    <select-reference
-      ref="selectReference"
-      @choosen="chooseReference"
+    <m-allocation
+      ref="allocation"
+      @choosen="chooseAllocation($event)"
     />
   </div>
 </template>
@@ -318,23 +316,25 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSales from '@/views/sales/Breadcrumb'
 import Form from '@/utils/Form'
 import PointTable from 'point-table-vue'
-import SelectReference from './SelectReference'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     SalesMenu,
     Breadcrumb,
     BreadcrumbSales,
-    PointTable,
-    SelectReference
+    PointTable
   },
   data () {
     return {
       isSaving: false,
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
-      referenceForm: null,
       reference: null,
+      referenceType: null,
+      referenceTypes: {
+        SalesDeliveryNote: 'salesDeliveryNote',
+        SalesVisitation: 'salesVisitation'
+      },
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -350,14 +350,14 @@ export default {
         notes: null,
         discountPercent: 0,
         discountValue: 0,
-        tax_base: 0,
+        taxBase: 0,
         tax: 0,
         typeOfTax: 'exclude',
         items: [],
         requestApprovalTo: null,
         approverName: null,
         approverEmail: null,
-        reference_id: null
+        referenceId: null
       })
     }
   },
@@ -369,15 +369,15 @@ export default {
         return carry + item.quantity * (item.price - item.discountValue)
       }, 0)
     },
-    tax_base () {
+    taxBase () {
       return this.subtotal - this.form.discountValue
     },
     tax () {
       let value = 0
       if (this.form.typeOfTax == 'include') {
-        value = this.tax_base - (this.tax_base * 10 / 11)
+        value = this.taxBase - (this.taxBase * 10 / 11)
       } else if (this.form.typeOfTax == 'exclude') {
-        value = this.tax_base / 10
+        value = this.taxBase / 10
       }
       return value
     },
@@ -396,7 +396,8 @@ export default {
         id: this.$route.params.id
       }).then(response => {
         this.isLoading = false
-        this.form.reference_id = response.data.id
+        this.referenceType = this.referenceTypes[response.data.referenceableType]
+        this.form.referenceId = response.data.id
         this.form.date = response.data.form.date
         this.form.customerId = response.data.customerId
         this.form.customerName = response.data.customerName
@@ -434,42 +435,13 @@ export default {
         this.form.typeOfTax = taxType
       }
     },
-    chooseReference (referenceForm) {
-      const referenceTypes = {
-        SalesDeliveryNote: 'salesDeliveryNote'
+    chooseAllocation (allocation) {
+      const row = this.form.items[allocation.index]
+      row.allocationId = allocation.id
+      row.allocation = {
+        id: allocation.id,
+        name: allocation.name
       }
-      const referenceType = referenceTypes[referenceForm.formableType]
-      const reference = referenceForm[referenceType]
-
-      if (referenceType === 'salesDeliveryNote') {
-        this.form.typeOfTax = reference.deliveryOrder.salesOrder.typeOfTax
-      }
-
-      this.referenceForm = referenceForm
-      this.reference = reference
-      this.form.reference_id = reference.id
-      this.form.customerId = reference.customer.id
-      this.form.customerName = reference.customer.name
-      this.form.customerLabel = reference.customer.label
-      this.form.items = reference.items.map(item => {
-        return {
-          referenceItemId: item.id,
-          itemId: item.itemId,
-          item_name: item.itemName,
-          item_label: item.itemName,
-          more: false,
-          unit: item.unit,
-          converter: item.converter,
-          quantity: item.quantity,
-          price: item.price,
-          discountPercent: 0,
-          discountValue: 0,
-          total: item.quantity * (item.price - item.discountValue),
-          allocationId: item.allocationId,
-          allocationName: item.allocationName,
-          notes: item.notes
-        }
-      })
     },
     onSubmit () {
       this.isSaving = true
@@ -483,7 +455,7 @@ export default {
       }
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       this.form.subtotal = this.subtotal
-      this.form.tax_base = this.tax_base
+      this.form.taxBase = this.taxBase
       this.form.tax = this.tax
       this.form.total = this.total
       this.form.items = this.form.items.filter(item => item.itemId)

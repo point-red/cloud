@@ -162,7 +162,6 @@ export default {
       this.close()
     },
     choose (option) {
-      console.log(option)
       this.$emit('choosen', option)
       this.close()
     },

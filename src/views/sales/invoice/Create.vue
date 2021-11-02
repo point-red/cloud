@@ -140,12 +140,10 @@
                     />
                   </td>
                   <td>
-                    <p-form-input
-                      id="allocation"
-                      name="allocation"
-                      disabled
-                      :value="row.allocationName"
-                    />
+                    <span
+                      class="select-link"
+                      @click="referenceType !== 'salesDeliveryNote' && $refs.allocation.open(index)"
+                    >{{ row.allocationName || $t('select') | uppercase }}</span><br>
                   </td>
                 </tr>
               </template>
@@ -308,6 +306,10 @@
       permission="approve sales invoice"
       @choosen="chooseApprover"
     />
+    <m-allocation
+      ref="allocation"
+      @choosen="chooseAllocation($event)"
+    />
     <select-reference
       ref="selectReference"
       @choosen="chooseReference"
@@ -338,6 +340,7 @@ export default {
       requestedBy: localStorage.getItem('fullName'),
       referenceForm: null,
       reference: null,
+      referenceType: null,
       form: new Form({
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         customerId: null,
@@ -402,13 +405,12 @@ export default {
       }
     },
     chooseReference (referenceForm) {
-      let referenceType = ''
-      if (referenceForm.number.startsWith('DN')) { referenceType = 'salesDeliveryNote' }
-      if (referenceForm.number.startsWith('SV')) { referenceType = 'salesVisitation' }
+      if (referenceForm.number.startsWith('DN')) { this.referenceType = 'salesDeliveryNote' }
+      if (referenceForm.number.startsWith('SV')) { this.referenceType = 'salesVisitation' }
 
-      const reference = referenceForm[referenceType]
+      const reference = referenceForm[this.referenceType]
 
-      if (referenceType === 'salesDeliveryNote') {
+      if (this.referenceType === 'salesDeliveryNote') {
         this.form.typeOfTax = reference.deliveryOrder.salesOrder.typeOfTax
       }
 
@@ -433,11 +435,18 @@ export default {
           discountPercent: referenceItem.discountPercent,
           discountValue: referenceItem.discountValue,
           total: referenceItem.quantity * (referenceItem.price - referenceItem.discountValue),
+          notes: referenceItem.notes,
           allocationId: referenceItem.allocation && referenceItem.allocation.id,
           allocationName: referenceItem.allocation && referenceItem.allocation.name,
-          notes: referenceItem.notes
+          expiryDate: referenceItem.expiryDate,
+          productionNumber: referenceItem.productionNumber
         }
       })
+    },
+    chooseAllocation (allocation) {
+      const row = this.form.items[allocation.index]
+      row.allocationId = allocation.id
+      row.allocationName = allocation.name
     },
     onSubmit () {
       this.isSaving = true
@@ -456,10 +465,12 @@ export default {
           referenceItemId: item.referenceItemId,
           quantity: item.quantity,
           itemUnit: item.unit,
-          allocationId: item.allocation && item.allocation.id,
+          allocationId: item.allocationId,
           price: item.price,
           discountPercent: item.discountPercent,
-          discountValue: item.discountValue
+          discountValue: item.discountValue,
+          expiryDate: item.expiryDate,
+          productionNumber: item.productionNumber
         }
       })
       const requestPayload = {
