@@ -140,7 +140,10 @@ export default {
             'salesDeliveryNote.customer.name': this.searchText,
             'salesDeliveryNote.itemsQuery.item_name': this.searchText,
             'salesDeliveryNote.deliveryOrder.salesOrder.created_at': this.searchText,
-            'salesDeliveryNote.deliveryOrder.salesOrder.form.number': this.searchText
+            'salesDeliveryNote.deliveryOrder.salesOrder.form.number': this.searchText,
+            'salesVisitation.customer.name': this.searchText,
+            'salesVisitation.itemsQuery.item.name': this.searchText,
+            'salesVisitation.created_at': this.searchText
           },
           limit: 10,
           page: this.currentPage
