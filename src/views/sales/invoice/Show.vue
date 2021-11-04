@@ -44,7 +44,7 @@
                 <button
                   class="mr-3 btn btn-sm btn-outline-secondary mr-5"
                   title="Send sales invoice to customer"
-                  @click="() => $refs['send-report-modal'].open()"
+                  @click="$refs['send-report-modal'].open()"
                 >
                   <i class="si si-paper-plane" />
                 </button>
@@ -170,7 +170,7 @@
                 <td class="text-right">
                   {{ row.quantity * (row.price - row.discountValue) | numberFormat }}
                 </td>
-                <td>{{ row.allocationName }}</td>
+                <td>{{ row.allocation && row.allocation.name }}</td>
               </tr>
             </template>
             <tr slot="p-body">
@@ -182,7 +182,7 @@
                 <b>{{ $t('subtotal') | uppercase }}</b>
               </td>
               <td class="text-right">
-                <b>{{ invoice.subtotal | numberFormat }}</b>
+                <b>{{ invoiceSubtotal | numberFormat }}</b>
               </td>
               <td />
             </tr>
@@ -208,7 +208,7 @@
                 <b>{{ $t('tax base') | uppercase }}</b>
               </td>
               <td class="text-right">
-                <b>{{ invoice.subtotal - invoice.discountValue | numberFormat }}</b>
+                <b>{{ invoiceSubtotal - invoice.discountValue | numberFormat }}</b>
               </td>
               <td />
             </tr>
@@ -304,6 +304,7 @@
           v-model="sendInvoiceData.email"
           type="email"
           required
+          :disabled="!!invoice.customer.email"
           :label="$t('email') | uppercase"
           :is-horizontal="false"
         />
@@ -337,6 +338,7 @@
     <print-sales-invoice
       ref="print-invoice"
       :invoice="invoice"
+      :subtotal="invoiceSubtotal"
       :tax-base="tax"
     />
   </div>
@@ -371,7 +373,21 @@ export default {
   },
   computed: {
     ...mapGetters('salesInvoice', ['invoice']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    invoiceSubtotal () {
+      var subtotal = 0
+      this.invoice.items.forEach(function (element) {
+        if (element.discountPercent > 0) {
+          element.total = element.quantity * (element.price - (element.price * element.discountPercent / 100))
+        } else if (element.discountValue > 0) {
+          element.total = element.quantity * (element.price - element.discountValue)
+        } else {
+          element.total = element.quantity * element.price
+        }
+        subtotal += parseFloat(element.total)
+      })
+      return subtotal
+    }
   },
   watch: {
     '$route' (to, from) {
@@ -410,26 +426,12 @@ export default {
             'form.branch'
         }
       }).then(response => {
-        this.calculate()
+        this.sendInvoiceData.email = this.invoice.customer.email
       }).catch(error => {
         this.$notification.error(error.message)
       }).finally(() => {
         this.isLoading = false
       })
-    },
-    calculate () {
-      var subtotal = 0
-      this.invoice.items.forEach(function (element) {
-        if (element.discountPercent > 0) {
-          element.total = element.quantity * (element.price - (element.price * element.discountPercent / 100))
-        } else if (element.discountValue > 0) {
-          element.total = element.quantity * (element.price - element.discountValue)
-        } else {
-          element.total = element.quantity * element.price
-        }
-        subtotal += parseFloat(element.total)
-      })
-      this.invoice.subtotal = subtotal
     },
     onDelete (reason) {
       this.isDeleting = true
@@ -493,7 +495,7 @@ export default {
           message
         })
 
-        this.sendInvoiceData.email = ''
+        this.sendInvoiceData.email = this.invoice.customer.email || ''
         this.sendInvoiceData.message = ''
         this.$refs['send-report-modal'].close()
         this.$notification.success('sales invoice sent')
