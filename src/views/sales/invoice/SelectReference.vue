@@ -125,6 +125,7 @@ export default {
   },
   watch: {
     searchText: debounce(function () {
+      this.currentPage = 1
       this.search()
     }, 300)
   },

@@ -363,7 +363,8 @@ export default {
             'form.number': this.searchText,
             'form.notes': this.searchText,
             'customer.name': this.searchText,
-            'items.item_name': this.searchText
+            'items.item_name': this.searchText,
+            'items.allocation.name': this.searchText
           },
           filter_date_min: this.serverDateTime(this.date.start, 'start'),
           filter_date_max: this.serverDateTime(this.date.end, 'end'),
@@ -385,7 +386,7 @@ export default {
       try {
         const formStatus = this.formStatus.value ? this.formStatus.value.split(';')[1] || null : null
         const formApprovalStatus = this.formApprovalStatus.value || null
-        const { data: salesInvoices } = await axiosNode.get({
+        const { data: { data: salesInvoices } } = await axiosNode.get('/sales/invoices', {
           params: {
             filter_form: formStatus + ';' + formApprovalStatus,
             filter_like: {
@@ -403,13 +404,6 @@ export default {
 
         let indexItem = 0
         const dataResult = salesInvoices.map((salesInvoice) => {
-          let discountSalesInvoice = 0
-          if (salesInvoice.discountPercent > 0) {
-            discountSalesInvoice = `${salesInvoice.discountPercent}%`
-          } else if (salesInvoice.discountValue > 0) {
-            discountSalesInvoice = salesInvoice.discountValue
-          }
-
           const subTotal = this.getSubTotal(salesInvoice.items)
 
           let formStatus = ''
@@ -423,25 +417,19 @@ export default {
 
           return salesInvoice.items.map((item) => {
             indexItem++
-            let discountItem = 0
-            if (item.discountPercent > 0) {
-              discountItem = `${item.discountPercent}%`
-            } else if (item.discountValue > 0) {
-              discountItem = item.discountValue
-            }
 
             return {
               No: indexItem,
               'Form Number': salesInvoice.form.number,
-              'Invoice Date': this.$options.filters.dateFormat(salesInvoice.form.date, 'DD/mm/YYYY'),
+              'Invoice Date': this.$options.filters.dateFormat(salesInvoice.form.date, 'DD/MM/YYYY'),
               Customer: salesInvoice.customer && salesInvoice.customer.name,
               Item: item.itemName,
               Allocation: item.allocation && item.allocation.name,
               Unit: item.unit,
               Price: item.price,
-              'Discount Item': discountItem,
+              'Discount Item': item.discountValue,
               'Sub Total': subTotal,
-              Discount: discountSalesInvoice,
+              Discount: salesInvoice.discountValue,
               'Tax Method': salesInvoice.typeOfTax,
               Tax: salesInvoice.tax,
               Total: salesInvoice.amount,

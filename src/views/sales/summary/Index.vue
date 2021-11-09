@@ -726,7 +726,8 @@ export default {
         salesInvoice.items.forEach((salesInvoiceItem) => {
           const allocation = salesInvoiceItem.allocation
           if (!allocation || !allocation.name) {
-            reportAllocation.undefinedAllocation.items.push(salesInvoiceItem)
+            // uncomment this if want to show Undefined allocation
+            // reportAllocation.undefinedAllocation.items.push(salesInvoiceItem)
           } else {
             if (!reportAllocation[`allocation_${allocation.id}`]) {
               reportAllocation[`allocation_${allocation.id}`] = {
