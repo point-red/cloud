@@ -1,6 +1,6 @@
 import api from '@/api/nodeServer'
 
-const url = '/inventory/correction'
+const url = '/inventory/corrections'
 
 const state = {
   stockCorrection: {
@@ -135,17 +135,6 @@ const actions = {
   cancellationReject (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/' + payload.id + '/cancellation-reject', payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  sendReport (context, payload) {
-    const requestPayload = { email: payload.email, message: payload.message }
-    return new Promise((resolve, reject) => {
-      api.post(`${url}/${payload.id}/send-stockCorrection`, requestPayload)
         .then(response => {
           resolve(response)
         }).catch(error => {

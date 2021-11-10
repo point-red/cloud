@@ -17,8 +17,8 @@
             </span>
           </download-excel>
           <router-link
-            v-if="$permission.has('create sales invoice')"
-            to="/sales/invoice/create"
+            v-if="$permission.has('create stock correction')"
+            to="/inventory/correction/create"
             class="input-group-prepend"
           >
             <span class="input-group-text">
@@ -126,67 +126,58 @@
             <tr slot="p-head">
               <th>Number</th>
               <th>Date</th>
-              <th>Customer</th>
-              <th>Notes</th>
+              <th>Form Number</th>
               <th>Item</th>
-              <th>Allocation</th>
+              <th>Production Number</th>
+              <th>Expiry Date</th>
+              <th>Notes</th>
               <th class="text-right">
                 Quantity
               </th>
-              <th>Price</th>
-              <th>Value</th>
               <th>Approval</th>
-              <th class="text-center">
-                Form Status
-              </th>
               <th width="50px" />
             </tr>
-            <template v-for="(invoice, index) in invoices">
+            <template v-for="(stockCorrection, index) in stockCorrections">
               <tr
-                v-for="(invoiceItem, index2) in invoice.items"
+                v-for="(stockCorrectionItem, index2) in stockCorrection.items"
                 :key="'pr-' + index + '-i-' + index2"
                 slot="p-body"
               >
                 <th>
-                  <router-link :to="{ name: 'sales.invoice.show', params: { id: invoice.id }}">
-                    {{ invoice.form.number }}
+                  <router-link :to="{ name: 'inventory.stockCorrection.show', params: { id: stockCorrection.id }}">
+                    {{ stockCorrection.form.number }}
                   </router-link>
                 </th>
-                <td>{{ invoice.form.date | dateFormat('DD MMMM YYYY') }}</td>
-                <td>
-                  <template v-if="invoice.customer">
-                    {{ invoice.customer.name }}
-                  </template>
-                </td>
+                <td>{{ stockCorrection.form.date | dateFormat('DD MMMM YYYY') }}</td>
                 <td class="text-break">
-                  {{ invoice.form.notes }}
+                  {{ stockCorrection.form.notes }}
                 </td>
-                <td>{{ invoiceItem.itemName }}</td>
-                <td>{{ invoiceItem.allocation && invoiceItem.allocation.name }}</td>
+                <td>{{ stockCorrectionItem.itemName }}</td>
+                <td>{{ stockCorrectionItem.allocation && stockCorrectionItem.allocation.name }}</td>
                 <td class="text-right">
-                  {{ invoiceItem.quantity | numberFormat }} {{ invoiceItem.unit }}
+                  {{ stockCorrectionItem.quantity | numberFormat }} {{ stockCorrectionItem.unit }}
                 </td>
                 <td>
-                  {{ invoiceItem.price | numberFormat }}
+                  {{ stockCorrectionItem.price | numberFormat }}
                 </td>
                 <td>
-                  {{ invoiceItem.quantity * invoiceItem.price | numberFormat }}
+                  {{ stockCorrectionItem.quantity * stockCorrectionItem.price | numberFormat }}
                 </td>
                 <td class="text-center">
                   <div
-                    v-if="invoice.form.approvalStatus == 0"
+                    v-if="stockCorrection.form.approvalStatus == 0"
                     class="badge badge-primary"
                   >
                     {{ $t('pending') | uppercase }}
                   </div>
                   <div
-                    v-if="invoice.form.approvalStatus == -1"
+                    v-if="stockCorrection.form.approvalStatus == -1"
                     class="badge badge-danger"
                   >
                     {{ $t('rejected') | uppercase }}
                   </div>
                   <div
-                    v-if="invoice.form.approvalStatus == 1"
+                    v-if="stockCorrection.form.approvalStatus == 1"
                     class="badge badge-success"
                   >
                     {{ $t('approved') | uppercase }}
@@ -194,19 +185,19 @@
                 </td>
                 <td class="text-center">
                   <div
-                    v-if="invoice.form.cancellationStatus == 1"
+                    v-if="stockCorrection.form.cancellationStatus == 1"
                     class="badge badge-danger"
                   >
                     {{ $t('canceled') | uppercase }}
                   </div>
                   <div
-                    v-else-if="invoice.form.done == 0"
+                    v-else-if="stockCorrection.form.done == 0"
                     class="badge badge-primary"
                   >
                     {{ $t('pending') | uppercase }}
                   </div>
                   <div
-                    v-else-if="invoice.form.done == 1"
+                    v-else-if="stockCorrection.form.done == 1"
                     class="badge badge-success"
                   >
                     {{ $t('done') | uppercase }}
@@ -281,7 +272,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('salesInvoice', ['invoices', 'pagination'])
+    ...mapGetters('inventoryCorrection', ['stockCorrections', 'pagination'])
   },
   watch: {
     date: {
@@ -293,7 +284,7 @@ export default {
             date_to: this.date.end
           }
         })
-        this.getInvoices()
+        this.getStockCorrections()
       },
       deep: true
     }
@@ -306,13 +297,13 @@ export default {
         date_to: this.date.end
       }
     })
-    this.getInvoices()
+    this.getStockCorrections()
   },
   updated () {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('salesInvoice', ['get']),
+    ...mapActions('inventoryCorrection', ['get']),
     filterSearch: debounce(function (value) {
       this.$router.push({
         query: {
@@ -322,7 +313,7 @@ export default {
       })
       this.searchText = value
       this.currentPage = 1
-      this.getInvoices()
+      this.getStockCorrections()
     }, 300),
     chooseFormStatus: debounce(function (option) {
       this.$router.push({
@@ -334,7 +325,7 @@ export default {
       this.formStatus.label = option.label
       this.formStatus.value = option.value
       this.currentPage = 1
-      this.getInvoices()
+      this.getStockCorrections()
     }),
     chooseFormApprovalStatus: debounce(function (option) {
       this.$router.push({
@@ -346,9 +337,9 @@ export default {
       this.formApprovalStatus.label = option.label
       this.formApprovalStatus.value = option.value
       this.currentPage = 1
-      this.getInvoices()
+      this.getStockCorrections()
     }),
-    getInvoices () {
+    getStockCorrections () {
       this.isLoading = true
       const formStatus = this.formStatus.value ? this.formStatus.value.split(';')[1] || null : null
       const formApprovalStatus = this.formApprovalStatus.value || null
@@ -358,7 +349,6 @@ export default {
           filter_like: {
             'form.number': this.searchText,
             'form.notes': this.searchText,
-            'customer.name': this.searchText,
             'items.item_name': this.searchText
           },
           filter_date_min: this.serverDateTime(this.date.start, 'start'),
@@ -374,20 +364,19 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getInvoices()
+      this.getStockCorrections()
     },
     async generateReport () {
       this.isLoading = true
       try {
         const formStatus = this.formStatus.value ? this.formStatus.value.split(';')[1] || null : null
         const formApprovalStatus = this.formApprovalStatus.value || null
-        const { data: salesInvoices } = await axiosNode.get({
+        const { data: stockCorrections } = await axiosNode.get({
           params: {
             filter_form: formStatus + ';' + formApprovalStatus,
             filter_like: {
               'form.number': this.searchText,
               'form.notes': this.searchText,
-              'customer.name': this.searchText,
               'items.item_name': this.searchText
             },
             filter_date_min: this.serverDateTime(this.date.start, 'start'),
@@ -398,53 +387,26 @@ export default {
         })
 
         let indexItem = 0
-        const dataResult = salesInvoices.map((salesInvoice) => {
-          let discountSalesInvoice = 0
-          if (salesInvoice.discountPercent > 0) {
-            discountSalesInvoice = `${salesInvoice.discountPercent}%`
-          } else if (salesInvoice.discountValue > 0) {
-            discountSalesInvoice = salesInvoice.discountValue
-          }
-
-          const subTotal = this.getSubTotal(salesInvoice.items)
-
+        const dataResult = stockCorrections.map((stockCorrection) => {
           let formStatus = ''
-          if (salesInvoice.form.cancellationStatus == 1) {
+          if (stockCorrection.form.cancellationStatus == 1) {
             formStatus = 'cancelled'
-          } else if (salesInvoice.form.done == 0) {
+          } else if (stockCorrection.form.done == 0) {
             formStatus = 'pending'
-          } else if (salesInvoice.form.done == 1) {
+          } else if (stockCorrection.form.done == 1) {
             formStatus = 'done'
           }
 
-          return salesInvoice.items.map((item) => {
+          return stockCorrection.items.map((item) => {
             indexItem++
-            let discountItem = 0
-            if (item.discountPercent > 0) {
-              discountItem = `${item.discountPercent}%`
-            } else if (item.discountValue > 0) {
-              discountItem = item.discountValue
-            }
 
             return {
               No: indexItem,
-              'Form Number': salesInvoice.form.number,
-              'Invoice Date': this.$options.filters.dateFormat(salesInvoice.form.date, 'DD/mm/YYYY'),
-              Customer: salesInvoice.customer && salesInvoice.customer.name,
+              'Form Number': stockCorrection.form.number,
+              'Invoice Date': this.$options.filters.dateFormat(stockCorrection.form.date, 'DD/mm/YYYY'),
               Item: item.itemName,
-              Allocation: item.allocation && item.allocation.name,
-              Unit: item.unit,
-              Price: item.price,
-              'Discount Item': discountItem,
-              'Sub Total': subTotal,
-              Discount: discountSalesInvoice,
-              'Tax Method': salesInvoice.typeOfTax,
-              Tax: salesInvoice.tax,
-              Total: salesInvoice.amount,
-              'Created at': this.$options.filters.dateFormat(salesInvoice.form.createdAt, 'DD/mm/YYYY HH:mm:ss'),
-              'Created by': salesInvoice.form.createdByUser && salesInvoice.form.createdByUser.name,
-              'Approved by': salesInvoice.form.approvalByUser && salesInvoice.form.approvalByUser.name,
-              'Approval status': this.approvalStatusses[salesInvoice.form.approvalStatus],
+              'Production Number': item.productionNumber,
+              'Expiry Date': item.expiryDate,
               'Form status': formStatus
             }
           })
@@ -457,26 +419,6 @@ export default {
         this.isLoading = false
         return this.$notification.error(error.message)
       }
-    },
-    getSubTotal (items) {
-      const subTotal = items.reduce((result, item) => {
-        return result + this.getItemsPrice(item)
-      }, 0)
-
-      return subTotal
-    },
-    getItemsPrice (item) {
-      let perItemPrice = item.price
-      if (item.discountValue > 0) {
-        perItemPrice -= item.discountValue
-      }
-      if (item.discountPercent > 0) {
-        const discountPercent = item.discountPercent / 100
-        perItemPrice -= perItemPrice * discountPercent
-      }
-      const totalItemPrice = perItemPrice * item.quantity
-
-      return totalItemPrice
     }
   }
 }

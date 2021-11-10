@@ -98,7 +98,7 @@ export default {
     },
     min: {
       type: Number,
-      default: 0
+      default: Number.MIN_SAFE_INTEGER
     },
     max: {
       type: Number,
