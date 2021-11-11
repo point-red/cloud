@@ -393,7 +393,8 @@ export default {
               'form.number': this.searchText,
               'form.notes': this.searchText,
               'customer.name': this.searchText,
-              'items.item_name': this.searchText
+              'items.item_name': this.searchText,
+              'items.allocation.name': this.searchText
             },
             filter_date_min: this.serverDateTime(this.date.start, 'start'),
             filter_date_max: this.serverDateTime(this.date.end, 'end'),
