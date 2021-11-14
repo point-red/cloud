@@ -141,9 +141,9 @@
                   </td>
                   <td>
                     <span
-                      class="select-link"
+                      :class="{'select-link': referenceType !== 'salesDeliveryNote'}"
                       @click="referenceType !== 'salesDeliveryNote' && $refs.allocation.open(index)"
-                    >{{ row.allocationName || $t('select') | uppercase }}</span><br>
+                    >{{ row.allocationName || (referenceType === 'salesDeliveryNote' ? '' : 'SELECT') }}</span><br>
                   </td>
                 </tr>
               </template>
