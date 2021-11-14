@@ -12,7 +12,7 @@
         Dashboard Penjualan Berdasarkan Item
       </h2>
       <div class="row">
-        <div class="col-6">
+        <div class="col-md-6">
           <point-table>
             <tr slot="p-head">
               <th>Product</th>
@@ -29,7 +29,7 @@
             </template>
           </point-table>
         </div>
-        <div class="col-6">
+        <div class="col-md-6">
           <div class="d-flex justify-content-end">
             <button
               class="btn btn-secondary btn-sm"
@@ -168,7 +168,7 @@
         Dashboard Penjualan Berdasarkan Customer
       </h2>
       <div class="row">
-        <div class="col-6">
+        <div class="col-md-6">
           <point-table>
             <tr slot="p-head">
               <th>Customer</th>
@@ -185,7 +185,7 @@
             </template>
           </point-table>
         </div>
-        <div class="col-6">
+        <div class="col-md-6">
           <div class="d-flex justify-content-end">
             <button
               class="btn btn-secondary btn-sm"
@@ -324,7 +324,7 @@
         Dashboard Penjualan Berdasarkan Allocation
       </h2>
       <div class="row">
-        <div class="col-6">
+        <div class="col-md-6">
           <point-table>
             <tr slot="p-head">
               <th>Allocation</th>
@@ -341,7 +341,7 @@
             </template>
           </point-table>
         </div>
-        <div class="col-6">
+        <div class="col-md-6">
           <div class="d-flex justify-content-end">
             <button
               class="btn btn-secondary btn-sm"
