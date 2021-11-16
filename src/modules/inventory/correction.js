@@ -40,7 +40,6 @@ const mutations = {
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    console.log(payload.data)
     payload.data.items.forEach(element => {
       element.more = false
     })

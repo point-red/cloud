@@ -213,6 +213,7 @@ export default {
       this.mutableWarehouseId = row.warehouse_id
       this.mutableRequireExpiryDate = row.item.require_expiry_date
       this.mutableRequireProductionNumber = row.item.require_production_number
+      console.log(row)
       if (row.dna) {
         this.mutableInventories = row.dna
       }

@@ -42,8 +42,8 @@
                         class="select-link"
                         @click="$refs.warehouse.open()"
                       >
-                        <template v-if="form.warehouseId !== null && form.warehouseName !== null">
-                          {{ form.warehouseName }}
+                        <template v-if="form.warehouse_id !== null && form.warehouse_name !== null">
+                          {{ form.warehouse_name }}
                         </template>
                         <template v-else>
                           {{ $t('select') | uppercase }}
@@ -55,7 +55,7 @@
               </div>
             </div>
             <hr>
-            <point-table v-if="form.warehouseId">
+            <point-table v-if="form.warehouse_id">
               <tr slot="p-head">
                 <th>#</th>
                 <th style="min-width: 120px">
@@ -78,15 +78,15 @@
                       class="select-link"
                       @click="$refs.item.open(index)"
                     >
-                      {{ row.itemLabel || $t('select') | uppercase }}
+                      {{ row.item_label || $t('select') | uppercase }}
                     </span>
                   </td>
                   <td>
                     <p-quantity-custom
                       :id="'stock-database' + index"
-                      v-model="row.stockDatabase"
+                      v-model="row.stock_database"
                       :name="'stock-database' + index"
-                      :item-id="row.itemId"
+                      :item-id="row.item_id"
                       :units="row.units"
                       :unit="{
                         name: row.unit,
@@ -100,26 +100,28 @@
                   <td>
                     <p-quantity
                       :id="'stock-correction' + index"
-                      v-model="row.stockCorrection"
+                      v-model="row.stock_correction"
                       :name="'stock-correction' + index"
-                      :disabled="row.itemId == null"
-                      :item-id="row.itemId"
+                      :item-id="row.item_id"
                       :units="row.units"
                       :unit="{
                         name: row.unit,
                         label: row.unit,
                         converter: row.converter
                       }"
+                      :max="row.quantity_pending * 1"
+                      :disabled="row.item_id == null"
                       disable-unit-selection
                       @choosen="chooseUnit($event, row)"
+                      @click.native="onClickQuantity(row, index)"
                     />
                   </td>
                   <td>
                     <p-quantity-custom
                       :id="'stock-balance' + index"
-                      :value="parseFloat(row.stockDatabase) + parseFloat(row.stockCorrection)"
+                      :value="parseFloat(row.stock_database) + parseFloat(row.stock_correction)"
                       :name="'stock-balance' + index"
-                      :item-id="row.itemId"
+                      :item-id="row.item_id"
                       :units="row.units"
                       :unit="{
                         name: row.unit,
@@ -133,12 +135,14 @@
                   <td>
                     <p-form-input
                       :id="'item-notes' + index"
-                      :disabled="row.itemId == null"
+                      v-model="row.notes"
+                      :disabled="row.item_id == null"
                       :name="'item-notes' + index"
                     />
                   </td>
                   <td>
                     <span
+                      v-if="row.item_id != null"
                       class="select-link"
                       @click="$refs.allocation.open(index)"
                     >{{ row.allocationName || $t('select') | uppercase }}</span><br>
@@ -247,7 +251,7 @@
             </div>
             <hr>
             <div
-              v-if="form.warehouseId"
+              v-if="form.warehouse_id"
               class="row"
             >
               <div class="col-sm-6" />
@@ -277,8 +281,8 @@
                 <span
                   class="select-link"
                   @click="$refs.approver.open()"
-                >{{ form.approverName || $t('select') | uppercase }}</span><br>
-                <span style="font-size:9px">{{ form.approverEmail | uppercase }}</span>
+                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
@@ -317,6 +321,12 @@
       ref="allocation"
       @choosen="chooseAllocation($event)"
     />
+    <m-inventory-out
+      :id="'inventory'"
+      ref="inventory"
+      :disable-unit-selection="true"
+      @updated="updateDna($event)"
+    />
   </div>
 </template>
 
@@ -340,14 +350,14 @@ export default {
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
       form: new Form({
-        warehouseId: null,
-        warehouseName: null,
+        warehouse_id: null,
+        warehouse_name: null,
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         notes: null,
         items: [],
-        requestApprovalTo: null,
-        approverName: null,
-        approverEmail: null
+        request_approval_to: null,
+        approver_name: null,
+        approver_email: null
       })
     }
   },
@@ -361,52 +371,66 @@ export default {
     }),
     addItemRow () {
       this.form.items.push({
-        itemId: null,
-        itemName: null,
+        item_id: null,
+        item_name: null,
+        item_label: null,
+        require_expiry_date: null,
+        require_production_number: null,
         unit: null,
         converter: null,
-        stockDatabase: 0,
-        stockCorrection: 0,
+        quantity: null,
+        allocation_id: null,
+        allocation_name: null,
         notes: null,
+        units: [{
+          label: '',
+          name: '',
+          converter: null
+        }],
+        stock_database: 0,
+        stock_correction: 0,
         allocationId: null,
         allocationName: ''
       })
     },
     chooseApprover (value) {
-      this.form.requestApprovalTo = value.id
-      this.form.approverName = value.fullName
-      this.form.approverEmail = value.email
+      this.form.request_approval_to = value.id
+      this.form.approver_name = value.fullName
+      this.form.approver_email = value.email
     },
     chooseWarehouse (value) {
-      this.form.warehouseId = value.id
-      this.form.warehouseName = value.name
+      this.form.warehouse_id = value.id
+      this.form.warehouse_name = value.name
       this.form.items = []
       this.addItemRow()
     },
     async chooseItem (item) {
-      const { data: inventoryWarehouses } = await this.findInventoryWarehouse({
-        itemId: item.id,
-        params: {
-          item_id: item.id,
-          warehouse_id: this.form.warehouseId,
-          limit: 1
-        }
-      })
-
-      const inventory = inventoryWarehouses.find((inventoryWarehouse) => inventoryWarehouse.id === this.form.warehouseId)
-
       if (item.id == null) {
         this.clearItem(item.index)
         return
       }
 
+      const { data: inventoryWarehouses } = await this.findInventoryWarehouse({
+        itemId: item.id,
+        params: {
+          item_id: item.id,
+          warehouse_id: this.form.warehouse_id,
+          limit: 1
+        }
+      })
+      const inventory = inventoryWarehouses.find((inventoryWarehouse) => inventoryWarehouse.id === this.form.warehouse_id)
+
       const row = this.form.items[item.index]
-      row.itemId = item.id
-      row.itemName = item.name
-      row.itemLabel = item.label
+      row.item = item
+      row.item_id = item.id
+      row.item_name = item.name
+      row.item_label = item.label
+      row.stock_correction = 0
+      row.require_production_number = item.require_production_number
+      row.require_expiry_date = item.require_expiry_date
       row.units = item.units
-      row.stockCorrection = 0
-      row.stockDatabase = parseFloat(inventory.opening_balance)
+      row.stock_database = parseFloat(inventory.opening_balance)
+      row.stock_correction = 0
       row.units.forEach((unit, keyUnit) => {
         if (unit.converter == 1) {
           row.unit = unit.label
@@ -415,7 +439,7 @@ export default {
       })
       let isNeedNewRow = true
       this.form.items.forEach(element => {
-        if (element.itemId == null) {
+        if (element.item_id == null) {
           isNeedNewRow = false
         }
       })
@@ -444,34 +468,66 @@ export default {
       row.allocationId = allocation.id
       row.allocationName = allocation.name
     },
+    onClickQuantity (row, index) {
+      if (row.require_expiry_date == 1 || row.require_production_number == 1) {
+        row.warehouse_id = this.form.warehouse_id
+        row.index = index
+        this.$refs.inventory.open(row, row.quantity)
+      }
+    },
+    updateDna (e) {
+      this.form.items[e.index].dna = e.dna
+      this.form.items[e.index].stock_correction = e.quantity
+    },
     onSubmit () {
       this.isSaving = true
-      if (this.form.requestApprovalTo == null) {
+      if (this.form.request_approval_to == null) {
         this.$notification.error('approval can not be null')
         this.isSaving = false
         this.form.errors.record({
-          requestApprovalTo: ['Approver should not empty']
+          request_approval_to: ['Approver should not empty']
         })
         return
       }
 
-      const items = this.form.items.map((item) => {
-        return {
-          itemId: item.itemId,
+      const items = []
+      this.form.items.forEach((item) => {
+        if (item.item_id === null) { return }
+        if (item.require_expiry_date === 1 && item.require_production_number === 1) {
+          item.dna.forEach((itemDna) => {
+            if (parseFloat(itemDna.quantity) !== 0) {
+              items.push({
+                itemId: itemDna.item_id,
+                unit: itemDna.unit_reference,
+                converter: itemDna.converter_reference,
+                stockCorrection: itemDna.quantity,
+                notes: item.notes,
+                expiryDate: itemDna.expiry_date,
+                productionNumber: itemDna.production_number,
+                allocationId: itemDna.allocation_id
+              })
+            }
+          })
+          return
+        }
+
+        items.push({
+          itemId: item.item_id,
           unit: item.unit,
           converter: item.converter,
-          stockCorrection: item.stockCorrection,
+          stockCorrection: item.stock_correction,
           notes: item.notes,
-          expiryDate: item.expiryDate,
-          productionNumber: item.productionNumber
-        }
+          expiryDate: item.expiry_date,
+          productionNumber: item.production_number,
+          allocationId: item.allocation_id
+        })
       })
+
       const requestPayload = {
-        formId: this.referenceForm.id,
         items,
-        requestApprovalTo: this.form.requestApprovalTo,
+        requestApprovalTo: this.form.request_approval_to,
         dueDate: this.form.date,
-        warehouseId: this.form.warehouseId,
+        warehouseId: this.form.warehouse_id,
         notes: this.form.notes
       }
 

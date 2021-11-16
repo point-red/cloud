@@ -100,23 +100,6 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-3 text-center">
-              <p-form-row
-                id="form-status"
-                name="form-status"
-                :label="$t('form status')"
-                :is-horizontal="false"
-              >
-                <div slot="body">
-                  <span
-                    class="select-link"
-                    @click="$refs.formStatus.open()"
-                  >
-                    {{ formStatus.label || $t('select') | uppercase }}
-                  </span>
-                </div>
-              </p-form-row>
-            </div>
           </div>
           <hr>
         </div>
@@ -126,7 +109,6 @@
             <tr slot="p-head">
               <th>Number</th>
               <th>Date</th>
-              <th>Form Number</th>
               <th>Item</th>
               <th>Production Number</th>
               <th>Expiry Date</th>
@@ -135,7 +117,6 @@
                 Quantity
               </th>
               <th>Approval</th>
-              <th width="50px" />
             </tr>
             <template v-for="(stockCorrection, index) in stockCorrections">
               <tr
@@ -144,24 +125,21 @@
                 slot="p-body"
               >
                 <th>
-                  <router-link :to="{ name: 'inventory.stockCorrection.show', params: { id: stockCorrection.id }}">
+                  <router-link :to="{ name: 'inventory.correction.show', params: { id: stockCorrection.id }}">
                     {{ stockCorrection.form.number }}
                   </router-link>
                 </th>
                 <td>{{ stockCorrection.form.date | dateFormat('DD MMMM YYYY') }}</td>
-                <td class="text-break">
-                  {{ stockCorrection.form.notes }}
+                <td>{{ stockCorrectionItem.item.name }}</td>
+                <td>{{ stockCorrectionItem.productionNumber }}</td>
+                <td>
+                  {{ stockCorrectionItem.expiryDate ? $options.filters.dateFormat(stockCorrectionItem.expiryDate) : '' }}
                 </td>
-                <td>{{ stockCorrectionItem.itemName }}</td>
-                <td>{{ stockCorrectionItem.allocation && stockCorrectionItem.allocation.name }}</td>
+                <td class="text-break">
+                  {{ stockCorrectionItem.notes }}
+                </td>
                 <td class="text-right">
                   {{ stockCorrectionItem.quantity | numberFormat }} {{ stockCorrectionItem.unit }}
-                </td>
-                <td>
-                  {{ stockCorrectionItem.price | numberFormat }}
-                </td>
-                <td>
-                  {{ stockCorrectionItem.quantity * stockCorrectionItem.price | numberFormat }}
                 </td>
                 <td class="text-center">
                   <div
@@ -183,27 +161,6 @@
                     {{ $t('approved') | uppercase }}
                   </div>
                 </td>
-                <td class="text-center">
-                  <div
-                    v-if="stockCorrection.form.cancellationStatus == 1"
-                    class="badge badge-danger"
-                  >
-                    {{ $t('canceled') | uppercase }}
-                  </div>
-                  <div
-                    v-else-if="stockCorrection.form.done == 0"
-                    class="badge badge-primary"
-                  >
-                    {{ $t('pending') | uppercase }}
-                  </div>
-                  <div
-                    v-else-if="stockCorrection.form.done == 1"
-                    class="badge badge-success"
-                  >
-                    {{ $t('done') | uppercase }}
-                  </div>
-                </td>
-                <td />
               </tr>
             </template>
           </point-table>
@@ -348,8 +305,9 @@ export default {
           filter_form: formStatus + ';' + formApprovalStatus,
           filter_like: {
             'form.number': this.searchText,
-            'form.notes': this.searchText,
-            'items.item_name': this.searchText
+            'form.notes': this.searchText
+            // ,
+            // 'items.item_name': this.searchText
           },
           filter_date_min: this.serverDateTime(this.date.start, 'start'),
           filter_date_max: this.serverDateTime(this.date.end, 'end'),
@@ -371,7 +329,7 @@ export default {
       try {
         const formStatus = this.formStatus.value ? this.formStatus.value.split(';')[1] || null : null
         const formApprovalStatus = this.formApprovalStatus.value || null
-        const { data: stockCorrections } = await axiosNode.get({
+        const { data: { data: stockCorrections } } = await axiosNode.get('/inventory/corrections', {
           params: {
             filter_form: formStatus + ';' + formApprovalStatus,
             filter_like: {
@@ -391,10 +349,12 @@ export default {
           let formStatus = ''
           if (stockCorrection.form.cancellationStatus == 1) {
             formStatus = 'cancelled'
-          } else if (stockCorrection.form.done == 0) {
+          } else if (stockCorrection.form.approvalStatus == 1) {
+            formStatus = 'approved'
+          } else if (stockCorrection.form.approvalStatus == -1) {
+            formStatus = 'rejected'
+          } else if (stockCorrection.form.approvalStatus == 0) {
             formStatus = 'pending'
-          } else if (stockCorrection.form.done == 1) {
-            formStatus = 'done'
           }
 
           return stockCorrection.items.map((item) => {
@@ -403,8 +363,11 @@ export default {
             return {
               No: indexItem,
               'Form Number': stockCorrection.form.number,
-              'Invoice Date': this.$options.filters.dateFormat(stockCorrection.form.date, 'DD/mm/YYYY'),
-              Item: item.itemName,
+              'Stock Correction Date': this.$options.filters.dateFormat(stockCorrection.form.date, 'DD/mm/YYYY'),
+              Item: item.item.name,
+              'Stock Database': item.initialStock,
+              'Stock Correction': item.quantity,
+              Balance: item.finalStock,
               'Production Number': item.productionNumber,
               'Expiry Date': item.expiryDate,
               'Form status': formStatus
