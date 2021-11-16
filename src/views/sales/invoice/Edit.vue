@@ -38,12 +38,18 @@
                   </tr>
                   <tr>
                     <td class="font-weight-bold">
+                      {{ $t('Form number') | uppercase }}
+                    </td>
+                    <td> <span> {{ form.number | uppercase }} </span> </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">
                       {{ $t('reference') | uppercase }}
                     </td>
                     <td>
                       <span>
                         <template v-if="reference && reference.form.number != null">
-                          {{ reference.form.number }}
+                          {{ reference.form.number | uppercase }}
                         </template>
                         <template v-else>
                           {{ $t('select') | uppercase }}
@@ -138,9 +144,11 @@
                   </td>
                   <td>
                     <span
+                      v-if="referenceType === 'salesVisitation'"
                       class="select-link"
-                      @click="referenceType !== 'salesDeliveryNote' && $refs.allocation.open(index)"
-                    >{{ (row.allocation && row.allocation.name) || $t('select') | uppercase }}</span><br>
+                      @click="$refs.allocation.open(index)"
+                    >{{ (row.allocation && row.allocation.name) || $t('select') | uppercase }}</span>
+                    <span v-else>{{ (row.allocation && row.allocation.name) || '' }}</span><br>
                   </td>
                 </tr>
               </template>
@@ -398,6 +406,7 @@ export default {
         this.isLoading = false
         this.referenceType = this.referenceTypes[response.data.referenceableType]
         this.form.referenceId = response.data.id
+        this.form.number = response.data.form.number
         this.form.date = response.data.form.date
         this.form.customerId = response.data.customerId
         this.form.customerName = response.data.customerName

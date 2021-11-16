@@ -114,7 +114,8 @@ const actions = {
   },
   reject (context, payload) {
     return new Promise((resolve, reject) => {
-      api.post(url + '/' + payload.id + '/reject', { reason: payload.reason })
+      const bodyPayload = { reason: payload.reason || null }
+      api.post(url + '/' + payload.id + '/reject', bodyPayload)
         .then(response => {
           resolve(response)
         }).catch(error => {
@@ -124,7 +125,7 @@ const actions = {
   },
   cancellationApprove (context, payload) {
     return new Promise((resolve, reject) => {
-      api.post(url + '/' + payload.id + '/cancellation-approve', payload)
+      api.post(url + '/' + payload.id + '/cancellation-approve')
         .then(response => {
           resolve(response)
         }).catch(error => {
@@ -134,7 +135,8 @@ const actions = {
   },
   cancellationReject (context, payload) {
     return new Promise((resolve, reject) => {
-      api.post(url + '/' + payload.id + '/cancellation-reject', payload)
+      const bodyPayload = { reason: payload.reason || null }
+      api.post(url + '/' + payload.id + '/cancellation-reject', bodyPayload)
         .then(response => {
           resolve(response)
         }).catch(error => {
@@ -143,9 +145,9 @@ const actions = {
     })
   },
   sendReport (context, payload) {
-    const requestPayload = { email: payload.email, message: payload.message }
+    const bodyPayload = { email: payload.email, message: payload.message || null }
     return new Promise((resolve, reject) => {
-      api.post(`${url}/${payload.id}/send-invoice`, requestPayload)
+      api.post(`${url}/${payload.id}/send-invoice`, bodyPayload)
         .then(response => {
           resolve(response)
         }).catch(error => {
