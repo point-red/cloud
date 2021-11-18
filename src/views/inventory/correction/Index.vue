@@ -141,7 +141,7 @@
                 <td class="text-right">
                   {{ stockCorrectionItem.quantity | numberFormat }} {{ stockCorrectionItem.unit }}
                 </td>
-                <td class="text-center">
+                <td>
                   <div
                     v-if="stockCorrection.form.approvalStatus == 0"
                     class="badge badge-primary"

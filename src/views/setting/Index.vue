@@ -140,7 +140,8 @@ export default {
         expeditionOrder: 'Expedition Order',
         expeditionDownPayment: 'Expediton Down Payment',
         expeditionInvoice: 'Expedition Invoice',
-        paymentOrderExpedition: 'Payment Order Expedition'
+        paymentOrderExpedition: 'Payment Order Expedition',
+        stockCorrection: 'Stock Correction'
       }
     }
   },
@@ -213,7 +214,8 @@ export default {
           expeditionOrder: this.endNote.expeditionOrder,
           expeditionDownPayment: this.endNote.expeditionDownPayment,
           expeditionInvoice: this.endNote.expeditionInvoice,
-          paymentOrderExpedition: this.endNote.paymentOrderExpedition
+          paymentOrderExpedition: this.endNote.paymentOrderExpedition,
+          stockCorrection: this.endNote.stockCorrection
         }
         const { data: { data: endNote } } = await axiosNode.post('/setting/end-note', requestBody)
         this.endNote = endNote

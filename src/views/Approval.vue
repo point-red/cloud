@@ -9,27 +9,27 @@
           <strong>APPROVAL STATUS</strong>
         </div>
         <div class="body">
-          <div v-if="salesInvoice.form">
+          <div v-if="formable.form">
             <div class="form-number">
-              {{ salesInvoice.form.number }}
+              {{ formable.form.number }}
             </div>
             <template>
               <div
-                v-if="salesInvoice.form.approvalStatus === 1"
+                v-if="formable.form.approvalStatus === 1"
                 class="form-status bg-success"
               >
                 Approved
               </div>
 
               <div
-                v-if="salesInvoice.form.approvalStatus === -1"
+                v-if="formable.form.approvalStatus === -1"
                 class="form-status bg-danger"
               >
                 Rejected
               </div>
 
               <div
-                v-if="salesInvoice.form.approvalStatus === 0"
+                v-if="formable.form.approvalStatus === 0"
                 class="form-status bg-secondary"
               >
                 Pending
@@ -50,12 +50,14 @@ export default {
     return {
       action: '',
       token: '',
-      salesInvoice: {},
-      projectName: ''
+      formable: {},
+      projectName: '',
+      formableType: ''
     }
   },
   created () {
     this.tenant = this.$route.query.tenant || ''
+    this.formableType = this.$route.query.form_type || ''
     this.action = this.$route.query.action || ''
     this.token = this.$route.query.token || ''
 
@@ -63,10 +65,38 @@ export default {
   },
   methods: {
     async handleAction () {
+      this.validate()
       const headers = {
         Tenant: this.tenant,
         Authorization: undefined
       }
+
+      if (this.formableType === 'SalesInvoice') {
+        await this.handleSalesInvoice(headers)
+        return
+      }
+      if (this.formableType === 'StockCorrection') {
+        await this.handleStockCorrection(headers)
+      }
+    },
+    validate () {
+      if (!this.tenant || this.tenant.length === 0) {
+        this.$notification.error('Bad request')
+        return
+      }
+      if (!this.formableType || this.formableType.length === 0) {
+        this.$notification.error('Bad request')
+        return
+      }
+      if (!this.action || this.action.length === 0) {
+        this.$notification.error('Bad request')
+        return
+      }
+      if (!this.token || this.token.length === 0) {
+        this.$notification.error('Bad request')
+      }
+    },
+    async handleSalesInvoice (headers) {
       let salesInvoice, projectName
       if (this.action === 'approve') {
         ({ data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/approve-with-token', {
@@ -78,7 +108,22 @@ export default {
         }, { headers }))
       }
 
-      this.salesInvoice = salesInvoice
+      this.formable = salesInvoice
+      this.projectName = projectName
+    },
+    async handleStockCorrection (headers) {
+      let stockCorrection, projectName
+      if (this.action === 'approve') {
+        ({ data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/approve-with-token', {
+          token: this.token
+        }, { headers }))
+      } else if (this.action === 'reject') {
+        ({ data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/reject-with-token', {
+          token: this.token
+        }, { headers }))
+      }
+
+      this.formable = stockCorrection
       this.projectName = projectName
     }
   }

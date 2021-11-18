@@ -42,7 +42,7 @@
                 <button
                   class="mr-3 btn btn-sm btn-outline-secondary mr-5"
                   title="Print stock correction"
-                  @click="() => $refs['print-stock-correction'].open()"
+                  @click="() => $refs['print-correction'].open()"
                 >
                   <i class="si si-printer" />
                 </button>
@@ -209,12 +209,10 @@
       @delete="onDelete($event)"
     />
 
-    <!-- <print-sales-invoice
-      ref="print-stock-correction"
-      :invoice="invoice"
-      :subtotal="invoiceSubtotal"
-      :tax-base="tax"
-    /> -->
+    <print-stock-correction
+      ref="print-correction"
+      :stock-correction="stockCorrection"
+    />
   </div>
 </template>
 
@@ -222,16 +220,15 @@
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbInventory from '../Breadcrumb'
 import PointTable from 'point-table-vue'
-// import PrintSalesInvoice from './PrintSalesInvoice'
+import PrintStockCorrection from './PrintStockCorrection'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     Breadcrumb,
     BreadcrumbInventory,
-    PointTable
-    // ,
-    // PrintSalesInvoice
+    PointTable,
+    PrintStockCorrection
   },
   data () {
     return {

@@ -1,13 +1,13 @@
 <template>
   <sweet-modal
-    ref="print-sales-invoice"
-    :title="$t('print sales invoice') | uppercase"
+    ref="print-stock-correction"
+    :title="$t('print stock correction') | uppercase"
     overlay-theme="dark"
     @close="onClose()"
   >
     <div
-      id="print-sales-invoice"
-      class="print-sales-invoice-container m-2 mb-4 mx-auto"
+      id="print-stock-correction"
+      class="print-stock-correction-container m-2 mb-4 mx-auto"
     >
       <div
         class="d-flex justify-content-between"
@@ -22,7 +22,7 @@
         </div>
         <div class="company-detail">
           <h1 style="margin-top: 0; margin-bottom: 5px;">
-            Invoice
+            Stock Correction
           </h1>
           <h3
             class="my-5px"
@@ -50,29 +50,12 @@
           <tr>
             <td>Date</td>
             <td>:</td>
-            <td>{{ invoice.date | dateFormat('DD MMMM YYYY') }}</td>
+            <td>{{ stockCorrection.form.date | dateFormat('DD MMMM YYYY') }}</td>
           </tr>
           <tr>
-            <td>Invoice number</td>
+            <td>Form number</td>
             <td>:</td>
-            <td>{{ invoice.form.number }}</td>
-          </tr>
-        </table>
-        <table style="margin-left: 5px;">
-          <tr>
-            <td>Customer</td>
-            <td>:</td>
-            <td>{{ invoice.customer.name || '-' }}</td>
-          </tr>
-          <tr>
-            <td>Address</td>
-            <td>:</td>
-            <td>{{ invoice.customer.address || '-' }}</td>
-          </tr>
-          <tr>
-            <td>Phone number</td>
-            <td>:</td>
-            <td>{{ invoice.customer.phone || '-' }}</td>
+            <td>{{ stockCorrection.form.number }}</td>
           </tr>
         </table>
       </div>
@@ -83,81 +66,40 @@
         <tr>
           <th>No</th>
           <th>Item</th>
-          <th>Quantity</th>
-          <th>Price</th>
-          <th>Discount</th>
-          <th>Total</th>
+          <th>Allocation</th>
+          <th>Stock Database</th>
+          <th>Stock Correction</th>
+          <th>Balance</th>
+          <th>Notes</th>
         </tr>
         <tr
-          v-for="(row, index) in invoice.items"
+          v-for="(row, index) in stockCorrection.items"
           :key="index"
         >
           <td>{{ index+1 }}</td>
-          <td>{{ row.itemName }}</td>
+          <td>{{ row.item.name }}</td>
           <td class="text-right">
-            {{ row.quantity | numberFormat }} {{ row.unit }}
+            {{ row.allocation && row.allocation.name }}
           </td>
           <td class="text-right">
-            {{ row.price | numberFormat }}
+            {{ row.initialStock | numberFormat }}
           </td>
           <td class="text-right">
-            {{ row.discountValue | numberFormat }}
+            {{ row.quantity | numberFormat }}
           </td>
           <td class="text-left">
-            {{ row.quantity * (row.price - row.discountValue) | numberFormat }}
+            {{ row.finalStock | numberFormat }}
           </td>
-        </tr>
-        <tr>
-          <td
-            colspan="5"
-            class="text-right"
-          >
-            Sub total
+          <td>
+            {{ row.notes }}
           </td>
-          <td>{{ $attrs.subtotal | numberFormat }}</td>
-        </tr>
-        <tr>
-          <td
-            colspan="5"
-            class="text-right"
-          >
-            Discount
-          </td>
-          <td>{{ invoice.discountValue | numberFormat }}</td>
-        </tr>
-        <tr>
-          <td
-            colspan="5"
-            class="text-right"
-          >
-            Tax base
-          </td>
-          <td>{{ invoice.amount - invoice.tax | numberFormat }}</td>
-        </tr>
-        <tr>
-          <td
-            colspan="5"
-            class="text-right"
-          >
-            Tax
-          </td>
-          <td>{{ invoice.tax | numberFormat }}</td>
-        </tr>
-        <tr>
-          <td
-            colspan="5"
-            class="text-right"
-          >
-            Total
-          </td>
-          <td>{{ invoice.amount | numberFormat }}</td>
         </tr>
       </table>
       <span>Notes: {{ notes }}</span>
     </div>
     <div class="pull-right">
       <button
-        v-print="'print-sales-invoice'"
+        v-print="'print-stock-correction'"
         type="button"
         class="btn btn-sm btn-outline-secondary"
       >
@@ -175,7 +117,7 @@ export default {
     print
   },
   props: {
-    invoice: {
+    stockCorrection: {
       type: Object,
       required: true
     }
@@ -224,7 +166,7 @@ export default {
       this.close()
     },
     open () {
-      this.$refs['print-sales-invoice'].open()
+      this.$refs['print-stock-correction'].open()
     },
     close () {
       this.$refs['select-' + this.id].close()
@@ -243,7 +185,7 @@ export default {
     async getSettingEndNote () {
       try {
         const { data: { data: endNote } } = await axiosNode.get('/setting/end-note')
-        this.notes = endNote.salesInvoice
+        this.notes = endNote.stockCorrection
       } catch (e) {
         console.log(e)
       }
@@ -253,7 +195,7 @@ export default {
 </script>
 
 <style scoped>
-.print-sales-invoice-container {
+.print-stock-correction-container {
   width: 90%;
   padding: 30px;
 }
