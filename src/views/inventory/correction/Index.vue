@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-inventory />
-      <span class="breadcrumb-item active">{{ $t('inventory correction') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('stock correction') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
@@ -265,7 +265,8 @@ export default {
       this.$router.push({
         query: {
           ...this.$route.query,
-          search: value
+          search: value,
+          page: 1
         }
       })
       this.searchText = value
@@ -305,9 +306,10 @@ export default {
           filter_form: formStatus + ';' + formApprovalStatus,
           filter_like: {
             'form.number': this.searchText,
-            'form.notes': this.searchText
-            // ,
-            // 'items.item_name': this.searchText
+            'form.notes': this.searchText,
+            'items.item.name': this.searchText,
+            'items.production_number': this.searchText,
+            'items.notes': this.searchText
           },
           filter_date_min: this.serverDateTime(this.date.start, 'start'),
           filter_date_max: this.serverDateTime(this.date.end, 'end'),
@@ -335,7 +337,7 @@ export default {
             filter_like: {
               'form.number': this.searchText,
               'form.notes': this.searchText,
-              'items.item_name': this.searchText
+              'items.item.name': this.searchText
             },
             filter_date_min: this.serverDateTime(this.date.start, 'start'),
             filter_date_max: this.serverDateTime(this.date.end, 'end'),

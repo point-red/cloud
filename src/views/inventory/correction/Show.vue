@@ -6,9 +6,9 @@
         to="/inventory/correction"
         class="breadcrumb-item"
       >
-        {{ $t('correction') | uppercase }}
+        {{ $t('stock correction') | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ stockCorrection.form.number | uppercase }}</span>
     </breadcrumb>
 
     <p-show-form-approval-status

@@ -6,7 +6,7 @@
         to="/inventory/correction"
         class="breadcrumb-item"
       >
-        {{ $t('correction') | uppercase }}
+        {{ $t('stock correction') | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>

@@ -123,7 +123,8 @@ const actions = {
   },
   cancellationApprove (context, payload) {
     return new Promise((resolve, reject) => {
-      api.post(url + '/' + payload.id + '/cancellation-approve', payload)
+      const bodyPayload = {}
+      api.post(url + '/' + payload.id + '/cancellation-approve', bodyPayload)
         .then(response => {
           resolve(response)
         }).catch(error => {
@@ -133,7 +134,8 @@ const actions = {
   },
   cancellationReject (context, payload) {
     return new Promise((resolve, reject) => {
-      api.post(url + '/' + payload.id + '/cancellation-reject', payload)
+      const bodyPayload = { reason: payload.reason }
+      api.post(url + '/' + payload.id + '/cancellation-reject', bodyPayload)
         .then(response => {
           resolve(response)
         }).catch(error => {
