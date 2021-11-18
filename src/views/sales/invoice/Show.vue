@@ -13,7 +13,8 @@
 
     <sales-menu />
 
-    <p-show-form-approval-status
+    <p-show-form-approval-status-custom
+      form-name="Sales Invoice"
       :is-loading="isLoading"
       :approved-by="invoice.form.requestApprovalToUser.fullName"
       :cancellation-status="invoice.form.cancellationStatus"
@@ -23,8 +24,10 @@
       @onReject="onReject"
     />
 
-    <p-show-form-cancellation-status
+    <p-show-form-cancellation-status-custom
+      form-name="Sales Invoice"
       :is-loading="isLoading"
+      :approved-by="invoice.form.requestApprovalToUser.fullName"
       :cancellation-status="invoice.form.cancellationStatus"
       :cancellation-approval-reason="invoice.form.cancellationApprovalReason"
       :request-cancellation-reason="invoice.form.requestCancellationReason"
@@ -438,7 +441,7 @@ export default {
       this.delete({
         id: this.id,
         data: {
-          reason: reason
+          reason: reason || null
         }
       }).then(response => {
         this.isDeleting = false
@@ -456,6 +459,9 @@ export default {
       }).then(response => {
         this.$notification.success('approve success')
         this.salesInvoiceRequest()
+      }).catch(error => {
+        // console.log(error)
+        this.$notification.error('Something error when approving the invoice creation')
       })
     },
     onReject (reason) {
@@ -465,6 +471,9 @@ export default {
       }).then(response => {
         this.$notification.success('reject success')
         this.salesInvoiceRequest()
+      }).catch(error => {
+        // console.log(error)
+        this.$notification.error('Something error when rejecting the invoice creation')
       })
     },
     onCancellationApprove () {
@@ -473,6 +482,9 @@ export default {
       }).then(response => {
         this.$notification.success('cancellation approved')
         this.$router.push('/sales/invoice')
+      }).catch(error => {
+        // console.log(error)
+        this.$notification.error('Something error when approving the invoice cancellation')
       })
     },
     onCancellationReject (reason) {
@@ -483,7 +495,8 @@ export default {
         this.$notification.success('cancellation rejected')
         this.salesInvoiceRequest()
       }).catch(error => {
-        console.log(error.message)
+        // console.log(error)
+        this.$notification.error('Something error when rejecting the invoice cancellation')
       })
     },
     async sendInvoice () {
@@ -500,7 +513,8 @@ export default {
         this.$refs['send-report-modal'].close()
         this.$notification.success('sales invoice sent')
       } catch (error) {
-        this.$notification.error(error.message)
+        // console.log(error)
+        this.$notification.error('Something error when sending the invoice')
       }
     }
   }

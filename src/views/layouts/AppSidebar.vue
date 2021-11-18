@@ -755,6 +755,7 @@
             <li
               v-if="$permission.has('menu setting')"
               :class="{ 'open' : firstUri === 'setting' }"
+              @click="toggleLeftSidebar('close-xs')"
             >
               <router-link
                 to="/setting"

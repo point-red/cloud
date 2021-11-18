@@ -775,6 +775,7 @@ export default {
       this.reportAllocation = arrayReportAllocation
       this.allocationReportLabels = arrayReportAllocation.map((item) => item.name)
       this.allocationReportValues = arrayReportAllocation.map((item) => item.total)
+      this.showAllocationFilter = false
     },
     chooseItem (itemId, option) {
       if (!option.id) {
