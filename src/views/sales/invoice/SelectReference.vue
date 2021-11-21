@@ -40,6 +40,17 @@
             @click="choose(option)"
           >
             <template v-if="option.number.startsWith('SV')">
+              <template v-if="option.salesVisitation.items.length === 0">
+                <tr>
+                  <td>{{ null }}</td>
+                  <td>{{ null }}</td>
+                  <td>{{ `${$options.filters.dateFormat(option.date, 'DD MMMM YYYY')}` }}</td>
+                  <td>{{ option.number }}</td>
+                  <td>{{ option.salesVisitation.customer.name }}</td>
+                  <td>{{ null }}</td>
+                  <td>{{ null }}</td>
+                </tr>
+              </template>
               <template v-for="(item, itemIndex) in option.salesVisitation.items">
                 <tr
                   :key="'request-'+optionIndex+'-'+itemIndex"
@@ -139,11 +150,11 @@ export default {
             number: this.searchText,
             created_at: this.searchText,
             'salesDeliveryNote.customer.name': this.searchText,
-            'salesDeliveryNote.itemsQuery.item_name': this.searchText,
+            // 'salesDeliveryNote.items.item_name': this.searchText,
             'salesDeliveryNote.deliveryOrder.salesOrder.created_at': this.searchText,
             'salesDeliveryNote.deliveryOrder.salesOrder.form.number': this.searchText,
             'salesVisitation.customer.name': this.searchText,
-            'salesVisitation.itemsQuery.item.name': this.searchText,
+            // 'salesVisitation.items.item.name': this.searchText,
             'salesVisitation.created_at': this.searchText
           },
           limit: 10,
