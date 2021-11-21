@@ -1,15 +1,16 @@
 <template>
-  <div class="p-3 d-flex">
-    <div class="col-xl-2 col-lg-4">
+  <div class="p-3 row">
+    <div class="col-xl-2 col-lg-4 col-sm-12">
       <div class="block block-rounded text-center">
         <div class="block-content block-content-full block-content-sm">
-          <div class="d-flex justify-content-center">
+          <div class="d-flex justify-content-center my-3">
             <i class="si si-settings font-size-h1" />
           </div>
+          <hr>
           <ul class="nav nav-pills flex-column push mt-3">
             <li class="nav-item">
               <button
-                class="d-block btn btn-secondary mt-2 col-12 text-left"
+                :class="{'d-block btn btn-secondary mt-2 col-12 text-left': true, active: currentPage === 'end_notes' }"
                 @click="currentPage = 'end_notes'"
               >
                 <span> {{ $t('end notes') | uppercase }}</span>
@@ -17,7 +18,7 @@
             </li>
             <li class="nav-item">
               <button
-                class="d-block btn btn-secondary text-black mt-2 col-12 text-left"
+                :class="{'d-block btn btn-secondary mt-2 col-12 text-left': true, active: currentPage === 'company_logo' }"
                 @click="currentPage = 'company_logo'"
               >
                 <span> {{ $t('company logo') | uppercase }}</span>
@@ -29,7 +30,7 @@
     </div>
     <p-block
       v-if="currentPage === 'company_logo'"
-      class="col-xl-10 col-lg-8"
+      class="col-xl-10 col-lg-8 col-sm-12"
       :header="true"
       title="Company Logo"
     >
