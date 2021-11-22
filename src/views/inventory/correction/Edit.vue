@@ -17,6 +17,7 @@
           <p-block-inner :is-loading="isLoading">
             <div class="row">
               <div class="col-sm-6">
+                <h1>Stock Correction</h1>
                 <table class="table table-sm table-bordered">
                   <tr>
                     <td class="font-weight-bold">
@@ -31,14 +32,6 @@
                         :errors="form.errors.get('date')"
                         @errors="form.errors.set('date', null)"
                       />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>
-                      {{ $t('form number') | uppercase }}
-                    </th>
-                    <td>
-                      {{ form.number | uppercase }}
                     </td>
                   </tr>
                   <tr>
