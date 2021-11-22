@@ -139,7 +139,9 @@
                 <th class="text-center">
                   {{ index + 1 }}
                 </th>
-                <td>{{ row.item.name }}</td>
+                <td>
+                  {{ row.item.label }} {{ row.item.requireProductionNumber ? `(PID: ${row.productionNumber})` : '' }} {{ row.item.requireExpiryDate ? `(E/D: ${$options.filters.dateFormat(row.expiryDate, 'DD MMMM YYYY')})` : '' }}
+                </td>
                 <td class="text-right">
                   {{ row.initialStock | numberFormat }} {{ row.unit }}
                 </td>
@@ -234,11 +236,7 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: false,
-      isDeleting: false,
-      sendStockCorrectionData: {
-        email: '',
-        message: ''
-      }
+      isDeleting: false
     }
   },
   computed: {

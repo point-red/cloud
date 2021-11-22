@@ -6,7 +6,7 @@
         to="/inventory/correction"
         class="breadcrumb-item"
       >
-        {{ $t('correction') | uppercase }}
+        {{ $t('stock correction') | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
@@ -315,6 +315,7 @@
     />
     <select-item
       ref="item"
+      :warehouse-id="form.warehouse_id"
       @choosen="chooseItem($event)"
     />
     <m-allocation
@@ -493,7 +494,7 @@ export default {
       const items = []
       this.form.items.forEach((item) => {
         if (item.item_id === null) { return }
-        if (item.require_expiry_date === 1 && item.require_production_number === 1) {
+        if (item.require_expiry_date && item.require_production_number) {
           item.dna.forEach((itemDna) => {
             if (parseFloat(itemDna.quantity) !== 0) {
               items.push({

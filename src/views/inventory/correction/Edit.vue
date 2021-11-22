@@ -365,6 +365,7 @@ export default {
       this.find({
         id: this.$route.params.id
       }).then(async (response) => {
+        this.form.id = response.data.id
         this.form.warehouse_id = response.data.warehouseId
         this.form.warehouse_name = response.data.warehouse.name
         this.form.number = response.data.form.number
@@ -387,36 +388,107 @@ export default {
     ...mapActions('inventoryInventoryWarehouseRecapitulation', {
       findInventoryWarehouse: 'find'
     }),
-    async mapItemsData (items) {
-      const mappedItems = await Promise.all(items.map(async (stockCorrectionItem) => {
+    async mapItemsData (stockCorrectionItems) {
+      const stockCorrectionItemIds = [...new Set(stockCorrectionItems.map(stockCorrectionItem => stockCorrectionItem.itemId))]
+      const mappedItems = await Promise.all(stockCorrectionItemIds.map(async (stockCorrectionItemId) => {
+        const selectedItems = stockCorrectionItems.filter(stockCorrectionItem => stockCorrectionItem.itemId === stockCorrectionItemId)
+
+        if (!selectedItems[0].item.requireExpiryDate && !selectedItems[0].item.requireProductionNumber) {
+          const selectedItem = selectedItems[0]
+          const { data: inventoryWarehouses } = await this.findInventoryWarehouse({
+            itemId: selectedItem.item.id,
+            params: {
+              item_id: selectedItem.item.id,
+              warehouse_id: this.form.warehouse_id,
+              limit: 1
+            }
+          })
+          const inventory = inventoryWarehouses.find((inventoryWarehouse) => inventoryWarehouse.id === this.form.warehouse_id)
+          const unit = selectedItem.item.units.find(unit => unit.converter === 1)
+          selectedItem.item = {
+            ...selectedItem.item,
+            unit,
+            require_expiry_date: selectedItem.item.requireExpiryDate,
+            require_production_number: selectedItem.item.requireProductionNumber,
+            warehouse_id: this.warehouse.id
+          }
+
+          return {
+            id: selectedItem.id,
+            notes: selectedItem.notes,
+            production_number: selectedItem.productionNumber,
+            expiry_date: selectedItem.expiryDate,
+            item: selectedItem.item,
+            item_id: selectedItem.item.id,
+            item_name: selectedItem.item.name,
+            item_label: selectedItem.item.label,
+            stock_correction: selectedItem.quantity,
+            require_production_number: selectedItem.item.requireProductionNumber,
+            require_expiry_date: selectedItem.item.requireExpiryDate,
+            stock_database: parseFloat(inventory.opening_balance),
+            units: selectedItem.item.units,
+            unit: selectedItem.unit,
+            converter: selectedItem.converter
+          }
+        }
+
+        const dna = selectedItems.map((selectedItem) => {
+          return {
+            id: selectedItem.id,
+            form_id: this.form.id,
+            warehouse_id: this.warehouse_id,
+            item_id: selectedItem.itemId,
+            quantity: selectedItem.quantity,
+            expiry_date: selectedItem.expiryDate,
+            production_number: selectedItem.productionNumber,
+            unit_reference: selectedItem.unit,
+            converter_reference: selectedItem.converter,
+            remaining: 0,
+            remainingInUnit: 0
+          }
+        })
+
+        const selectedItem = selectedItems[0]
         const { data: inventoryWarehouses } = await this.findInventoryWarehouse({
-          itemId: stockCorrectionItem.item.id,
+          itemId: selectedItem.item.id,
           params: {
-            item_id: stockCorrectionItem.item.id,
+            item_id: selectedItem.item.id,
             warehouse_id: this.form.warehouse_id,
             limit: 1
           }
         })
         const inventory = inventoryWarehouses.find((inventoryWarehouse) => inventoryWarehouse.id === this.form.warehouse_id)
+        const unit = selectedItem.item.units.find(unit => unit.converter === 1)
+        selectedItem.item = {
+          ...selectedItem.item,
+          unit,
+          require_expiry_date: selectedItem.item.requireExpiryDate,
+          require_production_number: selectedItem.item.requireProductionNumber,
+          warehouse_id: this.form.warehouse_id
+        }
 
-        const mappedItem = {}
-        mappedItem.id = stockCorrectionItem.id
-        mappedItem.notes = stockCorrectionItem.notes
-        mappedItem.production_number = stockCorrectionItem.productionNumber
-        mappedItem.expiry_date = stockCorrectionItem.expiryDate
-        mappedItem.item = stockCorrectionItem.item
-        mappedItem.item_id = stockCorrectionItem.item.id
-        mappedItem.item_name = stockCorrectionItem.item.name
-        mappedItem.item_label = stockCorrectionItem.item.name
-        mappedItem.stock_correction = stockCorrectionItem.quantity
-        mappedItem.require_production_number = stockCorrectionItem.item.requireProductionNumber
-        mappedItem.require_expiry_date = stockCorrectionItem.requireExpiryDate
-        mappedItem.stock_database = parseFloat(inventory.opening_balance)
-        mappedItem.units = stockCorrectionItem.item.units
-        mappedItem.unit = stockCorrectionItem.unit
-        mappedItem.converter = stockCorrectionItem.converter
+        const totalQuantity = dna.reduce((prev, current) => {
+          return prev.quantity + current.quantity
+        })
 
-        return mappedItem
+        return {
+          id: selectedItem.id,
+          notes: selectedItem.notes,
+          production_number: selectedItem.productionNumber,
+          expiry_date: selectedItem.expiryDate,
+          item: selectedItem.item,
+          item_id: selectedItem.item.id,
+          item_name: selectedItem.item.name,
+          item_label: selectedItem.item.label,
+          stock_correction: totalQuantity,
+          require_production_number: selectedItem.item.requireProductionNumber,
+          require_expiry_date: selectedItem.item.requireExpiryDate,
+          stock_database: parseFloat(inventory.opening_balance),
+          units: selectedItem.item.units,
+          unit: selectedItem.unit,
+          converter: selectedItem.converter,
+          dna
+        }
       }))
 
       return mappedItems

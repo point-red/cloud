@@ -50,14 +50,6 @@
       </div>
       <div class="pull-right">
         <button
-          v-if="createButton"
-          type="button"
-          class="btn btn-sm btn-outline-secondary mr-5"
-          @click="$refs.addItem.open()"
-        >
-          {{ $t('create') | uppercase }}
-        </button>
-        <button
           type="button"
           class="btn btn-sm btn-outline-danger"
           @click="clear()"
@@ -66,23 +58,23 @@
         </button>
       </div>
     </sweet-modal>
-    <m-add-item
-      id="add-item"
-      ref="addItem"
-      @added="onAdded()"
-    />
   </div>
 </template>
 
 <script>
 import debounce from 'lodash/debounce'
-import { mapGetters, mapActions } from 'vuex'
+import axiosNode from '@/axiosNode'
+// import { mapGetters, mapActions } from 'vuex'
 
 export default {
   props: {
     id: {
       type: String,
       default: ''
+    },
+    warehouseId: {
+      type: Number,
+      default: null
     },
     value: {
       type: [String, Number],
@@ -109,7 +101,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterItem', ['items', 'pagination'])
+    // ...mapGetters('masterItem', ['items', 'pagination'])
   },
   watch: {
     searchText: debounce(function () {
@@ -120,38 +112,42 @@ export default {
     }
   },
   created () {
-    this.search()
+    if (this.warehouseId) {
+      this.search()
+    }
   },
   beforeDestroy () {
     this.close()
   },
   methods: {
-    ...mapActions('masterItem', ['get', 'create']),
+    getItems (payload) {
+      return axiosNode.get('/master/items', payload)
+    },
     search () {
+      console.log('masuk')
       this.isLoading = true
-      this.get({
+      this.getItems({
         params: {
-          sort_by: 'name',
-          limit: 100,
+          warehouse_id: this.warehouseId,
           filter_like: {
             code: this.searchText,
             name: this.searchText
-          },
-          includes: 'units.prices'
+          }
         }
       }).then(response => {
+        console.log(response)
         this.options = []
         this.mutableLabel = ''
-        response.data.map((key, value) => {
+        response.data.data.map((key, value) => {
           this.options.push({
             id: key.id,
             label: key.label,
             name: key.name,
-            require_expiry_date: key.require_expiry_date,
-            require_production_number: key.require_production_number,
-            unit_default: key.unit_default,
-            unit_default_purchase: key.unit_default_purchase,
-            unit_default_sales: key.unit_default_sales,
+            require_expiry_date: key.requireExpiryDate,
+            require_production_number: key.requireProductionNumber,
+            unit_default: key.unitDefault,
+            unit_default_purchase: key.unitDefaultPurchase,
+            unit_default_sales: key.unitDefaultSales,
             units: key.units
           })
 
@@ -163,9 +159,6 @@ export default {
       }).catch(error => {
         this.isLoading = false
       })
-    },
-    onAdded () {
-      this.search()
     },
     clear (option) {
       this.mutableId = null
@@ -206,6 +199,7 @@ export default {
       this.close()
     },
     open (index = null) {
+      this.search()
       this.index = index
       this.$refs['select-' + this.id].open()
       this.$nextTick(() => {
