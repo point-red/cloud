@@ -150,11 +150,9 @@ export default {
             number: this.searchText,
             created_at: this.searchText,
             'salesDeliveryNote.customer.name': this.searchText,
-            // 'salesDeliveryNote.items.item_name': this.searchText,
             'salesDeliveryNote.deliveryOrder.salesOrder.created_at': this.searchText,
             'salesDeliveryNote.deliveryOrder.salesOrder.form.number': this.searchText,
             'salesVisitation.customer.name': this.searchText,
-            // 'salesVisitation.items.item.name': this.searchText,
             'salesVisitation.created_at': this.searchText
           },
           limit: 10,
