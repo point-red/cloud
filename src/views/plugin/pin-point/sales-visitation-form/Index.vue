@@ -469,7 +469,7 @@ export default {
 
       if (diffDays > 31) {
         this.isExporting = false
-        this.$alert.error('Export tidak bisa lebih dari 1 bulan')
+        this.$alert.error('', 'Export tidak bisa lebih dari 1 bulan')
         return
       }
 
