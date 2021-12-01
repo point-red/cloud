@@ -49,7 +49,7 @@
           id="customer"
           v-model="form.customer"
           name="customer"
-          :label="$t('customer')"
+          :label="$t('customer' + '*')"
           :disabled="isSaving"
           :errors="form.errors.get('customer')"
           @errors="form.errors.set('customer', null)"
@@ -65,7 +65,7 @@
           </div>
         </p-form-row>
 
-        <p-form-row :label="'customer group'">
+        <p-form-row :label="'customer group' + '*'">
           <div
             slot="body"
             class="col-lg-9"
@@ -170,7 +170,7 @@
           id="phone"
           v-model="form.phone"
           name="phone"
-          :label="$t('phone')"
+          :label="$t('phone') + '*'"
           :disabled="isSaving"
           :errors="form.errors.get('phone')"
           @errors="form.errors.set('phone', null)"
@@ -179,7 +179,7 @@
         <p-form-row
           id="similar-product"
           name="similar_product"
-          :label="$t('similar product') | titlecase"
+          :label="$t('similar product') | titlecase + '*'"
         >
           <div
             slot="body"
@@ -200,7 +200,7 @@
         <p-form-row
           id="interest"
           name="interest"
-          :label="$t('interest reason') | titlecase"
+          :label="$t('interest reason') | titlecase + '*'"
         >
           <div
             slot="body"
@@ -221,7 +221,7 @@
         <p-form-row
           id="no-interest"
           name="no_interest"
-          :label="$t('no interest reason')"
+          :label="$t('no interest reason') + '*'"
         >
           <div
             slot="body"
