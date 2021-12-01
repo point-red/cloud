@@ -139,7 +139,7 @@
           id="address"
           v-model="form.address"
           name="address"
-          :label="$t('address')"
+          :label="$t('address') + '*'"
           :placeholder="$t('address')"
           :disabled="isSaving"
           :errors="form.errors.get('address')"
@@ -179,7 +179,7 @@
         <p-form-row
           id="similar-product"
           name="similar_product"
-          :label="$t('similar product') | titlecase + '*'"
+          :label="$t('similar product') + '*' | titlecase"
         >
           <div
             slot="body"
@@ -200,7 +200,7 @@
         <p-form-row
           id="interest"
           name="interest"
-          :label="$t('interest reason') | titlecase + '*'"
+          :label="$t('interest reason') + '*' | titlecase"
         >
           <div
             slot="body"
