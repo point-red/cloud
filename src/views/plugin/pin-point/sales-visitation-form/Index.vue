@@ -468,6 +468,7 @@ export default {
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
       if (diffDays > 31) {
+        this.isExporting = false
         this.$alert.error('Export tidak bisa lebih dari 1 bulan')
         return
       }
