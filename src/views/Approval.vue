@@ -6,30 +6,30 @@
       </h1>
       <div class="floating-approve">
         <div class="header">
-          <strong>APPROVAL STATUS</strong>
+          <strong>{{ crudType | uppercase }} APPROVAL STATUS</strong>
         </div>
         <div class="body">
-          <div v-if="salesInvoice.form">
+          <div v-if="resource && resource.form">
             <div class="form-number">
-              {{ salesInvoice.form.number }}
+              {{ resource.form.number }}
             </div>
             <template>
               <div
-                v-if="salesInvoice.form.approvalStatus === 1"
+                v-if="approvalStatus === 1"
                 class="form-status bg-success"
               >
                 Approved
               </div>
 
               <div
-                v-if="salesInvoice.form.approvalStatus === -1"
+                v-if="approvalStatus === -1"
                 class="form-status bg-danger"
               >
                 Rejected
               </div>
 
               <div
-                v-if="salesInvoice.form.approvalStatus === 0"
+                v-if="approvalStatus === 0"
                 class="form-status bg-secondary"
               >
                 Pending
@@ -48,14 +48,19 @@ import axiosNode from '@/axiosNode'
 export default {
   data: () => {
     return {
+      crudType: '',
       action: '',
       token: '',
-      salesInvoice: {},
-      projectName: ''
+      resourceType: '',
+      resource: {},
+      projectName: '',
+      approvalStatus: null
     }
   },
   created () {
     this.tenant = this.$route.query.tenant || ''
+    this.resourceType = this.$route.query['resource-type'] || ''
+    this.crudType = this.$route.query['crud-type']
     this.action = this.$route.query.action || ''
     this.token = this.$route.query.token || ''
 
@@ -67,19 +72,38 @@ export default {
         Tenant: this.tenant,
         Authorization: undefined
       }
-      let salesInvoice, projectName
-      if (this.action === 'approve') {
-        ({ data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/approve-with-token', {
-          token: this.token
-        }, { headers }))
-      } else if (this.action === 'reject') {
-        ({ data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/reject-with-token', {
-          token: this.token
-        }, { headers }))
+
+      let resource, projectName, approvalStatus
+      if (this.resourceType === 'SalesInvoice') {
+        ({ resource, projectName, approvalStatus } = await this.handleApprovalSalesInvoice(headers))
       }
 
-      this.salesInvoice = salesInvoice
+      this.resource = resource
       this.projectName = projectName
+      this.approvalStatus = approvalStatus
+    },
+    async handleApprovalSalesInvoice (headers) {
+      if (this.crudType === 'create' || this.crudType === 'update') {
+        if (this.action === 'approve') {
+          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/create-approve-with-token', { token: this.token }, { headers })
+          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.approvalStatus }
+        }
+        if (this.action === 'reject') {
+          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/create-reject-with-token', { token: this.token }, { headers })
+          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.approvalStatus }
+        }
+      }
+
+      if (this.crudType === 'delete') {
+        if (this.action === 'approve') {
+          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/delete-approve-with-token', { token: this.token }, { headers })
+          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.cancellationStatus }
+        }
+        if (this.action === 'reject') {
+          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/delete-reject-with-token', { token: this.token }, { headers })
+          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.cancellationStatus }
+        }
+      }
     }
   }
 }

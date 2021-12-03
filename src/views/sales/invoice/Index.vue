@@ -11,6 +11,7 @@
       <p-block>
         <div class="input-group block">
           <download-excel
+            :name="`Sales Invoice_${$options.filters.dateFormat(date.start, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.end, 'DD MMM YYYY')}`"
             :fetch="generateReport"
             class="input-group-prepend"
           >
@@ -293,10 +294,12 @@ export default {
         this.$router.push({
           query: {
             ...this.$route.query,
+            page: 1,
             date_from: this.date.start,
             date_to: this.date.end
           }
         })
+        this.currentPage = 1
         this.getInvoices()
       },
       deep: true
@@ -426,6 +429,7 @@ export default {
               Customer: salesInvoice.customer && salesInvoice.customer.name,
               Item: item.itemName,
               Allocation: item.allocation && item.allocation.name,
+              Quantity: item.quantity,
               Unit: item.unit,
               Price: item.price,
               'Discount Item': item.discountValue,
