@@ -465,6 +465,7 @@ export default {
           referenceItemId: item.referenceItemId,
           quantity: item.quantity,
           itemUnit: item.unit,
+          converter: item.converter,
           allocationId: item.allocationId,
           price: item.price,
           discountPercent: item.discountPercent,
