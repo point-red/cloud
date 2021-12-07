@@ -461,6 +461,18 @@ export default {
     },
     exportData (file = '') {
       this.isExporting = true
+
+      const date1 = new Date(this.date.start)
+      const date2 = new Date(this.date.end)
+      const diffTime = Math.abs(date2 - date1)
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+      if (diffDays > 31) {
+        this.isExporting = false
+        this.$alert.error('', 'Export tidak bisa lebih dari 1 bulan')
+        return
+      }
+
       this.toggleBtnDropdown()
       this.export({
         date_from: this.date.start,

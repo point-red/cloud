@@ -6,30 +6,30 @@
       </h1>
       <div class="floating-approve">
         <div class="header">
-          <strong>APPROVAL STATUS</strong>
+          <strong>{{ crudType | uppercase }} APPROVAL STATUS</strong>
         </div>
         <div class="body">
-          <div v-if="formable.form">
+          <div v-if="resource && resource.form">
             <div class="form-number">
-              {{ formable.form.number }}
+              {{ resource.form.number }}
             </div>
             <template>
               <div
-                v-if="formable.form.approvalStatus === 1"
+                v-if="approvalStatus === 1"
                 class="form-status bg-success"
               >
                 Approved
               </div>
 
               <div
-                v-if="formable.form.approvalStatus === -1"
+                v-if="approvalStatus === -1"
                 class="form-status bg-danger"
               >
                 Rejected
               </div>
 
               <div
-                v-if="formable.form.approvalStatus === 0"
+                v-if="approvalStatus === 0"
                 class="form-status bg-secondary"
               >
                 Pending
@@ -48,16 +48,19 @@ import axiosNode from '@/axiosNode'
 export default {
   data: () => {
     return {
+      crudType: '',
       action: '',
       token: '',
-      formable: {},
+      resourceType: '',
+      resource: {},
       projectName: '',
-      formableType: ''
+      approvalStatus: null
     }
   },
   created () {
     this.tenant = this.$route.query.tenant || ''
-    this.formableType = this.$route.query.form_type || ''
+    this.resourceType = this.$route.query['resource-type'] || ''
+    this.crudType = this.$route.query['crud-type']
     this.action = this.$route.query.action || ''
     this.token = this.$route.query.token || ''
 
@@ -71,60 +74,37 @@ export default {
         Authorization: undefined
       }
 
-      if (this.formableType === 'SalesInvoice') {
-        await this.handleSalesInvoice(headers)
-        return
-      }
-      if (this.formableType === 'StockCorrection') {
-        await this.handleStockCorrection(headers)
-      }
-    },
-    validate () {
-      if (!this.tenant || this.tenant.length === 0) {
-        this.$notification.error('Bad request')
-        return
-      }
-      if (!this.formableType || this.formableType.length === 0) {
-        this.$notification.error('Bad request')
-        return
-      }
-      if (!this.action || this.action.length === 0) {
-        this.$notification.error('Bad request')
-        return
-      }
-      if (!this.token || this.token.length === 0) {
-        this.$notification.error('Bad request')
-      }
-    },
-    async handleSalesInvoice (headers) {
-      let salesInvoice, projectName
-      if (this.action === 'approve') {
-        ({ data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/approve-with-token', {
-          token: this.token
-        }, { headers }))
-      } else if (this.action === 'reject') {
-        ({ data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/reject-with-token', {
-          token: this.token
-        }, { headers }))
+      let resource, projectName, approvalStatus
+      if (this.resourceType === 'SalesInvoice') {
+        ({ resource, projectName, approvalStatus } = await this.handleApprovalSalesInvoice(headers))
       }
 
-      this.formable = salesInvoice
+      this.resource = resource
       this.projectName = projectName
+      this.approvalStatus = approvalStatus
     },
-    async handleStockCorrection (headers) {
-      let stockCorrection, projectName
-      if (this.action === 'approve') {
-        ({ data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/approve-with-token', {
-          token: this.token
-        }, { headers }))
-      } else if (this.action === 'reject') {
-        ({ data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/reject-with-token', {
-          token: this.token
-        }, { headers }))
+    async handleApprovalSalesInvoice (headers) {
+      if (this.crudType === 'create' || this.crudType === 'update') {
+        if (this.action === 'approve') {
+          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/create-approve-with-token', { token: this.token }, { headers })
+          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.approvalStatus }
+        }
+        if (this.action === 'reject') {
+          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/create-reject-with-token', { token: this.token }, { headers })
+          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.approvalStatus }
+        }
       }
 
-      this.formable = stockCorrection
-      this.projectName = projectName
+      if (this.crudType === 'delete') {
+        if (this.action === 'approve') {
+          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/delete-approve-with-token', { token: this.token }, { headers })
+          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.cancellationStatus }
+        }
+        if (this.action === 'reject') {
+          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/delete-reject-with-token', { token: this.token }, { headers })
+          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.cancellationStatus }
+        }
+      }
     }
   }
 }
