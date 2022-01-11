@@ -133,7 +133,7 @@ export default {
             this.findUser({
               id: this.user.id,
               params: {
-                includes: 'roles;warehouses'
+                includes: 'roles;branches;warehouses'
               }
             }).then((response) => {
               this.isSaving = false
