@@ -94,44 +94,14 @@
               @place_changed="setPlace"
               @keypress.enter.prevent
             />
-            <gmap-map
-              id="map"
-              ref="map"
-              :center="center"
-              :zoom="15"
-              :options="{
-                disableDefaultUI: true,
-                styles: [
-                  {
-                    featureType: 'poi.business',
-                    stylers: [
-                      {
-                        visibility: 'off'
-                      }
-                    ]
-                  },
-                  {
-                    featureType: 'poi.park',
-                    elementType: 'labels.text',
-                    stylers: [
-                      {
-                        visibility: 'off'
-                      }
-                    ]
-                  }
-                ]
-              }"
-              style="width: 100%; height: 200px"
-            >
-              <gmap-marker
-                v-for="(m, index) in markers"
-                :key="index"
-                :position="center = m.position"
-                :clickable="true"
-                :draggable="true"
-                @click="center=m.position"
-              />
-            </gmap-map>
+            <iframe
+              width="100%"
+              height="200"
+              style="border:0"
+              loading="lazy"
+              allowfullscreen
+              :src="`https://www.google.com/maps/embed/v1/view?center=${center.lat},${center.lng}&zoom=15&key=${gmapApiKey}`"
+            />
           </div>
         </p-form-row>
 
@@ -515,7 +485,7 @@ export default {
   },
   data () {
     return {
-      mapboxApiKey: process.env.VUE_APP_MAPBOX_APIKEY,
+      gmapApiKey: process.env.VUE_APP_GMAP_KEY,
       isLoading: false,
       loadingMessage: 'Loading...',
       isSaving: false,
@@ -552,9 +522,7 @@ export default {
         { position: { lat: 10.0, lng: 10.0 } }
       ],
       addressComponent: {},
-      getMap: this.$root.mapping,
       description: '',
-      latLng: {},
       place: null
     }
   },
