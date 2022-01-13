@@ -94,14 +94,44 @@
               @place_changed="setPlace"
               @keypress.enter.prevent
             />
-            <iframe
-              width="100%"
-              height="200"
-              style="border:0"
-              loading="lazy"
-              allowfullscreen
-              :src="`https://www.google.com/maps/embed/v1/view?center=${center.lat},${center.lng}&zoom=15&key=${gmapApiKey}`"
-            />
+            <gmap-map
+              id="map"
+              ref="map"
+              :center="center"
+              :zoom="15"
+              :options="{
+                disableDefaultUI: true,
+                styles: [
+                  {
+                    featureType: 'poi.business',
+                    stylers: [
+                      {
+                        visibility: 'off'
+                      }
+                    ]
+                  },
+                  {
+                    featureType: 'poi.park',
+                    elementType: 'labels.text',
+                    stylers: [
+                      {
+                        visibility: 'off'
+                      }
+                    ]
+                  }
+                ]
+              }"
+              style="width: 100%; height: 200px"
+            >
+              <gmap-marker
+                v-for="(m, index) in markers"
+                :key="index"
+                :position="center = m.position"
+                :clickable="true"
+                :draggable="true"
+                @click="center=m.position"
+              />
+            </gmap-map>
           </div>
         </p-form-row>
 
