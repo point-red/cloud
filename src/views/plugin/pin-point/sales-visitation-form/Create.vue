@@ -87,14 +87,51 @@
             slot="body"
             class="col-lg-9"
           >
-            <iframe
-              width="100%"
-              height="200"
-              style="border:0"
-              loading="lazy"
-              allowfullscreen
-              :src="`https://www.google.com/maps/embed/v1/view?center=${center.lat},${center.lng}&zoom=15&key=${gmapApiKey}`"
+            <gmap-autocomplete
+              :value="description"
+              :disabled="true"
+              class="form-control"
+              @place_changed="setPlace"
+              @keypress.enter.prevent
             />
+            <gmap-map
+              id="map"
+              ref="map"
+              :center="center"
+              :zoom="15"
+              :options="{
+                disableDefaultUI: true,
+                styles: [
+                  {
+                    featureType: 'poi.business',
+                    stylers: [
+                      {
+                        visibility: 'off'
+                      }
+                    ]
+                  },
+                  {
+                    featureType: 'poi.park',
+                    elementType: 'labels.text',
+                    stylers: [
+                      {
+                        visibility: 'off'
+                      }
+                    ]
+                  }
+                ]
+              }"
+              style="width: 100%; height: 200px"
+            >
+              <gmap-marker
+                v-for="(m, index) in markers"
+                :key="index"
+                :position="center = m.position"
+                :clickable="true"
+                :draggable="true"
+                @click="center=m.position"
+              />
+            </gmap-map>
           </div>
         </p-form-row>
 
@@ -465,7 +502,6 @@ import MMInterestReason from './MMInterestReason'
 import MMNoInterestReason from './MMNoInterestReason'
 import MMSimilarProduct from './MMSimilarProduct'
 import { mapActions, mapGetters } from 'vuex'
-import axios from 'axios'
 
 export default {
   components: {
@@ -517,7 +553,6 @@ export default {
       ],
       addressComponent: {},
       description: '',
-      latLng: {},
       place: null
     }
   },
@@ -574,29 +609,10 @@ export default {
       this.form.items[e.index].unit = e.unit
       this.form.items[e.index].converter = e.converter
     },
-    async updateAddress () {
-      const res = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${this.center.lat},${this.center.lng}&sensor=false&key=${this.gmapApiKey}`)
-      if (res.status == 200) {
-        this.addressComponent = res.data.results[0]
-        this.setDescription(this.addressComponent.formatted_address)
-        this.form.address = this.addressComponent.formatted_address
-        this.addressComponent.address_components.forEach(component => {
-          if (component.types) {
-            component.types.forEach(types => {
-              if (types == 'administrative_area_level_3') {
-                this.form.district = component.long_name
-              } else if (types == 'administrative_area_level_4') {
-                this.form.sub_district = component.long_name
-              }
-            })
-          }
-        })
-      }
-    },
     onCaptured (value) {
       this.form.image = value
     },
-    async getLocation () {
+    getLocation () {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
           const pos = {
@@ -609,7 +625,13 @@ export default {
           this.form.longitude = pos.lng
           this.markers[0].position.lat = pos.lat
           this.markers[0].position.lng = pos.lng
-          this.updateAddress()
+          this.$refs.map.$mapPromise.then(() => {
+            this.isLoading = false
+            // eslint-disable-next-line no-undef
+            this.geocodeLatLng(new google.maps.Geocoder(), pos, google.maps.InfoWindow)
+          }).catch(error => {
+            this.isLoading = false
+          })
         }.bind(this))
       } else {
         this.loadingMessage = 'Geolocation not available, please update your browser or using another browser'
@@ -637,6 +659,50 @@ export default {
     setDescription (description) {
       this.description = description
     },
+    setPlace (place) {
+      this.center.lat = place.geometry.location.lat()
+      this.center.lng = place.geometry.location.lng()
+      this.markers[0].position.lat = place.geometry.location.lat()
+      this.markers[0].position.lng = place.geometry.location.lng()
+      this.addressComponent = place
+      this.setDescription(this.addressComponent.formatted_address)
+      this.form.address = this.addressComponent.formatted_address
+      this.form.district = ''
+      this.form.sub_district = ''
+      this.addressComponent.address_components.forEach(component => {
+        if (component.types) {
+          component.types.forEach(types => {
+            if (types == 'administrative_area_level_3') {
+              this.form.district = component.long_name
+            } else if (types == 'administrative_area_level_4') {
+              this.form.sub_district = component.long_name
+            }
+          })
+        }
+      })
+    },
+    geocodeLatLng (geocoder, map, infowindow) {
+      var self = this
+      geocoder.geocode({ location: this.center }, function (results, status) {
+        if (status == 'OK') {
+          self.addressComponent = results[0]
+          self.setDescription(self.addressComponent.formatted_address)
+          self.form.address = self.addressComponent.formatted_address
+          self.addressComponent.address_components.forEach(component => {
+            if (component.types) {
+              component.types.forEach(types => {
+                if (types == 'administrative_area_level_3') {
+                  self.form.district = component.long_name
+                } else if (types == 'administrative_area_level_4') {
+                  self.form.sub_district = component.long_name
+                }
+              })
+            }
+          })
+        }
+      })
+    },
+    // [End] Google Map
     addItemRow () {
       this.form.items.push({
         item_id: null,
