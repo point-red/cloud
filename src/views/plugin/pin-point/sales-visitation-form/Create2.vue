@@ -576,8 +576,8 @@ export default {
     },
     async updateAddress () {
       const res = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${this.center.lat},${this.center.lng}&sensor=false&key=${this.gmapApiKey}`)
-
-      if (res.status == 200) {
+      console.log(res)
+      if (res.status == 200 && res.data && res.data.results[0]) {
         this.addressComponent = res.data.results[0]
         this.setDescription(this.addressComponent.formatted_address)
         this.form.address = this.addressComponent.formatted_address
