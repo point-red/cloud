@@ -216,6 +216,17 @@
                     {{ $t('item') | uppercase }}
                   </router-link>
                 </li>
+                <li
+                  v-if="$permission.has('read fixed asset')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/master/fixed-assets"
+                    active-class="active"
+                  >
+                    {{ $t('fixed asset') | uppercase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li
@@ -652,12 +663,17 @@
                     {{ $t('chart of account') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read cut off')">
+                <li
+                  v-if="$permission.has('read cut off')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/accounting/cut-off"
-                    active-class="active">{{ $t('cut off') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('cut off') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
                 <li
                   v-if="$permission.has('read balance sheet')"
                   @click="toggleLeftSidebar('close-xs')"

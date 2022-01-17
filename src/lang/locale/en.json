@@ -491,5 +491,25 @@
 	"amount received difference": "amount received difference",
 	"if kpi 100%": "if kpi 100%",
 	"allowance": "allowance",
-	"setting": "setting"
+	"setting": "setting",
+	"create fixed asset helper - chart of account": "select a journal account for this Asset, so that all journals that occur at the time of purchase, sale and usage of goods will be automatically journalized into the selected account",
+	"fixed asset account": "Asset account",
+	"fixed asset depreciation account": "Depreciation Expense Account",
+	"fixed asset accumulation account": "Accumulation account",
+	"create fixed asset helper - group": "Fixed asset groups are useful for making it easier to grouping fixed asset in a report or when searching data.",
+	"fixed asset": "fixed asset",
+	"add fixed asset": "add fixed asset",
+	"edit fixed asset": "edit fixed asset",
+	"fixed asset group": "fixed asset group",	
+	"add fixed asset group": "add fixed asset group",	
+	"edit fixed asset group": "edit fixed asset group",	
+	"depreciation method": "depreciation method",
+	"select accumulation chart of account": "select accumulation chart of account",
+	"select depreciation chart of account": "select depreciation chart of account",
+	"year": "year",
+	"month": "month",
+	"useful life": "Useful life",
+	"select fixed asset group": "select fixed asset group",
+	"salvage value": "salvage value"
+
 }

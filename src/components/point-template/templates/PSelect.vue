@@ -10,6 +10,7 @@
       position="left"
       :multiple="multiple"
       :max-selected="maxSelected"
+      :required="required"
     />
   </div>
 </template>
@@ -44,6 +45,10 @@ export default {
     maxSelected: {
       type: Number,
       default: 0 // 0 = unlimited
+    },
+    required: {
+      type: Boolean,
+      default: false
     }
   },
   data () {

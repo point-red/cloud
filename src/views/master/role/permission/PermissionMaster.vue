@@ -434,6 +434,53 @@
           />
         </td>
       </tr>
+
+      <tr slot="p-body">
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create fixed asset', 'read fixed asset', 'update fixed asset', 'delete fixed asset'], permissions)"
+            @click.native="togglePermissionRow(['create fixed asset', 'read fixed asset', 'update fixed asset', 'delete fixed asset'], permissions)"
+          />
+        </td>
+        <td><b>{{ $t('fixed asset') | uppercase }}</b></td>
+        <td>
+          <p-form-check-box
+            ref="create fixed asset"
+            :is-form="false"
+            :checked="$rolePermission.has('create fixed asset', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create fixed asset')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read fixed asset"
+            :is-form="false"
+            :checked="$rolePermission.has('read fixed asset', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read fixed asset')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update fixed asset"
+            :is-form="false"
+            :checked="$rolePermission.has('update fixed asset', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update fixed asset')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete fixed asset"
+            :is-form="false"
+            :checked="$rolePermission.has('delete fixed asset', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete fixed asset')"
+          />
+        </td>
+      </tr>
     </p-table>
 
     <button
