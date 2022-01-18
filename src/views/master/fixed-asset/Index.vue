@@ -43,7 +43,7 @@
               <th>Depreciation Account</th>
               <th>Accumulation Account</th>
               <th>Useful Life (year)</th>
-              <th>Salvage Value (year)</th>
+              <th>Salvage Value</th>
             </tr>
             <tr
               v-for="(fixedAsset, index) in fixedAssets"

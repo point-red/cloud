@@ -48,7 +48,7 @@
                   v-model="form.depreciation_method"
                   name="depreciation_method"
                   value="STRAIGHT_LINE"
-                  :disabled="isSaving"
+                  :disabled="true"
                   :options="depreciationMethods"
                   :errors="form.errors.get('depreciation_method')"
                   @errors="form.errors.set('depreciation_method', null)"
@@ -76,8 +76,7 @@
               >
                 <span
                   class="select-link"
-                  :disabled="isSaving"
-                  @click="$refs.chartOfAccountRef.open()"
+                  :disabled="true"
                 >{{ form.chart_of_account_label || $t('select') | uppercase }}</span>
 
                 <div
@@ -105,8 +104,7 @@
               >
                 <span
                   class="select-link"
-                  :disabled="isSaving"
-                  @click="$refs.accumulationChartOfAccountRef.open()"
+                  :disabled="true"
                 >{{ form.accumulation_chart_of_account_label || $t('select') | uppercase }}</span>
 
                 <div
@@ -134,8 +132,7 @@
               >
                 <span
                   class="select-link"
-                  :disabled="isSaving"
-                  @click="$refs.depreciationChartOfAccountRef.open()"
+                  :disabled="true"
                 >{{ form.depreciation_chart_of_account_label || $t('select') | uppercase }}</span>
 
                 <div
@@ -163,7 +160,7 @@
                     name="useful-life-year"
                     :is-text-right="false"
                     :label="$t('useful life')"
-                    :disabled="isSaving"
+                    :disabled="true"
                     :errors="form.errors.get('useful_life_year')"
                     @errors="form.errors.set('useful_life_year', null)"
                   />
@@ -206,7 +203,7 @@
               v-model="form.salvage_value"
               name="salvage_value"
               :placeholder="$t('required') | uppercase"
-              :disabled="isSaving"
+              :disabled="true"
               :errors="form.errors.get('salvage_value')"
               @errors="form.errors.set('salvage_value', null)"
             >
@@ -222,7 +219,7 @@
                 name="salvage_value"
                 :is-text-right="false"
                 :label="$t('salvage value')"
-                :disabled="isSaving"
+                :disabled="true"
                 :errors="form.errors.get('salvage_value')"
                 @errors="form.errors.set('salvage_value', null)"
               />
@@ -261,26 +258,6 @@
       ref="fixedAssetGroupRef"
       v-model="form.fixed_asset_group_id"
       @choosen="onChoosenFixedAssetGroup"
-    />
-    <m-chart-of-account
-      ref="chartOfAccountRef"
-      v-model="form.chart_of_account_id"
-      type="fixed asset"
-      @choosen="onChoosenAccount"
-    />
-    <m-chart-of-account
-      ref="accumulationChartOfAccountRef"
-      v-model="form.accumulation_chart_of_account_id"
-      :title="$t('select accumulation chart of account') | uppercase"
-      type="FIXED ASSET DEPRECIATION"
-      @choosen="onChoosenAccumulationAccount"
-    />
-    <m-chart-of-account
-      ref="depreciationChartOfAccountRef"
-      v-model="form.depreciation_chart_of_account_id"
-      :title="$t('select depreciation chart of account') | uppercase"
-      type="DIRECT EXPENSE"
-      @choosen="onChoosenDepreciationAccount"
     />
   </div>
 </template>
