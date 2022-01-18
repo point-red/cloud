@@ -148,7 +148,7 @@ export default {
       this.get({
         params: {
           page: this.currentPage,
-          limit: 20,
+          limit: 10,
           sort_by: 'name',
           filter_like: {
             code: this.searchText,

@@ -33,7 +33,7 @@
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            v-if="$permission.has('delete fixed-asset')"
+            v-if="$permission.has('delete fixed asset')"
             type="button"
             :disabled="isDeleting"
             class="btn btn-sm btn-outline-secondary"
@@ -119,6 +119,7 @@ export default {
           id: this.id
         }).then(response => {
           this.isDeleting = false
+          this.$notification.success('delete success')
           this.$router.push('/master/fixed-asset-groups')
         }).catch(response => {
           this.isDeleting = false

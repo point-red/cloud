@@ -269,7 +269,7 @@ export default {
         fixed_asset_group_id: null,
         useful_life_year: null,
         useful_life_month: null,
-        salvage_value: null
+        salvage_value: 0
       })
     }
   },
