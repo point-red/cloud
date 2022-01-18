@@ -97,7 +97,7 @@
               class="col-lg-6"
             >
               <span
-                class="select-link"
+                class=""
                 :disabled="true"
                 @click="$refs.chartOfAccountRef.open()"
               >{{ fixedAsset.account ? fixedAsset.account.label : null || $t('select') | uppercase }}</span>
@@ -118,7 +118,7 @@
               class="col-lg-6"
             >
               <span
-                class="select-link"
+                class=""
                 :disabled="true"
                 @click="$refs.accumulationChartOfAccountRef.open()"
               >{{ fixedAsset.accumulation_account ? fixedAsset.accumulation_account.label : null || $t('select') | uppercase }}</span>
@@ -139,7 +139,7 @@
               class="col-lg-6"
             >
               <span
-                class="select-link"
+                class=""
                 :disabled="true"
                 @click="$refs.depreciationChartOfAccountRef.open()"
               >{{ fixedAsset.depreciation_account ? fixedAsset.depreciation_account.label : null || $t('select') | uppercase }}</span>
@@ -225,8 +225,7 @@
           <hr>
 
           <span
-            class="select-link"
-            @click="$refs.fixedAssetGroupRef.open()"
+            class=""
           >
             {{ fixedAsset.groups ? fixedAsset.groups.name : null || $t('no group') | uppercase }}
           </span>

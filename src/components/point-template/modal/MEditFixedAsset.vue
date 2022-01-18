@@ -35,26 +35,14 @@
             />
 
             <p-form-row
-              id="depreciation_method"
-              name="depreciation_method"
+              id="name"
+              v-model="depreciation_method_name"
+              name="name"
               :label="$t('depreciation method')"
-            >
-              <div
-                slot="body"
-                class="col-lg-9"
-              >
-                <p-select
-                  id="depreciation_method"
-                  v-model="form.depreciation_method"
-                  name="depreciation_method"
-                  value="STRAIGHT_LINE"
-                  :disabled="true"
-                  :options="depreciationMethods"
-                  :errors="form.errors.get('depreciation_method')"
-                  @errors="form.errors.set('depreciation_method', null)"
-                />
-              </div>
-            </p-form-row>
+              :placeholder="$t('required') | uppercase"
+              :disabled="true"
+              :required="true"
+            />
 
             <p-separator />
 
@@ -75,7 +63,7 @@
                 class="col-lg-6"
               >
                 <span
-                  class="select-link"
+                  class=""
                   :disabled="true"
                 >{{ form.chart_of_account_label || $t('select') | uppercase }}</span>
 
@@ -103,7 +91,7 @@
                 class="col-lg-6"
               >
                 <span
-                  class="select-link"
+                  class=""
                   :disabled="true"
                 >{{ form.accumulation_chart_of_account_label || $t('select') | uppercase }}</span>
 
@@ -131,7 +119,7 @@
                 class="col-lg-6"
               >
                 <span
-                  class="select-link"
+                  class=""
                   :disabled="true"
                 >{{ form.depreciation_chart_of_account_label || $t('select') | uppercase }}</span>
 
@@ -288,6 +276,11 @@ export default {
   computed: {
     ...mapGetters('masterFixedAsset', ['fixedAsset']),
     ...mapGetters('masterFixedAssetDepreciationMethod', ['depreciationMethods']),
+    depreciation_method_name () {
+      const x = this.depreciationMethods.find(dm => dm.id === this.form.depreciation_method)
+      if (x) return x.label
+      return ''
+    },
     useful_life_year () {
       return this.form.useful_life_year
     }
