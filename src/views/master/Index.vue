@@ -52,6 +52,12 @@
         link="/master/item"
         icon="si si-grid"
       />
+      <p-box
+        v-if="$permission.has('read fixed asset')"
+        :name="$t('fixed asset')"
+        link="/master/fixed-assets"
+        icon="si si-grid"
+      />
     </div>
   </div>
 </template>

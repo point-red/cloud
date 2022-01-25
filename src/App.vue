@@ -91,6 +91,9 @@ export default {
   background: #0c80df;
   border-left-color: #0073d1;
 }
+.vue-notification-group {
+  z-index: 9999 !important;
+}
 .full-width {
   width: 100%;
 }

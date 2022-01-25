@@ -2,7 +2,7 @@
   <div>
     <sweet-modal
       ref="modal"
-      :title="$t('select chart of account') | uppercase"
+      :title="title || $t('select chart of account') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >
@@ -82,6 +82,10 @@ export default {
       default: ''
     },
     label: {
+      type: String,
+      default: ''
+    },
+    title: {
       type: String,
       default: ''
     },

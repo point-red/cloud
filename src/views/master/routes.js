@@ -15,6 +15,8 @@ import ItemGroup from './item-group/routes'
 import ItemPriceList from './item-price-list/routes'
 import Warehouse from './warehouse/routes'
 import Branch from './branch/routes'
+import FixedAsset from './fixed-asset/routes'
+import FixedAssetGroup from './fixed-asset-group/routes'
 
 export default [
   { path: '/master', name: 'Master', component: Master },
@@ -33,5 +35,7 @@ export default [
   ...ItemGroup,
   ...ItemPriceList,
   ...Warehouse,
-  ...Branch
+  ...Branch,
+  ...FixedAsset,
+  ...FixedAssetGroup
 ]

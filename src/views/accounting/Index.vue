@@ -13,7 +13,8 @@
       <!-- <p-box
         :name="$t('cut off')"
         link="/accounting/cut-off"
-        icon="si si-docs"/> -->
+        icon="si si-docs"
+      /> -->
       <p-box
         :name="$t('balance sheet')"
         link="/accounting/balance-sheet"
