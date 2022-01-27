@@ -4,15 +4,10 @@ const url = '/inventory/corrections'
 
 const state = {
   stockCorrection: {
-    amount: null,
-    customer: {
-      name: null,
-      phone: null,
-      email: null
-    },
-    discountValue: null,
-    discountPercent: null,
-    dueDate: null,
+    warehouse: {},
+    warehouseId: null,
+    items: [],
+    id: null,
     form: {
       createdByUser: {},
       requestApprovalToUser: {}
@@ -83,7 +78,9 @@ const actions = {
   },
   update (context, payload) {
     return new Promise((resolve, reject) => {
-      api.patch(url + '/' + payload.id, payload)
+      const stockCorrectionId = payload.id
+      payload.id = undefined
+      api.patch(url + '/' + stockCorrectionId, payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

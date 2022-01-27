@@ -349,7 +349,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('inventoryCorrection', ['correction']),
+    ...mapGetters('inventoryCorrection', ['stockCorrection']),
     ...mapGetters('auth', ['authUser'])
   },
   created () {
@@ -358,7 +358,7 @@ export default {
       this.find({
         id: this.$route.params.id
       }).then(async (response) => {
-        this.form.id = response.data.id
+        this.form.id = response.data.form.id
         this.form.warehouse_id = response.data.warehouseId
         this.form.warehouse_name = response.data.warehouse.name
         this.form.number = response.data.form.number
@@ -386,6 +386,7 @@ export default {
       const mappedItems = await Promise.all(stockCorrectionItemIds.map(async (stockCorrectionItemId) => {
         const selectedItems = stockCorrectionItems.filter(stockCorrectionItem => stockCorrectionItem.itemId === stockCorrectionItemId)
 
+        // without DNA
         if (!selectedItems[0].item.requireExpiryDate && !selectedItems[0].item.requireProductionNumber) {
           const selectedItem = selectedItems[0]
           const { data: inventoryWarehouses } = await this.findInventoryWarehouse({
@@ -425,6 +426,7 @@ export default {
           }
         }
 
+        // with DNA
         const dna = selectedItems.map((selectedItem) => {
           return {
             id: selectedItem.id,
@@ -461,11 +463,10 @@ export default {
         }
 
         const totalQuantity = dna.reduce((prev, current) => {
-          return prev.quantity + current.quantity
-        })
+          return prev + current.quantity
+        }, 0)
 
         return {
-          id: selectedItem.id,
           notes: selectedItem.notes,
           production_number: selectedItem.productionNumber,
           expiry_date: selectedItem.expiryDate,
@@ -593,8 +594,17 @@ export default {
       }
     },
     updateDna (e) {
-      this.form.items[e.index].dna = e.dna
-      this.form.items[e.index].stock_correction = e.quantity
+      e.dna.forEach((updateItem) => {
+        const updateDna = this.form.items[e.index].dna.find((dnaItem) => {
+          return dnaItem.item_id === updateItem.item_id && dnaItem.expiry_date === updateItem.expiry_date
+        })
+        updateDna.quantity = parseInt(updateItem.quantity)
+      })
+
+      const totalQuantity = this.form.items[e.index].dna.reduce((prev, current) => {
+        return prev + current.quantity
+      }, 0)
+      this.form.items[e.index].stock_correction = totalQuantity
     },
     onSubmit () {
       this.isSaving = true
@@ -610,25 +620,27 @@ export default {
       const items = []
       this.form.items.forEach((item) => {
         if (item.item_id === null) { return }
-        // if (item.require_expiry_date === 1 && item.require_production_number === 1) {
-        //   item.dna.forEach((itemDna) => {
-        //     if (parseFloat(itemDna.quantity) !== 0) {
-        //       items.push({
-        //         stockCorrectionItemId: item.id,
-        //         itemId: itemDna.item_id,
-        //         unit: itemDna.unit_reference,
-        //         converter: itemDna.converter_reference,
-        //         stockCorrection: itemDna.quantity,
-        //         notes: item.notes,
-        //         expiryDate: itemDna.expiry_date,
-        //         productionNumber: itemDna.production_number,
-        //         allocationId: itemDna.allocation_id
-        //       })
-        //     }
-        //   })
-        //   return
-        // }
+        // with dna
+        if (item.require_expiry_date && item.require_production_number) {
+          item.dna.forEach((itemDna) => {
+            if (parseFloat(itemDna.quantity) !== 0) {
+              items.push({
+                stockCorrectionItemId: itemDna.id,
+                itemId: itemDna.item_id,
+                unit: itemDna.unit_reference,
+                converter: itemDna.converter_reference,
+                stockCorrection: itemDna.quantity,
+                notes: item.notes,
+                expiryDate: itemDna.expiry_date,
+                productionNumber: itemDna.production_number,
+                allocationId: itemDna.allocation_id
+              })
+            }
+          })
+          return
+        }
 
+        // without dna
         items.push({
           stockCorrectionItemId: item.id,
           itemId: item.item_id,
@@ -642,15 +654,12 @@ export default {
         })
       })
 
-      console.log(items)
-
       const requestPayload = {
-        id: this.correction.id,
+        id: this.stockCorrection.id,
         items,
-        request_approval_to: this.form.request_approval_to,
         dueDate: this.form.date,
-        warehouseId: this.form.warehouse_id,
-        notes: this.form.notes
+        notes: this.form.notes,
+        requestApprovalTo: this.form.request_approval_to
       }
 
       this.update(requestPayload)
@@ -658,7 +667,7 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/inventory/correction/' + response.data.stockCorrection.id)
+          this.$router.push('/inventory/correction/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)

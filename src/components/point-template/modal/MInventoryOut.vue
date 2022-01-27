@@ -163,8 +163,6 @@ export default {
         this.inventories.forEach(inventory => {
           inventory.quantity = 0
           this.mutableInventories.forEach(el => {
-            console.log(inventory.expiry_date)
-            console.log(el.expiry_date)
             if (inventory.item_id == el.item_id &&
               inventory.expiry_date == el.expiry_date &&
               inventory.production_number == el.production_number) {
@@ -216,7 +214,6 @@ export default {
       this.mutableRequireExpiryDate = row.item.require_expiry_date
       this.mutableRequireProductionNumber = row.item.require_production_number
 
-      console.log(row)
       if (row.dna) {
         this.mutableInventories = row.dna
       }
