@@ -14,16 +14,6 @@
             v-if="$permission.has('create item')"
             href="javascript:void(0)"
             class="input-group-prepend"
-            @click="$refs.fileInputHidden.click()"
-          >
-            <span class="input-group-text">
-              <i class="fa fa-upload" />
-            </span>
-          </a>
-          <a
-            v-if="$permission.has('create item')"
-            href="javascript:void(0)"
-            class="input-group-prepend"
             @click="$refs.addItem.open()"
           >
             <span class="input-group-text">
@@ -90,17 +80,7 @@
     </div>
     <m-add-item
       ref="addItem"
-      @closed="onAdded"
-    />
-    <m-add-item-import
-      ref="addItemImport"
-      @imported="onAdded"
-    />
-    <p-form-file-hidden
-      id="file"
-      ref="fileInputHidden"
-      name="file"
-      @fileChanged="importItem"
+      @added="onAdded"
     />
   </div>
 </template>
@@ -110,7 +90,6 @@ import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
 import PointTable from 'point-table-vue'
-import readXlsxFile from 'read-excel-file'
 import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -130,8 +109,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterItem', ['items', 'pagination']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('masterItem', ['items', 'pagination'])
   },
   created () {
     this.search()
@@ -175,30 +153,7 @@ export default {
       this.searchText = value
       this.currentPage = 1
       this.search()
-    }, 300),
-    importItem (file) {
-      if (this.authUser.branch != null) {
-        if (file.name.match(/.(xls|xlsx)$/i)) {
-          readXlsxFile(file).then((rows) => {
-            const res = []
-            for (let i = 0; i < rows.length; i++) {
-              rows[i] = rows[i].filter(r => {
-                return r !== null
-              })
-              if (rows[i].length !== 0 && rows[i].indexOf(null) == -1) {
-                res.push(rows[i])
-              }
-            }
-            this.$refs.addItemImport.setValue(res)
-            this.$refs.addItemImport.open()
-          })
-        } else {
-          this.$notification.error('File not allowed (allowed extension: .xls, .xlsx)')
-        }
-      } else {
-        this.$notification.error('Please set as default branch')
-      }
-    }
+    }, 300)
   }
 }
 </script>
