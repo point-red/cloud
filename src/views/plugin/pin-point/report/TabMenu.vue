@@ -24,7 +24,7 @@
         class="nav-item"
       >
         <router-link
-          to="/plugin/pin-point/report/accumulation/interest-reason"
+          to="/plugin/pin-point/report/accumulation"
           exact
           class="nav-link"
           active-class="active"
