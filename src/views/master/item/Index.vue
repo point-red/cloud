@@ -14,6 +14,16 @@
             v-if="$permission.has('create item')"
             href="javascript:void(0)"
             class="input-group-prepend"
+            @click="$refs.fileInputHidden.click()"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-upload" />
+            </span>
+          </a>
+          <a
+            v-if="$permission.has('create item')"
+            href="javascript:void(0)"
+            class="input-group-prepend"
             @click="$refs.addItem.open()"
           >
             <span class="input-group-text">
@@ -80,7 +90,17 @@
     </div>
     <m-add-item
       ref="addItem"
-      @added="onAdded"
+      @closed="onAdded"
+    />
+    <m-add-item-import
+      ref="addItemImport"
+      @imported="onAdded"
+    />
+    <p-form-file-hidden
+      id="file"
+      ref="fileInputHidden"
+      name="file"
+      @fileChanged="importItem"
     />
   </div>
 </template>
@@ -109,7 +129,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterItem', ['items', 'pagination'])
+    ...mapGetters('masterItem', ['items', 'pagination']),
+    ...mapGetters('auth', ['authUser'])
   },
   created () {
     this.search()
