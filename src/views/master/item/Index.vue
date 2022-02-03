@@ -110,7 +110,6 @@ import TabMenu from './TabMenu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbMaster from '@/views/master/Breadcrumb'
 import PointTable from 'point-table-vue'
-import readXlsxFile from 'read-excel-file'
 import debounce from 'lodash/debounce'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -179,19 +178,8 @@ export default {
     importItem (file) {
       if (this.authUser.branch != null) {
         if (file.name.match(/.(xls|xlsx)$/i)) {
-          readXlsxFile(file).then((rows) => {
-            const res = []
-            for (let i = 0; i < rows.length; i++) {
-              rows[i] = rows[i].filter(r => {
-                return r !== null
-              })
-              if (rows[i].length !== 0 && rows[i].indexOf(null) == -1) {
-                res.push(rows[i])
-              }
-            }
-            this.$refs.addItemImport.setValue(res)
-            this.$refs.addItemImport.open()
-          })
+          this.$refs.addItemImport.setValue(file)
+          this.$refs.addItemImport.open()
         } else {
           this.$notification.error('File not allowed (allowed extension: .xls, .xlsx)')
         }

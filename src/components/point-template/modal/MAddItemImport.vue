@@ -193,7 +193,7 @@
 </template>
 
 <script>
-import Form from '@/utils/Form'
+import readXlsxFile from 'read-excel-file'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -203,8 +203,9 @@ export default {
       isFailed: false,
       query: false,
       header: [],
-      value: [],
+      file: null,
       form_code: {
+        start_row: null,
         code: null,
         name: null,
         chart_of_account: null,
@@ -215,8 +216,7 @@ export default {
         require_expiry_date: null,
         require_production_number: null,
         group_name: null
-      },
-      form: []
+      }
     }
   },
   computed: {
@@ -244,32 +244,12 @@ export default {
         }
       })
       if (validate) {
-        for (let i = 1; i < this.value.length; i++) {
-          const unit = []
-          if (this.form_code.units_converter_1 != null && this.form_code.units_measurement_1 != null) {
-            unit[0] = this.setUnit(this.value[i][this.form_code.units_converter_1], this.value[i][this.form_code.units_measurement_1])
-          }
-          if (this.form_code.units_converter_2 != null && this.form_code.units_measurement_2 != null) {
-            unit[1] = this.setUnit(this.value[i][this.form_code.units_converter_2], this.value[i][this.form_code.units_measurement_2])
-          }
-          if (unit.length == 0) {
-            unit[0] = this.setUnit('pcs', 1)
-          }
-          const temp = {
-            code: this.value[i][this.form_code.code],
-            name: this.value[i][this.form_code.name],
-            chart_of_account: this.value[i][this.form_code.chart_of_account],
-            units: unit,
-            require_expiry_date: this.value[i][this.form_code.require_expiry_date] == null ? false : this.stringToBoolean(this.value[i][this.form_code.require_expiry_date]),
-            require_production_number: this.value[i][this.form_code.require_production_number] == null ? false : this.stringToBoolean(this.value[i][this.form_code.require_production_number]),
-            group_name: this.form_code.group_name !== null ? this.value[i][this.form_code.group_name] : null
-          }
-          this.form.push(temp)
+        const data = new FormData()
+        data.set('file', this.file)
+        for (const [key, value] of Object.entries(this.form_code)) {
+          data.set(key, value)
         }
-        const payload = new Form({
-          items: this.form
-        })
-        console.log(payload)
+        const payload = data
         this.import(payload)
           .then(response => {
             if (response.data) {
@@ -291,30 +271,26 @@ export default {
     close () {
       this.$refs.modal.close()
     },
-    setUnit (converter, measurement) {
-      return {
-        label: converter,
-        name: converter,
-        converter: measurement,
-        default_purchase: false,
-        default_sales: false
-      }
-    },
-    setValue (result) {
-      this.value = result
-      for (let i = 0; i < result[0].length; i++) {
-        this.header.push({
-          id: i,
-          label: result[0][i]
-        })
-      }
-    },
-    stringToBoolean (string) {
-      switch (String(string).toLowerCase().trim()) {
-        case 'true': case 'yes': case '1': return true
-        case 'false': case 'no': case '0': case null: return false
-        default: return Boolean(string)
-      }
+    setValue (file) {
+      this.file = file
+      readXlsxFile(file).then((rows) => {
+        for (let i = 0; i < rows.length; i++) {
+          let header = false
+          for (let k = 0; k < rows[i].length; k++) {
+            if (rows[i][k] !== null) {
+              header = true
+              this.form_code.start_row = i + 1
+              this.header.push({
+                id: k,
+                label: rows[i][k]
+              })
+            }
+          }
+          if (header == true) {
+            break
+          }
+        }
+      })
     }
   }
 }
