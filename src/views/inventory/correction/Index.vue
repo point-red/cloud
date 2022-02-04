@@ -10,6 +10,7 @@
         <div class="input-group block">
           <download-excel
             :fetch="generateReport"
+            :name="`Stock correction_${$options.filters.dateFormat(date.start)}-${$options.filters.dateFormat(date.end)}`"
             class="input-group-prepend"
           >
             <span class="input-group-text">
@@ -361,18 +362,19 @@ export default {
 
           return stockCorrection.items.map((item) => {
             indexItem++
-
             return {
               No: indexItem,
               'Form Number': stockCorrection.form.number,
-              'Stock Correction Date': this.$options.filters.dateFormat(stockCorrection.form.date, 'DD/mm/YYYY'),
+              Warehouse: stockCorrection.warehouse.name,
+              'Stock Correction Date': this.$options.filters.dateFormat(stockCorrection.form.date, 'DD/MM/YYYY'),
               Item: item.item.name,
               'Stock Database': item.initialStock,
               'Stock Correction': item.quantity,
               Balance: item.finalStock,
               'Production Number': item.productionNumber,
               'Expiry Date': item.expiryDate,
-              'Form status': formStatus
+              'Form Status': formStatus,
+              'Export Date': this.$options.filters.dateFormat(new Date(), 'DD/MM/YYYY')
             }
           })
         })

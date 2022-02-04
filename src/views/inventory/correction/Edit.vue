@@ -17,7 +17,7 @@
           <p-block-inner :is-loading="isLoading">
             <div class="row">
               <div class="col-sm-6">
-                <h1>Stock Correction</h1>
+                <h4>{{ $t('stock correction') | uppercase }}</h4>
                 <table class="table table-sm table-bordered">
                   <tr>
                     <td class="font-weight-bold">
@@ -404,7 +404,7 @@ export default {
             unit,
             require_expiry_date: selectedItem.item.requireExpiryDate,
             require_production_number: selectedItem.item.requireProductionNumber,
-            warehouse_id: this.warehouse.id
+            warehouse_id: this.form.warehouse_id
           }
 
           return {

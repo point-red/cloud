@@ -17,6 +17,7 @@
           <p-block-inner :is-loading="isLoading">
             <div class="row">
               <div class="col-sm-6">
+                <h4>{{ $t('stock correction') | uppercase }}</h4>
                 <table class="table table-sm table-bordered">
                   <tr>
                     <td class="font-weight-bold">
