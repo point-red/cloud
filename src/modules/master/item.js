@@ -108,6 +108,16 @@ const actions = {
         })
     })
   },
+  import (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/import', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
   update (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url + '/' + payload.id, payload)
