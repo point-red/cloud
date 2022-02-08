@@ -1,107 +1,143 @@
 <template>
   <sweet-modal
     ref="print-stock-correction"
-    :title="$t('print stock correction') | uppercase"
+    :title="$t('print sales invoice') | uppercase"
     overlay-theme="dark"
     @close="onClose()"
   >
-    <div
+    <table
       id="print-stock-correction"
       class="print-stock-correction-container m-2 mb-4 mx-auto"
     >
-      <div
-        class="d-flex justify-content-between"
-        style="margin-bottom: 10px;"
-      >
-        <div style="width: 110px; height: 110px; align-self: center;">
-          <img
-            :src="logoUrl"
-            alt="Logo"
-            style="width: 100px; height: 100px;"
-          >
-        </div>
-        <div class="company-detail">
-          <h1 style="margin-top: 0; margin-bottom: 5px;">
-            Stock Correction
-          </h1>
-          <h3
-            class="my-5px"
-            style="line-height: 22px"
-          >
-            {{ tenantName }}
-          </h3>
-          <p
-            class="my-5px"
-            style="line-height: 15px;"
-          >
-            {{ tenantAddress }}
-          </p>
-          <p class="my-5px">
-            {{ tenantPhone }}
-          </p>
-        </div>
-      </div>
-      <hr style="height:10px; border:none; color:gray; background-color:gray;">
-      <div
-        class="d-flex justify-content-between"
-        style="margin-top: 10px;"
-      >
-        <table style="margin-right: 5px;">
-          <tr>
-            <td>Date</td>
-            <td>:</td>
-            <td>{{ stockCorrection.form.date | dateFormat('DD MMMM YYYY') }}</td>
-          </tr>
-          <tr>
-            <td>Form number</td>
-            <td>:</td>
-            <td>{{ stockCorrection.form.number }}</td>
-          </tr>
-        </table>
-      </div>
-      <table
-        class="table-items"
-        style="width: 100%;"
-      >
+      <thead>
         <tr>
-          <th>No</th>
-          <th>Item</th>
-          <th>Allocation</th>
-          <th>Stock Database</th>
-          <th>Stock Correction</th>
-          <th>Balance</th>
-          <th>Notes</th>
-        </tr>
-        <tr
-          v-for="(row, index) in stockCorrection.items"
-          :key="index"
-        >
-          <td>{{ index+1 }}</td>
-          <td>{{ row.item.name }}</td>
-          <td class="text-right">
-            {{ row.allocation && row.allocation.name }}
-          </td>
-          <td class="text-right">
-            {{ row.initialStock | numberFormat }}
-          </td>
-          <td class="text-right">
-            {{ row.quantity | numberFormat }}
-          </td>
-          <td class="text-left">
-            {{ row.finalStock | numberFormat }}
-          </td>
           <td>
-            {{ row.notes }}
+            <div
+              class="d-flex justify-content-between"
+              style="margin-bottom: 10px;"
+            >
+              <div style="width: 110px; height: 110px; align-self: center;">
+                <img
+                  :src="logoUrl"
+                  alt="Logo"
+                  style="width: 100px; height: 100px;"
+                >
+              </div>
+              <div class="company-detail">
+                <h1 style="margin-top: 0; margin-bottom: 5px;">
+                  Stock Correction
+                </h1>
+                <h3
+                  class="my-5px"
+                  style="line-height: 22px"
+                >
+                  {{ tenantName }}
+                </h3>
+                <p
+                  class="my-5px"
+                  style="line-height: 15px;"
+                >
+                  {{ tenantAddress }}
+                </p>
+                <p class="my-5px">
+                  {{ tenantPhone }}
+                </p>
+              </div>
+            </div>
+            <hr class="header-divider">
+            <div
+              class="d-flex justify-content-between"
+              style="margin-top: 10px; margin-bottom: 10px"
+            >
+              <table
+                class="header-detail"
+                style="margin-right: 20px;"
+              >
+                <tr>
+                  <td>Date</td>
+                  <td>:</td>
+                  <td>{{ stockCorrection.form.date | dateFormat('DD MMMM YYYY') }}</td>
+                </tr>
+                <tr>
+                  <td>Form number</td>
+                  <td>:</td>
+                  <td>{{ stockCorrection.form.number }}</td>
+                </tr>
+              </table>
+            </div>
           </td>
         </tr>
-      </table>
-      <span>Notes: {{ notes }}</span>
-    </div>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <table
+              class="table-items"
+              style="width: 100%;"
+            >
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Item</th>
+                  <th>Allocation</th>
+                  <th>Stock Database</th>
+                  <th>Stock Correction</th>
+                  <th>Balance</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tr
+                v-for="(row, index) in stockCorrection.items"
+                :key="index"
+              >
+                <td>{{ index+1 }}</td>
+                <td>{{ row.item.name }}</td>
+                <td class="text-right">
+                  {{ row.allocation && row.allocation.name }}
+                </td>
+                <td class="text-right">
+                  {{ row.initialStock | numberFormat }}
+                </td>
+                <td class="text-right">
+                  {{ row.quantity | numberFormat }}
+                </td>
+                <td class="text-left">
+                  {{ row.finalStock | numberFormat }}
+                </td>
+                <td>
+                  {{ row.notes }}
+                </td>
+              </tr>
+            </table>
+            <span>Notes: {{ notes }}</span>
+            <div
+              class="d-flex justify-content-end"
+              style="margin-top: 75px;"
+            >
+              <div
+                class="text-center"
+                style="margin-right: 75px;"
+              >
+                <h3>Created by</h3>
+                <br><br><br>
+                {{ stockCorrection.form.createdByUser.fullName }}
+              </div>
+              <div class="text-center">
+                <h3>Approved by</h3>
+                <br><br><br>
+                {{ stockCorrection.form.requestApprovalToUser.fullName }}
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot />
+    </table>
     <div class="pull-right">
       <button
         v-print="'print-stock-correction'"
         type="button"
-        class="btn btn-sm btn-outline-secondary"
+        class="btn btn-sm btn-outline-secondary mt-3"
       >
         {{ $t('print') | uppercase }}
       </button>
@@ -256,5 +292,19 @@ table.table-items, .table-items th, .table-items td {
 .company-detail {
   min-width: 200px;
   max-width: 250px;
+}
+.header-divider {
+  height:10px;
+  border:none;
+  color:gray;
+  background-color:gray;
+}
+@media print {
+  table.header-detail tr td {
+    line-height: 0.5px;
+  }
+  #print-stock-correction thead tr td {
+    padding-top: 20px;
+  }
 }
 </style>

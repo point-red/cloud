@@ -506,7 +506,7 @@ export default {
                 notes: item.notes,
                 expiryDate: itemDna.expiry_date,
                 productionNumber: itemDna.production_number,
-                allocationId: itemDna.allocation_id
+                allocationId: itemDna.allocationId
               })
             }
           })
@@ -521,7 +521,7 @@ export default {
           notes: item.notes,
           expiryDate: item.expiry_date,
           productionNumber: item.production_number,
-          allocationId: item.allocation_id
+          allocationId: item.allocationId
         })
       })
 

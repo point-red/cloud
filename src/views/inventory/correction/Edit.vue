@@ -122,16 +122,14 @@
                     <p-form-input
                       :id="'item-notes' + index"
                       v-model="row.notes"
-                      :disabled="row.item_id == null"
                       :name="'item-notes' + index"
+                      disabled
                     />
                   </td>
                   <td>
                     <span
                       v-if="row.item_id != null"
-                      class="select-link"
-                      @click="$refs.allocation.open(index)"
-                    >{{ row.allocationName || $t('select') | uppercase }}</span><br>
+                    >{{ row.allocation.name || '' | uppercase }}</span><br>
                   </td>
                 </tr>
               </template>
@@ -422,7 +420,8 @@ export default {
             stock_database: parseFloat(inventory.opening_balance),
             units: selectedItem.item.units,
             unit: selectedItem.unit,
-            converter: selectedItem.converter
+            converter: selectedItem.converter,
+            allocation: selectedItem.allocation
           }
         }
 
@@ -481,7 +480,8 @@ export default {
           units: selectedItem.item.units,
           unit: selectedItem.unit,
           converter: selectedItem.converter,
-          dna
+          dna,
+          allocation: selectedItem.allocation
         }
       }))
 
