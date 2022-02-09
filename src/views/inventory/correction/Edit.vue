@@ -123,13 +123,14 @@
                       :id="'item-notes' + index"
                       v-model="row.notes"
                       :name="'item-notes' + index"
-                      disabled
                     />
                   </td>
                   <td>
                     <span
                       v-if="row.item_id != null"
-                    >{{ row.allocation.name || '' | uppercase }}</span><br>
+                      class="select-link"
+                      @click="$refs.allocation.open(index)"
+                    >{{ row.allocationName || 'select' | uppercase }}</span><br>
                   </td>
                 </tr>
               </template>
@@ -421,7 +422,8 @@ export default {
             units: selectedItem.item.units,
             unit: selectedItem.unit,
             converter: selectedItem.converter,
-            allocation: selectedItem.allocation
+            allocationId: selectedItem.allocation && selectedItem.allocation.id,
+            allocationName: selectedItem.allocation && selectedItem.allocation.name
           }
         }
 
@@ -481,7 +483,8 @@ export default {
           unit: selectedItem.unit,
           converter: selectedItem.converter,
           dna,
-          allocation: selectedItem.allocation
+          allocationId: selectedItem.allocation && selectedItem.allocation.id,
+          allocationName: selectedItem.allocation && selectedItem.allocation.name
         }
       }))
 
@@ -633,13 +636,14 @@ export default {
                 notes: item.notes,
                 expiryDate: itemDna.expiry_date,
                 productionNumber: itemDna.production_number,
-                allocationId: itemDna.allocation_id
+                allocationId: itemDna.allocationId
               })
             }
           })
           return
         }
 
+        console.log(item)
         // without dna
         items.push({
           stockCorrectionItemId: item.id,
@@ -650,7 +654,7 @@ export default {
           notes: item.notes,
           expiryDate: item.expiry_date,
           productionNumber: item.production_number,
-          allocationId: item.allocation_id
+          allocationId: item.allocationId
         })
       })
 
