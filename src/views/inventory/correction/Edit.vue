@@ -65,7 +65,12 @@
                 >
                   <th>{{ index + 1 }}</th>
                   <td>
-                    {{ row.item_label }}
+                    <span
+                      class="select-link"
+                      @click="$refs.item.open(index)"
+                    >
+                      {{ row.item_label || $t('select') | uppercase }}
+                    </span>
                   </td>
                   <td>
                     <p-quantity-custom
@@ -123,6 +128,7 @@
                       :id="'item-notes' + index"
                       v-model="row.notes"
                       :name="'item-notes' + index"
+                      :disabled="row.item_id == null"
                     />
                   </td>
                   <td>
@@ -300,6 +306,7 @@
     />
     <select-item
       ref="item"
+      :warehouse-id="form.warehouse_id"
       @choosen="chooseItem($event)"
     />
     <m-allocation
@@ -368,6 +375,7 @@ export default {
         this.form.approver_email = response.data.form.requestApprovalToUser.email
 
         this.form.items = await this.mapItemsData(response.data.items)
+        this.addItemRow()
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
@@ -531,6 +539,11 @@ export default {
         return
       }
 
+      const isAlreadyAdded = this.form.items.find((formItem) => formItem.item_id === item.id)
+      if (isAlreadyAdded) {
+        return
+      }
+
       const { data: inventoryWarehouses } = await this.findInventoryWarehouse({
         itemId: item.id,
         params: {
@@ -597,17 +610,22 @@ export default {
       }
     },
     updateDna (e) {
-      e.dna.forEach((updateItem) => {
-        const updateDna = this.form.items[e.index].dna.find((dnaItem) => {
-          return dnaItem.item_id === updateItem.item_id && dnaItem.expiry_date === updateItem.expiry_date
+      if (this.form.items[e.index].dna) {
+        e.dna.forEach((updateItem) => {
+          const updateDna = this.form.items[e.index].dna.find((dnaItem) => {
+            return dnaItem.item_id === updateItem.item_id && dnaItem.expiry_date === updateItem.expiry_date
+          })
+          updateDna.quantity = parseInt(updateItem.quantity)
         })
-        updateDna.quantity = parseInt(updateItem.quantity)
-      })
 
-      const totalQuantity = this.form.items[e.index].dna.reduce((prev, current) => {
-        return prev + current.quantity
-      }, 0)
-      this.form.items[e.index].stock_correction = totalQuantity
+        const totalQuantity = this.form.items[e.index].dna.reduce((prev, current) => {
+          return prev + current.quantity
+        }, 0)
+        this.form.items[e.index].stock_correction = totalQuantity
+      } else {
+        this.form.items[e.index].dna = e.dna
+        this.form.items[e.index].stock_correction = e.quantity
+      }
     },
     onSubmit () {
       this.isSaving = true
@@ -628,7 +646,6 @@ export default {
           item.dna.forEach((itemDna) => {
             if (parseFloat(itemDna.quantity) !== 0) {
               items.push({
-                stockCorrectionItemId: itemDna.id,
                 itemId: itemDna.item_id,
                 unit: itemDna.unit_reference,
                 converter: itemDna.converter_reference,
@@ -636,17 +653,15 @@ export default {
                 notes: item.notes,
                 expiryDate: itemDna.expiry_date,
                 productionNumber: itemDna.production_number,
-                allocationId: itemDna.allocationId
+                allocationId: item.allocationId
               })
             }
           })
           return
         }
 
-        console.log(item)
         // without dna
         items.push({
-          stockCorrectionItemId: item.id,
           itemId: item.item_id,
           unit: item.unit,
           converter: item.converter,

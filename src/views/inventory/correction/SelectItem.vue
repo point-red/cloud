@@ -124,7 +124,6 @@ export default {
       return axiosNode.get('/master/items', payload)
     },
     search () {
-      console.log('masuk')
       this.isLoading = true
       this.getItems({
         params: {
@@ -135,7 +134,6 @@ export default {
           }
         }
       }).then(response => {
-        console.log(response)
         this.options = []
         this.mutableLabel = ''
         response.data.data.map((key, value) => {
