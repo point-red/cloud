@@ -642,7 +642,7 @@ export default {
       this.form.items.forEach((item) => {
         if (item.item_id === null) { return }
         // with dna
-        if (item.require_expiry_date && item.require_production_number) {
+        if (item.require_expiry_date || item.require_production_number) {
           item.dna.forEach((itemDna) => {
             if (parseFloat(itemDna.quantity) !== 0) {
               items.push({
@@ -652,8 +652,8 @@ export default {
                 stockCorrection: itemDna.quantity,
                 notes: item.notes,
                 expiryDate: itemDna.expiry_date,
-                productionNumber: itemDna.production_number,
-                allocationId: item.allocationId
+                ...(itemDna.expiry_date ? { expiryDate: itemDna.expiry_date } : { expiryDate: null }),
+                ...(itemDna.production_number ? { productionNumber: itemDna.production_number } : { productionNumber: null })
               })
             }
           })
