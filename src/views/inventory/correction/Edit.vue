@@ -141,9 +141,9 @@
                 </tr>
               </template>
             </point-table>
-
+            <hr>
             <div
-              v-if="form.referenceId"
+              v-if="form.warehouse_id"
               class="row"
             >
               <div class="col-sm-6">
@@ -154,98 +154,6 @@
                   placeholder="Notes"
                 />
               </div>
-              <div class="col-sm-6">
-                <p-form-row
-                  id="discount"
-                  name="discount"
-                  :label="$t('discount')"
-                >
-                  <div
-                    slot="body"
-                    class="col-lg-9 mt-5"
-                  >
-                    <p-discount
-                      id="discount"
-                      v-model="form.discountPercent"
-                      name="discount"
-                      :base-value="subtotal"
-                      :discount-percent.sync="form.discountPercent"
-                      :discount-value.sync="form.discountValue"
-                    />
-                  </div>
-                </p-form-row>
-                <p-form-row
-                  id="tax_base"
-                  name="tax_base"
-                  :label="$t('tax base')"
-                >
-                  <div
-                    slot="body"
-                    class="col-lg-9 mt-5"
-                  >
-                    <p-form-number
-                      :id="'tax_base'"
-                      :name="'tax_base'"
-                      :readonly="true"
-                      :value="tax_base"
-                    />
-                  </div>
-                </p-form-row>
-                <p-form-row
-                  name="tax"
-                  :label="$t('tax')"
-                >
-                  <div
-                    slot="body"
-                    class="col-lg-9"
-                  >
-                    <p-form-check-box
-                      class="mb-0"
-                      style="float:left"
-                      name="tax"
-                      :checked="form.typeOfTax == 'include'"
-                      :description="$t('include tax')"
-                      @click.native="chooseTax('include')"
-                    />
-                    <p-form-check-box
-                      name="tax"
-                      :checked="form.typeOfTax == 'exclude'"
-                      :description="$t('exclude tax')"
-                      @click.native="chooseTax('exclude')"
-                    />
-                    <p-form-number
-                      :id="'total'"
-                      :name="'total'"
-                      :readonly="true"
-                      :value="tax"
-                    />
-                  </div>
-                </p-form-row>
-                <p-form-row
-                  id="total"
-                  name="total"
-                  :label="$t('total')"
-                >
-                  <div
-                    slot="body"
-                    class="col-lg-9 mt-5"
-                  >
-                    <p-form-number
-                      :id="'total'"
-                      :name="'total'"
-                      :readonly="true"
-                      :value="total"
-                    />
-                  </div>
-                </p-form-row>
-              </div>
-            </div>
-            <hr>
-            <div
-              v-if="form.warehouse_id"
-              class="row"
-            >
-              <div class="col-sm-6" />
               <div class="col-sm-3 text-center">
                 <h6 class="mb-0">
                   {{ $t('requested by') | uppercase }}
@@ -613,7 +521,26 @@ export default {
       if (this.form.items[e.index].dna) {
         e.dna.forEach((updateItem) => {
           const updateDna = this.form.items[e.index].dna.find((dnaItem) => {
-            return dnaItem.item_id === updateItem.item_id && dnaItem.expiry_date === updateItem.expiry_date
+            if (updateItem.production_number && updateItem.expiry_date) {
+              return dnaItem.item_id === updateItem.item_id &&
+                     dnaItem.production_number === updateItem.production_number &&
+                     dnaItem.expiry_date === updateItem.expiry_date
+            }
+            if (updateItem.production_number && !updateItem.expiry_date) {
+              return dnaItem.item_id === updateItem.item_id &&
+                     dnaItem.production_number === updateItem.production_number &&
+                     !dnaItem.expiry_date
+            }
+            if (!updateItem.production_number && updateItem.expiry_date) {
+              return dnaItem.item_id === updateItem.item_id &&
+                     !dnaItem.production_number &&
+                     dnaItem.expiry_date === updateItem.expiry_date
+            }
+            if (!updateItem.production_number && !updateItem.expiry_date) {
+              return dnaItem.item_id === updateItem.item_id &&
+                     !updateItem.production_number &&
+                     !dnaItem.expiry_date
+            }
           })
           updateDna.quantity = parseInt(updateItem.quantity)
         })
@@ -652,6 +579,7 @@ export default {
                 stockCorrection: itemDna.quantity,
                 notes: item.notes,
                 expiryDate: itemDna.expiry_date,
+                allocationId: item.allocationId,
                 ...(itemDna.expiry_date ? { expiryDate: itemDna.expiry_date } : { expiryDate: null }),
                 ...(itemDna.production_number ? { productionNumber: itemDna.production_number } : { productionNumber: null })
               })
