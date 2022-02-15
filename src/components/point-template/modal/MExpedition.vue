@@ -2,7 +2,7 @@
   <div>
     <sweet-modal
       :ref="'select-' + id"
-      :title="$t('select supplier') | uppercase"
+      :title="$t('select expedition') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >
@@ -24,9 +24,9 @@
         v-else
         class="list-group push"
       >
-        <template v-for="(option, index) in options">
+        <template v-for="(option, idx) in options">
           <div
-            :key="index"
+            :key="idx"
             class="list-group-item list-group-item-action justify-content-between align-items-center"
             :class="{'active': option.id == mutableId }"
             href="javascript:void(0)"
@@ -58,7 +58,7 @@
         <button
           type="button"
           class="btn btn-sm btn-outline-secondary mr-5"
-          @click="$refs.addSupplier.open()"
+          @click="$refs.addExpedition.open()"
         >
           {{ $t('create new') | uppercase }}
         </button>
@@ -74,9 +74,9 @@
       </div>
     </sweet-modal>
 
-    <m-add-supplier
-      id="add-supplier"
-      ref="addSupplier"
+    <m-add-expedition
+      id="add-expedition"
+      ref="addExpedition"
       @added="onAdded()"
     />
   </div>
@@ -103,6 +103,7 @@ export default {
   },
   data () {
     return {
+      index: null,
       searchText: '',
       options: [],
       mutableId: this.value,
@@ -112,7 +113,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterSupplier', ['suppliers', 'pagination'])
+    ...mapGetters('masterExpedition', ['expeditions', 'pagination'])
   },
   watch: {
     searchText: debounce(function () {
@@ -132,7 +133,7 @@ export default {
     this.close()
   },
   methods: {
-    ...mapActions('masterSupplier', ['get', 'create']),
+    ...mapActions('masterExpedition', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
@@ -190,13 +191,15 @@ export default {
         this.isSaving = false
       })
     },
-    open () {
+    open (index = null) {
+      this.index = index
       this.$refs['select-' + this.id].open()
       this.$nextTick(() => {
         this.$refs.searchText.focus()
       })
     },
     choose (option) {
+      option.index = this.index
       this.mutableId = option.id
       this.$emit('choosen', option)
       this.close()

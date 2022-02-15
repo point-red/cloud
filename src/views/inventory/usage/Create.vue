@@ -387,7 +387,7 @@ export default {
       row.require_expiry_date = item.require_expiry_date
       row.units = item.units
       row.units.forEach((unit, keyUnit) => {
-        if (unit.id == item.unit_default_purchase) {
+        if (unit.id === item.unit_default_purchase) {
           row.unit = unit.label
           row.converter = unit.converter
         }
@@ -403,7 +403,7 @@ export default {
       }
     },
     onClickQuantity (row, index) {
-      if (row.require_expiry_date == 1 || row.require_production_number == 1) {
+      if (row.require_expiry_date === 1 || row.require_production_number === 1) {
         row.warehouse_id = this.warehouseId
         row.index = index
         this.$refs.inventory.open(row, row.quantity)

@@ -2,214 +2,178 @@
   <div>
     <breadcrumb>
       <breadcrumb-accounting />
-      <span class="breadcrumb-item active">
-        <router-link
-          to="/accounting/cut-off"
-          class="breadcrumb-item"
-        >{{ $t('cut off') | uppercase }}</router-link>
-      </span>
-      <span class="breadcrumb-item active">{{ cutOff.form.number }}</span>
+      <span class="breadcrumb-item active">{{ $t('cut off') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
-      <div class="col-sm-12">
-        <form
-          class="row"
-          @submit.prevent="onSubmit"
-        >
-          <p-block
-            :title="$t('cut off')"
-            :header="false"
+      <p-block
+        :title="$t('cut off')"
+        :header="false"
+      >
+        <div class="text-right">
+          <router-link
+            v-if="$permission.has('create cut off')"
+            to="/accounting/cut-off/create"
+            class="btn btn-sm btn-outline-secondary mr-5"
           >
-            <p-block-inner :is-loading="isLoading">
-              <h5 class="text-center">
-                {{ $t('cut off') | uppercase }}
-              </h5>
-              <hr>
-              <p-form-row
-                id="date"
-                :label="$t('date')"
+            {{ $t('create') | uppercase }}
+          </router-link>
+        </div>
+        <hr>
+
+        <div class="col-sm-12 p-0">
+          <div class="col-sm-6 p-0">
+            <p class="h3">
+              {{ $t('cut off') | capitalize }}
+            </p>
+            <table
+              v-if="chartOfAccount && chartOfAccount.chart_of_account"
+              class="table table-bordered"
+            >
+              <tr>
+                <td>{{ $t('account number') | capitalize }}</td>
+                <td>{{ chartOfAccount.chart_of_account.number }}</td>
+              </tr>
+              <tr>
+                <td>{{ $t('account') | capitalize }}</td>
+                <td>{{ chartOfAccount.chart_of_account.alias }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <p-block-inner :is-loading="isLoading">
+          <point-table>
+            <tr slot="p-head">
+              <th>{{ $t('form date') | capitalize }}</th>
+              <th>{{ $t('form number') | capitalize }}</th>
+              <th>{{ $t('amount') | capitalize }}</th>
+              <th>{{ $t('notes') | capitalize }}</th>
+              <th>{{ $t('created by') | capitalize }}</th>
+            </tr>
+            <template slot="p-body">
+              <tr
+                v-for="(cutoff, idx) in cutOffAccounts"
+                :key="idx"
               >
-                <div
-                  slot="body"
-                  class="col-lg-9 col-form-label"
-                >
-                  {{ cutOff.form.date | dateFormat('DD MMMM YYYY') }} <span style="font-size:10px">({{ cutOff.form.date | dateFormat('HH:mm') }})</span>
-                </div>
-              </p-form-row>
-              <p-form-row
-                id="number"
-                :label="$t('number')"
-              >
-                <div
-                  slot="body"
-                  class="col-lg-9 col-form-label"
-                >
-                  {{ cutOff.form.number }}
-                </div>
-              </p-form-row>
-              <hr>
-              <p-table>
-                <tr slot="p-head">
-                  <th>Number</th>
-                  <th>Name</th>
-                  <th class="text-right">
-                    Debit
-                  </th>
-                  <th class="text-right">
-                    Credit
-                  </th>
-                </tr>
-                <tr
-                  v-for="cutOffDetail in cutOff.details"
-                  :key="cutOffDetail.id"
-                  slot="p-body"
-                >
-                  <td>{{ cutOffDetail.chart_of_account.number }}</td>
-                  <td>{{ cutOffDetail.chart_of_account.name }}</td>
-                  <td class="text-right">
-                    {{ cutOffDetail.debit | numberFormat }}
-                  </td>
-                  <td class="text-right">
-                    {{ cutOffDetail.credit | numberFormat }}
-                  </td>
-                </tr>
-                <tr slot="p-body">
-                  <td />
-                  <td />
-                  <td class="text-right font-w600">
-                    {{ totalDebit | numberFormat }}
-                  </td>
-                  <td class="text-right font-w600">
-                    {{ totalCredit | numberFormat }}
-                  </td>
-                </tr>
-              </p-table>
-              <div class="row mt-50">
-                <div class="col-sm-6">
-                  <h6 class="mb-0">
-                    {{ $t('notes') | uppercase }}
-                  </h6>
-                  <div style="white-space: pre-wrap;">
-                    {{ cutOff.form.notes }}
-                  </div>
-                  <div class="d-sm-block d-md-none mt-10" />
-                </div>
-                <div class="col-sm-3 text-center">
-                  <h6 class="mb-0">
-                    {{ $t('requested by') | uppercase }}
-                  </h6>
-                  <div
-                    class="mb-50"
-                    style="font-size:11px"
+                <td>{{ cutoff.cutoff && cutoff.cutoff.form.date | dateFormat('DD MMM YYYY') }}</td>
+                <td>
+                  <span
+                    class="select-link"
+                    @click="showDetail(cutoff)"
                   >
-                    {{ cutOff.form.date | dateFormat('DD MMMM YYYY') }}
-                  </div>
-                  {{ cutOff.form.created_by.full_name | uppercase }}
-                  <div class="d-sm-block d-md-none mt-10" />
-                </div>
-                <div class="col-sm-3 text-center">
-                  <h6 class="mb-0">
-                    {{ $t('approved by') | uppercase }}
-                  </h6>
-                  <div
-                    class="mb-50"
-                    style="font-size:11px"
-                  >
-                    <template v-if="cutOff.approvers[0].approval_at">
-                      {{ cutOff.approvers[0].approval_at | dateFormat('DD MMMM YYYY') }}
-                    </template>
-                    <template v-else>
-                      _______________
-                    </template>
-                  </div>
-                  {{ cutOff.approvers[0].requested_to.first_name | uppercase }} {{ cutOff.approvers[0].requested_to.last_name | uppercase }}
-                  <div style="font-size:11px">
-                    {{ cutOff.approvers[0].requested_to.email | lowercase }}
-                  </div>
-                </div>
-                <div class="col-sm-12">
-                  <hr>
-                  <!-- <router-link :to="{ name: 'purchase.request.edit', params: { id: cutOff.id }}" class="btn btn-sm btn-primary mr-5">
-                    {{ $t('edit') | uppercase }}
-                  </router-link> -->
-                  <button
-                    class="btn btn-sm btn-danger mb-10"
-                    :disabled="isLoading"
-                    @click="remove"
-                  >
-                    <i
-                      v-show="isLoading"
-                      class="fa fa-asterisk fa-spin"
-                    /> {{ $t('delete') | uppercase }}
-                  </button>
-                </div>
-              </div>
-            </p-block-inner>
-          </p-block>
-        </form>
-      </div>
+                    {{ cutoff.cutoff && cutoff.cutoff.form.number }}
+                  </span>
+                </td>
+                <td>{{ (cutoff.debit === 0 ? cutoff.credit : cutoff.debit) | numberFormat }}</td>
+                <td>{{ cutoff.cutoff && cutoff.cutoff.form.notes }}</td>
+                <td>{{ cutoff.cutoff && cutoff.cutoff.form.created_by.name }}</td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <b>Total</b>
+                </td>
+                <td>{{ (cutOffAccounts.reduce((total, cutoff) => total + (cutoff.debit === 0 ? cutoff.credit : cutoff.debit), 0)) | numberFormat }}</td>
+                <td />
+                <td />
+              </tr>
+            </template>
+          </point-table>
+        </p-block-inner>
+      </p-block>
     </div>
+
+    <MPaymentShow
+      ref="paymentRef"
+    />
+    <MFixedAssetShow
+      ref="fixedAssetRef"
+    />
+    <MInventoriesShow
+      ref="inventorieRef"
+    />
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbAccounting from '@/views/accounting/Breadcrumb'
+import PointTable from 'point-table-vue'
+import debounce from 'lodash/debounce'
+import MPaymentShow from './MPaymentShow'
+import MFixedAssetShow from './MFixedAssetShow'
+import MInventoriesShow from './MInventoriesShow'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     Breadcrumb,
-    BreadcrumbAccounting
+    BreadcrumbAccounting,
+    PointTable,
+    MPaymentShow,
+    MFixedAssetShow,
+    MInventoriesShow
   },
   data () {
     return {
       id: this.$route.params.id,
-      totalCredit: 0,
-      totalDebit: 0,
-      isLoading: false
+      isLoading: false,
+      lastPage: 1,
+      limit: 1000,
+      chartOfAccount: null
     }
   },
   computed: {
-    ...mapGetters('accountingCutOff', ['cutOff'])
+    ...mapGetters('accountingCutOff', ['cutOffAccounts'])
   },
   created () {
-    this.isLoading = true
-    this.find({
-      id: this.id,
-      params: {
-        with_archives: true,
-        with_origin: true,
-        includes: 'form;details.chartOfAccount;approvers.requestedBy;approvers.requestedTo'
-      }
-    }).then((response) => {
-      this.totalCredit = 0
-      this.totalDebit = 0
-      this.cutOff.details.forEach(element => {
-        this.totalCredit += parseFloat(element.credit)
-        this.totalDebit += parseFloat(element.debit)
-      })
-      this.isLoading = false
-    }, (error) => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    this.getCutOffs()
   },
   methods: {
-    ...mapActions('accountingCutOff', ['find', 'delete']),
-    remove () {
+    ...mapActions('accountingCutOff', ['getByAccount']),
+    getCutOffs () {
       this.isLoading = true
-      this.delete({ id: this.id })
-        .then((response) => {
-          this.isLoading = false
-          this.$notification.success('Delete success')
-          this.$router.replace('/accounting/cut-off')
-        }, (error) => {
-          this.isLoading = false
-          this.$notification.error(error.message)
-        })
+      this.getByAccount({
+        params: {
+          filter_equal: {
+            chart_of_account_id: this.id
+          },
+          limit: 200,
+          includes: 'chartOfAccount.type;cutoff.form.createdBy',
+          page: this.currentPage
+        }
+      }).then((response) => {
+        this.isLoading = false
+        console.log(response)
+        this.chartOfAccount = (response.data || []).find(item => item.chart_of_account_id == this.id)
+      }, (error) => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    },
+    filterSearch: debounce(function (value) {
+      this.$router.push({ query: { search: value } })
+      this.searchText = value
+      this.currentPage = 1
+      this.getCutOffs()
+    }, 300),
+    showDetail (cutoff) {
+      console.log(cutoff)
+      const subLedger = cutoff.chart_of_account.sub_ledger.trim()
+      if (['CUSTOMER', 'SUPPLIER', 'EXPEDITION', 'EMPLOYEE'].indexOf(subLedger) > -1) {
+        this.$refs.paymentRef.open(cutoff)
+      } else if (subLedger === 'ITEM') {
+        this.$refs.inventorieRef.open(cutoff)
+      } else if (subLedger === 'FIXED ASSET') {
+        this.$refs.fixedAssetRef.open(cutoff)
+      }
     }
   }
 }
 </script>
+
+<style lang="scss">
+td .fa {
+  font-size:14px;
+  padding: 5px;
+}
+</style>

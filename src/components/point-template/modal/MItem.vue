@@ -99,6 +99,8 @@ export default {
   },
   data () {
     return {
+      chartOfAccountId: null,
+      groupId: null,
       index: null,
       searchText: '',
       options: [],
@@ -133,11 +135,16 @@ export default {
         params: {
           sort_by: 'name',
           limit: 100,
+          join: 'groups',
           filter_like: {
             code: this.searchText,
             name: this.searchText
           },
-          includes: 'units.prices'
+          group_id: this.groupId,
+          filter_equal: {
+            chart_of_account_id: this.chartOfAccountId
+          },
+          includes: 'units.prices;groups'
         }
       }).then(response => {
         this.options = []
@@ -155,13 +162,14 @@ export default {
             units: key.units
           })
 
-          if (this.value == key.id) {
+          if (this.value === key.id) {
             this.mutableLabel = key.label
           }
         })
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
+        console.log(error)
       })
     },
     onAdded () {
@@ -211,6 +219,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.searchText.focus()
       })
+      if (this.groupId !== 'undefined') this.search()
     },
     close () {
       this.$refs['select-' + this.id].close()

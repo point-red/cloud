@@ -4,20 +4,14 @@ const url = '/accounting/cut-offs'
 
 const state = {
   cutOff: {
-    form: {
-      number: null,
-      notes: null,
-      created_by: {
-        full_name: null
-      }
-    },
-    approvers: [{
-      requested_to: {
-        full_name: null
-      }
-    }]
+    alias: null,
+    number: null,
+    credit: 0,
+    debit: 0,
+    id: null
   },
-  cutOffs: []
+  cutOffs: [],
+  cutOffAccounts: []
 }
 
 const getters = {
@@ -26,12 +20,18 @@ const getters = {
   },
   cutOffs: state => {
     return state.cutOffs
+  },
+  cutOffAccounts: state => {
+    return state.cutOffAccounts
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.cutOffs = payload.data
+  },
+  'FETCH_ARRAY1' (state, payload) {
+    state.cutOffAccounts = payload.data
   },
   'FETCH_OBJECT' (state, payload) {
     state.cutOff = payload.data
@@ -53,6 +53,17 @@ const actions = {
       api.get(url, payload)
         .then(response => {
           commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  getByAccount ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/account', payload)
+        .then(response => {
+          commit('FETCH_ARRAY1', response)
           resolve(response)
         }).catch(error => {
           reject(error)

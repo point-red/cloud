@@ -663,7 +663,7 @@
                     {{ $t('chart of account') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li
+                <li
                   v-if="$permission.has('read cut off')"
                   @click="toggleLeftSidebar('close-xs')"
                 >
@@ -673,7 +673,7 @@
                   >
                     {{ $t('cut off') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
                 <li
                   v-if="$permission.has('read balance sheet')"
                   @click="toggleLeftSidebar('close-xs')"

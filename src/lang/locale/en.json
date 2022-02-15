@@ -510,6 +510,21 @@
 	"month": "month",
 	"useful life": "Useful life",
 	"select fixed asset group": "select fixed asset group",
-	"salvage value": "salvage value"
-
+	"salvage value": "salvage value",
+	"asset": "asset",
+	"purchase date": "purchase date",
+	"acquisition cost": "acquisition cost",
+	"accumulated depreciation": "accumulated depreciation",
+	"book value": "book value",
+	"date payable": "date payable",
+	"date receivable / invoice date": "date receivable / invoice date",
+	"detail form": "detail form",
+	"journal": "journal",
+	"form date": "form date",
+	"account number": "account number",
+	"created by": "created by",
+	"sales report": "sales report",
+	"account name": "account name",
+	"select asset": "select asset",
+	"check again": "check again"
 }
