@@ -1,7 +1,7 @@
 <template>
   <sweet-modal
     ref="print-stock-correction"
-    :title="$t('print sales invoice') | uppercase"
+    :title="$t('print stock correction') | uppercase"
     overlay-theme="dark"
     @close="onClose()"
   >
@@ -62,6 +62,26 @@
                   <td>Form number</td>
                   <td>:</td>
                   <td>{{ stockCorrection.form.number }}</td>
+                </tr>
+              </table>
+              <table
+                class="header-detail"
+                style="margin-left: 20px;"
+              >
+                <tr>
+                  <td>Customer</td>
+                  <td>:</td>
+                  <td>{{ stockCorrection.warehouse.name || '-' }}</td>
+                </tr>
+                <tr>
+                  <td>Address</td>
+                  <td>:</td>
+                  <td>{{ stockCorrection.warehouse.adress || '-' }}</td>
+                </tr>
+                <tr>
+                  <td>Phone number</td>
+                  <td>:</td>
+                  <td>{{ stockCorrection.warehouse.phone || '-' }}</td>
                 </tr>
               </table>
             </div>

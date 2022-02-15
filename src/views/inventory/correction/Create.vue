@@ -324,6 +324,11 @@ export default {
         return
       }
 
+      const isAlreadyAdded = this.form.items.find((formItem) => formItem.item_id === item.id)
+      if (isAlreadyAdded) {
+        return
+      }
+
       const { data: inventoryWarehouses } = await this.findInventoryWarehouse({
         itemId: item.id,
         params: {
