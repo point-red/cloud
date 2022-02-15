@@ -92,6 +92,12 @@
                   </td>
                   <td>{{ stockCorrection.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
+                <tr>
+                  <td class="font-weight-bold">
+                    {{ $t('warehouse') | uppercase }}
+                  </td>
+                  <td>{{ stockCorrection.warehouse.name }}</td>
+                </tr>
                 <tr v-if="stockCorrection.referenceable">
                   <td class="font-weight-bold">
                     {{ $t('reference') | uppercase }}
@@ -168,37 +174,41 @@
               </div>
               <div class="d-sm-block d-md-none mt-10" />
             </div>
-            <div class="col-sm-3 text-center">
-              <h6 class="mb-0">
-                {{ $t('requested by') | uppercase }}
-              </h6>
-              <div
-                class="mb-50"
-                style="font-size:11px"
-              >
-                {{ stockCorrection.form.date | dateFormat('DD MMMM YYYY') }}
-              </div>
-              {{ stockCorrection.form.createdByUser.fullName | uppercase }}
-              <div class="d-sm-block d-md-none mt-10" />
-            </div>
-            <div class="col-sm-3 text-center">
-              <h6 class="mb-0">
-                {{ $t('approved by') | uppercase }}
-              </h6>
-              <div
-                class="mb-50"
-                style="font-size:11px"
-              >
-                <template v-if="stockCorrection.form.approvalAt">
-                  {{ stockCorrection.form.approvalAt | dateFormat('DD MMMM YYYY') }}
-                </template>
-                <template v-else>
-                  _______________
-                </template>
-              </div>
-              {{ stockCorrection.form.requestApprovalToUser.fullName | uppercase }}
-              <div style="font-size:11px">
-                {{ stockCorrection.form.requestApprovalToUser.email | lowercase }}
+            <div class="row col-sm-6 align-items-end m-0 p-0">
+              <div class="row col-12 m-0 p-0">
+                <div class="col-6 text-center">
+                  <h6 class="mb-0">
+                    {{ $t('requested by') | uppercase }}
+                  </h6>
+                  <div
+                    class="mb-50"
+                    style="font-size:11px"
+                  >
+                    {{ stockCorrection.form.date | dateFormat('DD MMMM YYYY') }}
+                  </div>
+                  {{ stockCorrection.form.createdByUser.fullName | uppercase }}
+                  <div class="d-sm-block d-md-none mt-10" />
+                </div>
+                <div class="col-6 text-center">
+                  <h6 class="mb-0">
+                    {{ $t('approved by') | uppercase }}
+                  </h6>
+                  <div
+                    class="mb-50"
+                    style="font-size:11px"
+                  >
+                    <template v-if="stockCorrection.form.approvalAt">
+                      {{ stockCorrection.form.approvalAt | dateFormat('DD MMMM YYYY') }}
+                    </template>
+                    <template v-else>
+                      _______________
+                    </template>
+                  </div>
+                  {{ stockCorrection.form.requestApprovalToUser.fullName | uppercase }}
+                  <div style="font-size:11px">
+                    {{ stockCorrection.form.requestApprovalToUser.email | lowercase }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -164,34 +164,38 @@
                   placeholder="Notes"
                 />
               </div>
-              <div class="col-sm-3 text-center">
-                <h6 class="mb-0">
-                  {{ $t('requested by') | uppercase }}
-                </h6>
-                <div
-                  class="mb-50"
-                  style="font-size:11px"
-                >
-                  {{ Date.now() | dateFormat('DD MMMM YYYY') }}
+              <div class="row col-sm-6 align-items-end m-0 p-0">
+                <div class="row col-12 m-0 p-0">
+                  <div class="col-6 text-center">
+                    <h6 class="mb-0">
+                      {{ $t('requested by') | uppercase }}
+                    </h6>
+                    <div
+                      class="mb-50"
+                      style="font-size:11px"
+                    >
+                      {{ Date.now() | dateFormat('DD MMMM YYYY') }}
+                    </div>
+                    {{ requestedBy | uppercase }}
+                    <div class="d-sm-block d-md-none mt-10" />
+                  </div>
+                  <div class="col-6 text-center">
+                    <h6 class="mb-0">
+                      {{ $t('approved by') | uppercase }}
+                    </h6>
+                    <div
+                      class="mb-50"
+                      style="font-size:11px"
+                    >
+                      _______________
+                    </div>
+                    <span
+                      class="select-link"
+                      @click="$refs.approver.open()"
+                    >{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                    <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
+                  </div>
                 </div>
-                {{ requestedBy | uppercase }}
-                <div class="d-sm-block d-md-none mt-10" />
-              </div>
-              <div class="col-sm-3 text-center">
-                <h6 class="mb-0">
-                  {{ $t('approved by') | uppercase }}
-                </h6>
-                <div
-                  class="mb-50"
-                  style="font-size:11px"
-                >
-                  _______________
-                </div>
-                <span
-                  class="select-link"
-                  @click="$refs.approver.open()"
-                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
-                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
