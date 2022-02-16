@@ -69,7 +69,7 @@
                 style="margin-left: 20px;"
               >
                 <tr>
-                  <td>Customer</td>
+                  <td>Warehouse</td>
                   <td>:</td>
                   <td>{{ stockCorrection.warehouse.name || '-' }}</td>
                 </tr>
