@@ -10,8 +10,16 @@
         <div class="input-group block">
           <download-excel
             :fetch="generateReport"
-            :name="`Stock correction_${$options.filters.dateFormat(date.start)}-${$options.filters.dateFormat(date.end)}`"
+            :name="`Stock Correction_${$options.filters.dateFormat(date.start, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.end, 'DD MMM YYYY')}`"
             class="input-group-prepend"
+            :header="[
+              `Export date: ${$options.filters.dateFormat(new Date(), 'DD MMM YYYY HH:mm')} `,
+              `Export period: ${$options.filters.dateFormat(date.start, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.end, 'DD MMM YYYY')}`,
+              ' ',
+              `Project name: ${authUser.tenant_name}`,
+              'Stock Correction',
+              ' '
+            ]"
           >
             <span class="input-group-text">
               <i class="fa fa-download" />
@@ -230,7 +238,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('inventoryCorrection', ['stockCorrections', 'pagination'])
+    ...mapGetters('inventoryCorrection', ['stockCorrections', 'pagination']),
+    ...mapGetters('auth', ['authUser'])
   },
   watch: {
     date: {
@@ -373,8 +382,7 @@ export default {
               Balance: item.finalStock,
               'Production Number': item.productionNumber,
               'Expiry Date': item.expiryDate,
-              'Form Status': formStatus,
-              'Export Date': this.$options.filters.dateFormat(new Date(), 'DD/MM/YYYY')
+              'Form Status': formStatus
             }
           })
         })

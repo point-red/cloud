@@ -97,24 +97,17 @@
             >
               <thead>
                 <tr>
-                  <th>No</th>
                   <th>Item</th>
-                  <th>Allocation</th>
                   <th>Stock Database</th>
                   <th>Stock Correction</th>
                   <th>Balance</th>
-                  <th>Notes</th>
                 </tr>
               </thead>
               <tr
                 v-for="(row, index) in stockCorrection.items"
                 :key="index"
               >
-                <td>{{ index+1 }}</td>
                 <td>{{ row.item.name }}</td>
-                <td class="text-right">
-                  {{ row.allocation && row.allocation.name }}
-                </td>
                 <td class="text-right">
                   {{ row.initialStock | numberFormat }}
                 </td>
@@ -123,9 +116,6 @@
                 </td>
                 <td class="text-left">
                   {{ row.finalStock | numberFormat }}
-                </td>
-                <td>
-                  {{ row.notes }}
                 </td>
               </tr>
             </table>
