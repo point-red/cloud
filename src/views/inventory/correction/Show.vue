@@ -299,11 +299,15 @@ export default {
       })
     },
     onDelete (reason) {
+      if (!reason) {
+        this.$notification.error('Delete reason is required')
+        return
+      }
       this.isDeleting = true
       this.delete({
         id: this.id,
         data: {
-          reason: reason || null
+          reason: reason
         }
       }).then(response => {
         this.isDeleting = false
@@ -326,6 +330,10 @@ export default {
       })
     },
     onReject (reason) {
+      if (!reason) {
+        this.$notification.error('Reject reason is required')
+        return
+      }
       this.reject({
         id: this.id,
         reason: reason
@@ -347,6 +355,10 @@ export default {
       })
     },
     onCancellationReject (reason) {
+      if (!reason) {
+        this.$notification.error('Reject reason is required')
+        return
+      }
       this.cancellationReject({
         id: this.id,
         reason: reason

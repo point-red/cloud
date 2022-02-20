@@ -119,7 +119,6 @@
                 </td>
               </tr>
             </table>
-            <span>Notes: {{ notes }}</span>
             <div
               class="d-flex justify-content-end"
               style="margin-top: 75px;"
@@ -171,8 +170,7 @@ export default {
   data () {
     return {
       onLoad: true,
-      logoUrl: '',
-      notes: ''
+      logoUrl: ''
     }
   },
   computed: {
@@ -224,14 +222,6 @@ export default {
       try {
         const { data: { data: currentLogo } } = await axiosNode.get('/setting/logo')
         this.logoUrl = currentLogo.publicUrl
-      } catch (e) {
-        console.log(e)
-      }
-    },
-    async getSettingEndNote () {
-      try {
-        const { data: { data: endNote } } = await axiosNode.get('/setting/end-note')
-        this.notes = endNote.stockCorrection
       } catch (e) {
         console.log(e)
       }
