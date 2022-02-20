@@ -616,7 +616,7 @@ export default {
       this.update(requestPayload)
         .then(response => {
           this.isSaving = false
-          this.$notification.success('create success')
+          this.$notification.success('update success')
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/inventory/correction/' + response.data.id)
         }).catch(error => {

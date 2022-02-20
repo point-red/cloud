@@ -11,7 +11,8 @@
       <span class="breadcrumb-item active">{{ stockCorrection.form.number | uppercase }}</span>
     </breadcrumb>
 
-    <p-show-form-approval-status
+    <p-show-form-approval-status-custom
+      form-name="Stock Correction"
       :is-loading="isLoading"
       :approved-by="stockCorrection.form.requestApprovalToUser.fullName"
       :cancellation-status="stockCorrection.form.cancellationStatus"
@@ -21,8 +22,10 @@
       @onReject="onReject"
     />
 
-    <p-show-form-cancellation-status
+    <p-show-form-cancellation-status-custom
+      form-name="Stock Correction"
       :is-loading="isLoading"
+      :approved-by="stockCorrection.form.requestApprovalToUser.fullName"
       :cancellation-status="stockCorrection.form.cancellationStatus"
       :cancellation-approval-reason="stockCorrection.form.cancellationApprovalReason"
       :request-cancellation-reason="stockCorrection.form.requestCancellationReason"
@@ -300,7 +303,7 @@ export default {
       this.delete({
         id: this.id,
         data: {
-          reason: reason
+          reason: reason || null
         }
       }).then(response => {
         this.isDeleting = false
@@ -318,6 +321,8 @@ export default {
       }).then(response => {
         this.$notification.success('approve success')
         this.stockCorrectionRequest()
+      }).catch(error => {
+        this.$notification.error('Something error when approving the stock correction creation')
       })
     },
     onReject (reason) {
@@ -327,6 +332,8 @@ export default {
       }).then(response => {
         this.$notification.success('reject success')
         this.stockCorrectionRequest()
+      }).catch(error => {
+        this.$notification.error('Something error when rejecting the stock correction creation')
       })
     },
     onCancellationApprove () {
@@ -335,6 +342,8 @@ export default {
       }).then(response => {
         this.$notification.success('cancellation approved')
         this.$router.push('/inventory/correction')
+      }).catch(error => {
+        this.$notification.error('Something error when approving the stock correction cancellation')
       })
     },
     onCancellationReject (reason) {
@@ -345,7 +354,7 @@ export default {
         this.$notification.success('cancellation rejected')
         this.stockCorrectionRequest()
       }).catch(error => {
-        console.log(error.message)
+        this.$notification.error('Something error when rejecting the stock correction cancellation')
       })
     }
   }
