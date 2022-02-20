@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-master />
-      <span class="breadcrumb-item active">{{ $t('item') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('fixed asset group') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu />
@@ -11,20 +11,10 @@
       <p-block>
         <div class="input-group block">
           <a
-            v-if="$permission.has('create item')"
+            v-if="$permission.has('create fixed asset')"
             href="javascript:void(0)"
             class="input-group-prepend"
-            @click="$refs.fileInputHidden.click()"
-          >
-            <span class="input-group-text">
-              <i class="fa fa-upload" />
-            </span>
-          </a>
-          <a
-            v-if="$permission.has('create item')"
-            href="javascript:void(0)"
-            class="input-group-prepend"
-            @click="$refs.addItem.open()"
+            @click="$refs.addFixedAssetGroup.open()"
           >
             <span class="input-group-text">
               <i class="fa fa-plus" />
@@ -47,36 +37,18 @@
               <th width="50px">
                 #
               </th>
-              <th>Code</th>
               <th>Name</th>
-              <th>Account</th>
-              <th>Stock</th>
             </tr>
             <tr
-              v-for="(item, index) in items"
-              :key="item.id"
+              v-for="(group, index) in groups"
+              :key="index"
               slot="p-body"
             >
-              <th>{{ ++index }}</th>
+              <th>{{ index + 1 }}</th>
               <td>
-                <router-link :to="{ name: 'item.show', params: { id: item.id }}">
-                  {{ item.code }}
+                <router-link :to="{ name: 'fixed-asset-group.show', params: { id: group.id }}">
+                  {{ group.name | titlecase }}
                 </router-link>
-              </td>
-              <td>
-                <router-link :to="{ name: 'item.show', params: { id: item.id }}">
-                  {{ item.name }}
-                </router-link>
-              </td>
-              <td>
-                <template v-if="item.account">
-                  {{ item.account.number }} - {{ item.account.alias }}
-                </template>
-              </td>
-              <td>
-                <template v-if="item.units.length">
-                  {{ item.stock | numberFormat }} {{ item.units[0].label }}
-                </template>
               </td>
             </tr>
           </point-table>
@@ -88,19 +60,10 @@
         />
       </p-block>
     </div>
-    <m-add-item
-      ref="addItem"
-      @closed="onAdded"
-    />
-    <m-add-item-import
-      ref="addItemImport"
-      @imported="onAdded"
-    />
-    <p-form-file-hidden
-      id="file"
-      ref="fileInputHidden"
-      name="file"
-      @fileChanged="importItem"
+
+    <m-add-fixed-asset-group
+      ref="addFixedAssetGroup"
+      @added="onAdded"
     />
   </div>
 </template>
@@ -129,11 +92,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterItem', ['items', 'pagination']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('masterFixedAssetGroup', ['groups', 'pagination'])
   },
   created () {
-    this.search()
+    this.getGroupRequest()
     this.$nextTick(() => {
       this.$refs.searchText.setFocus()
     })
@@ -142,50 +104,39 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('masterItem', ['get']),
-    onAdded () {
-      this.search()
-    },
+    ...mapActions('masterFixedAssetGroup', {
+      getGroup: 'get'
+    }),
     updatePage (value) {
       this.currentPage = value
-      this.search()
+      this.getGroupRequest()
     },
-    search () {
+    getGroupRequest () {
       this.isLoading = true
-      this.get({
+      this.getGroup({
         params: {
-          page: this.currentPage,
-          limit: 20,
           sort_by: 'name',
           filter_like: {
-            code: this.searchText,
             name: this.searchText
           },
-          includes: 'account;units'
+          limit: 10,
+          page: this.currentPage
         }
-      }).then(response => {
+      }).then((response) => {
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
+        this.$notifications.error(error.message)
       })
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
       this.currentPage = 1
-      this.search()
+      this.getGroupRequest()
     }, 300),
-    importItem (file) {
-      if (this.authUser.branch != null) {
-        if (file.name.match(/.(xls|xlsx)$/i)) {
-          this.$refs.addItemImport.setValue(file)
-          this.$refs.addItemImport.open()
-        } else {
-          this.$notification.error('File not allowed (allowed extension: .xls, .xlsx)')
-        }
-      } else {
-        this.$notification.error('Please set as default branch')
-      }
+    onAdded (group) {
+      this.getGroupRequest()
     }
   }
 }

@@ -488,5 +488,25 @@
 	"wa daily report": "nilai pelaporan wa harian",
 	"amount received difference": "selisih nilai yang diterima",
 	"if kpi 100%": "jika kpi 100%",
-	"allowance": "allowance"
+	"allowance": "allowance",
+	"fixed asset": "aset tetap",
+	"add fixed asset": "tambah aset tetap",
+	"edit fixed asset": "ubah aset tetap",
+	"fixed asset group": "grup aset tetap",	
+	"add fixed asset group": "tambah grup aset tetap",	
+	"edit fixed asset group": "ubah grup aset tetap",	
+	"create fixed asset helper - chart of account": "Pilih akun jurnal untuk aset ini, sehingga semua jurnal yang terjadi saat pembelian, penjuallan dan penggunaan barang akan otomatis terjurnal pada akun yang dipilih",
+	"fixed asset account": "Akun aset",
+	"fixed asset depreciation account": "akun penyusutan",
+	"fixed asset accumulation account": "akun akumulasi",
+	"depreciation method": "metode penyusutan",
+	"select accumulation chart of account": "pilih akun akumulasi",
+	"select depreciation chart of account": "pilih akun penyusutan",
+	"year": "tahun",
+	"month": "bulan",
+	"useful life": "masa penggunaan",
+	"salvage value": "nilai sisa",
+	"select fixed asset group": "pilih grup aset tetap",
+	"create fixed asset helper - group": "Grup berguna untuk mempermudah pengelompokan aset tetap dalam laporan maupun saat pencarian data."
+
 }

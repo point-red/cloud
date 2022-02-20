@@ -69,10 +69,19 @@
             :is-form="false"
             :checked="checkPermissionRow(['create cut off', 'read cut off', 'update cut off', 'delete cut off'], permissions)"
             :description="''"
-            @click.native="togglePermissionRow(['create cut off', 'read cut off', 'update cut off', 'delete cut off'], permissions)"
+            @click.native="togglePermissionRow(['approve cut off', 'create cut off', 'read cut off', 'update cut off', 'delete cut off'], permissions)"
           />
         </td>
         <td><b>{{ $t('cut off') | uppercase }}</b></td>
+        <td>
+          <p-form-check-box
+            ref="approve cut off"
+            :is-form="false"
+            :checked="$rolePermission.has('approve cut off', permissions)"
+            :description="'approve' | uppercase"
+            @click.native="togglePermission('approve cut off')"
+          />
+        </td>
         <td>
           <p-form-check-box
             ref="create cut off"

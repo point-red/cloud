@@ -1,55 +1,21 @@
 import api from '@/api'
 
-const url = '/master/items'
+const url = '/master/fixed-asset-groups'
 
 const state = {
-  item: {
-    code: '',
-    name: '',
-    stock: null,
-    units: [
-      {
-        label: '',
-        name: '',
-        converter: null
-      }
-    ],
-    account: [
-      {
-        number: '',
-        name: ''
-      }
-    ]
+  group: {
+    name: ''
   },
-  items: [
-    {
-      code: '',
-      name: '',
-      stock: null,
-      units: [
-        {
-          label: '',
-          name: '',
-          converter: null
-        }
-      ],
-      account: [
-        {
-          number: '',
-          name: ''
-        }
-      ]
-    }
-  ],
+  groups: [],
   pagination: {}
 }
 
 const getters = {
-  item: state => {
-    return state.item
+  group: state => {
+    return state.group
   },
-  items: state => {
-    return state.items
+  groups: state => {
+    return state.groups
   },
   pagination: state => {
     return state.pagination
@@ -58,20 +24,20 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.items = payload.data
+    state.groups = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.item = payload.data
+    state.group = payload.data
   },
   'CREATE' (state, payload) {
-    state.item = payload
+    state.group = payload
   },
   'UPDATE' (state, payload) {
-    state.item = payload
+    state.group = payload
   },
   'DELETE' (state, payload) {
-    state.item = {}
+    state.group = {}
   }
 }
 
@@ -101,16 +67,6 @@ const actions = {
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url, payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  import (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/import', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

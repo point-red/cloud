@@ -49,7 +49,7 @@
           id="customer"
           v-model="form.customer"
           name="customer"
-          :label="$t('customer')"
+          :label="$t('customer' + '*')"
           :disabled="isSaving"
           :errors="form.errors.get('customer')"
           @errors="form.errors.set('customer', null)"
@@ -65,7 +65,7 @@
           </div>
         </p-form-row>
 
-        <p-form-row :label="'group'">
+        <p-form-row :label="'customer group' + '*'">
           <div
             slot="body"
             class="col-lg-9"
@@ -87,52 +87,14 @@
             slot="body"
             class="col-lg-9"
           >
-            <gmap-autocomplete
-              :value="description"
-              :disabled="true"
-              class="form-control"
-              @place_changed="setPlace"
-              @keypress.enter.prevent
+            <iframe
+              width="100%"
+              height="200"
+              style="border:0"
+              loading="lazy"
+              allowfullscreen
+              :src="`https://www.google.com/maps/embed/v1/view?center=${center.lat},${center.lng}&zoom=15&key=${gmapApiKey}`"
             />
-
-            <gmap-map
-              id="map"
-              ref="map"
-              :center="center"
-              :zoom="15"
-              :options="{
-                disableDefaultUI: true,
-                styles: [
-                  {
-                    featureType: 'poi.business',
-                    stylers: [
-                      {
-                        visibility: 'off'
-                      }
-                    ]
-                  },
-                  {
-                    featureType: 'poi.park',
-                    elementType: 'labels.text',
-                    stylers: [
-                      {
-                        visibility: 'off'
-                      }
-                    ]
-                  }
-                ]
-              }"
-              style="width: 100%; height: 200px"
-            >
-              <gmap-marker
-                v-for="(m, index) in markers"
-                :key="index"
-                :position="center = m.position"
-                :clickable="true"
-                :draggable="true"
-                @click="center=m.position"
-              />
-            </gmap-map>
           </div>
         </p-form-row>
 
@@ -140,7 +102,7 @@
           id="address"
           v-model="form.address"
           name="address"
-          :label="$t('address')"
+          :label="$t('address') + '*'"
           :placeholder="$t('address')"
           :disabled="isSaving"
           :errors="form.errors.get('address')"
@@ -171,7 +133,7 @@
           id="phone"
           v-model="form.phone"
           name="phone"
-          :label="$t('phone')"
+          :label="$t('phone') + '*'"
           :disabled="isSaving"
           :errors="form.errors.get('phone')"
           @errors="form.errors.set('phone', null)"
@@ -180,7 +142,7 @@
         <p-form-row
           id="similar-product"
           name="similar_product"
-          :label="$t('similar product') | titlecase"
+          :label="$t('similar product') + '*' | titlecase"
         >
           <div
             slot="body"
@@ -201,7 +163,7 @@
         <p-form-row
           id="interest"
           name="interest"
-          :label="$t('interest reason') | titlecase"
+          :label="$t('interest reason') + '*' | titlecase"
         >
           <div
             slot="body"
@@ -222,7 +184,7 @@
         <p-form-row
           id="no-interest"
           name="no_interest"
-          :label="$t('no interest reason')"
+          :label="$t('no interest reason') + '*'"
         >
           <div
             slot="body"
@@ -273,78 +235,6 @@
             />
           </div>
         </p-form-row>
-
-        <p-table>
-          <tr slot="p-head">
-            <th>Item</th>
-            <th>Jumlah</th>
-            <th>Harga Satuan</th>
-            <th>Total</th>
-          </tr>
-          <tr
-            v-for="(row, index) in form.items"
-            slot="p-body"
-            :key="'row-' + index"
-          >
-            <td>
-              {{ row }}
-              <span
-                class="select-link"
-                @click="$refs.item.open(index)"
-              >
-                {{ row.item_label || $t('select') | uppercase }}
-              </span>
-            </td>
-            <td>
-              <p-quantity
-                :id="'quantity' + index"
-                v-model="row.quantity"
-                :name="'quantity' + index"
-                :item-id="row.item_id"
-                :units="row.units"
-                :unit="{
-                  name: row.unit,
-                  label: row.unit,
-                  converter: row.converter
-                }"
-                :max="row.quantity_pending * 1"
-                :readonly="onClickUnit(row)"
-                @choosen="chooseUnit($event, row)"
-                @click.native="onClickQuantity(row, index)"
-                @keyup.native="calculate"
-              />
-            </td>
-            <td>
-              <p-form-number
-                :id="'price' + index"
-                v-model="row.price"
-                :name="'price' + index"
-                :disabled="row.item_id == null"
-                @keyup.native="calculate"
-              />
-            </td>
-            <td>
-              <p-form-number
-                :id="'total' + index"
-                v-model="row.total"
-                :name="'total' + index"
-                :disabled="true"
-              />
-            </td>
-          </tr>
-          <tr slot="p-body">
-            <td />
-            <td />
-            <td>Total</td>
-            <td>
-              <p-form-number
-                v-model="form.total_price"
-                :readonly="true"
-                :is-text-right="true"
-              />
-            </td>
-          </tr>
-        </p-table>
 
         <hr>
 
@@ -437,6 +327,77 @@
           </div>
         </p-form-row>
 
+        <p-table>
+          <tr slot="p-head">
+            <th>Item</th>
+            <th>Jumlah</th>
+            <th>Harga Satuan</th>
+            <th>Total</th>
+          </tr>
+          <tr
+            v-for="(row, index) in form.items"
+            slot="p-body"
+            :key="'row-' + index"
+          >
+            <td>
+              <span
+                class="select-link"
+                @click="$refs.item.open(index)"
+              >
+                {{ row.item_label || $t('select') | uppercase }}
+              </span>
+            </td>
+            <td>
+              <p-quantity
+                :id="'quantity' + index"
+                v-model="row.quantity"
+                :name="'quantity' + index"
+                :item-id="row.item_id"
+                :units="row.units"
+                :unit="{
+                  name: row.unit,
+                  label: row.unit,
+                  converter: row.converter
+                }"
+                :max="row.quantity_pending * 1"
+                :readonly="onClickUnit(row)"
+                @choosen="chooseUnit($event, row)"
+                @click.native="onClickQuantity(row, index)"
+                @keyup.native="calculate"
+              />
+            </td>
+            <td>
+              <p-form-number
+                :id="'price' + index"
+                v-model="row.price"
+                :name="'price' + index"
+                :disabled="row.item_id == null"
+                @keyup.native="calculate"
+              />
+            </td>
+            <td>
+              <p-form-number
+                :id="'total' + index"
+                v-model="row.total"
+                :name="'total' + index"
+                :disabled="true"
+              />
+            </td>
+          </tr>
+          <tr slot="p-body">
+            <td />
+            <td />
+            <td>Total</td>
+            <td>
+              <p-form-number
+                v-model="form.total_price"
+                :readonly="true"
+                :is-text-right="true"
+              />
+            </td>
+          </tr>
+        </p-table>
+
         <hr>
 
         <div class="form-group row">
@@ -504,6 +465,7 @@ import MMInterestReason from './MMInterestReason'
 import MMNoInterestReason from './MMNoInterestReason'
 import MMSimilarProduct from './MMSimilarProduct'
 import { mapActions, mapGetters } from 'vuex'
+import axios from 'axios'
 
 export default {
   components: {
@@ -517,6 +479,7 @@ export default {
   },
   data () {
     return {
+      gmapApiKey: process.env.VUE_APP_GMAP_KEY,
       isLoading: false,
       loadingMessage: 'Loading...',
       isSaving: false,
@@ -553,7 +516,6 @@ export default {
         { position: { lat: 10.0, lng: 10.0 } }
       ],
       addressComponent: {},
-      getMap: this.$root.mapping,
       description: '',
       latLng: {},
       place: null
@@ -562,10 +524,10 @@ export default {
   computed: {
     ...mapGetters('auth', ['authUser'])
   },
-  mounted () {
+  async mounted () {
     this.isLoading = false
     this.loadingMessage = 'Searching current location'
-    this.getLocation()
+    await this.getLocation()
   },
   created () {
     this.addItemRow()
@@ -582,6 +544,9 @@ export default {
       this.form.warehouse_id = option.id
     },
     onClickQuantity (row, index) {
+      if (this.form.payment_method == 'sell-out' || this.form.payment_method == 'taking-order') {
+        return
+      }
       if (row.require_expiry_date == 1 || row.require_production_number == 1) {
         row.warehouse_id = this.warehouseId
         row.index = index
@@ -589,7 +554,10 @@ export default {
       }
     },
     onClickUnit (row) {
-      console.log(row)
+      if (this.form.payment_method == 'sell-out' || this.form.payment_method == 'taking-order') {
+        return false
+      }
+
       if (row.item || row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
         return true
       }
@@ -606,10 +574,30 @@ export default {
       this.form.items[e.index].unit = e.unit
       this.form.items[e.index].converter = e.converter
     },
+    async updateAddress () {
+      const res = await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${this.center.lat},${this.center.lng}&sensor=false&key=${this.gmapApiKey}`)
+      console.log(res)
+      if (res.status == 200 && res.data && res.data.results[0]) {
+        this.addressComponent = res.data.results[0]
+        this.setDescription(this.addressComponent.formatted_address)
+        this.form.address = this.addressComponent.formatted_address
+        this.addressComponent.address_components.forEach(component => {
+          if (component.types) {
+            component.types.forEach(types => {
+              if (types == 'administrative_area_level_3') {
+                this.form.district = component.long_name
+              } else if (types == 'administrative_area_level_4') {
+                this.form.sub_district = component.long_name
+              }
+            })
+          }
+        })
+      }
+    },
     onCaptured (value) {
       this.form.image = value
     },
-    getLocation () {
+    async getLocation () {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function (position) {
           const pos = {
@@ -622,13 +610,7 @@ export default {
           this.form.longitude = pos.lng
           this.markers[0].position.lat = pos.lat
           this.markers[0].position.lng = pos.lng
-          this.$refs.map.$mapPromise.then(() => {
-            this.isLoading = false
-            // eslint-disable-next-line no-undef
-            this.geocodeLatLng(new google.maps.Geocoder(), pos, google.maps.InfoWindow)
-          }).catch(error => {
-            this.isLoading = false
-          })
+          this.updateAddress()
         }.bind(this))
       } else {
         this.loadingMessage = 'Geolocation not available, please update your browser or using another browser'
@@ -641,6 +623,10 @@ export default {
       })
     },
     chooseCustomer (option) {
+      if (option.groups.length >= 1) {
+        this.form.group_id = option.groups[0].id
+        this.form.group_name = option.groups[0].name
+      }
       this.form.customer_id = option.id
       this.form.customer_name = option.name
     },
@@ -652,50 +638,6 @@ export default {
     setDescription (description) {
       this.description = description
     },
-    setPlace (place) {
-      this.center.lat = place.geometry.location.lat()
-      this.center.lng = place.geometry.location.lng()
-      this.markers[0].position.lat = place.geometry.location.lat()
-      this.markers[0].position.lng = place.geometry.location.lng()
-      this.addressComponent = place
-      this.setDescription(this.addressComponent.formatted_address)
-      this.form.address = this.addressComponent.formatted_address
-      this.form.district = ''
-      this.form.sub_district = ''
-      this.addressComponent.address_components.forEach(component => {
-        if (component.types) {
-          component.types.forEach(types => {
-            if (types == 'administrative_area_level_3') {
-              this.form.district = component.long_name
-            } else if (types == 'administrative_area_level_4') {
-              this.form.sub_district = component.long_name
-            }
-          })
-        }
-      })
-    },
-    geocodeLatLng (geocoder, map, infowindow) {
-      var self = this
-      geocoder.geocode({ location: this.center }, function (results, status) {
-        if (status == 'OK') {
-          self.addressComponent = results[0]
-          self.setDescription(self.addressComponent.formatted_address)
-          self.form.address = self.addressComponent.formatted_address
-          self.addressComponent.address_components.forEach(component => {
-            if (component.types) {
-              component.types.forEach(types => {
-                if (types == 'administrative_area_level_3') {
-                  self.form.district = component.long_name
-                } else if (types == 'administrative_area_level_4') {
-                  self.form.sub_district = component.long_name
-                }
-              })
-            }
-          })
-        }
-      })
-    },
-    // [End] Google Map
     addItemRow () {
       this.form.items.push({
         item_id: null,
@@ -792,7 +734,7 @@ export default {
           this.isSaving = false
           this.$notification.success('Create success')
           this.$store.dispatch('accountRewardPoint/get')
-          // this.$router.push('/plugin/pin-point/sales-visitation-form')
+          this.$router.push('/plugin/pin-point/sales-visitation-form')
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)

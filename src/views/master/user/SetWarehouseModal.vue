@@ -81,7 +81,7 @@ export default {
     getUserRequest () {
       this.getUser({
         params: {
-          includes: 'roles;warehouses'
+          includes: 'roles;branches;warehouses'
         }
       })
     },

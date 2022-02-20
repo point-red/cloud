@@ -8,8 +8,10 @@
       key-field="id"
       show-field="label"
       position="left"
+      :disabled="disabled"
       :multiple="multiple"
       :max-selected="maxSelected"
+      :required="required"
     />
   </div>
 </template>
@@ -17,6 +19,10 @@
 <script>
 export default {
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     keyField: {
       type: String,
       default: 'id'
@@ -44,6 +50,10 @@ export default {
     maxSelected: {
       type: Number,
       default: 0 // 0 = unlimited
+    },
+    required: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -90,5 +100,8 @@ export default {
 <style>
 .v-dropdown-container {
   z-index: 10950 !important;
+}
+.sm-default-btn.sm-default-btn--disabled {
+  color: #606061;
 }
 </style>

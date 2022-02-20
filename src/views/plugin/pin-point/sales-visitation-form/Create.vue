@@ -515,7 +515,7 @@ export default {
   },
   data () {
     return {
-      mapboxApiKey: process.env.VUE_APP_MAPBOX_APIKEY,
+      gmapApiKey: process.env.VUE_APP_GMAP_KEY,
       isLoading: false,
       loadingMessage: 'Loading...',
       isSaving: false,
@@ -552,9 +552,7 @@ export default {
         { position: { lat: 10.0, lng: 10.0 } }
       ],
       addressComponent: {},
-      getMap: this.$root.mapping,
       description: '',
-      latLng: {},
       place: null
     }
   },

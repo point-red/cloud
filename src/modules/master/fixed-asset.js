@@ -1,55 +1,63 @@
 import api from '@/api'
 
-const url = '/master/items'
+const url = '/master/fixed-assets'
 
 const state = {
-  item: {
+  fixedAsset: {
     code: '',
     name: '',
-    stock: null,
-    units: [
-      {
-        label: '',
-        name: '',
-        converter: null
-      }
-    ],
-    account: [
-      {
-        number: '',
-        name: ''
-      }
-    ]
+    fixed_asset_group_id: null,
+    useful_life_year: null,
+    salvage_value: null,
+    account: {
+      number: '',
+      name: '',
+      alias: ''
+    },
+    depreciation_account: {
+      number: '',
+      name: '',
+      alias: ''
+    },
+    accummulation_account: {
+      number: '',
+      name: '',
+      alias: ''
+    }
   },
-  items: [
+  fixedAssets: [
     {
       code: '',
       name: '',
-      stock: null,
-      units: [
-        {
-          label: '',
-          name: '',
-          converter: null
-        }
-      ],
-      account: [
-        {
-          number: '',
-          name: ''
-        }
-      ]
+      fixed_asset_group_id: null,
+      useful_life_year: null,
+      salvage_value: null,
+      account: {
+        number: '',
+        name: '',
+        alias: ''
+      },
+      depreciation_account: {
+        number: '',
+        name: '',
+        alias: ''
+      },
+      accummulation_account: {
+        number: '',
+        name: '',
+        alias: ''
+      }
     }
   ],
   pagination: {}
 }
 
 const getters = {
-  item: state => {
-    return state.item
+  fixedAsset: state => {
+    return state.fixedAsset
   },
-  items: state => {
-    return state.items
+  fixedAssets: state => {
+    return state.fixedAssets
   },
   pagination: state => {
     return state.pagination
@@ -58,20 +66,20 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.items = payload.data
+    state.fixedAssets = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.item = payload.data
+    state.fixedAsset = payload.data
   },
   'CREATE' (state, payload) {
-    state.item = payload
+    state.fixedAsset = payload
   },
   'UPDATE' (state, payload) {
-    state.item = payload
+    state.fixedAsset = payload
   },
   'DELETE' (state, payload) {
-    state.item = {}
+    state.fixedAsset = {}
   }
 }
 
@@ -101,16 +109,6 @@ const actions = {
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url, payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  import (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/import', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

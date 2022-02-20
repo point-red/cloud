@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-master />
-      <span class="breadcrumb-item active">{{ $t('item') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('fixed asset') | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu />
@@ -11,20 +11,10 @@
       <p-block>
         <div class="input-group block">
           <a
-            v-if="$permission.has('create item')"
+            v-if="$permission.has('create fixed asset')"
             href="javascript:void(0)"
             class="input-group-prepend"
-            @click="$refs.fileInputHidden.click()"
-          >
-            <span class="input-group-text">
-              <i class="fa fa-upload" />
-            </span>
-          </a>
-          <a
-            v-if="$permission.has('create item')"
-            href="javascript:void(0)"
-            class="input-group-prepend"
-            @click="$refs.addItem.open()"
+            @click="$refs.addFixedAsset.open()"
           >
             <span class="input-group-text">
               <i class="fa fa-plus" />
@@ -50,33 +40,47 @@
               <th>Code</th>
               <th>Name</th>
               <th>Account</th>
-              <th>Stock</th>
+              <th>Depreciation Account</th>
+              <th>Accumulation Account</th>
+              <th>Useful Life (year)</th>
+              <th>Salvage Value</th>
             </tr>
             <tr
-              v-for="(item, index) in items"
-              :key="item.id"
+              v-for="(fixedAsset, index) in fixedAssets"
+              :key="fixedAsset.id"
               slot="p-body"
             >
               <th>{{ ++index }}</th>
               <td>
-                <router-link :to="{ name: 'item.show', params: { id: item.id }}">
-                  {{ item.code }}
+                <router-link :to="{ name: 'fixedAsset.show', params: { id: fixedAsset.id }}">
+                  {{ fixedAsset.code }}
                 </router-link>
               </td>
               <td>
-                <router-link :to="{ name: 'item.show', params: { id: item.id }}">
-                  {{ item.name }}
+                <router-link :to="{ name: 'fixedAsset.show', params: { id: fixedAsset.id }}">
+                  {{ fixedAsset.name }}
                 </router-link>
               </td>
               <td>
-                <template v-if="item.account">
-                  {{ item.account.number }} - {{ item.account.alias }}
+                <template v-if="fixedAsset.account">
+                  {{ fixedAsset.account.number }} - {{ fixedAsset.account.alias }}
                 </template>
               </td>
               <td>
-                <template v-if="item.units.length">
-                  {{ item.stock | numberFormat }} {{ item.units[0].label }}
+                <template v-if="fixedAsset.depreciation_account">
+                  {{ fixedAsset.depreciation_account.number }} - {{ fixedAsset.depreciation_account.alias }}
                 </template>
+              </td>
+              <td>
+                <template v-if="fixedAsset.accumulation_account">
+                  {{ fixedAsset.accumulation_account.number }} - {{ fixedAsset.accumulation_account.alias }}
+                </template>
+              </td>
+              <td>
+                {{ fixedAsset.useful_life_year | numberFormat }}
+              </td>
+              <td>
+                {{ fixedAsset.salvage_value | numberFormat }}
               </td>
             </tr>
           </point-table>
@@ -88,19 +92,9 @@
         />
       </p-block>
     </div>
-    <m-add-item
-      ref="addItem"
-      @closed="onAdded"
-    />
-    <m-add-item-import
-      ref="addItemImport"
-      @imported="onAdded"
-    />
-    <p-form-file-hidden
-      id="file"
-      ref="fileInputHidden"
-      name="file"
-      @fileChanged="importItem"
+    <m-add-fixed-asset
+      ref="addFixedAsset"
+      @added="onAdded"
     />
   </div>
 </template>
@@ -129,8 +123,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('masterItem', ['items', 'pagination']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('masterFixedAsset', ['fixedAssets', 'pagination'])
   },
   created () {
     this.search()
@@ -142,7 +135,7 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('masterItem', ['get']),
+    ...mapActions('masterFixedAsset', ['get']),
     onAdded () {
       this.search()
     },
@@ -155,13 +148,13 @@ export default {
       this.get({
         params: {
           page: this.currentPage,
-          limit: 20,
+          limit: 10,
           sort_by: 'name',
           filter_like: {
             code: this.searchText,
             name: this.searchText
           },
-          includes: 'account;units'
+          includes: 'groups;account;accumulationAccount;depreciationAccount'
         }
       }).then(response => {
         this.isLoading = false
@@ -174,19 +167,7 @@ export default {
       this.searchText = value
       this.currentPage = 1
       this.search()
-    }, 300),
-    importItem (file) {
-      if (this.authUser.branch != null) {
-        if (file.name.match(/.(xls|xlsx)$/i)) {
-          this.$refs.addItemImport.setValue(file)
-          this.$refs.addItemImport.open()
-        } else {
-          this.$notification.error('File not allowed (allowed extension: .xls, .xlsx)')
-        }
-      } else {
-        this.$notification.error('Please set as default branch')
-      }
-    }
+    }, 300)
   }
 }
 </script>
