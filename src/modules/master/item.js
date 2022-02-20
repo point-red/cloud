@@ -118,6 +118,20 @@ const actions = {
         })
     })
   },
+  excelExport () {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/exportToExcel',
+        { responseType: 'arraybuffer' })
+        .then(response => {
+          var fileURL = window.URL.createObjectURL(new Blob([response]))
+          var fileLink = document.createElement('a')
+          fileLink.href = fileURL
+          fileLink.setAttribute('download', 'test.xlsx')
+          document.body.appendChild(fileLink)
+          fileLink.click()
+        })
+    })
+  },
   update (context, payload) {
     return new Promise((resolve, reject) => {
       api.patch(url + '/' + payload.id, payload)

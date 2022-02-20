@@ -24,6 +24,16 @@
             v-if="$permission.has('create item')"
             href="javascript:void(0)"
             class="input-group-prepend"
+            @click="downloadExcel"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-download" />
+            </span>
+          </a>
+          <a
+            v-if="$permission.has('create item')"
+            href="javascript:void(0)"
+            class="input-group-prepend"
             @click="$refs.addItem.open()"
           >
             <span class="input-group-text">
@@ -143,6 +153,7 @@ export default {
   },
   methods: {
     ...mapActions('masterItem', ['get']),
+    ...mapActions('masterItem', ['excelExport']),
     onAdded () {
       this.search()
     },
@@ -186,6 +197,9 @@ export default {
       } else {
         this.$notification.error('Please set as default branch')
       }
+    },
+    downloadExcel: function () {
+      this.excelExport()
     }
   }
 }
