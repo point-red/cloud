@@ -73,7 +73,7 @@
           />
         </td>
         <td><b>{{ $t('cut off') | uppercase }}</b></td>
-        <td>
+        <!-- <td>
           <p-form-check-box
             ref="approve cut off"
             :is-form="false"
@@ -81,7 +81,7 @@
             :description="'approve' | uppercase"
             @click.native="togglePermission('approve cut off')"
           />
-        </td>
+        </td> -->
         <td>
           <p-form-check-box
             ref="create cut off"
@@ -100,7 +100,7 @@
             @click.native="togglePermission('read cut off')"
           />
         </td>
-        <td>
+        <!-- <td>
           <p-form-check-box
             ref="update cut off"
             :is-form="false"
@@ -117,7 +117,7 @@
             :description="'delete' | uppercase"
             @click.native="togglePermission('delete cut off')"
           />
-        </td>
+        </td> -->
       </tr>
       <tr slot="p-body">
         <td>

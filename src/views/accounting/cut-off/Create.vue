@@ -81,10 +81,10 @@
                         />
                       </span>
                       <span
-                        v-if="!isDisabledDebit(row) && errors && Object.keys(errors).reduce((prev, key) => prev || key.indexOf('details.'+index+'.items') > -1, false)"
+                        v-if="!isDisabledDebit(row) && errors && Object.keys(errors).reduce((prev, key) => prev || key.indexOf('details.'+index) > -1, false)"
                         class="text-danger"
                       >
-                        {{ $t('check again') }}
+                        {{ errors['details.'+index] }}
                       </span>
                     </td>
                     <td class="align-top">
@@ -99,10 +99,10 @@
                         />
                       </span>
                       <span
-                        v-if="!isDisabledCredit(row) && errors && Object.keys(errors).reduce((prev, key) => prev || key.indexOf('details.'+index+'.items') > -1, false)"
+                        v-if="!isDisabledCredit(row) && errors && Object.keys(errors).reduce((prev, key) => prev || key.indexOf('details.'+index) > -1, false)"
                         class="text-danger"
                       >
-                        {{ $t('check again') }}
+                        {{ errors['details.'+index] }}
                       </span>
                     </td>
                   </tr>
@@ -274,7 +274,7 @@ export default {
     },
     recalculate () {
       this.form.details.map(detail => {
-        if (!detail.chart_of_account_id) return detail
+        if (!detail.chart_of_account_id || !detail.chart_of_account_sub_ledger) return detail
 
         if (['CUSTOMER', 'SUPPLIER', 'EXPEDITION', 'EMPLOYEE'].indexOf(detail.chart_of_account_sub_ledger.trim()) > -1) {
           detail.debit = this.sumPayment(detail, 'DEBIT')
@@ -319,7 +319,7 @@ export default {
       })
     },
     showModal (index, row, isDisabled) {
-      if (isDisabled) return
+      if (isDisabled || !row.chart_of_account_sub_ledger) return
       if (['CUSTOMER', 'SUPPLIER', 'EXPEDITION', 'EMPLOYEE'].indexOf(row.chart_of_account_sub_ledger.trim()) > -1) {
         this.$refs.paymentRef.id = index
         this.$refs.paymentRef.errors = this.errors

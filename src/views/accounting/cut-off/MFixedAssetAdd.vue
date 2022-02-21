@@ -125,7 +125,7 @@
                   :id="'accumulation-' + i"
                   v-model="row.accumulation"
                   :name="'accumulation-' + i"
-                  :disabled="!row.object_id"
+                  :disabled="!row.object_id || row.depreciation_method !== 'STRAIGHT_LINE'"
                   @keyup.native="calculate(row, i)"
                 />
                 <span
@@ -249,6 +249,10 @@ export default {
       this.items[fixedAsset.index].fixedAsset = fixedAsset
       this.items[fixedAsset.index].object_id = fixedAsset.id
       this.items[fixedAsset.index].name = fixedAsset.name
+      this.items[fixedAsset.index].depreciation_method = fixedAsset.depreciation_method
+      if (fixedAsset.depreciation_method !== 'STRAIGHT_LINE') {
+        this.items[fixedAsset.index].accumulation = 0
+      }
       this.addItemRow()
     },
     onChoosenSupplier (supplier) {

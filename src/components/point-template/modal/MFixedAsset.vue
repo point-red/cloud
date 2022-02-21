@@ -142,7 +142,8 @@ export default {
         response.data.map((key, value) => {
           this.options.push({
             id: key.id,
-            label: key.name
+            label: key.name,
+            depreciation_method: key.depreciation_method
           })
 
           if (this.value == key.id) {

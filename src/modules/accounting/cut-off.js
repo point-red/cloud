@@ -11,7 +11,13 @@ const state = {
     id: null
   },
   cutOffs: [],
-  cutOffAccounts: []
+  cutOffAccounts: [],
+  pagination: {},
+  total: {
+    debit: 0,
+    credit: 0
+  },
+  download: null
 }
 
 const getters = {
@@ -23,18 +29,35 @@ const getters = {
   },
   cutOffAccounts: state => {
     return state.cutOffAccounts
+  },
+  total: state => {
+    return state.total
+  },
+  download: state => {
+    return state.download
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.cutOffs = payload.data
+    state.pagination = payload.meta
   },
   'FETCH_ARRAY1' (state, payload) {
     state.cutOffAccounts = payload.data
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     state.cutOff = payload.data
+  },
+  'FETCH_TOTAL' (state, payload) {
+    state.total = payload
+  },
+  'DOWNLOAD' (state, payload) {
+    state.download = payload
   },
   'CREATE' (state, payload) {
     state.cutOff = payload
@@ -64,6 +87,28 @@ const actions = {
       api.get(url + '/account', payload)
         .then(response => {
           commit('FETCH_ARRAY1', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  getDownload ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/account', payload)
+        .then(response => {
+          commit('DOWNLOAD', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  getTotal ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/total', payload)
+        .then(response => {
+          commit('FETCH_TOTAL', response)
           resolve(response)
         }).catch(error => {
           reject(error)

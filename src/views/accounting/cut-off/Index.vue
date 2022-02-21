@@ -11,6 +11,15 @@
         :header="false"
       >
         <div class="input-group block">
+          <a
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="doDownload"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-download" />
+            </span>
+          </a>
           <router-link
             v-if="$permission.has('create cut off')"
             to="/accounting/cut-off/create"
@@ -30,6 +39,10 @@
             @input="filterSearch"
           />
         </div>
+        <a
+          v-if="downloadUrl"
+          :href="downloadUrl"
+        >{{ $t('please download here') }}</a>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
@@ -63,12 +76,17 @@
                 >
                   <b>Total</b>
                 </td>
-                <td>{{ (cutOffAccounts.reduce((total, cutoff) => total + cutoff.debit, 0)) | numberFormat }}</td>
-                <td>{{ (cutOffAccounts.reduce((total, cutoff) => total + cutoff.credit, 0)) | numberFormat }}</td>
+                <td><b> {{ total.debit | numberFormat }} </b></td>
+                <td><b> {{ total.credit | numberFormat }} </b></td>
               </tr>
             </template>
           </point-table>
         </p-block-inner>
+        <p-pagination
+          :current-page="currentPage"
+          :last-page="lastPage"
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>
@@ -90,6 +108,7 @@ export default {
   data () {
     return {
       isLoading: false,
+      downloadUrl: null,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
@@ -99,13 +118,21 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('accountingCutOff', ['cutOffAccounts'])
+    ...mapGetters('accountingCutOff', ['cutOffAccounts', 'pagination', 'total', 'download'])
   },
   created () {
     this.getCutOffs()
+    this.getTotal()
+  },
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('accountingCutOff', ['getByAccount']),
+    ...mapActions('accountingCutOff', ['getByAccount', 'getTotal', 'getDownload']),
+    updatePage (value) {
+      this.currentPage = value
+      this.getCutOffs()
+    },
     getCutOffs () {
       this.isLoading = true
       this.getByAccount({
@@ -118,15 +145,33 @@ export default {
           filter_like: {
             'form.number': this.searchText
           },
-          limit: 10,
+          limit: this.limit,
           includes: 'chartOfAccount',
           page: this.currentPage
         }
       }).then((response) => {
-        console.log(this.cutfOffs)
         this.isLoading = false
       }, (error) => {
         this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    },
+    doDownload () {
+      this.getDownload({
+        params: {
+          isDownload: 'true',
+          join: 'account',
+          fields: 'cutoff_accounts.id;cutoff_id;chart_of_account_id;raw:sum(debit) as debit;raw:sum(credit) as credit;cutoff_accounts.created_at;cutoff_accounts.updated_at',
+          sort_by: 'account.number',
+          group_by: 'chart_of_account_id',
+          filter_like: {
+            'form.number': this.searchText
+          },
+          includes: 'chartOfAccount'
+        }
+      }).then((response) => {
+        this.downloadUrl = response.data.url
+      }, (error) => {
         this.$notification.error(error.message)
       })
     },
