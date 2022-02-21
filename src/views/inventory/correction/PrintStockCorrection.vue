@@ -109,13 +109,13 @@
               >
                 <td>{{ row.item.name }}</td>
                 <td class="text-right">
-                  {{ row.initialStock | numberFormat }}
+                  {{ row.initialStock | numberFormat }} {{ row.unit }}
                 </td>
                 <td class="text-right">
-                  {{ row.quantity | numberFormat }}
+                  {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
                 <td class="text-left">
-                  {{ row.finalStock | numberFormat }}
+                  {{ row.finalStock | numberFormat }} {{ row.unit }}
                 </td>
               </tr>
             </table>
