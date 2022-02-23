@@ -32,7 +32,7 @@
               <template
                 v-for="(row, i) in cutOff.cut_off_details"
               >
-                <template v-if="row.cutoffable && row.cutoffable.dna">
+                <template v-if="row.cutoffable && row.cutoffable.dna && row.cutoffable.dna.length > 0">
                   <tr
                     v-for="(dna, ii) in row.cutoffable.dna"
                     :key="ii"
@@ -74,10 +74,10 @@
                       {{ row.cutoffable && row.cutoffable.item && row.cutoffable.item.name }}
                     </td>
                     <td>
-                      {{ row.cutoffable && row.cutoffable.dna && row.cutoffable.dna.production_number }}
+                      {{ row.cutoffable && row.cutoffable.dna && row.cutoffable.dna.production_number || "-" }}
                     </td>
                     <td>
-                      {{ row.cutoffable && row.cutoffable.dna && row.cutoffable.dna.expiry_date }}
+                      {{ row.cutoffable && row.cutoffable.dna && row.cutoffable.dna.expiry_date || "-" }}
                     </td>
                     <td>
                       {{ row.cutoffable.quantity | numberFormat }} {{ row.cutoffable.unit }}
