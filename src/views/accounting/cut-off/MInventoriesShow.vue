@@ -38,7 +38,7 @@
                     :key="ii"
                   >
                     <td>
-                      {{ row.cutoffable && row.cutoffable.item && row.cutoffable.item.groups && row.cutoffable.item.groups[0].name }}
+                      {{ row.cutoffable && row.cutoffable.item && row.cutoffable.item.groups && row.cutoffable.item.groups[0] && row.cutoffable.item.groups[0].name }}
                     </td>
                     <td>
                       {{ row.cutoffable && row.cutoffable.warehouse && row.cutoffable.warehouse.name }}
@@ -65,7 +65,7 @@
                     :key="i"
                   >
                     <td>
-                      {{ row.cutoffable && row.cutoffable.item && row.cutoffable.item.groups && row.cutoffable.item.groups[0].name }}
+                      {{ row.cutoffable && row.cutoffable.item && row.cutoffable.item.groups && row.cutoffable.item.groups[0] && row.cutoffable.item.groups[0].name }}
                     </td>
                     <td>
                       {{ row.cutoffable && row.cutoffable.warehouse && row.cutoffable.warehouse.name }}
@@ -74,7 +74,7 @@
                       {{ row.cutoffable && row.cutoffable.item && row.cutoffable.item.name }}
                     </td>
                     <td>
-                      {{ row.cutoffable && row.cutoffable.dna && row.cutoffable.dna.production_number || "-" }}
+                      -
                     </td>
                     <td>
                       {{ row.cutoffable && row.cutoffable.dna && row.cutoffable.dna.expiry_date || "-" }}
