@@ -137,13 +137,14 @@ export default {
       this.isLoading = true
       this.getByAccount({
         params: {
-          join: 'account',
+          join: 'account,cutoff.form',
           fields: 'cutoff_accounts.id;cutoff_id;chart_of_account_id;raw:sum(debit) as debit;raw:sum(credit) as credit;cutoff_accounts.created_at;cutoff_accounts.updated_at',
           sort_by: 'account.number',
           group_by: 'chart_of_account_id',
           // filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
           filter_like: {
-            'form.number': this.searchText
+            'form.number': this.searchText,
+            'account.alias': this.searchText
           },
           limit: this.limit,
           includes: 'chartOfAccount',
