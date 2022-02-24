@@ -117,7 +117,7 @@ const actions = {
   },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/' + payload.id, payload)
+      api.get(url + '/account/' + payload.id, payload)
         .then(response => {
           commit('FETCH_OBJECT', response)
           resolve(response)

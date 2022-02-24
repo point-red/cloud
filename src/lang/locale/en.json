@@ -527,5 +527,6 @@
 	"account name": "account name",
 	"select asset": "select asset",
 	"check again": "check again",
-	"please download here": "download here, link will be expired after 24 hour"
+	"please download here": "download here, link will be expired after 24 hour",
+	"cutoff form warning": "please check your data before submitting this form"
 }

@@ -123,6 +123,11 @@
                 </template>
               </point-table>
               <div class="row mt-50">
+                <div class="col-sm-12">
+                  *) {{ $t('cutoff form warning') | capitalize }}
+                  <br>
+                  <br>
+                </div>
                 <div class="col-sm-8">
                   <textarea
                     v-model="form.notes"

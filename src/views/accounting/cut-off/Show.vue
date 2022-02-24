@@ -2,7 +2,16 @@
   <div>
     <breadcrumb>
       <breadcrumb-accounting />
-      <span class="breadcrumb-item active">{{ $t('cut off') | uppercase }}</span>
+      <span class="breadcrumb-item">
+        <router-link
+          to="/accounting/cut-off"
+          class="breadcrumb-item"
+        >{{ $t('cut off') | uppercase }}</router-link>
+      </span>
+      <span
+        v-if="chartOfAccount.chart_of_account"
+        class="breadcrumb-item active"
+      >{{ chartOfAccount.chart_of_account.alias | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
@@ -46,7 +55,8 @@
             <tr slot="p-head">
               <th>{{ $t('form date') | capitalize }}</th>
               <th>{{ $t('form number') | capitalize }}</th>
-              <th>{{ $t('amount') | capitalize }}</th>
+              <th>{{ $t('debit') | capitalize }}</th>
+              <th>{{ $t('credit') | capitalize }}</th>
               <th>{{ $t('notes') | capitalize }}</th>
               <th>{{ $t('created by') | capitalize }}</th>
             </tr>
@@ -64,7 +74,8 @@
                     {{ cutoff.cutoff && cutoff.cutoff.form.number }}
                   </span>
                 </td>
-                <td>{{ (cutoff.debit === 0 ? cutoff.credit : cutoff.debit) | numberFormat }}</td>
+                <td>{{ cutoff.debit | numberFormat }}</td>
+                <td>{{ cutoff.credit | numberFormat }}</td>
                 <td>{{ cutoff.cutoff && cutoff.cutoff.form.notes }}</td>
                 <td>{{ cutoff.cutoff && cutoff.cutoff.form.created_by.name }}</td>
               </tr>
@@ -72,7 +83,8 @@
                 <td colspan="2">
                   <b>Total</b>
                 </td>
-                <td>{{ (cutOffAccounts.reduce((total, cutoff) => total + (cutoff.debit === 0 ? cutoff.credit : cutoff.debit), 0)) | numberFormat }}</td>
+                <td>{{ cutOffAccounts.reduce((total, cutoff) => total + cutoff.debit, 0) | numberFormat }}</td>
+                <td>{{ cutOffAccounts.reduce((total, cutoff) => total + cutoff.credit, 0) | numberFormat }}</td>
                 <td />
                 <td />
               </tr>
@@ -157,7 +169,7 @@ export default {
       this.getCutOffs()
     }, 300),
     showDetail (cutoff) {
-      console.log(cutoff)
+      if (!cutoff.chart_of_account.sub_ledger) return false
       const subLedger = cutoff.chart_of_account.sub_ledger.trim()
       if (['CUSTOMER', 'SUPPLIER', 'EXPEDITION', 'EMPLOYEE'].indexOf(subLedger) > -1) {
         this.$refs.paymentRef.open(cutoff)
