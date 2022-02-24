@@ -299,10 +299,8 @@ export default {
       })
     },
     onDelete (reason) {
-      if (!reason) {
-        this.$notification.error('Delete reason is required')
-        return
-      }
+      if (!reason) return this.$notification.error('Delete reason is required')
+
       this.isDeleting = true
       this.delete({
         id: this.id,
@@ -326,14 +324,14 @@ export default {
         this.$notification.success('approve success')
         this.stockCorrectionRequest()
       }).catch(error => {
+        if (error.message) return this.$notification.error(error.message)
+
         this.$notification.error('Something error when approving the stock correction creation')
       })
     },
     onReject (reason) {
-      if (!reason) {
-        this.$notification.error('Reject reason is required')
-        return
-      }
+      if (!reason) return this.$notification.error('Reject reason is required')
+
       this.reject({
         id: this.id,
         reason: reason
@@ -341,6 +339,8 @@ export default {
         this.$notification.success('reject success')
         this.stockCorrectionRequest()
       }).catch(error => {
+        if (error.message) return this.$notification.error(error.message)
+
         this.$notification.error('Something error when rejecting the stock correction creation')
       })
     },
@@ -351,14 +351,14 @@ export default {
         this.$notification.success('cancellation approved')
         this.$router.push('/inventory/correction')
       }).catch(error => {
+        if (error.message) return this.$notification.error(error.message)
+
         this.$notification.error('Something error when approving the stock correction cancellation')
       })
     },
     onCancellationReject (reason) {
-      if (!reason) {
-        this.$notification.error('Reject reason is required')
-        return
-      }
+      if (!reason) return this.$notification.error('Reject reason is required')
+
       this.cancellationReject({
         id: this.id,
         reason: reason
@@ -366,6 +366,8 @@ export default {
         this.$notification.success('cancellation rejected')
         this.stockCorrectionRequest()
       }).catch(error => {
+        if (error.message) return this.$notification.error(error.message)
+
         this.$notification.error('Something error when rejecting the stock correction cancellation')
       })
     }

@@ -522,41 +522,8 @@ export default {
       }
     },
     updateDna (e) {
-      if (this.form.items[e.index].dna) {
-        e.dna.forEach((updateItem) => {
-          const updateDna = this.form.items[e.index].dna.find((dnaItem) => {
-            if (updateItem.production_number && updateItem.expiry_date) {
-              return dnaItem.item_id === updateItem.item_id &&
-                     dnaItem.production_number === updateItem.production_number &&
-                     dnaItem.expiry_date === updateItem.expiry_date
-            }
-            if (updateItem.production_number && !updateItem.expiry_date) {
-              return dnaItem.item_id === updateItem.item_id &&
-                     dnaItem.production_number === updateItem.production_number &&
-                     !dnaItem.expiry_date
-            }
-            if (!updateItem.production_number && updateItem.expiry_date) {
-              return dnaItem.item_id === updateItem.item_id &&
-                     !dnaItem.production_number &&
-                     dnaItem.expiry_date === updateItem.expiry_date
-            }
-            if (!updateItem.production_number && !updateItem.expiry_date) {
-              return dnaItem.item_id === updateItem.item_id &&
-                     !updateItem.production_number &&
-                     !dnaItem.expiry_date
-            }
-          })
-          updateDna.quantity = parseInt(updateItem.quantity)
-        })
-
-        const totalQuantity = this.form.items[e.index].dna.reduce((prev, current) => {
-          return prev + current.quantity
-        }, 0)
-        this.form.items[e.index].stock_correction = totalQuantity
-      } else {
-        this.form.items[e.index].dna = e.dna
-        this.form.items[e.index].stock_correction = e.quantity
-      }
+      this.form.items[e.index].dna = e.dna
+      this.form.items[e.index].stock_correction = e.quantity
     },
     onSubmit () {
       this.isSaving = true

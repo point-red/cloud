@@ -36,6 +36,13 @@
               </div>
             </template>
           </div>
+          <div v-else>
+            <div
+              class="form-status bg-secondary"
+            >
+              Unknown
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -75,16 +82,20 @@ export default {
       }
 
       let resource, projectName, approvalStatus
-      if (this.resourceType === 'SalesInvoice') {
-        ({ resource, projectName, approvalStatus } = await this.handleApprovalSalesInvoice(headers))
-      }
-      if (this.resourceType === 'StockCorrection') {
-        ({ resource, projectName, approvalStatus } = await this.handleApprovalStockCorrection(headers))
+      try {
+        if (this.resourceType === 'SalesInvoice') {
+          ({ resource, projectName, approvalStatus } = await this.handleApprovalSalesInvoice(headers))
+        }
+        if (this.resourceType === 'StockCorrection') {
+          ({ resource, projectName, approvalStatus } = await this.handleApprovalStockCorrection(headers))
+        }
+      } catch (error) {
+        if (error.data && error.data.message) { this.$notification.error(error.data.message) }
       }
 
       this.resource = resource
       this.projectName = projectName
-      this.approvalStatus = approvalStatus
+      this.approvalStatus = approvalStatus || 2
     },
     async handleApprovalSalesInvoice (headers) {
       if (this.crudType === 'create' || this.crudType === 'update') {
