@@ -53,7 +53,7 @@
 import axiosNode from '@/axiosNode'
 
 export default {
-  data: () => {
+  data () {
     return {
       crudType: '',
       action: '',
@@ -91,11 +91,21 @@ export default {
         }
       } catch (error) {
         if (error.data && error.data.message) { this.$notification.error(error.data.message) }
+        if (error.data && error.data.meta) {
+          const meta = error.data.meta
+          resource = {
+            form: {
+              ...(meta.formNumber ? { number: meta.formNumber } : {})
+            }
+          }
+          approvalStatus = meta.formStatus
+          projectName = meta.projectName
+        }
       }
 
       this.resource = resource
       this.projectName = projectName
-      this.approvalStatus = approvalStatus || 2
+      this.approvalStatus = approvalStatus !== undefined && approvalStatus !== null ? approvalStatus : 2
     },
     async handleApprovalSalesInvoice (headers) {
       if (this.crudType === 'create' || this.crudType === 'update') {
