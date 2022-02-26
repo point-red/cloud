@@ -34,13 +34,15 @@
               >
                 Pending
               </div>
+              <div
+                v-else
+                class="form-status bg-secondary"
+              >
+                Unknown
+              </div>
             </template>
-          </div>
-          <div v-else>
-            <div
-              class="form-status bg-secondary"
-            >
-              Unknown
+            <div class="m-0 mt-4 alert alert-danger">
+              {{ warningMessage }}
             </div>
           </div>
         </div>
@@ -61,7 +63,8 @@ export default {
       resourceType: '',
       resource: {},
       projectName: '',
-      approvalStatus: null
+      approvalStatus: null,
+      warningMessage: ''
     }
   },
   created () {
@@ -90,7 +93,12 @@ export default {
           ({ resource, projectName, approvalStatus } = await this.handleApprovalStockCorrection(headers))
         }
       } catch (error) {
-        if (error.data && error.data.message) { this.$notification.error(error.data.message) }
+        if (error.data && error.data.message) {
+          this.$notification.error(error.data.message)
+          if (error.data.message === 'Stock can not be minus') {
+            this.warningMessage = 'Stock not enough'
+          }
+        }
         if (error.data && error.data.meta) {
           const meta = error.data.meta
           resource = {
