@@ -637,6 +637,39 @@
                     {{ $t('bank') | uppercase }}
                   </router-link>
                 </li>
+                <li
+                  v-if="$permission.has('read cash advance')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/finance/cash-advance"
+                    active-class="active"
+                  >
+                    {{ $t('cash advance') | uppercase }}
+                  </router-link>
+                </li>
+                <li
+                  v-if="$permission.has('read cash report')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/finance/cash-report"
+                    active-class="active"
+                  >
+                    {{ $t('cash report') | uppercase }}
+                  </router-link>
+                </li>
+                <li
+                  v-if="$permission.has('read bank report')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/finance/bank-report"
+                    active-class="active"
+                  >
+                    {{ $t('bank report') | uppercase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li
