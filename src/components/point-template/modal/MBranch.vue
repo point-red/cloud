@@ -41,6 +41,18 @@
       >
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
+      <div
+        v-if="clearButton"
+        class="pull-right"
+      >
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-danger"
+          @click="clear()"
+        >
+          {{ $t('clear') | uppercase }}
+        </button>
+      </div>
       <template slot="footer">
         <button
           type="button"
@@ -67,6 +79,10 @@ export default {
     label: {
       type: String,
       default: null
+    },
+    clearButton: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -156,6 +172,17 @@ export default {
     close () {
       this.$refs.modal.close()
       this.$emit('close', true)
+    },
+    clear () {
+      this.mutableId = null
+      this.mutableLabel = ''
+      this.$emit('input', null)
+      this.$emit('choosen', {
+        id: null,
+        name: '',
+        label: ''
+      })
+      this.close()
     }
   }
 }
