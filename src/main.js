@@ -34,6 +34,7 @@ import VScrollLock from 'v-scroll-lock'
 import SweetModal from 'sweet-modal-vue/src/plugin.js'
 import sanitizeHTML from 'sanitize-html'
 import * as GmapVue from 'gmap-vue'
+import vars from './modules/common-vars'
 
 Vue.use(SweetModal)
 Vue.use(VScrollLock)
@@ -96,6 +97,7 @@ Vue.use(PointFormRules)
 Vue.use(PointTemplate)
 
 Vue.prototype.$sanitize = sanitizeHTML
+Vue.prototype.$vars = vars
 
 Vue.config.productionTip = false
 
