@@ -43,7 +43,7 @@
           :class="{ 'fadeIn': isFilterOpen }"
         >
           <div class="row">
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-2 text-center">
               <p-form-row
                 id="date-start"
                 name="date-start"
@@ -60,7 +60,7 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-2 text-center">
               <p-form-row
                 id="date-end"
                 name="date-end"
@@ -77,17 +77,78 @@
                 </div>
               </p-form-row>
             </div>
+            <div class="col-sm-2 text-center">
+              <p-form-row
+                id="filter-item"
+                name="filter-item"
+                :label="$t('filter item')"
+                :is-horizontal="false"
+              >
+                <div slot="body">
+                  <span
+                    class="select-link"
+                    @click="$refs.item.open()"
+                  >
+                    {{ itemName || $t('select') | uppercase }}
+                  </span>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-2 text-center">
+              <p-form-row
+                id="filter-payment-method"
+                name="filter-payment-method"
+                :label="$t('payment method')"
+                :is-horizontal="false"
+              >
+                <div slot="body">
+                  <span
+                    class="select-link"
+                    @click="$refs.paymentable.open()"
+                  >
+                    {{ paymentName || $t('select') | uppercase }}
+                  </span>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-2 text-center">
+              <p-form-row
+                id="filter-branch"
+                name="filter-branch"
+                :label="$t('branch')"
+                :is-horizontal="false"
+              >
+                <div slot="body">
+                  <span
+                    class="select-link"
+                    @click="$refs.branch.open()"
+                  >
+                    {{ branchName || $t('select') | uppercase }}
+                  </span>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-2 text-center">
+              <p-form-row
+                id="filter-item-sold"
+                name="filter-item-sold"
+                :label="$t('item sold')"
+                :is-horizontal="false"
+              >
+                <div slot="body">
+                  <span
+                    class="select-link"
+                    @click="$refs.itemSold.open()"
+                  >
+                    {{ itemSoldLabel || $t('select') | uppercase }}
+                  </span>
+                </div>
+              </p-form-row>
+            </div>
           </div>
           <hr>
           <div class="row">
             <div class="col-sm-12 ml-10 mb-10">
-              BRANCH :
-              <span
-                class="select-link mr-10"
-                @click="$refs.branch.open()"
-              >
-                {{ branchName || $t('select') | uppercase }}
-              </span>
               <button
                 type="button"
                 :disabled="isExporting"
@@ -337,7 +398,21 @@
     </div>
     <m-branch
       ref="branch"
+      :clear-button="true"
       @choosen="chooseBranch"
+    />
+    <m-item
+      ref="item"
+      :create-button="false"
+      @choosen="chooseItem"
+    />
+    <m-item-sold
+      ref="itemSold"
+      @choosen="chooseItemSold"
+    />
+    <m-payment-method
+      ref="paymentable"
+      @choosen="choosePayment"
     />
   </div>
 </template>
@@ -376,7 +451,13 @@ export default {
       searchText: '',
       limit: 10,
       page: this.$route.query.page * 1 || 1,
-      lastPage: 1
+      lastPage: 1,
+      itemSoldKey: '',
+      itemSoldLabel: '',
+      itemId: null,
+      itemName: '',
+      paymentKey: '',
+      paymentName: ''
     }
   },
   computed: {
@@ -423,12 +504,30 @@ export default {
       this.$alert.error('', form.photo)
     },
     chooseBranch (option) {
+      this.branchId = null
+      this.branchName = ''
       this.authUser.branches.forEach(element => {
         if (option.id == element.id) {
           this.branchId = option.id
           this.branchName = option.name
         }
       })
+      this.search()
+    },
+    chooseItem (item) {
+      this.itemId = item.id
+      this.itemName = item.name
+      this.search()
+    },
+    chooseItemSold (itemSold) {
+      this.itemSoldKey = itemSold.key
+      this.itemSoldLabel = itemSold.label
+      this.search()
+    },
+    choosePayment (paymentMethod) {
+      this.paymentName = paymentMethod.name
+      this.paymentKey = paymentMethod.key
+      this.search()
     },
     search () {
       this.isLoading = true
@@ -446,11 +545,14 @@ export default {
             'sales_visitation.district': this.searchText,
             'sales_visitation.sub_district': this.searchText,
             'sales_visitation.phone': this.searchText,
-            'sales_visitation.notes': this.searchText,
-            'sales_visitation.branch_id': this.branchId
+            'sales_visitation.notes': this.searchText
           },
           limit: this.limit,
-          page: this.page
+          page: this.page,
+          payment_method: this.paymentKey,
+          branch_id: this.branchId,
+          item_id: this.itemId,
+          item_sold: this.itemSoldKey
         }
       }).then(response => {
         this.isLoading = false
