@@ -240,6 +240,7 @@ export default {
         approver_email: null,
         notes: null,
         number: null,
+        amount_remaining: null,
         activity: 'Update Form',
         details: [{
           chart_of_account_id: null,
@@ -365,6 +366,7 @@ export default {
       this.form.approver_email = data.form.request_approval_to.email
       this.form.notes = data.form.notes
       this.form.number = data.form.number
+      this.form.amount_remaining = data.form.amount_remaining
       this.form.details[0].chart_of_account_id = data.details[0].account.id
       this.form.details[0].chart_of_account_name = '[' + data.details[0].account.number + '] ' + data.details[0].account.alias
       this.form.details[0].amount = data.details[0].amount

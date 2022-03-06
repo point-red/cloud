@@ -8,16 +8,15 @@
     <div class="row">
       <p-block :title="$t('cash advance')">
         <div class="input-group block">
-          <a
-            v-if="$permission.has('read cash advance')"
-            href="javascript:void(0)"
+          <download-excel
+            :name="`Cash Advance_${$options.filters.dateFormat(date.start, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.end, 'DD MMM YYYY')}`"
+            :fetch="generateReport"
             class="input-group-prepend"
-            @click="downloadExcelList()"
           >
             <span class="input-group-text">
               <i class="fa fa-download" />
             </span>
-          </a>
+          </download-excel>
           <router-link
             v-if="$permission.has('create cash advance')"
             to="/finance/cash-advance/create"
@@ -232,12 +231,12 @@
                     </div>
                   </td>
                   <td class="text-center">
-                    <button
-                      type="button"
+                    <router-link
+                      :to="{ name: 'finance.cash-advance.history', params: { number: cashAdvance.form.number }}"
                       class="btn btn-circle btn-dual-secondary"
                     >
                       <i class="fa fa-history fa-lg" />
-                    </button>
+                    </router-link>
                   </td>
                 </tr>
               </template>
@@ -267,13 +266,16 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import debounce from 'lodash/debounce'
 import PointTable from 'point-table-vue'
+import JsonExcel from 'vue-json-excel'
+import axios from '@/axios'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     Breadcrumb,
     BreadcrumbFinance,
-    PointTable
+    PointTable,
+    DownloadExcel: JsonExcel
   },
   data () {
     return {
@@ -374,6 +376,79 @@ export default {
     updatePage (value) {
       this.currentPage = value
       this.search()
+    },
+    async generateReport () {
+      this.isLoading = true
+      try {
+        const { data: { data: cashAdvances } } = await axios.get('/finance/cash-advances', {
+          params: {
+            join: 'form,details,account,employee',
+            sort_by: '-form.number',
+            group_by: 'cash_advance.id',
+            fields: 'cash_advance.*',
+            filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
+            filter_like: {
+              'form.number': this.searchText,
+              'form.notes': this.searchText,
+              'employee.name': this.searchText,
+              'account.name': this.searchText
+            },
+            filter_date_min: {
+              'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
+            },
+            filter_date_max: {
+              'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+            },
+            includes: 'employee;form;details.account;',
+            limit: 10000,
+            page: 1
+          }
+        })
+
+        let indexItem = 0
+        const dataResult = cashAdvances.map((cashAdvance) => {
+          let approvalStatus = ''
+          if (cashAdvance.form.approval_status == -1) {
+            approvalStatus = 'rejected'
+          } else if (cashAdvance.form.approval_status == 0) {
+            approvalStatus = 'pending'
+          } else if (cashAdvance.form.approval_status == 1) {
+            approvalStatus = 'approve'
+          }
+
+          let formStatus = ''
+          if (cashAdvance.form.cancellationStatus == 1) {
+            formStatus = 'cancelled'
+          } else if (cashAdvance.form.done == 0) {
+            formStatus = 'pending'
+          } else if (cashAdvance.form.done == 1) {
+            formStatus = 'done'
+          }
+
+          return cashAdvance.details.map((detail) => {
+            indexItem++
+
+            return {
+              No: indexItem,
+              'Date Form': this.$options.filters.dateFormat(cashAdvance.form.date, 'DD MMMM YYYY'),
+              'Form Number': cashAdvance.form.number,
+              'Payment Method': cashAdvance.payment_type,
+              Account: detail.account.name,
+              Amount: cashAdvance.amount,
+              Notes: detail.notes,
+              'Approval status': approvalStatus,
+              'Form status': formStatus
+            }
+          })
+        })
+
+        this.isLoading = false
+        return dataResult.flat()
+      } catch (error) {
+        console.log(error)
+        this.isLoading = false
+        return this.$notification.error(error.message)
+      }
     }
   }
 }

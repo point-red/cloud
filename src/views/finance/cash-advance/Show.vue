@@ -1,6 +1,6 @@
 <template>
   <div>
-    <breadcrumb>
+    <breadcrumb v-if="cashAdvance.archived_at == null">
       <breadcrumb-finance />
       <router-link
         to="/finance/cash-advance"
@@ -10,9 +10,19 @@
       </router-link>
       <span class="breadcrumb-item active">{{ cashAdvance.form.number }}</span>
     </breadcrumb>
+    <breadcrumb v-else>
+      <breadcrumb-finance />
+      <router-link
+        to="/finance/cash-advance"
+        class="breadcrumb-item"
+      >
+        {{ $t('cash advance') | uppercase }}
+      </router-link>
+      <span class="breadcrumb-item">{{ $t('archive') | uppercase }}</span>
+    </breadcrumb>
 
     <div
-      v-if="cashAdvance.form.cancellation_status != 0 && cashAdvance.form.approval_status == 0 && isLoading == false"
+      v-if="cashAdvance.archived_at == null && cashAdvance.form.cancellation_status != 0 && cashAdvance.form.approval_status == 0 && isLoading == false"
       class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
@@ -42,7 +52,7 @@
     </div>
 
     <div
-      v-if="cashAdvance.form.cancellation_status == 0 && isLoading == false"
+      v-if="cashAdvance.archived_at == null && cashAdvance.form.cancellation_status == 0 && isLoading == false"
       class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
@@ -78,7 +88,7 @@
     </div>
 
     <div
-      v-if="cashAdvance.form.approval_status == -1 && isLoading == false"
+      v-if="cashAdvance.archived_at == null && cashAdvance.form.approval_status == -1 && isLoading == false"
       class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
@@ -108,7 +118,7 @@
     </div>
 
     <div
-      v-if="cashAdvance.form.cancellation_status == 1 && isLoading == false"
+      v-if="cashAdvance.archived_at == null && cashAdvance.form.cancellation_status == 1 && isLoading == false"
       class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
@@ -126,7 +136,18 @@
       <p-block :title="$t('cash advance')">
         <p-block-inner :is-loading="isLoading">
           <div class="row">
-            <div class="col-sm-12">
+            <div
+              v-if="cashAdvance.archived_at != null"
+              class="col-sm-12"
+            >
+              <h4 class="mb-0">
+                {{ $t('Archive') | uppercase }}
+              </h4>
+            </div>
+            <div
+              v-else
+              class="col-sm-12"
+            >
               <div class="text-right">
                 <button
                   type="button"
@@ -137,6 +158,7 @@
                 <button
                   type="button"
                   class="btn btn-circle btn-dual-secondary pt-1 mr-2"
+                  @click="$refs.printForm.open()"
                 >
                   <i class="fa fa-print fa-2x" />
                 </button>
@@ -160,6 +182,14 @@
                 >
                   {{ $t('delete') | uppercase }}
                 </button>
+                <button
+                  v-if="cashAdvance.form.approval_status == 1"
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary mr-5"
+                  @click="onRefund()"
+                >
+                  {{ $t('refund') | uppercase }}
+                </button>
               </div>
             </div>
           </div>
@@ -181,7 +211,12 @@
                   >
                     {{ $t('form number') | uppercase }}
                   </td>
-                  <td>{{ cashAdvance.form.number }}</td>
+                  <td v-if="cashAdvance.archived_at != null">
+                    {{ cashAdvance.form.edited_number }}
+                  </td>
+                  <td v-else>
+                    {{ cashAdvance.form.number }}
+                  </td>
                 </tr>
               </table>
             </div>
@@ -293,6 +328,10 @@
       ref="formCancellationReject"
       @reject="onCancellationReject($event)"
     />
+    <print-form
+      ref="printForm"
+      :cash="cashAdvance"
+    />
   </div>
 </template>
 
@@ -301,13 +340,15 @@ import debounce from 'lodash/debounce'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import PointTable from 'point-table-vue'
+import PrintForm from './PrintForm'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     PointTable,
     Breadcrumb,
-    BreadcrumbFinance
+    BreadcrumbFinance,
+    PrintForm
   },
   data () {
     return {
@@ -391,6 +432,9 @@ export default {
       }).catch(error => {
         console.log(error.message)
       })
+    },
+    onRefund () {
+      alert('refunded')
     },
     search () {
       this.isLoading = true
