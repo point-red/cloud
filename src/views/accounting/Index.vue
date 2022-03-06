@@ -10,11 +10,11 @@
         link="/accounting/chart-of-account"
         icon="si si-docs"
       />
-      <!-- <p-box
+      <p-box
         :name="$t('cut off')"
         link="/accounting/cut-off"
         icon="si si-docs"
-      /> -->
+      />
       <p-box
         :name="$t('balance sheet')"
         link="/accounting/balance-sheet"

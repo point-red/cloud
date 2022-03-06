@@ -24,9 +24,9 @@
         v-else
         class="list-group push"
       >
-        <template v-for="(option, index) in options">
+        <template v-for="(option, idx) in options">
           <a
-            :key="index"
+            :key="idx"
             class="list-group-item list-group-item-action justify-content-between align-items-center"
             :class="{'active': option.id == mutableId }"
             href="javascript:void(0)"
@@ -104,6 +104,7 @@ export default {
   },
   data () {
     return {
+      index: null,
       searchText: '',
       options: [],
       mutableId: this.value,
@@ -181,6 +182,7 @@ export default {
       })
     },
     choose (option) {
+      option.index = this.index
       this.mutableId = option.id
       this.$emit('choosen', option)
       this.close()
@@ -194,7 +196,8 @@ export default {
     onAdded () {
       this.search()
     },
-    open () {
+    open (index = null) {
+      this.index = index
       this.$refs['select-' + this.id].open()
     },
     close () {

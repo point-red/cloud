@@ -6,6 +6,7 @@
       format="DD-MM-YYYY"
       type="date"
       :shortcuts="shortcuts"
+      :disabled="disabled"
       value-type="YYYY-MM-DD"
     />
 
@@ -34,6 +35,10 @@ export default {
     DatePicker
   },
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     name: {
       type: String,
       default: null
