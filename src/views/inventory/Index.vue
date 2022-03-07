@@ -23,12 +23,12 @@
         link="/inventory/audit"
         icon="si si-note"
       />
-      <!-- <p-box
+      <p-box
         v-if="$permission.has('read stock correction')"
         :name="$t('stock correction')"
         link="/inventory/correction"
         icon="si si-note"
-      /> -->
+      />
       <!-- <p-box
         :name="$t('transfer item')"
         v-if="$permission.has('read transfer item')"

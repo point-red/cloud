@@ -517,7 +517,7 @@
                     {{ $t('inventory audit') | uppercase }}
                   </router-link>
                 </li>
-                <!-- <li
+                <li
                   v-if="$permission.has('read stock correction')"
                   @click="toggleLeftSidebar('close-xs')"
                 >
@@ -527,7 +527,7 @@
                   >
                     {{ $t('stock correction') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
                 <!--
                 <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read transfer item')">
                   <router-link
