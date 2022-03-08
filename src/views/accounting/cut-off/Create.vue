@@ -275,7 +275,7 @@ export default {
     sumFixedAsset (row, position) {
       if (!row) return null
       if (row.chart_of_account_position !== position) return 0
-      return row.items.reduce((total, curr) => total + parseFloat(curr.book_value), 0)
+      return row.items.reduce((total, curr) => total + parseFloat(curr.total), 0)
     },
     recalculate () {
       this.form.details.map(detail => {
