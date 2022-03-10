@@ -21,6 +21,16 @@
             </span>
           </a> -->
           <a
+            v-if="$permission.has('read item')"
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="excel()"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-download" />
+            </span>
+          </a>
+          <a
             v-if="$permission.has('create item')"
             href="javascript:void(0)"
             class="input-group-prepend"
@@ -186,7 +196,8 @@ export default {
       } else {
         this.$notification.error('Please set as default branch')
       }
-    }
+    },
+    ...mapActions('masterItem', ['excel'])
   }
 }
 </script>

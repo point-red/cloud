@@ -137,6 +137,25 @@ const actions = {
           reject(error)
         })
     })
+  },
+  excel (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/excel', null,
+        {
+          responseType: 'blob'
+        })
+        .then(response => {
+          const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+          const elem = window.document.createElement('a')
+          elem.href = window.URL.createObjectURL(blob)
+          elem.download = 'export item.xlsx'
+          document.body.appendChild(elem)
+          elem.click()
+          document.body.removeChild(elem)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 
