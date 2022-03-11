@@ -61,6 +61,7 @@
                 :name="'inventory-out-' + inventoryIndex"
                 :units="mutableItemUnits"
                 :unit="mutableItemUnit"
+                :disable-unit-selection="disableUnitSelection"
                 @input="calculate"
                 @choosen="updateUnit"
               />
@@ -108,6 +109,14 @@ export default {
     value: {
       type: [String, Number],
       default: null
+    },
+    disableUnitSelection: {
+      type: Boolean,
+      default: false
+    },
+    onlySmallestUnit: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -208,11 +217,18 @@ export default {
       this.mutableRowId = row.row_id
       this.mutableItemId = row.item.id
       this.mutableItemName = row.item.name
-      this.mutableItemUnit = row.item.unit
-      this.mutableItemUnits = row.item.units
       this.mutableWarehouseId = row.warehouse_id
       this.mutableRequireExpiryDate = row.item.require_expiry_date
       this.mutableRequireProductionNumber = row.item.require_production_number
+
+      if (this.onlySmallestUnit) {
+        const smallestUnit = row.item.units.find(unit => unit.converter === 1)
+        this.mutableItemUnits = [smallestUnit]
+        this.mutableItemUnit = smallestUnit
+      } else {
+        this.mutableItemUnits = row.item.units
+        this.mutableItemUnit = row.item.unit
+      }
 
       if (row.dna) {
         this.mutableInventories = row.dna
