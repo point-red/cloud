@@ -34,7 +34,16 @@
               >
                 Pending
               </div>
+              <div
+                v-else
+                class="form-status bg-secondary"
+              >
+                Unknown
+              </div>
             </template>
+            <div class="m-0 mt-4 alert alert-danger">
+              {{ warningMessage }}
+            </div>
           </div>
         </div>
       </div>
@@ -46,7 +55,7 @@
 import axiosNode from '@/axiosNode'
 
 export default {
-  data: () => {
+  data () {
     return {
       crudType: '',
       action: '',
@@ -54,7 +63,8 @@ export default {
       resourceType: '',
       resource: {},
       projectName: '',
-      approvalStatus: null
+      approvalStatus: null,
+      warningMessage: ''
     }
   },
   created () {
@@ -68,19 +78,42 @@ export default {
   },
   methods: {
     async handleAction () {
+      // this.validate()
       const headers = {
         Tenant: this.tenant,
         Authorization: undefined
       }
 
       let resource, projectName, approvalStatus
-      if (this.resourceType === 'SalesInvoice') {
-        ({ resource, projectName, approvalStatus } = await this.handleApprovalSalesInvoice(headers))
+      try {
+        if (this.resourceType === 'SalesInvoice') {
+          ({ resource, projectName, approvalStatus } = await this.handleApprovalSalesInvoice(headers))
+        }
+        if (this.resourceType === 'StockCorrection') {
+          ({ resource, projectName, approvalStatus } = await this.handleApprovalStockCorrection(headers))
+        }
+      } catch (error) {
+        if (error.data && error.data.message) {
+          this.$notification.error(error.data.message)
+          if (error.data.message === 'Stock can not be minus') {
+            this.warningMessage = 'Stock not enough'
+          }
+        }
+        if (error.data && error.data.meta) {
+          const meta = error.data.meta
+          resource = {
+            form: {
+              ...(meta.formNumber ? { number: meta.formNumber } : {})
+            }
+          }
+          approvalStatus = meta.formStatus
+          projectName = meta.projectName
+        }
       }
 
       this.resource = resource
       this.projectName = projectName
-      this.approvalStatus = approvalStatus
+      this.approvalStatus = approvalStatus !== undefined && approvalStatus !== null ? approvalStatus : 2
     },
     async handleApprovalSalesInvoice (headers) {
       if (this.crudType === 'create' || this.crudType === 'update') {
@@ -102,6 +135,29 @@ export default {
         if (this.action === 'reject') {
           const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/delete-reject-with-token', { token: this.token }, { headers })
           return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.cancellationStatus }
+        }
+      }
+    },
+    async handleApprovalStockCorrection (headers) {
+      if (this.crudType === 'create' || this.crudType === 'update') {
+        if (this.action === 'approve') {
+          const { data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/create-approve-with-token', { token: this.token }, { headers })
+          return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.approvalStatus }
+        }
+        if (this.action === 'reject') {
+          const { data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/create-reject-with-token', { token: this.token }, { headers })
+          return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.approvalStatus }
+        }
+      }
+
+      if (this.crudType === 'delete') {
+        if (this.action === 'approve') {
+          const { data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/delete-approve-with-token', { token: this.token }, { headers })
+          return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.cancellationStatus }
+        }
+        if (this.action === 'reject') {
+          const { data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/delete-reject-with-token', { token: this.token }, { headers })
+          return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.cancellationStatus }
         }
       }
     }

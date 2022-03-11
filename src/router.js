@@ -58,6 +58,7 @@ export default new Router({
               .then(response => {
                 next()
               }).catch(error => {
+                console.log(error)
                 next('/503')
               })
             next()
@@ -100,12 +101,13 @@ export default new Router({
           if (Vue.cookie.get('TAT') !== null) {
             store.dispatch('reloadVuex')
               .then(response => {
-                if (window.location.host == process.env.VUE_APP_DOMAIN) {
+                if (window.location.host === process.env.VUE_APP_DOMAIN) {
                   next('/account')
                 } else {
                   next()
                 }
               }).catch(error => {
+                console.log(error)
                 next('/503')
               })
           } else {
@@ -113,7 +115,7 @@ export default new Router({
           }
         } else {
           // redirect to account route if host is not tenant subdomain
-          if (window.location.host == process.env.VUE_APP_DOMAIN) {
+          if (window.location.host === process.env.VUE_APP_DOMAIN) {
             next('/account')
           } else {
             next()

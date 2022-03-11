@@ -1,40 +1,28 @@
-import api from '@/api'
+import api from '@/api/nodeServer'
 
-const url = '/accounting/cut-offs'
+const url = '/inventory/corrections'
 
 const state = {
-  cutOff: {
-    alias: null,
-    number: null,
-    credit: 0,
-    debit: 0,
-    id: null
+  stockCorrection: {
+    warehouse: {},
+    warehouseId: null,
+    items: [],
+    id: null,
+    form: {
+      createdByUser: {},
+      requestApprovalToUser: {}
+    }
   },
-  cutOffs: [],
-  cutOffAccounts: [],
-  pagination: {},
-  total: {
-    debit: 0,
-    credit: 0
-  },
-  download: null
+  stockCorrections: [],
+  pagination: {}
 }
 
 const getters = {
-  cutOff: state => {
-    return state.cutOff
+  stockCorrection: state => {
+    return state.stockCorrection
   },
-  cutOffs: state => {
-    return state.cutOffs
-  },
-  cutOffAccounts: state => {
-    return state.cutOffAccounts
-  },
-  total: state => {
-    return state.total
-  },
-  download: state => {
-    return state.download
+  stockCorrections: state => {
+    return state.stockCorrections
   },
   pagination: state => {
     return state.pagination
@@ -43,30 +31,14 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.cutOffs = payload.data
-    state.pagination = payload.meta
-  },
-  'FETCH_ARRAY1' (state, payload) {
-    state.cutOffAccounts = payload.data
+    state.stockCorrections = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.cutOff = payload.data
-  },
-  'FETCH_TOTAL' (state, payload) {
-    state.total = payload
-  },
-  'DOWNLOAD' (state, payload) {
-    state.download = payload
-  },
-  'CREATE' (state, payload) {
-    state.cutOff = payload
-  },
-  'UPDATE' (state, payload) {
-    state.cutOff = payload
-  },
-  'DELETE' (state, payload) {
-    state.cutOff = {}
+    payload.data.items.forEach(element => {
+      element.more = false
+    })
+    state.stockCorrection = payload.data
   }
 }
 
@@ -77,47 +49,15 @@ const actions = {
         .then(response => {
           commit('FETCH_ARRAY', response)
           resolve(response)
-        }).catch(error => {
-          reject(error)
         })
-    })
-  },
-  getByAccount ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      api.get(url + '/account', payload)
-        .then(response => {
-          commit('FETCH_ARRAY1', response)
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  getDownload ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      api.get(url + '/account', payload)
-        .then(response => {
-          commit('DOWNLOAD', response)
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  getTotal ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      api.get(url + '/total', payload)
-        .then(response => {
-          commit('FETCH_TOTAL', response)
-          resolve(response)
-        }).catch(error => {
+        .catch(error => {
           reject(error)
         })
     })
   },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/account/' + payload.id, payload)
+      api.get(url + '/' + payload.id, payload)
         .then(response => {
           commit('FETCH_OBJECT', response)
           resolve(response)
@@ -138,7 +78,9 @@ const actions = {
   },
   update (context, payload) {
     return new Promise((resolve, reject) => {
-      api.patch(url + '/' + payload.id, payload)
+      const stockCorrectionId = payload.id
+      payload.id = undefined
+      api.patch(url + '/' + stockCorrectionId, payload)
         .then(response => {
           resolve(response)
         }).catch(error => {
@@ -149,6 +91,48 @@ const actions = {
   delete (context, payload) {
     return new Promise((resolve, reject) => {
       api.delete(url + '/' + payload.id, payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  approve (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/approve', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  reject (context, payload) {
+    const bodyPayload = { reason: payload.reason || null }
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/reject', bodyPayload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationApprove (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/cancellation-approve')
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  cancellationReject (context, payload) {
+    return new Promise((resolve, reject) => {
+      const bodyPayload = { reason: payload.reason || null }
+      api.post(url + '/' + payload.id + '/cancellation-reject', bodyPayload)
         .then(response => {
           resolve(response)
         }).catch(error => {

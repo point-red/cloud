@@ -150,7 +150,13 @@ export default {
             this.options.push({
               id: key.id,
               alias: key.alias,
-              label: key.label
+              type: {
+                name: key.type.name
+              },
+              label: key.label,
+              number: key.number,
+              position: key.position,
+              sub_ledger: key.sub_ledger
             })
 
             if (this.value == key.id) {
@@ -182,7 +188,13 @@ export default {
             this.options.push({
               id: key.id,
               alias: key.alias,
-              label: key.label
+              type: {
+                name: key.type.name
+              },
+              label: key.label,
+              number: key.number,
+              position: key.position,
+              sub_ledger: key.sub_ledger
             })
 
             if (this.value == key.id) {
@@ -206,10 +218,10 @@ export default {
       this.$emit('choosen', option)
       this.close()
     },
-    open (index = null) {
+    open (index = null, update = false) {
       this.index = index
       this.$refs.modal.open()
-      this.search()
+      if (update) this.search()
     },
     close () {
       this.$refs.modal.close()

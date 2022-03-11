@@ -2,7 +2,7 @@
   <div>
     <sweet-modal
       :ref="'select-' + id"
-      :title="$t('select employee') | uppercase"
+      :title="$t('select asset') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >
@@ -46,7 +46,7 @@
         <button
           type="button"
           class="btn btn-sm btn-outline-secondary mr-5"
-          @click="$refs.addEmployee.open()"
+          @click="$refs.addFixedAsset.open()"
         >
           {{ $t('create new') | uppercase }}
         </button>
@@ -62,9 +62,9 @@
       </div>
     </sweet-modal>
 
-    <m-add-employee
-      id="add-employee"
-      ref="addEmployee"
+    <m-add-fixed-asset
+      id="add-fixed-asset"
+      ref="addFixedAsset"
       @added="onAdded()"
     />
   </div>
@@ -91,6 +91,9 @@ export default {
   },
   data () {
     return {
+      chartOfAccountId: null,
+      accumulationChartOfAccountId: null,
+      depreciationChartOfAccountId: null,
       index: null,
       searchText: '',
       options: [],
@@ -101,7 +104,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('humanResourceEmployee', ['employees', 'pagination'])
+    ...mapGetters('masterFixedAsset', ['fixedAssets', 'pagination'])
   },
   watch: {
     searchText: debounce(function () {
@@ -118,7 +121,7 @@ export default {
     this.close()
   },
   methods: {
-    ...mapActions('humanResourceEmployee', ['get', 'create']),
+    ...mapActions('masterFixedAsset', ['get', 'create']),
     search () {
       this.isLoading = true
       this.get({
@@ -127,6 +130,11 @@ export default {
           limit: 50,
           filter_like: {
             name: this.searchText
+          },
+          filter_equal_or: {
+            chart_of_account_id: this.chartOfAccountId,
+            accumulation_chart_of_account_id: this.accumulationChartOfAccountId,
+            depreciation_chart_of_account_id: this.depreciationChartOfAccountId
           }
         }
       }).then(response => {
@@ -134,7 +142,8 @@ export default {
         response.data.map((key, value) => {
           this.options.push({
             id: key.id,
-            label: key.name
+            label: key.name,
+            depreciation_method: key.depreciation_method
           })
 
           if (this.value == key.id) {
@@ -161,8 +170,14 @@ export default {
         this.isSaving = false
       })
     },
-    open (index = null) {
+    open (index = null, options = null) {
       this.index = index
+      if (options) {
+        this.chartOfAccountId = options.chartOfAccountId
+        this.accumulationChartOfAccountId = options.accumulationChartOfAccountId
+        this.depreciationChartOfAccountId = options.depreciationChartOfAccountId
+        this.search()
+      }
       this.$refs['select-' + this.id].open()
       this.$nextTick(() => {
         this.$refs.searchText.focus()

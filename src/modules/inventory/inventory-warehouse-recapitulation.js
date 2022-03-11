@@ -59,6 +59,17 @@ const actions = {
           reject(error)
         })
     })
+  },
+  find ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/' + payload.itemId, payload)
+        .then(response => {
+          commit('FETCH_OBJECT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 

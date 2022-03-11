@@ -2,7 +2,7 @@
   <div>
     <sweet-modal
       :ref="'select-' + id"
-      :title="$t('select employee') | uppercase"
+      :title="$t('select item') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >
@@ -24,9 +24,9 @@
         v-else
         class="list-group push"
       >
-        <template v-for="(option, idx) in options">
+        <template v-for="(option, optionIndex) in options">
           <a
-            :key="idx"
+            :key="optionIndex"
             class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
             :class="{'active': option.id == mutableId }"
             href="javascript:void(0)"
@@ -40,16 +40,13 @@
         v-if="searchText && options.length == 0 && !isLoading"
         class="alert alert-info text-center"
       >
-        {{ $t('searching not found', [searchText]) | capitalize }} <br>
+        {{ $t('searching not found', [searchText]) | capitalize }}
       </div>
-      <div class="pull-left">
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-secondary mr-5"
-          @click="$refs.addEmployee.open()"
-        >
-          {{ $t('create new') | uppercase }}
-        </button>
+      <div
+        v-if="!searchText && options.length == 0 && !isLoading"
+        class="alert alert-info text-center"
+      >
+        {{ $t('you don\'t have any') | capitalize }} {{ $t('item') | capitalize }}
       </div>
       <div class="pull-right">
         <button
@@ -61,32 +58,35 @@
         </button>
       </div>
     </sweet-modal>
-
-    <m-add-employee
-      id="add-employee"
-      ref="addEmployee"
-      @added="onAdded()"
-    />
   </div>
 </template>
 
 <script>
 import debounce from 'lodash/debounce'
-import { mapGetters, mapActions } from 'vuex'
+import axiosNode from '@/axiosNode'
+// import { mapGetters, mapActions } from 'vuex'
 
 export default {
   props: {
     id: {
       type: String,
-      required: true
+      default: ''
+    },
+    warehouseId: {
+      type: Number,
+      default: null
     },
     value: {
       type: [String, Number],
-      default: null
+      default: ''
     },
     label: {
       type: String,
-      default: null
+      default: ''
+    },
+    createButton: {
+      type: Boolean,
+      default: true
     }
   },
   data () {
@@ -101,7 +101,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('humanResourceEmployee', ['employees', 'pagination'])
+    // ...mapGetters('masterItem', ['items', 'pagination'])
   },
   watch: {
     searchText: debounce(function () {
@@ -112,33 +112,45 @@ export default {
     }
   },
   created () {
-    this.search()
+    if (this.warehouseId) {
+      this.search()
+    }
   },
   beforeDestroy () {
     this.close()
   },
   methods: {
-    ...mapActions('humanResourceEmployee', ['get', 'create']),
+    getItems (payload) {
+      return axiosNode.get('/master/items', payload)
+    },
     search () {
       this.isLoading = true
-      this.get({
+      this.getItems({
         params: {
-          sort_by: 'name',
-          limit: 50,
+          warehouse_id: this.warehouseId,
           filter_like: {
+            code: this.searchText,
             name: this.searchText
           }
         }
       }).then(response => {
         this.options = []
-        response.data.map((key, value) => {
+        this.mutableLabel = ''
+        response.data.data.map((key, value) => {
           this.options.push({
             id: key.id,
-            label: key.name
+            label: key.label,
+            name: key.name,
+            require_expiry_date: key.requireExpiryDate,
+            require_production_number: key.requireProductionNumber,
+            unit_default: key.unitDefault,
+            unit_default_purchase: key.unitDefaultPurchase,
+            unit_default_sales: key.unitDefaultSales,
+            units: key.units
           })
 
           if (this.value == key.id) {
-            this.mutableLabel = key.name
+            this.mutableLabel = key.label
           }
         })
         this.isLoading = false
@@ -146,43 +158,54 @@ export default {
         this.isLoading = false
       })
     },
-    onAdded () {
-      this.search()
-    },
-    add () {
-      this.isSaving = true
-      this.create({
-        name: this.searchText
-      }).then(response => {
-        this.search()
-        this.isSaving = false
-      }).catch(error => {
-        this.$notification.error(error.message)
-        this.isSaving = false
+    clear (option) {
+      this.mutableId = null
+      this.mutableLabel = null
+      this.$emit('choosen', {
+        index: this.index,
+        id: null,
+        name: null,
+        label: null,
+        require_expiry_date: null,
+        require_production_number: null,
+        unit_default: null,
+        unit_default_purchase: null,
+        unit_default_sales: null,
+        units: null,
+        unit: null
       })
+      this.close()
+    },
+    choose (option) {
+      this.mutableId = option.id
+      this.mutableLabel = option.label
+      // make default unit non reactive
+      const unit = JSON.parse(JSON.stringify(option.units[0]))
+      this.$emit('choosen', {
+        index: this.index,
+        id: option.id,
+        name: option.name,
+        label: option.label,
+        require_expiry_date: option.require_expiry_date,
+        require_production_number: option.require_production_number,
+        unit_default: option.unit_default,
+        unit_default_purchase: option.unit_default_purchase,
+        unit_default_sales: option.unit_default_sales,
+        units: option.units,
+        unit: unit
+      })
+      this.close()
     },
     open (index = null) {
+      this.search()
       this.index = index
       this.$refs['select-' + this.id].open()
       this.$nextTick(() => {
         this.$refs.searchText.focus()
       })
     },
-    choose (option) {
-      option.index = this.index
-      option.name = option.label
-      this.mutableId = option.id
-      this.mutableLabel = option.label
-      this.$emit('input', option.id)
-      this.$emit('choosen', option)
-      this.close()
-    },
-    show () {
-      this.$refs['select-' + this.id].show()
-    },
     close () {
       this.$refs['select-' + this.id].close()
-      this.$emit('close', true)
     },
     onClose () {
       this.$emit('close', true)
