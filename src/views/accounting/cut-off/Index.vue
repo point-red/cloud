@@ -161,7 +161,7 @@ export default {
       this.getDownload({
         params: {
           isDownload: 'true',
-          join: 'account',
+          join: 'account,cutoff.form',
           fields: 'cutoff_accounts.id;cutoff_id;chart_of_account_id;raw:sum(debit) as debit;raw:sum(credit) as credit;cutoff_accounts.created_at;cutoff_accounts.updated_at',
           sort_by: 'account.number',
           group_by: 'chart_of_account_id',
