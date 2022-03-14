@@ -6,50 +6,26 @@
     </breadcrumb>
 
     <div class="mb-20">
-      <ul
-        class="nav nav-tabs nav-tabs-alt"
-        data-toggle="tabs"
-        role="tablist"
-      >
+      <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
         <slot />
-        <li
-          v-if="$permission.has('create employee kpi')"
-          class="nav-item ml-auto"
-        >
-          <router-link
-            to=""
-            class="nav-link"
-            @click.native="$refs.create.show()"
-          >
+        <li v-if="$permission.has('create employee kpi')" class="nav-item ml-auto">
+          <router-link to class="nav-link" @click.native="$refs.create.show()">
             <span>{{ $t('add') | uppercase }}</span>
           </router-link>
         </li>
-        <li
-          v-if="$permission.has('create employee kpi')"
-          class="nav-item"
-        >
-          <a
-            href="javascript:void(0)"
-            class="nav-link"
-            @click="addFiles()"
-          ><i class="si si-cloud-upload" /> {{ $t('import') | uppercase }}</a>
-          <input
-            id="file"
-            ref="file"
-            type="file"
-            style="display:none"
-            @change="onFileChange"
-          >
+        <li v-if="$permission.has('create employee kpi')" class="nav-item">
+          <a href="javascript:void(0)" class="nav-link" @click="addFiles()">
+            <i class="si si-cloud-upload" />
+            {{ $t('import') | uppercase }}
+          </a>
+          <input id="file" ref="file" type="file" style="display:none" @change="onFileChange" />
         </li>
         <slot name="right" />
       </ul>
     </div>
 
     <div class="row">
-      <p-block
-        :title="title"
-        :header="true"
-      >
+      <p-block :title="title" :header="true">
         <!-- Search -->
         <div class="input-group block mb-5">
           <p-form-input
@@ -63,59 +39,39 @@
           />
         </div>
         <!-- End Search -->
-        <hr>
+        <hr />
         <div class="text-center font-size-sm mb-10">
-          <a
-            href="javascript:void(0)"
-            @click="isAdvanceFilter = !isAdvanceFilter"
-          >
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
+          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
+            {{ $t('advance filter') | uppercase }}
+            <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div
-          v-show="isAdvanceFilter"
-          class="card"
-          :class="{ 'fadeIn': isAdvanceFilter }"
-        >
+        <div v-show="isAdvanceFilter" class="card" :class="{ 'fadeIn': isAdvanceFilter }">
           <div class="row">
             <div class="col-sm-3 text-center">
-              <p-form-row
-                id="status"
-                name="status"
-                :label="$t('status')"
-                :is-horizontal="false"
-              >
+              <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
                 <div slot="body">
                   <span
                     class="select-link"
                     @click="$refs.status.open({ id: statusId, label: statusLabel })"
-                  >
-                    {{ statusLabel || $t('select') | uppercase }}
-                  </span>
+                  >{{ statusLabel || $t('select') | uppercase }}</span>
                 </div>
               </p-form-row>
             </div>
           </div>
         </div>
-        <hr>
-        <div
-          v-show="checkedRow.length > 0"
-          class="mr-15 animated fadeIn"
-        >
+        <hr />
+        <div v-show="checkedRow.length > 0" class="mr-15 animated fadeIn">
           <button
             type="button"
             class="btn btn-secondary mr-5"
             @click="bulkArchiveKpiTemplate()"
-          >
-            {{ $t('archive') | uppercase }}
-          </button>
+          >{{ $t('archive') | uppercase }}</button>
           <button
             type="button"
             class="btn btn-secondary mr-5"
             @click="bulkActivateKpiTemplate()"
-          >
-            {{ $t('activate') | uppercase }}
-          </button>
+          >{{ $t('activate') | uppercase }}</button>
         </div>
         <p-block-inner :is-loading="isLoading">
           <point-table>
@@ -132,16 +88,10 @@
                 />
               </th>
               <th>Kpi Category</th>
-              <th class="text-center">
-                Total Weight
-              </th>
+              <th class="text-center">Total Weight</th>
               <th class="text-right" />
             </tr>
-            <tr
-              v-for="(template, index) in templates"
-              slot="p-body"
-              :key="template.id"
-            >
+            <tr v-for="(template, index) in templates" slot="p-body" :key="template.id">
               <th>{{ ( page - 1 ) * limit + index + 1 }}</th>
               <td>
                 <p-form-check-box
@@ -154,22 +104,18 @@
                 />
               </td>
               <td>
-                <router-link :to="{ name: 'KpiShow', params: { id: template.id }}">
-                  {{ template.name }}
-                </router-link>
+                <router-link
+                  :to="{ name: 'KpiShow', params: { id: template.id }}"
+                >{{ template.name }}</router-link>
               </td>
-              <td class="text-center">
-                {{ template.weight | numberFormat }}%
-              </td>
+              <td class="text-center">{{ template.weight | numberFormat }}%</td>
               <td>
                 <a
                   v-if="$permission.has('update employee kpi')"
                   href="javascript:void(0)"
                   class="btn btn-sm btn-secondary"
                   @click="$refs.edit.show(template)"
-                >
-                  {{ $t('rename') | uppercase }}
-                </a>
+                >{{ $t('rename') | uppercase }}</a>
                 <button
                   :disabled="isExporting.includes(template.id)"
                   type="submit"
@@ -177,10 +123,8 @@
                   style="margin-left:12px"
                   @click="exportData(template.id)"
                 >
-                  <i
-                    v-show="isExporting.includes(template.id)"
-                    class="fa fa-asterisk fa-spin"
-                  /> {{ $t('export') | uppercase }}
+                  <i v-show="isExporting.includes(template.id)" class="fa fa-asterisk fa-spin" />
+                  {{ $t('export') | uppercase }}
                 </button>
                 <button
                   v-if="$permission.has('create employee kpi')"
@@ -190,10 +134,8 @@
                   style="margin-left:12px"
                   @click="duplicate(template.id)"
                 >
-                  <i
-                    v-show="isDuplicating"
-                    class="fa fa-asterisk fa-spin"
-                  /> {{ $t('duplicate') | uppercase }}
+                  <i v-show="isDuplicating" class="fa fa-asterisk fa-spin" />
+                  {{ $t('duplicate') | uppercase }}
                 </button>
                 <button
                   v-if="$permission.has('delete employee kpi')"
@@ -203,42 +145,21 @@
                   style="margin-left:12px"
                   @click="remove(template.id)"
                 >
-                  <i
-                    v-show="isRemoving"
-                    class="fa fa-spinner fa-spin"
-                  /> {{ $t('remove') | uppercase }}
+                  <i v-show="isRemoving" class="fa fa-spinner fa-spin" />
+                  {{ $t('remove') | uppercase }}
                 </button>
               </td>
             </tr>
           </point-table>
         </p-block-inner>
-        <p-pagination
-          :current-page="page"
-          :last-page="lastPage"
-          @updatePage="updatePage"
-        />
+        <p-pagination :current-page="page" :last-page="lastPage" @updatePage="updatePage" />
       </p-block>
     </div>
 
-    <result-modal
-      id="result"
-      ref="result"
-      :title="'KPI RESULT'"
-    />
-    <create-modal
-      id="create"
-      ref="create"
-      :title="'KPI CATEGORY'"
-    />
-    <edit-modal
-      id="edit"
-      ref="edit"
-      :title="'KPI CATEGORY'"
-    />
-    <m-status
-      ref="status"
-      @choosen="onChoosenStatus"
-    />
+    <result-modal id="result" ref="result" :title="'KPI RESULT'" />
+    <create-modal id="create" ref="create" :title="'KPI CATEGORY'" />
+    <edit-modal id="edit" ref="edit" :title="'KPI CATEGORY'" />
+    <m-status ref="status" @choosen="onChoosenStatus" />
   </div>
 </template>
 

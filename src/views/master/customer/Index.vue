@@ -32,13 +32,18 @@
               <i class="fa fa-upload" />
             </span>
 
-            <input
-              id="file"
-              ref="file"
-              type="file"
-              style="display:none"
-              @change="onFileChange"
-            >
+            <input id="file" ref="file" type="file" style="display:none" @change="onFileChange" />
+          </a>
+          <a
+            v-if="$permission.has('read customer')"
+            href="javascript:void(0)"
+            title="export"
+            class="input-group-prepend"
+            @click="exportData()"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-download" />
+            </span>
           </a>
           <p-form-input
             id="search-text"
@@ -51,33 +56,20 @@
           />
         </div>
         <div class="text-center font-size-sm mb-10">
-          <a
-            href="javascript:void(0)"
-            @click="isAdvanceFilter = !isAdvanceFilter"
-          >
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
+          <a href="javascript:void(0)" @click="isAdvanceFilter = !isAdvanceFilter">
+            {{ $t('advance filter') | uppercase }}
+            <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div
-          v-show="isAdvanceFilter"
-          class="card"
-          :class="{ 'fadeIn': isAdvanceFilter }"
-        >
+        <div v-show="isAdvanceFilter" class="card" :class="{ 'fadeIn': isAdvanceFilter }">
           <div class="row">
             <div class="col-sm-3 text-center">
-              <p-form-row
-                id="status"
-                name="status"
-                :label="$t('status')"
-                :is-horizontal="false"
-              >
+              <p-form-row id="status" name="status" :label="$t('status')" :is-horizontal="false">
                 <div slot="body">
                   <span
                     class="select-link"
                     @click="$refs.status.open({ id: statusId, label: statusLabel })"
-                  >
-                    {{ statusLabel || $t('select') | uppercase }}
-                  </span>
+                  >{{ statusLabel || $t('select') | uppercase }}</span>
                 </div>
               </p-form-row>
             </div>
@@ -92,32 +84,23 @@
                   <span
                     class="select-link"
                     @click="$refs.pricingGroup.open()"
-                  >
-                    {{ pricingGroupLabel || $t('select') | uppercase }}
-                  </span>
+                  >{{ pricingGroupLabel || $t('select') | uppercase }}</span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-3 text-center">
-              <p-form-row
-                id="group"
-                name="group"
-                :label="$t('group')"
-                :is-horizontal="false"
-              >
+              <p-form-row id="group" name="group" :label="$t('group')" :is-horizontal="false">
                 <div slot="body">
                   <span
                     class="select-link"
                     @click="$refs.customerGroup.open()"
-                  >
-                    {{ groupLabel || $t('select') | uppercase }}
-                  </span>
+                  >{{ groupLabel || $t('select') | uppercase }}</span>
                 </div>
               </p-form-row>
             </div>
           </div>
         </div>
-        <hr>
+        <hr />
         <div>
           <label class="css-control css-control-primary css-checkbox mr-10">
             <input
@@ -125,43 +108,32 @@
               class="css-control-input"
               :checked="isRowsChecked(customers, checkedRow)"
               @click="toggleCheckRows()"
-            >
+            />
             <span class="css-control-indicator" />
           </label>
-          <span
-            v-show="checkedRow.length > 0"
-            class="mr-15 animated fadeIn"
-          >
+          <span v-show="checkedRow.length > 0" class="mr-15 animated fadeIn">
             <button
               type="button"
               class="btn btn-sm btn-outline-secondary mr-5"
               @click="bulkArchiveCustomer()"
-            >
-              {{ $t('archive') | uppercase }}
-            </button>
+            >{{ $t('archive') | uppercase }}</button>
             <button
               type="button"
               class="btn btn-sm btn-outline-secondary mr-5"
               @click="bulkActivateCustomer()"
-            >
-              {{ $t('activate') | uppercase }}
-            </button>
+            >{{ $t('activate') | uppercase }}</button>
             <button
               type="button"
               class="btn btn-sm btn-outline-secondary"
               @click="bulkDeleteCustomer()"
-            >
-              {{ $t('delete') | uppercase }}
-            </button>
+            >{{ $t('delete') | uppercase }}</button>
           </span>
         </div>
-        <hr>
+        <hr />
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">
-                #
-              </th>
+              <th width="50px">#</th>
               <th width="50px" />
               <th>Code</th>
               <th>Name</th>
@@ -186,9 +158,7 @@
                   'bg-gray': customer.archived_at != null,
                   'bg-primary-lighter': isRowChecked(customer.id)
                 }"
-              >
-                {{ customerIndex + 1 }}
-              </th>
+              >{{ customerIndex + 1 }}</th>
               <td>
                 <p-form-check-box
                   id="subscibe"
@@ -200,14 +170,14 @@
                 />
               </td>
               <td>
-                <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">
-                  {{ customer.code }}
-                </router-link>
+                <router-link
+                  :to="{ name: 'customer.show', params: { id: customer.id }}"
+                >{{ customer.code }}</router-link>
               </td>
               <td>
-                <router-link :to="{ name: 'customer.show', params: { id: customer.id }}">
-                  {{ customer.name }}
-                </router-link>
+                <router-link
+                  :to="{ name: 'customer.show', params: { id: customer.id }}"
+                >{{ customer.name }}</router-link>
               </td>
               <td>{{ customer.email }}</td>
               <td>{{ customer.address }}</td>
@@ -219,15 +189,14 @@
                     @click="$refs.branch.open()"
                   >
                     {{ customer.branch_name || $t('select') | uppercase }}
-                  </span> -->
+                  </span>-->
                   {{ customer.branch.name || $t('select') | uppercase }}
                 </span>
               </td>
               <td>
                 <template v-for="(group, index) in customer.groups">
-                  {{ group.name }}<template v-if="customer.groups.length != index + 1">
-                    ,
-                  </template>
+                  {{ group.name }}
+                  <template v-if="customer.groups.length != index + 1">,</template>
                 </template>
               </td>
               <td>
@@ -236,33 +205,14 @@
             </tr>
           </point-table>
         </p-block-inner>
-        <p-pagination
-          :current-page="page"
-          :last-page="lastPage"
-          @updatePage="updatePage"
-        />
+        <p-pagination :current-page="page" :last-page="lastPage" @updatePage="updatePage" />
       </p-block>
     </div>
-    <m-add-customer
-      ref="addCustomer"
-      @added="onAdded"
-    />
-    <m-status
-      ref="status"
-      @choosen="onChoosenStatus"
-    />
-    <m-branch
-      ref="branch"
-      @choosen="onChoosenBranch"
-    />
-    <m-pricing-group
-      ref="pricingGroup"
-      @choosen="onChoosenPricingGroup"
-    />
-    <m-customer-group
-      ref="customerGroup"
-      @choosen="onChoosenGroup"
-    />
+    <m-add-customer ref="addCustomer" @added="onAdded" />
+    <m-status ref="status" @choosen="onChoosenStatus" />
+    <m-branch ref="branch" @choosen="onChoosenBranch" />
+    <m-pricing-group ref="pricingGroup" @choosen="onChoosenPricingGroup" />
+    <m-customer-group ref="customerGroup" @choosen="onChoosenGroup" />
   </div>
 </template>
 
@@ -311,7 +261,7 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('masterCustomer', ['get', 'bulkArchive', 'bulkActivate', 'bulkDelete']),
+    ...mapActions('masterCustomer', ['get', 'bulkArchive', 'bulkActivate', 'bulkDelete', 'export']),
     onChoosenBranch (branch) {
 
     },
@@ -340,6 +290,17 @@ export default {
         self.isLoading = false
         console.log(error)
       })
+    },
+    exportData () {
+      var today = new Date();
+      var date = today.getFullYear().toString() + "-" + (today.getMonth() + 1).toString() + "-" + today.getDate().toString();
+      var time = today.getHours().toString() + ":" + today.getMinutes().toString() + ":" + today.getSeconds().toString();
+      this.export({
+        datetimenow: date + " " + time,
+        join: 'address,phone,email',
+        is_archived: this.statusId,
+        group_id: this.groupId
+      });
     },
     toggleCheckRow (id) {
       if (!this.isRowChecked(id)) {
