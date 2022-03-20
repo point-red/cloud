@@ -10,7 +10,7 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <!-- <a
+          <a
             v-if="$permission.has('create item')"
             href="javascript:void(0)"
             class="input-group-prepend"
@@ -19,7 +19,7 @@
             <span class="input-group-text">
               <i class="fa fa-upload" />
             </span>
-          </a> -->
+          </a>
           <a
             v-if="$permission.has('create item')"
             href="javascript:void(0)"
