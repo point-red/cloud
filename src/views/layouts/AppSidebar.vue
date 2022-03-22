@@ -261,7 +261,7 @@
                     to="/human-resource/kpi"
                     active-class="active"
                   >
-                    {{ $t('kpi template') | uppercase }}
+                    {{ $t('key performance indicator') | uppercase }}
                   </router-link>
                 </li>
               </ul>
