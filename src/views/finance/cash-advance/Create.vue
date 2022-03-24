@@ -75,7 +75,7 @@
               </h6>
               <span
                 class="select-link"
-                @click="$refs.employee.show()"
+                @click="$refs.employee.open()"
               >
                 {{ form.employee_name || $t('select') | uppercase }}
               </span>
@@ -198,8 +198,7 @@
     <m-employee
       id="employee"
       ref="employee"
-      @input="chooseEmployeeToId"
-      @choosen="chooseEmployeeToName"
+      @choosen="choosenEmployee"
     />
   </div>
 </template>
@@ -236,7 +235,7 @@ export default {
         approver_email: null,
         notes: null,
         amount: 0,
-        activity: 'Created Form',
+        activity: 'Created',
         details: [{
           chart_of_account_id: null,
           chart_of_account_name: null,
@@ -285,11 +284,9 @@ export default {
         })
       }
     },
-    chooseEmployeeToId (id) {
-      this.form.employee_id = id
-    },
-    chooseEmployeeToName (name) {
-      this.form.employee_name = name
+    choosenEmployee (value) {
+      this.form.employee_id = value.id
+      this.form.employee_name = value.name
     },
     calculate: debounce(function () {
       var totalAmount = 0

@@ -80,6 +80,16 @@ const actions = {
         })
     })
   },
+  storeHistory (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/history', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url + '/' + payload.id, payload)
@@ -141,6 +151,16 @@ const actions = {
         })
     })
   },
+  refund (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/refund', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
   cancellationApprove (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/' + payload.id + '/cancellation-approve', payload)
@@ -154,6 +174,26 @@ const actions = {
   cancellationReject (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/' + payload.id + '/cancellation-reject', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  sendBulkRequestApproval (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/send-bulk-request-approval', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  bulkApproval (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/bulk-approval', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

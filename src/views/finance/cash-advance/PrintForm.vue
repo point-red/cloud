@@ -122,6 +122,7 @@
         v-print="'print-form'"
         type="button"
         class="btn btn-sm btn-outline-secondary mt-3"
+        @click="emitHistory()"
       >
         {{ $t('print') | uppercase }}
       </button>
@@ -193,6 +194,9 @@ export default {
     },
     onClose () {
       this.$emit('close', true)
+    },
+    emitHistory () {
+      this.$emit('history', 'Printed')
     },
     async getSettingLogo () {
       try {

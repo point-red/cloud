@@ -22,7 +22,7 @@
     </breadcrumb>
 
     <div
-      v-if="cashAdvance.archived_at == null && cashAdvance.form.cancellation_status != 0 && cashAdvance.form.approval_status == 0 && isLoading == false"
+      v-if="cashAdvance.archived_at == null && cashAdvance.form.cancellation_status != 1 && cashAdvance.form.approval_status == 0 && isLoading == false"
       class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
@@ -149,33 +149,40 @@
               class="col-sm-12"
             >
               <div class="text-right">
-                <button
-                  type="button"
-                  class="btn btn-circle btn-dual-secondary pt-1 mr-2"
+                <a
+                  v-if="cashAdvance.employee.emails.length!=0"
+                  :href="'mailto:' + cashAdvance.employee.emails[0].email + '?Subject=Invoice Cash Advance&body=Content Body'"
+                  class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                  title="Print cash advance"
                 >
-                  <i class="fa fa-paper-plane fa-2x" />
-                </button>
+                  <i class="fa fa-paper-plane" />
+                </a>
                 <button
                   type="button"
-                  class="btn btn-circle btn-dual-secondary pt-1 mr-2"
+                  class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                  title="Print cash advance"
                   @click="$refs.printForm.open()"
                 >
-                  <i class="fa fa-print fa-2x" />
+                  <i class="si si-printer" />
                 </button>
                 <router-link
+                  v-if="$permission.has('create cash advance')"
                   :to="{ name: 'finance.cash-advance.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('create') | uppercase }}
                 </router-link>
                 <router-link
+                  v-if="$permission.has('update cash advance')"
                   :to="{ name: 'finance.cash-advance.edit', params: { id: id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('edit') | uppercase }}
                 </router-link>
                 <button
-                  v-if="cashAdvance.form.cancellation_status != 1"
+                  v-if="$permission.has('delete cash advance')
+                    && (cashAdvance.form.request_cancellation_to == null
+                      || cashAdvance.form.cancellation_status == -1)"
                   type="button"
                   class="btn btn-sm btn-outline-secondary mr-5"
                   @click="$refs.formRequestDelete.open()"
@@ -183,7 +190,7 @@
                   {{ $t('delete') | uppercase }}
                 </button>
                 <button
-                  v-if="cashAdvance.form.approval_status == 1"
+                  v-if="cashAdvance.form.approval_status == 1 && !cashAdvance.form.done && cashAdvance.form.cancellation_status != 1"
                   type="button"
                   class="btn btn-sm btn-outline-secondary mr-5"
                   @click="onRefund()"
@@ -331,6 +338,7 @@
     <print-form
       ref="printForm"
       :cash="cashAdvance"
+      @history="storeHistoryRecord($event)"
     />
   </div>
 </template>
@@ -353,6 +361,7 @@ export default {
   data () {
     return {
       id: this.$route.params.id,
+      apporval: this.$route.query.approval,
       isLoading: false
     }
   },
@@ -363,14 +372,23 @@ export default {
   created () {
     this.search()
   },
+  mounted () {
+    if (this.apporval == 'approve') {
+      this.onApprove()
+    } else if (this.apporval == 'reject') {
+      this.onReject()
+    }
+  },
   methods: {
     ...mapActions('financeCashAdvance', {
       find: 'find',
       delete: 'delete',
       approve: 'approve',
       reject: 'reject',
+      refund: 'refund',
       cancellationApprove: 'cancellationApprove',
-      cancellationReject: 'cancellationReject'
+      cancellationReject: 'cancellationReject',
+      storeHistory: 'storeHistory'
     }),
     calculate: debounce(function () {
       var totalAmount = 0
@@ -380,23 +398,27 @@ export default {
       this.cashAdvance.amount = totalAmount
     }, 300),
     onDelete (reason) {
-      this.delete({
-        id: this.id,
-        data: {
-          reason: reason,
-          activity: 'Request Cancellation Form'
-        }
-      }).then(response => {
-        this.$notification.success('cancel success')
-        this.search()
-      }).catch(error => {
-        this.$notification.error(error.message)
-      })
+      if (reason.length == 0) {
+        this.$notification.error('reason delete required')
+      } else {
+        this.delete({
+          id: this.id,
+          data: {
+            reason: reason,
+            activity: 'Request Cancellation'
+          }
+        }).then(response => {
+          this.$notification.success('cancel success')
+          this.search()
+        }).catch(error => {
+          this.$notification.error(error.message)
+        })
+      }
     },
     onApprove () {
       this.approve({
         id: this.id,
-        activity: 'Approved Form'
+        activity: 'Approved'
       }).then(response => {
         this.$notification.success('approval approved')
         this.search()
@@ -406,7 +428,7 @@ export default {
       this.reject({
         id: this.id,
         reason: reason,
-        activity: 'Rejected Form'
+        activity: 'Rejected'
       }).then(response => {
         this.$notification.success('approval rejected')
         this.search()
@@ -415,7 +437,7 @@ export default {
     onCancellationApprove () {
       this.cancellationApprove({
         id: this.id,
-        activity: 'Approved Cancellation Form'
+        activity: 'Cancellation Approve'
       }).then(response => {
         this.$notification.success('cancellation approved')
         this.$router.push('/finance/cash-advance')
@@ -425,16 +447,22 @@ export default {
       this.cancellationReject({
         id: this.id,
         reason: reason,
-        activity: 'Rejected Cancellation Form'
+        activity: 'Cancellation Rejected'
       }).then(response => {
         this.$notification.success('cancellation rejected')
         this.search()
-      }).catch(error => {
-        console.log(error.message)
       })
     },
     onRefund () {
-      alert('refunded')
+      this.refund({
+        id: this.id,
+        activity: 'Refunded'
+      }).then(response => {
+        this.$notification.success('refund success')
+        this.search()
+      }).catch(error => {
+        this.$notification.error(error.message)
+      })
     },
     search () {
       this.isLoading = true
@@ -442,7 +470,7 @@ export default {
         id: this.id,
         params: {
           includes: 'form;' +
-            'employee;' +
+            'employee.emails;' +
             'details.account;' +
             'form.createdBy;' +
             'form.requestApprovalTo;' +
@@ -453,6 +481,16 @@ export default {
         this.calculate()
       }).catch(error => {
         this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    },
+    storeHistoryRecord (history) {
+      this.storeHistory({
+        id: this.id,
+        activity: history
+      }).then(response => {
+        this.$notification.success('history recorded : ' + history)
+      }).catch(error => {
         this.$notification.error(error.message)
       })
     }

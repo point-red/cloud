@@ -241,7 +241,7 @@ export default {
         notes: null,
         number: null,
         amount_remaining: null,
-        activity: 'Update Form',
+        activity: 'Updated',
         details: [{
           chart_of_account_id: null,
           chart_of_account_name: null,

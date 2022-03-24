@@ -2,23 +2,21 @@
   <div>
     <breadcrumb>
       <breadcrumb-finance />
-      <span class="breadcrumb-item active">{{ $t('cash advance') | uppercase }}</span>
+      <router-link
+        to="/finance/cash-advance"
+        class="breadcrumb-item"
+      >
+        {{ $t('cash advance') | uppercase }}
+      </router-link>
+      <span class="breadcrumb-item active">{{ $t('request approve all') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
       <p-block :title="$t('cash advance')">
         <div class="input-group block">
           <download-excel
-            :name="`Cash Advance_${$options.filters.dateFormat(date.start, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.end, 'DD MMM YYYY')}`"
+            :name="`Cash Advance_approve`"
             :fetch="generateReport"
-            :header="[
-              `Export date: ${$options.filters.dateFormat(new Date(), 'DD MMM YYYY HH:mm')} `,
-              `Export period: ${$options.filters.dateFormat(date.start, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.end, 'DD MMM YYYY')}`,
-              ' ',
-              `Project name: ${authUser.tenant_name}`,
-              'Cash Advance',
-              ' '
-            ]"
             class="input-group-prepend"
           >
             <span class="input-group-text">
@@ -44,105 +42,29 @@
             @input="filterSearch"
           />
         </div>
-        <div class="d-flex justify-content-between">
-          <router-link
-            to="/finance/cash-advance/request-approve-all"
-            class="btn btn-sm btn-light"
+        <div class="font-size-sm mb-10">
+          <button
+            class="btn btn-sm btn-primary mr-3"
+            @click="sendApproval()"
           >
-            {{ $t('request approve all') | uppercase }}
-          </router-link>
-          <div class="font-size-sm mb-10 mt-2">
-            <a
-              href="javascript:void(0)"
-              @click="isAdvanceFilter = !isAdvanceFilter"
-            >
-              {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
-            </a>
-          </div>
-          <div />
-        </div>
-        <div
-          v-show="isAdvanceFilter"
-          class="card"
-          :class="{ 'fadeIn': isAdvanceFilter }"
-        >
-          <div class="row">
-            <div class="col-sm-6 text-center">
-              <p-form-row
-                id="date-start"
-                name="date-start"
-                :label="$t('date start')"
-                :is-horizontal="false"
-              >
-                <div slot="body">
-                  <p-date-picker
-                    id="date"
-                    v-model="date.start"
-                    name="date"
-                    label="date"
-                  />
-                </div>
-              </p-form-row>
-            </div>
-            <div class="col-sm-6 text-center">
-              <p-form-row
-                id="date-end"
-                name="date-end"
-                :label="$t('date end')"
-                :is-horizontal="false"
-              >
-                <div slot="body">
-                  <p-date-picker
-                    id="date"
-                    v-model="date.end"
-                    name="date"
-                    label="date"
-                  />
-                </div>
-              </p-form-row>
-            </div>
-            <div class="col-sm-6 text-center">
-              <p-form-row
-                id="form-approval-status"
-                name="form-approval-status"
-                :label="$t('approval status')"
-                :is-horizontal="false"
-              >
-                <div slot="body">
-                  <span
-                    class="select-link"
-                    @click="$refs.formApprovalStatus.open()"
-                  >
-                    {{ formApprovalStatus.label || $t('select') | uppercase }}
-                  </span>
-                </div>
-              </p-form-row>
-            </div>
-            <div class="col-sm-6 text-center">
-              <p-form-row
-                id="form-status"
-                name="form-status"
-                :label="$t('form status')"
-                :is-horizontal="false"
-              >
-                <div slot="body">
-                  <span
-                    class="select-link"
-                    @click="$refs.formStatus.open()"
-                  >
-                    {{ formStatus.label || $t('select') | uppercase }}
-                  </span>
-                </div>
-              </p-form-row>
-            </div>
-          </div>
+            {{ $t('send ' + checkedLength + ' request') | uppercase }}
+            <i class="fa fa-paper-plane" />
+          </button>
         </div>
         <hr>
-        <p-block-inner :is-loading="isLoading">
+        <p-block-inner
+          v-if="!isLoading"
+          :is-loading="isLoading"
+        >
           <point-table>
             <tr slot="p-head">
               <th class="text-center">
-                No
+                <input
+                  v-model="isCheckAll"
+                  type="checkbox"
+                  style="min-width: auto"
+                  @change="checkAll()"
+                >
               </th>
               <th class="text-center">
                 Date Form
@@ -163,16 +85,10 @@
                 Amount
               </th>
               <th class="text-center">
-                Amount Remaining
-              </th>
-              <th class="text-center">
                 Approval Status
               </th>
               <th class="text-center">
-                Form Status
-              </th>
-              <th class="text-center">
-                History
+                Last Request
               </th>
             </tr>
             <template v-for="(cashAdvance, index) in cashAdvances">
@@ -182,7 +98,12 @@
                   slot="p-body"
                 >
                   <td class="text-center">
-                    {{ ++index }}
+                    <input
+                      v-model="checkedData[index].checked"
+                      type="checkbox"
+                      style="min-width: auto"
+                      @change="countCheck()"
+                    >
                   </td>
                   <td class="text-center">
                     {{ cashAdvance.form.date | dateFormat('DD MMMM YYYY') }}
@@ -205,9 +126,6 @@
                     {{ cashAdvance.amount | numberFormat }}
                   </td>
                   <td class="text-center">
-                    {{ cashAdvance.amount_remaining | numberFormat }}
-                  </td>
-                  <td class="text-center">
                     <div
                       v-if="cashAdvance.form.approval_status == 0"
                       class="badge badge-primary"
@@ -228,32 +146,9 @@
                     </div>
                   </td>
                   <td class="text-center">
-                    <div
-                      v-if="cashAdvance.form.cancellation_status == 1"
-                      class="badge badge-danger"
-                    >
-                      {{ $t('canceled') | uppercase }}
+                    <div v-if="cashAdvance.last_request_approval_at !== null">
+                      {{ cashAdvance.last_request_approval_at | dateFormat('DD MMMM YYYY') }}
                     </div>
-                    <div
-                      v-else-if="cashAdvance.form.done == 0"
-                      class="badge badge-primary"
-                    >
-                      {{ $t('pending') | uppercase }}
-                    </div>
-                    <div
-                      v-else-if="cashAdvance.form.done == 1"
-                      class="badge badge-success"
-                    >
-                      {{ $t('done') | uppercase }}
-                    </div>
-                  </td>
-                  <td class="text-center">
-                    <router-link
-                      :to="{ name: 'finance.cash-advance.history', params: { number: cashAdvance.form.number }}"
-                      class="btn btn-sm btn-light"
-                    >
-                      <i class="fa fa-history p-0" />
-                    </router-link>
                   </td>
                 </tr>
               </template>
@@ -296,8 +191,9 @@ export default {
   },
   data () {
     return {
-      isAdvanceFilter: false,
-      checkedRow: [],
+      isCheckAll: false,
+      checkedData: [],
+      checkedLength: 0,
       date: {
         start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
         end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
@@ -315,25 +211,17 @@ export default {
       formApprovalStatus: {
         id: null,
         label: null,
-        value: null
+        value: 'approvalPending'
+      },
+      formCancellationStatus: {
+        id: null,
+        label: null,
+        value: 'notCanceled'
       }
     }
   },
   computed: {
-    ...mapGetters('financeCashAdvance', ['cashAdvances', 'pagination']),
-    ...mapGetters('auth', ['authUser'])
-  },
-  watch: {
-    date: function () {
-      this.$router.push({
-        query: {
-          ...this.$route.query,
-          date_from: this.date.start,
-          date_to: this.date.end
-        }
-      })
-      this.search()
-    }
+    ...mapGetters('financeCashAdvance', ['cashAdvances', 'pagination'])
   },
   created () {
     this.search()
@@ -342,7 +230,7 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('financeCashAdvance', ['get']),
+    ...mapActions('financeCashAdvance', ['get', 'sendBulkRequestApproval']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
@@ -359,6 +247,20 @@ export default {
       this.formApprovalStatus.value = option.value
       this.search()
     },
+    checkAll () {
+      this.checkedData.forEach(data => {
+        data.checked = this.isCheckAll
+      })
+      this.countCheck()
+    },
+    countCheck () {
+      this.checkedLength = this.checkedData.filter(data => data.checked).length
+      if (this.checkedLength == this.cashAdvances.length) {
+        this.isCheckAll = true
+      } else if (this.checkedLength != this.cashAdvances.length) {
+        this.isCheckAll = false
+      }
+    },
     search () {
       this.isLoading = true
       this.get({
@@ -367,24 +269,24 @@ export default {
           sort_by: '-form.number',
           group_by: 'cash_advance.id',
           fields: 'cash_advance.*',
-          filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
+          filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value + ';' + this.formCancellationStatus.value,
           filter_like: {
             'form.number': this.searchText,
             'form.notes': this.searchText,
             'employee.name': this.searchText,
             'account.name': this.searchText
           },
-          filter_date_min: {
-            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
-          },
-          filter_date_max: {
-            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
-          },
           limit: this.limit,
           includes: 'employee;form;details.account;',
           page: this.currentPage
         }
       }).then(response => {
+        response.data.forEach(cashAdvance => {
+          this.checkedData.push({
+            id: cashAdvance.id,
+            checked: false
+          })
+        })
         this.isLoading = false
       }).catch(error => {
         this.isLoading = false
@@ -394,6 +296,26 @@ export default {
     updatePage (value) {
       this.currentPage = value
       this.search()
+    },
+    sendApproval () {
+      const baseUrl = location.origin
+      const data = []
+      this.checkedData.forEach(cashAdvance => {
+        if (cashAdvance.checked) {
+          data.push(cashAdvance.id)
+        }
+      })
+      console.log(data)
+      this.sendBulkRequestApproval({
+        bulk_id: data,
+        tenant_base_url: baseUrl,
+        activity: 'request approve all'
+      }).then(response => {
+        this.$notification.success('Request Approval Sended')
+        this.search()
+      }).catch(error => {
+        this.$notification.error(error.message)
+      })
     },
     async generateReport () {
       this.isLoading = true
@@ -410,12 +332,6 @@ export default {
               'form.notes': this.searchText,
               'employee.name': this.searchText,
               'account.name': this.searchText
-            },
-            filter_date_min: {
-              'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
-            },
-            filter_date_max: {
-              'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
             },
             includes: 'employee;form;details.account;',
             limit: 10000,

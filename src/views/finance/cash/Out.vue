@@ -393,7 +393,7 @@ export default {
           sort_by: '-form.number',
           group_by: 'cash_advance.id',
           fields: 'cash_advance.*',
-          filter_form: 'notArchived;pending;approvalApproved',
+          filter_form: 'notArchived;pending;approvalApproved;notCanceled',
           filter_like: {
             'form.number': this.searchText,
             'form.notes': this.searchText,
