@@ -97,21 +97,6 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>Units Converter 1</td>
-                  <td>
-                    <p-select
-                      id="units_converter_1"
-                      v-model="form_code.units_converter_1"
-                      name="units_converter_1"
-                      :query="query"
-                      :disabled="isSaving"
-                      :options="header"
-                      :errors="form_code.units_converter_1"
-                      @errors="form_code.units_converter_1 = null"
-                    />
-                  </td>
-                </tr>
-                <tr>
                   <td>Units Converter 2</td>
                   <td>
                     <p-select

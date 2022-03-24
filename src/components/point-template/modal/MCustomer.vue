@@ -52,7 +52,7 @@
       </div>
       <div class="pull-left">
         <button
-          v-if="createButton"
+          v-if="createButton && $permission.has('create customer')"
           type="button"
           class="btn btn-sm btn-outline-secondary mr-5"
           @click="$refs.addCustomer.open()"

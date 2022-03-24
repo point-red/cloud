@@ -137,6 +137,26 @@
                     />
                   </div>
                 </p-form-row>
+                <p-form-row
+                  id="branch"
+                  name="branch"
+                  :label="$t('branch')"
+                >
+                  <div
+                    slot="body"
+                    class="col-lg-9"
+                  >
+                    <p-select
+                      id="branch"
+                      v-model="form.branch"
+                      name="branch"
+                      :disabled="isSaving"
+                      :options="optionList"
+                      :errors="form.errors.get('branch')"
+                      @errors="form.errors.set('branch', null)"
+                    />
+                  </div>
+                </p-form-row>
 
                 <div class="pull-right">
                   <button
@@ -180,6 +200,7 @@ export default {
         email: null,
         address: null,
         phone: null,
+        branch: null,
         file: {}
       })
     }
@@ -196,6 +217,7 @@ export default {
       data.set('address', this.form.address)
       data.set('phone', this.form.phone)
       data.set('email', this.form.email)
+      data.set('branch', this.form.branch)
       var self = this
       self.isLoading = true
       axios.post('/master/customers/import', data, {
@@ -233,6 +255,8 @@ export default {
           this.form.email = i
         } else if (rows[0][i] === 'phone') {
           this.form.phone = i
+        } else if (rows[0][i] === 'branch') {
+          this.form.branch = i
         }
         this.optionList.push({
           id: i,
