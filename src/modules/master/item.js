@@ -76,6 +76,16 @@ const mutations = {
 }
 
 const actions = {
+  export (_, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/export', payload)
+        .then((response) => {
+          resolve(response)
+        }, (error) => {
+          reject(error)
+        })
+    })
+  },
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url, payload)

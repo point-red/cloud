@@ -21,6 +21,16 @@
             </span>
           </a>
           <a
+            v-if="$permission.has('read item')"
+            href="javascript:void(0)"
+            class="input-group-prepend"
+            @click="exportData"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-download" />
+            </span>
+          </a>
+          <a
             v-if="$permission.has('create item')"
             href="javascript:void(0)"
             class="input-group-prepend"
@@ -122,6 +132,7 @@ export default {
   },
   data () {
     return {
+      isExporting: false,
       isLoading: true,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
@@ -142,7 +153,28 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('masterItem', ['get']),
+    ...mapActions('masterItem', ['get', 'export']),
+    exportData () {
+      if (this.isExporting) {
+        return
+      }
+
+      this.isExporting = true
+      this.export({
+        sort_by: 'name',
+        filter_like: {
+          code: this.searchText,
+          name: this.searchText
+        },
+        includes: 'account;units'
+      }).then(response => {
+        window.open(response.data.url, '_blank')
+      }).catch(error => {
+        console.log(error)
+      }).finally(() => {
+        this.isExporting = false
+      })
+    },
     onAdded () {
       this.search()
     },
