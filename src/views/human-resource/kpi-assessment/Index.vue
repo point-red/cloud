@@ -49,19 +49,9 @@
                 <td>
                   <div class="row">
                     <a
-                      v-if="isUser(employee.user_id) && $permission.has('create employee assessment')"
+                      v-if="$permission.has('create employee assessment')"
                       :href="'kpi-assessment/'+ employee.id"
                       title="create"
-                      class="input-group-prepend mr-2"
-                    >
-                      <span class="input-group-text">
-                        <i class="fa fa-pencil" />
-                      </span>
-                    </a>
-                    <a
-                      v-if="!isUser(employee.user_id) && $permission.has('update employee assessment')"
-                      :href="'kpi-assessment/'+ employee.id + '/edit'"
-                      title="edit"
                       class="input-group-prepend mr-2"
                     >
                       <span class="input-group-text">
@@ -135,9 +125,6 @@ export default {
       bulkActivate: 'bulkActivate',
       bulkDelete: 'bulkDelete'
     }),
-    isUser (employee_userid) {
-      return localStorage.getItem('userId') == employee_userid;
-    },
     getNumberIndex (index) {
       return (this.page * 10) - 10 + index + 1
     },

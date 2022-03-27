@@ -104,7 +104,31 @@ const actions = {
         reject(error)
       })
     })
-  }
+  },
+  showBy ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/show-by/' + payload.feature + '/' + payload.feature_id)
+        .then(response => {
+          commit('FETCH_OBJECT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  replace (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/replace', payload, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then(response => {
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
 }
 
 export default {
