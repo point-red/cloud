@@ -39,9 +39,9 @@
             <th class="text-right">
               Quantity
             </th>
-            <th class="text-right">
+            <!-- <th class="text-right">
               Stock
-            </th>
+            </th> -->
           </tr>
           <tr
             v-for="(option, inventoryIndex) in inventories"
@@ -66,10 +66,10 @@
                 @choosen="updateUnit"
               />
             </td>
-            <td class="text-right">
+            <!-- <td class="text-right">
               {{ option.remainingInUnit | numberFormat }}
               {{ mutableItemUnit.label | uppercase }}
-            </td>
+            </td> -->
           </tr>
           <tr slot="p-body">
             <td v-if="mutableRequireExpiryDate" /><td v-if="mutableRequireProductionNumber" /><td class="text-right">
