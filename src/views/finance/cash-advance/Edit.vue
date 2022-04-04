@@ -228,6 +228,7 @@ export default {
       isSaving: false,
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
+      old_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
       form: new Form({
         id: this.$route.params.id,
         increment_group: this.$moment().format('YYYYMM'),
@@ -319,21 +320,21 @@ export default {
       if (this.form.request_approval_to == null) {
         this.$notification.error('approval cannot be null')
         this.isSaving = false
-        this.form.errors.record({
-          request_approval_to: ['Approver should not empty']
-        })
-        return
+      } else if (this.$moment(this.old_date).format('YYYY-MM-DD') > this.$moment(this.form.date).format('YYYY-MM-DD')) {
+        this.$notification.error('date must be equal or more than previous date')
+        this.isSaving = false
+      } else {
+        this.update(this.form)
+          .then(response => {
+            this.isSaving = false
+            this.$notification.success('update success')
+            this.$router.push('/finance/cash-advance/' + response.data.id)
+          }).catch(error => {
+            this.isSaving = false
+            this.$notification.error(error.message)
+            this.form.errors.record(error.errors)
+          })
       }
-      this.update(this.form)
-        .then(response => {
-          this.isSaving = false
-          this.$notification.success('update success')
-          this.$router.push('/finance/cash-advance/' + response.data.id)
-        }).catch(error => {
-          this.isSaving = false
-          this.$notification.error(error.message)
-          this.form.errors.record(error.errors)
-        })
     },
     search () {
       this.isLoading = true
@@ -357,6 +358,7 @@ export default {
       })
     },
     mapForm (data) {
+      this.old_date = data.form.date
       this.form.date = data.form.date
       this.form.payment_type = data.payment_type.toLowerCase()
       this.form.employee_id = data.employee.id

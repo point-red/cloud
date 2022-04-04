@@ -80,6 +80,7 @@
                     v-model="date.start"
                     name="date"
                     label="date"
+                    @input="search()"
                   />
                 </div>
               </p-form-row>
@@ -97,6 +98,7 @@
                     v-model="date.end"
                     name="date"
                     label="date"
+                    @input="search()"
                   />
                 </div>
               </p-form-row>
@@ -372,7 +374,10 @@ export default {
             'form.number': this.searchText,
             'form.notes': this.searchText,
             'employee.name': this.searchText,
-            'account.name': this.searchText
+            'account.alias': this.searchText,
+            'cash_advance_detail.notes': this.searchText,
+            'cash_advance.amount': this.searchText,
+            'cash_advance.amount_remaining': this.searchText
           },
           filter_date_min: {
             'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))

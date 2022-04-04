@@ -73,7 +73,7 @@
                     {{ ++index }}
                   </td>
                   <td class="text-center">
-                    {{ history.table.form.date | dateFormat('DD MMMM YYYY') }}
+                    {{ history.date | dateFormat('DD MMMM YYYY  HH:mm:ss') }}
                   </td>
                   <td class="text-center">
                     <router-link :to="{ name: 'finance.cash-advance.show', params: { id: history.table_id }}">

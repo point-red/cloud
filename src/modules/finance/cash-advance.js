@@ -190,16 +190,6 @@ const actions = {
           reject(error)
         })
     })
-  },
-  bulkApproval (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/bulk-approval', payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
   }
 }
 

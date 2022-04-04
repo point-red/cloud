@@ -50,13 +50,6 @@
       <div class="pull-right">
         <button
           type="button"
-          class="mr-5 btn btn-sm btn-outline-secondary"
-          @click="add()"
-        >
-          {{ $t('add') | uppercase }}
-        </button>
-        <button
-          type="button"
           class="btn btn-sm btn-outline-danger"
           @click="clear()"
         >
@@ -90,6 +83,10 @@ export default {
       default: ''
     },
     nottype: {
+      type: String,
+      default: ''
+    },
+    datareference: {
       type: String,
       default: ''
     }
@@ -168,8 +165,9 @@ export default {
         this.isLoading = false
       })
     },
-    add () {
-      //
+    clear () {
+      this.$emit('clear', this.datareference)
+      this.close()
     },
     choose (option) {
       option.index = this.index

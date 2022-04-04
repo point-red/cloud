@@ -54,14 +54,19 @@
                 style="margin-right: 20px;"
               >
                 <tr>
-                  <td>Date</td>
+                  <td>Employee</td>
                   <td>:</td>
-                  <td>{{ cash.form.date | dateFormat('DD MMMM YYYY') }}</td>
+                  <td>{{ cash.employee.name }}</td>
                 </tr>
                 <tr>
                   <td>Form number</td>
                   <td>:</td>
                   <td>{{ cash.form.number }}</td>
+                </tr>
+                <tr>
+                  <td>Date</td>
+                  <td>:</td>
+                  <td>{{ cash.form.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
               </table>
             </div>

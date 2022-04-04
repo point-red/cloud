@@ -100,21 +100,21 @@
               <button
                 type="button"
                 class="btn btn-outline-secondary mr-5"
-                title="Print cash advance"
+                title="Print cash report"
                 @click="$refs.printForm.open()"
               >
                 <i class="si si-printer logo-print" />
               </button>
               <div class="d-flex flex-column">
                 <download-excel
-                  :name="`Cash Reports_${$options.filters.dateFormat(date.start, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.end, 'DD MMM YYYY')}`"
+                  :name="`Cash Reports_${$options.filters.dateFormat(date.from, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.to, 'DD MMM YYYY')}`"
                   :fetch="generateReport"
                   :header="[
-                    `Period: ${$options.filters.dateFormat(date.start, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.end, 'DD MMM YYYY')}`,
+                    `Period: ${$options.filters.dateFormat(date.from, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.to, 'DD MMM YYYY')}`,
                     `Date Export: ${$options.filters.dateFormat(new Date(), 'DD MMM YYYY HH:mm')} `,
                     ' ',
                     'Cash Report',
-                    `Periode : ${$options.filters.dateFormat(date.start, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.end, 'DD MMM YYYY')}`
+                    `Periode : ${$options.filters.dateFormat(date.from, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.to, 'DD MMM YYYY')}`
                   ]"
                   class="btn btn-outline-secondary mr-5"
                 >
@@ -124,7 +124,7 @@
                   type="button"
                   class="btn btn-outline-secondary mr-5 mt-2"
                   title="Export pdf"
-                  @click="$refs.printForm.open()"
+                  @click="$refs.printForm.printPDF()"
                 >
                   {{ $t('export pdf') | uppercase }}
                 </button>
@@ -455,17 +455,25 @@
     <Coa
       ref="chartOfAccountRef"
       type="cash"
+      datareference="account"
+      @clear="clearReference"
       @choosen="onChoosenAccount"
     />
     <Coa
       ref="chartOfJournalRef"
       nottype="cash"
+      datareference="journal"
+      @clear="clearReference"
       @choosen="onChoosenJournal"
     />
     <m-paymentable
       id="paymentable"
       ref="paymentable"
       @choosen="onChoosenSubledger"
+    />
+    <print-form
+      ref="printForm"
+      @history="storeHistoryRecord($event)"
     />
   </div>
 </template>
@@ -476,6 +484,7 @@ import BreadcrumbFinance from '../Breadcrumb'
 import debounce from 'lodash/debounce'
 import PointTable from 'point-table-vue'
 import JsonExcel from 'vue-json-excel'
+import PrintForm from './PrintForm'
 import Coa from './Coa'
 import axios from '@/axios'
 import { mapGetters, mapActions } from 'vuex'
@@ -485,6 +494,7 @@ export default {
     Breadcrumb,
     BreadcrumbFinance,
     PointTable,
+    PrintForm,
     Coa,
     DownloadExcel: JsonExcel
   },
@@ -522,7 +532,7 @@ export default {
     ...mapGetters('financeReport', ['reports', 'total', 'opening_balance', 'ending_balance', 'cash_advance', 'pagination']),
     ...mapGetters('auth', ['authUser'])
   },
-  created () {
+  mounted () {
     this.search()
   },
   updated () {
@@ -584,9 +594,20 @@ export default {
           this.isLoading = false
           this.$notification.error(error.message)
         })
+        this.$refs.printForm.getData()
       } else {
         this.$notification.error('Please set date to proceed filter')
       }
+    },
+    clearReference (datareference) {
+      if (datareference == 'account') {
+        this.account_id = null
+        this.account_name = null
+      } else if (datareference == 'journal') {
+        this.journal_account_id = null
+        this.journal_account_name = null
+      }
+      this.search()
     },
     async generateReport () {
       this.isLoading = true
@@ -609,7 +630,6 @@ export default {
             limit: this.limit
           }
         })
-        console.log(reports.data)
 
         let indexItem = 0
         const dataResult = reports.data.data.data.map((data) => {

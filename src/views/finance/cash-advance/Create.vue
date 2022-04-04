@@ -311,7 +311,7 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/finance/cash-advance')
+          this.$router.push('/finance/cash-advance/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)

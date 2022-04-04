@@ -311,7 +311,9 @@ export default {
         tenant_base_url: baseUrl,
         activity: 'request approve all'
       }).then(response => {
-        this.$notification.success('Request Approval Sended')
+        this.isCheckAll = false
+        this.checkAll()
+        this.$notification.success('request approval success')
         this.search()
       }).catch(error => {
         this.$notification.error(error.message)

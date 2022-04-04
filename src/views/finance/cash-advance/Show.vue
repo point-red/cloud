@@ -173,7 +173,10 @@
                   {{ $t('create') | uppercase }}
                 </router-link>
                 <router-link
-                  v-if="$permission.has('update cash advance')"
+                  v-if="$permission.has('update cash advance')
+                    && cashAdvance.form.approval_by != null
+                    && cashAdvance.form.done == 0
+                    && cashAdvance.amount == cashAdvance.amount_remaining"
                   :to="{ name: 'finance.cash-advance.edit', params: { id: id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
@@ -181,8 +184,10 @@
                 </router-link>
                 <button
                   v-if="$permission.has('delete cash advance')
+                    && cashAdvance.form.done == 0
                     && (cashAdvance.form.request_cancellation_to == null
-                      || cashAdvance.form.cancellation_status == -1)"
+                      || cashAdvance.form.cancellation_status == -1)
+                    && cashAdvance.amount == cashAdvance.amount_remaining"
                   type="button"
                   class="btn btn-sm btn-outline-secondary mr-5"
                   @click="$refs.formRequestDelete.open()"
@@ -190,7 +195,7 @@
                   {{ $t('delete') | uppercase }}
                 </button>
                 <button
-                  v-if="cashAdvance.form.approval_status == 1 && !cashAdvance.form.done && cashAdvance.form.cancellation_status != 1"
+                  v-if="cashAdvance.form.approval_status == 1 && cashAdvance.form.done == 0 && cashAdvance.form.cancellation_status != 1"
                   type="button"
                   class="btn btn-sm btn-outline-secondary mr-5"
                   @click="onRefund()"
@@ -422,17 +427,25 @@ export default {
       }).then(response => {
         this.$notification.success('approval approved')
         this.search()
+      }).catch(error => {
+        this.$notification.error(error.message)
       })
     },
     onReject (reason) {
-      this.reject({
-        id: this.id,
-        reason: reason,
-        activity: 'Rejected'
-      }).then(response => {
-        this.$notification.success('approval rejected')
-        this.search()
-      })
+      if (reason.length == 0) {
+        this.$notification.error('reason reject required')
+      } else {
+        this.reject({
+          id: this.id,
+          reason: reason,
+          activity: 'Rejected'
+        }).then(response => {
+          this.$notification.success('approval rejected')
+          this.search()
+        }).catch(error => {
+          this.$notification.error(error.message)
+        })
+      }
     },
     onCancellationApprove () {
       this.cancellationApprove({
@@ -441,6 +454,8 @@ export default {
       }).then(response => {
         this.$notification.success('cancellation approved')
         this.$router.push('/finance/cash-advance')
+      }).catch(error => {
+        this.$notification.error(error.message)
       })
     },
     onCancellationReject (reason) {

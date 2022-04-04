@@ -22,14 +22,14 @@
               </div>
 
               <div
-                v-if="approvalStatus === -1"
+                v-else-if="approvalStatus === -1"
                 class="form-status bg-danger"
               >
                 Rejected
               </div>
 
               <div
-                v-if="approvalStatus === 0"
+                v-else-if="approvalStatus === 0"
                 class="form-status bg-secondary"
               >
                 Pending
@@ -41,11 +41,23 @@
                 Unknown
               </div>
             </template>
-            <div class="m-0 mt-4 alert alert-danger">
+            <div
+              v-if="warningMessage.length!=0"
+              class="m-0 mt-4 alert alert-danger"
+            >
               {{ warningMessage }}
             </div>
           </div>
         </div>
+      </div>
+      <div class="text-center mt-2">
+        <button
+          class="footer text-center text-white bg-secondary"
+          type="button"
+          @click="close"
+        >
+          <strong>BACK</strong>
+        </button>
       </div>
     </div>
   </div>
@@ -53,6 +65,7 @@
 
 <script>
 import axiosNode from '@/axiosNode'
+import axios from '@/axios'
 
 export default {
   data () {
@@ -63,6 +76,7 @@ export default {
       resourceType: '',
       resource: {},
       projectName: '',
+      id: '',
       approvalStatus: null,
       warningMessage: ''
     }
@@ -73,10 +87,15 @@ export default {
     this.crudType = this.$route.query['crud-type']
     this.action = this.$route.query.action || ''
     this.token = this.$route.query.token || ''
+    this.id = this.$route.query.id || ''
+    this.projectName = this.$route.query['project-name'] || ''
 
     this.handleAction()
   },
   methods: {
+    close () {
+      open(location, '_self').close()
+    },
     async handleAction () {
       // this.validate()
       const headers = {
@@ -92,7 +111,11 @@ export default {
         if (this.resourceType === 'StockCorrection') {
           ({ resource, projectName, approvalStatus } = await this.handleApprovalStockCorrection(headers))
         }
+        if (this.resourceType === 'CashAdvance') {
+          ({ resource, projectName, approvalStatus } = await this.handleApprovalCashAdvance(headers))
+        }
       } catch (error) {
+        alert(error)
         if (error.data && error.data.message) {
           this.$notification.error(error.data.message)
           if (error.data.message === 'Stock can not be minus') {
@@ -160,6 +183,19 @@ export default {
           return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.cancellationStatus }
         }
       }
+    },
+    async handleApprovalCashAdvance (headers) {
+      let status = 0
+      if (this.action === 'approve') {
+        status = 1
+      } else if (this.action === 'reject') {
+        status = -1
+      }
+      const { data: { data: cashAdvance } } = await axios.post('approval-with-token/finance/cash-advances', { token: this.token, id: this.id, status: status, activity: 'approved by email' }, { headers })
+      if (cashAdvance.form.approval_status == 0) {
+        this.warningMessage = 'Remaining Balance Not Enough'
+      }
+      return { resource: cashAdvance, projectName: this.projectName, approvalStatus: cashAdvance.form.approval_status }
     }
   }
 }
