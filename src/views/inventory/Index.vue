@@ -29,11 +29,12 @@
         link="/inventory/correction"
         icon="si si-note"
       />
-      <!-- <p-box
-        :name="$t('transfer item')"
+      <p-box
         v-if="$permission.has('read transfer item')"
+        :name="$t('transfer item')"
         link="/inventory/transfer"
-        icon="si si-directions"/> -->
+        icon="si si-directions"
+      />
     </div>
   </div>
 </template>

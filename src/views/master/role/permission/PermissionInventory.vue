@@ -122,9 +122,9 @@
         <td>
           <p-form-check-box
             :is-form="false"
-            :checked="checkPermissionRow(['create transfer item', 'read transfer item', 'update transfer item', 'delete transfer item'], permissions)"
+            :checked="checkPermissionRow(['create transfer item', 'read transfer item', 'update transfer item', 'delete transfer item', 'approve transfer item'], permissions)"
             :description="''"
-            @click.native="togglePermissionRow(['create transfer item', 'read transfer item', 'update transfer item', 'delete transfer item'], permissions)"
+            @click.native="togglePermissionRow(['create transfer item', 'read transfer item', 'update transfer item', 'delete transfer item', 'approve transfer item'], permissions)"
           />
         </td>
         <td><b>{{ $t('transfer item') | uppercase }}</b></td>
@@ -162,6 +162,15 @@
             :checked="$rolePermission.has('delete transfer item', permissions)"
             :description="'delete' | uppercase"
             @click.native="togglePermission('delete transfer item')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="approve transfer item"
+            :is-form="false"
+            :checked="$rolePermission.has('approve transfer item', permissions)"
+            :description="'approval' | uppercase"
+            @click.native="togglePermission('approve transfer item')"
           />
         </td>
       </tr>

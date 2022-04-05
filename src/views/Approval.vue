@@ -5,7 +5,7 @@
         {{ projectName }}
       </h1>
       <div class="floating-approve">
-        <div class="header">
+        <div class="header text-center">
           <strong>{{ crudType | uppercase }} APPROVAL STATUS</strong>
         </div>
         <div class="body">
@@ -34,18 +34,30 @@
               >
                 Pending
               </div>
-              <div
+              <!-- <div
                 v-else
                 class="form-status bg-secondary"
               >
                 Unknown
-              </div>
+              </div> -->
             </template>
-            <div class="m-0 mt-4 alert alert-danger">
+            <div
+              v-if="warningMessage"
+              class="m-0 mt-4 alert alert-danger"
+            >
               {{ warningMessage }}
             </div>
           </div>
         </div>
+      </div>
+      <div class="text-center">
+        <button
+          class="footer text-center text-white bg-secondary"
+          type="button"
+          @click="close"
+        >
+          <strong>{{ uppercase }} BACK</strong>
+        </button>
       </div>
     </div>
   </div>
@@ -53,6 +65,7 @@
 
 <script>
 import axiosNode from '@/axiosNode'
+import { mapActions } from 'vuex'
 
 export default {
   data () {
@@ -67,16 +80,32 @@ export default {
       warningMessage: ''
     }
   },
+  computed: {
+    tenantName () {
+      return localStorage.getItem('tenantName')
+    }
+  },
   created () {
     this.tenant = this.$route.query.tenant || ''
     this.resourceType = this.$route.query['resource-type'] || ''
     this.crudType = this.$route.query['crud-type']
     this.action = this.$route.query.action || ''
     this.token = this.$route.query.token || ''
+    this.approver_id = this.$route.query.approver_id || ''
+    if (this.$route.query.ids != undefined) {
+      this.ids = JSON.parse('[' + this.$route.query.ids + ']') || ''
+    }
 
     this.handleAction()
   },
   methods: {
+    ...mapActions('inventoryTransferItem', {
+      approveByEmail: 'approveByEmail',
+      rejectByEmail: 'rejectByEmail'
+    }),
+    close () {
+      open(location, '_self').close()
+    },
     async handleAction () {
       // this.validate()
       const headers = {
@@ -91,6 +120,9 @@ export default {
         }
         if (this.resourceType === 'StockCorrection') {
           ({ resource, projectName, approvalStatus } = await this.handleApprovalStockCorrection(headers))
+        }
+        if (this.resourceType === 'TransferSend') {
+          this.handleApprovalTransferSend()
         }
       } catch (error) {
         if (error.data && error.data.message) {
@@ -159,6 +191,38 @@ export default {
           const { data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/delete-reject-with-token', { token: this.token }, { headers })
           return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.cancellationStatus }
         }
+      }
+    },
+    async handleApprovalTransferSend () {
+      if (this.action === 'approve') {
+        this.approveByEmail({
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form.approval_status
+          if (this.approvalStatus === 0) {
+            this.warningMessage = 'Stock not enough'
+          }
+        }).catch(error => {
+          console.log(error.message)
+        })
+      }
+      if (this.action === 'reject') {
+        this.rejectByEmail({
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id,
+          reason: 'Rejected by email'
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form.approval_status
+        }).catch(error => {
+          console.log(error.message)
+        })
       }
     }
   }

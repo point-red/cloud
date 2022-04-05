@@ -528,13 +528,17 @@
                     {{ $t('stock correction') | uppercase }}
                   </router-link>
                 </li>
-                <!--
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read transfer item')">
+                <li
+                  v-if="$permission.has('read transfer item')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/inventory/transfer"
-                    active-class="active">{{ $t('transfer item') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('transfer item') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
               </ul>
             </li>
             <li
