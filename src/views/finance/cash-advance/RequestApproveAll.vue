@@ -146,8 +146,8 @@
                     </div>
                   </td>
                   <td class="text-center">
-                    <div v-if="cashAdvance.last_request_approval_at !== null">
-                      {{ cashAdvance.last_request_approval_at | dateFormat('DD MMMM YYYY') }}
+                    <div v-if="cashAdvance.last_request_approval_at != null">
+                      {{ cashAdvance.last_request_approval_at | dateFormat('DD MMMM YYYY HH:mm') }}
                     </div>
                   </td>
                 </tr>
@@ -308,7 +308,7 @@ export default {
       console.log(data)
       this.sendBulkRequestApproval({
         bulk_id: data,
-        tenant_base_url: baseUrl,
+        tenant_url: baseUrl,
         activity: 'request approve all'
       }).then(response => {
         this.isCheckAll = false
