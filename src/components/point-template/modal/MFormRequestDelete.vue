@@ -49,8 +49,14 @@ export default {
       this.$emit('close', true)
     },
     onDelete () {
-      this.$emit('delete', this.reason)
-      this.close()
+      console.log(this.reason)
+      if (this.reason != '') {
+        this.$emit('delete', this.reason)
+        this.close()
+      } else {
+        this.close()
+        this.$notification.error('reason must be filled')
+      }
     },
     onClose () {
       this.reason = ''

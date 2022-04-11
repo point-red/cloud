@@ -72,7 +72,7 @@
                 </div>
 
                 <div
-                  v-if="resource.form.approval_status === 0 && resourceType == 'TransferSend'"
+                  v-if="resource.form.approval_status === 0 && resourceType != 'CashAdvance'"
                   class="font-white bg-danger"
                 >
                   Stock not enough
@@ -94,7 +94,7 @@
           type="button"
           @click="close"
         >
-          <strong>BACK</strong>
+          <strong>{{ uppercase }} BACK</strong>
         </button>
       </div>
     </div>

@@ -3,11 +3,13 @@ import InventoryAudit from '@/views/inventory/audit/routes'
 import InventoryReport from '@/views/inventory/report/routes'
 import InventoryUsage from '@/views/inventory/usage/routes'
 import Correction from '@/views/inventory/correction/routes'
+import InventoryTransfer from './transfer/routes'
 
 export default [
   { path: '/inventory', name: 'Inventory', component: Inventory },
   ...InventoryAudit,
   ...InventoryReport,
   ...InventoryUsage,
-  ...Correction
+  ...Correction,
+  ...InventoryTransfer
 ]

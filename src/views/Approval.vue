@@ -5,7 +5,7 @@
         {{ projectName }}
       </h1>
       <div class="floating-approve">
-        <div class="header">
+        <div class="header text-center">
           <strong>{{ crudType | uppercase }} APPROVAL STATUS</strong>
         </div>
         <div class="body">
@@ -34,15 +34,15 @@
               >
                 Pending
               </div>
-              <div
+              <!-- <div
                 v-else
                 class="form-status bg-secondary"
               >
                 Unknown
-              </div>
+              </div> -->
             </template>
             <div
-              v-if="warningMessage.length!=0"
+              v-if="warningMessage"
               class="m-0 mt-4 alert alert-danger"
             >
               {{ warningMessage }}
@@ -56,7 +56,7 @@
           type="button"
           @click="close"
         >
-          <strong>BACK</strong>
+          <strong>{{ uppercase }} BACK</strong>
         </button>
       </div>
     </div>
@@ -66,6 +66,7 @@
 <script>
 import axiosNode from '@/axiosNode'
 import axios from '@/axios'
+import { mapActions } from 'vuex'
 
 export default {
   data () {
@@ -81,6 +82,11 @@ export default {
       warningMessage: ''
     }
   },
+  computed: {
+    tenantName () {
+      return localStorage.getItem('tenantName')
+    }
+  },
   created () {
     this.tenant = this.$route.query.tenant || ''
     this.resourceType = this.$route.query['resource-type'] || ''
@@ -89,10 +95,18 @@ export default {
     this.token = this.$route.query.token || ''
     this.id = this.$route.query.id || ''
     this.projectName = this.$route.query['project-name'] || ''
+    this.approver_id = this.$route.query.approver_id || ''
+    if (this.$route.query.ids != undefined) {
+      this.ids = JSON.parse('[' + this.$route.query.ids + ']') || ''
+    }
 
     this.handleAction()
   },
   methods: {
+    ...mapActions('inventoryTransferItem', {
+      approveByEmail: 'approveByEmail',
+      rejectByEmail: 'rejectByEmail'
+    }),
     close () {
       open(location, '_self').close()
     },
@@ -113,6 +127,9 @@ export default {
         }
         if (this.resourceType === 'CashAdvance') {
           ({ resource, projectName, approvalStatus } = await this.handleApprovalCashAdvance(headers))
+        }
+        if (this.resourceType === 'TransferSend') {
+          this.handleApprovalTransferSend()
         }
       } catch (error) {
         alert(error)
@@ -196,6 +213,38 @@ export default {
         this.warningMessage = 'Remaining Balance Not Enough'
       }
       return { resource: cashAdvance, projectName: this.projectName, approvalStatus: cashAdvance.form.approval_status }
+    },
+    async handleApprovalTransferSend () {
+      if (this.action === 'approve') {
+        this.approveByEmail({
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form.approval_status
+          if (this.approvalStatus === 0) {
+            this.warningMessage = 'Stock not enough'
+          }
+        }).catch(error => {
+          console.log(error.message)
+        })
+      }
+      if (this.action === 'reject') {
+        this.rejectByEmail({
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id,
+          reason: 'Rejected by email'
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form.approval_status
+        }).catch(error => {
+          console.log(error.message)
+        })
+      }
     }
   }
 }
