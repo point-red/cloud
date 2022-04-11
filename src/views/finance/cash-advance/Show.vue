@@ -22,36 +22,6 @@
     </breadcrumb>
 
     <div
-      v-if="cashAdvance.archived_at == null && cashAdvance.form.cancellation_status != 1 && cashAdvance.form.approval_status == 0 && isLoading == false"
-      class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
-      role="alert"
-    >
-      <div class="flex-fill mr-10">
-        <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle" />
-          {{ $t('pending approval warning', { form: 'cash advance', approvedBy: cashAdvance.form.request_approval_to.full_name }) | uppercase }}
-        </p>
-        <hr>
-        <div v-if="$permission.has('approve cash advance')">
-          <button
-            type="button"
-            class="btn btn-sm btn-primary mr-5"
-            @click="onApprove"
-          >
-            {{ $t('approve') | uppercase }}
-          </button>
-          <button
-            type="button"
-            class="btn btn-sm btn-danger"
-            @click="$refs.formApprovalReject.open()"
-          >
-            {{ $t('reject') | uppercase }}
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div
       v-if="cashAdvance.archived_at == null && cashAdvance.form.cancellation_status == 0 && isLoading == false"
       class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
@@ -80,6 +50,36 @@
             type="button"
             class="btn btn-sm btn-danger"
             @click="$refs.formCancellationReject.open()"
+          >
+            {{ $t('reject') | uppercase }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      v-else-if="cashAdvance.archived_at == null && cashAdvance.form.cancellation_status != 1 && cashAdvance.form.approval_status == 0 && isLoading == false"
+      class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
+      role="alert"
+    >
+      <div class="flex-fill mr-10">
+        <p class="mb-0">
+          <i class="fa fa-fw fa-exclamation-triangle" />
+          {{ $t('pending approval warning', { form: 'cash advance', approvedBy: cashAdvance.form.request_approval_to.full_name }) | uppercase }}
+        </p>
+        <hr>
+        <div v-if="$permission.has('approve cash advance')">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary mr-5"
+            @click="onApprove"
+          >
+            {{ $t('approve') | uppercase }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-danger"
+            @click="$refs.formApprovalReject.open()"
           >
             {{ $t('reject') | uppercase }}
           </button>
@@ -176,7 +176,8 @@
                   v-if="$permission.has('update cash advance')
                     && cashAdvance.form.approval_by != null
                     && cashAdvance.form.done == 0
-                    && cashAdvance.amount == cashAdvance.amount_remaining"
+                    && cashAdvance.amount == cashAdvance.amount_remaining
+                    || cashAdvance.form.is_updated == false"
                   :to="{ name: 'finance.cash-advance.edit', params: { id: id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
