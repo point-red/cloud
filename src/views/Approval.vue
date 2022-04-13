@@ -211,6 +211,12 @@ export default {
       const { data: { data: cashAdvance } } = await axios.post('approval-with-token/finance/cash-advances', { token: this.token, id: this.id, status: status, activity: 'approved by email' }, { headers })
       if (cashAdvance.form.approval_status == 0) {
         this.warningMessage = 'Remaining Balance Not Enough'
+      } else if (cashAdvance.form.approval_status != status) {
+        if (cashAdvance.form.approval_status == 1) {
+          this.warningMessage = 'Cash Advance was approved before'
+        } else if (cashAdvance.form.approval_status == -1) {
+          this.warningMessage = 'Cash Advance was rejected before'
+        }
       }
       return { resource: cashAdvance, projectName: this.projectName, approvalStatus: cashAdvance.form.approval_status }
     },

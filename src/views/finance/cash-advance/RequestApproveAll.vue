@@ -309,7 +309,7 @@ export default {
       this.sendBulkRequestApproval({
         bulk_id: data,
         tenant_url: baseUrl,
-        activity: 'request approve all'
+        activity: 'Request approve all'
       }).then(response => {
         this.isCheckAll = false
         this.checkAll()

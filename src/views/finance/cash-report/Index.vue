@@ -185,7 +185,7 @@
                 slot="p-body"
               >
                 <td class="text-center">
-                  {{ ++index }}
+                  {{ index+1 }}
                 </td>
                 <td class="text-center">
                   {{ report.date | dateFormat('DD MMMM YYYY') }}
@@ -248,6 +248,13 @@
                   class="text-center"
                 >
                   {{ 0 | numberFormat }}
+                </td>
+                <td class="text-center">
+                  <input
+                    v-model="checkedData[index].checked"
+                    type="checkbox"
+                    style="min-width: auto"
+                  >
                 </td>
               </tr>
             </template>
@@ -444,6 +451,9 @@
               </td>
             </tr>
           </point-table>
+          <p class="font-italic">
+            {{ $t('*if your amount not balance, please check your transaction') }}
+          </p>
         </p-block-inner>
         <p-pagination
           :current-page="currentPage"
@@ -469,6 +479,7 @@
     <m-paymentable
       id="paymentable"
       ref="paymentable"
+      @clear="clearSubledger"
       @choosen="onChoosenSubledger"
     />
     <print-form
@@ -501,6 +512,7 @@ export default {
   data () {
     return {
       isLoading: false,
+      checkedData: [],
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
@@ -588,7 +600,11 @@ export default {
             page: this.currentPage
           }
         }).then(response => {
-          console.log('response adalah:' + response)
+          response.data.data.forEach(data => {
+            this.checkedData.push({
+              checked: false
+            })
+          })
           this.isLoading = false
         }).catch(error => {
           this.isLoading = false
@@ -607,6 +623,12 @@ export default {
         this.journal_account_id = null
         this.journal_account_name = null
       }
+      this.search()
+    },
+    clearSubledger () {
+      this.subledger_id = null
+      this.subledger_name = null
+      this.subledger_type = null
       this.search()
     },
     async generateReport () {
