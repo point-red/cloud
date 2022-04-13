@@ -243,14 +243,14 @@
       id="warehouse"
       ref="warehouse"
       name="warehouse"
-      :exclude="[form.to_warehouse_id, distributionWarehouseId]"
+      :exclude="[form.to_warehouse_id]"
       @choosen="chooseWarehouse"
     />
     <m-warehouse
       id="to_warehouse"
       ref="to_warehouse"
       name="to_warehouse"
-      :exclude="[form.warehouse_id, distributionWarehouseId]"
+      :exclude="[form.warehouse_id]"
       @choosen="chooseToWarehouse"
     />
     <m-item
@@ -287,7 +287,6 @@ export default {
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
       warehouseId: null,
-      distributionWarehouseId: null,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -328,26 +327,11 @@ export default {
         this.$notification.error(error.message)
       })
     }
-
-    this.getWarehouse({
-      params: {
-        sort_by: 'name',
-        limit: 1,
-        filter_like: {
-          name: 'DISTRIBUTION WAREHOUSE'
-        }
-      }
-    }).then(response => {
-      this.distributionWarehouseId = response.data[0].id
-    }).catch(error => {
-      this.isLoading = false
-    })
   },
   methods: {
     ...mapActions('masterItem', ['find']),
     ...mapActions('inventoryTransferItem', ['create', 'addHistories']),
     ...mapActions('inventoryInventoryWarehouseCurrentstock', ['get']),
-    ...mapActions('masterWarehouse', { getWarehouse: 'get' }),
     addItemRow () {
       this.form.items.push({
         item_id: null,

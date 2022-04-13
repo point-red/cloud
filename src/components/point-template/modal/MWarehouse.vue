@@ -133,12 +133,15 @@ export default {
         this.options = []
         this.mutableLabel = ''
         response.data.map((key, value) => {
-          if (this.exclude.includes(key.id) == false) {
-            this.options.push({
-              id: key.id,
-              name: key.name,
-              label: key.name
-            })
+          console.log(key.name)
+          if (key.name != 'DISTRIBUTION WAREHOUSE') {
+            if (this.exclude.includes(key.id) == false) {
+              this.options.push({
+                id: key.id,
+                name: key.name,
+                label: key.name
+              })
+            }
           }
 
           if (this.value == key.id) {
