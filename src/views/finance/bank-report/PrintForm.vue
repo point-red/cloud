@@ -18,14 +18,8 @@
               style="margin-bottom: 10px;"
             >
               <div class="text-center">
-                <h1 style="margin-top: 0; margin-bottom: 5px; line-height: 28px">
+                <h1 style="margin-top: 0; margin-bottom: 15px; line-height: 28px">
                   Bank Report
-                </h1>
-                <h1
-                  class="my-5px"
-                  style="line-height: 28px; margin-bottom: 15px;"
-                >
-                  {{ tenantName }}
                 </h1>
                 <h3
                   class="my-5px font-weight-bold"

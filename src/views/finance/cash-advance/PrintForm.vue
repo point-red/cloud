@@ -9,6 +9,14 @@
       id="print-form"
       class="print-form-container m-2 mb-4 mx-auto"
     >
+      <div
+        v-if="cash.form.cancellation_status == 1"
+        id="background"
+      >
+        <h2 class="text-danger">
+          {{ $t('Cancelled') }}
+        </h2>
+      </div>
       <thead>
         <tr>
           <td>
@@ -224,6 +232,9 @@ export default {
 </script>
 
 <style scoped>
+#background {
+  display: none;
+}
 .print-form-container {
   width: 90%;
   padding: 30px;
@@ -298,6 +309,26 @@ table.table-items, .table-items th, .table-items td {
   }
   #print-form thead tr td {
     padding-top: 20px;
+  }
+  #background {
+    display: block;
+    margin: 0;
+    opacity: 0.5;
+    position: fixed;
+    z-index: 3;
+
+    left: 30%;
+    top: 30%;
+    transform: translate(-50%, -50%);
+    transform: rotate(-45deg);
+  }
+  #background h2{
+    font-size:96px;
+  }
+
+  #print-form {
+    position: relative;
+    z-index: 1;
   }
 }
 </style>
