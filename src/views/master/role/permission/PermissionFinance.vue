@@ -232,6 +232,66 @@
         </td>
         <td />
       </tr>
+      <tr slot="p-body">
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['read cash report', 'check cash report'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['read cash report', 'check cash report'], permissions)"
+          />
+        </td>
+        <td><b>{{ $t('cash report') | uppercase }}</b></td>
+        <td>
+          <p-form-check-box
+            ref="check cash report"
+            :is-form="false"
+            :checked="$rolePermission.has('check cash report', permissions)"
+            :description="'check' | uppercase"
+            @click.native="togglePermission('check cash report')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read cash report"
+            :is-form="false"
+            :checked="$rolePermission.has('read cash report', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read cash report')"
+          />
+        </td>
+        <td />
+      </tr>
+      <tr slot="p-body">
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['read bank report', 'check bank report'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['read bank report', 'check bank report'], permissions)"
+          />
+        </td>
+        <td><b>{{ $t('bank report') | uppercase }}</b></td>
+        <td>
+          <p-form-check-box
+            ref="check bank report"
+            :is-form="false"
+            :checked="$rolePermission.has('check bank report', permissions)"
+            :description="'check' | uppercase"
+            @click.native="togglePermission('check bank report')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read bank report"
+            :is-form="false"
+            :checked="$rolePermission.has('read bank report', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read bank report')"
+          />
+        </td>
+        <td />
+      </tr>
     </p-table>
     <button
       class="btn btn-primary"

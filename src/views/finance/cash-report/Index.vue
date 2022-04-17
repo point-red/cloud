@@ -4,7 +4,10 @@
       <breadcrumb-finance />
       <span class="breadcrumb-item active">{{ $t('cash report') | uppercase }}</span>
     </breadcrumb>
-    <div class="row">
+    <div
+      v-if="$permission.has('read cash report')"
+      class="row"
+    >
       <p-block :title="$t('cash report')">
         <div class="row">
           <div class="col-6">
@@ -185,7 +188,7 @@
                 slot="p-body"
               >
                 <td class="text-center">
-                  {{ index+1 }}
+                  {{ parseInt(index)+1 }}
                 </td>
                 <td class="text-center">
                   {{ report.date | dateFormat('DD MMMM YYYY') }}
@@ -249,7 +252,10 @@
                 >
                   {{ 0 | numberFormat }}
                 </td>
-                <td class="text-center">
+                <td
+                  v-if="$permission.has('check cash report')"
+                  class="text-center"
+                >
                   <input
                     v-model="checkedData[index].checked"
                     type="checkbox"
@@ -516,7 +522,7 @@ export default {
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
-      limit: 10,
+      limit: 200,
       date: {
         from: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
         to: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
@@ -600,11 +606,7 @@ export default {
             page: this.currentPage
           }
         }).then(response => {
-          response.data.data.forEach(data => {
-            this.checkedData.push({
-              checked: false
-            })
-          })
+          this.setCheckedList()
           this.isLoading = false
         }).catch(error => {
           this.isLoading = false
@@ -614,6 +616,13 @@ export default {
       } else {
         this.$notification.error('Please set date to proceed filter')
       }
+    },
+    setCheckedList () {
+      Object.entries(this.reports).forEach(() => {
+        this.checkedData.push({
+          checked: false
+        })
+      })
     },
     clearReference (datareference) {
       if (datareference == 'account') {

@@ -81,7 +81,7 @@
                   v-if="resource.form.approval_status === 0 && resourceType == 'CashAdvance'"
                   class="font-white bg-danger"
                 >
-                  Remaining balance is not enough
+                  Balance is not enough
                 </div>
                 <div
                   v-else-if="resource.form.approval_status != actionCode && resource.form.approval_status == 1"

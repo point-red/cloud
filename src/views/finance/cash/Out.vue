@@ -115,36 +115,6 @@
                 </tr>
               </template>
             </template>
-            <template v-for="(cashAdvance, index) in cashAdvances">
-              <template v-for="(cashAdvanceDetail, index2) in cashAdvance.details">
-                <tr
-                  :key="'cash-advance-' + index + '-' + index2"
-                  slot="p-body"
-                >
-                  <th>
-                    <router-link :to="{ name: 'finance.cash-advance.show', params: { id: cashAdvance.id }}">
-                      {{ cashAdvance.form.number }}
-                    </router-link>
-                  </th>
-                  <td>{{ cashAdvance.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                  <td>{{ cashAdvance.employee.name }}</td>
-                  <td>{{ cashAdvanceDetail.account.number }} - {{ cashAdvanceDetail.account.alias }}</td>
-                  <td>{{ cashAdvanceDetail.notes }}</td>
-                  <td class="text-right">
-                    {{ cashAdvance.amount_remaining | numberFormat }}
-                  </td>
-                  <td class="text-center">
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-primary"
-                      @click="payCashAdvance(cashAdvance)"
-                    >
-                      {{ $t('pay') | uppercase }}
-                    </button>
-                  </td>
-                </tr>
-              </template>
-            </template>
             <template v-for="(downPayment, index) in downPayments">
               <tr
                 :key="'purchase-down-payment-' + index"
@@ -220,10 +190,6 @@ export default {
       paymentOrders: 'paymentOrders',
       paymentOrdersPagination: 'pagination'
     }),
-    ...mapGetters('financeCashAdvance', {
-      cashAdvances: 'cashAdvances',
-      cashAdvancesPagination: 'pagination'
-    }),
     ...mapGetters('purchaseDownPayment', ['downPayments'])
   },
   watch: {
@@ -242,18 +208,11 @@ export default {
     this.search()
   },
   updated () {
-    if (this.paymentOrdersPagination.last_page > this.cashAdvancesPagination.last_page) {
-      this.lastPage = this.paymentOrdersPagination.last_page
-    } else if (this.paymentOrdersPagination.last_page < this.cashAdvancesPagination.last_page) {
-      this.lastPage = this.cashAdvancesPagination.last_page
-    }
+    this.lastPage = this.paymentOrdersPagination.last_page
   },
   methods: {
     ...mapActions('financePaymentOrder', {
       getPaymentOrder: 'get'
-    }),
-    ...mapActions('financeCashAdvance', {
-      getCashAdvance: 'get'
     }),
     ...mapActions('purchaseDownPayment', {
       getPurchaseDownPayment: 'get'
@@ -283,33 +242,6 @@ export default {
           paymentable_type: paymentOrder.paymentable_type,
           paymentable_id: paymentOrder.paymentable_id,
           amount: paymentOrder.amount,
-          details: details
-        }
-      })
-      this.$router.push({ name: 'finance.cash.out.create' })
-    },
-    payCashAdvance (cashAdvance) {
-      const details = []
-      cashAdvance.details.forEach(el => {
-        details.push({
-          chart_of_account_id: el.account.id,
-          chart_of_account_label: el.account.label,
-          allocation_id: el.allocation ? el.allocation.id : null,
-          allocation_name: el.allocation ? el.allocation.name : null,
-          notes: el.notes,
-          amount: cashAdvance.amount_remaining
-        })
-      })
-      this.$store.commit('financePayment/FETCH_OBJECT', {
-        data: {
-          reference_form_id: cashAdvance.form.id,
-          referenceable_id: cashAdvance.id,
-          referenceable_type: 'CashAdvance',
-          reference_number: cashAdvance.form.number,
-          paymentable_name: cashAdvance.employee.name,
-          paymentable_type: 'Employee',
-          paymentable_id: cashAdvance.employee.id,
-          amount: cashAdvance.amount_remaining,
           details: details
         }
       })
@@ -379,44 +311,6 @@ export default {
           },
           limit: this.limit,
           includes: 'form;paymentable;details.account;details.allocation',
-          page: this.currentPage
-        }
-      }).then(response => {
-        this.isLoading = false
-      }).catch(error => {
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
-      this.getCashAdvance({
-        params: {
-          join: 'form,details,account,employee',
-          sort_by: '-form.number',
-          group_by: 'cash_advance.id',
-          fields: 'cash_advance.*',
-          filter_form: 'notArchived;pending;approvalApproved;notCanceled',
-          filter_like: {
-            'form.number': this.searchText,
-            'form.notes': this.searchText,
-            'employee.name': this.searchText,
-            'account.name': this.searchText
-          },
-          filter_null: 'cash_advance.archived_at',
-          filter_not_equal: {
-            'cash_advance.amount_remaining': 0
-          },
-          filter_equal: {
-            'cash_advance.payment_type': 'cash',
-            'form.notes': this.searchText,
-            'account.name': this.searchText
-          },
-          filter_date_min: {
-            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
-          },
-          filter_date_max: {
-            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
-          },
-          limit: this.limit,
-          includes: 'employee;form;details.account;',
           page: this.currentPage
         }
       }).then(response => {
