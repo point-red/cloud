@@ -12,9 +12,9 @@
         icon="si si-badge"
       />
       <p-box
-        v-if="$plugin.has('KPI') && $permission.has('create employee assessment') || $permission.has('read employee assessment')"
+        v-if="$plugin.has('KPI') && ($permission.has('create employee assessment') || $permission.has('read employee assessment'))"
         name="KPI Assessment"
-        link="/human-resource/kpi-assessment"
+        link="/human-resource/kpi/kpi-assessment"
         icon="si si-pencil"
       />
     </div>

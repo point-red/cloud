@@ -1,8 +1,13 @@
 <template>
   <div>
-    <p-modal id="show-attachment" ref="showAttachment">
+    <p-modal
+      id="show-attachment"
+      ref="showAttachment"
+      @onClose="onClose"
+      @toggleFullscreen="onFullscreen"
+    >
       <template slot="content">
-        <iframe :src="url" frameborder="0" style="min-height:400px; width:100%"></iframe>
+        <iframe :src="url" frameborder="0" v-bind:style="iframeStyle"></iframe>
       </template>
     </p-modal>
   </div>
@@ -12,7 +17,11 @@
 export default {
   data() {
     return {
-      url: ""
+      url: "",
+      iframeStyle: {
+        height: "400px",
+        width: "100%",
+      },
     };
   },
   methods: {
@@ -23,7 +32,17 @@ export default {
     close() {
       this.url = "";
       this.$refs.showAttachment.close();
-    }
-  }
+    },
+    onClose() {
+      this.url = "";
+    },
+    onFullscreen({isfullscreen}) {
+      if (isfullscreen) {
+        this.iframeStyle.height = "100%";
+      } else {
+        this.iframeStyle.height = "400px";
+      }
+    },
+  },
 };
 </script>

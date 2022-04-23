@@ -32,15 +32,13 @@
             </tr>
             <template v-for="(employee, index) in employees">
               <tr
-                v-if="($permission.has('create employee assessment') && isShow(employee.scorers)) || $permission.has('read employee')"
+                v-if="$permission.has('read employee assessment') && (isShow(employee.scorers) || isUser(employee.user_id)) && ($permission.has('create employee assessment') || $permission.has('read employee'))"
                 :key="employee.id"
                 slot="p-body"
               >
                 <th>{{ getNumberIndex(index) }}</th>
                 <td>
-                  <router-link
-                    :to="{ name: 'EmployeeShow', params: { id: employee.id }}"
-                  >{{ employee.name }}</router-link>
+                 {{ employee.name }}
                 </td>
                 <td>{{ employee.job_title }}</td>
                 <td>
@@ -136,6 +134,9 @@ export default {
     updatePage (value) {
       this.page = value
       this.getEmployeesRequest()
+    },
+    isUser(employee_userid) {
+      return localStorage.getItem("userId") == employee_userid;
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })

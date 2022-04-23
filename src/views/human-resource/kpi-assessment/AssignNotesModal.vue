@@ -14,13 +14,19 @@
                 v-model="notes"
                 class="form-control mt-2"
                 rows="3"
-                :readonly="!isUser(employee_id)"
+                :readonly="!isUser(employee_user_id) || isdetail"
               />
             </template>
           </div>
         </template>
         <template slot="footer">
-          <button type="submit" class="btn btn-sm btn-primary">Save</button>
+          <button
+            type="submit"
+            v-show="isUser(employee_user_id) && !isdetail"
+            class="btn btn-sm btn-primary"
+          >
+            Save
+          </button>
         </template>
       </p-modal>
     </form>
@@ -33,11 +39,13 @@ export default {
     return {
       employee_id: null,
       indicatorId: null,
-      notes: ""
+      employee_user_id: null,
+      notes: "",
+      isdetail: false,
     };
   },
   methods: {
-    show(indicator, id) {
+    show(indicator, id, user_id, isdetail = false) {
       this.indicatorId = indicator.id;
       this.notes =
         indicator.selected !== undefined
@@ -46,6 +54,8 @@ export default {
             : ""
           : "";
       this.employee_id = id;
+      this.employee_user_id = user_id;
+      this.isdetail = isdetail;
       this.$refs.notesAssessment.show();
     },
     isUser(employee_userid) {
@@ -58,11 +68,11 @@ export default {
     onSubmitNotes() {
       this.$emit("saveNotes", {
         indicatorId: this.indicatorId,
-        notes: this.notes
+        notes: this.notes,
       });
       this.notes = "";
       this.$refs.notesAssessment.close();
-    }
-  }
+    },
+  },
 };
 </script>
