@@ -11,7 +11,7 @@
         {{ $t("history assessment") | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{
-        $t("assessment") | uppercase
+        $t("show") | uppercase
       }}</span>
     </breadcrumb>
 

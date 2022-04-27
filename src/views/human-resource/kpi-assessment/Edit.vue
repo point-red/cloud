@@ -4,7 +4,15 @@
       <breadcrumb-human-resource />
       <breadcrumb-human-resource-kpi />
       <breadcrumb-human-resource-kpi-kpi-assessment />
-      <span class="breadcrumb-item active">{{ $t("edit") | uppercase }}</span>
+      <router-link
+        :to="'/human-resource/kpi/kpi-assessment/' + id + '/history'"
+        class="breadcrumb-item"
+      >
+        {{ $t("history assessment") | uppercase }}
+      </router-link>
+      <span class="breadcrumb-item active">{{
+        $t("edit") | uppercase
+      }}</span>
     </breadcrumb>
 
     <form class="row" @submit.prevent="onSubmit">
