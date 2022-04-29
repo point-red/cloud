@@ -68,6 +68,16 @@ const actions = {
           reject(error)
         })
     })
+  },
+  setCheckReport (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/set-checklist', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 

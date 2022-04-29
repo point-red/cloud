@@ -260,6 +260,7 @@
                     v-model="checkedData[index].checked"
                     type="checkbox"
                     style="min-width: auto"
+                    @click="sendCheckedList(report.form_number, index)"
                   >
                 </td>
               </tr>
@@ -557,7 +558,7 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('financeReport', ['get']),
+    ...mapActions('financeReport', ['get', 'setCheckReport']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
@@ -598,6 +599,7 @@ export default {
               'form.date': this.serverDateTime(this.$moment(this.date.to).format('YYYY-MM-DD 23:59:59'))
             },
             report_type: 'bank',
+            report_name: 'BankReport',
             account_id: this.account_id,
             journal_account_id: this.journal_account_id,
             subledger_id: this.subledger_id,
@@ -618,11 +620,12 @@ export default {
       }
     },
     setCheckedList () {
-      Object.entries(this.reports).forEach(() => {
+      this.checkedData = []
+      for (let i = 0; i < this.reports.length; i++) {
         this.checkedData.push({
-          checked: false
+          checked: this.reports[i].is_checked
         })
-      })
+      }
     },
     clearReference (datareference) {
       if (datareference == 'account') {
@@ -654,6 +657,7 @@ export default {
               'form.date': this.serverDateTime(this.$moment(this.date.to).format('YYYY-MM-DD 23:59:59'))
             },
             report_type: 'bank',
+            report_name: 'BankReport',
             account_id: this.account_id,
             journal_account_id: this.journal_account_id,
             subledger_id: this.subledger_id,
@@ -809,6 +813,19 @@ export default {
         this.isLoading = false
         return this.$notification.error(error.message)
       }
+    },
+    sendCheckedList (formNumber, index) {
+      this.checkedData[index].checked = !this.checkedData[index].checked
+      this.setCheckReport({
+        number: formNumber,
+        report_name: 'BankReport',
+        is_checked: this.checkedData[index].checked
+      }).then(response => {
+        this.$notification.success('check saved')
+        this.search()
+      }).catch(error => {
+        this.$notification.error(error.message)
+      })
     }
   }
 }
