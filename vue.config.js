@@ -13,6 +13,5 @@ module.exports = {
     workboxOptions: {
       skipWaiting: true
     }
-  },
-  lintOnSave: false
+  }
 }

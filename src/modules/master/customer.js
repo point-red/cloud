@@ -151,32 +151,6 @@ const actions = {
           reject(error)
         })
     })
-  },
-  export ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/export', payload, {
-        responseType: 'blob'
-      })
-        .then((response) => {
-          const url = URL.createObjectURL(new Blob([response], {
-            type: 'application/vnd.ms-excel'
-          }))
-          var today = new Date();
-          var date = today.getFullYear().toString() + (today.getMonth() + 1).toString() + today.getDate().toString();
-          var time = today.getHours().toString() + today.getMinutes().toString() + today.getSeconds().toString();
-          var tenantName = localStorage.getItem('tenantName');
-          console.log(tenantName);
-          var fileName = tenantName + "-" + date + time + "-customers";
-          const link = document.createElement('a')
-          link.href = url
-          link.setAttribute('download', `${fileName}.xlsx`)
-          document.body.appendChild(link)
-          link.click()
-          resolve(response)
-        }, (error) => {
-          reject(error)
-        })
-    })
   }
 }
 
