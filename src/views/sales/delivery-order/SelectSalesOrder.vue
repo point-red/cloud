@@ -121,7 +121,8 @@ export default {
           group_by: 'form.id',
           filter_form: 'activePending;approvalApproved',
           filter_not_null: 'form.number',
-          includes: 'customer;items.item.units;form.createdBy'
+          includes: 'customer;items.item.units;form.createdBy',
+          remaining_delivery_order_info: 1
         }
       }).then(response => {
         this.options = response.data

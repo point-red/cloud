@@ -14,7 +14,9 @@
     <sales-menu />
 
     <p-show-form-approval-status
+      form="sales delivery order"
       :is-loading="isLoading"
+      :is-proccess-approval="isProccessApproval"
       :approved-by="deliveryOrder.form.request_approval_to.full_name"
       :cancellation-status="deliveryOrder.form.cancellation_status"
       :approval-status="deliveryOrder.form.approval_status"
@@ -47,19 +49,19 @@
                 >
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <!-- <router-link
+                <router-link
                   :to="{ name: 'sales.delivery-order.edit', params: { id: deliveryOrder.id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('edit') | uppercase }}
-                </router-link> -->
-                <!-- <button
+                </router-link>
+                <button
                   v-if="deliveryOrder.form.cancellation_status == null || deliveryOrder.form.cancellation_status == -1"
                   class="btn btn-sm btn-outline-secondary mr-5"
                   @click="$refs.formRequestDelete.open()"
                 >
                   {{ $t('delete') | uppercase }}
-                </button> -->
+                </button>
                 <m-form-request-delete
                   ref="formRequestDelete"
                   @delete="onDelete($event)"
@@ -128,7 +130,13 @@
               </th>
               <th>Item</th>
               <th class="text-right">
-                Quantity
+                Quantity Request
+              </th>
+              <th class="text-right">
+                Quantity Delivered
+              </th>
+              <th class="text-right">
+                Quantity Remaining
               </th>
             </tr>
             <template v-for="(row, index) in deliveryOrder.items">
@@ -141,7 +149,13 @@
                 </th>
                 <td>{{ row.item.label }}</td>
                 <td class="text-right">
-                  {{ row.quantity | numberFormat }} {{ row.unit }}
+                  {{ row.quantity_requested | numberFormat }} {{ row.unit }}
+                </td>
+                <td class="text-right">
+                  {{ row.quantity_delivered | numberFormat }} {{ row.unit }}
+                </td>
+                <td class="text-right">
+                  {{ row.quantity_remaining | numberFormat }} {{ row.unit }}
                 </td>
               </tr>
             </template>
@@ -219,6 +233,7 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: false,
+      isProccessApproval: false,
       isDeleting: false
     }
   },
@@ -310,20 +325,28 @@ export default {
       })
     },
     onApprove () {
+      this.isProccessApproval = true
+
       this.approve({
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
         this.deliveryOrderRequest()
+      }).finally(() => {
+        this.isProccessApproval = false
       })
     },
     onReject (reason) {
+      this.isProccessApproval = true
+
       this.reject({
         id: this.id,
         reason: reason
       }).then(response => {
         this.$notification.success('reject success')
         this.deliveryOrderRequest()
+      }).finally(() => {
+        this.isProccessApproval = false
       })
     },
     onCancellationApprove () {

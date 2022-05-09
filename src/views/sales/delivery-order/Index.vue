@@ -114,6 +114,17 @@
           </div>
           <hr>
         </div>
+        <div>
+          <router-link
+            v-if="$permission.has('create sales delivery order')"
+            to="/sales/delivery-order/approval"
+            class="input-group-prepend"
+          >
+            <span class="input-group-text font-size-sm">
+              {{ $t('request approval all') | uppercase }}
+            </span>
+          </router-link>
+        </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
@@ -122,20 +133,18 @@
               <th>Date</th>
               <th>Customer</th>
               <th>Item</th>
+              <th>Warehouse</th>
               <th class="text-right">
                 Quantity
-              </th>
-              <th class="text-right">
-                Price
-              </th>
-              <th class="text-right">
-                Amount
               </th>
               <th class="text-center">
                 Approval Status
               </th>
               <th class="text-center">
                 Form Status
+              </th>
+              <th class="text-center">
+                History
               </th>
               <th width="50px" />
             </tr>
@@ -157,14 +166,13 @@
                   </template>
                 </td>
                 <td>{{ deliveryOrderItem.item.name }}</td>
-                <td class="text-right">
-                  {{ deliveryOrderItem.quantity | numberFormat }} {{ deliveryOrderItem.unit }}
+                <td>
+                  <template v-if="deliveryOrder.warehouse">
+                    {{ deliveryOrder.warehouse.name }}
+                  </template>
                 </td>
                 <td class="text-right">
-                  {{ deliveryOrderItem.price | numberFormat }}
-                </td>
-                <td class="text-right">
-                  {{ (deliveryOrderItem.quantity * deliveryOrderItem.price) | numberFormat }}
+                  {{ deliveryOrderItem.quantity_delivered | numberFormat }} {{ deliveryOrderItem.unit }}
                 </td>
                 <td class="text-center">
                   <div
@@ -205,6 +213,14 @@
                   >
                     {{ $t('done') | uppercase }}
                   </div>
+                </td>
+                <td class="text-center">
+                  <router-link
+                    class="btn btn-sm btn-light"
+                    :to="{ name: 'sales.delivery-order.histories', params: { id: deliveryOrder.id }}"
+                  >
+                    <i class="fa fa-history" />
+                  </router-link>
                 </td>
                 <td />
               </tr>
@@ -344,7 +360,7 @@ export default {
             'form.date': this.serverDateTime(this.date.end, 'end')
           },
           limit: 10,
-          includes: 'form;customer;items.item;items.allocation',
+          includes: 'form;customer;warehouse;items.item;items.allocation',
           page: this.currentPage
         }
       }).catch(error => {
@@ -362,5 +378,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  .btn .fa-history{
+    margin-top: -3px;
+  }
 </style>

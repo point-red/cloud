@@ -1,12 +1,15 @@
 <template>
   <div>
     <div
-      class="input-group"
+      :class="{
+        'input-group': true,
+        'is-invalid': hasError
+      }"
       style="min-width: 180px"
     >
       <cleave
         v-model="number"
-        :readonly="false"
+        :readonly="readonly"
         :options="options"
         class="form-control form-number"
         :class="{
@@ -16,7 +19,10 @@
         }"
       />
       <div
-        class="input-group-append"
+        :class="{
+          'input-group-append': true,
+          'disabled': disableUnitSelection || disabled
+        }"
         @click="onClickUnit"
       >
         <span class="input-group-text">
@@ -56,6 +62,10 @@ export default {
     Cleave
   },
   props: {
+    hasError: {
+      type: Boolean,
+      default: false
+    },
     readonly: {
       type: Boolean,
       default: false
@@ -176,5 +186,11 @@ export default {
 <style scoped>
 .form-number {
   min-width: 150px;
+}
+.input-group-append {
+  cursor: pointer;
+}
+.input-group-append.disabled {
+  cursor: auto;
 }
 </style>
