@@ -1,9 +1,9 @@
 import api from '@/api'
 
-const url = '/inventory/transfer-items'
+const url = '/inventory/receive-items'
 
 const state = {
-  inventoryTransferItem: {
+  inventoryReceiveItem: {
     date: null,
     form: {
       number: null,
@@ -17,20 +17,20 @@ const state = {
     },
     items: []
   },
-  inventoryTransferItems: [],
-  historyTransferItems: [],
+  inventoryReceiveItems: [],
+  historyReceiveItems: [],
   pagination: {}
 }
 
 const getters = {
-  inventoryTransferItem: state => {
-    return state.inventoryTransferItem
+  inventoryReceiveItem: state => {
+    return state.inventoryReceiveItem
   },
-  inventoryTransferItems: state => {
-    return state.inventoryTransferItems
+  inventoryReceiveItems: state => {
+    return state.inventoryReceiveItems
   },
-  historyTransferItems: state => {
-    return state.historyTransferItems
+  historyReceiveItems: state => {
+    return state.historyReceiveItems
   },
   pagination: state => {
     return state.pagination
@@ -39,24 +39,24 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.inventoryTransferItems = payload.data
-    state.historyTransferItems = payload.data
+    state.inventoryReceiveItems = payload.data
+    state.historyReceiveItems = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     payload.data.items.forEach(element => {
       element.more = false
     })
-    state.inventoryTransferItem = payload.data
+    state.inventoryReceiveItem = payload.data
   },
   'CREATE' (state, payload) {
-    state.inventoryTransferItem = payload
+    state.inventoryReceiveItem = payload
   },
   'UPDATE' (state, payload) {
-    state.inventoryTransferItem = payload
+    state.inventoryReceiveItem = payload
   },
   'DELETE' (state, payload) {
-    state.inventoryTransferItem = {}
+    state.inventoryReceiveItem = {}
   }
 }
 
@@ -134,9 +134,9 @@ const actions = {
         })
     })
   },
-  close (context, payload) {
+  sendEmail (context, payload) {
     return new Promise((resolve, reject) => {
-      api.post(url + '/' + payload.id + '/close', payload)
+      api.post(url + '/' + payload.id + '/send', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {
@@ -177,16 +177,6 @@ const actions = {
   cancellationReject (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/' + payload.id + '/cancellation-reject', payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  closeApprove (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/' + payload.id + '/close-approve', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

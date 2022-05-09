@@ -377,29 +377,34 @@ export default {
       this.form.items[e.index].converter = e.converter
     },
     chooseWarehouse (warehouse) {
+      if (this.form.items) {
+        if (this.warehouseId == null) {
+          this.form.items.forEach(item => {
+            if (item.item_id) {
+              this.get({
+                params: {
+                  item_id: item.item_id,
+                  warehouse_id: warehouse.id,
+                  expiry_date: null,
+                  production_number: null
+                }
+              }).then(response => {
+                item.stock = response
+                this.isLoading = false
+              }).catch(error => {
+                this.isLoading = false
+                this.$notification.error(error.message)
+              })
+            }
+          })
+        } else if (this.warehouseId != warehouse.id) {
+          this.form.items = []
+          this.addItemRow()
+        }
+      }
       this.warehouseId = warehouse.id
       this.form.warehouse_id = warehouse.id
       this.form.warehouse_name = warehouse.name
-      if (this.form.items) {
-        this.form.items.forEach(item => {
-          if (item.item_id) {
-            this.get({
-              params: {
-                item_id: item.item_id,
-                warehouse_id: warehouse.id,
-                expiry_date: null,
-                production_number: null
-              }
-            }).then(response => {
-              item.stock = response
-              this.isLoading = false
-            }).catch(error => {
-              this.isLoading = false
-              this.$notification.error(error.message)
-            })
-          }
-        })
-      }
     },
     chooseToWarehouse (warehouse) {
       this.form.to_warehouse_id = warehouse.id
@@ -491,7 +496,7 @@ export default {
         this.isSaving = false
         return
       }
-      if (this.authUser.warehouse.id != this.form.warehouse_id) {
+      if (this.authUser.warehouse == null || this.authUser.warehouse.id != this.form.warehouse_id) {
         this.$notification.error('please set as default warehouse')
         this.isSaving = false
         return

@@ -95,13 +95,19 @@ export default {
     if (this.$route.query.ids != undefined) {
       this.ids = JSON.parse('[' + this.$route.query.ids + ']') || ''
     }
-
+    if (this.$route.query.form_send_done != undefined) {
+      this.formSendDone = this.$route.query.form_send_done
+    }
     this.handleAction()
   },
   methods: {
     ...mapActions('inventoryTransferItem', {
       approveByEmail: 'approveByEmail',
       rejectByEmail: 'rejectByEmail'
+    }),
+    ...mapActions('inventoryReceiveItem', {
+      approveByEmailReceive: 'approveByEmail',
+      rejectByEmailReceive: 'rejectByEmail'
     }),
     close () {
       open(location, '_self').close()
@@ -123,6 +129,9 @@ export default {
         }
         if (this.resourceType === 'TransferSend') {
           this.handleApprovalTransferSend()
+        }
+        if (this.resourceType === 'TransferReceive') {
+          this.handleApprovalTransferReceive()
         }
       } catch (error) {
         if (error.data && error.data.message) {
@@ -223,6 +232,68 @@ export default {
         }).catch(error => {
           console.log(error.message)
         })
+      }
+    },
+    async handleApprovalTransferReceive () {
+      if (this.crudType === 'update') {
+        if (this.action === 'approve') {
+          this.approveByEmailReceive({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            form_send_done: this.formSendDone
+          }).then(response => {
+            this.resource = response.data
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data.form.approval_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
+        if (this.action === 'reject') {
+          this.rejectByEmailReceive({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            reason: 'Rejected by email'
+          }).then(response => {
+            this.resource = response.data
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data.form.approval_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
+      }
+      if (this.crudType === 'delete') {
+        if (this.action === 'approve') {
+          this.approveByEmailReceive({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            form_send_done: this.formSendDone
+          }).then(response => {
+            this.resource = response.data
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data.form.cancellation_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
+        if (this.action === 'reject') {
+          this.rejectByEmailReceive({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            reason: 'Rejected by email'
+          }).then(response => {
+            this.resource = response.data
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data.form.cancellation_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
       }
     }
   }

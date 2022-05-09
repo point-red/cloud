@@ -1,7 +1,7 @@
 <template>
   <sweet-modal
-    ref="print-transfer-item"
-    :title="$t('print transfer item') | uppercase"
+    ref="print-receive-item"
+    :title="$t('print receive item') | uppercase"
     overlay-theme="dark"
     @close="onClose()"
   >
@@ -25,7 +25,7 @@
               </div>
               <div class="company-detail">
                 <h1 style="margin-top: 0; margin-bottom: 5px;">
-                  Transfer Item Send
+                  Transfer Item Receive
                 </h1>
                 <h3
                   class="my-5px"
@@ -56,22 +56,22 @@
                 <tr>
                   <td>Form Number</td>
                   <td>:</td>
-                  <td>{{ transferitem.form.number }}</td>
+                  <td>{{ receiveitem.form.number }}</td>
                 </tr>
                 <tr>
                   <td>Date</td>
                   <td>:</td>
-                  <td>{{ transferitem.date | dateFormat('DD MMMM YYYY') }}</td>
+                  <td>{{ receiveitem.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
                 <tr>
-                  <td>Warehouse Send</td>
+                  <td>Form Reference</td>
                   <td>:</td>
-                  <td>{{ transferitem.warehouse.name || '-' }}</td>
+                  <td>{{ receiveitem.transfer_item.form.number || '-' }}</td>
                 </tr>
                 <tr>
-                  <td>Driver</td>
+                  <td>Warehouse Receive</td>
                   <td>:</td>
-                  <td>{{ transferitem.driver || '-' }}</td>
+                  <td>{{ receiveitem.warehouse.name || '-' }}</td>
                 </tr>
               </table>
               <table
@@ -79,19 +79,19 @@
                 style="margin-left: 20px;"
               >
                 <tr>
-                  <td>Warehouse Receive</td>
+                  <td>From Warehouse</td>
                   <td>:</td>
-                  <td>{{ transferitem.to_warehouse.name || '-' }}</td>
+                  <td>{{ receiveitem.from_warehouse.name || '-' }}</td>
                 </tr>
                 <tr>
                   <td>Address</td>
                   <td>:</td>
-                  <td>{{ transferitem.to_warehouse.address || '-' }}</td>
+                  <td>{{ receiveitem.from_warehouse.address || '-' }}</td>
                 </tr>
                 <tr>
                   <td>Phone number</td>
                   <td>:</td>
-                  <td>{{ transferitem.to_warehouse.phone || '-' }}</td>
+                  <td>{{ receiveitem.from_warehouse.phone || '-' }}</td>
                 </tr>
                 <tr>
                   .
@@ -119,10 +119,13 @@
                   <th class="text-center">
                     Quantity Send
                   </th>
+                  <th class="text-center">
+                    Quantity Receive
+                  </th>
                 </tr>
               </thead>
               <tr
-                v-for="(row, index) in transferitem.items"
+                v-for="(row, index) in receiveitem.items"
                 :key="index"
               >
                 <td class="text-center">
@@ -138,6 +141,13 @@
                   </template>
                 </td>
                 <td class="text-center">
+                  <template v-for="(transferItemItem) in receiveitem.transfer_item.items">
+                    <template v-if="transferItemItem.item_id == row.item_id && transferItemItem.production_number == row.production_number && transferItemItem.expiry_date == row.expiry_date">
+                      {{ transferItemItem.quantity | numberFormat }} {{ transferItemItem.unit }}
+                    </template>
+                  </template>
+                </td>
+                <td class="text-center">
                   {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
               </tr>
@@ -146,26 +156,10 @@
               class="d-flex justify-content-end"
               style="margin-top: 75px;"
             >
-              <div
-                class="text-center"
-                style="margin-right: 75px;"
-              >
-                <h3>Driver</h3>
-                <br><br><br>
-                {{ transferitem.driver }}
-              </div>
-              <div
-                class="text-center"
-                style="margin-right: 75px;"
-              >
+              <div class="text-center">
                 <h3>Created By</h3>
                 <br><br><br>
-                {{ transferitem.form.created_by.full_name }}
-              </div>
-              <div class="text-center">
-                <h3>Approved By</h3>
-                <br><br><br>
-                {{ transferitem.form.request_approval_to.full_name }}
+                {{ receiveitem.form.created_by.full_name }}
               </div>
             </div>
           </td>
@@ -194,7 +188,7 @@ export default {
     print
   },
   props: {
-    transferitem: {
+    receiveitem: {
       type: Object,
       required: true
     }
@@ -236,7 +230,7 @@ export default {
     this.onLoad = false
   },
   methods: {
-    ...mapActions('inventoryTransferItem', ['addHistories']),
+    ...mapActions('inventoryReceiveItem', ['addHistories']),
     clear () {
       this.mutableId = null
       this.mutableLabel = null
@@ -244,7 +238,7 @@ export default {
       this.close()
     },
     open () {
-      this.$refs['print-transfer-item'].open()
+      this.$refs['print-receive-item'].open()
     },
     close () {
       this.$refs['select-' + this.id].close()
@@ -253,7 +247,7 @@ export default {
       this.$emit('close', true)
     },
     createHistoryPrint () {
-      this.addHistories({ id: this.transferitem.id, activity: 'Printed' })
+      this.addHistories({ id: this.receiveitem.id, activity: 'Printed' })
         .catch(error => {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)

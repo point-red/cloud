@@ -11,7 +11,7 @@
         <div class="input-group block">
           <download-excel
             class="input-group-prepend"
-            @click="exportData(inventoryTransferItems)"
+            @click="exportData(inventoryReceiveItems)"
           >
             <span class="input-group-text">
               <i class="fa fa-download" />
@@ -37,18 +37,7 @@
           />
         </div>
         <div class="input-group block">
-          <div class="col-2">
-            <router-link
-              v-if="$permission.has('create transfer item')"
-              to="/inventory/transfer/send/approval"
-              class="input-group-prepend"
-            >
-              <span class="input-group-text font-size-sm">
-                {{ $t('request approval all') | uppercase }}
-              </span>
-            </router-link>
-          </div>
-          <div class="col-10 text-center font-size-sm">
+          <div class="col-12 text-center font-size-sm">
             <a
               href="javascript:void(0)"
               @click="isAdvanceFilter = !isAdvanceFilter"
@@ -148,7 +137,7 @@
               type="checkbox"
               class="css-control-input"
               @click="toggleCheckRows()"
-              :checked="isRowsChecked(inventoryTransferItems, checkedRow)">
+              :checked="isRowsChecked(inventoryReceiveItems, checkedRow)">
             <span class="css-control-indicator"></span>
           </label> -->
           <span
@@ -173,107 +162,56 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>Date Form</th>
+              <th>Form Reference</th>
               <th>Form Number</th>
+              <th>From Warehouse</th>
+              <th>To Warehouse</th>
+              <th>Date Send</th>
+              <th>Date Receive</th>
               <th>Item</th>
-              <th>Production Item</th>
-              <th>Expiry Date</th>
               <th class="text-center">
                 Quantity Send
               </th>
               <th class="text-center">
                 Quantity Receive
               </th>
-              <th class="text-center">
-                Approval Status
-              </th>
-              <th class="text-center">
-                Form Status
-              </th>
               <th>History</th>
             </tr>
-            <template v-for="(inventoryTransferItem, index) in inventoryTransferItems">
+            <template v-for="(inventoryReceiveItem, index) in inventoryReceiveItems">
               <tr
-                v-for="(inventoryTransferItemItem, index2) in inventoryTransferItem.items"
+                v-for="(inventoryReceiveItemItem, index2) in inventoryReceiveItem.items"
                 :key="'pr-' + index + '-i-' + index2"
                 slot="p-body"
               >
-                <td>{{ inventoryTransferItem.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <th>
-                  <router-link :to="{ name: 'inventory.transfer.send.show', params: { id: inventoryTransferItem.id }}">
-                    {{ inventoryTransferItem.form.number }}
+                  <router-link :to="{ name: 'inventory.transfer.send.show', params: { id: inventoryReceiveItem.transfer_item_id }}">
+                    {{ inventoryReceiveItem.transfer_item.form.number }}
                   </router-link>
                 </th>
-                <td>{{ inventoryTransferItemItem.item.name }}</td>
-                <td>{{ inventoryTransferItemItem.production_number }}</td>
-                <td>{{ inventoryTransferItemItem.expiry_date }}</td>
+                <th>
+                  <router-link :to="{ name: 'inventory.transfer.receive.show', params: { id: inventoryReceiveItem.id }}">
+                    {{ inventoryReceiveItem.form.number }}
+                  </router-link>
+                </th>
+                <td>{{ inventoryReceiveItem.from_warehouse.name }}</td>
+                <td>{{ inventoryReceiveItem.warehouse.name }}</td>
+                <td>{{ inventoryReceiveItem.transfer_item.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ inventoryReceiveItem.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ inventoryReceiveItemItem.item.name }}</td>
                 <td class="text-right">
-                  {{ inventoryTransferItemItem.quantity | numberFormat }} {{ inventoryTransferItemItem.unit }}
+                  <template v-for="(inventoryTransferItemItem) in inventoryReceiveItem.transfer_item.items">
+                    <template v-if="inventoryTransferItemItem.item_id == inventoryReceiveItemItem.item_id && inventoryTransferItemItem.production_number == inventoryReceiveItemItem.production_number && inventoryTransferItemItem.expiry_date == inventoryReceiveItemItem.expiry_date">
+                      {{ inventoryTransferItemItem.quantity | numberFormat }} {{ inventoryTransferItemItem.unit }}
+                    </template>
+                  </template>
                 </td>
-                <td class="text-center">
-                  <div
-                    v-if="inventoryTransferItem.form.cancellation_status == 1"
-                    class="badge badge-primary"
-                  >
-                    {{ $t('pending') | uppercase }}
-                  </div>
-                  <div
-                    v-else-if="inventoryTransferItem.form.done == 0"
-                    class="badge badge-primary"
-                  >
-                    {{ $t('pending') | uppercase }}
-                  </div>
-                  <div
-                    v-else-if="inventoryTransferItem.form.done == 1"
-                    class="badge badge-primary"
-                  >
-                    {{ $t('pending') | uppercase }}
-                  </div>
-                </td>
-                <td class="text-center">
-                  <div
-                    v-if="inventoryTransferItem.form.approval_status == 0"
-                    class="badge badge-primary"
-                  >
-                    {{ $t('pending') | uppercase }}
-                  </div>
-                  <div
-                    v-if="inventoryTransferItem.form.approval_status == -1"
-                    class="badge badge-danger"
-                  >
-                    {{ $t('rejected') | uppercase }}
-                  </div>
-                  <div
-                    v-if="inventoryTransferItem.form.approval_status == 1"
-                    class="badge badge-success"
-                  >
-                    {{ $t('approved') | uppercase }}
-                  </div>
-                </td>
-                <td class="text-center">
-                  <div
-                    v-if="inventoryTransferItem.form.cancellation_status == 1"
-                    class="badge badge-danger"
-                  >
-                    {{ $t('canceled') | uppercase }}
-                  </div>
-                  <div
-                    v-else-if="inventoryTransferItem.form.done == 0"
-                    class="badge badge-primary"
-                  >
-                    {{ $t('pending') | uppercase }}
-                  </div>
-                  <div
-                    v-else-if="inventoryTransferItem.form.done == 1"
-                    class="badge badge-success"
-                  >
-                    {{ $t('done') | uppercase }}
-                  </div>
+                <td class="text-right">
+                  {{ inventoryReceiveItemItem.quantity | numberFormat }} {{ inventoryReceiveItemItem.unit }}
                 </td>
                 <td class="text-center">
                   <router-link
                     class="btn btn-sm btn-light"
-                    :to="{ name: 'inventory.transfer.send.histories', params: { id: inventoryTransferItem.id }}"
+                    :to="{ name: 'inventory.transfer.receive.histories', params: { id: inventoryReceiveItem.id }}"
                   >
                     <i class="fa fa-history" />
                   </router-link>
@@ -340,7 +278,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('inventoryTransferItem', ['inventoryTransferItems', 'pagination'])
+    ...mapGetters('inventoryReceiveItem', ['inventoryReceiveItems', 'pagination'])
   },
   watch: {
     date: {
@@ -352,7 +290,7 @@ export default {
             date_to: this.date.end
           }
         })
-        this.getinventoryTransferItem()
+        this.getinventoryReceiveItem()
       },
       deep: true
     }
@@ -365,13 +303,13 @@ export default {
         date_to: this.date.end
       }
     })
-    this.getinventoryTransferItem()
+    this.getinventoryReceiveItem()
   },
   updated () {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('inventoryTransferItem', ['get', 'export']),
+    ...mapActions('inventoryReceiveItem', ['get', 'export']),
     toggleCheckRow (id) {
       if (!this.isRowChecked(id)) {
         this.checkedRow.push({ id })
@@ -380,15 +318,15 @@ export default {
       }
     },
     toggleCheckRows () {
-      if (!this.isRowsChecked(this.inventoryTransferItems, this.checkedRow)) {
-        this.inventoryTransferItems.forEach(element => {
+      if (!this.isRowsChecked(this.inventoryReceiveItems, this.checkedRow)) {
+        this.inventoryReceiveItems.forEach(element => {
           if (!this.isRowChecked(element.id)) {
             const id = element.id
             this.checkedRow.push({ id })
           }
         })
       } else {
-        this.inventoryTransferItems.forEach(element => {
+        this.inventoryReceiveItems.forEach(element => {
           this.checkedRow.splice(this.checkedRow.map((o) => o.id).indexOf(element.id), 1)
         })
       }
@@ -414,21 +352,21 @@ export default {
     },
     bulkApprove () {
       this.bulkApprove({
-        inventoryTransferItems: this.checkedRow
+        inventoryReceiveItems: this.checkedRow
       }).then(response => {
         this.checkedRow = []
-        this.getinventoryTransferItem()
+        this.getinventoryReceiveItem()
       })
     },
     chooseFormStatus (option) {
       this.formStatus.label = option.label
       this.formStatus.value = option.value
-      this.getinventoryTransferItem()
+      this.getinventoryReceiveItem()
     },
     chooseFormApprovalStatus (option) {
       this.formApprovalStatus.label = option.label
       this.formApprovalStatus.value = option.value
-      this.getinventoryTransferItem()
+      this.getinventoryReceiveItem()
     },
     filterSearch: debounce(function (value) {
       this.$router.push({
@@ -439,15 +377,15 @@ export default {
       })
       this.searchText = value
       this.currentPage = 1
-      this.getinventoryTransferItem()
+      this.getinventoryReceiveItem()
     }, 300),
-    getinventoryTransferItem () {
+    getinventoryReceiveItem () {
       this.isLoading = true
       console.log(this.searchText)
       this.get({
         params: {
           join: 'form,items,item',
-          fields: 'transfer_sent.*',
+          fields: 'transfer_receive.*',
           sort_by: '-form.number',
           group_by: 'form.id',
           filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
@@ -463,7 +401,7 @@ export default {
             'form.date': this.serverDateTime(this.date.end, 'end')
           },
           limit: 10,
-          includes: 'form;items.item',
+          includes: 'form;items.item;from_warehouse;warehouse;transfer_item.form;transfer_item.items;',
           page: this.currentPage
         }
       }).catch(error => {
@@ -474,7 +412,7 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getinventoryTransferItem()
+      this.getinventoryReceiveItem()
     },
     exportData (value) {
       console.log('export')
@@ -486,7 +424,8 @@ export default {
         data: {
           ids: ids,
           date_start: this.date.start,
-          date_end: this.date.end
+          date_end: this.date.end,
+          tenant_name: localStorage.getItem('tenantName')
         }
       }).then((response) => {
         // this.isExporting.splice(this.isExporting.indexOf(value), 1)
