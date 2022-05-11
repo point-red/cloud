@@ -61,6 +61,20 @@
               @errors="form.errors.set('phone', null)"
             />
 
+            <div class="pull-right">
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                :disabled="isSaving"
+                @click="onSubmit"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
+              </button>
+            </div>
+
             <p-separator />
 
             <h5>{{ $t('credit limit') | uppercase }}</h5>
@@ -103,7 +117,7 @@
 
             <hr>
 
-            <div class="pull-right">
+            <div class="">
               <button
                 type="submit"
                 class="btn btn-sm btn-primary"
