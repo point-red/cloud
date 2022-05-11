@@ -40,6 +40,16 @@
         @onCancellationApprove="onCancellationApprove"
         @onCancellationReject="onCancellationReject"
       />
+      <p-show-form-close-status
+        form-name="Transfer Item Send"
+        :is-loading="isLoading"
+        :approved-by="inventoryTransferItem.form.request_approval_to.full_name"
+        :close-status="inventoryTransferItem.form.close_status"
+        :close-approval-reason="inventoryTransferItem.form.close_approval_reason"
+        :request-close-reason="inventoryTransferItem.form.request_close_reason"
+        @onCloseApprove="onCloseApprove"
+        @onCloseReject="onCloseReject"
+      />
     </span>
 
     <div
@@ -63,23 +73,32 @@
                     <i class="si si-printer" />
                   </button>
                   <router-link
+                    v-if="$permission.has('create transfer item')"
                     :to="{ name: 'inventory.transfer.send.create' }"
                     class="btn btn-sm btn-outline-secondary mr-5"
                   >
                     {{ $t('create') | uppercase }}
                   </router-link>
                   <router-link
+                    v-if="$permission.has('update transfer item')"
                     :to="{ name: 'inventory.transfer.send.edit', params: { id: inventoryTransferItem.id }}"
                     class="btn btn-sm btn-outline-secondary mr-5"
                   >
                     {{ $t('edit') | uppercase }}
                   </router-link>
                   <button
-                    v-if="inventoryTransferItem.form.cancellation_status == null || inventoryTransferItem.form.cancellation_status == -1"
+                    v-if="$permission.has('delete transfer item') && (inventoryTransferItem.form.cancellation_status == null || inventoryTransferItem.form.cancellation_status == -1)"
                     class="btn btn-sm btn-outline-secondary mr-5"
                     @click="$refs.formRequestDelete.open()"
                   >
                     {{ $t('delete') | uppercase }}
+                  </button>
+                  <button
+                    v-if="inventoryTransferItem.receive_item != null && inventoryTransferItem.form.done == 0 && (inventoryTransferItem.form.close_status == null || inventoryTransferItem.form.close_status == -1)"
+                    class="btn btn-sm btn-outline-secondary mr-5"
+                    @click="$refs.formRequestClose.open()"
+                  >
+                    {{ $t('close form') | uppercase }}
                   </button>
                 </div>
               </span>
@@ -157,6 +176,9 @@
                 Balances
               </th>
               <th class="text-right">
+                Quantity Receive
+              </th>
+              <th class="text-right">
                 Notes
               </th>
             </tr>
@@ -186,6 +208,23 @@
                 </td>
                 <td class="text-right">
                   {{ row.balance | numberFormat }} {{ row.unit }}
+                </td>
+                <td class="text-right">
+                  <span v-if="inventoryTransferItem.receive_item != null">
+                    <template v-if="inventoryTransferItem.receive_item.form.approval_status == 1">
+                      <template v-for="(inventoryReceiveItemItem) in inventoryTransferItem.receive_item.items">
+                        <template v-if="row.item_id == inventoryReceiveItemItem.item_id && row.production_number == inventoryReceiveItemItem.production_number && row.expiry_date == inventoryReceiveItemItem.expiry_date">
+                          {{ inventoryReceiveItemItem.quantity | numberFormat }} {{ inventoryReceiveItemItem.unit }}
+                        </template>
+                      </template>
+                    </template>
+                    <template v-else>
+                      {{ 0 | numberFormat }} {{ row.unit }}
+                    </template>
+                  </span>
+                  <span v-else>
+                    {{ 0 | numberFormat }} {{ row.unit }}
+                  </span>
                 </td>
                 <td class="text-right">
                   {{ row.notes }}
@@ -240,6 +279,10 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-form-request-close
+      ref="formRequestClose"
+      @close-form="onCloseForm($event)"
+    />
     <m-form-request-delete
       ref="formRequestDelete"
       @delete="onDelete($event)"
@@ -255,8 +298,6 @@
     <print-transfer-item
       ref="print-transfer-item"
       :transferitem="inventoryTransferItem"
-      :subtotal="100"
-      :tax-base="tax"
     />
   </div>
 </template>
@@ -297,46 +338,6 @@ export default {
       }
     }
   },
-  mounted () {
-    this.find({
-      id: this.id,
-      params: {
-        with_archives: true,
-        with_origin: true,
-        includes: 'warehouse;' +
-          'to_warehouse;' +
-          'items.item;' +
-          'form.createdBy;' +
-          'form.requestApprovalTo;' +
-          'form.branch'
-      }
-    }).then(response => {
-      if (this.$route.query.action === 'approve') {
-        this.$alert.confirm(this.$t('approve'), this.$t('are you sure you want to approve this document?')).then(async res => {
-          try {
-            if (response.data.form.cancellation_status == null && response.data.form.approval_status == 0 && this.isLoading == false) {
-              this.onApprove()
-            } else if (response.data.form.cancellation_status == 0 && this.isLoading == false) {
-              this.onCancellationApprove()
-            }
-          } catch (error) {
-          } finally {
-            this.isLoading = false
-          }
-        })
-      } else if (this.$route.query.action === 'reject') {
-        if (response.data.form.cancellation_status == null && response.data.form.approval_status == 0 && this.isLoading == false) {
-          this.$refs.formApprovalReject.open()
-        } else if (response.data.form.cancellation_status == 0 && this.isLoading == false) {
-          this.$refs.formCancellationReject.open()
-        }
-      }
-    }).catch(error => {
-      this.$notification.error(error.message)
-    }).finally(() => {
-      this.isLoading = false
-    })
-  },
   created () {
     this.inventoryTransferItemRequest()
   },
@@ -346,8 +347,10 @@ export default {
       delete: 'delete',
       approve: 'approve',
       reject: 'reject',
+      close: 'close',
       cancellationApprove: 'cancellationApprove',
       cancellationReject: 'cancellationReject',
+      closeApprove: 'closeApprove',
       addHistories: 'addHistories'
     }),
     toggleMore () {
@@ -370,7 +373,8 @@ export default {
             'items.item;' +
             'form.createdBy;' +
             'form.requestApprovalTo;' +
-            'form.branch'
+            'form.branch;' +
+            'receiveItem;receiveItem.form;receiveItem.items;'
         }
       }).then(response => {
       }).catch(error => {
@@ -391,6 +395,26 @@ export default {
         this.$notification.success('cancel success')
         this.inventoryTransferItemRequest()
         this.addHistories({ id: this.id, activity: 'Deleted' })
+          .catch(error => {
+            console.log(error.message)
+          })
+      }).catch(error => {
+        this.isDeleting = false
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
+      })
+    },
+    onCloseForm (reason) {
+      this.close({
+        id: this.id,
+        data: {
+          reason: reason
+        }
+      }).then(response => {
+        this.isDeleting = false
+        this.$notification.success('close form success')
+        this.inventoryTransferItemRequest()
+        this.addHistories({ id: this.id, activity: 'Close Form' })
           .catch(error => {
             console.log(error.message)
           })
@@ -453,6 +477,32 @@ export default {
           })
       }).catch(error => {
         console.log(error.message)
+      })
+    },
+    onCloseApprove () {
+      const items = []
+      this.inventoryTransferItem.items.forEach(itemTransfer => {
+        this.inventoryTransferItem.receive_item.items.forEach(itemReceive => {
+          if (itemReceive.item_id == itemTransfer.item_id && itemReceive.production_number == itemTransfer.production_number && itemReceive.expiry_date == itemTransfer.expiry_date) {
+            if (itemReceive.quantity < itemTransfer.quantity) {
+              items.push({
+                item_id: itemTransfer.item_id,
+                difference: itemTransfer.quantity - itemReceive.quantity
+              })
+            }
+          }
+        })
+      })
+      this.closeApprove({
+        id: this.id,
+        items: items
+      }).then(response => {
+        this.$notification.success('close form approved')
+        this.inventoryTransferItemRequest()
+        this.addHistories({ id: response.data.id, activity: 'Close Form Approved' })
+          .catch(error => {
+            console.log(error.message)
+          })
       })
     }
   }

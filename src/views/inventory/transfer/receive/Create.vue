@@ -96,7 +96,13 @@
                 >
                   <th>{{ index + 1 }}</th>
                   <td>
-                    {{ row.item_name | uppercase }}
+                    {{ row.item.label }}
+                    <template v-if="row.production_number">
+                      (PID: {{ row.production_number }})
+                    </template>
+                    <template v-if="row.item.require_expiry_date">
+                      (E/D: {{ row.expiry_date | dateFormat('DD MMMM YYYY') }})
+                    </template>
                   </td>
                   <td>
                     <p-quantity
@@ -130,6 +136,7 @@
                       :max="row.quantity_pending * 1"
                       :disable-unit-selection="true"
                       :readonly="onClickUnit(row)"
+                      @input="onQtyChange($event, row)"
                       @choosen="chooseUnit($event, row)"
                       @click.native="onClickQuantity(row, index)"
                     />
@@ -155,7 +162,7 @@
                       :id="'notes-' + index"
                       v-model="row.notes"
                       :name="'notes-' + index"
-                      :readonly="row.item_id == null"
+                      :readonly="true"
                     />
                   </td>
                 </tr>
@@ -171,9 +178,9 @@
                   placeholder="Notes"
                 />
               </div>
-              <div class="col-sm-3 text-center">
+              <div class="col-sm-6 text-center">
                 <h6 class="mb-0">
-                  {{ $t('requested by') | uppercase }}
+                  {{ $t('created by') | uppercase }}
                 </h6>
                 <div
                   class="mb-50"
@@ -183,22 +190,6 @@
                 </div>
                 {{ requestedBy | uppercase }}
                 <div class="d-sm-block d-md-none mt-10" />
-              </div>
-              <div class="col-sm-3 text-center">
-                <h6 class="mb-0">
-                  {{ $t('approved by') | uppercase }}
-                </h6>
-                <div
-                  class="mb-50"
-                  style="font-size:11px"
-                >
-                  _______________
-                </div>
-                <span
-                  class="select-link"
-                  @click="$refs.approver.open()"
-                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
-                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
@@ -227,7 +218,7 @@
     />
     <m-user
       ref="approver"
-      :permission="'approve purchase order'"
+      :permission="'approve transfer item'"
       @choosen="chooseApprover"
     />
     <select-reference
@@ -264,9 +255,7 @@ export default {
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         warehouse_id: null,
-        warehouse_name: null,
         from_warehouse_id: null,
-        from_warehouse_name: null,
         driver: null,
         notes: null,
         items: [],
@@ -301,13 +290,19 @@ export default {
   },
   methods: {
     ...mapActions('masterItem', ['find']),
-    ...mapActions('inventoryTransferItem', ['create', 'addHistories']),
+    ...mapActions('inventoryReceiveItem', ['create', 'approve', 'addHistories']),
     ...mapActions('inventoryInventoryWarehouseCurrentstock', ['get']),
     onClickQuantity (row, index) {
       if (row.require_expiry_date == 1 || row.require_production_number == 1) {
         row.warehouse_id = this.warehouseId
         row.index = index
         this.$refs.inventory.open(row, row.quantity)
+      }
+    },
+    onQtyChange (value, row) {
+      if (value > row.quantity_send) {
+        this.$notification.error('Quantity exceeds the stock limit sent!')
+        row.quantity = row.quantity_send
       }
     },
     onClickUnit (row) {
@@ -322,27 +317,29 @@ export default {
     },
     chooseTransferItem (transferItem) {
       this.transferItem = transferItem
-      this.warehouse_id = transferItem.to_warehouse_id
-      this.from_warehouse_id = transferItem.warehouse_id
-      this.driver = transferItem.driver
-      this.notes = transferItem.notes
+      this.form.warehouse_id = transferItem.to_warehouse_id
+      this.form.from_warehouse_id = transferItem.warehouse_id
+      this.form.driver = transferItem.driver
       this.form.transfer_item_id = transferItem.id
+      this.form.notes = transferItem.form.notes
       this.form.items = transferItem.items
+      this.form.request_approval_to = transferItem.form.request_approval_to
       this.form.items.forEach(transferItemItem => {
-        let quantityPending = 0
-        const quantity = transferItemItem.quantity
-        transferItem.purchase_receives.forEach(purchaseReceive => {
-          purchaseReceive.items.forEach(purchaseReceiveItem => {
-            if (purchaseReceiveItem.purchase_order_item_id == transferItemItem.id) {
-              quantityPending += purchaseReceiveItem.quantity
-            }
-          })
+        transferItemItem.stock = ''
+        transferItemItem.quantity_send = transferItemItem.quantity
+        this.get({
+          params: {
+            item_id: transferItemItem.item_id,
+            warehouse_id: this.form.warehouse_id,
+            expiry_date: transferItemItem.expiry_date,
+            production_number: transferItemItem.production_number
+          }
+        }).then(response => {
+          transferItemItem.stock = response
+        }).catch(error => {
+          this.isLoading = false
+          this.$notification.error(error.message)
         })
-        transferItemItem.purchase_order_item_id = transferItemItem.id
-        transferItemItem.item_name = transferItemItem.item.name
-        transferItemItem.item_label = transferItemItem.item.label
-        transferItemItem.quantity_pending = quantity - quantityPending
-        transferItemItem.quantity = 0
       })
     },
     updateDna (e) {
@@ -358,15 +355,17 @@ export default {
       this.form.approver_email = value.email
     },
     ComputeBalance (row) {
-      row.balance = row.stock - row.quantity
-      if (row.balance < 0) {
-        this.$alert.info('WARNING', this.$t('Not enough stock!'))
-        row.quantity = row.stock
-      }
+      row.balance = parseInt(row.stock) + parseInt(row.quantity)
       return row.balance
     },
     onSubmit () {
       this.isSaving = true
+      let formSendDone = 1
+      if (this.authUser.warehouse == null || this.authUser.warehouse.id != this.form.warehouse_id) {
+        this.$notification.error('please set as default warehouse')
+        this.isSaving = false
+        return
+      }
       if (this.form.request_approval_to == null) {
         this.$notification.error('approval cannot be null')
         this.isSaving = false
@@ -375,6 +374,11 @@ export default {
         })
         return
       }
+      this.form.items.forEach(item => {
+        if (item.quantity < item.quantity_send) {
+          formSendDone = 0
+        }
+      })
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       this.form.items = this.form.items.filter(item => item.item_id)
       this.create(this.form)
@@ -382,12 +386,20 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/inventory/transfer/send/' + response.data.id)
-          this.addHistories({ id: response.data.id, activity: 'Created' })
-            .catch(error => {
-              this.$notification.error(error.message)
-              this.form.errors.record(error.errors)
-            })
+          this.approve({
+            id: response.data.id,
+            form_send_done: formSendDone
+          }).then(response => {
+            this.$router.push('/inventory/transfer/receive/' + response.data.id)
+            this.addHistories({ id: response.data.id, activity: 'Created' })
+              .catch(error => {
+                this.$notification.error(error.message)
+                this.form.errors.record(error.errors)
+              })
+          }).catch(error => {
+            this.$notification.error(error.message + ', please edit the document')
+            console.log(error.message)
+          })
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)
