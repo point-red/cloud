@@ -100,21 +100,23 @@
                 {{ group.label | uppercase }}<template v-if="index + 1 != form.groups.length">,</template>
               </template>
             </span>
+
+            <hr>
+
+            <div class="pull-right">
+              <button
+                type="submit"
+                class="btn btn-sm btn-primary"
+                :disabled="isSaving"
+                @click="onSubmit"
+              >
+                <i
+                  v-show="isSaving"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('save') | uppercase }}
+              </button>
+            </div>
           </div>
-        </div>
-        <hr>
-        <div class="pull-right">
-          <button
-            type="submit"
-            class="btn btn-sm btn-primary"
-            :disabled="isSaving"
-            @click="onSubmit"
-          >
-            <i
-              v-show="isSaving"
-              class="fa fa-asterisk fa-spin"
-            /> {{ $t('save') | uppercase }}
-          </button>
         </div>
       </sweet-modal>
     </form>
