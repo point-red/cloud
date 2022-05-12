@@ -42,7 +42,13 @@
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
-              <div class="text-right">
+              <h3 v-if="deliveryOrder.form.edited_number">
+                {{ $t('archive') | uppercase }}
+              </h3>
+              <div
+                v-if="deliveryOrder.form.number"
+                class="text-right"
+              >
                 <router-link
                   :to="{ name: 'sales.delivery-order.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
@@ -81,7 +87,7 @@
                   >
                     {{ $t('form number') | uppercase }}
                   </td>
-                  <td>{{ deliveryOrder.form.number }}</td>
+                  <td>{{ deliveryOrder.form.number || deliveryOrder.form.edited_number }}</td>
                 </tr>
                 <tr>
                   <td class="font-weight-bold">

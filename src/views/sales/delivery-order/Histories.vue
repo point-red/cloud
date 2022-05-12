@@ -64,7 +64,7 @@
                   {{ deliveryOrderHistory.date | dateFormat('DD MMMM YYYY HH:mm') }}
                 </td>
                 <th class="text-center">
-                  <router-link :to="{ name: 'inventory.transfer.send.show', params: { id: deliveryOrderHistory.formable_id }}">
+                  <router-link :to="{ name: 'sales.delivery-order.show', params: { id: deliveryOrderHistory.formable_id }}">
                     {{ deliveryOrderHistory.number }}
                   </router-link>
                 </th>

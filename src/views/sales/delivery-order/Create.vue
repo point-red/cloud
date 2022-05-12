@@ -3,7 +3,7 @@
     <breadcrumb>
       <breadcrumb-sales />
       <router-link
-        to="/sales/delivery-order"
+        :to="{ name: 'sales.delivery-order.index' }"
         class="breadcrumb-item"
       >
         {{ $t('delivery order') | uppercase }}
