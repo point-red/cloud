@@ -8,7 +8,7 @@
     >
       <textarea
         ref="reason"
-        v-model="reason"
+        v-model="form.reason"
         rows="5"
         :class="{
           'form-control': true,
@@ -59,7 +59,7 @@ export default {
     reject () {
       this.isSaving = true
 
-      if (!this.reason) {
+      if (!this.form.reason) {
         this.isSaving = false
         this.$notification.error('Reason should not empty')
         this.form.errors.record({
@@ -69,7 +69,7 @@ export default {
         return false
       }
 
-      this.$emit('reject', this.reason)
+      this.$emit('reject', this.form.reason)
       this.close()
     },
     onClose () {

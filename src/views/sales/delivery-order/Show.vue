@@ -26,7 +26,10 @@
     />
 
     <p-show-form-cancellation-status
+      form="sales delivery order"
       :is-loading="isLoading"
+      :is-proccess-approval="isProccessCancellationApproval"
+      :approved-by="deliveryOrder.form.request_approval_to.full_name"
       :cancellation-status="deliveryOrder.form.cancellation_status"
       :cancellation-approval-reason="deliveryOrder.form.cancellation_approval_reason"
       :request-cancellation-reason="deliveryOrder.form.request_cancellation_reason"
@@ -62,16 +65,12 @@
                   {{ $t('edit') | uppercase }}
                 </router-link>
                 <button
-                  v-if="deliveryOrder.form.cancellation_status == null || deliveryOrder.form.cancellation_status == -1"
+                  v-if="actions.delete"
                   class="btn btn-sm btn-outline-secondary mr-5"
                   @click="$refs.formRequestDelete.open()"
                 >
                   {{ $t('delete') | uppercase }}
                 </button>
-                <m-form-request-delete
-                  ref="formRequestDelete"
-                  @delete="onDelete($event)"
-                />
               </div>
             </div>
           </div>
@@ -237,25 +236,37 @@ export default {
   },
   data () {
     return {
-      id: this.$route.params.id,
       isLoading: false,
       isProccessApproval: false,
+      isProccessCancellationApproval: false,
       isDeleting: false
     }
   },
   computed: {
     ...mapGetters('salesDeliveryOrder', ['deliveryOrder']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    actions () {
+      const { form } = this.deliveryOrder
+
+      const whereNotArchived = !!form.number
+      const whereNotCancelled = (form.cancellation_status == null || form.cancellation_status == -1)
+      const wherePending = form.done < 1
+
+      return {
+        delete: wherePending && whereNotCancelled && whereNotArchived
+      }
+    }
   },
   watch: {
     '$route' (to, from) {
       if (to.params.id != from.params.id) {
-        this.id = to.params.id
+        this.$route.params.id = to.params.id
         this.deliveryOrderRequest()
       }
     }
   },
   created () {
+    console.log(this.actions)
     this.deliveryOrderRequest()
   },
   methods: {
@@ -278,7 +289,7 @@ export default {
     deliveryOrderRequest () {
       this.isLoading = true
       this.find({
-        id: this.id,
+        id: this.$route.params.id,
         params: {
           with_archives: true,
           with_origin: true,
@@ -316,25 +327,25 @@ export default {
     onDelete (reason) {
       this.isDeleting = true
       this.delete({
-        id: this.id,
+        id: this.$route.params.id,
         data: {
           reason: reason
         }
       }).then(response => {
-        this.isDeleting = false
         this.$notification.success('cancel success')
         this.deliveryOrderRequest()
       }).catch(error => {
-        this.isDeleting = false
         this.$notification.error(error.message)
         this.form.errors.record(error.errors)
+      }).finally(() => {
+        this.isDeleting = false
       })
     },
     onApprove () {
       this.isProccessApproval = true
 
       this.approve({
-        id: this.id
+        id: this.$route.params.id
       }).then(response => {
         this.$notification.success('approve success')
         this.deliveryOrderRequest()
@@ -346,7 +357,7 @@ export default {
       this.isProccessApproval = true
 
       this.reject({
-        id: this.id,
+        id: this.$route.params.id,
         reason: reason
       }).then(response => {
         this.$notification.success('reject success')
@@ -358,22 +369,30 @@ export default {
       })
     },
     onCancellationApprove () {
+      this.isProccessCancellationApproval = true
+
       this.cancellationApprove({
-        id: this.id
+        id: this.$route.params.id
       }).then(response => {
         this.$notification.success('cancellation approved')
         this.$router.push('/sales/delivery-order')
+      }).finally(() => {
+        this.isProccessCancellationApproval = false
       })
     },
     onCancellationReject (reason) {
+      this.isProccessCancellationApproval = true
+
       this.cancellationReject({
-        id: this.id,
+        id: this.$route.params.id,
         reason: reason
       }).then(response => {
         this.$notification.success('cancellation rejected')
         this.deliveryOrderRequest()
       }).catch(error => {
         console.log(error.message)
+      }).finally(() => {
+        this.isProccessCancellationApproval = false
       })
     }
   }
