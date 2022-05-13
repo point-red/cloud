@@ -126,7 +126,8 @@
                       :id="'quantity_delivered' + index"
                       v-model="row.quantity_delivered"
                       :name="'quantity_delivered' + index"
-                      :disabled="row.item_id == null"
+                      :max="Number(row.quantity_requested)"
+                      min="0"
                       :item-id="row.item_id"
                       :units="row.units"
                       :unit="{
@@ -134,17 +135,11 @@
                         label: row.unit,
                         converter: row.converter
                       }"
-                      :has-error="row.is_quantity_over"
+                      :disabled="! row.item_id"
                       disable-unit-selection
                       @changed="onQuantityChange($event, row)"
                       @choosen="chooseUnit($event, row)"
                     />
-                    <span
-                      v-if="row.is_quantity_over"
-                      class="position-absolute text-danger"
-                    >
-                      {{ $t('quantity over message') }}
-                    </span>
                   </td>
                   <td>
                     <p-quantity
@@ -214,7 +209,7 @@
                 <button
                   type="submit"
                   class="btn btn-block btn-sm btn-primary"
-                  :disabled="isSaving || hasError"
+                  :disabled="isSaving"
                 >
                   <i
                     v-show="isSaving"
@@ -264,7 +259,6 @@ export default {
   },
   data () {
     return {
-      hasError: false,
       isSaving: false,
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
@@ -303,13 +297,14 @@ export default {
   },
   watch: {
     'form.items': {
-      handler (newValue) {
-        const [item] = newValue
+      handler (changedItems) {
+        changedItems.forEach(item => {
+          const quantityDelivered = Number(item.quantity_delivered) <= Number(item.quantity_requested)
+            ? item.quantity_delivered
+            : item.quantity_requested
 
-        item.quantity_remaining = item.quantity_requested - item.quantity_delivered
-        item.is_quantity_over = item.quantity_remaining < 0
-
-        this.hasError = item.is_quantity_over
+          item.quantity_remaining = Number(item.quantity_requested) - Number(quantityDelivered)
+        })
       },
       deep: true
     }

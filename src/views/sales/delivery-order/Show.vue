@@ -351,6 +351,8 @@ export default {
       }).then(response => {
         this.$notification.success('reject success')
         this.deliveryOrderRequest()
+      }).catch(error => {
+        this.$notification.error(error.message)
       }).finally(() => {
         this.isProccessApproval = false
       })

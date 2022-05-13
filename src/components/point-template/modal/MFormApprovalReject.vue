@@ -10,7 +10,10 @@
         ref="reason"
         v-model="reason"
         rows="5"
-        class="form-control"
+        :class="{
+          'form-control': true,
+          'is-invalid': !!form.errors.get('reason')
+        }"
         placeholder="reason"
       />
       <hr>
@@ -19,19 +22,24 @@
         class="btn btn-block btn-sm btn-danger mr-5"
         @click="reject()"
       >
-        {{ $t('reject') | uppercase }}
+        <i
+          v-show="isSaving"
+          class="fa fa-asterisk fa-spin"
+        /> {{ $t('reject') | uppercase }}
       </button>
     </sweet-modal>
   </div>
 </template>
 
 <script>
+import Form from '@/utils/Form'
+
 export default {
   data () {
     return {
       isSaving: false,
       isLoading: false,
-      reason: ''
+      form: new Form({ reason: '' })
     }
   },
   beforeDestroy () {
@@ -49,6 +57,18 @@ export default {
       this.$emit('close', true)
     },
     reject () {
+      this.isSaving = true
+
+      if (!this.reason) {
+        this.isSaving = false
+        this.$notification.error('Reason should not empty')
+        this.form.errors.record({
+          reason: ['Reason should not empty']
+        })
+
+        return false
+      }
+
       this.$emit('reject', this.reason)
       this.close()
     },
