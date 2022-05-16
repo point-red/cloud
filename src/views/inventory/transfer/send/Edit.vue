@@ -533,7 +533,7 @@ export default {
       }
     },
     ComputeBalance (row) {
-      row.balance = row.stock - row.quantity
+      row.balance = parseInt(row.stock) - parseInt(row.quantity)
       return row.balance
     },
     ComputeDna (row) {
@@ -544,6 +544,11 @@ export default {
     },
     onSubmit () {
       this.isSaving = true
+      if (this.authUser.warehouse == null || this.authUser.warehouse.id != this.form.warehouse_id) {
+        this.$notification.error('please set as default warehouse')
+        this.isSaving = false
+        return
+      }
       if (this.form.request_approval_to == null) {
         this.$notification.error('approval cannot be null')
         this.isSaving = false

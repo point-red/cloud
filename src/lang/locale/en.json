@@ -100,6 +100,7 @@
 	"confirmation delete message": "are you sure? you won't be able to revert this!",
 	"pending approval warning": "this {form} in pending state, need approval from {approvedBy}",
 	"pending cancellation warning": "this {form} request to delete, need approval from {approvedBy}",
+	"pending close warning": "this {form} request to close, need approval from {approvedBy}",
 	"dashboard": "dashboard",
 	"main menu": "main menu",
 	"master": "master",

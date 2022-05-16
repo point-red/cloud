@@ -6,6 +6,31 @@
       overlay-theme="dark"
       @close="onClose()"
     >
+      <div class="pull-left">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary mr-5"
+          @click="$refs.addCustomerGroup.open()"
+        >
+          {{ $t('create new') | uppercase }}
+        </button>
+      </div>
+      <div class="pull-right">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary mr-5"
+          @click="clear"
+        >
+          {{ $t('clear') | uppercase }}
+        </button>
+        <button
+          type="submit"
+          class="btn btn-sm btn-primary"
+          @click="onSubmit"
+        >
+          {{ $t('submit') | uppercase }}
+        </button>
+      </div>
       <input
         v-model="searchText"
         type="text"
