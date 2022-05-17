@@ -124,6 +124,9 @@ export default {
         if (this.resourceType === 'TransferSend') {
           this.handleApprovalTransferSend()
         }
+        if (this.resourceType === 'SalesDeliveryOrder') {
+          this.handleApprovalDeliveryOrder()
+        }
       } catch (error) {
         if (error.data && error.data.message) {
           this.$notification.error(error.data.message)
@@ -212,6 +215,35 @@ export default {
       }
       if (this.action === 'reject') {
         this.rejectByEmail({
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id,
+          reason: 'Rejected by email'
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form.approval_status
+        }).catch(error => {
+          console.log(error.message)
+        })
+      }
+    },
+    async handleApprovalDeliveryOrder () {
+      if (this.action === 'approve') {
+        this.$store.dispatch('salesDeliveryOrder/approveByEmail', {
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form.approval_status
+        }).catch(error => {
+          console.log(error.message)
+        })
+      }
+      if (this.action === 'reject') {
+        this.$store.dispatch('salesDeliveryOrder/rejectByEmail', {
           ids: this.ids,
           token: this.token,
           approver_id: this.approver_id,

@@ -285,6 +285,7 @@ export default {
         type_of_tax: 'exclude',
         items: [],
         request_approval_to: null,
+        request_approval_at: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         approver_name: null,
         approver_email: null,
         sales_order_id: null

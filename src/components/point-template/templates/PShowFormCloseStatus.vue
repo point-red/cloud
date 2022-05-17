@@ -1,48 +1,48 @@
 <template>
   <div>
     <div
-      v-if="cancellationStatus == -1 && isLoading == false"
+      v-if="closeStatus == -1 && isLoading == false"
       class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
       <div class="flex-fill mr-10">
         <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle" /> {{ $t('cancellation request rejected') | uppercase }}
+          <i class="fa fa-fw fa-exclamation-triangle" /> {{ $t('close request rejected') | uppercase }}
         </p>
         <div style="white-space: pre-wrap;">
-          <b>{{ $t('reason') | uppercase }}:</b> <pre>{{ cancellationApprovalReason }}</pre>
+          <b>{{ $t('reason') | uppercase }}:</b> <pre>{{ closeApprovalReason }}</pre>
         </div>
       </div>
     </div>
     <div
-      v-if="cancellationStatus == 1 && isLoading == false"
+      v-if="closeStatus == 1 && isLoading == false"
       class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
       <div class="flex-fill mr-10">
         <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle" /> {{ $t('canceled') | uppercase }}
+          <i class="fa fa-fw fa-exclamation-triangle" /> {{ $t('closed') | uppercase }}
         </p>
         <div style="white-space: pre-wrap;">
-          <b>{{ $t('reason') | uppercase }}:</b> <pre>{{ requestCancellationReason }}</pre>
+          <b>{{ $t('reason') | uppercase }}:</b> <pre>{{ requestCloseReason }}</pre>
         </div>
       </div>
     </div>
     <div
-      v-if="cancellationStatus == 0 && isLoading == false"
+      v-if="closeStatus == 0 && isLoading == false"
       class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle" />
-          {{ $t('pending cancellation warning', { form: form, approvedBy: approvedBy }) | uppercase }}
+          {{ $t('pending close warning', { form: form, approvedBy: approvedBy }) | uppercase }}
         </p>
         <p
           class="mb-0"
           style="font-size: 10px"
         >
-          <b>{{ $t('reason') | uppercase }}</b> : <pre>{{ requestCancellationReason | uppercase }}</pre>
+          <b>{{ $t('reason') | uppercase }}</b> : <pre>{{ requestCloseReason | uppercase }}</pre>
         </p>
         <hr>
         <div v-if="$permission.has('approve ' + form)">
@@ -50,7 +50,7 @@
             type="button"
             class="btn btn-sm btn-primary mr-5"
             :disabled="isProccessApproval || isProccessApprove"
-            @click="onCancellationApprove"
+            @click="onCloseApprove"
           >
             <i
               v-show="isProccessApprove"
@@ -61,7 +61,7 @@
             type="button"
             class="btn btn-sm btn-danger"
             :disabled="isProccessApproval || isProccessReject"
-            @click="$refs.formCancellationReject.open()"
+            @click="$refs.formCloseReject.open()"
           >
             <i
               v-show="isProccessReject"
@@ -71,9 +71,9 @@
         </div>
       </div>
     </div>
-    <m-form-cancellation-reject
-      ref="formCancellationReject"
-      @reject="onCancellationReject($event)"
+    <m-form-close-reject
+      ref="formCloseReject"
+      @reject="onCloseReject($event)"
     />
   </div>
 </template>
@@ -81,15 +81,15 @@
 <script>
 export default {
   props: {
-    cancellationStatus: {
+    closeStatus: {
       type: Number,
       default: null
     },
-    cancellationApprovalReason: {
+    closeApprovalReason: {
       type: String,
       default: ''
     },
-    requestCancellationReason: {
+    requestCloseReason: {
       type: String,
       default: ''
     },
@@ -125,13 +125,13 @@ export default {
     }
   },
   methods: {
-    onCancellationApprove (event) {
+    onCloseApprove (event) {
       this.isProccessApprove = true
-      this.$emit('onCancellationApprove', event)
+      this.$emit('onCloseApprove', event)
     },
-    onCancellationReject (event) {
+    onCloseReject (event) {
       this.isProccessReject = true
-      this.$emit('onCancellationReject', event)
+      this.$emit('onCloseReject', event)
     }
   }
 }

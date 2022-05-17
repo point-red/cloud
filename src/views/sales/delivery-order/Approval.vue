@@ -11,6 +11,8 @@
       <span class="breadcrumb-item active">{{ $t('approval') | uppercase }}</span>
     </breadcrumb>
 
+    <sales-menu />
+
     <div class="row">
       <p-block>
         <div class="input-group block">
@@ -66,7 +68,7 @@
               <th class="text-center">
                 Approval Status
               </th>
-              <th class="text-center">
+              <th>
                 Last Request
               </th>
             </tr>
@@ -88,7 +90,7 @@
                 </td>
                 <th>
                   <router-link :to="{ name: 'sales.delivery-order.show', params: { id: deliveryOrder.id }}">
-                    {{ deliveryOrder.form.number }}
+                    {{ deliveryOrder.form.number + (deliveryOrder.form.close_status == 1 ? ' - Closed' : '') }}
                   </router-link>
                 </th>
                 <td>{{ deliveryOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
@@ -126,7 +128,7 @@
                     {{ $t('approved') | uppercase }}
                   </div>
                 </td>
-                <td class="text-center">
+                <td>
                   <span v-if="deliveryOrder.last_request_date">
                     {{ deliveryOrder.last_request_date | dateFormat('DD MMMM YYYY HH:mm') }}
                   </span>
@@ -154,6 +156,7 @@
 </template>
 
 <script>
+import SalesMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSales from '@/views/sales/Breadcrumb'
 import debounce from 'lodash/debounce'
@@ -162,6 +165,7 @@ import { mapGetters, mapActions } from 'vuex'
 import momentjs from 'moment-timezone'
 export default {
   components: {
+    SalesMenu,
     Breadcrumb,
     BreadcrumbSales,
     PointTable
@@ -337,15 +341,15 @@ export default {
     sendRequest () {
       if (this.checkedRow.length > 0) {
         this.isLoading = true
-        this.send({
-          ids: this.checkedRow
-        })
+        this.send({ ids: this.checkedRow })
           .then(response => {
             this.$notification.success('sending email approval success')
             this.checkedRow = []
+            this.getDeliveryOrders()
           }).catch(error => {
-            this.isLoading = false
             this.$notification.error(error.message)
+          }).finally(() => {
+            this.isLoading = false
           })
       }
     }

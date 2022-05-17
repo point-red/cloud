@@ -37,6 +37,18 @@
       @onCancellationReject="onCancellationReject"
     />
 
+    <p-show-form-close-status
+      form="sales delivery order"
+      :is-loading="isLoading"
+      :is-proccess-approval="isProccessCloseApproval"
+      :approved-by="deliveryOrder.form.request_approval_to.full_name"
+      :close-status="deliveryOrder.form.close_status"
+      :close-approval-reason="deliveryOrder.form.close_approval_reason"
+      :request-close-reason="deliveryOrder.form.request_close_reason"
+      @onCloseApprove="onCloseApprove"
+      @onCloseReject="onCloseReject"
+    />
+
     <div
       v-if="deliveryOrder"
       class="row"
@@ -67,9 +79,24 @@
                 <button
                   v-if="actions.delete"
                   class="btn btn-sm btn-outline-secondary mr-5"
+                  :disabled="isDeleting"
                   @click="$refs.formRequestDelete.open()"
                 >
-                  {{ $t('delete') | uppercase }}
+                  <i
+                    v-show="isDeleting"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('delete') | uppercase }}
+                </button>
+                <button
+                  v-if="actions.close"
+                  class="btn btn-sm btn-outline-secondary mr-5"
+                  :disabled="isClosing"
+                  @click="$refs.formRequestClose.open()"
+                >
+                  <i
+                    v-show="isClosing"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('close') | uppercase }}
                 </button>
               </div>
             </div>
@@ -217,6 +244,10 @@
       ref="formRequestDelete"
       @delete="onDelete($event)"
     />
+    <m-form-request-close
+      ref="formRequestClose"
+      @closeRequest="onCloseRequest($event)"
+    />
   </div>
 </template>
 
@@ -239,7 +270,9 @@ export default {
       isLoading: false,
       isProccessApproval: false,
       isProccessCancellationApproval: false,
-      isDeleting: false
+      isProccessCloseApproval: false,
+      isDeleting: false,
+      isClosing: false
     }
   },
   computed: {
@@ -248,12 +281,12 @@ export default {
     actions () {
       const { form } = this.deliveryOrder
 
+      const wherePending = form.done == 0
       const whereNotArchived = !!form.number
-      const whereNotCancelled = (form.cancellation_status == null || form.cancellation_status == -1)
-      const wherePending = form.done < 1
 
       return {
-        delete: wherePending && whereNotCancelled && whereNotArchived
+        delete: wherePending && form.cancellation_status == null && whereNotArchived,
+        close: wherePending && form.close_status == null && whereNotArchived
       }
     }
   },
@@ -266,17 +299,19 @@ export default {
     }
   },
   created () {
-    console.log(this.actions)
     this.deliveryOrderRequest()
   },
   methods: {
     ...mapActions('salesDeliveryOrder', {
       find: 'find',
       delete: 'delete',
+      closeForm: 'close',
       approve: 'approve',
       reject: 'reject',
       cancellationApprove: 'cancellationApprove',
-      cancellationReject: 'cancellationReject'
+      cancellationReject: 'cancellationReject',
+      closeApprove: 'closeApprove',
+      closeReject: 'closeReject'
     }),
     toggleMore () {
       const isMoreActive = this.deliveryOrder.items.some(function (el, index) {
@@ -341,17 +376,33 @@ export default {
         this.isDeleting = false
       })
     },
+    onCloseRequest (reason) {
+      this.isClosing = true
+      this.closeForm({ id: this.$route.params.id, reason: reason })
+        .then(response => {
+          this.$notification.success('close success')
+          this.deliveryOrderRequest()
+        }).catch(error => {
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        }).finally(() => {
+          this.isClosing = false
+        })
+    },
     onApprove () {
       this.isProccessApproval = true
 
-      this.approve({
-        id: this.$route.params.id
-      }).then(response => {
-        this.$notification.success('approve success')
-        this.deliveryOrderRequest()
-      }).finally(() => {
-        this.isProccessApproval = false
-      })
+      this.approve({ id: this.$route.params.id })
+        .then(response => {
+          this.$notification.success('approve success')
+          this.deliveryOrderRequest()
+        })
+        .catch(error => {
+          this.$notification.error(error?.message)
+        })
+        .finally(() => {
+          this.isProccessApproval = false
+        })
     },
     onReject (reason) {
       this.isProccessApproval = true
@@ -363,7 +414,7 @@ export default {
         this.$notification.success('reject success')
         this.deliveryOrderRequest()
       }).catch(error => {
-        this.$notification.error(error.message)
+        this.$notification.error(error?.message)
       }).finally(() => {
         this.isProccessApproval = false
       })
@@ -376,6 +427,8 @@ export default {
       }).then(response => {
         this.$notification.success('cancellation approved')
         this.$router.push('/sales/delivery-order')
+      }).catch(error => {
+        this.$notification.error(error?.message)
       }).finally(() => {
         this.isProccessCancellationApproval = false
       })
@@ -390,9 +443,38 @@ export default {
         this.$notification.success('cancellation rejected')
         this.deliveryOrderRequest()
       }).catch(error => {
-        console.log(error.message)
+        this.$notification.error(error?.message)
       }).finally(() => {
         this.isProccessCancellationApproval = false
+      })
+    },
+    onCloseApprove () {
+      this.isProccessCloseApproval = true
+
+      this.closeApprove({
+        id: this.$route.params.id
+      }).then(response => {
+        this.$notification.success('close approved')
+        this.$router.push('/sales/delivery-order')
+      }).catch(error => {
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessCloseApproval = false
+      })
+    },
+    onCloseReject (reason) {
+      this.isProccessCloseApproval = true
+
+      this.closeReject({
+        id: this.$route.params.id,
+        reason: reason
+      }).then(response => {
+        this.$notification.success('close rejected')
+        this.deliveryOrderRequest()
+      }).catch(error => {
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessCloseApproval = false
       })
     }
   }

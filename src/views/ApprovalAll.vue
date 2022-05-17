@@ -58,21 +58,21 @@
                   v-if="resource.form.approval_status === 1"
                   class="font-white bg-success"
                 >
-                  Succes
+                  Success
                 </div>
 
                 <div
                   v-if="resource.form.approval_status === -1"
                   class="font-white bg-success"
                 >
-                  Succes
+                  Success
                 </div>
 
                 <div
                   v-if="resource.form.approval_status === 0"
-                  class="font-white bg-danger"
+                  class="font-white bg-secondary"
                 >
-                  Stock not enough
+                  {{ resourceType === 'TransferSend' ? 'Stock not enough' : 'pending' }}
                 </div>
               </template>
             </td>
@@ -102,7 +102,7 @@ export default {
       action: '',
       token: '',
       resourceType: '',
-      resource: {},
+      resources: [],
       projectName: '',
       approvalStatus: null,
       collectif: false
@@ -138,6 +138,9 @@ export default {
       if (this.resourceType === 'TransferSend') {
         this.handleApprovalTransferSend()
       }
+      if (this.resourceType === 'SalesDeliveryOrder') {
+        this.handleApprovalDeliveryOrder()
+      }
     },
     async handleApprovalTransferSend () {
       if (this.action === 'approve') {
@@ -163,6 +166,35 @@ export default {
           this.resources = response.data
           this.projectName = this.tenantName
           this.approvalStatus = -1
+        }).catch(error => {
+          console.log(error.message)
+        })
+      }
+    },
+    async handleApprovalDeliveryOrder () {
+      if (this.action === 'approve') {
+        this.$store.dispatch('salesDeliveryOrder/approveByEmail', {
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id
+        }).then(response => {
+          this.resources = response.data
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form.approval_status
+        }).catch(error => {
+          console.log(error.message)
+        })
+      }
+      if (this.action === 'reject') {
+        this.$store.dispatch('salesDeliveryOrder/rejectByEmail', {
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id,
+          reason: 'Rejected by email'
+        }).then(response => {
+          this.resources = response.data
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form.approval_status
         }).catch(error => {
           console.log(error.message)
         })
