@@ -22,14 +22,14 @@
               </div>
 
               <div
-                v-if="approvalStatus === -1"
+                v-else-if="approvalStatus === -1"
                 class="form-status bg-danger"
               >
                 Rejected
               </div>
 
               <div
-                v-if="approvalStatus === 0"
+                v-else-if="approvalStatus === 0"
                 class="form-status bg-secondary"
               >
                 Pending
@@ -50,7 +50,7 @@
           </div>
         </div>
       </div>
-      <div class="text-center">
+      <div class="text-center mt-2">
         <button
           class="footer text-center text-white bg-secondary"
           type="button"
@@ -65,6 +65,7 @@
 
 <script>
 import axiosNode from '@/axiosNode'
+import axios from '@/axios'
 import { mapActions } from 'vuex'
 
 export default {
@@ -76,6 +77,7 @@ export default {
       resourceType: '',
       resource: {},
       projectName: '',
+      id: '',
       approvalStatus: null,
       warningMessage: ''
     }
@@ -91,6 +93,8 @@ export default {
     this.crudType = this.$route.query['crud-type']
     this.action = this.$route.query.action || ''
     this.token = this.$route.query.token || ''
+    this.id = this.$route.query.id || ''
+    this.projectName = this.$route.query['project-name'] || ''
     this.approver_id = this.$route.query.approver_id || ''
     if (this.$route.query.ids != undefined) {
       this.ids = JSON.parse('[' + this.$route.query.ids + ']') || ''
@@ -127,6 +131,9 @@ export default {
         if (this.resourceType === 'StockCorrection') {
           ({ resource, projectName, approvalStatus } = await this.handleApprovalStockCorrection(headers))
         }
+        if (this.resourceType === 'CashAdvance') {
+          ({ resource, projectName, approvalStatus } = await this.handleApprovalCashAdvance(headers))
+        }
         if (this.resourceType === 'TransferSend') {
           this.handleApprovalTransferSend()
         }
@@ -134,6 +141,7 @@ export default {
           this.handleApprovalTransferReceive()
         }
       } catch (error) {
+        alert(error)
         if (error.data && error.data.message) {
           this.$notification.error(error.data.message)
           if (error.data.message === 'Stock can not be minus') {
@@ -201,6 +209,25 @@ export default {
           return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.cancellationStatus }
         }
       }
+    },
+    async handleApprovalCashAdvance (headers) {
+      let status = 0
+      if (this.action === 'approve') {
+        status = 1
+      } else if (this.action === 'reject') {
+        status = -1
+      }
+      const { data: { data: cashAdvance } } = await axios.post('approval-with-token/finance/cash-advances', { token: this.token, id: this.id, status: status, activity: 'approved by email' }, { headers })
+      if (cashAdvance.form.approval_status == 0) {
+        this.warningMessage = 'Balance Not Enough'
+      } else if (cashAdvance.form.approval_status != status) {
+        if (cashAdvance.form.approval_status == 1) {
+          this.warningMessage = 'Cash Advance was approved before'
+        } else if (cashAdvance.form.approval_status == -1) {
+          this.warningMessage = 'Cash Advance was rejected before'
+        }
+      }
+      return { resource: cashAdvance, projectName: this.projectName, approvalStatus: cashAdvance.form.approval_status }
     },
     async handleApprovalTransferSend () {
       if (this.action === 'approve') {
