@@ -167,9 +167,20 @@ export default {
       this.get({
         id: this.id,
         params: {
-          sort_by: '-user_activity.date',
-          limit: 10,
+          sort_by: '-user_activities.date',
           includes: 'user',
+          filter_like: {
+            'form.number': this.searchText,
+            'user_activities.activity': this.searchText
+          },
+          or_filter_where_has_like: [
+            {
+              user: {
+                name: this.searchText
+              }
+            }
+          ],
+          limit: 10,
           page: this.currentPage
         }
       }).catch(error => {

@@ -64,6 +64,19 @@
                 v-if="deliveryOrder.form.number"
                 class="text-right"
               >
+                <button
+                  class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                  title="Send Receipt Delivery Order"
+                  :disabled="isSendingEmail"
+                  @click="() => $refs.formSendEmail.open()"
+                >
+                  <i
+                    :class="{
+                      'si si-printer': !isSendingEmail,
+                      'fa fa-asterisk fa-spin': isSendingEmail,
+                    }"
+                  />
+                </button>
                 <router-link
                   :to="{ name: 'sales.delivery-order.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
@@ -248,6 +261,10 @@
       ref="formRequestClose"
       @closeRequest="onCloseRequest($event)"
     />
+    <m-form-send-email
+      ref="formSendEmail"
+      @submit="onSendEmail($event)"
+    />
   </div>
 </template>
 
@@ -272,7 +289,8 @@ export default {
       isProccessCancellationApproval: false,
       isProccessCloseApproval: false,
       isDeleting: false,
-      isClosing: false
+      isClosing: false,
+      isSendingEmail: false
     }
   },
   computed: {
@@ -388,6 +406,33 @@ export default {
         }).finally(() => {
           this.isClosing = false
         })
+    },
+    async onSendEmail (form) {
+      this.isSendingEmail = true
+
+      try {
+        const params = {
+          ...form,
+          subject: 'Delivery Order Receipt',
+          attachments: [
+            {
+              filename: 'Delivery Order Receipt ' + this.deliveryOrder.form.number + '.pdf',
+              type: 'pdf',
+              view: 'sales.delivery-order.delivery-order-receipt',
+              view_data: { deliveryOrder: this.deliveryOrder }
+            }
+          ]
+        }
+        await this.$store.dispatch('emailService/send', { ...params })
+
+        this.$notification.success('send receipt success')
+        this.deliveryOrderRequest()
+      } catch (error) {
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
+      } finally {
+        this.isSendingEmail = false
+      }
     },
     onApprove () {
       this.isProccessApproval = true

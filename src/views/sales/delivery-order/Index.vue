@@ -10,6 +10,28 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
+          <div
+            class="input-group-prepend"
+            :disabled="isExportingData"
+            :style="{
+              'opacity': isExportingData ? 0.3 : 1,
+              'cursor': isExportingData ? 'not-allowed' : 'pointer'
+            }"
+            @click="exportData"
+          >
+            <span
+              v-if="isExportingData"
+              class="input-group-text"
+            >
+              <i class="fa fa-asterisk fa-spin" />
+            </span>
+            <span
+              v-else
+              class="input-group-text"
+            >
+              <i class="fa fa-download" />
+            </span>
+          </div>
           <router-link
             v-if="$permission.has('create sales delivery order')"
             to="/sales/delivery-order/create"
@@ -262,6 +284,7 @@ export default {
   data () {
     return {
       isLoading: true,
+      isExportingData: false,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
@@ -316,7 +339,7 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('salesDeliveryOrder', ['get']),
+    ...mapActions('salesDeliveryOrder', ['get', 'export']),
     chooseFormStatus (option) {
       this.formStatus.label = option.label
       this.formStatus.value = option.value
@@ -372,6 +395,41 @@ export default {
     updatePage (value) {
       this.currentPage = value
       this.getDeliveryOrder()
+    },
+    async exportData () {
+      if (this.isExportingData) return
+
+      this.isExportingData = true
+
+      try {
+        const { data: { url } } = await this.export({
+          params: {
+            join: 'form,customer,items,item',
+            fields: 'sales_delivery_order.*;sales_delivery_order_item.*',
+            sort_by: '-form.number',
+            filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
+            filter_like: {
+              'form.number': this.searchText,
+              'customer.name': this.searchText,
+              'item.code': this.searchText,
+              'item.name': this.searchText
+            },
+            filter_date_min: {
+              'form.date': this.serverDateTime(this.date.start, 'start')
+            },
+            filter_date_max: {
+              'form.date': this.serverDateTime(this.date.end, 'end')
+            },
+            includes: 'form;customer;warehouse;items.item'
+          }
+        })
+
+        window.open(url, '_blank')
+        this.isExportingData = false
+      } catch (error) {
+        this.isExportingData = false
+        this.$notification.error(error.message)
+      }
     }
   }
 }
