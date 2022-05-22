@@ -17,10 +17,11 @@
       form="sales delivery order"
       :is-loading="isLoading"
       :is-proccess-approval="isProccessApproval"
-      :approved-by="deliveryOrder.form.request_approval_to.full_name"
-      :cancellation-status="deliveryOrder.form.cancellation_status"
       :approval-status="deliveryOrder.form.approval_status"
       :approval-reason="deliveryOrder.form.approval_reason"
+      :approved-by="deliveryOrder.form.request_approval_to.full_name"
+      :cancellation-status="deliveryOrder.form.cancellation_status"
+      :close-status="deliveryOrder.form.close_status"
       @onApprove="onApprove"
       @onReject="onReject"
     />
@@ -31,6 +32,7 @@
       :is-proccess-approval="isProccessCancellationApproval"
       :approved-by="deliveryOrder.form.request_approval_to.full_name"
       :cancellation-status="deliveryOrder.form.cancellation_status"
+      :close-status="deliveryOrder.form.close_status"
       :cancellation-approval-reason="deliveryOrder.form.cancellation_approval_reason"
       :request-cancellation-reason="deliveryOrder.form.request_cancellation_reason"
       @onCancellationApprove="onCancellationApprove"
@@ -312,12 +314,13 @@ export default {
     actions () {
       const { form } = this.deliveryOrder
 
+      const whereDone = form.done == 1
       const wherePending = form.done == 0
       const whereNotArchived = !!form.number
 
       return {
         delete: wherePending && form.cancellation_status == null && whereNotArchived,
-        close: wherePending && form.close_status == null && whereNotArchived
+        close: whereDone && form.close_status == null && whereNotArchived
       }
     }
   },

@@ -15,7 +15,7 @@
       </div>
     </div>
     <div
-      v-if="cancellationStatus == null && approvalStatus == 0 && isLoading == false"
+      v-if="cancellationStatus == null && closeStatus == null && approvalStatus == 0 && isLoading == false"
       class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
@@ -62,6 +62,10 @@
 export default {
   props: {
     cancellationStatus: {
+      type: Number,
+      default: null
+    },
+    closeStatus: {
       type: Number,
       default: null
     },

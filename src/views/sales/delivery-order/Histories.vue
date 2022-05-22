@@ -22,6 +22,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
+          <router-link
+            v-if="$permission.has('create sales delivery order')"
+            to="/sales/delivery-order/create"
+            class="input-group-prepend"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-plus" />
+            </span>
+          </router-link>
           <p-form-input
             id="search-text"
             ref="searchText"
@@ -113,8 +122,12 @@ export default {
       isAdvanceFilter: false,
       checkedRow: [],
       date: {
-        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
-        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
+        start: this.$route.query.date_from
+          ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00')
+          : this.$moment().format('YYYY-MM-01 00:00:00'),
+        end: this.$route.query.date_to
+          ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59')
+          : this.$moment().format('YYYY-MM-DD 23:59:59')
       }
     }
   },

@@ -104,6 +104,15 @@
       <tbody>
         <tr>
           <td>
+            <div
+              v-if="deliveryOrder.form.cancellation_status == 1"
+              class="watermark"
+            >
+              <img
+                src="/assets/img/draft-watermark.png"
+                style="opacity: 0.5; width: 100%"
+              >
+            </div>
             <table
               class="table-items"
               style="width: 100%;"
@@ -267,6 +276,17 @@ export default {
 </script>
 
 <style scoped>
+.watermark{
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: -1;
+}
 .print-delivery-order-container {
   width: 90%;
   padding: 30px;
