@@ -72,10 +72,17 @@
                 >
                   <i
                     :class="{
-                      'si si-printer': !isSendingEmail,
+                      'fa fa-paper-plane': !isSendingEmail,
                       'fa fa-asterisk fa-spin': isSendingEmail,
                     }"
                   />
+                </button>
+                <button
+                  class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                  title="Preview Receipt Delivery Order"
+                  @click="() => $refs.printPreview.open()"
+                >
+                  <i class="si si-printer" />
                 </button>
                 <router-link
                   :to="{ name: 'sales.delivery-order.create' }"
@@ -265,6 +272,10 @@
       ref="formSendEmail"
       @submit="onSendEmail($event)"
     />
+    <m-print-preview
+      ref="printPreview"
+      :delivery-order="deliveryOrder"
+    />
   </div>
 </template>
 
@@ -272,6 +283,7 @@
 import SalesMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSales from '../Breadcrumb'
+import MPrintPreview from './MPrintPreview'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -280,6 +292,7 @@ export default {
     SalesMenu,
     Breadcrumb,
     BreadcrumbSales,
+    MPrintPreview,
     PointTable
   },
   data () {
@@ -426,7 +439,6 @@ export default {
         await this.$store.dispatch('emailService/send', { ...params })
 
         this.$notification.success('send receipt success')
-        this.deliveryOrderRequest()
       } catch (error) {
         this.$notification.error(error.message)
         this.form.errors.record(error.errors)

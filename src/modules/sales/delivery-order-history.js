@@ -35,6 +35,16 @@ const actions = {
           reject(error)
         })
     })
+  },
+  add (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/histories', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 
