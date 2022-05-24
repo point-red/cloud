@@ -314,13 +314,13 @@ export default {
     actions () {
       const { form } = this.deliveryOrder
 
-      const whereDone = form.done == 1
+      const whereApprove = form.approval_status == 1
       const wherePending = form.done == 0
       const whereNotArchived = !!form.number
 
       return {
         delete: wherePending && form.cancellation_status == null && whereNotArchived,
-        close: whereDone && form.close_status == null && whereNotArchived
+        close: whereApprove && form.close_status == null && whereNotArchived
       }
     }
   },
