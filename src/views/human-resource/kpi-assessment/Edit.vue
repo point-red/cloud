@@ -10,9 +10,7 @@
       >
         {{ $t("history assessment") | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">{{
-        $t("edit") | uppercase
-      }}</span>
+      <span class="breadcrumb-item active">{{ $t("edit") | uppercase }}</span>
     </breadcrumb>
 
     <form class="row" @submit.prevent="onSubmit">
@@ -330,6 +328,17 @@
             </tr>
           </p-table>
 
+          <p-form-row :label="$t('comment')">
+            <div slot="body" class="col-lg-9 col-form-label">
+              <textarea
+                @change="changeCommentTemplate"
+                v-model="form.comment"
+                class="form-control"
+                rows="3"
+              />
+            </div>
+          </p-form-row>
+
           <div class="form-group row">
             <div class="col-md-12">
               <hr />
@@ -403,6 +412,7 @@ export default {
       id: this.$route.params.employeeId,
       form: new Form({
         date: "",
+        comment: null,
         template: {
           groups: [],
         },
@@ -442,6 +452,7 @@ export default {
         kpiId: this.kpiId,
       }).then(
         (response) => {
+          this.form.comment = this.assessment.comment;
           this.form.date = this.assessment.date;
           this.form.template = this.assessment;
           this.assignSelected();
@@ -498,6 +509,10 @@ export default {
     },
     isUser(employee_userid) {
       return localStorage.getItem("userId") == employee_userid;
+    },
+    changeCommentTemplate() {
+      this.onSave();
+      console.log(this.form);
     },
     showAttachment(indicator) {
       this.showByAttachment({
