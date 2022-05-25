@@ -332,6 +332,22 @@
             </tr>
           </p-table>
 
+          <p-form-row
+            :label="$t('comment')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 col-form-label"
+            >
+              <textarea
+                @change="changeCommentTemplate"
+                v-model="form.template.comment"
+                class="form-control"
+                rows="3"
+              />
+            </div>
+          </p-form-row>
+
           <div class="form-group row">
             <div class="col-md-12">
               <hr />
@@ -416,6 +432,7 @@ export default {
         },
         template: {
           groups: [],
+          comnment: null
         },
       }),
       title: "Kpi",
@@ -522,6 +539,11 @@ export default {
     },
     isUser(employee_userid) {
       return localStorage.getItem("userId") == employee_userid;
+    },
+    changeCommentTemplate(){
+      this.$set(this.form.template, 'comment', this.form.template.comment);
+      this.onSave();
+      console.log(this.form);
     },
     onChangeDate(time) {
       if (this.employee.user_id == undefined) {

@@ -10,9 +10,7 @@
       >
         {{ $t("history assessment") | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">{{
-        $t("show") | uppercase
-      }}</span>
+      <span class="breadcrumb-item active">{{ $t("show") | uppercase }}</span>
     </breadcrumb>
 
     <form class="row" @submit.prevent="onSubmit">
@@ -229,6 +227,12 @@
               <td />
             </tr>
           </p-table>
+
+          <p-form-row :is-horizontal="false" :label="$t('comment')">
+            <div slot="body" class="col-lg-9 col-form-label">
+              <pre>{{ assessment.comment }}</pre>
+            </div>
+          </p-form-row>
         </p-block-inner>
       </p-block>
     </form>
