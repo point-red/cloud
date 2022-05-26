@@ -531,7 +531,7 @@ export default {
       formStatus: {
         id: null,
         label: null,
-        value: 'notArchived'
+        value: 'notArchived;notCanceled'
       },
       formApprovalStatus: {
         id: null,
