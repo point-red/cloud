@@ -222,39 +222,39 @@
                 <td class="text-center">
                   {{ report.notes }}
                 </td>
-                <td class="text-center">
+                <td class="text-right">
                   {{ report.debit | numberFormat }}
                 </td>
-                <td class="text-center">
+                <td class="text-right">
                   {{ report.credit | numberFormat }}
                 </td>
                 <td
                   v-if="report.balance > 0"
-                  class="text-center"
+                  class="text-right"
                 >
                   {{ Math.abs(report.balance) | numberFormat }}
                 </td>
                 <td
                   v-else
-                  class="text-center"
+                  class="text-right"
                 >
                   {{ 0 | numberFormat }}
                 </td>
                 <td
                   v-if="report.balance < 0"
-                  class="text-center"
+                  class="text-right"
                 >
                   {{ Math.abs(report.balance) | numberFormat }}
                 </td>
                 <td
                   v-else
-                  class="text-center"
+                  class="text-right"
                 >
                   {{ 0 | numberFormat }}
                 </td>
                 <td
                   v-if="$permission.has('check bank report')"
-                  class="text-center"
+                  class="text-right"
                 >
                   <input
                     v-model="checkedData[index].checked"
@@ -274,33 +274,33 @@
               <td />
               <td />
               <td />
-              <td class="text-center">
+              <td class="text-right">
                 {{ total.debit | numberFormat }}
               </td>
-              <td class="text-center">
+              <td class="text-right">
                 {{ total.credit | numberFormat }}
               </td>
               <td
                 v-if="(total.debit - total.credit) > 0"
-                class="text-center"
+                class="text-right"
               >
                 {{ Math.abs(total.debit - total.credit) | numberFormat }}
               </td>
               <td
                 v-else
-                class="text-center"
+                class="text-right"
               >
                 {{ 0 | numberFormat }}
               </td>
               <td
                 v-if="(total.debit - total.credit) < 0"
-                class="text-center"
+                class="text-right"
               >
                 {{ Math.abs(total.debit - total.credit) | numberFormat }}
               </td>
               <td
                 v-else
-                class="text-center"
+                class="text-right"
               >
                 {{ 0 | numberFormat }}
               </td>
@@ -314,33 +314,33 @@
               <td />
               <td />
               <td />
-              <td class="text-center">
+              <td class="text-right">
                 {{ opening_balance.debit | numberFormat }}
               </td>
-              <td class="text-center">
+              <td class="text-right">
                 {{ opening_balance.credit | numberFormat }}
               </td>
               <td
                 v-if="ending_balance > 0"
-                class="text-center"
+                class="text-right"
               >
                 {{ ending_balance | numberFormat }}
               </td>
               <td
-                v-if="ending_balance > 0 || ending_balance == 0"
-                class="text-center"
+                v-else
+                class="text-right"
               >
                 {{ 0 | numberFormat }}
               </td>
               <td
                 v-if="ending_balance < 0"
-                class="text-center"
+                class="text-right"
               >
                 {{ Math.abs(ending_balance) | numberFormat }}
               </td>
               <td
-                v-if="ending_balance < 0 || ending_balance == 0"
-                class="text-center"
+                v-else
+                class="text-right"
               >
                 {{ 0 | numberFormat }}
               </td>
@@ -356,49 +356,49 @@
               <td />
               <td
                 v-if="ending_balance > 0"
-                class="text-center"
+                class="text-right"
               >
                 {{ ending_balance | numberFormat }}
               </td>
               <td
-                v-if="ending_balance > 0 || ending_balance == 0"
-                class="text-center"
+                v-else
+                class="text-right"
               >
                 {{ 0 | numberFormat }}
               </td>
               <td
                 v-if="ending_balance < 0"
-                class="text-center"
-              >
-                {{ 0 | numberFormat }}
-              </td>
-              <td
-                v-if="ending_balance < 0 || ending_balance == 0"
-                class="text-center"
+                class="text-right"
               >
                 {{ Math.abs(ending_balance) | numberFormat }}
+              </td>
+              <td
+                v-else
+                class="text-right"
+              >
+                {{ 0 | numberFormat }}
               </td>
               <td
                 v-if="ending_balance > 0"
-                class="text-center"
+                class="text-right"
               >
                 {{ ending_balance | numberFormat }}
               </td>
               <td
-                v-if="ending_balance > 0 || ending_balance == 0"
-                class="text-center"
+                v-else
+                class="text-right"
               >
                 {{ 0 | numberFormat }}
               </td>
               <td
-                v-if="ending_balance < 0 || ending_balance == 0"
-                class="text-center"
+                v-if="ending_balance < 0"
+                class="text-right"
               >
                 {{ Math.abs(ending_balance) | numberFormat }}
               </td>
               <td
-                v-if="ending_balance < 0"
-                class="text-center"
+                v-else
+                class="text-right"
               >
                 {{ 0 | numberFormat }}
               </td>
@@ -414,10 +414,10 @@
               <td />
               <td />
               <td />
-              <td class="text-center">
+              <td class="text-right">
                 {{ cash_advance | numberFormat }}
               </td>
-              <td class="text-center">
+              <td class="text-right">
                 {{ 0 | numberFormat }}
               </td>
             </tr>
@@ -434,25 +434,25 @@
               <td />
               <td
                 v-if="(ending_balance - cash_advance) > 0"
-                class="text-center"
+                class="text-right"
               >
                 {{ ending_balance - cash_advance | numberFormat }}
               </td>
               <td
                 v-else
-                class="text-center"
+                class="text-right"
               >
                 {{ 0 | numberFormat }}
               </td>
               <td
                 v-if="(ending_balance - cash_advance) < 0"
-                class="text-center"
+                class="text-right"
               >
                 {{ Math.abs(ending_balance - cash_advance) | numberFormat }}
               </td>
               <td
                 v-else
-                class="text-center"
+                class="text-right"
               >
                 {{ 0 | numberFormat }}
               </td>

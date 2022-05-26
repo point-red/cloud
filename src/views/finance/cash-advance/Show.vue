@@ -177,7 +177,8 @@
                     && cashAdvance.form.approval_by != null
                     && cashAdvance.form.done == 0
                     && cashAdvance.amount == cashAdvance.amount_remaining
-                    || cashAdvance.form.is_updated == false"
+                    || ( cashAdvance.form.is_updated == false
+                      && cashAdvance.form.approval_by == null )"
                   :to="{ name: 'finance.cash-advance.edit', params: { id: id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
