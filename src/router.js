@@ -4,6 +4,7 @@ import GuestLayout from './views/layouts/GuestLayout.vue'
 import AuthLayout from '@/views/layouts/AuthLayout'
 import AccountLayout from '@/views/layouts/account/AccountLayout'
 import Approval from '@/views/Approval.vue'
+import ApprovalAll from '@/views/ApprovalAll.vue'
 // Authentication Pages
 import E404 from '@/views/error/404'
 import E503 from '@/views/error/503'
@@ -126,6 +127,10 @@ export default new Router({
     {
       path: '/approval',
       component: Approval
+    },
+    {
+      path: '/approval-all',
+      component: ApprovalAll
     },
     {
       path: '/404',

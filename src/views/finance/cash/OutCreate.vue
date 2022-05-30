@@ -89,7 +89,17 @@
               <td>{{ row.notes }}</td>
               <td>{{ row.allocation_name }}</td>
               <td class="text-right">
-                {{ row.amount | numberFormat }}
+                <div v-if="form.referenceable_type=='CashAdvance'">
+                  <p-form-number
+                    :id="'amount-' + index"
+                    v-model="row.amount"
+                    :name="'amount-' + index"
+                    @keyup.native="calculate()"
+                  />
+                </div>
+                <div v-else>
+                  {{ row.amount | numberFormat }}
+                </div>
               </td>
             </tr>
             <tr slot="p-body">
@@ -151,6 +161,7 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import Form from '@/utils/Form'
@@ -219,6 +230,13 @@ export default {
     ...mapActions('financePayment', {
       create: 'create'
     }),
+    calculate: debounce(function () {
+      var totalAmount = 0
+      this.form.details.forEach(function (element) {
+        totalAmount += parseFloat(element.amount)
+      })
+      this.form.amount = totalAmount
+    }, 300),
     onChoosenAccountCash (account) {
       this.form.payment_account_id = account.id
       this.form.payment_account_name = account.label

@@ -81,6 +81,12 @@ export default {
     label: {
       type: String,
       default: null
+    },
+    exclude: {
+      type: Array,
+      default: function () {
+        return []
+      }
     }
   },
   data () {
@@ -127,11 +133,15 @@ export default {
         this.options = []
         this.mutableLabel = ''
         response.data.map((key, value) => {
-          this.options.push({
-            id: key.id,
-            name: key.name,
-            label: key.name
-          })
+          if (key.name != 'DISTRIBUTION WAREHOUSE') {
+            if (this.exclude.includes(key.id) == false) {
+              this.options.push({
+                id: key.id,
+                name: key.name,
+                label: key.name
+              })
+            }
+          }
 
           if (this.value == key.id) {
             this.mutableLabel = key.name
@@ -164,6 +174,7 @@ export default {
       this.close()
     },
     open (index = null) {
+      this.search()
       this.index = index
       this.$refs['select-' + this.id].open()
     },

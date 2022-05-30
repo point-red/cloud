@@ -5,7 +5,7 @@
         {{ projectName }}
       </h1>
       <div class="floating-approve">
-        <div class="header">
+        <div class="header text-center">
           <strong>{{ crudType | uppercase }} APPROVAL STATUS</strong>
         </div>
         <div class="body">
@@ -22,30 +22,42 @@
               </div>
 
               <div
-                v-if="approvalStatus === -1"
+                v-else-if="approvalStatus === -1"
                 class="form-status bg-danger"
               >
                 Rejected
               </div>
 
               <div
-                v-if="approvalStatus === 0"
+                v-else-if="approvalStatus === 0"
                 class="form-status bg-secondary"
               >
                 Pending
               </div>
-              <div
+              <!-- <div
                 v-else
                 class="form-status bg-secondary"
               >
                 Unknown
-              </div>
+              </div> -->
             </template>
-            <div class="m-0 mt-4 alert alert-danger">
+            <div
+              v-if="warningMessage"
+              class="m-0 mt-4 alert alert-danger"
+            >
               {{ warningMessage }}
             </div>
           </div>
         </div>
+      </div>
+      <div class="text-center mt-2">
+        <button
+          class="footer text-center text-white bg-secondary"
+          type="button"
+          @click="close"
+        >
+          <strong>{{ uppercase }} BACK</strong>
+        </button>
       </div>
     </div>
   </div>
@@ -53,6 +65,8 @@
 
 <script>
 import axiosNode from '@/axiosNode'
+import axios from '@/axios'
+import { mapActions } from 'vuex'
 
 export default {
   data () {
@@ -63,8 +77,14 @@ export default {
       resourceType: '',
       resource: {},
       projectName: '',
+      id: '',
       approvalStatus: null,
       warningMessage: ''
+    }
+  },
+  computed: {
+    tenantName () {
+      return localStorage.getItem('tenantName')
     }
   },
   created () {
@@ -73,10 +93,29 @@ export default {
     this.crudType = this.$route.query['crud-type']
     this.action = this.$route.query.action || ''
     this.token = this.$route.query.token || ''
-
+    this.id = this.$route.query.id || ''
+    this.projectName = this.$route.query['project-name'] || ''
+    this.approver_id = this.$route.query.approver_id || ''
+    if (this.$route.query.ids != undefined) {
+      this.ids = JSON.parse('[' + this.$route.query.ids + ']') || ''
+    }
+    if (this.$route.query.form_send_done != undefined) {
+      this.formSendDone = this.$route.query.form_send_done
+    }
     this.handleAction()
   },
   methods: {
+    ...mapActions('inventoryTransferItem', {
+      approveByEmail: 'approveByEmail',
+      rejectByEmail: 'rejectByEmail'
+    }),
+    ...mapActions('inventoryReceiveItem', {
+      approveByEmailReceive: 'approveByEmail',
+      rejectByEmailReceive: 'rejectByEmail'
+    }),
+    close () {
+      open(location, '_self').close()
+    },
     async handleAction () {
       // this.validate()
       const headers = {
@@ -92,7 +131,17 @@ export default {
         if (this.resourceType === 'StockCorrection') {
           ({ resource, projectName, approvalStatus } = await this.handleApprovalStockCorrection(headers))
         }
+        if (this.resourceType === 'CashAdvance') {
+          ({ resource, projectName, approvalStatus } = await this.handleApprovalCashAdvance(headers))
+        }
+        if (this.resourceType === 'TransferSend') {
+          this.handleApprovalTransferSend()
+        }
+        if (this.resourceType === 'TransferReceive') {
+          this.handleApprovalTransferReceive()
+        }
       } catch (error) {
+        alert(error)
         if (error.data && error.data.message) {
           this.$notification.error(error.data.message)
           if (error.data.message === 'Stock can not be minus') {
@@ -158,6 +207,119 @@ export default {
         if (this.action === 'reject') {
           const { data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/delete-reject-with-token', { token: this.token }, { headers })
           return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.cancellationStatus }
+        }
+      }
+    },
+    async handleApprovalCashAdvance (headers) {
+      let status = 0
+      if (this.action === 'approve') {
+        status = 1
+      } else if (this.action === 'reject') {
+        status = -1
+      }
+      const { data: { data: cashAdvance } } = await axios.post('approval-with-token/finance/cash-advances', { token: this.token, id: this.id, status: status, activity: 'approved by email' }, { headers })
+      if (cashAdvance.form.approval_status == 0) {
+        this.warningMessage = 'Balance Not Enough'
+      } else if (cashAdvance.form.approval_status != status) {
+        if (cashAdvance.form.approval_status == 1) {
+          this.warningMessage = 'Cash Advance was approved before'
+        } else if (cashAdvance.form.approval_status == -1) {
+          this.warningMessage = 'Cash Advance was rejected before'
+        }
+      }
+      return { resource: cashAdvance, projectName: this.projectName, approvalStatus: cashAdvance.form.approval_status }
+    },
+    async handleApprovalTransferSend () {
+      if (this.action === 'approve') {
+        this.approveByEmail({
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form.approval_status
+          if (this.approvalStatus === 0) {
+            this.warningMessage = 'Stock not enough'
+          }
+        }).catch(error => {
+          console.log(error.message)
+        })
+      }
+      if (this.action === 'reject') {
+        this.rejectByEmail({
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id,
+          reason: 'Rejected by email'
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form.approval_status
+        }).catch(error => {
+          console.log(error.message)
+        })
+      }
+    },
+    async handleApprovalTransferReceive () {
+      if (this.crudType === 'update') {
+        if (this.action === 'approve') {
+          this.approveByEmailReceive({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            form_send_done: this.formSendDone
+          }).then(response => {
+            this.resource = response.data
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data.form.approval_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
+        if (this.action === 'reject') {
+          this.rejectByEmailReceive({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            reason: 'Rejected by email'
+          }).then(response => {
+            this.resource = response.data
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data.form.approval_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
+      }
+      if (this.crudType === 'delete') {
+        if (this.action === 'approve') {
+          this.approveByEmailReceive({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            form_send_done: this.formSendDone
+          }).then(response => {
+            this.resource = response.data
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data.form.cancellation_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
+        if (this.action === 'reject') {
+          this.rejectByEmailReceive({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            reason: 'Rejected by email'
+          }).then(response => {
+            this.resource = response.data
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data.form.cancellation_status
+          }).catch(error => {
+            console.log(error.message)
+          })
         }
       }
     }

@@ -39,9 +39,9 @@
             <th class="text-right">
               Quantity
             </th>
-            <th class="text-right">
+            <!-- <th class="text-right">
               Stock
-            </th>
+            </th> -->
           </tr>
           <tr
             v-for="(option, inventoryIndex) in inventories"
@@ -61,14 +61,15 @@
                 :name="'inventory-out-' + inventoryIndex"
                 :units="mutableItemUnits"
                 :unit="mutableItemUnit"
+                :disable-unit-selection="disableUnitSelection"
                 @input="calculate"
                 @choosen="updateUnit"
               />
             </td>
-            <td class="text-right">
+            <!-- <td class="text-right">
               {{ option.remainingInUnit | numberFormat }}
               {{ mutableItemUnit.label | uppercase }}
-            </td>
+            </td> -->
           </tr>
           <tr slot="p-body">
             <td v-if="mutableRequireExpiryDate" /><td v-if="mutableRequireProductionNumber" /><td class="text-right">
@@ -108,6 +109,14 @@ export default {
     value: {
       type: [String, Number],
       default: null
+    },
+    disableUnitSelection: {
+      type: Boolean,
+      default: false
+    },
+    onlySmallestUnit: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -208,11 +217,18 @@ export default {
       this.mutableRowId = row.row_id
       this.mutableItemId = row.item.id
       this.mutableItemName = row.item.name
-      this.mutableItemUnit = row.item.unit
-      this.mutableItemUnits = row.item.units
       this.mutableWarehouseId = row.warehouse_id
       this.mutableRequireExpiryDate = row.item.require_expiry_date
       this.mutableRequireProductionNumber = row.item.require_production_number
+
+      if (this.onlySmallestUnit) {
+        const smallestUnit = row.item.units.find(unit => unit.converter === 1)
+        this.mutableItemUnits = [smallestUnit]
+        this.mutableItemUnit = smallestUnit
+      } else {
+        this.mutableItemUnits = row.item.units
+        this.mutableItemUnit = row.item.unit
+      }
 
       if (row.dna) {
         this.mutableInventories = row.dna

@@ -528,13 +528,17 @@
                     {{ $t('stock correction') | uppercase }}
                   </router-link>
                 </li>
-                <!--
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read transfer item')">
+                <li
+                  v-if="$permission.has('read transfer item')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/inventory/transfer"
-                    active-class="active">{{ $t('transfer item') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('transfer item') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
               </ul>
             </li>
             <li
@@ -635,6 +639,39 @@
                     active-class="active"
                   >
                     {{ $t('bank') | uppercase }}
+                  </router-link>
+                </li>
+                <li
+                  v-if="$permission.has('read cash advance')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/finance/cash-advance"
+                    active-class="active"
+                  >
+                    {{ $t('cash advance') | uppercase }}
+                  </router-link>
+                </li>
+                <li
+                  v-if="$permission.has('read cash report')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/finance/cash-report"
+                    active-class="active"
+                  >
+                    {{ $t('cash report') | uppercase }}
+                  </router-link>
+                </li>
+                <li
+                  v-if="$permission.has('read bank report')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/finance/bank-report"
+                    active-class="active"
+                  >
+                    {{ $t('bank report') | uppercase }}
                   </router-link>
                 </li>
               </ul>

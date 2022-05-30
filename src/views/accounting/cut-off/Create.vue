@@ -220,7 +220,7 @@ export default {
       requestedBy: localStorage.getItem('fullName'),
       errors: [],
       form: new Form({
-        date: this.$moment().format('YYYY-MM-DD'),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         increment_group: this.$moment().format('YYYYMM'),
         notes: null,
         details: []
@@ -275,7 +275,7 @@ export default {
     sumFixedAsset (row, position) {
       if (!row) return null
       if (row.chart_of_account_position !== position) return 0
-      return row.items.reduce((total, curr) => total + parseFloat(curr.book_value), 0)
+      return row.items.reduce((total, curr) => total + parseFloat(curr.total), 0)
     },
     recalculate () {
       this.form.details.map(detail => {

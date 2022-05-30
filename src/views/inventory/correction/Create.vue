@@ -239,6 +239,7 @@
       :id="'inventory'"
       ref="inventory"
       :disable-unit-selection="true"
+      :only-smallest-unit="true"
       @updated="updateDna($event)"
     />
   </div>
@@ -347,15 +348,11 @@ export default {
       row.stock_correction = 0
       row.require_production_number = item.require_production_number
       row.require_expiry_date = item.require_expiry_date
-      row.units = item.units
       row.stock_database = parseFloat(inventory.opening_balance)
       row.stock_correction = 0
-      row.units.forEach((unit, keyUnit) => {
-        if (unit.converter == 1) {
-          row.unit = unit.label
-          row.converter = unit.converter
-        }
-      })
+      row.units = this.getSmallestUnit(item.units)
+      row.unit = row.units[0].label
+      row.converter = row.units[0].converter
       let isNeedNewRow = true
       this.form.items.forEach(element => {
         if (element.item_id == null) {
@@ -398,6 +395,11 @@ export default {
       this.form.items[e.index].dna = e.dna
       this.form.items[e.index].stock_correction = e.quantity
     },
+    getSmallestUnit (units) {
+      return units.filter((unit) => {
+        return unit.converter === 1
+      })
+    },
     onSubmit () {
       this.isSaving = true
       if (this.form.request_approval_to == null) {
@@ -417,8 +419,8 @@ export default {
             if (parseFloat(itemDna.quantity) !== 0) {
               items.push({
                 itemId: itemDna.item_id,
-                unit: itemDna.unit_reference,
-                converter: itemDna.converter_reference,
+                unit: item.unit,
+                converter: item.converter,
                 stockCorrection: itemDna.quantity,
                 notes: item.notes,
                 ...(itemDna.expiry_date ? { expiryDate: itemDna.expiry_date } : { expiryDate: null }),
