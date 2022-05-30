@@ -239,7 +239,7 @@ export default {
           this.projectName = this.tenantName
           this.approvalStatus = response.data[0].form.approval_status
         }).catch(error => {
-          console.log(error.message)
+          this.$notification.error(error.message)
         })
       }
       if (this.action === 'reject') {
@@ -253,7 +253,7 @@ export default {
           this.projectName = this.tenantName
           this.approvalStatus = response.data[0].form.approval_status
         }).catch(error => {
-          console.log(error.message)
+          this.$notification.error(error.message)
         })
       }
     }

@@ -153,7 +153,7 @@ export default {
           this.projectName = this.tenantName
           this.approvalStatus = 1
         }).catch(error => {
-          console.log(error.message)
+          this.$notification.error(error.message)
         })
       }
       if (this.action === 'reject') {
@@ -167,7 +167,7 @@ export default {
           this.projectName = this.tenantName
           this.approvalStatus = -1
         }).catch(error => {
-          console.log(error.message)
+          this.$notification.error(error.message)
         })
       }
     },

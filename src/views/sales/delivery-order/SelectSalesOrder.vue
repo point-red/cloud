@@ -5,13 +5,14 @@
     overlay-theme="dark"
     @close="onClose()"
   >
-    <input
-      v-model="searchText"
-      type="text"
-      class="form-control"
+    <p-form-input
+      id="search-text"
+      class="btn-block"
+      name="search-text"
       placeholder="Search..."
-      @keydown.enter.prevent=""
-    >
+      :value="searchText"
+      @input="filterSearch"
+    />
     <hr>
     <div v-if="isLoading">
       <h3 class="text-center">
@@ -22,45 +23,49 @@
       v-else
       class="list-group push"
     >
-      <a
-        v-for="(option, optionIndex) in options"
-        :key="'request-'+optionIndex"
-        class="list-group-item list-group-item-action"
-        href="javascript:void(0)"
-        @click="choose(option)"
-      >
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <strong>{{ option.form.number }}</strong>
-          </div>
-          <div
-            style="font-size: 0.8em;"
-            class="text-black-50 text-right"
-          >
-            Created by {{ option.form.created_by.name }}<br>
-            {{ option.form.created_at | dateFormat('DD MMMM YYYY HH:mm') }}
-          </div>
-        </div>
-        <table
-          style="font-size:11px"
-          class="table mb-0"
-        >
-          <tr
-            v-for="(item, optionItemIndex) in option.items"
-            :key="'item-'+optionItemIndex"
-          >
-            <td class="pl-0">
-              {{ item.item.name }}
-            </td>
-            <td class="w-1 text-right text-nowrap">
-              {{ item.quantity }} {{ item.unit }}
-            </td>
+      <p-block-inner :is-loading="isLoading">
+        <point-table>
+          <tr slot="p-head">
+            <th>Date Form</th>
+            <th>Form Number</th>
+            <th>Customer</th>
+            <th width="105px">
+              Item
+            </th>
+            <th width="50px">
+              Quantity Requested
+            </th>
+            <th width="50px">
+              Quantity Remaining
+            </th>
           </tr>
-        </table>
-      </a>
+          <template v-for="(option, optionIndex) in salesOrders">
+            <tr
+              v-for="(item, itemIndex) in option.items"
+              :key="'pr-' + optionIndex + '-i-' + itemIndex"
+              slot="p-body"
+              class="list-group-item-action"
+              style="cursor: pointer"
+              @click="choose(option)"
+            >
+              <td>{{ option.form.created_at | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+              <td>{{ option.form.number }}</td>
+              <td>{{ option.form.created_by.name }}</td>
+              <td>{{ item.item.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.quantity_remaining }}</td>
+            </tr>
+          </template>
+        </point-table>
+        <p-pagination
+          :current-page="currentPage"
+          :last-page="lastPage"
+          @updatePage="updatePage"
+        />
+      </p-block-inner>
     </div>
     <div
-      v-if="searchText && options.length == 0 && !isLoading"
+      v-if="searchText && salesOrders.length == 0 && !isLoading"
       class="alert alert-info text-center"
     >
       {{ $t('searching not found', [searchText]) | capitalize }}
@@ -79,9 +84,13 @@
 
 <script>
 import debounce from 'lodash/debounce'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    PointTable
+  },
   props: {
     id: {
       type: String,
@@ -96,39 +105,58 @@ export default {
     return {
       index: null,
       searchText: '',
-      options: [],
+      currentPage: 1,
+      lastPage: 1,
+      limit: 10,
       selected: {},
       isLoading: false
     }
   },
   computed: {
-    ...mapGetters('masterItem', ['items', 'pagination'])
+    ...mapGetters('salesOrder', ['salesOrders', 'pagination'])
   },
-  watch: {
-    searchText: debounce(function () {
-      this.search()
-    }, 300)
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
     ...mapActions('salesOrder', ['get']),
-    search () {
+    filterSearch: debounce(function (value) {
+      console.log({ value })
+      this.searchText = value
+      this.currentPage = 1
+      this.getSalesOrder()
+    }, 500),
+    getSalesOrder () {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form,items,item',
+          join: 'form,items,item,customer',
           fields: 'sales_order.*',
           sort_by: '-form.number',
           group_by: 'form.id',
           filter_form: 'activePending;approvalApproved',
           filter_not_null: 'form.number',
+          filter_like: {
+            'form.number': this.searchText,
+            'customer.name': this.searchText,
+            'item.code': this.searchText,
+            'item.name': this.searchText,
+            'sales_order_item.notes': this.searchText,
+            'sales_order_item.quantity': this.searchText,
+            'sales_order_item.price': this.searchText
+          },
           includes: 'customer;items.item.units;form.createdBy',
-          remaining_delivery_order_info: 1
+          remaining_delivery_order_info: 1,
+          limit: this.limit,
+          page: this.currentPage
         }
-      }).then(response => {
-        this.options = response.data
       }).finally(() => {
         this.isLoading = false
       })
+    },
+    updatePage (value) {
+      this.currentPage = value
+      this.getSalesOrder()
     },
     clear (option) {
       this.$emit('choosen', {
@@ -145,7 +173,7 @@ export default {
     },
     open (index = null) {
       this.index = index
-      this.search()
+      this.getSalesOrder()
       this.$refs.modal.open()
     },
     close () {

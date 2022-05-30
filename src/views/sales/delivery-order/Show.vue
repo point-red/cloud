@@ -93,6 +93,7 @@
                   {{ $t('create') | uppercase }}
                 </router-link>
                 <router-link
+                  v-if="actions.edit"
                   :to="{ name: 'sales.delivery-order.edit', params: { id: deliveryOrder.id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
@@ -317,10 +318,13 @@ export default {
       const whereApprove = form.approval_status == 1
       const wherePending = form.done == 0
       const whereNotArchived = !!form.number
+      const whereNotCancelled = form.cancellation_status == null || form.cancellation_status != 1
+      const whereNotClosed = form.close_status == null || form.close_status != 1
 
       return {
-        delete: wherePending && form.cancellation_status == null && whereNotArchived,
-        close: whereApprove && form.close_status == null && whereNotArchived
+        edit: wherePending && whereNotClosed,
+        delete: wherePending && whereNotArchived && whereNotClosed && whereNotCancelled,
+        close: wherePending && whereNotArchived && whereNotClosed && whereApprove
       }
     }
   },
