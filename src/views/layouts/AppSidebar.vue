@@ -243,7 +243,7 @@
               </router-link>
               <ul>
                 <li
-                  v-if="$permission.has('read employee') || $permission.has('create employee assessment') || $permission.has('read employee assessment')"
+                  v-if="$permission.has('read employee')"
                   @click="toggleLeftSidebar('close-xs')"
                 >
                   <router-link
@@ -254,14 +254,14 @@
                   </router-link>
                 </li>
                 <li
-                  v-if="$plugin.has('KPI') && $permission.has('read employee kpi')"
+                  v-if="$plugin.has('KPI') && ($permission.has('read employee kpi') || $permission.has('create employee assessment') || $permission.has('read employee assessment'))"
                   @click="toggleLeftSidebar('close-xs')"
                 >
                   <router-link
                     to="/human-resource/kpi"
                     active-class="active"
                   >
-                    {{ $t('kpi template') | uppercase }}
+                    {{ $t('kpi') | uppercase }}
                   </router-link>
                 </li>
               </ul>
