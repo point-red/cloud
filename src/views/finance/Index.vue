@@ -23,6 +23,24 @@
         link="/finance/bank"
         icon="si si-credit-card"
       />
+      <p-box
+        v-if="$permission.has('read cash advance')"
+        :name="$t('cash advance')"
+        link="/finance/cash-advance"
+        icon="si si-credit-card"
+      />
+      <p-box
+        v-if="$permission.has('read cash report')"
+        :name="$t('cash report')"
+        link="/finance/cash-report"
+        icon="si si-credit-card"
+      />
+      <p-box
+        v-if="$permission.has('read bank report')"
+        :name="$t('bank report')"
+        link="/finance/bank-report"
+        icon="si si-credit-card"
+      />
     </div>
   </div>
 </template>
