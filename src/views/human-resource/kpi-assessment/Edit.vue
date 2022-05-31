@@ -141,7 +141,8 @@
                     v-if="
                       indicator.selected &&
                       indicator.selected.notes !== '' &&
-                      indicator.selected.notes !== undefined
+                      indicator.selected.notes !== undefined &&
+                      indicator.selected.notes !== null
                     "
                     @click="$refs.notes.show(indicator, id, employee.user_id)"
                     >{{
@@ -171,6 +172,7 @@
                       indicator.selected &&
                       indicator.selected.attachment !== undefined &&
                       indicator.selected.attachment !== '' &&
+                      indicator.selected.attachment !== null &&
                       isUser(employee.user_id)
                     "
                     :for="!isSaving ? 'file-' + indicator.id : ''"
@@ -196,6 +198,7 @@
                       indicator.selected &&
                       indicator.selected.attachment !== undefined &&
                       indicator.selected.attachment !== '' &&
+                      indicator.selected.attachment !== null &&
                       !isUser(employee.user_id)
                     "
                     href="javascript:void(0)"
@@ -294,7 +297,8 @@
                     v-if="
                       indicator.selected &&
                       indicator.selected.comment !== undefined &&
-                      indicator.selected.comment !== ''
+                      indicator.selected.comment !== '' &&
+                      indicator.selected.comment !== null
                     "
                     >{{
                       indicator.selected.comment.length > 15

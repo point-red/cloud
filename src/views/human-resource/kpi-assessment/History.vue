@@ -202,15 +202,15 @@
               <!-- status -->
               <td
                 v-if="
-                  assessment.groups[0].indicators[0].scores[0].status ===
+                  assessment.status ===
                   'COMPLETED'
                 "
                 class="text-center text-success"
               >
-                {{ assessment.groups[0].indicators[0].scores[0].status }}
+                {{ assessment.status }}
               </td>
               <td v-else class="text-center text-warning">
-                {{ assessment.groups[0].indicators[0].scores[0].status }}
+                {{ assessment.status }}
               </td>
 
               <td class="text-right">

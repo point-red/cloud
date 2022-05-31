@@ -144,7 +144,8 @@
                     v-if="
                       indicator.selected &&
                       indicator.selected.notes !== '' &&
-                      indicator.selected.notes !== undefined
+                      indicator.selected.notes !== undefined &&
+                      indicator.selected.notes !== null
                     "
                     @click="$refs.notes.show(indicator, id, employee.user_id)"
                     >{{
@@ -175,6 +176,7 @@
                       indicator.selected &&
                       indicator.selected.attachment !== undefined &&
                       indicator.selected.attachment !== '' &&
+                      indicator.selected.attachment !== null &&
                       isUser(employee.user_id)
                     "
                     :for="!isSaving ? 'file-' + indicator.id : ''"
@@ -203,6 +205,7 @@
                       indicator.selected &&
                       indicator.selected.attachment !== undefined &&
                       indicator.selected.attachment !== '' &&
+                      indicator.selected.attachment !== null &&
                       !isUser(employee.user_id)
                     "
                     @click="
@@ -298,7 +301,8 @@
                     v-if="
                       indicator.selected &&
                       indicator.selected.comment !== undefined &&
-                      indicator.selected.comment !== ''
+                      indicator.selected.comment !== '' &&
+                      indicator.selected.comment !== null
                     "
                     >{{
                       indicator.selected.comment.length > 15
@@ -332,13 +336,8 @@
             </tr>
           </p-table>
 
-          <p-form-row
-            :label="$t('comment')"
-          >
-            <div
-              slot="body"
-              class="col-lg-9 col-form-label"
-            >
+          <p-form-row :label="$t('comment')">
+            <div slot="body" class="col-lg-9 col-form-label">
               <textarea
                 @change="changeCommentTemplate"
                 v-model="form.template.comment"
@@ -432,7 +431,7 @@ export default {
         },
         template: {
           groups: [],
-          comnment: null
+          comnment: null,
         },
       }),
       title: "Kpi",
@@ -540,8 +539,8 @@ export default {
     isUser(employee_userid) {
       return localStorage.getItem("userId") == employee_userid;
     },
-    changeCommentTemplate(){
-      this.$set(this.form.template, 'comment', this.form.template.comment);
+    changeCommentTemplate() {
+      this.$set(this.form.template, "comment", this.form.template.comment);
       this.onSave();
       console.log(this.form);
     },

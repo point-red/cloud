@@ -113,7 +113,8 @@
                     v-if="
                       indicator.selected &&
                       indicator.selected.notes !== '' &&
-                      indicator.selected.notes !== undefined
+                      indicator.selected.notes !== undefined &&
+                      indicator.selected.notes !== null
                     "
                     @click="$refs.notes.show(indicator, id, 0, true)"
                     >{{
@@ -129,7 +130,8 @@
                     v-if="
                       indicator.selected &&
                       indicator.selected.attachment !== undefined &&
-                      indicator.selected.attachment !== ''
+                      indicator.selected.attachment !== '' && 
+                      indicator.selected.attachment !== null
                     "
                     class="text-decoration-none"
                     style="text-overflow: ellipsis"
@@ -194,7 +196,8 @@
                     v-if="
                       indicator.selected &&
                       indicator.selected.comment !== undefined &&
-                      indicator.selected.comment !== ''
+                      indicator.selected.comment !== '' &&
+                      indicator.selected.comment !== null
                     "
                     >{{
                       indicator.selected.comment.length > 20
