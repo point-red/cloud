@@ -7,7 +7,11 @@
       @toggleFullscreen="onFullscreen"
     >
       <template slot="content">
-        <iframe :src="url" frameborder="0" v-bind:style="iframeStyle"></iframe>
+        <iframe
+          :src="url"
+          frameborder="0"
+          :style="iframeStyle"
+        />
       </template>
     </p-modal>
   </div>
@@ -15,34 +19,34 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
-      url: "",
+      url: '',
       iframeStyle: {
-        height: "400px",
-        width: "100%",
-      },
-    };
+        height: '400px',
+        width: '100%'
+      }
+    }
   },
   methods: {
-    show(url) {
-      this.url = url;
-      this.$refs.showAttachment.show();
+    show (url) {
+      this.url = url
+      this.$refs.showAttachment.show()
     },
-    close() {
-      this.url = "";
-      this.$refs.showAttachment.close();
+    close () {
+      this.url = ''
+      this.$refs.showAttachment.close()
     },
-    onClose() {
-      this.url = "";
+    onClose () {
+      this.url = ''
     },
-    onFullscreen({isfullscreen}) {
+    onFullscreen ({ isfullscreen }) {
       if (isfullscreen) {
-        this.iframeStyle.height = "100%";
+        this.iframeStyle.height = '100%'
       } else {
-        this.iframeStyle.height = "400px";
+        this.iframeStyle.height = '400px'
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>

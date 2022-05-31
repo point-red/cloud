@@ -7,21 +7,39 @@
       <span class="breadcrumb-item active">{{ $t("create") | uppercase }}</span>
     </breadcrumb>
 
-    <form class="row" @submit.prevent="onSubmit">
-      <p-block :title="$t('employee assessment')" :header="true">
+    <form
+      class="row"
+      @submit.prevent="onSubmit"
+    >
+      <p-block
+        :title="$t('employee assessment')"
+        :header="true"
+      >
         <p-block-inner :is-loading="isLoading">
-          <p-form-row id="name" :label="$t('name')">
-            <div slot="body" class="col-lg-9 col-form-label">
+          <p-form-row
+            id="name"
+            :label="$t('name')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9 col-form-label"
+            >
               {{ employee.name }}
             </div>
           </p-form-row>
-          <p-form-row id="assessment-date" :label="$t('assessment period')">
-            <div slot="body" class="col-lg-9">
+          <p-form-row
+            id="assessment-date"
+            :label="$t('assessment period')"
+          >
+            <div
+              slot="body"
+              class="col-lg-9"
+            >
               <p-date-range-picker
                 v-model="form.date"
                 name="assessment-date"
-                @input="onChangeDate"
                 :help="$t('assessment date help')"
+                @input="onChangeDate"
               />
             </div>
           </p-form-row>
@@ -37,8 +55,7 @@
               <a
                 href="javascript:void(0)"
                 @click="$refs.assignKpiTemplate.show(id)"
-                >{{ form.template.name }}</a
-              >
+              >{{ form.template.name }}</a>
             </div>
             <div
               v-else
@@ -46,14 +63,19 @@
               class="col-lg-9"
               @click="$refs.assignKpiTemplate.show(id)"
             >
-              <button type="button" class="btn btn-sm btn-primary">
+              <button
+                type="button"
+                class="btn btn-sm btn-primary"
+              >
                 Assign Kpi
               </button>
             </div>
           </p-form-row>
           <p-table>
             <tr slot="p-head">
-              <th class="font-size-h6 font-w700">{{ $t("no") | uppercase }}</th>
+              <th class="font-size-h6 font-w700">
+                {{ $t("no") | uppercase }}
+              </th>
               <th class="font-size-h6 font-w700">
                 {{ $t("key performance indicator") | uppercase }}
               </th>
@@ -86,8 +108,14 @@
               v-for="(group, indexGroup) in form.template.groups"
               slot="p-body"
             >
-              <tr :key="'group' + group.id" class="bg-info-light">
-                <td class="text-center font-w600" colspan="2">
+              <tr
+                :key="'group' + group.id"
+                class="bg-info-light"
+              >
+                <td
+                  class="text-center font-w600"
+                  colspan="2"
+                >
                   {{ group.name }}
                 </td>
                 <td class="text-center font-w600">
@@ -114,7 +142,9 @@
               >
                 <td>{{ index + 1 }}</td>
                 <td>{{ indicator.name }}</td>
-                <td class="text-center">{{ indicator.weight }}%</td>
+                <td class="text-center">
+                  {{ indicator.weight }}%
+                </td>
                 <td class="text-center">
                   {{ indicator.target | numberFormat }}
                 </td>
@@ -124,7 +154,7 @@
                       (!indicator.selected ||
                         indicator.selected.notes === '' ||
                         indicator.selected.notes === undefined) &&
-                      isUser(employee.user_id)
+                        isUser(employee.user_id)
                     "
                     href="javascript:void(0)"
                     class="btn btn-sm btn-primary"
@@ -134,25 +164,30 @@
                         : null
                     "
                   >
-                    <i v-show="isSaving" class="fa fa-asterisk fa-spin" />
-                    <i v-show="!isSaving" class="si si-note" />
+                    <i
+                      v-show="isSaving"
+                      class="fa fa-asterisk fa-spin"
+                    />
+                    <i
+                      v-show="!isSaving"
+                      class="si si-note"
+                    />
                   </a>
                   <a
+                    v-if="
+                      indicator.selected &&
+                        indicator.selected.notes !== '' &&
+                        indicator.selected.notes !== undefined
+                    "
                     href="javascript:void(0)"
                     class="text-decoration-none"
                     style="text-overflow: ellipsis"
-                    v-if="
-                      indicator.selected &&
-                      indicator.selected.notes !== '' &&
-                      indicator.selected.notes !== undefined
-                    "
                     @click="$refs.notes.show(indicator, id, employee.user_id)"
-                    >{{
-                      indicator.selected.notes.length > 15
-                        ? indicator.selected.notes.substring(0, 15) + "..."
-                        : indicator.selected.notes
-                    }}</a
-                  >
+                  >{{
+                    indicator.selected.notes.length > 15
+                      ? indicator.selected.notes.substring(0, 15) + "..."
+                      : indicator.selected.notes
+                  }}</a>
                 </td>
                 <td class="text-center">
                   <label
@@ -160,22 +195,28 @@
                       (!indicator.selected ||
                         indicator.selected.attachment === '' ||
                         indicator.selected.attachment === undefined) &&
-                      isUser(employee.user_id)
+                        isUser(employee.user_id)
                     "
                     :for="!isSaving ? 'file-' + indicator.id : ''"
                     class="btn btn-sm btn-primary mt-1"
                     @click="!isSaving ? setIndicatorIdAtt(indicator.id) : null"
                   >
-                    <i v-show="isSaving" class="fa fa-asterisk fa-spin" />
-                    <i v-show="!isSaving" class="si si-paper-clip" />
+                    <i
+                      v-show="isSaving"
+                      class="fa fa-asterisk fa-spin"
+                    />
+                    <i
+                      v-show="!isSaving"
+                      class="si si-paper-clip"
+                    />
                   </label>
 
                   <label
                     v-if="
                       indicator.selected &&
-                      indicator.selected.attachment !== undefined &&
-                      indicator.selected.attachment !== '' &&
-                      isUser(employee.user_id)
+                        indicator.selected.attachment !== undefined &&
+                        indicator.selected.attachment !== '' &&
+                        isUser(employee.user_id)
                     "
                     :for="!isSaving ? 'file-' + indicator.id : ''"
                     style="font-weight: 200; color: #3f9ce8"
@@ -194,24 +235,24 @@
                     style="display: none"
                     accept=".doc, .docx, .pdf, .png, .jpg, .jpeg"
                     @change="onFileChange"
-                  />
+                  >
                   <a
+                    v-if="
+                      indicator.selected &&
+                        indicator.selected.attachment !== undefined &&
+                        indicator.selected.attachment !== '' &&
+                        !isUser(employee.user_id)
+                    "
                     href="javascript:void(0)"
                     class="text-decoration-none"
                     style="text-overflow: ellipsis"
-                    v-if="
-                      indicator.selected &&
-                      indicator.selected.attachment !== undefined &&
-                      indicator.selected.attachment !== '' &&
-                      !isUser(employee.user_id)
-                    "
                     @click="
                       !isSaving
                         ? showAttachment(
-                            dataAttachmentId.groups[indexGroup].indicators[
-                              index
-                            ]
-                          )
+                          dataAttachmentId.groups[indexGroup].indicators[
+                            index
+                          ]
+                        )
                         : null
                     "
                   >
@@ -228,49 +269,51 @@
                       (!indicator.selected ||
                         indicator.selected.score === undefined ||
                         indicator.selected.score === null) &&
-                      !indicator.automated_code
+                        !indicator.automated_code
                     "
                     href="javascript:void(0)"
                     class="btn btn-sm btn-primary"
                     @click="!isSaving ? $refs.score.show(indicator) : null"
                   >
-                    <i v-show="isSaving" class="fa fa-asterisk fa-spin" />
-                    <i v-show="!isSaving" class="si si-note" />
+                    <i
+                      v-show="isSaving"
+                      class="fa fa-asterisk fa-spin"
+                    />
+                    <i
+                      v-show="!isSaving"
+                      class="si si-note"
+                    />
                   </a>
                   <a
+                    v-if="
+                      indicator.selected &&
+                        indicator.selected.score !== undefined &&
+                        indicator.selected.score !== null
+                    "
                     href="javascript:void(0)"
                     class="text-decoration-none"
                     style="text-overflow: ellipsis"
-                    v-if="
-                      indicator.selected &&
-                      indicator.selected.score !== undefined &&
-                      indicator.selected.score !== null
-                    "
                     @click="!isSaving ? $refs.score.show(indicator) : null"
-                    >{{ indicator.selected.score | numberFormat }}</a
-                  >
+                  >{{ indicator.selected.score | numberFormat }}</a>
                 </td>
                 <td class="text-center">
                   <span
                     v-if="
                       indicator.selected &&
-                      indicator.selected.score !== undefined &&
-                      indicator.selected.score !== null
+                        indicator.selected.score !== undefined &&
+                        indicator.selected.score !== null
                     "
-                    >{{
-                      indicator.selected.score_percentage | numberFormat
-                    }}</span
-                  >
+                  >{{
+                    indicator.selected.score_percentage | numberFormat
+                  }}</span>
                   <span
                     v-else-if="
                       indicator.automated_code && indicator.score_percentage
                     "
-                    >{{ indicator.score_percentage | numberFormat }}</span
-                  >
+                  >{{ indicator.score_percentage | numberFormat }}</span>
                   <span
                     v-else-if="indicator.automated_code && !indicator.score"
-                    >{{ 0 }}</span
-                  >
+                  >{{ 0 }}</span>
                 </td>
                 <td class="text-center">
                   <span v-if="indicator.selected">{{
@@ -281,31 +324,36 @@
                   <a
                     v-show="
                       !indicator.selected ||
-                      indicator.selected.comment === '' ||
-                      indicator.selected.comment === undefined
+                        indicator.selected.comment === '' ||
+                        indicator.selected.comment === undefined
                     "
                     href="javascript:void(0)"
                     class="btn btn-sm btn-primary"
                     @click="$refs.comment.show(indicator)"
                   >
-                    <i v-show="isSaving" class="fa fa-asterisk fa-spin" />
-                    <i v-show="!isSaving" class="si si-note" />
+                    <i
+                      v-show="isSaving"
+                      class="fa fa-asterisk fa-spin"
+                    />
+                    <i
+                      v-show="!isSaving"
+                      class="si si-note"
+                    />
                   </a>
                   <a
+                    v-if="
+                      indicator.selected &&
+                        indicator.selected.comment !== undefined &&
+                        indicator.selected.comment !== ''
+                    "
                     href="javascript:void(0)"
                     class="text-decoration-none"
                     @click="$refs.comment.show(indicator)"
-                    v-if="
-                      indicator.selected &&
-                      indicator.selected.comment !== undefined &&
-                      indicator.selected.comment !== ''
-                    "
-                    >{{
-                      indicator.selected.comment.length > 15
-                        ? indicator.selected.comment.substring(0, 15) + "..."
-                        : indicator.selected.comment
-                    }}</a
-                  >
+                  >{{
+                    indicator.selected.comment.length > 15
+                      ? indicator.selected.comment.substring(0, 15) + "..."
+                      : indicator.selected.comment
+                  }}</a>
                 </td>
               </tr>
             </template>
@@ -340,24 +388,27 @@
               class="col-lg-9 col-form-label"
             >
               <textarea
-                @change="changeCommentTemplate"
                 v-model="form.template.comment"
                 class="form-control"
                 rows="3"
+                @change="changeCommentTemplate"
               />
             </div>
           </p-form-row>
 
           <div class="form-group row">
             <div class="col-md-12">
-              <hr />
+              <hr>
               <button
                 v-if="form.template.weight > 0"
                 :disabled="isSaving || isSubmit"
                 type="submit"
                 class="btn btn-sm btn-primary mr-5"
               >
-                <i v-show="isSubmit" class="fa fa-asterisk fa-spin" />
+                <i
+                  v-show="isSubmit"
+                  class="fa fa-asterisk fa-spin"
+                />
                 {{ $t("save") | uppercase }}
               </button>
               <button
@@ -377,8 +428,14 @@
       ref="assignKpiTemplate"
       @assigned="getKpiTemplate"
     />
-    <assign-notes-modal ref="notes" @saveNotes="addedNotes" />
-    <assign-comment-modal ref="comment" @saveComment="addedComment" />
+    <assign-notes-modal
+      ref="notes"
+      @saveNotes="addedNotes"
+    />
+    <assign-comment-modal
+      ref="comment"
+      @saveComment="addedComment"
+    />
     <show-attachment-modal ref="showAttachment" />
 
     <assign-score-modal
@@ -391,17 +448,17 @@
 </template>
 
 <script>
-import Form from "@/utils/Form";
-import AssignScoreModal from "./AssignScoreModal";
-import AssignKpiTemplateModal from "./AssignKpiTemplateModal";
-import AssignNotesModal from "./AssignNotesModal";
-import AssignCommentModal from "./AssignCommentModal";
-import ShowAttachmentModal from "./ShowAttachmentModal";
-import Breadcrumb from "@/views/Breadcrumb";
-import BreadcrumbHumanResource from "@/views/human-resource/Breadcrumb";
-import BreadcrumbHumanResourceKpi from "@/views/human-resource/kpi/Breadcrumb";
-import BreadcrumbHumanResourceKpiKpiAssessment from "@/views/human-resource/kpi-assessment/Breadcrumb";
-import { mapGetters, mapActions } from "vuex";
+import Form from '@/utils/Form'
+import AssignScoreModal from './AssignScoreModal'
+import AssignKpiTemplateModal from './AssignKpiTemplateModal'
+import AssignNotesModal from './AssignNotesModal'
+import AssignCommentModal from './AssignCommentModal'
+import ShowAttachmentModal from './ShowAttachmentModal'
+import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
+import BreadcrumbHumanResourceKpi from '@/views/human-resource/kpi/Breadcrumb'
+import BreadcrumbHumanResourceKpiKpiAssessment from '@/views/human-resource/kpi-assessment/Breadcrumb'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
@@ -413,209 +470,209 @@ export default {
     BreadcrumbHumanResource,
     BreadcrumbHumanResourceKpi,
     BreadcrumbHumanResourceKpiKpiAssessment,
-    ShowAttachmentModal,
+    ShowAttachmentModal
   },
   props: {
     name: {
       type: String,
-      default: "",
-    },
+      default: ''
+    }
   },
-  data() {
+  data () {
     return {
       kpiId: null,
       id: this.$route.params.employeeId,
       form: new Form({
         date: {
-          start: this.$moment().format("YYYY-MM-DD 00:00:00"),
-          end: this.$moment().format("YYYY-MM-DD 23:59:59"),
+          start: this.$moment().format('YYYY-MM-DD 00:00:00'),
+          end: this.$moment().format('YYYY-MM-DD 23:59:59')
         },
         template: {
           groups: [],
           comnment: null
-        },
+        }
       }),
-      title: "Kpi",
+      title: 'Kpi',
       isLoading: true,
       isSaving: false,
       isSubmit: false,
-      scoreModalTitle: "",
+      scoreModalTitle: '',
       indicatorIdAtt: null,
       dataAttachmentId: {
-        groups: [],
-      },
-    };
+        groups: []
+      }
+    }
   },
   computed: {
-    ...mapGetters("humanResourceEmployee", ["employee"]),
-    ...mapGetters("humanResourceKpiResult", ["result"]),
-    ...mapGetters("humanResourceKpiTemplate", ["template"]),
-    ...mapGetters("humanResourceKpiAutomated", ["automated_codes"]),
-    ...mapGetters("humanResourceEmployeeAssessment", ["assessment"]),
-    ...mapGetters("cloudStorage", ["cloudStorage"]),
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceKpiResult', ['result']),
+    ...mapGetters('humanResourceKpiTemplate', ['template']),
+    ...mapGetters('humanResourceKpiAutomated', ['automated_codes']),
+    ...mapGetters('humanResourceEmployeeAssessment', ['assessment']),
+    ...mapGetters('cloudStorage', ['cloudStorage'])
   },
   watch: {
-    "form.date"() {
-      this.isLoading = true;
-      this.getAutomatedScore();
-    },
+    'form.date' () {
+      this.isLoading = true
+      this.getAutomatedScore()
+    }
   },
-  created() {
-    this.isLoading = true;
+  created () {
+    this.isLoading = true
     this.findEmployee({
-      id: this.id,
+      id: this.id
     })
       .then((response) => {
-        if (localStorage.getItem("userId") == this.employee.user_id) {
+        if (localStorage.getItem('userId') == this.employee.user_id) {
           if (this.employee.kpi_template_id === null) {
-            this.$refs.assignKpiTemplate.show(this.id);
+            this.$refs.assignKpiTemplate.show(this.id)
           } else {
-            this.getKpiTemplate(this.employee.kpi_template_id);
+            this.getKpiTemplate(this.employee.kpi_template_id)
           }
-          this.isLoading = false;
+          this.isLoading = false
         } else {
-          var dates = this.form.date.end.split(" ");
+          var dates = this.form.date.end.split(' ')
           this.getByPeriodeEmployeeAssessment({
             employeeId: this.id,
-            date: dates[0],
+            date: dates[0]
           })
             .then((response) => {
-              this.form.template = this.assessment;
-              this.form.template.score = 0;
-              this.form.template.score_percentage = 0;
-              this.assignSelected();
-              this.isLoading = false;
+              this.form.template = this.assessment
+              this.form.template.score = 0
+              this.form.template.score_percentage = 0
+              this.assignSelected()
+              this.isLoading = false
             })
             .catch((error) => {
-              this.isLoading = false;
-              console.log(error);
-            });
+              this.isLoading = false
+              console.log(error)
+            })
         }
       })
       .catch((error) => {
-        this.isLoading = false;
-        console.log(JSON.stringify(error));
-      });
+        this.isLoading = false
+        console.log(JSON.stringify(error))
+      })
   },
   methods: {
-    ...mapActions("humanResourceEmployee", {
-      findEmployee: "find",
+    ...mapActions('humanResourceEmployee', {
+      findEmployee: 'find'
     }),
-    ...mapActions("humanResourceKpiTemplate", {
-      findKpiTemplate: "find",
+    ...mapActions('humanResourceKpiTemplate', {
+      findKpiTemplate: 'find'
     }),
-    ...mapActions("humanResourceKpiResult", {
-      findKpiResult: "findByScorePercentage",
+    ...mapActions('humanResourceKpiResult', {
+      findKpiResult: 'findByScorePercentage'
     }),
-    ...mapActions("humanResourceEmployeeAssessment", {
-      createEmployeeAssessment: "create",
-      findEmployeeAssessment: "find",
-      updateEmployeeAssessment: "update",
-      getByPeriodeEmployeeAssessment: "getByPeriode",
+    ...mapActions('humanResourceEmployeeAssessment', {
+      createEmployeeAssessment: 'create',
+      findEmployeeAssessment: 'find',
+      updateEmployeeAssessment: 'update',
+      getByPeriodeEmployeeAssessment: 'getByPeriode'
     }),
-    ...mapActions("humanResourceKpiAutomated", {
-      getAutomatedData: "get",
+    ...mapActions('humanResourceKpiAutomated', {
+      getAutomatedData: 'get'
     }),
-    ...mapActions("cloudStorage", {
-      showByAttachment: "showBy",
-      uploadAttachment: "upload",
-      replaceAttachment: "replace",
+    ...mapActions('cloudStorage', {
+      showByAttachment: 'showBy',
+      uploadAttachment: 'upload',
+      replaceAttachment: 'replace'
     }),
 
-    getKpiTemplate(kpiTemplateId) {
-      this.isLoading = true;
+    getKpiTemplate (kpiTemplateId) {
+      this.isLoading = true
       this.findKpiTemplate({ id: kpiTemplateId })
         .then((response) => {
-          this.form.template = response.data;
-          this.getAutomatedScore();
+          this.form.template = response.data
+          this.getAutomatedScore()
         })
         .catch((error) => {
-          this.isLoading = false;
-          console.log(JSON.stringify(error));
-        });
+          this.isLoading = false
+          console.log(JSON.stringify(error))
+        })
     },
-    cancel() {
-      this.$router.go(-1);
+    cancel () {
+      this.$router.go(-1)
     },
-    isUser(employee_userid) {
-      return localStorage.getItem("userId") == employee_userid;
+    isUser (employeeUserid) {
+      return localStorage.getItem('userId') == employeeUserid
     },
-    changeCommentTemplate(){
-      this.$set(this.form.template, 'comment', this.form.template.comment);
-      this.onSave();
-      console.log(this.form);
+    changeCommentTemplate () {
+      this.$set(this.form.template, 'comment', this.form.template.comment)
+      this.onSave()
+      console.log(this.form)
     },
-    onChangeDate(time) {
+    onChangeDate (time) {
       if (this.employee.user_id == undefined) {
         this.findEmployee({
-          id: this.id,
+          id: this.id
         }).then((response) => {
           if (time.end !== null && !this.isUser(this.employee.user_id)) {
-            this.isLoading = true;
+            this.isLoading = true
             this.getByPeriodeEmployeeAssessment({
               employeeId: this.id,
-              date: time.end,
+              date: time.end
             })
               .then((response) => {
-                this.form.template = this.assessment;
-                this.form.template.score = 0;
-                this.form.template.score_percentage = 0;
-                this.assignSelected();
-                this.isLoading = false;
+                this.form.template = this.assessment
+                this.form.template.score = 0
+                this.form.template.score_percentage = 0
+                this.assignSelected()
+                this.isLoading = false
               })
               .catch((error) => {
-                this.isLoading = false;
-                console.log(error);
-              });
+                this.isLoading = false
+                console.log(error)
+              })
           }
-        });
+        })
       } else {
         if (time.end !== null && !this.isUser(this.employee.user_id)) {
-          this.isLoading = true;
+          this.isLoading = true
           this.getByPeriodeEmployeeAssessment({
             employeeId: this.id,
-            date: time.end,
+            date: time.end
           })
             .then((response) => {
-              this.form.template = this.assessment;
-              this.form.template.score = 0;
-              this.form.template.score_percentage = 0;
-              this.assignSelected();
-              this.isLoading = false;
+              this.form.template = this.assessment
+              this.form.template.score = 0
+              this.form.template.score_percentage = 0
+              this.assignSelected()
+              this.isLoading = false
             })
             .catch((error) => {
-              this.isLoading = false;
-              console.log(error);
-            });
+              this.isLoading = false
+              console.log(error)
+            })
         }
       }
     },
-    showAttachment(indicator) {
+    showAttachment (indicator) {
       this.showByAttachment({
-        feature: "assessment",
-        feature_id: indicator.id,
+        feature: 'assessment',
+        feature_id: indicator.id
       })
         .then(
           (response) => {
-            console.log(this.cloudStorage);
-            this.$refs.showAttachment.show(this.cloudStorage.preview);
+            console.log(this.cloudStorage)
+            this.$refs.showAttachment.show(this.cloudStorage.preview)
           },
           (error) => {
-            console.log(JSON.stringify(error));
+            console.log(JSON.stringify(error))
           }
         )
         .catch((error) => {
-          console.log(JSON.stringify(error));
-        });
+          console.log(JSON.stringify(error))
+        })
     },
-    addedComment({ indicatorId, comment }) {
+    addedComment ({ indicatorId, comment }) {
       const groupIndex = this.form.template.groups.findIndex((o) =>
         o.indicators.find((o) => o.id === indicatorId)
-      );
+      )
       // find index of template indicator
       const indicatorIndex = this.form.template.groups[
         groupIndex
-      ].indicators.findIndex((o) => o.id === indicatorId);
+      ].indicators.findIndex((o) => o.id === indicatorId)
       if (
         this.form.template.groups[groupIndex].indicators[indicatorIndex]
           .selected !== undefined
@@ -623,27 +680,27 @@ export default {
         this.$set(
           this.form.template.groups[groupIndex].indicators[indicatorIndex]
             .selected,
-          "comment",
+          'comment',
           comment
-        );
+        )
       } else {
         this.$set(
           this.form.template.groups[groupIndex].indicators[indicatorIndex],
-          "selected",
+          'selected',
           { comment: comment }
-        );
+        )
       }
-      this.onSave();
-      console.log(this.form);
+      this.onSave()
+      console.log(this.form)
     },
-    addedNotes({ indicatorId, notes }) {
+    addedNotes ({ indicatorId, notes }) {
       const groupIndex = this.form.template.groups.findIndex((o) =>
         o.indicators.find((o) => o.id === indicatorId)
-      );
+      )
       // find index of template indicator
       const indicatorIndex = this.form.template.groups[
         groupIndex
-      ].indicators.findIndex((o) => o.id === indicatorId);
+      ].indicators.findIndex((o) => o.id === indicatorId)
       if (
         this.form.template.groups[groupIndex].indicators[indicatorIndex]
           .selected !== undefined
@@ -651,42 +708,42 @@ export default {
         this.$set(
           this.form.template.groups[groupIndex].indicators[indicatorIndex]
             .selected,
-          "notes",
+          'notes',
           notes
-        );
+        )
       } else {
         this.$set(
           this.form.template.groups[groupIndex].indicators[indicatorIndex],
-          "selected",
+          'selected',
           { notes: notes }
-        );
+        )
       }
-      this.onSave();
-      console.log(this.form);
+      this.onSave()
+      console.log(this.form)
     },
-    setIndicatorIdAtt(indicatorId) {
-      this.indicatorIdAtt = indicatorId;
+    setIndicatorIdAtt (indicatorId) {
+      this.indicatorIdAtt = indicatorId
     },
-    onFileChange(e) {
-      const files = e.target.files || e.dataTransfer.files;
+    onFileChange (e) {
+      const files = e.target.files || e.dataTransfer.files
       if (!files.length) {
-        console.log("no files");
-        this.$notification.error("No Files", error.message);
+        console.log('no files')
+        this.$notification.error('No Files', e.message)
       } else {
         if (files[0].size > 1597152) {
-          this.$notification.error("File limit 2 Mb", error.message);
-          console.log("size limit");
+          this.$notification.error('File limit 2 Mb', e.message)
+          console.log('size limit')
         } else {
-          console.log(this.form);
-          console.log(files[0].name);
-          var indicatorId = this.indicatorIdAtt;
+          console.log(this.form)
+          console.log(files[0].name)
+          var indicatorId = this.indicatorIdAtt
           const groupIndex = this.form.template.groups.findIndex((o) =>
             o.indicators.find((o) => o.id === indicatorId)
-          );
+          )
           // find index of template indicator
           const indicatorIndex = this.form.template.groups[
             groupIndex
-          ].indicators.findIndex((o) => o.id === indicatorId);
+          ].indicators.findIndex((o) => o.id === indicatorId)
           if (
             this.form.template.groups[groupIndex].indicators[indicatorIndex]
               .selected !== undefined
@@ -694,37 +751,37 @@ export default {
             this.$set(
               this.form.template.groups[groupIndex].indicators[indicatorIndex]
                 .selected,
-              "attachment",
+              'attachment',
               files[0].name
-            );
+            )
           } else {
             this.$set(
               this.form.template.groups[groupIndex].indicators[indicatorIndex],
-              "selected",
+              'selected',
               { attachment: files[0].name }
-            );
+            )
           }
-          this.onSave(indicatorId, files[0]);
-          console.log(this.form);
+          this.onSave(indicatorId, files[0])
+          console.log(this.form)
         }
       }
     },
-    addedScore({ indicatorId, score, notes }) {
+    addedScore ({ indicatorId, score, notes }) {
       // find index of template group
       const groupIndex = this.form.template.groups.findIndex((o) =>
         o.indicators.find((o) => o.id === indicatorId)
-      );
+      )
       // find index of template indicator
       const indicatorIndex = this.form.template.groups[
         groupIndex
-      ].indicators.findIndex((o) => o.id === indicatorId);
+      ].indicators.findIndex((o) => o.id === indicatorId)
       // add selected score to template indicator
       var indicator =
-        this.form.template.groups[groupIndex].indicators[indicatorIndex];
-      var group = this.form.template.groups[groupIndex];
-      var template = this.form.template;
-      var scorePercentage = (score.score / indicator.target) * indicator.weight;
-      delete score.notes;
+        this.form.template.groups[groupIndex].indicators[indicatorIndex]
+      var group = this.form.template.groups[groupIndex]
+      var template = this.form.template
+      var scorePercentage = (score.score / indicator.target) * indicator.weight
+      delete score.notes
       // update data
       if (
         this.form.template.groups[groupIndex].indicators[indicatorIndex]
@@ -732,181 +789,181 @@ export default {
       ) {
         var selected =
           this.form.template.groups[groupIndex].indicators[indicatorIndex]
-            .selected;
-        selected = { ...selected, ...score };
+            .selected
+        selected = { ...selected, ...score }
         this.$set(
           this.form.template.groups[groupIndex].indicators[indicatorIndex],
-          "selected",
+          'selected',
           selected
-        );
+        )
       } else {
         this.$set(
           this.form.template.groups[groupIndex].indicators[indicatorIndex],
-          "selected",
+          'selected',
           score
-        );
+        )
       }
       this.$set(
         this.form.template.groups[groupIndex].indicators[indicatorIndex]
           .selected,
-        "score_percentage",
+        'score_percentage',
         scorePercentage
-      );
+      )
       this.$set(
         this.form.template.groups[groupIndex],
-        "score",
+        'score',
         parseFloat(score.score) + (parseFloat(group.score) || 0)
-      );
+      )
       this.$set(
         this.form.template.groups[groupIndex],
-        "score_percentage",
+        'score_percentage',
         parseFloat(scorePercentage) + (parseFloat(group.score_percentage) || 0)
-      );
+      )
       this.$set(
         this.form.template,
-        "score",
+        'score',
         parseFloat(score.score) + (parseFloat(template.score) || 0)
-      );
+      )
       this.$set(
         this.form.template,
-        "score_percentage",
+        'score_percentage',
         parseFloat(scorePercentage) +
           (parseFloat(template.score_percentage) || 0)
-      );
-      this.onSave();
-      console.log(score);
+      )
+      this.onSave()
+      console.log(score)
     },
-    findData() {
+    findData () {
       this.findEmployeeAssessment({
         employeeId: this.id,
-        kpiId: this.kpiId,
+        kpiId: this.kpiId
       }).then(
         (response) => {
-          this.form.date = this.assessment.date;
-          this.form.template = this.assessment;
-          this.assignSelected();
+          this.form.date = this.assessment.date
+          this.form.template = this.assessment
+          this.assignSelected()
         },
         (error) => {
-          console.log(JSON.stringify(error));
+          console.log(JSON.stringify(error))
         }
-      );
+      )
     },
-    onSave(indicator_id = null, files = null) {
-      this.isSaving = true;
+    onSave (indicatorId = null, files = null) {
+      this.isSaving = true
       if (this.kpiId != null) {
         this.updateEmployeeAssessment({
           employeeId: this.id,
           kpiId: this.kpiId,
-          form: this.form,
+          form: this.form
         })
           .then(
             (response) => {
-              if (indicator_id !== null && files !== null) {
-                const formData = new FormData();
-                formData.append("file", files);
-                formData.append("feature", "assessment");
-                formData.append("feature_id", indicator_id);
-                formData.append("notes", "");
-                formData.append("is_user_protected", true);
-                formData.append("expiration_day", 0);
-                this.replaceAttachment(formData).then((response) => {});
-                this.isSaving = false;
-                console.log(this.form);
+              if (indicatorId !== null && files !== null) {
+                const formData = new FormData()
+                formData.append('file', files)
+                formData.append('feature', 'assessment')
+                formData.append('feature_id', indicatorId)
+                formData.append('notes', '')
+                formData.append('is_user_protected', true)
+                formData.append('expiration_day', 0)
+                this.replaceAttachment(formData).then((response) => {})
+                this.isSaving = false
+                console.log(this.form)
               } else {
-                this.isSaving = false;
+                this.isSaving = false
               }
             },
             (error) => {
-              this.isSaving = false;
-              this.form.errors.record(error.errors);
+              this.isSaving = false
+              this.form.errors.record(error.errors)
             }
           )
           .catch((error) => {
-            this.isSaving = false;
-            console.log(JSON.stringify(error));
-          });
+            this.isSaving = false
+            console.log(JSON.stringify(error))
+          })
       } else {
         this.form.date.start = this.serverDateTime(
           this.form.date.start,
-          "start"
-        );
-        this.form.date.end = this.serverDateTime(this.form.date.end, "end");
+          'start'
+        )
+        this.form.date.end = this.serverDateTime(this.form.date.end, 'end')
         this.createEmployeeAssessment({
           employeeId: this.employee.id,
-          form: this.form,
+          form: this.form
         })
           .then((response) => {
-            this.kpiId = response.kpi_id;
-            this.indicatorIdAtt = response.indicator_id_attach;
-            console.log(files);
+            this.kpiId = response.kpi_id
+            this.indicatorIdAtt = response.indicator_id_attach
+            console.log(files)
             if (this.indicatorIdAtt > 0 && files !== null) {
-              const formData = new FormData();
-              formData.append("file", files);
-              formData.append("feature", "assessment");
-              formData.append("feature_id", this.indicatorIdAtt);
-              formData.append("notes", "");
-              formData.append("is_user_protected", true);
-              formData.append("expiration_day", 0);
+              const formData = new FormData()
+              formData.append('file', files)
+              formData.append('feature', 'assessment')
+              formData.append('feature_id', this.indicatorIdAtt)
+              formData.append('notes', '')
+              formData.append('is_user_protected', true)
+              formData.append('expiration_day', 0)
               this.uploadAttachment(formData)
                 .then(
                   (response) => {
-                    this.findData();
+                    this.findData()
                   },
                   (error) => {
-                    console.log(JSON.stringify(error));
-                    this.findData();
+                    console.log(JSON.stringify(error))
+                    this.findData()
                   }
                 )
                 .catch((error) => {
-                  this.findData();
-                });
+                  this.findData()
+                })
             } else {
-              this.findData();
+              this.findData()
             }
           })
           .catch((error) => {
-            this.isSaving = false;
-            console.log(JSON.stringify(error));
-          });
+            this.isSaving = false
+            console.log(JSON.stringify(error))
+          })
       }
-      console.log(this.form);
+      console.log(this.form)
     },
-    onSubmit() {
+    onSubmit () {
       // if (!this.form.date.start || !this.form.date.end) {
       //   this.$notification.error("Please select a valid date range");
       //   return;
       // }
-      this.$notification.success("Create success");
-      this.isSubmit = true;
+      this.$notification.success('Create success')
+      this.isSubmit = true
       this.findKpiResult(this.form.template.score_percentage)
         .then((response) => {
-          this.isSubmit = false;
+          this.isSubmit = false
           this.$alert
             .success(response.data.criteria, response.data.notes)
             .then(() => {
               this.$router.push(
-                "/human-resource/kpi/kpi-assessment/" + this.id + "/history"
-              );
-            });
+                '/human-resource/kpi/kpi-assessment/' + this.id + '/history'
+              )
+            })
         })
         .catch((error) => {
-          this.isSubmit = false;
+          this.isSubmit = false
           this.$router.push(
-            "/human-resource/kpi/kpi-assessment/" + this.id + "/history"
-          );
-        });
+            '/human-resource/kpi/kpi-assessment/' + this.id + '/history'
+          )
+        })
     },
 
-    assignSelected() {
+    assignSelected () {
       if (!this.isUser(this.employee.user_id) && this.kpiId === null) {
-        this.$set(this.dataAttachmentId, "groups", this.form.template.groups);
+        this.$set(this.dataAttachmentId, 'groups', this.form.template.groups)
       }
       for (var groupIndex in this.form.template.groups) {
-        var group = this.form.template.groups[groupIndex];
+        var group = this.form.template.groups[groupIndex]
 
         for (var indicatorIndex in group.indicators) {
           var indicator =
-            this.form.template.groups[groupIndex].indicators[indicatorIndex];
+            this.form.template.groups[groupIndex].indicators[indicatorIndex]
 
           if (!this.isUser(this.employee.user_id) && this.kpiId === null) {
             if (!indicator.automated_code && indicator.score !== undefined) {
@@ -914,17 +971,17 @@ export default {
                 this.form.template.groups[groupIndex].indicators[
                   indicatorIndex
                 ],
-                "selected",
+                'selected',
                 {
-                  attachment: indicator.attachment,
+                  attachment: indicator.attachment
                 }
-              );
+              )
               this.$set(
                 this.form.template.groups[groupIndex].indicators[indicatorIndex]
                   .selected,
-                "notes",
+                'notes',
                 indicator.notes
-              );
+              )
             }
           } else {
             if (!indicator.automated_code && indicator.score !== undefined) {
@@ -933,75 +990,75 @@ export default {
                   o.description === indicator.score_description &&
                   o.score === indicator.score &&
                   parseInt(o.kpi_indicator_id) === indicator.id
-              );
+              )
               if (score != undefined) {
                 var scorePercentage =
-                  (score.score / indicator.target) * indicator.weight;
-                delete score.notes;
+                  (score.score / indicator.target) * indicator.weight
+                delete score.notes
 
                 this.$set(
                   this.form.template.groups[groupIndex].indicators[
                     indicatorIndex
                   ],
-                  "selected",
+                  'selected',
                   score
-                );
+                )
                 this.$set(
                   this.form.template.groups[groupIndex].indicators[
                     indicatorIndex
                   ].selected,
-                  "score_percentage",
+                  'score_percentage',
                   scorePercentage
-                );
+                )
                 this.$set(
                   this.form.template.groups[groupIndex].indicators[
                     indicatorIndex
                   ].selected,
-                  "attachment",
+                  'attachment',
                   indicator.attachment
-                );
+                )
               } else {
                 this.$set(
                   this.form.template.groups[groupIndex].indicators[
                     indicatorIndex
                   ],
-                  "selected",
+                  'selected',
                   {
-                    attachment: indicator.attachment,
+                    attachment: indicator.attachment
                   }
-                );
+                )
               }
               this.$set(
                 this.form.template.groups[groupIndex].indicators[indicatorIndex]
                   .selected,
-                "notes",
+                'notes',
                 indicator.notes
-              );
+              )
               this.$set(
                 this.form.template.groups[groupIndex].indicators[indicatorIndex]
                   .selected,
-                "comment",
+                'comment',
                 indicator.comment
-              );
+              )
             }
           }
         }
       }
-      this.isSaving = false;
-      console.log(this.dataAttachmentId);
+      this.isSaving = false
+      console.log(this.dataAttachmentId)
     },
-    getAutomatedScore() {
-      var automatedIDs = [];
+    getAutomatedScore () {
+      var automatedIDs = []
 
       this.form.template.groups.forEach(function (group, key) {
         group.indicators.forEach(function (indicator, key) {
           if (indicator.automated_code) {
-            automatedIDs.push(indicator.automated_code);
+            automatedIDs.push(indicator.automated_code)
           }
-        });
-      });
+        })
+      })
 
-      automatedIDs = [...new Set(automatedIDs)];
+      automatedIDs = [...new Set(automatedIDs)]
 
       if (
         automatedIDs.length > 0 &&
@@ -1009,121 +1066,121 @@ export default {
         this.form.date.end
       ) {
         this.getAutomatedData({
-          startDate: this.serverDateTime(this.form.date.start, "start"),
-          endDate: this.serverDateTime(this.form.date.end, "end"),
+          startDate: this.serverDateTime(this.form.date.start, 'start'),
+          endDate: this.serverDateTime(this.form.date.end, 'end'),
           automated_codes: automatedIDs,
-          employeeId: this.id,
+          employeeId: this.id
         }).then(
           (response) => {
-            this.isLoading = false;
+            this.isLoading = false
 
-            var templateTarget = 0;
-            var templateScore = 0;
-            var templateScorePercentage = 0;
+            var templateTarget = 0
+            var templateScore = 0
+            var templateScorePercentage = 0
 
             this.form.template.groups.forEach((group, groupIndex) => {
-              var groupTarget = 0;
-              var groupScore = 0;
-              var groupScorePercentage = 0;
+              var groupTarget = 0
+              var groupScore = 0
+              var groupScorePercentage = 0
 
               group.indicators.forEach((indicator, indicatorIndex) => {
                 var target =
                   this.form.template.groups[groupIndex].indicators[
                     indicatorIndex
-                  ].target || 0;
-                var score = 0;
-                var scorePercentage = 0;
+                  ].target || 0
+                var score = 0
+                var scorePercentage = 0
 
                 if (response[indicator.automated_code]) {
-                  target = response[indicator.automated_code].target || 0;
-                  score = response[indicator.automated_code].score || 0;
+                  target = response[indicator.automated_code].target || 0
+                  score = response[indicator.automated_code].score || 0
 
-                  scorePercentage = (score / target) * indicator.weight || 0;
+                  scorePercentage = (score / target) * indicator.weight || 0
 
                   if (scorePercentage > indicator.weight) {
-                    scorePercentage = parseFloat(indicator.weight) || 0;
+                    scorePercentage = parseFloat(indicator.weight) || 0
                   }
 
                   this.$set(
                     this.form.template.groups[groupIndex].indicators[
                       indicatorIndex
                     ],
-                    "automated_code",
+                    'automated_code',
                     indicator.automated_code
-                  );
+                  )
                 } else if (indicator.selected) {
                   score =
                     this.form.template.groups[groupIndex].indicators[
                       indicatorIndex
-                    ].selected.score || 0;
-                  scorePercentage = (score / target) * indicator.weight || 0;
+                    ].selected.score || 0
+                  scorePercentage = (score / target) * indicator.weight || 0
                 }
 
                 this.$set(
                   this.form.template.groups[groupIndex].indicators[
                     indicatorIndex
                   ],
-                  "target",
+                  'target',
                   target
-                );
+                )
                 this.$set(
                   this.form.template.groups[groupIndex].indicators[
                     indicatorIndex
                   ],
-                  "score",
+                  'score',
                   score
-                );
+                )
                 this.$set(
                   this.form.template.groups[groupIndex].indicators[
                     indicatorIndex
                   ],
-                  "score_percentage",
+                  'score_percentage',
                   scorePercentage
-                );
+                )
 
-                groupTarget += target;
-                groupScore += score;
-                groupScorePercentage += scorePercentage;
+                groupTarget += target
+                groupScore += score
+                groupScorePercentage += scorePercentage
 
-                templateTarget += target;
-                templateScore += score;
-                templateScorePercentage += scorePercentage;
-              });
+                templateTarget += target
+                templateScore += score
+                templateScorePercentage += scorePercentage
+              })
 
               this.$set(
                 this.form.template.groups[groupIndex],
-                "target",
+                'target',
                 groupTarget
-              );
+              )
               this.$set(
                 this.form.template.groups[groupIndex],
-                "score",
+                'score',
                 groupScore
-              );
+              )
               this.$set(
                 this.form.template.groups[groupIndex],
-                "score_percentage",
+                'score_percentage',
                 groupScorePercentage
-              );
-            });
+              )
+            })
 
-            this.$set(this.form.template, "target", templateTarget);
-            this.$set(this.form.template, "score", templateScore);
+            this.$set(this.form.template, 'target', templateTarget)
+            this.$set(this.form.template, 'score', templateScore)
             this.$set(
               this.form.template,
-              "score_percentage",
+              'score_percentage',
               templateScorePercentage
-            );
+            )
           },
           (error) => {
-            this.isLoading = false;
-            console.log(JSON.stringify(error));
+            this.isLoading = false
+            console.log(JSON.stringify(error))
           }
-        );
+        )
       } else {
-        this.isLoading = false;
+        this.isLoading = false
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>

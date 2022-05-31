@@ -97,12 +97,12 @@ export default {
         document.body.classList.remove('modal-open')
       }
       document.removeEventListener('keydown', this.onEscListener)
-      this.$emit('onClose');
+      this.$emit('onClose')
       this.backdrop = false
     },
     toggleFullscreen () {
       this.isFullscreen = !this.isFullscreen
-      this.$emit('toggleFullscreen',{isfullscreen: this.isFullscreen});
+      this.$emit('toggleFullscreen', { isfullscreen: this.isFullscreen })
     },
     onEscListener () {
       if (event.key === 'Escape') {
