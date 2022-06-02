@@ -431,7 +431,7 @@ export default {
         },
         template: {
           groups: [],
-          comnment: null,
+          comment: null,
         },
       }),
       title: "Kpi",
