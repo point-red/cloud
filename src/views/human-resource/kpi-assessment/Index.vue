@@ -34,7 +34,7 @@
             </tr>
             <template v-for="(employee, index) in employees">
               <tr
-                v-if="$permission.has('read employee assessment') && (isShow(employee.scorers) || isUser(employee.user_id)) && ($permission.has('create employee assessment') || $permission.has('read employee'))"
+                v-if="$permission.has('read employee assessment') && ($permission.has('create employee assessment') || $permission.has('read employee'))"
                 :key="employee.id"
                 slot="p-body"
               >
@@ -165,7 +165,8 @@ export default {
           is_archived: this.statusId,
           sort_by: 'name',
           includes: 'scorers',
-          additional: 'groups'
+          additional: 'groups',
+          scorer_id: this.authUser.id
         }
       }).then((response) => {
         this.isLoading = false

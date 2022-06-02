@@ -176,8 +176,9 @@
                   <a
                     v-if="
                       indicator.selected &&
-                        indicator.selected.notes !== '' &&
-                        indicator.selected.notes !== undefined
+                      indicator.selected.notes !== '' &&
+                      indicator.selected.notes !== undefined &&
+                      indicator.selected.notes !== null
                     "
                     href="javascript:void(0)"
                     class="text-decoration-none"
@@ -214,9 +215,10 @@
                   <label
                     v-if="
                       indicator.selected &&
-                        indicator.selected.attachment !== undefined &&
-                        indicator.selected.attachment !== '' &&
-                        isUser(employee.user_id)
+                      indicator.selected.attachment !== undefined &&
+                      indicator.selected.attachment !== '' &&
+                      indicator.selected.attachment !== null &&
+                      isUser(employee.user_id)
                     "
                     :for="!isSaving ? 'file-' + indicator.id : ''"
                     style="font-weight: 200; color: #3f9ce8"
@@ -239,9 +241,10 @@
                   <a
                     v-if="
                       indicator.selected &&
-                        indicator.selected.attachment !== undefined &&
-                        indicator.selected.attachment !== '' &&
-                        !isUser(employee.user_id)
+                      indicator.selected.attachment !== undefined &&
+                      indicator.selected.attachment !== '' &&
+                      indicator.selected.attachment !== null &&
+                      !isUser(employee.user_id)
                     "
                     href="javascript:void(0)"
                     class="text-decoration-none"
@@ -343,8 +346,9 @@
                   <a
                     v-if="
                       indicator.selected &&
-                        indicator.selected.comment !== undefined &&
-                        indicator.selected.comment !== ''
+                      indicator.selected.comment !== undefined &&
+                      indicator.selected.comment !== '' &&
+                      indicator.selected.comment !== null
                     "
                     href="javascript:void(0)"
                     class="text-decoration-none"
@@ -380,13 +384,8 @@
             </tr>
           </p-table>
 
-          <p-form-row
-            :label="$t('comment')"
-          >
-            <div
-              slot="body"
-              class="col-lg-9 col-form-label"
-            >
+          <p-form-row :label="$t('comment')">
+            <div slot="body" class="col-lg-9 col-form-label">
               <textarea
                 v-model="form.template.comment"
                 class="form-control"
@@ -489,8 +488,8 @@ export default {
         },
         template: {
           groups: [],
-          comnment: null
-        }
+          comment: null,
+        },
       }),
       title: 'Kpi',
       isLoading: true,
@@ -597,10 +596,10 @@ export default {
     isUser (employeeUserid) {
       return localStorage.getItem('userId') == employeeUserid
     },
-    changeCommentTemplate () {
-      this.$set(this.form.template, 'comment', this.form.template.comment)
-      this.onSave()
-      console.log(this.form)
+    changeCommentTemplate() {
+      this.$set(this.form.template, "comment", this.form.template.comment);
+      this.onSave();
+      console.log(this.form);
     },
     onChangeDate (time) {
       if (this.employee.user_id == undefined) {
