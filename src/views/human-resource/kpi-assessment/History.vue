@@ -7,8 +7,15 @@
       <span class="breadcrumb-item active">{{ title | uppercase }}</span>
     </breadcrumb>
 
-    <div v-show="!hideChart" class="row">
-      <p-block :title="$t('kpi graph')" :header="true" column="col-lg-12">
+    <div
+      v-show="!hideChart"
+      class="row"
+    >
+      <p-block
+        :title="$t('kpi graph')"
+        :header="true"
+        column="col-lg-12"
+      >
         <line-chart
           ref="linechart"
           :chart-title="$t('kpi') | uppercase"
@@ -19,12 +26,18 @@
     </div>
 
     <div class="row">
-      <p-block :title="title" :header="true">
+      <p-block
+        :title="title"
+        :header="true"
+      >
         <div class="row">
           <div
             class="col-sm-4 col-md-3 col-lg-3 mb-1 mr-sm-4 mr-md-0 mr-lg-0 select-date"
           >
-            <p-date-range-picker v-model="reminderDate" name="reminder-date" />
+            <p-date-range-picker
+              v-model="reminderDate"
+              name="reminder-date"
+            />
           </div>
           <div
             class="col-sm-1 col-md-2 col-lg-1 mb-1 p-1 pl-sm-2 pl-md-1 pl-lg-1 reminder"
@@ -34,7 +47,10 @@
               class="btn btn-square btn-secondary"
               @click="kpiReminder"
             >
-              <i v-if="isSending" class="fa fa-asterisk fa-spin" />
+              <i
+                v-if="isSending"
+                class="fa fa-asterisk fa-spin"
+              />
               {{ $t("Reminder") | uppercase }}
             </button>
           </div>
@@ -45,40 +61,35 @@
               class="btn btn-square btn-outline-secondary"
               :class="{ active: reportType == 'all' }"
               @click="chooseType('all')"
-              >All</a
-            >
+            >All</a>
             <a
               href="javascript:void(0)"
               class="btn btn-square btn-outline-secondary"
               :class="{ active: reportType == 'daily' }"
               @click="chooseType('daily')"
-              >Daily</a
-            >
+            >Daily</a>
             <a
               href="javascript:void(0)"
               class="btn btn-square btn-outline-secondary"
               :class="{ active: reportType == 'weekly' }"
               @click="chooseType('weekly')"
-              >Weekly</a
-            >
+            >Weekly</a>
             <a
               href="javascript:void(0)"
               class="btn btn-square btn-outline-secondary"
               :class="{ active: reportType == 'monthly' }"
               @click="chooseType('monthly')"
-              >Monthly</a
-            >
+            >Monthly</a>
             <a
               href="javascript:void(0)"
               class="btn btn-square btn-outline-secondary"
               :class="{ active: reportType == 'yearly' }"
               @click="chooseType('yearly')"
-              >Yearly</a
-            >
+            >Yearly</a>
           </div>
         </div>
 
-        <hr />
+        <hr>
         <p-block-inner :is-loading="isLoading">
           <p-table>
             <tr slot="p-head">
@@ -93,7 +104,9 @@
               <th class="text-center">
                 {{ $t("score") }}
               </th>
-              <th class="text-center">%</th>
+              <th class="text-center">
+                %
+              </th>
             </tr>
             <tr
               v-for="assessment in assessments"
@@ -217,8 +230,8 @@
                 <router-link
                   v-if="
                     authUser.id == assessment.scorer.id &&
-                    $permission.has('update employee assessment') &&
-                    reportType == 'all'
+                      $permission.has('update employee assessment') &&
+                      reportType == 'all'
                   "
                   :to="{
                     path:
@@ -236,8 +249,8 @@
                 <template
                   v-if="
                     authUser.id == assessment.scorer.id &&
-                    $permission.has('delete employee assessment') &&
-                    reportType == 'all'
+                      $permission.has('delete employee assessment') &&
+                      reportType == 'all'
                   "
                 >
                   <div
@@ -259,7 +272,11 @@
       </p-block>
     </div>
 
-    <p-modal id="modal-delete" ref="delete" title="Confirmation">
+    <p-modal
+      id="modal-delete"
+      ref="delete"
+      title="Confirmation"
+    >
       <div slot="content">
         <p>Are you sure want to delete the KPI?</p>
       </div>
@@ -280,7 +297,10 @@
           class="btn btn-danger"
           @click="onDelete()"
         >
-          <i v-show="isSaving" class="fa fa-asterisk fa-spin" />
+          <i
+            v-show="isSaving"
+            class="fa fa-asterisk fa-spin"
+          />
           {{ $t("confirm") | uppercase }}
         </button>
       </div>
@@ -289,12 +309,12 @@
 </template>
 
 <script>
-import Breadcrumb from "@/views/Breadcrumb";
-import BreadcrumbHumanResource from "@/views/human-resource/Breadcrumb";
-import LineChart from "@/components/point-chart/LineChart";
-import { mapGetters, mapActions } from "vuex";
-import BreadcrumbHumanResourceKpi from "@/views/human-resource/kpi/Breadcrumb";
-import BreadcrumbHumanResourceKpiKpiAssessment from "@/views/human-resource/kpi-assessment/Breadcrumb";
+import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
+import LineChart from '@/components/point-chart/LineChart'
+import { mapGetters, mapActions } from 'vuex'
+import BreadcrumbHumanResourceKpi from '@/views/human-resource/kpi/Breadcrumb'
+import BreadcrumbHumanResourceKpiKpiAssessment from '@/views/human-resource/kpi-assessment/Breadcrumb'
 
 export default {
   components: {
@@ -304,155 +324,155 @@ export default {
     BreadcrumbHumanResourceKpi,
     BreadcrumbHumanResourceKpiKpiAssessment
   },
-  data() {
+  data () {
     return {
       id: this.$route.params.employeeId,
-      title: "History Assessment",
+      title: 'History Assessment',
       isLoading: true,
       chartLabel: [],
       chartData: [],
       isScorer: false,
       hideChart: false,
-      reportType: "all",
+      reportType: 'all',
       isSaving: false,
-      selectedAsessementId: "",
+      selectedAsessementId: '',
       page: this.$route.query.page * 1 || 1,
       lastPage: 1,
-      reminderDate: "",
-      isSending: false,
-    };
+      reminderDate: '',
+      isSending: false
+    }
   },
   computed: {
-    ...mapGetters("auth", ["authUser"]),
-    ...mapGetters("humanResourceEmployee", ["employee"]),
-    ...mapGetters("humanResourceEmployeeAssessment", [
-      "assessments",
-      "dataSet",
-      "pagination",
-    ]),
+    ...mapGetters('auth', ['authUser']),
+    ...mapGetters('humanResourceEmployee', ['employee']),
+    ...mapGetters('humanResourceEmployeeAssessment', [
+      'assessments',
+      'dataSet',
+      'pagination'
+    ])
   },
   watch: {
     dataSet: function (val) {
       if (val.scores.length >= 2) {
-        this.hideChart = false;
-        this.chartLabel.splice(0, this.chartLabel.length);
-        this.chartData.splice(0, this.chartData.length);
-        Array.prototype.push.apply(this.chartLabel, val.dates.reverse());
-        Array.prototype.push.apply(this.chartData, val.scores.reverse());
-        this.$refs.linechart.updateData();
+        this.hideChart = false
+        this.chartLabel.splice(0, this.chartLabel.length)
+        this.chartData.splice(0, this.chartData.length)
+        Array.prototype.push.apply(this.chartLabel, val.dates.reverse())
+        Array.prototype.push.apply(this.chartData, val.scores.reverse())
+        this.$refs.linechart.updateData()
       } else {
-        this.hideChart = true;
+        this.hideChart = true
       }
-    },
+    }
   },
-  created() {
-    this.getEmployeeAssessmentRequest();
+  created () {
+    this.getEmployeeAssessmentRequest()
   },
-  updated() {
-    this.lastPage = this.pagination.last_page;
+  updated () {
+    this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions("humanResourceEmployeeAssessment", {
-      getEmployeeAssessment: "get",
-      deleteEmployeeAssessment: "delete",
+    ...mapActions('humanResourceEmployeeAssessment', {
+      getEmployeeAssessment: 'get',
+      deleteEmployeeAssessment: 'delete'
     }),
-    ...mapActions("humanResourceEmployee", {
-      sendKpiReminder: "sendKpiReminder",
+    ...mapActions('humanResourceEmployee', {
+      sendKpiReminder: 'sendKpiReminder'
     }),
-    chooseType(type) {
-      this.reportType = type;
-      this.page = 1;
-      this.getEmployeeAssessmentRequest();
+    chooseType (type) {
+      this.reportType = type
+      this.page = 1
+      this.getEmployeeAssessmentRequest()
     },
-    getEmployeeAssessmentRequest() {
-      this.isLoading = true;
+    getEmployeeAssessmentRequest () {
+      this.isLoading = true
       this.getEmployeeAssessment({
         employeeId: this.id,
         params: {
           page: this.page,
-          type: this.reportType,
-        },
+          type: this.reportType
+        }
       }).then(
         (response) => {
-          this.isLoading = false;
+          this.isLoading = false
         },
         (error) => {
-          this.isLoading = false;
-          console.log(JSON.stringify(error));
+          this.isLoading = false
+          console.log(JSON.stringify(error))
         }
-      );
+      )
       if (this.employee.scorers) {
         this.employee.scorers.find((element) => {
           if (element.id == this.authUser.id) {
-            this.isScorer = true;
+            this.isScorer = true
           }
-        });
+        })
       }
     },
-    deleteAssessment(assessmentId) {
-      this.selectedAsessementId = assessmentId;
-      this.$refs.delete.show();
+    deleteAssessment (assessmentId) {
+      this.selectedAsessementId = assessmentId
+      this.$refs.delete.show()
     },
-    updatePage(value) {
-      this.page = value;
-      this.getEmployeeAssessmentRequest();
+    updatePage (value) {
+      this.page = value
+      this.getEmployeeAssessmentRequest()
     },
-    onDelete() {
-      this.isSaving = true;
+    onDelete () {
+      this.isSaving = true
       this.deleteEmployeeAssessment({
         id: this.selectedAsessementId,
-        employeeId: this.id,
+        employeeId: this.id
       }).then(
         (response) => {
-          this.isSaving = false;
-          this.getEmployeeAssessmentRequest();
-          this.$refs.delete.close();
+          this.isSaving = false
+          this.getEmployeeAssessmentRequest()
+          this.$refs.delete.close()
         },
         (error) => {
-          this.isSaving = false;
-          this.$notification.error("Delete failed", error.message);
-          console.log(JSON.stringify(error));
+          this.isSaving = false
+          this.$notification.error('Delete failed', error.message)
+          console.log(JSON.stringify(error))
         }
-      );
+      )
     },
-    kpiReminder() {
-      this.isSending = true;
-      const oneDay = 24 * 60 * 60 * 1000;
+    kpiReminder () {
+      this.isSending = true
+      const oneDay = 24 * 60 * 60 * 1000
       // scorers
-      const scorers = [];
-      const scorersDone = [];
+      const scorers = []
+      const scorersDone = []
       this.employee.scorers.map((scorer) => {
-        scorers.push(scorer);
-      });
+        scorers.push(scorer)
+      })
       if (this.reminderDate.start && this.reminderDate.end) {
         // start date kpi reminder
-        let startReminder = 0;
-        const startDate = this.reminderDate.start.split("-");
+        let startReminder = 0
+        const startDate = this.reminderDate.start.split('-')
         startReminder +=
           Number(startDate[2]) * oneDay +
           (Number(startDate[1] * oneDay * 30) +
-            Number(startDate[0] * oneDay * 365));
+            Number(startDate[0] * oneDay * 365))
         // end date kpi reminder
-        let endReminder = 0;
-        const endDate = this.reminderDate.end.split("-");
+        let endReminder = 0
+        const endDate = this.reminderDate.end.split('-')
         endReminder +=
           Number(endDate[2]) * oneDay +
           (Number(endDate[1] * oneDay * 30) +
-            Number(endDate[0] * oneDay * 365));
+            Number(endDate[0] * oneDay * 365))
         // check date reminder
         this.assessments.map((assessment) => {
-          let assessmentDate = 0;
-          const date = assessment.date.split(" ")[0].split("-");
+          let assessmentDate = 0
+          const date = assessment.date.split(' ')[0].split('-')
           assessmentDate +=
             Number(date[2]) * oneDay +
-            (Number(date[1] * oneDay * 30) + Number(date[0] * oneDay * 365));
+            (Number(date[1] * oneDay * 30) + Number(date[0] * oneDay * 365))
           if (
             assessmentDate >= startReminder &&
             assessmentDate <= endReminder
           ) {
-            scorersDone.push(assessment.scorer.id);
+            scorersDone.push(assessment.scorer.id)
           }
-        });
+        })
         // send kpi reminder
         scorers.map((scorer) => {
           if (scorersDone.indexOf(scorer.id) < 0) {
@@ -461,54 +481,54 @@ export default {
               name: scorer.full_name,
               employeeName: this.employee.name,
               startDate: this.reminderDate.start,
-              endDate: this.reminderDate.end,
+              endDate: this.reminderDate.end
               // link: 'dev.' + process.env.VUE_APP_DOMAIN + this.$route.path
-            };
+            }
             this.sendKpiReminder(data).then((res) => {
-              console.log(res);
+              console.log(res)
               const Toast = this.$swal.mixin({
                 toast: true,
-                position: "top-end",
+                position: 'top-end',
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
                 didOpen: (toast) => {
-                  toast.addEventListener("mouseenter", this.$swal.stopTimer);
-                  toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-                },
-              });
+                  toast.addEventListener('mouseenter', this.$swal.stopTimer)
+                  toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+                }
+              })
               Toast.fire({
-                icon: "success",
-                title: "send kpi reminder to: " + scorer.email,
+                icon: 'success',
+                title: 'send kpi reminder to: ' + scorer.email
               }).then(() => {
-                this.isSending = false;
-              });
-            });
+                this.isSending = false
+              })
+            })
           }
-        });
+        })
       } else {
-        this.isSending = false;
+        this.isSending = false
         const Toast = this.$swal.mixin({
           toast: true,
-          position: "top-end",
+          position: 'top-end',
           showConfirmButton: false,
           timer: 3000,
           timerProgressBar: true,
           didOpen: (toast) => {
-            toast.addEventListener("mouseenter", this.$swal.stopTimer);
-            toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-          },
-        });
+            toast.addEventListener('mouseenter', this.$swal.stopTimer)
+            toast.addEventListener('mouseleave', this.$swal.resumeTimer)
+          }
+        })
         Toast.fire({
-          icon: "error",
-          title: "Please enter date of periode",
+          icon: 'error',
+          title: 'Please enter date of periode'
         }).then(() => {
-          this.isSending = false;
-        });
+          this.isSending = false
+        })
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 <style scoped>
 @media (max-width: 576px) {
