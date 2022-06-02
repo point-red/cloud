@@ -101,8 +101,6 @@ export default {
       lastPage: 1,
       isAdvanceFilter: false,
       checkedRow: [],
-      statusId: null,
-      statusLabel: null
     }
   },
   computed: {
@@ -154,7 +152,6 @@ export default {
           },
           limit: 10,
           page: this.page,
-          is_archived: this.statusId,
           sort_by: 'name',
           includes: 'scorers',
           additional: 'groups',
