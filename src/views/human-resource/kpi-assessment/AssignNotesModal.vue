@@ -1,6 +1,9 @@
 <template>
   <div>
-    <form class="row" @submit.prevent="onSubmitNotes">
+    <form
+      class="row"
+      @submit.prevent="onSubmitNotes"
+    >
       <p-modal
         id="assign-notes"
         ref="notesAssessment"
@@ -21,8 +24,8 @@
         </template>
         <template slot="footer">
           <button
-            type="submit"
             v-show="isUser(employee_user_id) && !isdetail"
+            type="submit"
             class="btn btn-sm btn-primary"
           >
             Save
@@ -35,44 +38,44 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       employee_id: null,
       indicatorId: null,
       employee_user_id: null,
-      notes: "",
-      isdetail: false,
-    };
+      notes: '',
+      isdetail: false
+    }
   },
   methods: {
-    show(indicator, id, user_id, isdetail = false) {
-      this.indicatorId = indicator.id;
+    show (indicator, id, userId, isdetail = false) {
+      this.indicatorId = indicator.id
       this.notes =
         indicator.selected !== undefined
           ? indicator.selected.notes !== undefined
             ? indicator.selected.notes
-            : ""
-          : "";
-      this.employee_id = id;
-      this.employee_user_id = user_id;
-      this.isdetail = isdetail;
-      this.$refs.notesAssessment.show();
+            : ''
+          : ''
+      this.employee_id = id
+      this.employee_user_id = userId
+      this.isdetail = isdetail
+      this.$refs.notesAssessment.show()
     },
-    isUser(employee_userid) {
-      return localStorage.getItem("userId") == employee_userid;
+    isUser (employeeUserid) {
+      return localStorage.getItem('userId') == employeeUserid
     },
-    close() {
-      this.notes = "";
-      this.$refs.notesAssessment.close();
+    close () {
+      this.notes = ''
+      this.$refs.notesAssessment.close()
     },
-    onSubmitNotes() {
-      this.$emit("saveNotes", {
+    onSubmitNotes () {
+      this.$emit('saveNotes', {
         indicatorId: this.indicatorId,
-        notes: this.notes,
-      });
-      this.notes = "";
-      this.$refs.notesAssessment.close();
-    },
-  },
-};
+        notes: this.notes
+      })
+      this.notes = ''
+      this.$refs.notesAssessment.close()
+    }
+  }
+}
 </script>

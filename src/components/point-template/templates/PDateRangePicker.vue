@@ -85,6 +85,6 @@ export default {
   },
   mounted () {
     this.time = this.value
-  },
+  }
 }
 </script>

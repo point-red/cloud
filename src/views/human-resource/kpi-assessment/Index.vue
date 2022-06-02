@@ -19,12 +19,14 @@
             @input="filterSearch"
           />
         </div>
-        <hr />
+        <hr>
 
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">#</th>
+              <th width="50px">
+                #
+              </th>
               <th>{{ $t('name') }}</th>
               <th>{{ $t('job title') }}</th>
               <th>{{ $t('department') }}</th>
@@ -38,11 +40,13 @@
               >
                 <th>{{ getNumberIndex(index) }}</th>
                 <td>
-                 {{ employee.name }}
+                  {{ employee.name }}
                 </td>
                 <td>{{ employee.job_title }}</td>
                 <td>
-                  <template v-if="employee.group">{{ employee.group.name }}</template>
+                  <template v-if="employee.group">
+                    {{ employee.group.name }}
+                  </template>
                 </td>
                 <td>
                   <div class="row">
@@ -72,7 +76,11 @@
             </template>
           </point-table>
         </p-block-inner>
-        <p-pagination :current-page="page" :last-page="lastPage" @updatePage="updatePage" />
+        <p-pagination
+          :current-page="page"
+          :last-page="lastPage"
+          @updatePage="updatePage"
+        />
       </p-block>
     </div>
   </div>
@@ -133,8 +141,8 @@ export default {
       this.page = value
       this.getEmployeesRequest()
     },
-    isUser(employee_userid) {
-      return localStorage.getItem("userId") == employee_userid;
+    isUser (employeeUserid) {
+      return localStorage.getItem('userId') == employeeUserid
     },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })

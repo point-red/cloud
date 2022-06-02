@@ -2,10 +2,7 @@
   <div>
     <h5>{{ tableName }}</h5>
     <p-block-inner>
-      <template
-        v-if="rows && rows.length > 0"
-        :is-loading="isLoading"
-      >
+      <template v-if="rows && rows.length > 0">
         <point-table>
           <tr slot="p-head">
             <th>#</th>

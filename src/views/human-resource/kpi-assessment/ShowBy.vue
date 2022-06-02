@@ -212,9 +212,9 @@
 <script>
 
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbHumanResource from "@/views/human-resource/Breadcrumb";
-import BreadcrumbHumanResourceKpi from "@/views/human-resource/kpi/Breadcrumb";
-import BreadcrumbHumanResourceKpiKpiAssessment from "@/views/human-resource/kpi-assessment/Breadcrumb";
+import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
+import BreadcrumbHumanResourceKpi from '@/views/human-resource/kpi/Breadcrumb'
+import BreadcrumbHumanResourceKpiKpiAssessment from '@/views/human-resource/kpi-assessment/Breadcrumb'
 import KpiAssessmentCategoryModal from './KpiAssessmentCategoryModal'
 import { mapGetters, mapActions } from 'vuex'
 
