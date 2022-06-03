@@ -108,7 +108,7 @@ export default {
       page: this.$route.query.page * 1 || 1,
       lastPage: 1,
       isAdvanceFilter: false,
-      checkedRow: [],
+      checkedRow: []
     }
   },
   computed: {
