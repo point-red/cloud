@@ -160,6 +160,7 @@ export default {
           },
           limit: 10,
           page: this.page,
+          is_archived: 0,
           sort_by: 'name',
           includes: 'scorers',
           additional: 'groups',
