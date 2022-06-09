@@ -14,56 +14,46 @@
       @input="filterSearch"
     />
     <hr>
-    <div v-if="isLoading">
-      <h3 class="text-center">
-        Loading ...
-      </h3>
-    </div>
-    <div
-      v-else
-      class="list-group push"
-    >
-      <p-block-inner :is-loading="isLoading">
-        <point-table>
-          <tr slot="p-head">
-            <th>Date Form</th>
-            <th>Form Number</th>
-            <th>Customer</th>
-            <th width="105px">
-              Item
-            </th>
-            <th width="50px">
-              Quantity Requested
-            </th>
-            <th width="50px">
-              Quantity Remaining
-            </th>
+    <p-block-inner :is-loading="isLoading">
+      <point-table>
+        <tr slot="p-head">
+          <th>Date Form</th>
+          <th>Form Number</th>
+          <th>Customer</th>
+          <th width="105px">
+            Item
+          </th>
+          <th width="50px">
+            Quantity Requested
+          </th>
+          <th width="50px">
+            Quantity Remaining
+          </th>
+        </tr>
+        <template v-for="(option, optionIndex) in salesOrders">
+          <tr
+            v-for="(item, itemIndex) in option.items"
+            :key="'pr-' + optionIndex + '-i-' + itemIndex"
+            slot="p-body"
+            class="list-group-item-action"
+            style="cursor: pointer"
+            @click="choose(option)"
+          >
+            <th>{{ option.form.created_at | dateFormat('DD MMMM YYYY HH:mm') }}</th>
+            <td>{{ option.form.number }}</td>
+            <td>{{ option.form.created_by.name }}</td>
+            <td>{{ item.item.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.quantity_remaining }}</td>
           </tr>
-          <template v-for="(option, optionIndex) in salesOrders">
-            <tr
-              v-for="(item, itemIndex) in option.items"
-              :key="'pr-' + optionIndex + '-i-' + itemIndex"
-              slot="p-body"
-              class="list-group-item-action"
-              style="cursor: pointer"
-              @click="choose(option)"
-            >
-              <td>{{ option.form.created_at | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-              <td>{{ option.form.number }}</td>
-              <td>{{ option.form.created_by.name }}</td>
-              <td>{{ item.item.name }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ item.quantity_remaining }}</td>
-            </tr>
-          </template>
-        </point-table>
-        <p-pagination
-          :current-page="currentPage"
-          :last-page="lastPage"
-          @updatePage="updatePage"
-        />
-      </p-block-inner>
-    </div>
+        </template>
+      </point-table>
+      <p-pagination
+        :current-page="currentPage"
+        :last-page="lastPage"
+        @updatePage="updatePage"
+      />
+    </p-block-inner>
     <div
       v-if="searchText && salesOrders.length == 0 && !isLoading"
       class="alert alert-info text-center"
@@ -173,8 +163,11 @@ export default {
     },
     open (index = null) {
       this.index = index
+
       this.getSalesOrder()
+
       this.$refs.modal.open()
+      this.$refs.modal.$el.querySelector('.sweet-content-content').style.overflow = 'auto'
     },
     close () {
       this.$refs.modal.close()

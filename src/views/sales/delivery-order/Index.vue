@@ -136,7 +136,7 @@
           </div>
           <hr>
         </div>
-        <div>
+        <div style="margin-top: 10px">
           <router-link
             v-if="$permission.has('create sales delivery order')"
             to="/sales/delivery-order/approval"

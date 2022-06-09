@@ -141,7 +141,7 @@
                       v-model="row.quantity_delivered"
                       :name="'quantity_delivered' + index"
                       :max="Number(row.quantity_requested)"
-                      min="0"
+                      :min="0"
                       :item-id="row.item_id"
                       :units="row.units"
                       :unit="{
