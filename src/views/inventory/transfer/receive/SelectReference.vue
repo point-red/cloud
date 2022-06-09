@@ -44,7 +44,11 @@
                 <tr
                   :key="'request-'+optionIndex+'-'+itemIndex"
                 >
-                  <td>{{ optionIndex + 1 }}</td>
+                  <td>
+                    <template v-if="itemIndex == 0">
+                      {{ optionIndex + 1 }}
+                    </template>
+                  </td>
                   <td>{{ option.form.date }}</td>
                   <td>{{ option.form.number }}</td>
                   <td>{{ option.warehouse.name }}</td>
@@ -116,6 +120,11 @@ export default {
           sort_by: '-form.number',
           group_by: 'form.id',
           filter_form: 'activePending;approvalApproved',
+          filter_like: {
+            'form.number': this.searchText,
+            'item.code': this.searchText,
+            'item.name': this.searchText
+          },
           filter_not_null: 'form.number',
           includes: 'items.item.units;form.createdBy;receiveItem.items;warehouse;to_warehouse'
         }
@@ -169,5 +178,12 @@ input {
 }
 .w-1 {
   width: 1px;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.hover-active:hover {
+  background: #2196f3;
+  color: #ffffff;
 }
 </style>

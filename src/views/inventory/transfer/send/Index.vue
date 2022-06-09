@@ -219,19 +219,19 @@
                   {{ inventoryTransferItemItem.quantity | numberFormat }} {{ inventoryTransferItemItem.unit }}
                 </td>
                 <td class="text-center">
-                  <span
-                    v-if="inventoryTransferItem.form.cancellation_status == 1"
-                  >
-                    {{ 0 | numberFormat }} {{ inventoryTransferItemItem.unit }}
+                  <span v-if="inventoryTransferItem.receive_item != null">
+                    <template v-if="inventoryTransferItem.receive_item.form.approval_status == 1">
+                      <template v-for="(inventoryReceiveItemItem) in inventoryTransferItem.receive_item.items">
+                        <template v-if="inventoryTransferItemItem.item_id == inventoryReceiveItemItem.item_id && inventoryTransferItemItem.production_number == inventoryReceiveItemItem.production_number && inventoryTransferItemItem.expiry_date == inventoryReceiveItemItem.expiry_date">
+                          {{ inventoryReceiveItemItem.quantity | numberFormat }} {{ inventoryReceiveItemItem.unit }}
+                        </template>
+                      </template>
+                    </template>
+                    <template v-else>
+                      {{ 0 | numberFormat }} {{ inventoryTransferItemItem.unit }}
+                    </template>
                   </span>
-                  <span
-                    v-else-if="inventoryTransferItem.form.done == 0"
-                  >
-                    {{ 0 | numberFormat }} {{ inventoryTransferItemItem.unit }}
-                  </span>
-                  <span
-                    v-else-if="inventoryTransferItem.form.done == 1"
-                  >
+                  <span v-else>
                     {{ 0 | numberFormat }} {{ inventoryTransferItemItem.unit }}
                   </span>
                 </td>
@@ -473,7 +473,7 @@ export default {
             'form.date': this.serverDateTime(this.date.end, 'end')
           },
           limit: 10,
-          includes: 'form;items.item',
+          includes: 'form;items.item;receiveItem;receiveItem.form;receiveItem.items;',
           page: this.currentPage
         }
       }).catch(error => {
@@ -492,7 +492,8 @@ export default {
         data: {
           ids: ids,
           date_start: this.date.start,
-          date_end: this.date.end
+          date_end: this.date.end,
+          tenant_name: localStorage.getItem('tenantName')
         }
       }).then((response) => {
         // this.isExporting.splice(this.isExporting.indexOf(value), 1)

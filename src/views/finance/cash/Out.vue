@@ -186,7 +186,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('financePaymentOrder', ['paymentOrders', 'pagination']),
+    ...mapGetters('financePaymentOrder', {
+      paymentOrders: 'paymentOrders',
+      paymentOrdersPagination: 'pagination'
+    }),
     ...mapGetters('purchaseDownPayment', ['downPayments'])
   },
   watch: {
@@ -205,7 +208,7 @@ export default {
     this.search()
   },
   updated () {
-    this.lastPage = this.pagination.last_page
+    this.lastPage = this.paymentOrdersPagination.last_page
   },
   methods: {
     ...mapActions('financePaymentOrder', {

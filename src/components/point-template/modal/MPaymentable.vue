@@ -71,9 +71,9 @@
       <button
         type="button"
         class="btn btn-sm btn-outline-danger"
-        @click="close()"
+        @click="clear()"
       >
-        {{ $t('close') | uppercase }}
+        {{ $t('clear') | uppercase }}
       </button>
     </sweet-modal>
   </div>
@@ -256,6 +256,10 @@ export default {
     },
     onClose () {
       this.$emit('close', true)
+    },
+    clear () {
+      this.$emit('clear', true)
+      this.close()
     }
   }
 }

@@ -134,6 +134,16 @@ const actions = {
         })
     })
   },
+  close (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/close', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
   approveByEmail (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/approve', payload)
@@ -167,6 +177,16 @@ const actions = {
   cancellationReject (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/' + payload.id + '/cancellation-reject', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  closeApprove (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/close-approve', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {

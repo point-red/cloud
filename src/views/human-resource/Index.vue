@@ -5,14 +5,14 @@
     </breadcrumb>
     <div class="row gutters-tiny">
       <p-box
-        v-if="$permission.has('read employee') || $permission.has('create employee assessment') || $permission.has('read employee assessment')"
+        v-if="$permission.has('read employee')"
         name="Employee"
         link="/human-resource/employee"
         icon="si si-people"
       />
       <p-box
-        v-if="$plugin.has('KPI') && $permission.has('read employee kpi')"
-        name="Kpi Template"
+        v-if="$plugin.has('KPI') && ($permission.has('read employee kpi') || $permission.has('create employee assessment') || $permission.has('read employee assessment'))"
+        name="KPI"
         link="/human-resource/kpi"
         icon="si si-badge"
       />

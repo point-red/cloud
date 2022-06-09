@@ -11,8 +11,6 @@
       <span class="breadcrumb-item active">{{ employee.name | uppercase }}</span>
     </breadcrumb>
 
-    <employee-widget :id="id" />
-
     <tab-menu />
 
     <div class="row">
@@ -327,7 +325,6 @@
 <script>
 import TabMenu from '@/views/human-resource/TabMenu'
 
-import EmployeeWidget from './EmployeeWidget'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
@@ -336,8 +333,7 @@ export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource,
-    EmployeeWidget
+    BreadcrumbHumanResource
   },
   data () {
     return {

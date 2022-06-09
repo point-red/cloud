@@ -243,7 +243,7 @@
           </point-table>
         </p-block-inner>
         <p-pagination
-          :current-page="parseInt(this.$route.query.page)"
+          :current-page="parseInt($route.query.page)"
           :last-page="lastPage"
           @updatePage="updatePage"
         />

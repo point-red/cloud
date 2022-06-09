@@ -138,7 +138,6 @@ export default {
         this.options = []
         this.mutableLabel = ''
         response.data.map((key, value) => {
-          console.log(key.name)
           if (key.name != 'DISTRIBUTION WAREHOUSE') {
             if (this.exclude.includes(key.id) == false) {
               this.options.push({

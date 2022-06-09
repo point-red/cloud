@@ -55,6 +55,7 @@ export default {
     },
     onCloseRequest () {
       if (this.form.reason != '') {
+        this.$emit('close-form', this.form.reason)
         this.$emit('closeRequest', this.form.reason)
         this.close()
       } else {

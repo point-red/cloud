@@ -26,7 +26,7 @@
         :show-hidden-button="false"
         column="col-sm-12"
       >
-        <template v-slot:header>
+        <template #header>
           |<router-link
             v-if="$permission.has('create pos')"
             to="/pos/open-bill/create"

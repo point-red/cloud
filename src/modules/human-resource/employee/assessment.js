@@ -119,6 +119,18 @@ const actions = {
           reject(error)
         })
     })
+  },
+  getByPeriode ({ commit, dispatch }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get('/human-resource/employee/employees/' + payload.employeeId + '/assessment-by-periode/' + payload.date)
+        .then(response => {
+          commit('FETCH_ASSESSMENT', response)
+          dispatch('humanResourceEmployee/find', { id: payload.employeeId }, { root: true })
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 

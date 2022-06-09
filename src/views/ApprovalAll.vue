@@ -20,7 +20,10 @@
             </th>
           </tr>
         </thead>
-        <tbody class="tbody">
+        <tbody
+          v-if="resources"
+          class="tbody"
+        >
           <tr
             v-for="(resource, index) in resources"
             :key="index"
@@ -55,24 +58,42 @@
             <td class="text-center">
               <template>
                 <div
-                  v-if="resource.form.approval_status === 1"
+                  v-if="resource.form.approval_status === 1 && resource.form.approval_status == actionCode"
                   class="font-white bg-success"
                 >
                   Success
                 </div>
 
                 <div
-                  v-if="resource.form.approval_status === -1"
+                  v-if="resource.form.approval_status === -1 && resource.form.approval_status == actionCode"
                   class="font-white bg-success"
                 >
                   Success
                 </div>
 
                 <div
-                  v-if="resource.form.approval_status === 0"
-                  class="font-white bg-secondary"
+                  v-if="resource.form.approval_status === 0 && resourceType != 'CashAdvance'"
+                  class="font-white bg-danger"
                 >
                   {{ resourceType === 'TransferSend' ? 'Stock not enough' : 'pending' }}
+                </div>
+                <div
+                  v-if="resource.form.approval_status === 0 && resourceType == 'CashAdvance'"
+                  class="font-white bg-danger"
+                >
+                  Balance is not enough
+                </div>
+                <div
+                  v-else-if="resource.form.approval_status != actionCode && resource.form.approval_status == 1"
+                  class="font-white bg-danger"
+                >
+                  Form was approved before
+                </div>
+                <div
+                  v-else-if="resource.form.approval_status != actionCode && resource.form.approval_status == -1"
+                  class="font-white bg-danger"
+                >
+                  Form was rejected before
                 </div>
               </template>
             </td>
@@ -94,12 +115,14 @@
 
 <script>
 import { mapActions } from 'vuex'
+import axios from '@/axios'
 
 export default {
   data: () => {
     return {
       crudType: '',
       action: '',
+      actionCode: '',
       token: '',
       resourceType: '',
       resources: [],
@@ -123,7 +146,9 @@ export default {
     if (this.$route.query.ids != undefined) {
       this.ids = JSON.parse('[' + this.$route.query.ids + ']') || ''
     }
+    this.projectName = this.$route.query['project-name'] || ''
 
+    this.setActionCode()
     this.handleAction()
   },
   methods: {
@@ -137,6 +162,8 @@ export default {
     async handleAction () {
       if (this.resourceType === 'TransferSend') {
         this.handleApprovalTransferSend()
+      } else if (this.resourceType === 'CashAdvance') {
+        this.handleApprovalCashAdvance()
       }
       if (this.resourceType === 'SalesDeliveryOrder') {
         this.handleApprovalDeliveryOrder()
@@ -198,6 +225,24 @@ export default {
         }).catch(error => {
           console.log(error.message)
         })
+      }
+    },
+    async handleApprovalCashAdvance (headers) {
+      let activity = ''
+      if (this.action === 'approve') {
+        activity = 'approved by email'
+      } else if (this.action === 'reject') {
+        activity = 'rejected by email'
+      }
+      const bulkId = JSON.parse(this.$route.query.ids)
+      const { data: { data: cashAdvances } } = await axios.post('approval-with-token/finance/cash-advances/bulk', { token: this.token, bulk_id: bulkId, status: this.actionCode, activity: activity }, { headers })
+      this.resources = cashAdvances
+    },
+    setActionCode () {
+      if (this.action === 'approve') {
+        this.actionCode = 1
+      } else if (this.action === 'reject') {
+        this.actionCode = -1
       }
     }
   }

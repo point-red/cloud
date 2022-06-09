@@ -244,8 +244,6 @@ export default {
       this.close()
     },
     open () {
-      console.log(this.transferitem.show)
-      console.log(this.transferitem.items)
       this.$refs['print-transfer-item'].open()
     },
     close () {
