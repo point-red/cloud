@@ -651,7 +651,6 @@ export default {
                 } else {
                   this.assignSelected(this.assessment)
                 }
-                this.kpiId = null
                 this.isLoading = false
               })
               .catch((error) => {
@@ -681,7 +680,6 @@ export default {
               } else {
                 this.assignSelected(this.assessment)
               }
-              this.kpiId = null
               this.isLoading = false
             })
             .catch((error) => {
@@ -690,6 +688,7 @@ export default {
             })
         }
       }
+      this.kpiId = null
     },
     showAttachment (indicator) {
       this.showByAttachment({
