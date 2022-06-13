@@ -216,13 +216,16 @@
               <td
                 v-if="
                   assessment.status ===
-                  'COMPLETED'
+                    'COMPLETED'
                 "
                 class="text-center text-success"
               >
                 {{ assessment.status }}
               </td>
-              <td v-else class="text-center text-warning">
+              <td
+                v-else
+                class="text-center text-warning"
+              >
                 {{ assessment.status }}
               </td>
 
