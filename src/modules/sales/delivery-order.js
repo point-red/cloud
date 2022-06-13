@@ -33,7 +33,21 @@ const getters = {
     return state.deliveryOrder
   },
   deliveryOrders: state => {
-    return state.deliveryOrders
+    return state.deliveryOrders.map((deliveryOrder) => {
+      deliveryOrder.form.last_status = deliveryOrder.form.approval_status
+
+      if (deliveryOrder.form.close_status != null) {
+        deliveryOrder.form.last_status = deliveryOrder.form.close_status
+        return deliveryOrder
+      }
+
+      if (deliveryOrder.form.cancellation_status != null) {
+        deliveryOrder.form.last_status = deliveryOrder.form.cancellation_status
+        return deliveryOrder
+      }
+
+      return deliveryOrder
+    })
   },
   pagination: state => {
     return state.pagination

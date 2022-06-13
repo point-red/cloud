@@ -90,7 +90,7 @@
                 </td>
                 <th>
                   <router-link :to="{ name: 'sales.delivery-order.show', params: { id: deliveryOrder.id }}">
-                    {{ deliveryOrder.form.number + (deliveryOrder.form.close_status == 1 ? ' - Closed' : '') }}
+                    {{ deliveryOrder.form.number + ([0, 1].includes(deliveryOrder.form.close_status) ? ' - Closed' : '') }}
                   </router-link>
                 </th>
                 <td>{{ deliveryOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>

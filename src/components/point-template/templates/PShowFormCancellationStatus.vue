@@ -15,7 +15,7 @@
       </div>
     </div>
     <div
-      v-if="cancellationStatus == 1 && isLoading == false"
+      v-if="closeStatus == null && cancellationStatus == 1 && isLoading == false"
       class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >

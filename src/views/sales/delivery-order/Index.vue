@@ -198,19 +198,19 @@
                 </td>
                 <td class="text-center">
                   <div
-                    v-if="deliveryOrder.form.approval_status == 0"
+                    v-if="deliveryOrder.form.last_status == 0"
                     class="badge badge-primary"
                   >
                     {{ $t('pending') | uppercase }}
                   </div>
                   <div
-                    v-if="deliveryOrder.form.approval_status == -1"
+                    v-if="deliveryOrder.form.last_status == -1"
                     class="badge badge-danger"
                   >
                     {{ $t('rejected') | uppercase }}
                   </div>
                   <div
-                    v-if="deliveryOrder.form.approval_status == 1"
+                    v-if="deliveryOrder.form.last_status == 1"
                     class="badge badge-success"
                   >
                     {{ $t('approved') | uppercase }}
@@ -218,7 +218,13 @@
                 </td>
                 <td class="text-center">
                   <div
-                    v-if="deliveryOrder.form.cancellation_status == 1"
+                    v-if="deliveryOrder.form.close_status == 1"
+                    class="badge badge-danger"
+                  >
+                    {{ $t('closed') | uppercase }}
+                  </div>
+                  <div
+                    v-else-if="deliveryOrder.form.cancellation_status == 1"
                     class="badge badge-danger"
                   >
                     {{ $t('canceled') | uppercase }}

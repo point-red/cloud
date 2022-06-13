@@ -20,8 +20,22 @@
             </th>
           </tr>
         </thead>
+
+        <tbody v-if="isLoading">
+          <tr>
+            <td
+              colspan="3"
+              style="background: white"
+            >
+              <p-block>
+                <p-block-inner :is-loading="isLoading" />
+              </p-block>
+            </td>
+          </tr>
+        </tbody>
+
         <tbody
-          v-if="resources"
+          v-if="!isLoading && resources"
           class="tbody"
         >
           <tr
@@ -128,7 +142,8 @@ export default {
       resources: [],
       projectName: '',
       approvalStatus: null,
-      collectif: false
+      collectif: false,
+      isLoading: false
     }
   },
   computed: {
@@ -199,6 +214,12 @@ export default {
       }
     },
     async handleApprovalDeliveryOrder () {
+      let statusKey = 'approval_status'
+      if (this.crudType === 'delete') statusKey = 'cancellation_status'
+      if (this.crudType === 'close') statusKey = 'close_status'
+
+      this.isLoading = true
+
       if (this.action === 'approve') {
         this.$store.dispatch('salesDeliveryOrder/approveByEmail', {
           ids: this.ids,
@@ -207,10 +228,10 @@ export default {
         }).then(response => {
           this.resources = response.data
           this.projectName = this.tenantName
-          this.approvalStatus = response.data[0].form.approval_status
+          this.approvalStatus = response.data[0].form[statusKey]
         }).catch(error => {
           console.log(error.message)
-        })
+        }).finally(() => { this.isLoading = false })
       }
       if (this.action === 'reject') {
         this.$store.dispatch('salesDeliveryOrder/rejectByEmail', {
@@ -221,10 +242,10 @@ export default {
         }).then(response => {
           this.resources = response.data
           this.projectName = this.tenantName
-          this.approvalStatus = response.data[0].form.approval_status
+          this.approvalStatus = response.data[0].form[statusKey]
         }).catch(error => {
           console.log(error.message)
-        })
+        }).finally(() => { this.isLoading = false })
       }
     },
     async handleApprovalCashAdvance (headers) {
