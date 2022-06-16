@@ -9,7 +9,11 @@
           <strong>{{ crudType | uppercase }} APPROVAL STATUS</strong>
         </div>
         <div class="body">
-          <div v-if="resource && resource.form">
+          <p-block v-if="isLoading">
+            <p-block-inner :is-loading="isLoading" />
+          </p-block>
+
+          <div v-if="!isLoading && resource && resource.form">
             <div class="form-number">
               {{ resource.form.number }}
             </div>
@@ -79,7 +83,8 @@ export default {
       projectName: '',
       id: '',
       approvalStatus: null,
-      warningMessage: ''
+      warningMessage: '',
+      isLoading: false
     }
   },
   computed: {
@@ -139,6 +144,9 @@ export default {
         }
         if (this.resourceType === 'TransferReceive') {
           this.handleApprovalTransferReceive()
+        }
+        if (this.resourceType === 'SalesDeliveryOrder') {
+          this.handleApprovalDeliveryOrder()
         }
       } catch (error) {
         alert(error)
@@ -321,6 +329,41 @@ export default {
             console.log(error.message)
           })
         }
+      }
+    },
+    async handleApprovalDeliveryOrder () {
+      let statusKey = 'approval_status'
+      if (this.crudType === 'delete') statusKey = 'cancellation_status'
+      if (this.crudType === 'close') statusKey = 'close_status'
+
+      this.isLoading = true
+
+      if (this.action === 'approve') {
+        this.$store.dispatch('salesDeliveryOrder/approveByEmail', {
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form[statusKey]
+        }).catch(error => {
+          this.$notification.error(error.message)
+        }).finally(() => { this.isLoading = false })
+      }
+      if (this.action === 'reject') {
+        this.$store.dispatch('salesDeliveryOrder/rejectByEmail', {
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id,
+          reason: 'Rejected by email'
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form[statusKey]
+        }).catch(error => {
+          this.$notification.error(error.message)
+        }).finally(() => { this.isLoading = false })
       }
     }
   }

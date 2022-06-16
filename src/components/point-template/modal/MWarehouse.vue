@@ -87,6 +87,10 @@ export default {
       default: function () {
         return []
       }
+    },
+    defaultOnly: {
+      type: Boolean,
+      default: undefined
     }
   },
   data () {
@@ -127,7 +131,8 @@ export default {
           limit: 50,
           filter_like: {
             name: this.searchText
-          }
+          },
+          is_default_only: this.defaultOnly
         }
       }).then(response => {
         this.options = []

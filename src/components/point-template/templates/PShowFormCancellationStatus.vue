@@ -15,7 +15,7 @@
       </div>
     </div>
     <div
-      v-if="cancellationStatus == 1 && isLoading == false"
+      v-if="closeStatus == null && cancellationStatus == 1 && isLoading == false"
       class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
@@ -29,14 +29,14 @@
       </div>
     </div>
     <div
-      v-if="cancellationStatus == 0 && isLoading == false"
+      v-if="closeStatus == null && cancellationStatus == 0 && isLoading == false"
       class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle" />
-          {{ $t('pending cancellation warning', { form: 'purchase requisition', approvedBy: approvedBy }) | uppercase }}
+          {{ $t('pending cancellation warning', { form: form, approvedBy: approvedBy }) | uppercase }}
         </p>
         <p
           class="mb-0"
@@ -45,20 +45,28 @@
           <b>{{ $t('reason') | uppercase }}</b> : <pre>{{ requestCancellationReason | uppercase }}</pre>
         </p>
         <hr>
-        <div v-if="$permission.has('approve purchase request')">
+        <div v-if="$permission.has('approve ' + form)">
           <button
             type="button"
             class="btn btn-sm btn-primary mr-5"
+            :disabled="isProccessApproval || isProccessApprove"
             @click="onCancellationApprove"
           >
-            {{ $t('approve') | uppercase }}
+            <i
+              v-show="isProccessApprove"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('approve') | uppercase }}
           </button>
           <button
             type="button"
             class="btn btn-sm btn-danger"
+            :disabled="isProccessApproval || isProccessReject"
             @click="$refs.formCancellationReject.open()"
           >
-            {{ $t('reject') | uppercase }}
+            <i
+              v-show="isProccessReject"
+              class="fa fa-asterisk fa-spin"
+            /> {{ $t('reject') | uppercase }}
           </button>
         </div>
       </div>
@@ -73,6 +81,10 @@
 <script>
 export default {
   props: {
+    closeStatus: {
+      type: Number,
+      default: null
+    },
     cancellationStatus: {
       type: Number,
       default: null
@@ -92,13 +104,37 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
+    },
+    isProccessApproval: {
+      type: Boolean,
+      default: false
+    },
+    form: {
+      type: String,
+      default: 'purchase request'
+    }
+  },
+  data () {
+    return {
+      isProccessApprove: false,
+      isProccessReject: false
+    }
+  },
+  watch: {
+    isProccessApproval (newValue) {
+      if (!newValue) {
+        this.isProccessApprove = false
+        this.isProccessReject = false
+      }
     }
   },
   methods: {
     onCancellationApprove (event) {
+      this.isProccessApprove = true
       this.$emit('onCancellationApprove', event)
     },
     onCancellationReject (event) {
+      this.isProccessReject = true
       this.$emit('onCancellationReject', event)
     }
   }
