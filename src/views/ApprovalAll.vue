@@ -109,6 +109,12 @@
                 >
                   Form was rejected before
                 </div>
+                <div
+                  v-if="resource.form.approval_notes"
+                  style="color: red; font-size: 14px; text-align: left"
+                >
+                  {{ resource.form.approval_notes }}
+                </div>
               </template>
             </td>
           </tr>
@@ -214,38 +220,35 @@ export default {
       }
     },
     async handleApprovalDeliveryOrder () {
+      let endpoint = 'salesDeliveryOrder/approveByEmail'
+      let params = {
+        ids: this.ids,
+        token: this.token,
+        approver_id: this.approver_id
+      }
+      if (this.action === 'reject') {
+        endpoint = 'salesDeliveryOrder/rejectByEmail'
+        params = { ...params, reason: 'Rejected by Email' }
+      }
+
       let statusKey = 'approval_status'
-      if (this.crudType === 'delete') statusKey = 'cancellation_status'
       if (this.crudType === 'close') statusKey = 'close_status'
+      if (this.crudType === 'delete') statusKey = 'cancellation_status'
 
       this.isLoading = true
 
-      if (this.action === 'approve') {
-        this.$store.dispatch('salesDeliveryOrder/approveByEmail', {
-          ids: this.ids,
-          token: this.token,
-          approver_id: this.approver_id
-        }).then(response => {
-          this.resources = response.data
-          this.projectName = this.tenantName
-          this.approvalStatus = response.data[0].form[statusKey]
-        }).catch(error => {
-          console.log(error.message)
-        }).finally(() => { this.isLoading = false })
-      }
-      if (this.action === 'reject') {
-        this.$store.dispatch('salesDeliveryOrder/rejectByEmail', {
-          ids: this.ids,
-          token: this.token,
-          approver_id: this.approver_id,
-          reason: 'Rejected by email'
-        }).then(response => {
-          this.resources = response.data
-          this.projectName = this.tenantName
-          this.approvalStatus = response.data[0].form[statusKey]
-        }).catch(error => {
-          console.log(error.message)
-        }).finally(() => { this.isLoading = false })
+      try {
+        const response = await this.$store.dispatch(endpoint, params)
+
+        this.projectName = this.tenantName
+        this.resources = response.data.map((item) => {
+          item.approval_status = item.form[statusKey]
+          return item
+        })
+      } catch (error) {
+        this.$notification.error(error.message)
+      } finally {
+        this.isLoading = false
       }
     },
     async handleApprovalCashAdvance (headers) {
