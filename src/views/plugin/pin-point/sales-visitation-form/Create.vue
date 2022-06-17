@@ -596,7 +596,7 @@ export default {
       if (row.item || row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
         return true
       }
-      return false
+      return true
     },
     chooseUnit (unit, row) {
       row.unit = unit.label
