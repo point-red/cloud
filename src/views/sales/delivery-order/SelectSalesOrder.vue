@@ -41,7 +41,7 @@
           >
             <th>{{ option.form.created_at | dateFormat('DD MMMM YYYY HH:mm') }}</th>
             <td>{{ option.form.number }}</td>
-            <td>{{ option.form.created_by.name }}</td>
+            <td>{{ option.customer.name }}</td>
             <td>{{ item.item.name }}</td>
             <td>{{ item.quantity }}</td>
             <td>{{ item.quantity_remaining }}</td>
