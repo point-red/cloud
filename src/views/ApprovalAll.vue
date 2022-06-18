@@ -20,22 +20,8 @@
             </th>
           </tr>
         </thead>
-
-        <tbody v-if="isLoading">
-          <tr>
-            <td
-              colspan="3"
-              style="background: white"
-            >
-              <p-block>
-                <p-block-inner :is-loading="isLoading" />
-              </p-block>
-            </td>
-          </tr>
-        </tbody>
-
         <tbody
-          v-if="!isLoading && resources"
+          v-if="resources"
           class="tbody"
         >
           <tr
@@ -89,7 +75,7 @@
                   v-if="resource.form.approval_status === 0 && resourceType != 'CashAdvance'"
                   class="font-white bg-danger"
                 >
-                  {{ resourceType === 'TransferSend' ? 'Stock not enough' : 'pending' }}
+                  Stock not enough
                 </div>
                 <div
                   v-if="resource.form.approval_status === 0 && resourceType == 'CashAdvance'"
@@ -108,12 +94,6 @@
                   class="font-white bg-danger"
                 >
                   Form was rejected before
-                </div>
-                <div
-                  v-if="resource.form.approval_notes"
-                  style="color: red; font-size: 14px; text-align: left"
-                >
-                  {{ resource.form.approval_notes }}
                 </div>
               </template>
             </td>
@@ -145,11 +125,10 @@ export default {
       actionCode: '',
       token: '',
       resourceType: '',
-      resources: [],
+      resources: {},
       projectName: '',
       approvalStatus: null,
-      collectif: false,
-      isLoading: false
+      collectif: false
     }
   },
   computed: {
@@ -186,9 +165,6 @@ export default {
       } else if (this.resourceType === 'CashAdvance') {
         this.handleApprovalCashAdvance()
       }
-      if (this.resourceType === 'SalesDeliveryOrder') {
-        this.handleApprovalDeliveryOrder()
-      }
     },
     async handleApprovalTransferSend () {
       if (this.action === 'approve') {
@@ -201,7 +177,7 @@ export default {
           this.projectName = this.tenantName
           this.approvalStatus = 1
         }).catch(error => {
-          this.$notification.error(error.message)
+          console.log(error.message)
         })
       }
       if (this.action === 'reject') {
@@ -215,40 +191,8 @@ export default {
           this.projectName = this.tenantName
           this.approvalStatus = -1
         }).catch(error => {
-          this.$notification.error(error.message)
+          console.log(error.message)
         })
-      }
-    },
-    async handleApprovalDeliveryOrder () {
-      let endpoint = 'salesDeliveryOrder/approveByEmail'
-      let params = {
-        ids: this.ids,
-        token: this.token,
-        approver_id: this.approver_id
-      }
-      if (this.action === 'reject') {
-        endpoint = 'salesDeliveryOrder/rejectByEmail'
-        params = { ...params, reason: 'Rejected by Email' }
-      }
-
-      let statusKey = 'approval_status'
-      if (this.crudType === 'close') statusKey = 'close_status'
-      if (this.crudType === 'delete') statusKey = 'cancellation_status'
-
-      this.isLoading = true
-
-      try {
-        const response = await this.$store.dispatch(endpoint, params)
-
-        this.projectName = this.tenantName
-        this.resources = response.data.map((item) => {
-          item.approval_status = item.form[statusKey]
-          return item
-        })
-      } catch (error) {
-        this.$notification.error(error.message)
-      } finally {
-        this.isLoading = false
       }
     },
     async handleApprovalCashAdvance (headers) {

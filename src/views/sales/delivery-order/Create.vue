@@ -3,7 +3,7 @@
     <breadcrumb>
       <breadcrumb-sales />
       <router-link
-        :to="{ name: 'sales.delivery-order.index' }"
+        to="/sales/delivery-order"
         class="breadcrumb-item"
       >
         {{ $t('delivery order') | uppercase }}
@@ -93,9 +93,7 @@
                 <th style="min-width: 120px">
                   Item
                 </th>
-                <th>Quantity Requested</th>
-                <th>Quantity Delivered</th>
-                <th>Quantity Remaining</th>
+                <th>Quantity</th>
               </tr>
               <template v-for="(row, index) in form.items">
                 <tr
@@ -106,9 +104,10 @@
                   <td>{{ row.item_label | uppercase }}</td>
                   <td>
                     <p-quantity
-                      :id="'quantity_requested' + index"
-                      v-model="row.quantity_requested"
-                      :name="'quantity_requested' + index"
+                      :id="'quantity' + index"
+                      v-model="row.quantity"
+                      :name="'quantity' + index"
+                      :disabled="row.item_id == null"
                       :item-id="row.item_id"
                       :units="row.units"
                       :unit="{
@@ -116,45 +115,6 @@
                         label: row.unit,
                         converter: row.converter
                       }"
-                      disabled
-                      readonly
-                      @choosen="chooseUnit($event, row)"
-                    />
-                  </td>
-                  <td class="position-relative">
-                    <p-quantity
-                      :id="'quantity_delivered' + index"
-                      v-model="row.quantity_delivered"
-                      :name="'quantity_delivered' + index"
-                      :max="Number(row.quantity_requested)"
-                      :min="0"
-                      :item-id="row.item_id"
-                      :units="row.units"
-                      :unit="{
-                        name: row.unit,
-                        label: row.unit,
-                        converter: row.converter
-                      }"
-                      :disabled="! row.item_id"
-                      disable-unit-selection
-                      @changed="onQuantityChange($event, row)"
-                      @choosen="chooseUnit($event, row)"
-                    />
-                  </td>
-                  <td>
-                    <p-quantity
-                      :id="'quantity_remaining' + index"
-                      v-model="row.quantity_remaining"
-                      :name="'quantity_remaining' + index"
-                      :item-id="row.item_id"
-                      :units="row.units"
-                      :unit="{
-                        name: row.unit,
-                        label: row.unit,
-                        converter: row.converter
-                      }"
-                      disabled
-                      readonly
                       @choosen="chooseUnit($event, row)"
                     />
                   </td>
@@ -231,7 +191,6 @@
       id="warehouse"
       ref="warehouse"
       name="warehouse"
-      default-only
       @choosen="chooseWarehouse"
     />
     <select-sales-order
@@ -285,7 +244,6 @@ export default {
         type_of_tax: 'exclude',
         items: [],
         request_approval_to: null,
-        request_approval_at: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         approver_name: null,
         approver_email: null,
         sales_order_id: null
@@ -295,20 +253,6 @@ export default {
   computed: {
     ...mapGetters('salesDeliveryOrder', ['deliveryOrder']),
     ...mapGetters('auth', ['authUser'])
-  },
-  watch: {
-    'form.items': {
-      handler (changedItems) {
-        changedItems.forEach(item => {
-          const quantityDelivered = Number(item.quantity_delivered) <= Number(item.quantity_requested)
-            ? item.quantity_delivered
-            : item.quantity_requested
-
-          item.quantity_remaining = Number(item.quantity_requested) - Number(quantityDelivered)
-        })
-      },
-      deep: true
-    }
   },
   created () {
     if (this.$route.query.id) {
@@ -376,21 +320,15 @@ export default {
       this.form.customer_name = salesOrder.customer.name
       this.form.customer_label = salesOrder.customer.label
       this.form.items = salesOrder.items.map(item => {
-        const quantityRemainingInForm = item.quantity_remaining - item.quantity_remaining
-
         return {
           sales_order_item_id: item.id,
           item_id: item.item_id,
           item_name: item.item.name,
           item_label: item.item.name,
           more: false,
-          units: item.item.units,
-          unit: item.unit_smallest || item.unit,
-          converter: item.converter_smallest || item.converter,
-          quantity_requested: item.quantity_remaining,
-          quantity_delivered: item.quantity_remaining,
-          quantity_remaining: quantityRemainingInForm,
-          is_quantity_over: quantityRemainingInForm < 0,
+          unit: item.unit,
+          converter: item.converter,
+          quantity: item.quantity,
           price: item.price,
           discount_percent: 0,
           discount_value: 0,

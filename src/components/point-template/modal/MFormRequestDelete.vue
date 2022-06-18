@@ -8,12 +8,9 @@
     >
       <textarea
         ref="reason"
-        v-model="form.reason"
+        v-model="reason"
         rows="5"
-        :class="{
-          'form-control': true,
-          'is-invalid': !!form.errors.get('reason')
-        }"
+        class="form-control"
         placeholder="reason"
       />
       <hr>
@@ -29,14 +26,12 @@
 </template>
 
 <script>
-import Form from '@/utils/Form'
-
 export default {
   data () {
     return {
       isSaving: false,
       isLoading: false,
-      form: new Form({ reason: '' })
+      reason: ''
     }
   },
   beforeDestroy () {
@@ -54,18 +49,17 @@ export default {
       this.$emit('close', true)
     },
     onDelete () {
-      if (this.form.reason != '') {
-        this.$emit('delete', this.form.reason)
+      console.log(this.reason)
+      if (this.reason != '') {
+        this.$emit('delete', this.reason)
         this.close()
       } else {
-        this.form.errors.record({
-          reason: ['reason must be filled']
-        })
+        this.close()
         this.$notification.error('reason must be filled')
       }
     },
     onClose () {
-      this.form.reason = ''
+      this.reason = ''
     }
   }
 }

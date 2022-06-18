@@ -5,57 +5,62 @@
     overlay-theme="dark"
     @close="onClose()"
   >
-    <p-form-input
-      id="search-text"
-      class="btn-block"
-      name="search-text"
+    <input
+      v-model="searchText"
+      type="text"
+      class="form-control"
       placeholder="Search..."
-      :value="searchText"
-      @input="filterSearch"
-    />
+      @keydown.enter.prevent=""
+    >
     <hr>
-    <p-block-inner :is-loading="isLoading">
-      <point-table>
-        <tr slot="p-head">
-          <th>Date Form</th>
-          <th>Form Number</th>
-          <th>Customer</th>
-          <th width="105px">
-            Item
-          </th>
-          <th width="50px">
-            Quantity Requested
-          </th>
-          <th width="50px">
-            Quantity Remaining
-          </th>
-        </tr>
-        <template v-for="(option, optionIndex) in salesOrders">
-          <tr
-            v-for="(item, itemIndex) in option.items"
-            :key="'pr-' + optionIndex + '-i-' + itemIndex"
-            slot="p-body"
-            class="list-group-item-action"
-            style="cursor: pointer"
-            @click="choose(option)"
-          >
-            <th>{{ option.form.created_at | dateFormat('DD MMMM YYYY HH:mm') }}</th>
-            <td>{{ option.form.number }}</td>
-            <td>{{ option.form.created_by.name }}</td>
-            <td>{{ item.item.name }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.quantity_remaining }}</td>
-          </tr>
-        </template>
-      </point-table>
-      <p-pagination
-        :current-page="currentPage"
-        :last-page="lastPage"
-        @updatePage="updatePage"
-      />
-    </p-block-inner>
+    <div v-if="isLoading">
+      <h3 class="text-center">
+        Loading ...
+      </h3>
+    </div>
     <div
-      v-if="searchText && salesOrders.length == 0 && !isLoading"
+      v-else
+      class="list-group push"
+    >
+      <a
+        v-for="(option, optionIndex) in options"
+        :key="'request-'+optionIndex"
+        class="list-group-item list-group-item-action"
+        href="javascript:void(0)"
+        @click="choose(option)"
+      >
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{{ option.form.number }}</strong>
+          </div>
+          <div
+            style="font-size: 0.8em;"
+            class="text-black-50 text-right"
+          >
+            Created by {{ option.form.created_by.name }}<br>
+            {{ option.form.created_at | dateFormat('DD MMMM YYYY HH:mm') }}
+          </div>
+        </div>
+        <table
+          style="font-size:11px"
+          class="table mb-0"
+        >
+          <tr
+            v-for="(item, optionItemIndex) in option.items"
+            :key="'item-'+optionItemIndex"
+          >
+            <td class="pl-0">
+              {{ item.item.name }}
+            </td>
+            <td class="w-1 text-right text-nowrap">
+              {{ item.quantity }} {{ item.unit }}
+            </td>
+          </tr>
+        </table>
+      </a>
+    </div>
+    <div
+      v-if="searchText && options.length == 0 && !isLoading"
       class="alert alert-info text-center"
     >
       {{ $t('searching not found', [searchText]) | capitalize }}
@@ -74,13 +79,9 @@
 
 <script>
 import debounce from 'lodash/debounce'
-import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  components: {
-    PointTable
-  },
   props: {
     id: {
       type: String,
@@ -95,58 +96,38 @@ export default {
     return {
       index: null,
       searchText: '',
-      currentPage: 1,
-      lastPage: 1,
-      limit: 10,
+      options: [],
       selected: {},
       isLoading: false
     }
   },
   computed: {
-    ...mapGetters('salesOrder', ['salesOrders', 'pagination'])
+    ...mapGetters('masterItem', ['items', 'pagination'])
   },
-  updated () {
-    this.lastPage = this.pagination.last_page
+  watch: {
+    searchText: debounce(function () {
+      this.search()
+    }, 300)
   },
   methods: {
     ...mapActions('salesOrder', ['get']),
-    filterSearch: debounce(function (value) {
-      console.log({ value })
-      this.searchText = value
-      this.currentPage = 1
-      this.getSalesOrder()
-    }, 500),
-    getSalesOrder () {
+    search () {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form,items,item,customer',
+          join: 'form,items,item',
           fields: 'sales_order.*',
           sort_by: '-form.number',
           group_by: 'form.id',
           filter_form: 'activePending;approvalApproved',
           filter_not_null: 'form.number',
-          filter_like: {
-            'form.number': this.searchText,
-            'customer.name': this.searchText,
-            'item.code': this.searchText,
-            'item.name': this.searchText,
-            'sales_order_item.notes': this.searchText,
-            'sales_order_item.quantity': this.searchText,
-            'sales_order_item.price': this.searchText
-          },
-          includes: 'customer;items.item.units;form.createdBy',
-          remaining_delivery_order_info: 1,
-          limit: this.limit,
-          page: this.currentPage
+          includes: 'customer;items.item.units;form.createdBy'
         }
+      }).then(response => {
+        this.options = response.data
       }).finally(() => {
         this.isLoading = false
       })
-    },
-    updatePage (value) {
-      this.currentPage = value
-      this.getSalesOrder()
     },
     clear (option) {
       this.$emit('choosen', {
@@ -163,11 +144,8 @@ export default {
     },
     open (index = null) {
       this.index = index
-
-      this.getSalesOrder()
-
+      this.search()
       this.$refs.modal.open()
-      this.$refs.modal.$el.querySelector('.sweet-content-content').style.overflow = 'auto'
     },
     close () {
       this.$refs.modal.close()

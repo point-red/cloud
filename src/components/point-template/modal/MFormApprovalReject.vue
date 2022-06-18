@@ -8,12 +8,9 @@
     >
       <textarea
         ref="reason"
-        v-model="form.reason"
+        v-model="reason"
         rows="5"
-        :class="{
-          'form-control': true,
-          'is-invalid': !!form.errors.get('reason')
-        }"
+        class="form-control"
         placeholder="reason"
       />
       <hr>
@@ -22,24 +19,19 @@
         class="btn btn-block btn-sm btn-danger mr-5"
         @click="reject()"
       >
-        <i
-          v-show="isSaving"
-          class="fa fa-asterisk fa-spin"
-        /> {{ $t('reject') | uppercase }}
+        {{ $t('reject') | uppercase }}
       </button>
     </sweet-modal>
   </div>
 </template>
 
 <script>
-import Form from '@/utils/Form'
-
 export default {
   data () {
     return {
       isSaving: false,
       isLoading: false,
-      form: new Form({ reason: '' })
+      reason: ''
     }
   },
   beforeDestroy () {
@@ -57,19 +49,7 @@ export default {
       this.$emit('close', true)
     },
     reject () {
-      this.isSaving = true
-
-      if (!this.form.reason) {
-        this.isSaving = false
-        this.$notification.error('Reason should not empty')
-        this.form.errors.record({
-          reason: ['Reason should not empty']
-        })
-
-        return false
-      }
-
-      this.$emit('reject', this.form.reason)
+      this.$emit('reject', this.reason)
       this.close()
     },
     onClose () {

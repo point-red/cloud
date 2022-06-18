@@ -7,7 +7,6 @@
       type="date"
       :shortcuts="shortcuts"
       :disabled="disabled"
-      :disabled-date="disabledDateRule"
       value-type="YYYY-MM-DD"
     />
 
@@ -39,10 +38,6 @@ export default {
     disabled: {
       type: Boolean,
       default: false
-    },
-    disabledDateRule: {
-      type: Function,
-      default: undefined
     },
     name: {
       type: String,
