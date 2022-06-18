@@ -8,35 +8,30 @@
     >
       <textarea
         ref="reason"
-        v-model="form.reason"
+        v-model="reason"
         rows="5"
-        :class="{
-          'form-control': true,
-          'is-invalid': !!form.errors.get('reason')
-        }"
+        class="form-control"
         placeholder="reason"
       />
       <hr>
       <button
         type="button"
         class="btn btn-block btn-sm btn-danger mr-5"
-        @click="onCloseRequest()"
+        @click="onCloseForm()"
       >
-        {{ $t('close') | uppercase }}
+        {{ $t('close form') | uppercase }}
       </button>
     </sweet-modal>
   </div>
 </template>
 
 <script>
-import Form from '@/utils/Form'
-
 export default {
   data () {
     return {
       isSaving: false,
       isLoading: false,
-      form: new Form({ reason: '' })
+      reason: ''
     }
   },
   beforeDestroy () {
@@ -53,20 +48,17 @@ export default {
       this.$refs['form-request-close'].close()
       this.$emit('close', true)
     },
-    onCloseRequest () {
-      if (this.form.reason != '') {
-        this.$emit('close-form', this.form.reason)
-        this.$emit('closeRequest', this.form.reason)
+    onCloseForm () {
+      if (this.reason != '') {
+        this.$emit('close-form', this.reason)
         this.close()
       } else {
-        this.form.errors.record({
-          reason: ['reason must be filled']
-        })
+        this.close()
         this.$notification.error('reason must be filled')
       }
     },
     onClose () {
-      this.form.reason = ''
+      this.reason = ''
     }
   }
 }

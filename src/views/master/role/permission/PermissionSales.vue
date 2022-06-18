@@ -8,7 +8,6 @@
         <th />
         <th />
         <th />
-        <th />
       </tr>
       <tr slot="p-body">
         <td>
@@ -20,7 +19,6 @@
           />
         </td>
         <td><b>{{ $t('sales') | uppercase }}</b></td>
-        <td />
         <td />
         <td />
         <td />
@@ -72,7 +70,6 @@
             @click.native="togglePermission('delete sales contract')"
           />
         </td>
-        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -120,7 +117,6 @@
             @click.native="togglePermission('delete sales quotation')"
           />
         </td>
-        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -168,7 +164,6 @@
             @click.native="togglePermission('delete sales order')"
           />
         </td>
-        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -216,7 +211,6 @@
             @click.native="togglePermission('delete sales down payment')"
           />
         </td>
-        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -264,16 +258,6 @@
             @click.native="togglePermission('delete sales delivery order')"
           />
         </td>
-        <td>
-          <p-form-check-box
-            ref="approve sales delivery order"
-            :is-form="false"
-            :checked="$rolePermission.has('approve sales delivery order', permissions)"
-            :description="'approval' | uppercase"
-            @click.native="togglePermission('approve sales delivery order')"
-          />
-        </td>
-        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -321,7 +305,6 @@
             @click.native="togglePermission('delete sales delivery note')"
           />
         </td>
-        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -369,7 +352,6 @@
             @click.native="togglePermission('delete sales invoice')"
           />
         </td>
-        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -417,7 +399,6 @@
             @click.native="togglePermission('delete sales return')"
           />
         </td>
-        <td />
       </tr>
     </p-table>
     <button

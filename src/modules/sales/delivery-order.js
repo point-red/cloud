@@ -33,21 +33,7 @@ const getters = {
     return state.deliveryOrder
   },
   deliveryOrders: state => {
-    return state.deliveryOrders.map((deliveryOrder) => {
-      deliveryOrder.form.last_status = deliveryOrder.form.approval_status
-
-      if (deliveryOrder.form.close_status != null) {
-        deliveryOrder.form.last_status = deliveryOrder.form.close_status
-        return deliveryOrder
-      }
-
-      if (deliveryOrder.form.cancellation_status != null) {
-        deliveryOrder.form.last_status = deliveryOrder.form.cancellation_status
-        return deliveryOrder
-      }
-
-      return deliveryOrder
-    })
+    return state.deliveryOrders
   },
   pagination: state => {
     return state.pagination
@@ -129,16 +115,6 @@ const actions = {
         })
     })
   },
-  close (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/' + payload.id + '/close', payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
   approve (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/' + payload.id + '/approve', payload)
@@ -175,56 +151,6 @@ const actions = {
         .then(response => {
           resolve(response)
         }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  closeApprove (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/' + payload.id + '/close-approve', payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  closeReject (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/' + payload.id + '/close-reject', payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  approveByEmail (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/approve', payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  rejectByEmail (context, payload) {
-    return new Promise((resolve, reject) => {
-      api.post(url + '/reject', payload)
-        .then(response => {
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-    })
-  },
-  export ({ commit }, payload) {
-    return new Promise((resolve, reject) => {
-      api.get(url + '/export', payload)
-        .then((response) => {
-          resolve(response)
-        }, (error) => {
           reject(error)
         })
     })

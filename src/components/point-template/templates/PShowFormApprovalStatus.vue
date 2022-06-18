@@ -15,38 +15,30 @@
       </div>
     </div>
     <div
-      v-if="cancellationStatus == null && closeStatus == null && approvalStatus == 0 && isLoading == false"
+      v-if="cancellationStatus == null && approvalStatus == 0 && isLoading == false"
       class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
     >
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle" />
-          {{ $t('pending approval warning', { form: form, approvedBy: approvedBy }) | uppercase }}
+          {{ $t('pending approval warning', { form: 'purchase request', approvedBy: approvedBy }) | uppercase }}
         </p>
         <hr>
-        <div v-if="$permission.has('approve ' + form)">
+        <div v-if="$permission.has('approve purchase request')">
           <button
             type="button"
             class="btn btn-sm btn-primary mr-5"
-            :disabled="isProccessApproval || isProccessApprove"
             @click="onApprove"
           >
-            <i
-              v-show="isProccessApprove"
-              class="fa fa-asterisk fa-spin"
-            /> {{ $t('approve') | uppercase }}
+            {{ $t('approve') | uppercase }}
           </button>
           <button
             type="button"
             class="btn btn-sm btn-danger"
-            :disabled="isProccessApproval || isProccessReject"
             @click="$refs.formApprovalReject.open()"
           >
-            <i
-              v-show="isProccessReject"
-              class="fa fa-asterisk fa-spin"
-            /> {{ $t('reject') | uppercase }}
+            {{ $t('reject') | uppercase }}
           </button>
         </div>
       </div>
@@ -65,10 +57,6 @@ export default {
       type: Number,
       default: null
     },
-    closeStatus: {
-      type: Number,
-      default: null
-    },
     approvalStatus: {
       type: Number,
       default: null
@@ -84,37 +72,13 @@ export default {
     isLoading: {
       type: Boolean,
       default: false
-    },
-    isProccessApproval: {
-      type: Boolean,
-      default: false
-    },
-    form: {
-      type: String,
-      default: 'purchase request'
-    }
-  },
-  data () {
-    return {
-      isProccessApprove: false,
-      isProccessReject: false
-    }
-  },
-  watch: {
-    isProccessApproval (newValue) {
-      if (!newValue) {
-        this.isProccessApprove = false
-        this.isProccessReject = false
-      }
     }
   },
   methods: {
     onApprove (event) {
-      this.isProccessApprove = true
       this.$emit('onApprove', event)
     },
     onReject (event) {
-      this.isProccessReject = true
       this.$emit('onReject', event)
     }
   }

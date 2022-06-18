@@ -1,34 +1,6 @@
 <template>
   <div>
     <div
-      v-if="closeStatus == -1 && isLoading == false"
-      class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
-      role="alert"
-    >
-      <div class="flex-fill mr-10">
-        <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle" /> {{ $t('close request rejected') | uppercase }}
-        </p>
-        <div style="white-space: pre-wrap;">
-          <b>{{ $t('reason') | uppercase }}:</b> <pre>{{ closeApprovalReason }}</pre>
-        </div>
-      </div>
-    </div>
-    <div
-      v-if="closeStatus == 1 && isLoading == false"
-      class="alert alert-danger d-flex align-items-center justify-content-between mb-15"
-      role="alert"
-    >
-      <div class="flex-fill mr-10">
-        <p class="mb-0">
-          <i class="fa fa-fw fa-exclamation-triangle" /> {{ $t('closed') | uppercase }}
-        </p>
-        <div style="white-space: pre-wrap;">
-          <b>{{ $t('reason') | uppercase }}:</b> <pre>{{ requestCloseReason }}</pre>
-        </div>
-      </div>
-    </div>
-    <div
       v-if="closeStatus == 0 && isLoading == false"
       class="alert alert-warning d-flex align-items-center justify-content-between mb-15"
       role="alert"
@@ -36,7 +8,7 @@
       <div class="flex-fill mr-10">
         <p class="mb-0">
           <i class="fa fa-fw fa-exclamation-triangle" />
-          {{ $t('pending close warning', { form: form, approvedBy: approvedBy }) | uppercase }}
+          {{ $t('pending close warning', { form: formName, approvedBy: approvedBy }) | uppercase }}
         </p>
         <p
           class="mb-0"
@@ -45,33 +17,25 @@
           <b>{{ $t('reason') | uppercase }}</b> : <pre>{{ requestCloseReason | uppercase }}</pre>
         </p>
         <hr>
-        <div v-if="$permission.has('approve ' + form)">
+        <div v-if="$permission.has('approve purchase request')">
           <button
             type="button"
             class="btn btn-sm btn-primary mr-5"
-            :disabled="isProccessApproval || isProccessApprove"
             @click="onCloseApprove"
           >
-            <i
-              v-show="isProccessApprove"
-              class="fa fa-asterisk fa-spin"
-            /> {{ $t('approve') | uppercase }}
+            {{ $t('approve') | uppercase }}
           </button>
-          <button
+          <!-- <button
             type="button"
             class="btn btn-sm btn-danger"
-            :disabled="isProccessApproval || isProccessReject"
-            @click="$refs.formCloseReject.open()"
+            @click="$refs.formCancellationReject.open()"
           >
-            <i
-              v-show="isProccessReject"
-              class="fa fa-asterisk fa-spin"
-            /> {{ $t('reject') | uppercase }}
-          </button>
+            {{ $t('reject') | uppercase }}
+          </button> -->
         </div>
       </div>
     </div>
-    <m-form-close-reject
+    <m-form-cancellation-reject
       ref="formCloseReject"
       @reject="onCloseReject($event)"
     />
@@ -101,36 +65,16 @@ export default {
       type: Boolean,
       default: false
     },
-    isProccessApproval: {
-      type: Boolean,
-      default: false
-    },
-    form: {
+    formName: {
       type: String,
-      default: 'purchase request'
-    }
-  },
-  data () {
-    return {
-      isProccessApprove: false,
-      isProccessReject: false
-    }
-  },
-  watch: {
-    isProccessApproval (newValue) {
-      if (!newValue) {
-        this.isProccessApprove = false
-        this.isProccessReject = false
-      }
+      default: ''
     }
   },
   methods: {
     onCloseApprove (event) {
-      this.isProccessApprove = true
       this.$emit('onCloseApprove', event)
     },
     onCloseReject (event) {
-      this.isProccessReject = true
       this.$emit('onCloseReject', event)
     }
   }
