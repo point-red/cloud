@@ -14,22 +14,41 @@
     <sales-menu />
 
     <p-show-form-approval-status
+      form="sales delivery order"
       :is-loading="isLoading"
-      :approved-by="deliveryOrder.form.request_approval_to.full_name"
-      :cancellation-status="deliveryOrder.form.cancellation_status"
+      :is-proccess-approval="isProccessApproval"
       :approval-status="deliveryOrder.form.approval_status"
       :approval-reason="deliveryOrder.form.approval_reason"
+      :approved-by="deliveryOrder.form.request_approval_to.full_name"
+      :cancellation-status="deliveryOrder.form.cancellation_status"
+      :close-status="deliveryOrder.form.close_status"
       @onApprove="onApprove"
       @onReject="onReject"
     />
 
     <p-show-form-cancellation-status
+      form="sales delivery order"
       :is-loading="isLoading"
+      :is-proccess-approval="isProccessCancellationApproval"
+      :approved-by="deliveryOrder.form.request_approval_to.full_name"
       :cancellation-status="deliveryOrder.form.cancellation_status"
+      :close-status="deliveryOrder.form.close_status"
       :cancellation-approval-reason="deliveryOrder.form.cancellation_approval_reason"
       :request-cancellation-reason="deliveryOrder.form.request_cancellation_reason"
       @onCancellationApprove="onCancellationApprove"
       @onCancellationReject="onCancellationReject"
+    />
+
+    <p-show-form-close-status
+      form="sales delivery order"
+      :is-loading="isLoading"
+      :is-proccess-approval="isProccessCloseApproval"
+      :approved-by="deliveryOrder.form.request_approval_to.full_name"
+      :close-status="deliveryOrder.form.close_status"
+      :close-approval-reason="deliveryOrder.form.close_approval_reason"
+      :request-close-reason="deliveryOrder.form.request_close_reason"
+      @onCloseApprove="onCloseApprove"
+      @onCloseReject="onCloseReject"
     />
 
     <div
@@ -40,30 +59,68 @@
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
-              <div class="text-right">
+              <h3 v-if="deliveryOrder.form.edited_number">
+                {{ $t('archive') | uppercase }}
+              </h3>
+              <div
+                v-if="deliveryOrder.form.number"
+                class="text-right"
+              >
+                <button
+                  class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                  title="Send Receipt Delivery Order"
+                  :disabled="isSendingEmail"
+                  @click="() => $refs.formSendEmail.open()"
+                >
+                  <i
+                    :class="{
+                      'fa fa-paper-plane': !isSendingEmail,
+                      'fa fa-asterisk fa-spin': isSendingEmail,
+                    }"
+                  />
+                </button>
+                <button
+                  class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                  title="Preview Receipt Delivery Order"
+                  @click="() => $refs.printPreview.open()"
+                >
+                  <i class="si si-printer" />
+                </button>
                 <router-link
                   :to="{ name: 'sales.delivery-order.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <!-- <router-link
+                <router-link
+                  v-if="actions.edit"
                   :to="{ name: 'sales.delivery-order.edit', params: { id: deliveryOrder.id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('edit') | uppercase }}
-                </router-link> -->
-                <!-- <button
-                  v-if="deliveryOrder.form.cancellation_status == null || deliveryOrder.form.cancellation_status == -1"
+                </router-link>
+                <button
+                  v-if="actions.delete"
                   class="btn btn-sm btn-outline-secondary mr-5"
+                  :disabled="isDeleting"
                   @click="$refs.formRequestDelete.open()"
                 >
-                  {{ $t('delete') | uppercase }}
-                </button> -->
-                <m-form-request-delete
-                  ref="formRequestDelete"
-                  @delete="onDelete($event)"
-                />
+                  <i
+                    v-show="isDeleting"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('delete') | uppercase }}
+                </button>
+                <button
+                  v-if="actions.close"
+                  class="btn btn-sm btn-outline-secondary mr-5"
+                  :disabled="isClosing"
+                  @click="$refs.formRequestClose.open()"
+                >
+                  <i
+                    v-show="isClosing"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('close') | uppercase }}
+                </button>
               </div>
             </div>
           </div>
@@ -79,7 +136,7 @@
                   >
                     {{ $t('form number') | uppercase }}
                   </td>
-                  <td>{{ deliveryOrder.form.number }}</td>
+                  <td>{{ deliveryOrder.form.number || deliveryOrder.form.edited_number }}</td>
                 </tr>
                 <tr>
                   <td class="font-weight-bold">
@@ -128,7 +185,13 @@
               </th>
               <th>Item</th>
               <th class="text-right">
-                Quantity
+                Quantity Request
+              </th>
+              <th class="text-right">
+                Quantity Delivered
+              </th>
+              <th class="text-right">
+                Quantity Remaining
               </th>
             </tr>
             <template v-for="(row, index) in deliveryOrder.items">
@@ -141,7 +204,13 @@
                 </th>
                 <td>{{ row.item.label }}</td>
                 <td class="text-right">
-                  {{ row.quantity | numberFormat }} {{ row.unit }}
+                  {{ row.quantity_requested | numberFormat }} {{ row.unit }}
+                </td>
+                <td class="text-right">
+                  {{ row.quantity_delivered | numberFormat }} {{ row.unit }}
+                </td>
+                <td class="text-right">
+                  {{ row.quantity_remaining | numberFormat }} {{ row.unit }}
                 </td>
               </tr>
             </template>
@@ -198,6 +267,18 @@
       ref="formRequestDelete"
       @delete="onDelete($event)"
     />
+    <m-form-request-close
+      ref="formRequestClose"
+      @closeRequest="onCloseRequest($event)"
+    />
+    <m-form-send-email
+      ref="formSendEmail"
+      @submit="onSendEmail($event)"
+    />
+    <m-print-preview
+      ref="printPreview"
+      :delivery-order="deliveryOrder"
+    />
   </div>
 </template>
 
@@ -205,6 +286,7 @@
 import SalesMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSales from '../Breadcrumb'
+import MPrintPreview from './MPrintPreview'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -213,23 +295,43 @@ export default {
     SalesMenu,
     Breadcrumb,
     BreadcrumbSales,
+    MPrintPreview,
     PointTable
   },
   data () {
     return {
-      id: this.$route.params.id,
       isLoading: false,
-      isDeleting: false
+      isProccessApproval: false,
+      isProccessCancellationApproval: false,
+      isProccessCloseApproval: false,
+      isDeleting: false,
+      isClosing: false,
+      isSendingEmail: false
     }
   },
   computed: {
     ...mapGetters('salesDeliveryOrder', ['deliveryOrder']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    actions () {
+      const { form } = this.deliveryOrder
+
+      const whereApprove = form.approval_status == 1
+      const wherePending = form.done == 0
+      const whereNotArchived = !!form.number
+      const whereNotCancelled = form.cancellation_status == null || form.cancellation_status != 1
+      const whereNotClosed = form.close_status == null || form.close_status != 1
+
+      return {
+        edit: wherePending && whereNotClosed,
+        delete: wherePending && whereNotArchived && whereNotClosed && whereNotCancelled,
+        close: wherePending && whereNotArchived && whereNotClosed && whereApprove
+      }
+    }
   },
   watch: {
     '$route' (to, from) {
       if (to.params.id != from.params.id) {
-        this.id = to.params.id
+        this.$route.params.id = to.params.id
         this.deliveryOrderRequest()
       }
     }
@@ -241,10 +343,13 @@ export default {
     ...mapActions('salesDeliveryOrder', {
       find: 'find',
       delete: 'delete',
+      closeForm: 'close',
       approve: 'approve',
       reject: 'reject',
       cancellationApprove: 'cancellationApprove',
-      cancellationReject: 'cancellationReject'
+      cancellationReject: 'cancellationReject',
+      closeApprove: 'closeApprove',
+      closeReject: 'closeReject'
     }),
     toggleMore () {
       const isMoreActive = this.deliveryOrder.items.some(function (el, index) {
@@ -257,7 +362,7 @@ export default {
     deliveryOrderRequest () {
       this.isLoading = true
       this.find({
-        id: this.id,
+        id: this.$route.params.id,
         params: {
           with_archives: true,
           with_origin: true,
@@ -295,54 +400,145 @@ export default {
     onDelete (reason) {
       this.isDeleting = true
       this.delete({
-        id: this.id,
+        id: this.$route.params.id,
         data: {
           reason: reason
         }
       }).then(response => {
-        this.isDeleting = false
         this.$notification.success('cancel success')
         this.deliveryOrderRequest()
       }).catch(error => {
-        this.isDeleting = false
         this.$notification.error(error.message)
         this.form.errors.record(error.errors)
+      }).finally(() => {
+        this.isDeleting = false
       })
+    },
+    onCloseRequest (reason) {
+      this.isClosing = true
+      this.closeForm({ id: this.$route.params.id, reason: reason })
+        .then(response => {
+          this.$notification.success('close success')
+          this.deliveryOrderRequest()
+        }).catch(error => {
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        }).finally(() => {
+          this.isClosing = false
+        })
+    },
+    async onSendEmail (form) {
+      this.isSendingEmail = true
+
+      try {
+        const params = {
+          ...form,
+          subject: 'Delivery Order Receipt',
+          attachments: [
+            {
+              filename: 'Delivery Order Receipt ' + this.deliveryOrder.form.number + '.pdf',
+              type: 'pdf',
+              view: 'sales.delivery-order.delivery-order-receipt',
+              view_data: { deliveryOrder: this.deliveryOrder }
+            }
+          ]
+        }
+        await this.$store.dispatch('emailService/send', { ...params })
+
+        this.$notification.success('send receipt success')
+      } catch (error) {
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
+      } finally {
+        this.isSendingEmail = false
+      }
     },
     onApprove () {
-      this.approve({
-        id: this.id
-      }).then(response => {
-        this.$notification.success('approve success')
-        this.deliveryOrderRequest()
-      })
+      this.isProccessApproval = true
+
+      this.approve({ id: this.$route.params.id })
+        .then(response => {
+          this.$notification.success('approve success')
+          this.deliveryOrderRequest()
+        })
+        .catch(error => {
+          this.$notification.error(error?.message)
+        })
+        .finally(() => {
+          this.isProccessApproval = false
+        })
     },
     onReject (reason) {
+      this.isProccessApproval = true
+
       this.reject({
-        id: this.id,
+        id: this.$route.params.id,
         reason: reason
       }).then(response => {
         this.$notification.success('reject success')
         this.deliveryOrderRequest()
+      }).catch(error => {
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessApproval = false
       })
     },
     onCancellationApprove () {
+      this.isProccessCancellationApproval = true
+
       this.cancellationApprove({
-        id: this.id
+        id: this.$route.params.id
       }).then(response => {
         this.$notification.success('cancellation approved')
         this.$router.push('/sales/delivery-order')
+      }).catch(error => {
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessCancellationApproval = false
       })
     },
     onCancellationReject (reason) {
+      this.isProccessCancellationApproval = true
+
       this.cancellationReject({
-        id: this.id,
+        id: this.$route.params.id,
         reason: reason
       }).then(response => {
         this.$notification.success('cancellation rejected')
         this.deliveryOrderRequest()
       }).catch(error => {
-        console.log(error.message)
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessCancellationApproval = false
+      })
+    },
+    onCloseApprove () {
+      this.isProccessCloseApproval = true
+
+      this.closeApprove({
+        id: this.$route.params.id
+      }).then(response => {
+        this.$notification.success('close approved')
+        this.$router.push('/sales/delivery-order')
+      }).catch(error => {
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessCloseApproval = false
+      })
+    },
+    onCloseReject (reason) {
+      this.isProccessCloseApproval = true
+
+      this.closeReject({
+        id: this.$route.params.id,
+        reason: reason
+      }).then(response => {
+        this.$notification.success('close rejected')
+        this.deliveryOrderRequest()
+      }).catch(error => {
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessCloseApproval = false
       })
     }
   }

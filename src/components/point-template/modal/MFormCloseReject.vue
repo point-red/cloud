@@ -1,8 +1,8 @@
 <template>
   <div>
     <sweet-modal
-      :ref="'form-request-delete'"
-      :title="$t('form request delete') | uppercase"
+      :ref="'form-close-reject'"
+      :title="$t('form close reject') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >
@@ -20,9 +20,9 @@
       <button
         type="button"
         class="btn btn-block btn-sm btn-danger mr-5"
-        @click="onDelete()"
+        @click="reject()"
       >
-        {{ $t('delete') | uppercase }}
+        {{ $t('reject') | uppercase }}
       </button>
     </sweet-modal>
   </div>
@@ -44,25 +44,28 @@ export default {
   },
   methods: {
     open () {
-      this.$refs['form-request-delete'].open()
+      this.$refs['form-close-reject'].open()
       this.$nextTick(() => {
         this.$refs.reason.focus()
       })
     },
     close () {
-      this.$refs['form-request-delete'].close()
+      this.$refs['form-close-reject'].close()
       this.$emit('close', true)
     },
-    onDelete () {
-      if (this.form.reason != '') {
-        this.$emit('delete', this.form.reason)
-        this.close()
-      } else {
+    reject () {
+      if (!this.form.reason) {
+        this.isSaving = false
+        this.$notification.error('Reason should not empty')
         this.form.errors.record({
-          reason: ['reason must be filled']
+          reason: ['Reason should not empty']
         })
-        this.$notification.error('reason must be filled')
+
+        return false
       }
+
+      this.$emit('reject', this.form.reason)
+      this.close()
     },
     onClose () {
       this.form.reason = ''
