@@ -263,7 +263,7 @@
               slot="body"
               class="col-lg-9 col-form-label"
             >
-              <pre>{{ assessment.comment }}</pre>
+              <pre>{{ form.template.comment }}</pre>
             </div>
           </p-form-row>
         </p-block-inner>

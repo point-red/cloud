@@ -151,7 +151,8 @@
                     v-show="
                       (!indicator.selected ||
                         indicator.selected.notes === '' ||
-                        indicator.selected.notes === undefined) &&
+                        indicator.selected.notes === undefined ||
+                        indicator.selected.notes === null) &&
                         isUser(employee.user_id)
                     "
                     href="javascript:void(0)"
@@ -193,7 +194,8 @@
                     v-show="
                       (!indicator.selected ||
                         indicator.selected.attachment === '' ||
-                        indicator.selected.attachment === undefined) &&
+                        indicator.selected.attachment === undefined ||
+                        indicator.selected.attachment === null) &&
                         isUser(employee.user_id)
                     "
                     :for="!isSaving ? 'file-' + indicator.id : ''"
@@ -325,7 +327,8 @@
                     v-show="
                       !indicator.selected ||
                         indicator.selected.comment === '' ||
-                        indicator.selected.comment === undefined
+                        indicator.selected.comment === undefined ||
+                        indicator.selected.comment === null
                     "
                     href="javascript:void(0)"
                     class="btn btn-sm btn-primary"
@@ -710,8 +713,6 @@ export default {
       // add selected score to template indicator
       var indicator =
         this.form.template.groups[groupIndex].indicators[indicatorIndex]
-      var group = this.form.template.groups[groupIndex]
-      var template = this.form.template
       var scorePercentage = (score.score / indicator.target) * indicator.weight
       delete score.notes
       // update data
@@ -741,26 +742,50 @@ export default {
         'score_percentage',
         scorePercentage
       )
-      this.$set(
-        this.form.template.groups[groupIndex],
-        'score',
-        parseFloat(score.score) + (parseFloat(group.score) || 0)
-      )
-      this.$set(
-        this.form.template.groups[groupIndex],
-        'score_percentage',
-        parseFloat(scorePercentage) + (parseFloat(group.score_percentage) || 0)
-      )
+      var scoreTemplate = 0
+      var scorePercentageTemplate = 0
+      for (var groupIndex2 in this.form.template.groups) {
+        var group2 = this.form.template.groups[groupIndex2]
+        var scoreGroup = 0
+        var scorePercentageGroup = 0
+        for (var indicatorIndex2 in group2.indicators) {
+          if (
+            this.form.template.groups[groupIndex2].indicators[indicatorIndex2]
+              .selected.score !== undefined
+          ) {
+            var score2 =
+              this.form.template.groups[groupIndex2].indicators[indicatorIndex2]
+                .selected.score
+            var percentage =
+              this.form.template.groups[groupIndex2].indicators[indicatorIndex2]
+                .selected.score_percentage
+            scoreGroup += parseFloat(score2)
+            scorePercentageGroup += parseFloat(percentage)
+            scoreTemplate += parseFloat(score2)
+            scorePercentageTemplate += parseFloat(percentage)
+          }
+        }
+        this.$set(
+          this.form.template.groups[groupIndex2],
+          'score',
+          scoreGroup
+        )
+        this.$set(
+          this.form.template.groups[groupIndex2],
+          'score_percentage',
+          scorePercentageGroup
+        )
+      }
+
       this.$set(
         this.form.template,
         'score',
-        parseFloat(score.score) + (parseFloat(template.score) || 0)
+        scoreTemplate
       )
       this.$set(
         this.form.template,
         'score_percentage',
-        parseFloat(scorePercentage) +
-          (parseFloat(template.score_percentage) || 0)
+        scorePercentageTemplate
       )
       this.onSave()
       console.log(score)
@@ -775,29 +800,65 @@ export default {
         .then(
           (response) => {
             if (indicatorId !== null && files !== null) {
-              const formData = new FormData()
-              formData.append('file', files)
-              formData.append('feature', 'assessment')
-              formData.append('feature_id', indicatorId)
-              formData.append('notes', '')
-              formData.append('is_user_protected', true)
-              formData.append('expiration_day', 0)
-              this.replaceAttachment(formData).then((response) => {})
-              this.isSaving = false
-              console.log(this.form)
+              this.showByAttachment({
+                feature: 'assessment',
+                feature_id: indicatorId
+              })
+                .then(
+                  (response) => {
+                    const formData = new FormData()
+                    formData.append('file', files)
+                    formData.append('feature', 'assessment')
+                    formData.append('feature_id', indicatorId)
+                    formData.append('notes', '')
+                    formData.append('is_user_protected', true)
+                    formData.append('expiration_day', 0)
+                    formData.append('key', this.cloudStorage.key)
+                    this.replaceAttachment(formData).then((response) => {})
+                    this.findData()
+                    this.isSaving = false
+                    console.log(this.form)
+                  },
+                  (error) => {
+                    this.findData()
+                    console.log(JSON.stringify(error))
+                  }
+                )
+                .catch((error) => {
+                  this.findData()
+                  console.log(JSON.stringify(error))
+                })
             } else {
+              this.findData()
               this.isSaving = false
             }
           },
           (error) => {
+            this.findData()
             this.isSaving = false
             this.form.errors.record(error.errors)
           }
         )
         .catch((error) => {
+          this.findData()
           this.isSaving = false
           console.log(JSON.stringify(error))
         })
+    },
+    findData () {
+      this.findEmployeeAssessment({
+        employeeId: this.id,
+        kpiId: this.kpiId
+      }).then(
+        (response) => {
+          this.form.date = this.assessment.date
+          this.form.template = this.assessment
+          this.assignSelected()
+        },
+        (error) => {
+          console.log(JSON.stringify(error))
+        }
+      )
     },
     onSubmit () {
       // if (!this.form.date.start || !this.form.date.end) {

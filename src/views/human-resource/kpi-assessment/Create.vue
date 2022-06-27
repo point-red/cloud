@@ -153,7 +153,8 @@
                     v-show="
                       (!indicator.selected ||
                         indicator.selected.notes === '' ||
-                        indicator.selected.notes === undefined) &&
+                        indicator.selected.notes === undefined ||
+                        indicator.selected.notes === null) &&
                         isUser(employee.user_id)
                     "
                     href="javascript:void(0)"
@@ -195,7 +196,8 @@
                     v-show="
                       (!indicator.selected ||
                         indicator.selected.attachment === '' ||
-                        indicator.selected.attachment === undefined) &&
+                        indicator.selected.attachment === undefined ||
+                        indicator.selected.attachment === null) &&
                         isUser(employee.user_id)
                     "
                     :for="!isSaving ? 'file-' + indicator.id : ''"
@@ -328,7 +330,8 @@
                     v-show="
                       !indicator.selected ||
                         indicator.selected.comment === '' ||
-                        indicator.selected.comment === undefined
+                        indicator.selected.comment === undefined ||
+                        indicator.selected.comment === null
                     "
                     href="javascript:void(0)"
                     class="btn btn-sm btn-primary"
@@ -587,6 +590,24 @@ export default {
         .then((response) => {
           this.form.template = response.data
           this.getAutomatedScore()
+          this.kpiId = null
+          if (
+            this.form.date.end !== null &&
+            !this.isUser(this.employee.user_id)
+          ) {
+            this.getByPeriodeEmployeeAssessment({
+              employeeId: this.id,
+              date: this.form.date.end
+            })
+              .then((response) => {
+                this.assignSelected(this.assessment)
+                this.isLoading = false
+              })
+              .catch((error) => {
+                this.isLoading = false
+                console.log(error)
+              })
+          }
         })
         .catch((error) => {
           this.isLoading = false
@@ -601,6 +622,7 @@ export default {
     },
     changeCommentTemplate () {
       this.$set(this.form.template, 'comment', this.form.template.comment)
+      this.$set(this.form, 'comment', this.form.template.comment)
       this.onSave()
       console.log(this.form)
     },
@@ -616,10 +638,19 @@ export default {
               date: time.end
             })
               .then((response) => {
-                this.form.template = this.assessment
-                this.form.template.score = 0
-                this.form.template.score_percentage = 0
-                this.assignSelected()
+                this.form.template.name =
+                  this.form.template.name == null ||
+                  this.form.template.name == undefined
+                    ? this.assessment.name
+                    : this.form.template.name
+                if (this.form.template.groups.length <= 0) {
+                  this.form.template = this.assessment
+                  this.form.template.score = 0
+                  this.form.template.score_percentage = 0
+                  this.assignSelected()
+                } else {
+                  this.assignSelected(this.assessment)
+                }
                 this.isLoading = false
               })
               .catch((error) => {
@@ -636,10 +667,19 @@ export default {
             date: time.end
           })
             .then((response) => {
-              this.form.template = this.assessment
-              this.form.template.score = 0
-              this.form.template.score_percentage = 0
-              this.assignSelected()
+              this.form.template.name =
+                this.form.template.name == null ||
+                this.form.template.name == undefined
+                  ? this.assessment.name
+                  : this.form.template.name
+              if (this.form.template.groups.length <= 0) {
+                this.form.template = this.assessment
+                this.form.template.score = 0
+                this.form.template.score_percentage = 0
+                this.assignSelected()
+              } else {
+                this.assignSelected(this.assessment)
+              }
               this.isLoading = false
             })
             .catch((error) => {
@@ -648,6 +688,7 @@ export default {
             })
         }
       }
+      this.kpiId = null
     },
     showAttachment (indicator) {
       this.showByAttachment({
@@ -780,8 +821,6 @@ export default {
       // add selected score to template indicator
       var indicator =
         this.form.template.groups[groupIndex].indicators[indicatorIndex]
-      var group = this.form.template.groups[groupIndex]
-      var template = this.form.template
       var scorePercentage = (score.score / indicator.target) * indicator.weight
       delete score.notes
       // update data
@@ -811,26 +850,50 @@ export default {
         'score_percentage',
         scorePercentage
       )
-      this.$set(
-        this.form.template.groups[groupIndex],
-        'score',
-        parseFloat(score.score) + (parseFloat(group.score) || 0)
-      )
-      this.$set(
-        this.form.template.groups[groupIndex],
-        'score_percentage',
-        parseFloat(scorePercentage) + (parseFloat(group.score_percentage) || 0)
-      )
+      var scoreTemplate = 0
+      var scorePercentageTemplate = 0
+      for (var groupIndex2 in this.form.template.groups) {
+        var group2 = this.form.template.groups[groupIndex2]
+        var scoreGroup = 0
+        var scorePercentageGroup = 0
+        for (var indicatorIndex2 in group2.indicators) {
+          if (
+            this.form.template.groups[groupIndex2].indicators[indicatorIndex2]
+              .selected.score !== undefined
+          ) {
+            var score2 =
+              this.form.template.groups[groupIndex2].indicators[indicatorIndex2]
+                .selected.score
+            var percentage =
+              this.form.template.groups[groupIndex2].indicators[indicatorIndex2]
+                .selected.score_percentage
+            scoreGroup += parseFloat(score2)
+            scorePercentageGroup += parseFloat(percentage)
+            scoreTemplate += parseFloat(score2)
+            scorePercentageTemplate += parseFloat(percentage)
+          }
+        }
+        this.$set(
+          this.form.template.groups[groupIndex2],
+          'score',
+          scoreGroup
+        )
+        this.$set(
+          this.form.template.groups[groupIndex2],
+          'score_percentage',
+          scorePercentageGroup
+        )
+      }
+
       this.$set(
         this.form.template,
         'score',
-        parseFloat(score.score) + (parseFloat(template.score) || 0)
+        scoreTemplate
       )
       this.$set(
         this.form.template,
         'score_percentage',
-        parseFloat(scorePercentage) +
-          (parseFloat(template.score_percentage) || 0)
+        scorePercentageTemplate
       )
       this.onSave()
       console.log(score)
@@ -861,26 +924,47 @@ export default {
           .then(
             (response) => {
               if (indicatorId !== null && files !== null) {
-                const formData = new FormData()
-                formData.append('file', files)
-                formData.append('feature', 'assessment')
-                formData.append('feature_id', indicatorId)
-                formData.append('notes', '')
-                formData.append('is_user_protected', true)
-                formData.append('expiration_day', 0)
-                this.replaceAttachment(formData).then((response) => {})
-                this.isSaving = false
-                console.log(this.form)
+                this.showByAttachment({
+                  feature: 'assessment',
+                  feature_id: indicatorId
+                })
+                  .then(
+                    (response) => {
+                      const formData = new FormData()
+                      formData.append('file', files)
+                      formData.append('feature', 'assessment')
+                      formData.append('feature_id', indicatorId)
+                      formData.append('notes', '')
+                      formData.append('is_user_protected', true)
+                      formData.append('expiration_day', 0)
+                      formData.append('key', this.cloudStorage.key)
+                      this.replaceAttachment(formData).then((response) => {})
+                      this.findData()
+                      this.isSaving = false
+                      console.log(this.form)
+                    },
+                    (error) => {
+                      this.findData()
+                      console.log(JSON.stringify(error))
+                    }
+                  )
+                  .catch((error) => {
+                    this.findData()
+                    console.log(JSON.stringify(error))
+                  })
               } else {
+                this.findData()
                 this.isSaving = false
               }
             },
             (error) => {
+              this.findData()
               this.isSaving = false
               this.form.errors.record(error.errors)
             }
           )
           .catch((error) => {
+            this.findData()
             this.isSaving = false
             console.log(JSON.stringify(error))
           })
@@ -935,6 +1019,9 @@ export default {
       //   this.$notification.error("Please select a valid date range");
       //   return;
       // }
+      if (this.kpiId == null) {
+        this.onSave()
+      }
       this.$notification.success('Create success')
       this.isSubmit = true
       this.findKpiResult(this.form.template.score_percentage)
@@ -956,70 +1043,80 @@ export default {
         })
     },
 
-    assignSelected () {
+    assignSelected (dataAssessment = null) {
       if (!this.isUser(this.employee.user_id) && this.kpiId === null) {
         this.$set(this.dataAttachmentId, 'groups', this.form.template.groups)
       }
+      if (dataAssessment !== null) {
+        this.$set(this.dataAttachmentId, 'groups', dataAssessment.groups)
+      }
       for (var groupIndex in this.form.template.groups) {
         var group = this.form.template.groups[groupIndex]
-
+        if (
+          !this.isUser(this.employee.user_id) &&
+          this.kpiId === null &&
+          dataAssessment === null
+        ) {
+          this.$set(this.form.template.groups[groupIndex], 'score', 0)
+          this.$set(
+            this.form.template.groups[groupIndex],
+            'score_percentage',
+            0
+          )
+        }
         for (var indicatorIndex in group.indicators) {
           var indicator =
             this.form.template.groups[groupIndex].indicators[indicatorIndex]
-
           if (!this.isUser(this.employee.user_id) && this.kpiId === null) {
-            if (!indicator.automated_code && indicator.score !== undefined) {
-              this.$set(
-                this.form.template.groups[groupIndex].indicators[
-                  indicatorIndex
-                ],
-                'selected',
-                {
-                  attachment: indicator.attachment
-                }
-              )
-              this.$set(
+            if (dataAssessment !== null) {
+              indicator =
+                dataAssessment.groups.length > 0
+                  ? dataAssessment.groups[groupIndex].indicators[indicatorIndex]
+                  : null
+              if (
                 this.form.template.groups[groupIndex].indicators[indicatorIndex]
-                  .selected,
-                'notes',
-                indicator.notes
-              )
-            }
-          } else {
-            if (!indicator.automated_code && indicator.score !== undefined) {
-              var score = indicator.scores.find(
-                (o) =>
-                  o.description === indicator.score_description &&
-                  o.score === indicator.score &&
-                  parseInt(o.kpi_indicator_id) === indicator.id
-              )
-              if (score != undefined) {
-                var scorePercentage =
-                  (score.score / indicator.target) * indicator.weight
-                delete score.notes
-
+                  .selected == undefined
+              ) {
                 this.$set(
                   this.form.template.groups[groupIndex].indicators[
                     indicatorIndex
                   ],
                   'selected',
-                  score
+                  {
+                    attachment:
+                      this.form.template.name == dataAssessment.name &&
+                      indicator !== null
+                        ? indicator.attachment
+                        : ''
+                  }
                 )
-                this.$set(
-                  this.form.template.groups[groupIndex].indicators[
-                    indicatorIndex
-                  ].selected,
-                  'score_percentage',
-                  scorePercentage
-                )
+              } else {
                 this.$set(
                   this.form.template.groups[groupIndex].indicators[
                     indicatorIndex
                   ].selected,
                   'attachment',
-                  indicator.attachment
+                  this.form.template.name == dataAssessment.name &&
+                    indicator !== null
+                    ? indicator.attachment
+                    : ''
                 )
-              } else {
+              }
+
+              this.$set(
+                this.form.template.groups[groupIndex].indicators[indicatorIndex]
+                  .selected,
+                'notes',
+                this.form.template.name == dataAssessment.name &&
+                  indicator !== null
+                  ? indicator.notes
+                  : ''
+              )
+            } else {
+              if (
+                this.form.template.groups[groupIndex].indicators[indicatorIndex]
+                  .selected == undefined
+              ) {
                 this.$set(
                   this.form.template.groups[groupIndex].indicators[
                     indicatorIndex
@@ -1029,19 +1126,111 @@ export default {
                     attachment: indicator.attachment
                   }
                 )
+              } else {
+                this.$set(
+                  this.form.template.groups[groupIndex].indicators[
+                    indicatorIndex
+                  ].selected,
+                  'attachment',
+                  indicator.attachment
+                )
               }
+
               this.$set(
                 this.form.template.groups[groupIndex].indicators[indicatorIndex]
                   .selected,
                 'notes',
                 indicator.notes
               )
-              this.$set(
-                this.form.template.groups[groupIndex].indicators[indicatorIndex]
-                  .selected,
-                'comment',
-                indicator.comment
-              )
+            }
+          } else {
+            if (!indicator.automated_code && indicator.score !== undefined) {
+              if (dataAssessment !== null) {
+                indicator =
+                  dataAssessment.groups.length > 0
+                    ? dataAssessment.groups[groupIndex].indicators[
+                      indicatorIndex
+                    ]
+                    : null
+                this.$set(
+                  this.form.template.groups[groupIndex].indicators[
+                    indicatorIndex
+                  ].selected,
+                  'attachment',
+                  this.form.template.name == dataAssessment.name &&
+                    indicator !== null
+                    ? indicator.attachment
+                    : ''
+                )
+                this.$set(
+                  this.form.template.groups[groupIndex].indicators[
+                    indicatorIndex
+                  ].selected,
+                  'notes',
+                  this.form.template.name == dataAssessment.name &&
+                    indicator !== null
+                    ? indicator.notes
+                    : ''
+                )
+              } else {
+                var score = indicator.scores.find(
+                  (o) =>
+                    o.description === indicator.score_description &&
+                    o.score === indicator.score &&
+                    parseInt(o.kpi_indicator_id) === indicator.id
+                )
+                if (score != undefined) {
+                  var scorePercentage =
+                    (score.score / indicator.target) * indicator.weight
+                  delete score.notes
+
+                  this.$set(
+                    this.form.template.groups[groupIndex].indicators[
+                      indicatorIndex
+                    ],
+                    'selected',
+                    score
+                  )
+                  this.$set(
+                    this.form.template.groups[groupIndex].indicators[
+                      indicatorIndex
+                    ].selected,
+                    'score_percentage',
+                    scorePercentage
+                  )
+                  this.$set(
+                    this.form.template.groups[groupIndex].indicators[
+                      indicatorIndex
+                    ].selected,
+                    'attachment',
+                    indicator.attachment
+                  )
+                } else {
+                  this.$set(
+                    this.form.template.groups[groupIndex].indicators[
+                      indicatorIndex
+                    ],
+                    'selected',
+                    {
+                      attachment: indicator.attachment
+                    }
+                  )
+                }
+                this.$set(
+                  this.form.template.groups[groupIndex].indicators[
+                    indicatorIndex
+                  ].selected,
+                  'notes',
+                  indicator.notes
+                )
+                this.$set(
+                  this.form.template.groups[groupIndex].indicators[
+                    indicatorIndex
+                  ].selected,
+                  'comment',
+                  indicator.comment
+                )
+              }
             }
           }
         }
