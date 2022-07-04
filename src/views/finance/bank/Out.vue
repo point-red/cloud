@@ -304,12 +304,6 @@ export default {
             'form.notes': this.searchText,
             'account.name': this.searchText
           },
-          filter_date_min: {
-            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
-          },
-          filter_date_max: {
-            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
-          },
           limit: this.limit,
           includes: 'form;paymentable;details.account;details.allocation',
           page: this.currentPage
