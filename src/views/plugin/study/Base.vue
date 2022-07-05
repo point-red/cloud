@@ -5,7 +5,7 @@
         v-if="$permission.has('read study sheets')"
         :name="$t('study sheet') | titlecase"
         :link="$router.resolve({name: 'PluginStudySheetIndex'}).href"
-        icon="fa fa-book"
+        icon="fa fa-file-text"
       />
       <p-box
         v-if="$permission.has('read study subjects')"
