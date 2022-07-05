@@ -24,6 +24,13 @@
         link="/plugin/play-book"
         icon="fa fa-folder"
       />
+
+      <p-box
+        v-if="$plugin.has('STUDY') && $permission.has('menu study')"
+        :name="$t('study report')"
+        :link="$router.resolve({name: 'PluginStudy'}).href"
+        icon="fa fa-book"
+      />
     </div>
   </div>
 </template>

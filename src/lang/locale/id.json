@@ -526,6 +526,15 @@
 	"create fixed asset helper - group": "Grup berguna untuk mempermudah pengelompokan aset tetap dalam laporan maupun saat pencarian data.",
 	"created by": "dibuat oleh",
 
+	"study report": "laporan belajar",
+	"study subject": "mata pelajaran",
+	"study sheet": "lembar belajar",
+	"add study subject": "tambah mata pelajaran",
+	"edit study subject": "ubah mata pelajaran",
+	"delete study subject": "hapus mata pelajaran",
+	"ask to delete": "apa kamu yakin ingin menghapus {name} ?",
+	"search": "cari",
+	
 	"asset": "aset",
 	"purchase date": "tanggal pembelian",
 	"acquisition cost": "harga perolehan",

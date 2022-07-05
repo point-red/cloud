@@ -803,6 +803,17 @@
                     {{ 'play book' | uppercase }}
                   </router-link>
                 </li>
+                <li
+                  v-if="$plugin.has('STUDY') && $permission.has('menu study')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    :to="{name: 'PluginStudy'}"
+                    active-class="active"
+                  >
+                    {{ $t('study report') | uppercase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li
