@@ -44,6 +44,8 @@
               </div>
             </p-form-row>
 
+            <google-auth />
+
             <p-form-row
               :label="$t('study subject')"
               :errors="pointForm.errors.get('subject_id')"
@@ -293,11 +295,13 @@
 <script>
 import axios from '@/axios'
 import Form from '@/utils/Form'
+import GoogleAuth from '../GoogleAuth.vue'
 import SelectSubject from '../SelectSubject.vue'
 export default {
   name: 'PluginStudySheetCreate',
   components: {
-    SelectSubject
+    SelectSubject,
+    GoogleAuth
   },
   beforeRouteLeave (to, from, next) {
   // If the form is dirty and the user did not confirm leave,
