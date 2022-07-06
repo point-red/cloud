@@ -5,15 +5,15 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <a
+          <router-link
             v-if="$permission.has('create study sheets')"
-            href="javascript:void(0)"
             class="input-group-prepend"
+            :to="{name: 'PluginStudySheetCreate'}"
           >
             <span class="input-group-text">
               <i class="fa fa-plus" />
             </span>
-          </a>
+          </router-link>
           <p-form-input
             id="search-text"
             name="search-text"
@@ -27,13 +27,13 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">
+              <th>
                 #
               </th>
               <th>
                 {{ $t('date') }}
               </th>
-              <th class="text-center">
+              <th>
                 {{ $t('study subject') }}
               </th>
               <th>
@@ -50,43 +50,55 @@
               v-for="(sheet, index) in sheets"
               :key="sheet.id"
               slot="p-body"
+              class="d-relative"
             >
               <th>{{ pagination.from + index | numberFormat }}</th>
-              <!-- <td>{{ subject.name }}</td>
-              <td class="text-center">
-                <router-link
-                  class="border-bottom"
-                  :to="{name: 'PluginStudySheetIndex', query: {subject: subject.id}}"
-                >
-                  {{ subject.count_sheet | numberFormat }}
-                </router-link>
-              </td>
+              <td>{{ sheet.started_at | dateFormat('DD MMM YYYY') }}</td>
+              <td>{{ sheet.subject.name }}</td>
+              <td>{{ sheet.competency }}</td>
               <td class="text-center">
                 <div style="display: flex;">
-                  <button
+                  <router-link
+                    class="btn btn-light btn-action mr-2"
+                    :title="$t('open') | capitalize"
+                    :to="{name: 'PluginStudySheetShow', params: {id: sheet.id}}"
+                  >
+                    <i class="fa fa-search" />
+                  </router-link>
+                  <router-link
                     v-if="$permission.has('edit study sheets')"
                     class="btn btn-light btn-action mr-2"
                     :title="$t('edit') | capitalize"
-                    @click="$refs.modalEdit.open(subject)"
+                    :to="{name: 'PluginStudySheetEdit', params: {id: sheet.id}}"
                   >
                     <i class="fa fa-edit" />
-                  </button>
+                  </router-link>
                   <button
                     v-if="$permission.has('delete study sheets')"
                     class="btn btn-light btn-action"
                     :title="$t('delete') | capitalize"
-                    @click="$refs.modalDelete.open(subject)"
+                    @click="$refs.modalDelete.open(sheet)"
                   >
                     <i class="fa fa-trash" />
                   </button>
                 </div>
-              </td> -->
+              </td>
             </tr>
           </point-table>
         </p-block-inner>
+
+        <p-pagination
+          :current-page="pagination.current_page"
+          :last-page="pagination.last_page"
+          @updatePage="updatePage"
+        />
       </p-block>
-      {{ sheets }}
     </div>
+
+    <m-delete
+      ref="modalDelete"
+      @delete="sheetDeleted"
+    />
   </div>
 </template>
 
@@ -95,19 +107,19 @@ import debounce from 'lodash/debounce'
 import axios from '@/axios'
 import PointTable from 'point-table-vue'
 import PluginStudyTabMenu from '../TabMenu.vue'
+import MDelete from './Delete.vue'
 export default {
   name: 'PluginStudySheet',
   components: {
     PointTable,
-    PluginStudyTabMenu
+    PluginStudyTabMenu,
+    MDelete
   },
   data () {
     return {
       isLoading: true,
       searchText: this.$route.query.search,
       page: this.$route.query.page ?? 1,
-      limit: 10,
-      lastPage: 1,
       sheets: [],
       pagination: {}
     }
@@ -119,12 +131,20 @@ export default {
   methods: {
     getStudySheets () {
       const apiParams = {
-        sort_by: '-id'
+        sort_by: '-started_at',
+        page: this.$route.query.page,
+        filter_like: {
+          subject: this.searchText,
+          competency: this.searchText,
+          filter_equal: {
+            is_draft: 0
+          }
+        }
       }
-      axios.get('/plugin/study/sheet', apiParams)
+      axios.get('/plugin/study/sheet', { params: apiParams })
         .then(response => {
-          this.sheets = response.data
-          this.pagination = response.meta
+          this.sheets = response.data.data
+          this.pagination = response.data.meta
         })
         .finally(() => {
           this.isLoading = false
@@ -134,7 +154,26 @@ export default {
       this.$router.push({ query: { search: value, page: 1 } })
       this.searchText = value
       this.getStudySheets()
-    }, 300)
+    }, 300),
+    updatePage (value) {
+      this.$route.query.page = value
+      this.getStudySheets()
+    },
+    sheetDeleted (sheetId) {
+      this.sheets = this.sheets.filter(({ id }) => id !== sheetId)
+      this.getStudySheets()
+    }
   }
 }
 </script>
+
+<style scoped>
+:deep(.btn-action) {
+  padding: 0;
+  height: 28px;
+  width: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

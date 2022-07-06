@@ -8,7 +8,13 @@
         class="col-form-label"
         :class="{'col-lg-3' : isHorizontal}"
         :for="id"
-      >{{ label | uppercase }}</label>
+      >
+        {{ label | uppercase }}
+        <span
+          v-if="required && showAsteriskOnRequired"
+          class="text-danger"
+        >*</span>
+      </label>
     </slot>
     <slot name="body">
       <div
@@ -153,6 +159,10 @@ export default {
       default: false
     },
     required: {
+      type: Boolean,
+      default: false
+    },
+    showAsteriskOnRequired: {
       type: Boolean,
       default: false
     }

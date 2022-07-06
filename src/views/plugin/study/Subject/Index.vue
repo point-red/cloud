@@ -28,7 +28,7 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th width="50px">
+              <th>
                 #
               </th>
               <th>
@@ -142,7 +142,10 @@ export default {
   },
   methods: {
     getStudySubjects () {
-      axios.get('/plugin/study/subject', { sort_by: 'name' })
+      const apiParams = {
+        sort_by: 'name'
+      }
+      axios.get('/plugin/study/subject', { params: apiParams })
         .then(response => {
           this.subjects = response.data.data
         })

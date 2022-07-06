@@ -6,7 +6,7 @@
   >
     <!-- <slot /> -->
     <li
-      v-if="$permission.has('read study subjects')"
+      v-if="$permission.has('read study sheets')"
       class="nav-item"
     >
       <router-link
@@ -19,6 +19,18 @@
     </li>
     <li
       v-if="$permission.has('read study sheets')"
+      class="nav-item"
+    >
+      <router-link
+        :to="{name: 'PluginStudySheetDraft'}"
+        class="nav-link"
+        active-class="active"
+      >
+        <span>{{ $t('drafts') | uppercase }}</span>
+      </router-link>
+    </li>
+    <li
+      v-if="$permission.has('read study subjects')"
       class="nav-item"
     >
       <router-link
