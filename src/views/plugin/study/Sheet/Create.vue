@@ -80,6 +80,7 @@
                   name="photo"
                   accept="image/*"
                   :disabled="isSaving"
+                  @fileChanged="photoUploaded"
                 />
               </div>
             </p-form-row>
@@ -99,6 +100,7 @@
                   name="audio"
                   accept=".mp3, .m4a"
                   :disabled="isSaving"
+                  @fileChanged="audioUploaded"
                 />
               </div>
             </p-form-row>
@@ -118,6 +120,7 @@
                   name="video"
                   accept=".mp4, .mov"
                   :disabled="isSaving"
+                  @fileChanged="videoUploaded"
                 />
               </div>
             </p-form-row>
@@ -433,9 +436,15 @@ export default {
         e.returnValue = ''
       }
     },
-    photoUploaded () {},
-    audioUploaded () {},
-    videoUploaded () {}
+    photoUploaded (event) {
+      this.form.photo = event
+    },
+    audioUploaded (event) {
+      this.form.audio = event
+    },
+    videoUploaded (event) {
+      this.form.video = event
+    }
   }
 }
 </script>

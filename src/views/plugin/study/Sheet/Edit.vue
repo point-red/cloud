@@ -79,6 +79,7 @@
                     name="photo"
                     accept="image/*"
                     :disabled="isSaving"
+                    @fileChanged="photoUploaded"
                   />
                 </div>
               </p-form-row>
@@ -98,6 +99,7 @@
                     name="audio"
                     accept=".mp3, .m4a"
                     :disabled="isSaving"
+                    @fileChanged="audioUploaded"
                   />
                 </div>
               </p-form-row>
@@ -117,6 +119,7 @@
                     name="video"
                     accept=".mp4, .mov"
                     :disabled="isSaving"
+                    @fileChanged="videoUploaded"
                   />
                 </div>
               </p-form-row>
@@ -393,9 +396,21 @@ export default {
 
       return formData
     },
-    photoUploaded () {},
-    audioUploaded () {},
-    videoUploaded () {}
+    emitUpdateSheetName () {
+      const startedAt = this.sheet.started_at ? this.$moment(this.sheet.started_at).format('DD MMM YYYY') : ''
+      const subjectName = this.sheet.subject?.name
+      const sheetName = [subjectName, startedAt].filter(_ => _).join(' - ')
+      this.$emit('updateSheetName', sheetName)
+    },
+    photoUploaded (event) {
+      this.form.photo = event
+    },
+    audioUploaded (event) {
+      this.form.audio = event
+    },
+    videoUploaded (event) {
+      this.form.video = event
+    }
   }
 }
 </script>
