@@ -14,7 +14,7 @@
         class="nav-link"
         active-class="active"
       >
-        <span>{{ $t('study sheet') | uppercase }}</span>
+        <span>{{ $t('study sheets') | uppercase }}</span>
       </router-link>
     </li>
     <li

@@ -54,7 +54,7 @@
             >
               <th>{{ pagination.from + index | numberFormat }}</th>
               <td>{{ sheet.started_at | dateFormat('DD MMM YYYY') }}</td>
-              <td>{{ sheet.subject.name }}</td>
+              <td>{{ sheet.subject ? sheet.subject.name : '' }}</td>
               <td>{{ sheet.competency }}</td>
               <td class="text-center">
                 <div style="display: flex;">
@@ -135,10 +135,10 @@ export default {
         page: this.$route.query.page,
         filter_like: {
           subject: this.searchText,
-          competency: this.searchText,
-          filter_equal: {
-            is_draft: 0
-          }
+          competency: this.searchText
+        },
+        filter_equal: {
+          is_draft: 0
         }
       }
       axios.get('/plugin/study/sheet', { params: apiParams })
@@ -168,7 +168,7 @@ export default {
 </script>
 
 <style scoped>
-:deep(.btn-action) {
+>>> .btn-action {
   padding: 0;
   height: 28px;
   width: 28px;

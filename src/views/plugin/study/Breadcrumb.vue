@@ -18,13 +18,13 @@
 
     <template v-if="$route.name === 'PluginStudySubject'">
       <span class="breadcrumb-item active">
-        {{ $t('study subject') | uppercase }}
+        {{ $t('study subjects') | uppercase }}
       </span>
     </template>
 
     <template v-if="$route.name === 'PluginStudySheetIndex'">
       <span class="breadcrumb-item active">
-        {{ $t('study sheet') | uppercase }}
+        {{ $t('study sheets') | uppercase }}
       </span>
     </template>
     <template v-else-if="$route.name.includes('PluginStudySheet')">
@@ -32,7 +32,7 @@
         :to="{name: 'PluginStudySheetIndex'}"
         class="breadcrumb-item"
       >
-        {{ $t('study sheet') | uppercase }}
+        {{ $t('study sheets') | uppercase }}
       </router-link>
     </template>
 
@@ -57,6 +57,12 @@
       </router-link>
       <span class="breadcrumb-item active">
         {{ $t('edit') | uppercase }}
+      </span>
+    </template>
+
+    <template v-if="$route.name === 'PluginStudySheetDraft'">
+      <span class="breadcrumb-item active">
+        {{ $t('drafts') | uppercase }}
       </span>
     </template>
   </breadcrumb>

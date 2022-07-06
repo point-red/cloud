@@ -18,7 +18,7 @@ export default {
       component: () => import('./Sheet/Index.vue')
     },
     {
-      path: 'sheet/drafts',
+      path: 'sheet-drafts',
       name: 'PluginStudySheetDraft',
       component: () => import('./Sheet/Drafts.vue')
     },

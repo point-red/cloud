@@ -172,7 +172,7 @@ export default {
 </script>
 
 <style scoped>
-:deep(.btn-action) {
+>>> .btn-action {
   padding: 0;
   height: 28px;
   width: 28px;

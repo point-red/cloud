@@ -141,6 +141,22 @@
               @errors="pointForm.errors.set('teacher', null)"
             />
 
+            <div class="mb-2 d-flex font-size-lg text-primary">
+              <div class="mr-2">
+                <i class="fa fa-book" />
+              </div>
+              <div>
+                <a
+                  href="https://docs.google.com/spreadsheets/d/11TVngjUsDSP3wPCZkO2B6jKOGNvPSlu-7UdYHb_SzbU/edit?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style="text-decoration: underline;"
+                >
+                  {{ $t('access topics library here') | titlecase }}
+                </a>
+              </div>
+            </div>
+
             <p-form-row
               id="competency"
               v-model="form.competency"
@@ -240,6 +256,7 @@
                 type="button"
                 class="btn btn-sm btn-light mr-2"
                 :disabled="isSaving"
+                @click="cancel"
               >
                 {{ $t('cancel') | uppercase }}
               </button>
@@ -282,6 +299,16 @@ export default {
   components: {
     SelectSubject
   },
+  beforeRouteLeave (to, from, next) {
+  // If the form is dirty and the user did not confirm leave,
+  // prevent losing unsaved changes by canceling navigation
+    if (this.confirmStayInDirtyForm()) {
+      next(false)
+    } else {
+    // Navigate to next view
+      next()
+    }
+  },
   data () {
     return {
       isSaving: false,
@@ -302,6 +329,7 @@ export default {
         remarks: null,
         is_draft: false
       },
+      isSaved: false,
       pointForm: new Form({}),
       behaviorList: [
         { id: 'A', label: 'A - Excellent' },
@@ -310,8 +338,30 @@ export default {
       ]
     }
   },
+  computed: {
+    formIsDirty () {
+      if (this.isSaved) return false
+
+      return this.form.photo ||
+        this.form.audio ||
+        this.form.video ||
+        this.form.subject_id ||
+        this.form.institution ||
+        this.form.teacher ||
+        this.form.competency ||
+        this.form.learning_goals ||
+        this.form.activities ||
+        this.form.grade ||
+        this.form.behavior ||
+        this.form.remarks
+    }
+  },
   created () {
     this.pointForm = new Form(this.form)
+    window.addEventListener('beforeunload', this.beforeWindowUnload)
+  },
+  beforeDestroy () {
+    window.removeEventListener('beforeunload', this.beforeWindowUnload)
   },
   methods: {
     onSubmit () {
@@ -324,6 +374,7 @@ export default {
           const message = this.$t('data has been saved')
           const capitalizedMessage = this.$options.filters.capitalize(message)
           this.$notification.success(capitalizedMessage)
+          this.isSaved = true
           this.$router.replace({ name: 'PluginStudySheetShow', params: { id: response.data.id } })
         })
         .catch(error => {
@@ -358,6 +409,25 @@ export default {
       })
 
       return formData
+    },
+    cancel () {
+      this.pointForm.reset()
+      this.form = { ...this.point }
+      this.$router.replace({ name: 'PluginStudySheetIndex' })
+    },
+    confirmLeave () {
+      return window.confirm('Do you really want to leave? you have unsaved changes!')
+    },
+    confirmStayInDirtyForm () {
+      return this.formIsDirty && !this.confirmLeave()
+    },
+    beforeWindowUnload (e) {
+      if (this.confirmStayInDirtyForm()) {
+      // Cancel the event
+        e.preventDefault()
+        // Chrome requires returnValue to be set
+        e.returnValue = ''
+      }
     },
     photoUploaded () {},
     audioUploaded () {},
