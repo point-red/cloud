@@ -570,6 +570,7 @@
 	"draft": "draft",
 	"save to draft": "simpan sebagai draft",
 	"ask to delete": "are you sure you want to delete {name} ?",
+	"unlink": "unlink",
 	"data has been saved": "data has been saved",
 	"access topics library here": "access topics library here",
 	"checking google drive connection": "checking google drive connection",
