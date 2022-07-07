@@ -17,12 +17,12 @@
     <div class="row">
       <div class="col-12 col-md-5">
         <img
-          class="logo"
+          id="logo"
           src="https://i.imgur.com/QlENKNg.png"
         >
       </div>
       <div class="col-12 col-sm">
-        <div class="content">
+        <div id="content">
           <h1>
             {{ $t('hi') | capitalize }} {{ userName }} !
           </h1>
@@ -38,9 +38,12 @@
 
           <div class="menu-button">
             <div class="menu-button-1">
-              <a class="btn btn-danger w-100 btn-lg text-light">
+              <router-link
+                :to="{name: 'PluginStudySheetIndex'}"
+                class="btn btn-danger w-100 btn-lg text-white"
+              >
                 {{ $t('subject monitoring sheets') | titlecase }}
-              </a>
+              </router-link>
             </div>
             <div class="menu-button-1">
               <button class="btn btn-secondary w-100 btn-lg">
@@ -63,23 +66,10 @@ export default {
     }
   }
 }
-
-/*
-Permissions
-- menu study
-- read study sheets
-- create study sheets
-- edit study sheets
-- delete study sheets
-- read study subjects
-- create study subjects
-- edit study subjects
-- delete study subjects
-*/
 </script>
 
 <style scoped>
-.logo {
+#logo {
   display: block;
   width: auto;
   max-width: 360px;
@@ -89,13 +79,32 @@ Permissions
   object-fit: contain;
   padding: 1rem 2rem;
 }
+#content {
+  width: 100%;
+  max-width: 360px;
+  margin-top: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.menu-button {
+  margin-top: 4rem;
+}
+.menu-button-1 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
 @media only screen and (min-width: 640px)  {
-  .logo {
+  #logo {
     height: 280px;
   }
 }
+@media only screen and (min-width: 768px)  {
+  #content {
+    margin-left: 0;
+  }
+}
 @media only screen and (min-width: 1024px)  {
-  .logo {
+  #logo {
     height: 320px;
   }
 }
