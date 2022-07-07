@@ -146,10 +146,10 @@ export default {
           subject_id: this.$route.query.subject_id
         },
         filter_date_min: {
-          started_at: this.serverDateTime(this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00'))
+          started_at: this.$route.query.date_from ? this.serverDateTime(this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00')) : undefined
         },
         filter_date_max: {
-          started_at: this.serverDateTime(this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59'))
+          started_at: this.$route.query.date_to ? this.serverDateTime(this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59')) : undefined
         }
       }
       this.isLoading = true

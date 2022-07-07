@@ -425,7 +425,11 @@ export default {
           const capitalizedMessage = this.$options.filters.capitalize(message)
           this.$notification.success(capitalizedMessage)
           this.isSaved = true
-          this.$router.replace({ name: 'PluginStudySheetShow', params: { id: response.data.id } })
+          if (this.form.is_draft) {
+            this.$router.replace({ name: 'PluginStudySheetDraft' })
+          } else {
+            this.$router.replace({ name: 'PluginStudySheetShow', params: { id: response.data.id } })
+          }
         })
         .catch(error => {
           if (error.status === 422) {
