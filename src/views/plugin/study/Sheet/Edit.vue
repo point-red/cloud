@@ -110,6 +110,13 @@
                   slot="body"
                   class="col-lg-9"
                 >
+                  <iframe
+                    v-if="sheet.photo"
+                    :src="sheet.photo"
+                    allow="autoplay"
+                    width="100%"
+                    height="360px"
+                  />
                   <p-form-file
                     id="photo"
                     ref="photo"
@@ -130,6 +137,13 @@
                   slot="body"
                   class="col-lg-9"
                 >
+                  <iframe
+                    v-if="sheet.audio"
+                    :src="sheet.audio"
+                    allow="autoplay"
+                    width="100%"
+                    height="80px"
+                  />
                   <p-form-file
                     id="audio"
                     ref="audio"
@@ -150,6 +164,13 @@
                   slot="body"
                   class="col-lg-9"
                 >
+                  <iframe
+                    v-if="sheet.video"
+                    :src="sheet.video"
+                    allow="autoplay"
+                    width="100%"
+                    height="360px"
+                  />
                   <p-form-file
                     id="video"
                     ref="video"
@@ -346,6 +367,9 @@ export default {
         remarks: null,
         is_draft: false
       },
+      photo_file_id: null,
+      audio_file_id: null,
+      video_file_id: null,
       pointForm: new Form({}),
       behaviorList: [
         { id: 'A', label: 'A - Excellent' },
@@ -367,9 +391,9 @@ export default {
           this.form = {
             started_at: this.$moment(this.sheet.started_at).format('YYYY-MM-DD HH:mm:ss'),
             ended_at: this.$moment(this.sheet.ended_at).format('YYYY-MM-DD HH:mm:ss'),
-            photo_file_id: this.sheet.photo_file_id,
-            audio_file_id: this.sheet.audio_file_id,
-            video_file_id: this.sheet.video_file_id,
+            photo: null,
+            audio: null,
+            video: null,
             subject_id: this.sheet.subject_id,
             institution: this.sheet.institution,
             teacher: this.sheet.teacher,
@@ -381,6 +405,9 @@ export default {
             remarks: this.sheet.remarks,
             is_draft: false
           }
+          this.photo_file_id = this.sheet.photo_file_id
+          this.audio_file_id = this.sheet.audio_file_id
+          this.video_file_id = this.sheet.video_file_id
 
           this.emitUpdateSheetName()
         })
@@ -431,6 +458,16 @@ export default {
         }
       })
 
+      if (!this.form.photo && this.photo_file_id) {
+        formData.append('photo_file_id', this.photo_file_id)
+      }
+      if (!this.form.audio && this.audio_file_id) {
+        formData.append('audio_file_id', this.audio_file_id)
+      }
+      if (!this.form.video && this.video_file_id) {
+        formData.append('video_file_id', this.video_file_id)
+      }
+
       return formData
     },
     emitUpdateSheetName () {
@@ -456,3 +493,24 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.btn-duration {
+  padding: 0.5rem;
+  border: 0;
+  width: 3rem;
+  margin-right: 0.25rem;
+  line-height: 0.9rem;
+  cursor: pointer;
+}
+.btn-duration:active,
+.btn-duration:focus,
+.btn-duration:focus-visible {
+  outline: none;
+}
+.btn-duration:active,
+.btn-duration:hover,
+.btn-duration:focus {
+  filter: brightness(85%);
+}
+</style>
