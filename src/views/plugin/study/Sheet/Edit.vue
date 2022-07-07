@@ -34,7 +34,7 @@
               >
                 <div
                   slot="body"
-                  class="col-lg-9"
+                  class="col-lg-9 d-sm-flex"
                 >
                   <p-date-time-picker
                     id="ended_at"
@@ -42,6 +42,43 @@
                     :disabled="isSaving"
                     name="ended_at"
                   />
+                  <div class="pl-sm-3 mt-3 mt-sm-0">
+                    <button
+                      type="button"
+                      class="btn-duration"
+                      @click="setDuration(30)"
+                    >
+                      30<br>min
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-duration"
+                      @click="setDuration(45)"
+                    >
+                      45<br>min
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-duration"
+                      @click="setDuration(60)"
+                    >
+                      60<br>min
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-duration"
+                      @click="setDuration(90)"
+                    >
+                      90<br>min
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-duration"
+                      @click="setDuration(120)"
+                    >
+                      120<br>min
+                    </button>
+                  </div>
                 </div>
               </p-form-row>
 
@@ -97,7 +134,7 @@
                     id="audio"
                     ref="audio"
                     name="audio"
-                    accept=".mp3, .m4a"
+                    accept="audio/*"
                     :disabled="isSaving"
                     @fileChanged="audioUploaded"
                   />
@@ -117,13 +154,12 @@
                     id="video"
                     ref="video"
                     name="video"
-                    accept=".mp4, .mov"
+                    accept="video/*"
                     :disabled="isSaving"
                     @fileChanged="videoUploaded"
                   />
                 </div>
               </p-form-row>
-              <!-- @fileChanged="onFileChange" -->
 
               <p-form-row
                 id="institution"
@@ -248,6 +284,7 @@
                   {{ $t('cancel') | uppercase }}
                 </button>
                 <button
+                  v-if="sheet.is_draft"
                   type="button"
                   class="btn btn-sm btn-secondary mr-2"
                   :disabled="isSaving"
@@ -256,7 +293,7 @@
                   <i
                     v-show="isSaving"
                     class="fa fa-asterisk fa-spin"
-                  /> {{ $t('save to draft') | uppercase }}
+                  /> {{ $t('draft') | uppercase }}
                 </button>
                 <button
                   type="submit"
@@ -401,6 +438,11 @@ export default {
       const subjectName = this.sheet.subject?.name
       const sheetName = [subjectName, startedAt].filter(_ => _).join(' - ')
       this.$emit('updateSheetName', sheetName)
+    },
+    setDuration (minutes) {
+      const startedAt = this.$moment(this.form.started_at)
+      const endedAt = startedAt.add(minutes, 'minutes')
+      this.form.ended_at = endedAt.format('YYYY-MM-DD HH:mm:ss')
     },
     photoUploaded (event) {
       this.form.photo = event

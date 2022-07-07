@@ -30,14 +30,14 @@
         </button>
       </template>
 
-      <a
+      <button
         v-else
-        :href="authUrl"
         class="btn btn-sm btn-primary mr-2"
-        target="_blank"
+        type="button"
+        @click="openWindow"
       >
         {{ $t('authorize google drive') | titlecase }}
-      </a>
+      </button>
     </div>
   </p-form-row>
 </template>
@@ -51,11 +51,16 @@ export default {
       isLoading: true,
       isSaving: false,
       hasToken: false,
-      authUrl: ''
+      authUrl: '',
+      myInterval: null
     }
   },
   created () {
     this.getOauthToken()
+  },
+  beforeDestroy () {
+    // stop the auto refresh when leaving the page
+    clearInterval(this.myInterval)
   },
   methods: {
     getOauthToken () {
@@ -63,6 +68,8 @@ export default {
         .then(response => {
           if (response.data.authenticated) {
             this.hasToken = true
+            // token is exist, stop the auto refresh
+            clearInterval(this.myInterval)
           } else {
             this.authUrl = response.data.auth_url
           }
@@ -70,6 +77,13 @@ export default {
         .finally(() => {
           this.isLoading = false
         })
+    },
+    openWindow () {
+      window.open(this.authUrl, 'newwindow', 'width=400,height=600')
+      // check oauth token every 5 seconds
+      this.myInterval = setInterval(() => {
+        this.getOauthToken()
+      }, 5000)
     },
     unlinkGoogleDrive () {
       this.isSaving = true
@@ -84,6 +98,3 @@ export default {
   }
 }
 </script>
-
-<style lang="postcss" scoped>
-</style>

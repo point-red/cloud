@@ -33,7 +33,7 @@
             >
               <div
                 slot="body"
-                class="col-lg-9"
+                class="col-lg-9 d-sm-flex"
               >
                 <p-date-time-picker
                   id="ended_at"
@@ -41,6 +41,43 @@
                   :disabled="isSaving"
                   name="ended_at"
                 />
+                <div class="pl-sm-3 mt-3 mt-sm-0">
+                  <button
+                    type="button"
+                    class="btn-duration"
+                    @click="setDuration(30)"
+                  >
+                    30<br>min
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-duration"
+                    @click="setDuration(45)"
+                  >
+                    45<br>min
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-duration"
+                    @click="setDuration(60)"
+                  >
+                    60<br>min
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-duration"
+                    @click="setDuration(90)"
+                  >
+                    90<br>min
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-duration"
+                    @click="setDuration(120)"
+                  >
+                    120<br>min
+                  </button>
+                </div>
               </div>
             </p-form-row>
 
@@ -98,7 +135,7 @@
                   id="audio"
                   ref="audio"
                   name="audio"
-                  accept=".mp3, .m4a"
+                  accept="audio/*"
                   :disabled="isSaving"
                   @fileChanged="audioUploaded"
                 />
@@ -118,13 +155,12 @@
                   id="video"
                   ref="video"
                   name="video"
-                  accept=".mp4, .mov"
+                  accept="video/*"
                   :disabled="isSaving"
                   @fileChanged="videoUploaded"
                 />
               </div>
             </p-form-row>
-            <!-- @fileChanged="onFileChange" -->
 
             <p-form-row
               id="institution"
@@ -146,21 +182,28 @@
               @errors="pointForm.errors.set('teacher', null)"
             />
 
-            <div class="mb-2 d-flex font-size-lg text-primary">
-              <div class="mr-2">
-                <i class="fa fa-book" />
+            <p-form-row>
+              <div
+                slot="body"
+                class="col-lg-9"
+              >
+                <div class="mb-2 d-flex font-size-lg text-primary">
+                  <div class="mr-2">
+                    <i class="fa fa-book" />
+                  </div>
+                  <div>
+                    <a
+                      href="https://docs.google.com/spreadsheets/d/11TVngjUsDSP3wPCZkO2B6jKOGNvPSlu-7UdYHb_SzbU/edit?usp=sharing"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style="text-decoration: underline;"
+                    >
+                      {{ $t('access topics library here') | titlecase }}
+                    </a>
+                  </div>
+                </div>
               </div>
-              <div>
-                <a
-                  href="https://docs.google.com/spreadsheets/d/11TVngjUsDSP3wPCZkO2B6jKOGNvPSlu-7UdYHb_SzbU/edit?usp=sharing"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style="text-decoration: underline;"
-                >
-                  {{ $t('access topics library here') | titlecase }}
-                </a>
-              </div>
-            </div>
+            </p-form-row>
 
             <p-form-row
               id="competency"
@@ -274,7 +317,7 @@
                 <i
                   v-show="isSaving"
                   class="fa fa-asterisk fa-spin"
-                /> {{ $t('save to draft') | uppercase }}
+                /> {{ $t('draft') | uppercase }}
               </button>
               <button
                 type="submit"
@@ -436,6 +479,11 @@ export default {
         e.returnValue = ''
       }
     },
+    setDuration (minutes) {
+      const startedAt = this.$moment(this.form.started_at)
+      const endedAt = startedAt.add(minutes, 'minutes')
+      this.form.ended_at = endedAt.format('YYYY-MM-DD HH:mm:ss')
+    },
     photoUploaded (event) {
       this.form.photo = event
     },
@@ -448,3 +496,24 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.btn-duration {
+  padding: 0.5rem;
+  border: 0;
+  width: 3rem;
+  margin-right: 0.25rem;
+  line-height: 0.9rem;
+  cursor: pointer;
+}
+.btn-duration:active,
+.btn-duration:focus,
+.btn-duration:focus-visible {
+  outline: none;
+}
+.btn-duration:active,
+.btn-duration:hover,
+.btn-duration:focus {
+  filter: brightness(85%);
+}
+</style>

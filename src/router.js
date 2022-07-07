@@ -133,6 +133,10 @@ export default new Router({
       component: ApprovalAll
     },
     {
+      path: '/oauth/google/callback',
+      component: () => import('@/views/auth/OauthGoogleCallback.vue')
+    },
+    {
       path: '/404',
       component: E404
     },
