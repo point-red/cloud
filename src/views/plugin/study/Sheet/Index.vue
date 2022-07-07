@@ -23,7 +23,11 @@
             @input="filterSearch"
           />
         </div>
+
+        <advance-filter @change="getStudySheets" />
+
         <hr>
+
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
@@ -108,12 +112,14 @@ import axios from '@/axios'
 import PointTable from 'point-table-vue'
 import PluginStudyTabMenu from '../TabMenu.vue'
 import MDelete from './Delete.vue'
+import AdvanceFilter from './AdvanceFilter'
 export default {
   name: 'PluginStudySheet',
   components: {
     PointTable,
     PluginStudyTabMenu,
-    MDelete
+    MDelete,
+    AdvanceFilter
   },
   data () {
     return {
@@ -125,7 +131,6 @@ export default {
     }
   },
   created () {
-    this.isLoading = true
     this.getStudySheets()
   },
   methods: {
@@ -134,13 +139,20 @@ export default {
         sort_by: '-started_at',
         page: this.$route.query.page,
         filter_like: {
-          subject: this.searchText,
           competency: this.searchText
         },
         filter_equal: {
-          is_draft: 0
+          is_draft: 0,
+          subject_id: this.$route.query.subject_id
+        },
+        filter_date_min: {
+          started_at: this.serverDateTime(this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00'))
+        },
+        filter_date_max: {
+          started_at: this.serverDateTime(this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59'))
         }
       }
+      this.isLoading = true
       axios.get('/plugin/study/sheet', { params: apiParams })
         .then(response => {
           this.sheets = response.data.data
