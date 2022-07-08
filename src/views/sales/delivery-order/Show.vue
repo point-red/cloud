@@ -13,43 +13,45 @@
 
     <sales-menu />
 
-    <p-show-form-approval-status
-      form="sales delivery order"
-      :is-loading="isLoading"
-      :is-proccess-approval="isProccessApproval"
-      :approval-status="deliveryOrder.form.approval_status"
-      :approval-reason="deliveryOrder.form.approval_reason"
-      :approved-by="deliveryOrder.form.request_approval_to.full_name"
-      :cancellation-status="deliveryOrder.form.cancellation_status"
-      :close-status="deliveryOrder.form.close_status"
-      @onApprove="onApprove"
-      @onReject="onReject"
-    />
+    <div v-if="deliveryOrder.form.number">
+      <p-show-form-approval-status
+        form="sales delivery order"
+        :is-loading="isLoading"
+        :is-proccess-approval="isProccessApproval"
+        :approval-status="deliveryOrder.form.approval_status"
+        :approval-reason="deliveryOrder.form.approval_reason"
+        :approved-by="deliveryOrder.form.request_approval_to.full_name"
+        :cancellation-status="deliveryOrder.form.cancellation_status"
+        :close-status="deliveryOrder.form.close_status"
+        @onApprove="onApprove"
+        @onReject="onReject"
+      />
 
-    <p-show-form-cancellation-status
-      form="sales delivery order"
-      :is-loading="isLoading"
-      :is-proccess-approval="isProccessCancellationApproval"
-      :approved-by="deliveryOrder.form.request_approval_to.full_name"
-      :cancellation-status="deliveryOrder.form.cancellation_status"
-      :close-status="deliveryOrder.form.close_status"
-      :cancellation-approval-reason="deliveryOrder.form.cancellation_approval_reason"
-      :request-cancellation-reason="deliveryOrder.form.request_cancellation_reason"
-      @onCancellationApprove="onCancellationApprove"
-      @onCancellationReject="onCancellationReject"
-    />
+      <p-show-form-cancellation-status
+        form="sales delivery order"
+        :is-loading="isLoading"
+        :is-proccess-approval="isProccessCancellationApproval"
+        :approved-by="deliveryOrder.form.request_approval_to.full_name"
+        :cancellation-status="deliveryOrder.form.cancellation_status"
+        :close-status="deliveryOrder.form.close_status"
+        :cancellation-approval-reason="deliveryOrder.form.cancellation_approval_reason"
+        :request-cancellation-reason="deliveryOrder.form.request_cancellation_reason"
+        @onCancellationApprove="onCancellationApprove"
+        @onCancellationReject="onCancellationReject"
+      />
 
-    <p-show-form-close-status
-      form="sales delivery order"
-      :is-loading="isLoading"
-      :is-proccess-approval="isProccessCloseApproval"
-      :approved-by="deliveryOrder.form.request_approval_to.full_name"
-      :close-status="deliveryOrder.form.close_status"
-      :close-approval-reason="deliveryOrder.form.close_approval_reason"
-      :request-close-reason="deliveryOrder.form.request_close_reason"
-      @onCloseApprove="onCloseApprove"
-      @onCloseReject="onCloseReject"
-    />
+      <p-show-form-close-status
+        form="sales delivery order"
+        :is-loading="isLoading"
+        :is-proccess-approval="isProccessCloseApproval"
+        :approved-by="deliveryOrder.form.request_approval_to.full_name"
+        :close-status="deliveryOrder.form.close_status"
+        :close-approval-reason="deliveryOrder.form.close_approval_reason"
+        :request-close-reason="deliveryOrder.form.request_close_reason"
+        @onCloseApprove="onCloseApprove"
+        @onCloseReject="onCloseReject"
+      />
+    </div>
 
     <div
       v-if="deliveryOrder"
