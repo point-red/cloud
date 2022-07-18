@@ -301,6 +301,7 @@
                   type="button"
                   class="btn btn-sm btn-light mr-2"
                   :disabled="isSaving"
+                  @click="cancel"
                 >
                   {{ $t('cancel') | uppercase }}
                 </button>
@@ -380,7 +381,11 @@ export default {
   },
   created () {
     this.pointForm = new Form(this.form)
+    window.addEventListener('beforeunload', this.beforeWindowUnload)
     this.getStudySheet()
+  },
+  beforeDestroy () {
+    window.removeEventListener('beforeunload', this.beforeWindowUnload)
   },
   methods: {
     getStudySheet () {
@@ -493,6 +498,23 @@ export default {
     },
     videoUploaded (event) {
       this.form.video = event
+    },
+    cancel () {
+      this.$router.replace({
+        name: 'PluginStudySheetShow',
+        params: { id: this.$route.params.id }
+      })
+    },
+    confirmLeave () {
+      return window.confirm('Do you really want to leave? you have unsaved changes!')
+    },
+    beforeWindowUnload (e) {
+      if (!this.confirmLeave()) {
+      // Cancel the event
+        e.preventDefault()
+        // Chrome requires returnValue to be set
+        e.returnValue = ''
+      }
     }
   }
 }
