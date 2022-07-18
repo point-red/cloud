@@ -1,19 +1,5 @@
 <template>
   <div class="block p-4">
-    <!-- <div class="row gutters-tiny">
-          <p-box
-            v-if="$permission.has('read study sheets')"
-            :name="$t('study sheet') | titlecase"
-            :link="$router.resolve({name: 'PluginStudySheetIndex'}).href"
-            icon="fa fa-file-text"
-          />
-          <p-box
-            v-if="$permission.has('read study subjects')"
-            :name="$t('study subject') | titlecase"
-            :link="$router.resolve({name: 'PluginStudySubject'}).href"
-            icon="fa fa-book"
-          />
-        </div> -->
     <div class="row">
       <div class="col-12 col-md-5">
         <img
@@ -24,7 +10,7 @@
       <div class="col-12 col-sm">
         <div id="content">
           <h1>
-            {{ $t('hi') | capitalize }} {{ userName }} !
+            {{ $t('hi') | capitalize }} {{ userName | capitalize }} !
           </h1>
           <div class="d-flex align-items-center font-size-h4">
             <i class="fa fa-lightbulb-o text-danger fa-lg mr-3" />
