@@ -5,6 +5,7 @@
       ref="file"
       type="file"
       :name="name"
+      :accept="accept"
       @change="onFileChange()"
     >
     <div
@@ -41,6 +42,10 @@ export default {
     errors: {
       type: Array,
       default: null
+    },
+    accept: {
+      type: String,
+      default: '*'
     }
   },
   methods: {
