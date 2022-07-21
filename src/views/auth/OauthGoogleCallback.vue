@@ -33,6 +33,8 @@ export default {
         .catch(error => {
           if (error.response?.status === 422) {
             this.error = error.response.data.errors.code[0]
+          } else {
+            this.error = error.data.message
           }
         })
     }

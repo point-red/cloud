@@ -211,6 +211,9 @@ export default {
           this.sheet = response.data
           this.emitUpdateSheetName()
         })
+        .catch(error => {
+          this.$notification.error(error.data.message)
+        })
         .finally(() => {
           this.isLoading = false
         })

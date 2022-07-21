@@ -61,6 +61,8 @@ export default {
         .catch(error => {
           if (error.status === 422) {
             this.form.errors.record(error.data.errors)
+          } else {
+            this.$notification.error(error.data.message)
           }
         })
         .finally(() => {

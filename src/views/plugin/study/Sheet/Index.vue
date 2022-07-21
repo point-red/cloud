@@ -158,6 +158,9 @@ export default {
           this.sheets = response.data.data
           this.pagination = response.data.meta
         })
+        .catch(error => {
+          this.$notification.error(error.data.message)
+        })
         .finally(() => {
           this.isLoading = false
         })
