@@ -70,9 +70,8 @@ export default {
             this.hasToken = true
             // token is exist, stop the auto refresh
             clearInterval(this.myInterval)
-          } else {
-            this.authUrl = response.data.auth_url
           }
+          this.authUrl = response.data.auth_url
         })
         .catch(error => {
           this.$notification.error(error.data.message)
@@ -84,9 +83,9 @@ export default {
     openWindow () {
       window.open(this.authUrl, 'newwindow', 'width=400,height=600')
       // check oauth token every 5 seconds
-      this.myInterval = setInterval(() => {
-        this.getOauthToken()
-      }, 5000)
+      setTimeout(() => {
+        this.myInterval = setInterval(this.getOauthToken, 1000)
+      }, 7000)
     },
     unlinkGoogleDrive () {
       this.isSaving = true
