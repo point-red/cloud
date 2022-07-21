@@ -439,6 +439,8 @@ export default {
         .catch(error => {
           if (error.status === 422) {
             this.pointForm.errors.record(error.data.errors)
+          } else {
+            this.$notification.error(error.data.message)
           }
         })
         .finally(() => {

@@ -74,6 +74,9 @@ export default {
             this.authUrl = response.data.auth_url
           }
         })
+        .catch(error => {
+          this.$notification.error(error.data.message)
+        })
         .finally(() => {
           this.isLoading = false
         })
@@ -90,6 +93,9 @@ export default {
       axios.delete('oauth/login/google/drive')
         .then(() => {
           this.hasToken = false
+        })
+        .catch(error => {
+          this.$notification.error(error.data.message)
         })
         .finally(() => {
           this.isSaving = false

@@ -149,6 +149,9 @@ export default {
         .then(response => {
           this.subjects = response.data.data
         })
+        .catch(error => {
+          this.$notification.error(error.data.message)
+        })
         .finally(() => {
           this.isLoading = false
         })
