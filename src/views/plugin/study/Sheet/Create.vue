@@ -85,10 +85,8 @@
 
             <p-form-row
               :label="$t('study subject')"
-              :errors="pointForm.errors.get('subject_id')"
               :required="true"
               :show-asterisk-on-required="true"
-              @errors="pointForm.errors.set('subject_id', null)"
             >
               <div
                 slot="body"
@@ -97,6 +95,8 @@
                 <select-subject
                   v-model="form.subject_id"
                   :disabled="isSaving"
+                  :errors="pointForm.errors.get('subject_id')"
+                  @errors="pointForm.errors.set('subject_id', null)"
                 />
               </div>
             </p-form-row>
@@ -268,8 +268,6 @@
               :label="$t('behavior')"
               :required="true"
               :show-asterisk-on-required="true"
-              :errors="pointForm.errors.get('behavior')"
-              @errors="pointForm.errors.set('behavior', null)"
             >
               <div
                 slot="body"
@@ -281,6 +279,8 @@
                   :disabled="isSaving"
                   name="behavior"
                   :options="behaviorList"
+                  :errors="pointForm.errors.get('behavior')"
+                  @errors="pointForm.errors.set('behavior', null)"
                 />
               </div>
             </p-form-row>
