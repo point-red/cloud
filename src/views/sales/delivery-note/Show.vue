@@ -121,10 +121,13 @@
               </th>
               <th>Item</th>
               <th class="text-right">
+                Quantity Remaining
+              </th>
+              <th class="text-right">
                 Quantity
               </th>
             </tr>
-            <template v-for="(row, index) in deliveryNote.items">
+            <template v-for="(row, index) in items">
               <tr
                 slot="p-body"
                 :key="index"
@@ -132,7 +135,10 @@
                 <th class="text-center">
                   {{ index + 1 }}
                 </th>
-                <td>{{ row.item.label }}</td>
+                <td>{{ row.label }}</td>
+                <td class="text-right">
+                  {{ row.quantity_remaining | numberFormat }} {{ row.unit }}
+                </td>
                 <td class="text-right">
                   {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
@@ -217,7 +223,27 @@ export default {
   },
   computed: {
     ...mapGetters('salesDeliveryNote', ['deliveryNote']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    items () {
+      var items = []
+      this.deliveryNote.items.forEach(function (element) {
+        const i = Object.keys(items).length
+
+        if (i && items[i - 1].id === element.item_id) {
+          items[i - 1].quantity += element.quantity
+          items[i - 1].quantity_remaining += element.quantity_remaining
+        } else {
+          items.push({
+            id: element.item_id,
+            unit: element.unit,
+            label: element.item.label,
+            quantity: element.quantity,
+            quantity_remaining: element.quantity_remaining
+          })
+        }
+      })
+      return items
+    }
   },
   watch: {
     '$route' (to, from) {
