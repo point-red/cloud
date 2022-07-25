@@ -331,7 +331,7 @@ export default {
       }
     },
     onClickUnit (row) {
-      if (row.item || row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
+      if (row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
         return true
       }
       return false

@@ -32,13 +32,13 @@
               <i class="fa fa-database" /> BACKUP & RESTORE
             </button>
             <hr v-if="content == 'storage'">
-            <button
+            <!-- <button
               v-if="content == 'storage'"
               class="btn btn-danger btn-sm"
               @click="reset()"
             >
               <i class="fa fa-database" /> RESET
-            </button>
+            </button> -->
             <button
               v-if="content == 'backup'"
               class="btn btn-primary btn-sm"
