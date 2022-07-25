@@ -10,6 +10,19 @@
         title="Assign Kpi Template"
       >
         <template slot="content">
+          <!-- Search -->
+          <div class="input-group block mb-5">
+            <p-form-input
+              id="search-text"
+              ref="searchText"
+              v-model="searchText"
+              name="search-text"
+              placeholder="Search"
+              class="btn-block"
+              @input="filterSearch"
+            />
+          </div>
+          <!-- End Search -->
           <div v-if="isLoading">
             <h3 class="text-center">
               Loading ...
@@ -72,11 +85,13 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import debounce from 'lodash/debounce'
 
 export default {
   data () {
     return {
       employeeId: null,
+      searchText: '',
       template: null,
       selectedIndex: null,
       isLoading: false
@@ -97,6 +112,17 @@ export default {
   methods: {
     ...mapActions('humanResourceKpiTemplate', { getKpiTemplates: 'get' }),
     ...mapActions('humanResourceEmployee', { assignAssessment: 'assignAssessment' }),
+    filterSearch: debounce(function (value) {
+      this.isLoading = true
+      this.getKpiTemplates({
+        search: this.searchText
+      }).then((response) => {
+        this.isLoading = false
+      }, (errors) => {
+        this.isLoading = false
+        console.log(errors.data)
+      })
+    }, 300),
     show (employeeId) {
       this.employeeId = employeeId
       this.$refs.assignKpiTemplate.show()
