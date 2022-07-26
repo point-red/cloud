@@ -4,6 +4,12 @@
       <p-block>
         <div class="text-right">
           <router-link
+            :to="{ name: 'PluginStudySheetCreate' }"
+            class="btn btn-sm btn-outline-secondary mr-5"
+          >
+            {{ $t('create') | uppercase }}
+          </router-link>
+          <router-link
             :to="{name: 'PluginStudySheetEdit', params: {id: $route.params.id}}"
             class="btn btn-sm btn-outline-secondary mr-5"
           >
