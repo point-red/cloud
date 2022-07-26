@@ -5,6 +5,8 @@
     name="subject"
     :options="subjects"
     label-field="name"
+    :errors="errors"
+    @errors="$emit('errors')"
   />
 </template>
 
@@ -16,6 +18,10 @@ export default {
     value: {
       type: [String, Number],
       default: 0
+    },
+    errors: {
+      type: Array,
+      default: () => []
     }
   },
   data () {

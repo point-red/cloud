@@ -13,6 +13,14 @@
       :max-selected="maxSelected"
       :required="required"
     />
+
+    <div
+      v-for="(error, index) in errors"
+      :key="index"
+      class="invalid-input"
+    >
+      <i class="fa fa-warning" /> {{ error }}
+    </div>
   </div>
 </template>
 
@@ -50,6 +58,10 @@ export default {
     maxSelected: {
       type: Number,
       default: 0 // 0 = unlimited
+    },
+    errors: {
+      type: Array,
+      default: () => []
     },
     required: {
       type: Boolean,
@@ -95,6 +107,12 @@ export default {
 }
 .v-dropdown-container {
   max-width: 75%;
+}
+.invalid-input {
+  display: block;
+  margin-top: .25rem;
+  font-size: .875rem;
+  color: #ef5350;
 }
 </style>
 <style>
