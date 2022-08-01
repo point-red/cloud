@@ -7,6 +7,7 @@ import SalesDownPayment from './down-payment/routes'
 import SalesReport from './report/routes'
 import SalesInvoice from './invoice/routes'
 import SalesSummary from './summary/routes'
+import SalesPaymentCollection from './payment-collection/routes'
 
 export default [
   { path: '/sales', name: 'Sales', component: Sales },
@@ -17,5 +18,6 @@ export default [
   ...SalesDeliveryNote,
   ...SalesReport,
   ...SalesInvoice,
-  ...SalesSummary
+  ...SalesSummary,
+  ...SalesPaymentCollection
 ]

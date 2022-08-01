@@ -55,8 +55,15 @@ export default {
     },
     onDelete () {
       if (this.form.reason != '') {
-        this.$emit('delete', this.form.reason)
-        this.close()
+        if (this.form.reason.length > 255) {
+          this.form.errors.record({
+            reason: ['reason cannot be more than 255 character']
+          })
+          this.$notification.error('reason cannot be more than 255 character')
+        } else {
+          this.$emit('delete', this.form.reason)
+          this.close()
+        }
       } else {
         this.form.errors.record({
           reason: ['reason must be filled']

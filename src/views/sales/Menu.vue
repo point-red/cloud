@@ -60,6 +60,15 @@
       <span>{{ $t('sales invoice') | uppercase }}</span>
     </router-link>
     <router-link
+      v-if="$permission.has('create sales payment collection')"
+      to="/sales/payment-collection"
+      class="btn mr-5 mb-15"
+      :class="{'btn-secondary': !isMatch('/sales/payment-collection')}"
+      active-class="btn-primary"
+    >
+      <span>{{ $t('payment collection') | uppercase }}</span>
+    </router-link>
+    <router-link
       to="/sales/summary"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/sales/summary')}"
