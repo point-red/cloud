@@ -118,6 +118,10 @@ export default {
       approveByEmailReceive: 'approveByEmail',
       rejectByEmailReceive: 'rejectByEmail'
     }),
+    ...mapActions('accountingMemoJournal', {
+      approveByEmailMemo: 'approveByEmail',
+      rejectByEmailMemo: 'rejectByEmail'
+    }),
     close () {
       open(location, '_self').close()
     },
@@ -147,6 +151,9 @@ export default {
         }
         if (this.resourceType === 'SalesDeliveryOrder') {
           this.handleApprovalDeliveryOrder()
+        }
+        if (this.resourceType === 'MemoJournal') {
+          this.handleApprovalMemoJournal()
         }
       } catch (error) {
         alert(error)
@@ -364,6 +371,66 @@ export default {
         }).catch(error => {
           this.$notification.error(error.message)
         }).finally(() => { this.isLoading = false })
+      }
+    },
+    async handleApprovalMemoJournal () {
+      if (this.crudType === 'create' || this.crudType === 'update') {
+        if (this.action === 'approve') {
+          this.approveByEmailMemo({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id
+          }).then(response => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form.approval_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
+        if (this.action === 'reject') {
+          this.rejectByEmailMemo({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            reason: 'Rejected by email'
+          }).then(response => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form.approval_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
+      }
+      if (this.crudType === 'delete') {
+        if (this.action === 'approve') {
+          this.approveByEmailMemo({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id
+          }).then(response => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form.cancellation_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
+        if (this.action === 'reject') {
+          this.rejectByEmailemo({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            reason: 'Rejected by email'
+          }).then(response => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form.cancellation_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
       }
     }
   }

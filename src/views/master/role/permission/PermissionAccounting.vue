@@ -123,9 +123,9 @@
         <td>
           <p-form-check-box
             :is-form="false"
-            :checked="checkPermissionRow(['create memo journal', 'read memo journal', 'update memo journal', 'delete memo journal'], permissions)"
+            :checked="checkPermissionRow(['create memo journal', 'read memo journal', 'update memo journal', 'delete memo journal', 'approve memo journal'], permissions)"
             :description="''"
-            @click.native="togglePermissionRow(['create memo journal', 'read memo journal', 'update memo journal', 'delete memo journal'], permissions)"
+            @click.native="togglePermissionRow(['create memo journal', 'read memo journal', 'update memo journal', 'delete memo journal', 'approve memo journal'], permissions)"
           />
         </td>
         <td><b>{{ $t('memo journal') | uppercase }}</b></td>
@@ -163,6 +163,15 @@
             :checked="$rolePermission.has('delete memo journal', permissions)"
             :description="'delete' | uppercase"
             @click.native="togglePermission('delete memo journal')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="approve memo journal"
+            :is-form="false"
+            :checked="$rolePermission.has('approve memo journal', permissions)"
+            :description="'approval' | uppercase"
+            @click.native="togglePermission('approve memo journal')"
           />
         </td>
       </tr>

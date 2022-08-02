@@ -190,7 +190,16 @@ export default {
     clear () {
       this.mutableId = null
       this.mutableLabel = null
-      this.$emit('choosen', '')
+      this.$emit('choosen', {
+        index: this.index,
+        id: null,
+        address: null,
+        label: null,
+        groups: [],
+        name: null,
+        phone: null,
+        pricing_group_id: null
+      })
       this.close()
     },
     onAdded () {

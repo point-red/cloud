@@ -92,6 +92,12 @@ export default {
     type: {
       type: String,
       default: ''
+    },
+    exclude: {
+      type: Array,
+      default: function () {
+        return []
+      }
     }
   },
   data () {
@@ -185,17 +191,19 @@ export default {
           this.options = []
           this.mutableLabel = null
           response.data.map((key, value) => {
-            this.options.push({
-              id: key.id,
-              alias: key.alias,
-              type: {
-                name: key.type.name
-              },
-              label: key.label,
-              number: key.number,
-              position: key.position,
-              sub_ledger: key.sub_ledger
-            })
+            if (this.exclude.includes(key.type_id) == false) {
+              this.options.push({
+                id: key.id,
+                alias: key.alias,
+                type: {
+                  name: key.type.name
+                },
+                label: key.label,
+                number: key.number,
+                position: key.position,
+                sub_ledger: key.sub_ledger
+              })
+            }
 
             if (this.value == key.id) {
               this.mutableLabel = key.number + ' - ' + key.alias
@@ -209,6 +217,24 @@ export default {
     },
     add () {
       //
+    },
+    clear (option) {
+      this.mutableId = null
+      this.mutableLabel = null
+      this.$emit('input', null)
+      this.$emit('choosen', {
+        index: this.index,
+        id: null,
+        alias: null,
+        label: null,
+        number: null,
+        position: null,
+        sub_ledger: null,
+        type: {
+          name: null
+        }
+      })
+      this.close()
     },
     choose (option) {
       option.index = this.index
