@@ -173,7 +173,7 @@
             </point-table>
 
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-sm-9">
                 <textarea
                   v-model="form.notes"
                   rows="5"
@@ -194,22 +194,6 @@
                 </div>
                 {{ requestedBy | uppercase }}
                 <div class="d-sm-block d-md-none mt-10" />
-              </div>
-              <div class="col-sm-3 text-center">
-                <h6 class="mb-0">
-                  {{ $t('approved by') | uppercase }}
-                </h6>
-                <div
-                  class="mb-50"
-                  style="font-size:11px"
-                >
-                  _______________
-                </div>
-                <span
-                  class="select-link"
-                  @click="$refs.approver.open()"
-                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
-                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
             </div>
             <hr>
@@ -232,11 +216,6 @@
         </p-block>
       </div>
     </form>
-    <m-user
-      ref="approver"
-      permission="approve sales delivery note"
-      @choosen="chooseApprover"
-    />
     <select-delivery-order
       ref="selectDeliveryOrder"
       @choosen="chooseDeliveryOrder"
@@ -299,7 +278,8 @@ export default {
         approver_name: null,
         approver_email: null,
         delivery_order_id: null
-      })
+      }),
+      showNotif: false
     }
   },
   computed: {
@@ -317,6 +297,18 @@ export default {
           if (quantity > quantityRequested) item.quantity = quantityRequested
           item.quantity_remaining = isNaN(quantity) ? quantityRequested : remaining
         })
+      },
+      deep: true
+    },
+    'form.driver': {
+      handler (text) {
+        this.maxInput('driver', text)
+      },
+      deep: true
+    },
+    'form.license_plate': {
+      handler (text) {
+        this.maxInput('license_plate', text)
       },
       deep: true
     }
@@ -355,11 +347,6 @@ export default {
         element.warehouse_id = this.form.warehouse_id
         element.warehouse_name = this.form.warehouse_name
       })
-    },
-    chooseApprover (value) {
-      this.form.request_approval_to = value.id
-      this.form.approver_name = value.fullName
-      this.form.approver_email = value.email
     },
     chooseCustomer (value) {
       this.form.customer_id = value.id
@@ -425,14 +412,6 @@ export default {
     },
     onSubmit () {
       this.isSaving = true
-      if (this.form.request_approval_to == null) {
-        this.$notification.error('approval cannot be null')
-        this.isSaving = false
-        this.form.errors.record({
-          request_approval_to: ['Approver should not empty']
-        })
-        return
-      }
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       this.form.subtotal = this.subtotal
       this.form.tax_base = this.tax_base
@@ -464,6 +443,19 @@ export default {
         return true
       }
       return false
+    },
+    maxInput (name, input) {
+      const maxInput = 255
+      if (input.length > maxInput) {
+        setTimeout(() => {
+          this.form[name] = input.substring(0, maxInput)
+          if (!this.showNotif) {
+            this.showNotif = true
+            this.$notification.error('max input ' + maxInput + ' characters')
+            setTimeout(() => { this.showNotif = false }, 6000)
+          }
+        }, 1)
+      }
     }
   }
 }

@@ -176,43 +176,47 @@
                 :key="'pr-' + index + '-i-' + index2"
                 slot="p-body"
               >
-                <th>
-                  <router-link :to="{ name: 'sales.delivery-note.show', params: { id: deliveryNote.id }}">
-                    {{ deliveryNote.form.number }}
-                  </router-link>
-                </th>
-                <td>{{ deliveryNote.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                <td>
-                  <template v-if="deliveryNote.customer">
-                    {{ deliveryNote.customer.name }}
-                  </template>
-                </td>
-                <td>{{ deliveryNoteItem.item.name }}</td>
-                <td>{{ deliveryNote.warehouse.name }}</td>
-                <td class="text-right">
-                  {{ deliveryNoteItem.quantity | numberFormat }} {{ deliveryNoteItem.unit }}
-                </td>
-                <td class="text-center">
-                  <div
-                    v-if="deliveryNote.form.cancellation_status == 1"
-                    class="badge badge-danger"
-                  >
-                    {{ $t('canceled') | uppercase }}
-                  </div>
-                  <div
-                    v-else-if="deliveryNote.form.done == 0"
-                    class="badge badge-primary"
-                  >
-                    {{ $t('pending') | uppercase }}
-                  </div>
-                  <div
-                    v-else-if="deliveryNote.form.done == 1"
-                    class="badge badge-success"
-                  >
-                    {{ $t('done') | uppercase }}
-                  </div>
-                </td>
-                <td />
+                <template
+                  v-if="item.id == null || (item.id != null && item.id == deliveryNoteItem.item_id)"
+                >
+                  <th>
+                    <router-link :to="{ name: 'sales.delivery-note.show', params: { id: deliveryNote.id }}">
+                      {{ deliveryNote.form.number }}
+                    </router-link>
+                  </th>
+                  <td>{{ deliveryNote.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                  <td>
+                    <template v-if="deliveryNote.customer">
+                      {{ deliveryNote.customer.name }}
+                    </template>
+                  </td>
+                  <td>{{ deliveryNoteItem.item.name }}</td>
+                  <td>{{ deliveryNote.warehouse.name }}</td>
+                  <td class="text-right">
+                    {{ deliveryNoteItem.quantity | numberFormat }} {{ deliveryNoteItem.unit }}
+                  </td>
+                  <td class="text-center">
+                    <div
+                      v-if="deliveryNote.form.cancellation_status == 1"
+                      class="badge badge-danger"
+                    >
+                      {{ $t('canceled') | uppercase }}
+                    </div>
+                    <div
+                      v-else-if="deliveryNote.form.done == 0"
+                      class="badge badge-primary"
+                    >
+                      {{ $t('pending') | uppercase }}
+                    </div>
+                    <div
+                      v-else-if="deliveryNote.form.done == 1"
+                      class="badge badge-success"
+                    >
+                      {{ $t('done') | uppercase }}
+                    </div>
+                  </td>
+                  <td />
+                </template>
               </tr>
             </template>
           </point-table>
@@ -351,7 +355,7 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form,customer,items',
+          join: 'form,customer,items,item',
           fields: 'sales_delivery_note.*',
           sort_by: '-form.number',
           group_by: 'form.id',
