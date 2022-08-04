@@ -36,9 +36,6 @@
             <th v-if="mutableRequireProductionNumber">
               Production No.
             </th>
-            <th v-if="maxInput !== null">
-              Stok
-            </th>
             <th class="text-right">
               Quantity
             </th>
@@ -56,9 +53,6 @@
             </td>
             <td v-if="mutableRequireProductionNumber">
               {{ option.production_number }}
-            </td>
-            <td v-if="maxInput !== null">
-              {{ option.unitRemaining }}
             </td>
             <td class="text-right">
               <p-quantity
@@ -78,7 +72,7 @@
             </td> -->
           </tr>
           <tr slot="p-body">
-            <td v-if="mutableRequireExpiryDate" /><td v-if="mutableRequireProductionNumber" /><td v-if="maxInput !== null" /><td class="text-right">
+            <td v-if="mutableRequireExpiryDate" /><td v-if="mutableRequireProductionNumber" /><td class="text-right">
               {{ mutableTotalQuantity | numberFormat }} {{ mutableItemUnit.label }}
             </td>
             <td class="text-right" />
