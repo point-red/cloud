@@ -118,6 +118,10 @@ export default {
       approveByEmailReceive: 'approveByEmail',
       rejectByEmailReceive: 'rejectByEmail'
     }),
+    ...mapActions('salesPaymentCollection', {
+      approveByEmailPaymentCollection: 'approveByEmail',
+      rejectByEmailPaymentCollection: 'rejectByEmail'
+    }),
     close () {
       open(location, '_self').close()
     },
@@ -144,6 +148,9 @@ export default {
         }
         if (this.resourceType === 'TransferReceive') {
           this.handleApprovalTransferReceive()
+        }
+        if (this.resourceType === 'PaymentCollection') {
+          this.handleApprovalPaymentCollection()
         }
         if (this.resourceType === 'SalesDeliveryOrder') {
           this.handleApprovalDeliveryOrder()
@@ -364,6 +371,65 @@ export default {
         }).catch(error => {
           this.$notification.error(error.message)
         }).finally(() => { this.isLoading = false })
+      }
+    },
+    async handleApprovalPaymentCollection () {
+      if (this.crudType === 'delete') {
+        if (this.action === 'approve') {
+          this.approveByEmailPaymentCollection({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id
+          }).then(response => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form.cancellation_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
+        if (this.action === 'reject') {
+          this.rejectByEmailPaymentCollection({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            reason: 'Rejected by email'
+          }).then(response => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form.cancellation_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
+      } else {
+        if (this.action === 'approve') {
+          this.approveByEmailPaymentCollection({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id
+          }).then(response => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form.approval_status
+          }).catch(error => {
+            this.$notification.error(error.message)
+          })
+        }
+        if (this.action === 'reject') {
+          this.rejectByEmailPaymentCollection({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            reason: 'Rejected by email'
+          }).then(response => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form.approval_status
+          }).catch(error => {
+            console.log(error.message)
+          })
+        }
       }
     }
   }

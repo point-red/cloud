@@ -54,6 +54,16 @@ export default {
       this.$emit('close', true)
     },
     reject () {
+      if (this.form.reason.length > 255) {
+        this.isSaving = false
+        this.$notification.error('Reason should not empty')
+        this.form.errors.record({
+          reason: ['Reason should not empty']
+        })
+
+        return false
+      }
+
       if (!this.form.reason) {
         this.isSaving = false
         this.$notification.error('Reason should not empty')

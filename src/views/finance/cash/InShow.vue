@@ -8,7 +8,9 @@
       >
         {{ $t('cash') | uppercase }}
       </router-link>
-      <span class="breadcrumb-item">{{ $t('in') | uppercase }}</span>
+      <span class="breadcrumb-item">
+        <router-link to="/finance/cash/in">{{ $t('in') | uppercase }}</router-link>
+      </span>
       <span class="breadcrumb-item active">{{ payment.form.number }}</span>
     </breadcrumb>
 
@@ -16,7 +18,7 @@
       class="row"
       @submit.prevent="onSubmit"
     >
-      <p-block :title="$t('cash in')">
+      <p-block>
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-6">

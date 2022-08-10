@@ -84,7 +84,12 @@
                 >
                   Success
                 </div>
-
+                <div
+                  v-if="resource.form.approval_status === 0 && resourceType == 'PaymentCollection'"
+                  class="font-white bg-danger"
+                >
+                  Not enough amount to collect
+                </div>
                 <div
                   v-if="resource.form.approval_status === 0 && resourceType != 'CashAdvance'"
                   class="font-white bg-danger"
@@ -177,6 +182,10 @@ export default {
       approveByEmail: 'approveByEmail',
       rejectByEmail: 'rejectByEmail'
     }),
+    ...mapActions('salesPaymentCollection', {
+      approveByEmailPaymentCollection: 'approveByEmail',
+      rejectByEmailPaymentCollection: 'rejectByEmail'
+    }),
     close () {
       open(location, '_self').close()
     },
@@ -188,6 +197,9 @@ export default {
       }
       if (this.resourceType === 'SalesDeliveryOrder') {
         this.handleApprovalDeliveryOrder()
+      }
+      if (this.resourceType === 'PaymentCollection') {
+        this.handleApprovalPaymentCollection()
       }
     },
     async handleApprovalTransferSend () {
@@ -249,6 +261,37 @@ export default {
         this.$notification.error(error.message)
       } finally {
         this.isLoading = false
+      }
+    },
+    async handleApprovalPaymentCollection () {
+      if (this.action === 'approve') {
+        this.approveByEmailPaymentCollection({
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id
+        }).then(response => {
+          this.resources = response.data
+          this.projectName = this.tenantName
+          this.approvalStatus = 1
+        }).catch(error => {
+          this.$notification.error(error.message)
+          console.log(error.message)
+        })
+      }
+      if (this.action === 'reject') {
+        this.rejectByEmailPaymentCollection({
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id,
+          reason: 'Rejected by email'
+        }).then(response => {
+          this.resources = response.data
+          this.projectName = this.tenantName
+          this.approvalStatus = -1
+        }).catch(error => {
+          this.$notification.error(error.message)
+          console.log(error.message)
+        })
       }
     },
     async handleApprovalCashAdvance (headers) {
