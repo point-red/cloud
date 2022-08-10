@@ -650,8 +650,8 @@ export default {
           converter: item.converter,
           quantity: item.quantity,
           price: item.price,
-          discount_percent: 0,
-          discount_value: 0,
+          discount_percent: item.discount_percent,
+          discount_value: item.discount_value,
           total: item.quantity * (item.price - item.discount_value),
           allocation_id: item.allocation_id,
           allocation_name: '', // TODO get alocation name
