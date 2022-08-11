@@ -10,6 +10,28 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
+          <div
+            class="input-group-prepend"
+            :disabled="isExportingData"
+            :style="{
+              'opacity': isExportingData ? 0.3 : 1,
+              'cursor': isExportingData ? 'not-allowed' : 'pointer'
+            }"
+            @click="exportData"
+          >
+            <span
+              v-if="isExportingData"
+              class="input-group-text"
+            >
+              <i class="fa fa-asterisk fa-spin" />
+            </span>
+            <span
+              v-else
+              class="input-group-text"
+            >
+              <i class="fa fa-download" />
+            </span>
+          </div>
           <router-link
             v-if="$permission.has('create sales delivery note')"
             to="/sales/delivery-note/create"
@@ -77,24 +99,41 @@
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-3 text-center">
+            <div class="col-sm-2 text-center">
               <p-form-row
                 id="form-approval-status"
                 name="form-approval-status"
-                :label="$t('approval status')"
+                :label="$t('Item')"
                 :is-horizontal="false"
               >
                 <div slot="body">
                   <span
                     class="select-link"
-                    @click="$refs.formApprovalStatus.open()"
+                    @click="$refs.item.open()"
                   >
-                    {{ formApprovalStatus.label || $t('select') | uppercase }}
+                    {{ item.name || $t('select') | uppercase }}
                   </span>
                 </div>
               </p-form-row>
             </div>
-            <div class="col-sm-3 text-center">
+            <div class="col-sm-2 text-center">
+              <p-form-row
+                id="form-approval-status"
+                name="form-approval-status"
+                :label="$t('Warehouse')"
+                :is-horizontal="false"
+              >
+                <div slot="body">
+                  <span
+                    class="select-link"
+                    @click="$refs.warehouse.open()"
+                  >
+                    {{ warehouse.label || $t('select') | uppercase }}
+                  </span>
+                </div>
+              </p-form-row>
+            </div>
+            <div class="col-sm-2 text-center">
               <p-form-row
                 id="form-status"
                 name="form-status"
@@ -121,9 +160,8 @@
               <th>Number</th>
               <th>Date</th>
               <th>Customer</th>
-              <th>Driver</th>
-              <th>License Plate</th>
               <th>Item</th>
+              <th>Warehouse</th>
               <th class="text-right">
                 Quantity
               </th>
@@ -138,44 +176,47 @@
                 :key="'pr-' + index + '-i-' + index2"
                 slot="p-body"
               >
-                <th>
-                  <router-link :to="{ name: 'sales.delivery-note.show', params: { id: deliveryNote.id }}">
-                    {{ deliveryNote.form.number }}
-                  </router-link>
-                </th>
-                <td>{{ deliveryNote.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                <td>
-                  <template v-if="deliveryNote.customer">
-                    {{ deliveryNote.customer.name }}
-                  </template>
-                </td>
-                <td>{{ deliveryNote.driver }}</td>
-                <td>{{ deliveryNote.license_plate }}</td>
-                <td>{{ deliveryNoteItem.item.name }}</td>
-                <td class="text-right">
-                  {{ deliveryNoteItem.quantity | numberFormat }} {{ deliveryNoteItem.unit }}
-                </td>
-                <td class="text-center">
-                  <div
-                    v-if="deliveryNote.form.cancellation_status == 1"
-                    class="badge badge-danger"
-                  >
-                    {{ $t('canceled') | uppercase }}
-                  </div>
-                  <div
-                    v-else-if="deliveryNote.form.done == 0"
-                    class="badge badge-primary"
-                  >
-                    {{ $t('pending') | uppercase }}
-                  </div>
-                  <div
-                    v-else-if="deliveryNote.form.done == 1"
-                    class="badge badge-success"
-                  >
-                    {{ $t('done') | uppercase }}
-                  </div>
-                </td>
-                <td />
+                <template
+                  v-if="item.id == null || (item.id != null && item.id == deliveryNoteItem.item_id)"
+                >
+                  <th>
+                    <router-link :to="{ name: 'sales.delivery-note.show', params: { id: deliveryNote.id }}">
+                      {{ deliveryNote.form.number }}
+                    </router-link>
+                  </th>
+                  <td>{{ deliveryNote.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                  <td>
+                    <template v-if="deliveryNote.customer">
+                      {{ deliveryNote.customer.name }}
+                    </template>
+                  </td>
+                  <td>{{ deliveryNoteItem.item.name }}</td>
+                  <td>{{ deliveryNote.warehouse.name }}</td>
+                  <td class="text-right">
+                    {{ deliveryNoteItem.quantity | numberFormat }} {{ deliveryNoteItem.unit }}
+                  </td>
+                  <td class="text-center">
+                    <div
+                      v-if="deliveryNote.form.cancellation_status == 1"
+                      class="badge badge-danger"
+                    >
+                      {{ $t('canceled') | uppercase }}
+                    </div>
+                    <div
+                      v-else-if="deliveryNote.form.done == 0"
+                      class="badge badge-primary"
+                    >
+                      {{ $t('pending') | uppercase }}
+                    </div>
+                    <div
+                      v-else-if="deliveryNote.form.done == 1"
+                      class="badge badge-success"
+                    >
+                      {{ $t('done') | uppercase }}
+                    </div>
+                  </td>
+                  <td />
+                </template>
               </tr>
             </template>
           </point-table>
@@ -187,13 +228,19 @@
         />
       </p-block>
     </div>
-    <m-form-approval-status
-      ref="formApprovalStatus"
-      @choosen="chooseFormApprovalStatus($event)"
+    <m-warehouse
+      id="warehouse"
+      ref="warehouse"
+      name="warehouse"
+      @choosen="chooseWarehouse($event)"
     />
     <m-form-status
       ref="formStatus"
       @choosen="chooseFormStatus($event)"
+    />
+    <m-item
+      ref="item"
+      @choosen="chooseItem($event)"
     />
   </div>
 </template>
@@ -215,6 +262,7 @@ export default {
   data () {
     return {
       isLoading: true,
+      isExportingData: false,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
@@ -226,10 +274,15 @@ export default {
         label: null,
         value: 'notArchived'
       },
-      formApprovalStatus: {
+      warehouse: {
         id: null,
         label: null,
         value: null
+      },
+      item: {
+        id: null,
+        label: null,
+        name: null
       },
       date: {
         start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
@@ -269,15 +322,22 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('salesDeliveryNote', ['get']),
+    ...mapActions('salesDeliveryNote', ['get', 'export']),
     chooseFormStatus (option) {
       this.formStatus.label = option.label
       this.formStatus.value = option.value
       this.getDeliveryNote()
     },
-    chooseFormApprovalStatus (option) {
-      this.formApprovalStatus.label = option.label
-      this.formApprovalStatus.value = option.value
+    chooseWarehouse (option) {
+      this.warehouse.id = option.id
+      this.warehouse.label = option.label
+      this.warehouse.value = option.value
+      this.getDeliveryNote()
+    },
+    chooseItem (option) {
+      this.item.id = option.id
+      this.item.label = option.label
+      this.item.name = option.name
       this.getDeliveryNote()
     },
     filterSearch: debounce(function (value) {
@@ -295,11 +355,11 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form,customer',
+          join: 'form,customer,items,item',
           fields: 'sales_delivery_note.*',
           sort_by: '-form.number',
           group_by: 'form.id',
-          filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
+          filter_form: this.formStatus.value,
           filter_like: {
             'form.number': this.searchText,
             'customer.name': this.searchText,
@@ -312,8 +372,12 @@ export default {
           filter_date_max: {
             'form.date': this.serverDateTime(this.date.end, 'end')
           },
+          filter_equal: {
+            'sales_delivery_note_item.item_id': this.item.id,
+            'sales_delivery_note.warehouse_id': this.warehouse.id
+          },
           limit: 10,
-          includes: 'form;customer;items.item;items.allocation',
+          includes: 'form;customer;warehouse;items.item;items.allocation',
           page: this.currentPage
         }
       }).catch(error => {
@@ -325,6 +389,47 @@ export default {
     updatePage (value) {
       this.currentPage = value
       this.getDeliveryNote()
+    },
+    async exportData () {
+      if (this.isExportingData) return
+
+      this.isExportingData = true
+
+      try {
+        const { data: { url } } = await this.export({
+          params: {
+            join: 'form,customer,items,item',
+            fields: 'sales_delivery_note.*;sales_delivery_note_item.*',
+            sort_by: '-form.number',
+            filter_form: this.formStatus.value,
+            filter_like: {
+              'form.number': this.searchText,
+              'customer.name': this.searchText,
+              'item.code': this.searchText,
+              'item.name': this.searchText
+            },
+            filter_date_min: {
+              'form.date': this.serverDateTime(this.date.start, 'start')
+            },
+            filter_date_max: {
+              'form.date': this.serverDateTime(this.date.end, 'end')
+            },
+            filter_equal: {
+              'sales_delivery_note_item.item_id': this.item.id,
+              'sales_delivery_note.warehouse_id': this.warehouse.id
+            },
+            limit: 10,
+            includes: 'form;customer;warehouse;items.item;items.allocation',
+            page: this.currentPage
+          }
+        })
+
+        window.open(url, '_blank')
+        this.isExportingData = false
+      } catch (error) {
+        this.isExportingData = false
+        this.$notification.error(error.message)
+      }
     }
   }
 }

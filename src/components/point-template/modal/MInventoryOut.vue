@@ -142,7 +142,8 @@ export default {
       mutableRequireProductionNumber: false,
       mutableDiscountPercent: null,
       mutableTotalQuantity: 0,
-      mutableNotes: null
+      mutableNotes: null,
+      maxInput: null
     }
   },
   computed: {
@@ -176,6 +177,7 @@ export default {
               inventory.expiry_date == el.expiry_date &&
               inventory.production_number == el.production_number) {
               inventory.quantity = el.quantity
+              inventory.unitRemaining = el.remaining
             }
           })
         })
@@ -192,10 +194,37 @@ export default {
       this.inventories.forEach(element => {
         element.remainingInUnit = element.remaining / this.mutableItemUnit.converter
       })
-      this.mutableTotalQuantity = 0
-      this.inventories.forEach(inventory => {
-        this.mutableTotalQuantity += parseFloat(inventory.quantity)
-      })
+      if (this.maxInput === null) {
+        this.mutableTotalQuantity = 0
+        this.inventories.forEach(inventory => {
+          this.mutableTotalQuantity += parseFloat(inventory.quantity)
+        })
+      } else {
+        let index = null
+        let total = 0
+        this.mutableTotalQuantity = 0
+        this.inventories.forEach((inventory, i) => {
+          total = this.mutableTotalQuantity + parseFloat(inventory.quantity)
+          if (this.maxInput < total) {
+            index = i
+          } else {
+            this.mutableTotalQuantity = total
+            this.updateUnitRemaining(i, inventory.quantity)
+          }
+        })
+
+        if (index !== null) {
+          this.inventories[index].quantity = this.maxInput - this.mutableTotalQuantity
+          index = null
+        }
+      }
+    },
+    updateUnitRemaining (index, inputQuantity) {
+      const quantity = Number(inputQuantity)
+      const quantityRequested = Number(this.inventories[index].remaining)
+      const remaining = quantityRequested - quantity
+      if (quantity > quantityRequested) this.inventories[index].quantity = quantityRequested
+      this.inventories[index].unitRemaining = isNaN(quantity) ? quantityRequested : remaining
     },
     updateUnit (mutableItemUnit) {
       this.mutableItemUnit.converter = mutableItemUnit.converter
@@ -205,6 +234,11 @@ export default {
     },
     open (row) {
       this.index = row.index
+
+      if (row.max_input) {
+        this.maxInput = row.max_input
+      }
+
       if (!row.warehouse_id) {
         this.$alert.info('INPUT REQUIRED', this.$t('please select warehouse'))
         return
