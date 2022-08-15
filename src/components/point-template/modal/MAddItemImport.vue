@@ -31,8 +31,6 @@
                       :query="query"
                       :disabled="isSaving"
                       :options="header"
-                      :errors="form_code.code"
-                      @errors="form_code.code = null"
                     />
                   </td>
                 </tr>
@@ -46,8 +44,6 @@
                       :query="query"
                       :disabled="isSaving"
                       :options="header"
-                      :errors="form_code.name"
-                      @errors="form_code.name = null"
                     />
                   </td>
                 </tr>
@@ -61,8 +57,6 @@
                       :query="query"
                       :disabled="isSaving"
                       :options="header"
-                      :errors="form_code.chart_of_account"
-                      @errors="form_code.chart_of_account = null"
                     />
                   </td>
                 </tr>
@@ -76,8 +70,6 @@
                       :query="query"
                       :disabled="isSaving"
                       :options="header"
-                      :errors="form_code.units_measurement_1"
-                      @errors="form_code.units_measurement_1 = null"
                     />
                   </td>
                 </tr>
@@ -91,8 +83,6 @@
                       :query="query"
                       :disabled="isSaving"
                       :options="header"
-                      :errors="form_code.units_measurement_2"
-                      @errors="form_code.units_measurement_2 = null"
                     />
                   </td>
                 </tr>
@@ -106,8 +96,6 @@
                       :query="query"
                       :disabled="isSaving"
                       :options="header"
-                      :errors="form_code.units_converter_2"
-                      @errors="form_code.units_converter_2 = null"
                     />
                   </td>
                 </tr>
@@ -121,8 +109,6 @@
                       :query="query"
                       :disabled="isSaving"
                       :options="header"
-                      :errors="form_code.require_expiry_date"
-                      @errors="form_code.require_expiry_date = null"
                     />
                   </td>
                 </tr>
@@ -136,8 +122,6 @@
                       :query="query"
                       :disabled="isSaving"
                       :options="header"
-                      :errors="form_code.require_production_number"
-                      @errors="form_code.require_production_number = null"
                     />
                   </td>
                 </tr>
@@ -151,8 +135,6 @@
                       :query="query"
                       :disabled="isSaving"
                       :options="header"
-                      :errors="form_code.group_name"
-                      @errors="form_code.group_name = null"
                     />
                   </td>
                 </tr>
