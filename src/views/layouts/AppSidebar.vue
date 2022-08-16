@@ -439,6 +439,17 @@
                   </router-link>
                 </li>
                 <li
+                  v-if="$permission.has('read sales payment collection')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/sales/payment-collection"
+                    active-class="active"
+                  >
+                    {{ $t('payment collection') | uppercase }}
+                  </router-link>
+                </li>
+                <li
                   v-if="$permission.has('read sales invoice')"
                   @click="toggleLeftSidebar('close-xs')"
                 >

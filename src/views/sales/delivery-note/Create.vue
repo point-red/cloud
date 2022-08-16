@@ -59,10 +59,7 @@
                       {{ $t('warehouse') | uppercase }}
                     </td>
                     <td>
-                      <span
-                        class="select-link"
-                        @click="$refs.warehouse.open()"
-                      >{{ form.warehouse_name || $t('select') | uppercase }}</span>
+                      <span>{{ form.warehouse_name | uppercase }}</span>
                     </td>
                   </tr>
                   <tr>
@@ -123,17 +120,36 @@
                 <th style="min-width: 120px">
                   Item
                 </th>
+                <th>Quantity Remaining</th>
                 <th>Quantity</th>
               </tr>
               <template v-for="(row, index) in form.items">
                 <tr
                   slot="p-body"
                   :key="index"
+                  :class="{'d-none' : row.quantity_requested == 0}"
                 >
                   <th>{{ index + 1 }}</th>
                   <td>{{ row.item_label | uppercase }}</td>
                   <td>
                     <p-quantity
+                      :id="'quantity_remaining' + index"
+                      v-model="row.quantity_remaining"
+                      :name="'quantity_remaining' + index"
+                      :item-id="row.item_id"
+                      :units="row.units"
+                      :unit="{
+                        name: row.unit,
+                        label: row.unit,
+                        converter: row.converter
+                      }"
+                      disabled
+                      readonly
+                    />
+                  </td>
+                  <td>
+                    <p-quantity
+                      v-if="row.quantity_requested"
                       :id="'quantity' + index"
                       v-model="row.quantity"
                       :name="'quantity' + index"
@@ -145,7 +161,11 @@
                         label: row.unit,
                         converter: row.converter
                       }"
+                      :max="row.quantity_pending * 1"
+                      :disable-unit-selection="true"
+                      :readonly="onClickUnit(row)"
                       @choosen="chooseUnit($event, row)"
+                      @click.native="onClickQuantity(row, index)"
                     />
                   </td>
                 </tr>
@@ -153,7 +173,7 @@
             </point-table>
 
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-sm-9">
                 <textarea
                   v-model="form.notes"
                   rows="5"
@@ -174,22 +194,6 @@
                 </div>
                 {{ requestedBy | uppercase }}
                 <div class="d-sm-block d-md-none mt-10" />
-              </div>
-              <div class="col-sm-3 text-center">
-                <h6 class="mb-0">
-                  {{ $t('approved by') | uppercase }}
-                </h6>
-                <div
-                  class="mb-50"
-                  style="font-size:11px"
-                >
-                  _______________
-                </div>
-                <span
-                  class="select-link"
-                  @click="$refs.approver.open()"
-                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
-                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
             </div>
             <hr>
@@ -212,20 +216,15 @@
         </p-block>
       </div>
     </form>
-    <m-user
-      ref="approver"
-      permission="approve sales delivery note"
-      @choosen="chooseApprover"
-    />
-    <m-warehouse
-      id="warehouse"
-      ref="warehouse"
-      name="warehouse"
-      @choosen="chooseWarehouse"
-    />
     <select-delivery-order
       ref="selectDeliveryOrder"
       @choosen="chooseDeliveryOrder"
+    />
+    <m-inventory-out
+      :id="'inventory'"
+      ref="inventory"
+      :disable-unit-selection="true"
+      @updated="updateDna($event)"
     />
   </div>
 </template>
@@ -279,12 +278,40 @@ export default {
         approver_name: null,
         approver_email: null,
         delivery_order_id: null
-      })
+      }),
+      showNotif: false
     }
   },
   computed: {
     ...mapGetters('salesDeliveryNote', ['deliveryNote']),
     ...mapGetters('auth', ['authUser'])
+  },
+  watch: {
+    'form.items': {
+      handler (changedItems) {
+        changedItems.forEach(item => {
+          if (typeof item.quantity === 'undefined') item.quantity = 0
+          const quantity = Number(item.quantity)
+          const quantityRequested = Number(item.quantity_requested)
+          const remaining = quantityRequested - quantity
+          if (quantity > quantityRequested) item.quantity = quantityRequested
+          item.quantity_remaining = isNaN(quantity) ? quantityRequested : remaining
+        })
+      },
+      deep: true
+    },
+    'form.driver': {
+      handler (text) {
+        this.maxInput('driver', text)
+      },
+      deep: true
+    },
+    'form.license_plate': {
+      handler (text) {
+        this.maxInput('license_plate', text)
+      },
+      deep: true
+    }
   },
   created () {
     if (this.$route.query.id) {
@@ -321,11 +348,6 @@ export default {
         element.warehouse_name = this.form.warehouse_name
       })
     },
-    chooseApprover (value) {
-      this.form.request_approval_to = value.id
-      this.form.approver_name = value.fullName
-      this.form.approver_email = value.email
-    },
     chooseCustomer (value) {
       this.form.customer_id = value.id
       this.form.customer_name = value.name
@@ -345,15 +367,28 @@ export default {
         row.discount_percent = parseFloat(unit.prices[index].pivot.discount_percent)
       }
     },
+    updateDna (e) {
+      this.form.items[e.index].dna = e.dna
+      this.form.items[e.index].quantity = e.quantity
+      this.form.items[e.index].unit = e.unit
+      this.form.items[e.index].converter = e.converter
+    },
     chooseDeliveryOrder (deliveryOrder) {
+      this.chooseWarehouse(deliveryOrder.warehouse)
+
       this.deliveryOrder = deliveryOrder
-      this.form.warehouse_id = deliveryOrder.warehouse_id
       this.form.delivery_order_id = deliveryOrder.id
       this.form.customer_id = deliveryOrder.customer.id
       this.form.customer_name = deliveryOrder.customer.name
       this.form.customer_label = deliveryOrder.customer.label
       this.form.items = deliveryOrder.items.map(item => {
+        item.item.units.forEach((unit, keyUnit) => {
+          if (unit.id == item.item.unit_default) {
+            item.item.unit = unit
+          }
+        })
         return {
+          item: item.item,
           delivery_order_item_id: item.id,
           item_id: item.item_id,
           item_name: item.item.name,
@@ -362,6 +397,9 @@ export default {
           unit: item.unit,
           converter: item.converter,
           quantity: item.quantity,
+          quantity_requested: item.quantity_delivered,
+          require_expiry_date: item.item.require_expiry_date,
+          require_production_number: item.item.require_production_number,
           price: item.price,
           discount_percent: 0,
           discount_value: 0,
@@ -374,14 +412,6 @@ export default {
     },
     onSubmit () {
       this.isSaving = true
-      if (this.form.request_approval_to == null) {
-        this.$notification.error('approval cannot be null')
-        this.isSaving = false
-        this.form.errors.record({
-          request_approval_to: ['Approver should not empty']
-        })
-        return
-      }
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       this.form.subtotal = this.subtotal
       this.form.tax_base = this.tax_base
@@ -399,6 +429,33 @@ export default {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
+    },
+    onClickQuantity (row, index) {
+      if (row.require_expiry_date == 1 || row.require_production_number == 1) {
+        row.warehouse_id = this.form.warehouse_id
+        row.index = index
+        row.max_input = parseFloat(row.quantity_remaining)
+        this.$refs.inventory.open(row, row.quantity)
+      }
+    },
+    onClickUnit (row) {
+      if (row.item_id == null || row.require_expiry_date === 1 || row.require_production_number === 1) {
+        return true
+      }
+      return false
+    },
+    maxInput (name, input) {
+      const maxInput = 255
+      if (input.length > maxInput) {
+        setTimeout(() => {
+          this.form[name] = input.substring(0, maxInput)
+          if (!this.showNotif) {
+            this.showNotif = true
+            this.$notification.error('max input ' + maxInput + ' characters')
+            setTimeout(() => { this.showNotif = false }, 6000)
+          }
+        }, 1)
+      }
     }
   }
 }

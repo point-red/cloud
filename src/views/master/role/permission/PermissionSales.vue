@@ -419,6 +419,62 @@
         </td>
         <td />
       </tr>
+      <tr slot="p-body">
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create sales payment collection', 'read sales payment collection', 'update sales payment collection', 'delete sales payment collection', 'approve sales payment collection'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['create sales payment collection', 'read sales payment collection', 'update sales payment collection', 'delete sales payment collection', 'approve sales payment collection'], permissions)"
+          />
+        </td>
+        <td><b>{{ $t('payment collection') | uppercase }}</b></td>
+        <td>
+          <p-form-check-box
+            ref="create sales payment collection"
+            :is-form="false"
+            :checked="$rolePermission.has('create sales payment collection', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create sales payment collection')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read sales payment collection"
+            :is-form="false"
+            :checked="$rolePermission.has('read sales payment collection', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read sales payment collection')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update sales payment collection"
+            :is-form="false"
+            :checked="$rolePermission.has('update sales payment collection', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update sales payment collection')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete sales payment collection"
+            :is-form="false"
+            :checked="$rolePermission.has('delete sales payment collection', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete sales payment collection')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="approve sales payment collection"
+            :is-form="false"
+            :checked="$rolePermission.has('approve sales payment collection', permissions)"
+            :description="'approve' | uppercase"
+            @click.native="togglePermission('approve sales payment collection')"
+          />
+        </td>
+      </tr>
     </p-table>
     <button
       class="btn btn-primary"

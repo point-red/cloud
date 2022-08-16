@@ -1,9 +1,9 @@
 import api from '@/api'
 
-const url = '/sales/delivery-notes'
+const url = '/sales/payment-collection'
 
 const state = {
-  deliveryNote: {
+  salesPaymentCollection: {
     date: null,
     customer_id: null,
     form: {
@@ -19,45 +19,55 @@ const state = {
     customer: {
       name: null
     },
-    warehouse: {
-      name: null
-    }
+    details: []
   },
-  deliveryNotes: [],
+  salesPaymentCollections: [],
+  historySalesPaymentCollections: [],
+  references: {},
   pagination: {}
 }
 
 const getters = {
-  deliveryNote: state => {
-    return state.deliveryNote
+  salesPaymentCollection: state => {
+    return state.salesPaymentCollection
   },
-  deliveryNotes: state => {
-    return state.deliveryNotes
+  salesPaymentCollections: state => {
+    return state.salesPaymentCollections
   },
   pagination: state => {
     return state.pagination
+  },
+  references: state => {
+    return state.references
+  },
+  historySalesPaymentCollections: state => {
+    return state.historySalesPaymentCollections
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.deliveryNotes = payload.data
+    state.salesPaymentCollections = payload.data
+    state.historySalesPaymentCollections = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    // payload.data.items.forEach(element => {
-    //   element.more = false
-    // })
-    state.deliveryNote = payload.data
+    payload.data.details.forEach(element => {
+      element.more = false
+    })
+    state.salesPaymentCollection = payload.data
   },
   'CREATE' (state, payload) {
-    state.deliveryNote = payload
+    state.salesPaymentCollection = payload
   },
   'UPDATE' (state, payload) {
-    state.deliveryNote = payload
+    state.salesPaymentCollection = payload
   },
   'DELETE' (state, payload) {
-    state.deliveryNote = {}
+    state.salesPaymentCollection = {}
+  },
+  'FETCH_REFERENCES' (state, payload) {
+    state.references = payload.data
   }
 }
 
@@ -78,6 +88,17 @@ const actions = {
       api.get(url + '/' + payload.id, payload)
         .then(response => {
           commit('FETCH_OBJECT', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  getReferences ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/' + payload.id + '/references', payload)
+        .then(response => {
+          commit('FETCH_REFERENCES', response)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -154,12 +175,64 @@ const actions = {
         })
     })
   },
+  addHistories (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/histories', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  getHistories ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/' + payload.id + '/histories', payload)
+        .then(response => {
+          commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          console.log(error)
+          reject(error)
+        })
+    })
+  },
   export ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url + '/export', payload)
+      api.post(url + '/export', payload)
         .then((response) => {
           resolve(response)
         }, (error) => {
+          reject(error)
+        })
+    })
+  },
+  generateFormNumber ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/generate-number', payload)
+        .then((response) => {
+          resolve(response)
+        }, (error) => {
+          reject(error)
+        })
+    })
+  },
+  approveByEmail (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/approve', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  rejectByEmail (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/reject', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
           reject(error)
         })
     })

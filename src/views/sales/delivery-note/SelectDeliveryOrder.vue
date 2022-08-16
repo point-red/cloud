@@ -49,11 +49,17 @@
             v-for="(item, optionItemIndex) in option.items"
             :key="'item-'+optionItemIndex"
           >
-            <td class="pl-0">
+            <td
+              v-if="item.quantity_delivered"
+              class="pl-0"
+            >
               {{ item.item.name }}
             </td>
-            <td class="w-1 text-right text-nowrap">
-              {{ item.quantity }} {{ item.unit }}
+            <td
+              v-if="item.quantity_delivered"
+              class="w-1 text-right text-nowrap"
+            >
+              {{ item.quantity_delivered }} {{ item.unit }}
             </td>
           </tr>
         </table>
@@ -121,10 +127,23 @@ export default {
           group_by: 'form.id',
           filter_form: 'activePending;approvalApproved',
           filter_not_null: 'form.number',
-          includes: 'customer;items.item.units;form.createdBy'
+          includes: 'customer;warehouse;items.item.units;form.createdBy;deliveryNotes.items'
         }
       }).then(response => {
         this.options = response.data
+        const data = response.data
+        Object.keys(data).forEach(key => {
+          if (data[key].delivery_notes.length) {
+            const deliveryNoteItem = data[key].delivery_notes[data[key].delivery_notes.length - 1].items
+            Object.keys(deliveryNoteItem).forEach(keyDNItem => {
+              Object.keys(data[key].items).forEach(keyItem => {
+                if (deliveryNoteItem[keyDNItem].item_id == data[key].items[keyItem].item_id) {
+                  this.options[key].items[keyItem].quantity_delivered = deliveryNoteItem[keyDNItem].quantity_remaining
+                }
+              })
+            })
+          }
+        })
       }).finally(() => {
         this.isLoading = false
       })

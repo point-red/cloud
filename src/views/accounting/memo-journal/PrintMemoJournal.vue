@@ -209,7 +209,7 @@ export default {
     this.onLoad = false
   },
   methods: {
-    ...mapActions('inventoryTransferItem', ['addHistories']),
+    ...mapActions('accountingMemoJournal', ['addHistories']),
     clear () {
       this.mutableId = null
       this.mutableLabel = null

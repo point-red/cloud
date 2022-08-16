@@ -121,10 +121,13 @@
               </th>
               <th>Item</th>
               <th class="text-right">
+                Quantity Remaining
+              </th>
+              <th class="text-right">
                 Quantity
               </th>
             </tr>
-            <template v-for="(row, index) in deliveryNote.items">
+            <template v-for="(row, index) in items">
               <tr
                 slot="p-body"
                 :key="index"
@@ -132,7 +135,10 @@
                 <th class="text-center">
                   {{ index + 1 }}
                 </th>
-                <td>{{ row.item.label }}</td>
+                <td>{{ row.label }}</td>
+                <td class="text-right">
+                  {{ row.quantity_remaining | numberFormat }} {{ row.unit }}
+                </td>
                 <td class="text-right">
                   {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
@@ -140,7 +146,7 @@
             </template>
           </point-table>
           <div class="row mt-50">
-            <div class="col-sm-6">
+            <div class="col-sm-9">
               <h6 class="mb-0">
                 {{ $t('notes') | uppercase }}
               </h6>
@@ -161,26 +167,6 @@
               </div>
               {{ deliveryNote.form.created_by.full_name | uppercase }}
               <div class="d-sm-block d-md-none mt-10" />
-            </div>
-            <div class="col-sm-3 text-center">
-              <h6 class="mb-0">
-                {{ $t('approved by') | uppercase }}
-              </h6>
-              <div
-                class="mb-50"
-                style="font-size:11px"
-              >
-                <template v-if="deliveryNote.form.approval_at">
-                  {{ deliveryNote.form.approval_at | dateFormat('DD MMMM YYYY') }}
-                </template>
-                <template v-else>
-                  _______________
-                </template>
-              </div>
-              {{ deliveryNote.form.request_approval_to.full_name | uppercase }}
-              <div style="font-size:11px">
-                {{ deliveryNote.form.request_approval_to.email | lowercase }}
-              </div>
             </div>
           </div>
         </p-block-inner>
@@ -217,7 +203,27 @@ export default {
   },
   computed: {
     ...mapGetters('salesDeliveryNote', ['deliveryNote']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    items () {
+      var items = []
+      this.deliveryNote.items.forEach(function (element) {
+        const i = Object.keys(items).length
+
+        if (i && items[i - 1].id === element.item_id) {
+          items[i - 1].quantity += element.quantity
+          items[i - 1].quantity_remaining += element.quantity_remaining
+        } else {
+          items.push({
+            id: element.item_id,
+            unit: element.unit,
+            label: element.item.label,
+            quantity: element.quantity,
+            quantity_remaining: element.quantity_remaining
+          })
+        }
+      })
+      return items
+    }
   },
   watch: {
     '$route' (to, from) {

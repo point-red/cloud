@@ -420,6 +420,8 @@ export default {
       this.form.customerId = reference.customer.id
       this.form.customerName = reference.customer.name
       this.form.customerLabel = reference.customer.label
+      this.form.discountPercent = reference.deliveryOrder.salesOrder.discountPercent
+      this.form.discountValue = reference.deliveryOrder.salesOrder.discountValue
 
       this.form.items = reference.items.map(referenceItem => {
         return {
@@ -432,9 +434,9 @@ export default {
           converter: referenceItem.converter,
           quantity: referenceItem.quantity,
           price: referenceItem.price,
-          discountPercent: referenceItem.discountPercent,
-          discountValue: referenceItem.discountValue,
-          total: referenceItem.quantity * (referenceItem.price - referenceItem.discountValue),
+          discountPercent: referenceItem.deliveryOrderItem.salesOrderItem.discountPercent,
+          discountValue: referenceItem.deliveryOrderItem.salesOrderItem.discountValue,
+          total: referenceItem.quantity * (referenceItem.price - referenceItem.deliveryOrderItem.salesOrderItem.discountValue),
           notes: referenceItem.notes,
           allocationId: referenceItem.allocation && referenceItem.allocation.id,
           allocationName: referenceItem.allocation && referenceItem.allocation.name,
