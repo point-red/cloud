@@ -39,6 +39,22 @@
         <i class="si si-drawer mr-5" /> Storage
       </router-link>
 
+      <a
+        class="dropdown-item"
+        href="https://app.bluecatforms.com/mNe5NnPr/new-form"
+        target="_blank"
+      >
+        <i class="fa fa-bug" /> Bug Report
+      </a>
+
+      <a
+        class="dropdown-item"
+        href="https://pointdocumentation.gitbook.io/point-erp"
+        target="_blank"
+      >
+        <i class="fa fa-book" /> Documentation
+      </a>
+
       <div class="dropdown-divider" />
       <a
         class="dropdown-item"

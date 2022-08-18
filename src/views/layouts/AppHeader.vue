@@ -49,13 +49,6 @@
       <div class="content-header-section">
         <notification-dropdown />
 
-        <a
-          class="btn btn-rounded btn-dual-secondary"
-          href="https://app.bluecatforms.com/mNe5NnPr/new-form"
-          target="_blank"
-        >
-          <i class="fa fa-bug" />
-        </a>
         <header-dropdown />
 
         <!-- Toggle Side Overlay -->
