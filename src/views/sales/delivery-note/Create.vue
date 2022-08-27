@@ -374,6 +374,13 @@ export default {
       this.form.items[e.index].converter = e.converter
     },
     chooseDeliveryOrder (deliveryOrder) {
+      const items = deliveryOrder.items.filter(item => item.quantity_delivered)
+
+      if (items.length <= 0) {
+        this.$notification.error('Can not load form ' + deliveryOrder.form.number + ', because there is no item or quantity item is 0')
+        return false
+      }
+
       this.chooseWarehouse(deliveryOrder.warehouse)
 
       this.deliveryOrder = deliveryOrder
@@ -381,7 +388,7 @@ export default {
       this.form.customer_id = deliveryOrder.customer.id
       this.form.customer_name = deliveryOrder.customer.name
       this.form.customer_label = deliveryOrder.customer.label
-      this.form.items = deliveryOrder.items.map(item => {
+      this.form.items = items.map(item => {
         item.item.units.forEach((unit, keyUnit) => {
           if (unit.id == item.item.unit_default) {
             item.item.unit = unit
