@@ -192,6 +192,19 @@ export default {
       this.$emit('choosen', option)
       this.close()
     },
+    clear () {
+      this.mutableId = null
+      this.mutableLabel = null
+      this.$emit('input', null)
+      this.$emit('choosen', {
+        index: this.index,
+        id: null,
+        label: null,
+        name: null,
+        depreciation_method: null
+      })
+      this.close()
+    },
     show () {
       this.$refs['select-' + this.id].show()
     },

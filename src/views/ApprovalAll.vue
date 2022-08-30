@@ -186,6 +186,10 @@ export default {
       approveByEmailPaymentCollection: 'approveByEmail',
       rejectByEmailPaymentCollection: 'rejectByEmail'
     }),
+    ...mapActions('accountingMemoJournal', {
+      approveByEmailMemo: 'approveByEmail',
+      rejectByEmailMemo: 'rejectByEmail'
+    }),
     close () {
       open(location, '_self').close()
     },
@@ -200,6 +204,9 @@ export default {
       }
       if (this.resourceType === 'PaymentCollection') {
         this.handleApprovalPaymentCollection()
+      }
+      if (this.resourceType === 'MemoJournal') {
+        this.handleApprovalMemoJournal()
       }
     },
     async handleApprovalTransferSend () {
@@ -304,6 +311,35 @@ export default {
       const bulkId = JSON.parse(this.$route.query.ids)
       const { data: { data: cashAdvances } } = await axios.post('approval-with-token/finance/cash-advances/bulk', { token: this.token, bulk_id: bulkId, status: this.actionCode, activity: activity }, { headers })
       this.resources = cashAdvances
+    },
+    async handleApprovalMemoJournal () {
+      if (this.action === 'approve') {
+        this.approveByEmailMemo({
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id
+        }).then(response => {
+          this.resources = response.data
+          this.projectName = this.tenantName
+          this.approvalStatus = 1
+        }).catch(error => {
+          console.log(error.message)
+        })
+      }
+      if (this.action === 'reject') {
+        this.rejectByEmailMemo({
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id,
+          reason: 'Rejected by email'
+        }).then(response => {
+          this.resources = response.data
+          this.projectName = this.tenantName
+          this.approvalStatus = -1
+        }).catch(error => {
+          console.log(error.message)
+        })
+      }
     },
     setActionCode () {
       if (this.action === 'approve') {

@@ -723,6 +723,17 @@
                   </router-link>
                 </li>
                 <li
+                  v-if="$permission.has('read memo journal')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/accounting/memo-journal"
+                    active-class="active"
+                  >
+                    {{ $t('memo jurnal') | uppercase }}
+                  </router-link>
+                </li>
+                <li
                   v-if="$permission.has('read balance sheet')"
                   @click="toggleLeftSidebar('close-xs')"
                 >

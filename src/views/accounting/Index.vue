@@ -16,6 +16,11 @@
         icon="si si-docs"
       />
       <p-box
+        :name="$t('memo jurnal')"
+        link="/accounting/memo-journal"
+        icon="si si-docs"
+      />
+      <p-box
         :name="$t('balance sheet')"
         link="/accounting/balance-sheet"
         icon="si si-notebook"
