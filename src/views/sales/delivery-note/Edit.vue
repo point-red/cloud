@@ -169,7 +169,7 @@
             </point-table>
 
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-sm-9">
                 <textarea
                   v-model="form.notes"
                   rows="5"
@@ -189,22 +189,6 @@
                 </div>
                 {{ requestedBy | uppercase }}
                 <div class="d-sm-block d-md-none mt-10" />
-              </div>
-              <div class="col-sm-3 text-center">
-                <h6 class="mb-0">
-                  {{ $t('approved by') | uppercase }}
-                </h6>
-                <div
-                  class="mb-50"
-                  style="font-size:11px"
-                >
-                  _______________
-                </div>
-                <span
-                  class="select-link"
-                  @click="$refs.approver.open()"
-                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
-                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
             </div>
             <hr>
@@ -227,11 +211,6 @@
         </p-block>
       </div>
     </form>
-    <m-user
-      ref="approver"
-      permission="approve sales order"
-      @choosen="chooseApprover"
-    />
     <select-delivery-order
       ref="selectDeliveryOrder"
       @choosen="chooseDeliveryOrder"
@@ -360,6 +339,7 @@ export default {
       this.form.driver = deliveryNote.driver
       this.form.license_plate = deliveryNote.license_plate
       this.form.delivery_order_id = deliveryNote.delivery_order_id
+      this.form.request_approval_to = this.deliveryOrder.form.request_approval_to
 
       const items = []
       let currentId = 0
@@ -413,11 +393,6 @@ export default {
         element.warehouse_id = this.form.warehouse_id
         element.warehouse_name = this.form.warehouse_name
       })
-    },
-    chooseApprover (value) {
-      this.form.request_approval_to = value.id
-      this.form.approver_name = value.fullName || value.full_name
-      this.form.approver_email = value.email
     },
     chooseCustomer (value) {
       this.form.customer_id = value.id

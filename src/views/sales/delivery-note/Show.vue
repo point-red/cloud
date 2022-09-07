@@ -88,7 +88,7 @@
                   <td class="font-weight-bold">
                     {{ $t('date') | uppercase }}
                   </td>
-                  <td>{{ deliveryNote.date | dateFormat('DD MMMM YYYY') }}</td>
+                  <td>{{ deliveryNote.form.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
                 <tr v-if="deliveryNote.sales_order">
                   <td class="font-weight-bold">
@@ -232,7 +232,7 @@ export default {
       const wherePending = form.done == 0
       const whereNotClosed = form.close_status == null || form.close_status != 1
       return {
-        edit: wherePending && whereNotClosed
+        edit: wherePending && whereNotClosed && this.$permission.has('update sales delivery note')
       }
     },
     items () {
