@@ -656,7 +656,7 @@ export default {
     total_return () {
       var totalReturn = 0
       this.form.references.salesReturn.forEach(element => {
-        if (this.isRowChecked(1, element.id)) {
+        if (this.isRowChecked(2, element.id)) {
           totalReturn += parseFloat(element.toCollect)
         }
       })

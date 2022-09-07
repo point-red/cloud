@@ -60,6 +60,14 @@
       <span>{{ $t('sales invoice') | uppercase }}</span>
     </router-link>
     <router-link
+      to="/sales/return"
+      class="btn mr-5 mb-15"
+      :class="{'btn-secondary': !isMatch('/sales/return')}"
+      active-class="btn-primary"
+    >
+      <span>{{ $t('sales return ') | uppercase }}</span>
+    </router-link>
+    <router-link
       v-if="$permission.has('create sales payment collection')"
       to="/sales/payment-collection"
       class="btn mr-5 mb-15"
@@ -76,20 +84,6 @@
     >
       <span>{{ $t('sales summary') | uppercase }}</span>
     </router-link>
-    <!-- <router-link
-      to="/sales/return"
-      class="btn mr-5 mb-15"
-      :class="{'btn-secondary': !isMatch('/sales/return')}"
-      active-class="btn-primary">
-      <span>{{ $t('return') | uppercase }}</span>
-    </router-link> -->
-    <!-- <router-link
-      to="/sales/payment-collection"
-      class="btn mr-5 mb-15"
-      :class="{'btn-secondary': !isMatch('/sales/payment-collection')}"
-      active-class="btn-primary">
-      <span>{{ $t('payment collection') | uppercase }}</span>
-    </router-link> -->
   </div>
 </template>
 
