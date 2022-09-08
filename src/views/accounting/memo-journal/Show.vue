@@ -402,32 +402,6 @@ export default {
       }).catch(error => {
         console.log(error.message)
       })
-    },
-    onCloseApprove () {
-      const items = []
-      this.accountingMemoJournal.items.forEach(itemTransfer => {
-        this.accountingMemoJournal.receive_item.items.forEach(itemReceive => {
-          if (itemReceive.item_id == itemTransfer.item_id && itemReceive.production_number == itemTransfer.production_number && itemReceive.expiry_date == itemTransfer.expiry_date) {
-            if (itemReceive.quantity < itemTransfer.quantity) {
-              items.push({
-                item_id: itemTransfer.item_id,
-                difference: itemTransfer.quantity - itemReceive.quantity
-              })
-            }
-          }
-        })
-      })
-      this.closeApprove({
-        id: this.id,
-        items: items
-      }).then(response => {
-        this.$notification.success('close form approved')
-        this.accountingMemoJournalRequest()
-        this.addHistories({ id: response.data.id, activity: 'Close Form Approved' })
-          .catch(error => {
-            console.log(error.message)
-          })
-      })
     }
   }
 }

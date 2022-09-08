@@ -107,7 +107,7 @@
                     :rowspan="accountingMemoJournal.items.length"
                     class="text-center"
                   >
-                    <router-link :to="{ name: 'inventory.transfer.send.show', params: { id: accountingMemoJournal.id }}">
+                    <router-link :to="{ name: 'accounting.memo.journal.show', params: { id: accountingMemoJournal.id }}">
                       {{ accountingMemoJournal.number }}
                     </router-link>
                   </th>
