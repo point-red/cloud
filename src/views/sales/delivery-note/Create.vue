@@ -441,7 +441,7 @@ export default {
       if (row.require_expiry_date == 1 || row.require_production_number == 1) {
         row.warehouse_id = this.form.warehouse_id
         row.index = index
-        row.max_input = parseFloat(row.quantity_remaining)
+        row.max_input = Number(row.quantity_remaining) + Number(row.quantity)
         this.$refs.inventory.open(row, row.quantity)
       }
     },

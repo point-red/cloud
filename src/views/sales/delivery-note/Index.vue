@@ -383,7 +383,28 @@ export default {
       }).catch(error => {
         this.$notification.error(error.message)
       }).finally(() => {
+        this.groupItems()
         this.isLoading = false
+      })
+    },
+    groupItems () {
+      this.deliveryNotes.forEach((deliveryNote, i) => {
+        const items = []
+        let currentId = 0
+        deliveryNote.items.forEach((item) => {
+          item.item_label = item.item.name
+
+          let quantity = 0
+          if (currentId != item.item_id) {
+            items.push(item)
+            currentId = item.item_id
+            quantity = Number(item.quantity)
+          }
+
+          const index = items.length - 1
+          items[index].quantity = quantity || items[index].quantity + Number(item.quantity)
+        })
+        this.deliveryNotes[i].items = items
       })
     },
     updatePage (value) {
