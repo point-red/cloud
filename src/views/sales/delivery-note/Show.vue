@@ -90,13 +90,13 @@
                   </td>
                   <td>{{ deliveryNote.form.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
-                <tr v-if="deliveryNote.sales_order">
+                <tr>
                   <td class="font-weight-bold">
                     {{ $t('reference') | uppercase }}
                   </td>
-                  <td>{{ deliveryNote.sales_order.form.number }}</td>
+                  <td>{{ deliveryNote.delivery_order.form.number }}</td>
                 </tr>
-                <tr v-if="deliveryNote">
+                <tr>
                   <td class="font-weight-bold">
                     {{ $t('warehouse') | uppercase }}
                   </td>
@@ -292,6 +292,7 @@ export default {
           with_origin: true,
           includes: 'customer;' +
             'warehouse;' +
+            'deliveryOrder.form;' +
             'items.item;' +
             'items.allocation;' +
             'form.createdBy;' +
