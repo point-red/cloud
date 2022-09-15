@@ -43,8 +43,8 @@
                 v-if="item.quantityRemaining > 0"
                 :key="'request-'+optionIndex+'-'+itemIndex"
               >
-                <td>{{ itemIndex === 0 ? `${$options.filters.dateFormat(option.date, 'DD MMMM YYYY')}` : null }}</td>
-                <td>{{ itemIndex === 0 ? option.number : null }}</td>
+                <td>{{ itemIndex === 0 ? `${$options.filters.dateFormat(option.form.date, 'DD MMMM YYYY')}` : null }}</td>
+                <td>{{ itemIndex === 0 ? option.form.number : null }}</td>
                 <td>{{ itemIndex === 0 ? option.customerName : null }}</td>
                 <td>{{ item.itemName }}</td>
                 <td>{{ item.quantityRemaining }}</td>
