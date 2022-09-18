@@ -159,16 +159,11 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>No</th>
-              <th>
-                Date
-              </th>
+              <th>Date</th>
               <th>Nomor Form</th>
               <th>Supplier</th>
               <th>Notes</th>
-              <th class="text-right">
-                Value
-              </th>
+              <th>Value</th>
               <th class="text-center">
                 Approval Status
               </th>
@@ -181,40 +176,35 @@
             </tr>
             <template v-for="(purchasePaymentOrder, index) in purchasePaymentOrders">
               <tr
-                v-for="(purchasePaymentOrderItem, index2) in purchasePaymentOrder.items"
-                :key="'pr-' + index + '-i-' + index2"
+                :key="'pr-' + index"
                 slot="p-body"
               >
+                <td>{{ purchasePaymentOrder.date | dateFormat('DD MMMM YYYY') }}</td>
                 <th>
                   <router-link
                     :to="{ name: 'purchase.request.show', params: { id: purchasePaymentOrder.id }}"
                   >
-                    {{ purchasePaymentOrder.form.number }}
+                    {{ purchasePaymentOrder.form_number }}
                   </router-link>
                 </th>
-                <td>{{ purchasePaymentOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                <td>{{ purchasePaymentOrderItem.item_name }}</td>
-                <td>{{ purchasePaymentOrderItem.notes }}</td>
-                <td
-                  class="text-right"
-                >
-                  {{ purchasePaymentOrderItem.quantity | numberFormat }} {{ purchasePaymentOrderItem.unit }}
-                </td>
+                <td>{{ purchasePaymentOrder.supplier }}</td>
+                <td>{{ purchasePaymentOrder.notes }}</td>
+                <td>{{ purchasePaymentOrder.value | numberFormat }}</td>
                 <td class="text-center">
                   <div
-                    v-if="purchasePaymentOrder.form.approval_status == 0"
+                    v-if="purchasePaymentOrder.approval_status == 'Pending'"
                     class="badge badge-primary"
                   >
                     {{ $t('pending') | uppercase }}
                   </div>
                   <div
-                    v-if="purchasePaymentOrder.form.approval_status == -1"
+                    v-if="purchasePaymentOrder.approval_status == 'Rejected'"
                     class="badge badge-danger"
                   >
                     {{ $t('rejected') | uppercase }}
                   </div>
                   <div
-                    v-if="purchasePaymentOrder.form.approval_status == 1"
+                    v-if="purchasePaymentOrder.approval_status == 'Approved'"
                     class="badge badge-success"
                   >
                     {{ $t('approved') | uppercase }}
@@ -222,33 +212,31 @@
                 </td>
                 <td class="text-center">
                   <div
-                    v-if="purchasePaymentOrder.form.cancellation_status == 1"
+                    v-if="purchasePaymentOrder.done_status == 'Canceled'"
                     class="badge badge-danger"
                   >
                     {{ $t('canceled') | uppercase }}
                   </div>
                   <div
-                    v-else-if="purchasePaymentOrder.form.done == 0"
+                    v-if="purchasePaymentOrder.done_status == 'Pending'"
                     class="badge badge-primary"
                   >
                     {{ $t('pending') | uppercase }}
                   </div>
                   <div
-                    v-else-if="purchasePaymentOrder.form.done == 1"
+                    v-if="purchasePaymentOrder.done_status == 'Done'"
                     class="badge badge-success"
                   >
                     {{ $t('done') | uppercase }}
                   </div>
                 </td>
-                <td>
-                  <!-- <p-form-check-box
-                      id="check-box"
-                      :is-form="false"
-                      name="check-box"
-                      :checked="$_checkList_isRowChecked(purchasePaymentOrder.id)"
-                      class="text-center"
-                      @click.native="$_checkList_toggleCheckRow(purchasePaymentOrder.id)"
-                  />-->
+                <td class="text-center">
+                  <router-link
+                    class="btn btn-sm btn-light"
+                    to="/purchase/payment-order"
+                  >
+                    <i class="fa fa-history" />
+                  </router-link>
                 </td>
               </tr>
             </template>
@@ -276,7 +264,7 @@
 import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
-// import debounce from 'lodash/debounce'
+import debounce from 'lodash/debounce'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 // import CheckListMixin from '@/mixins/CheckList'
@@ -315,16 +303,67 @@ export default {
   computed: {
     ...mapGetters('purchasePaymentOrder', ['purchasePaymentOrders', 'pagination'])
   },
+  watch: {
+    date: {
+      handler: function () {
+        this.$router.push({
+          query: {
+            ...this.$route.query,
+            dateFrom: this.date.start,
+            dateTo: this.date.end
+          }
+        })
+        this.getPurchasePaymentOrder()
+      },
+      deep: true
+    }
+  },
   created () {
     this.getPurchasePaymentOrder()
   },
   methods: {
     ...mapActions('purchasePaymentOrder', ['get']),
+    filterSearch: debounce(function (value) {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          search: value
+        }
+      })
+      this.searchText = value
+      this.currentPage = 1
+      this.getPurchasePaymentOrder()
+    }, 300),
     getPurchasePaymentOrder () {
+      console.log(this.$options.filters.dateFormat(this.date.start, 'YYYY-MM-DD'), 'DATE START')
       this.isLoading = true
-      setTimeout(() => {
+      this.get({
+        params: {
+          filterLike: {
+            'form.number': this.searchText
+          },
+          dateFrom: this.$options.filters.dateFormat(this.date.start, 'YYYY-MM-DD'),
+          dateTo: this.$options.filters.dateFormat(this.date.end, 'YYYY-MM-DD'),
+          approvalStatus: this.formApprovalStatus.label,
+          doneStatus: this.formStatus.label,
+          page: 1
+        }
+      }).catch((error) => {
+        this.$notification.error(error.message)
+      }).finally(() => {
         this.isLoading = false
-      }, 2000)
+      })
+    },
+    chooseFormStatus (option) {
+      this.formStatus.label = option.label
+      this.formStatus.value = option.value
+      this.getPurchasePaymentOrder()
+    },
+    chooseFormApprovalStatus (option) {
+      console.log(option, 'OPTION')
+      this.formApprovalStatus.label = option.label
+      this.formApprovalStatus.value = option.value
+      this.getPurchasePaymentOrder()
     }
   }
 }
