@@ -2,30 +2,24 @@ import api from '@/api/nodeServer'
 
 const url = '/purchase/payment-order'
 
-// const dummyDataList = {
-//   data: [
-//     {
-//       payment_order_id: 5,
-//       date: '2022-09-12T00:00:00.000Z',
-//       form_number: 'PP2101001',
-//       supplier: 'Supplier Test',
-//       notes: 'string',
-//       value: '35000.000000000000000000000000000000',
-//       approval_status: 'Pending',
-//       done_status: 'Pending'
-//     }
-//   ],
-//   meta: {
-//     current_page: 1,
-//     last_page: 1,
-//     per_page: 10,
-//     total: 3
-//   }
-// }
-
 const state = {
   purchasePaymentOrder: {
-    date: null
+    date: null,
+    customer_id: null,
+    form: {
+      number: null,
+      notes: null,
+      created_by: {
+        name: null
+      },
+      request_approval_to: {
+        full_name: null
+      }
+    },
+    customer: {
+      name: null
+    },
+    details: []
   },
   purchasePaymentOrders: [],
   pagination: {},
@@ -55,6 +49,9 @@ const mutations = {
   },
   'FETCH_REFERENCES' (state, payload) {
     state.references = payload.data
+  },
+  'CREATE' (state, payload) {
+    state.purchasePaymentOrder = payload
   }
 }
 
@@ -75,6 +72,36 @@ const actions = {
       api.get(`${url}/reference/${payload.id}`)
         .then(response => {
           commit('FETCH_REFERENCES', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  create (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url, payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  approve (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(`${url}/${payload.id}/approve`)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  reject (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.patch(`${url}/${payload.id}/reject`, { reason: payload.reason })
+        .then(response => {
           resolve(response)
         }).catch(error => {
           reject(error)

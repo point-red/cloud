@@ -556,7 +556,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import PointTable from 'point-table-vue'
 import Form from '@/utils/Form'
-import Coa from '@/views/sales/payment-collection/Coa'
+import Coa from './Coa'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -613,6 +613,12 @@ export default {
           id: null,
           amount: 0
         }],
+        others_filtered: [{
+          coaId: null,
+          notes: null,
+          amount: 0,
+          allocationId: null
+        }],
         others: [{
           coaId: null,
           coaName: null,
@@ -639,7 +645,6 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('salesPaymentCollection', ['references']),
     ...mapGetters('auth', ['authUser']),
     total_invoice () {
       var totalInvoice = 0
@@ -677,7 +682,7 @@ export default {
     this.getDataFromStorage()
   },
   methods: {
-    ...mapActions('purchasePaymentOrder', ['getReferences']),
+    ...mapActions('purchasePaymentOrder', ['getReferences', 'create']),
     ...mapActions('salesPaymentCollectionApproval', ['sendSingle']),
     getDataFromStorage () {
       var data = JSON.parse(localStorage.getItem('paymentCollectionData'))
@@ -863,32 +868,32 @@ export default {
       this.form.invoices = []
       this.form.downPayments = []
       this.form.returns = []
+      this.form.others_filtered = []
       this.checkedRowToForm()
-      console.log(this.form, 'Form')
+      this.filteringOthersForm()
       const payload = {
         paymentType: this.form.payment_type,
         supplierId: this.form.supplier_id,
         date: this.$options.filters.dateFormat(this.form.date, 'YYYY-MM-DD'),
-        paymentAccountId: 'payment account id',
+        paymentAccountId: 1, // Dummy
         invoices: this.form.invoices,
         downPayments: this.form.downPayments,
         returns: this.form.returns,
-        others: this.form.others,
+        others: this.form.others_filtered,
         totalInvoiceAmount: this.total_invoice,
         totalDownPaymentAmount: this.total_down_payment,
         totalReturnAmount: this.total_return,
         totalOtherAmount: this.form.total_other,
         totalAmount: this.total_amount,
-        approvedBy: 'Approved By',
+        approvedBy: 1, // Dummy
         notes: this.form.notes
       }
-      console.log(payload, 'payload')
       this.isSaving = true
 
-      var totalInvoice = this.total_invoice
-      var totalDownPayment = this.total_down_payment
-      var totalReturn = this.total_return
-      var totalOther = this.form.total_other
+      // var totalInvoice = this.total_invoice
+      // var totalDownPayment = this.total_down_payment
+      // var totalReturn = this.total_return
+      // var totalOther = this.form.total_other
 
       if (this.form.request_approval_to == null) {
         this.$notification.error('approval cannot be null')
@@ -924,13 +929,13 @@ export default {
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/sales/payment-collection/' + response.data.id)
-          this.sendSingle({
-            id: response.data.id,
-            total_invoice: totalInvoice,
-            total_down_payment: totalDownPayment,
-            total_return: totalReturn,
-            total_other: totalOther
-          })
+          // this.sendSingle({
+          //   id: response.data.id,
+          //   total_invoice: totalInvoice,
+          //   total_down_payment: totalDownPayment,
+          //   total_return: totalReturn,
+          //   total_other: totalOther
+          // })
             .catch(error => {
               this.$notification.error(error.message)
               this.form.errors.record(error.errors)
@@ -940,6 +945,16 @@ export default {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
+    },
+    filteringOthersForm () {
+      this.form.others.forEach(element => {
+        this.form.others_filtered.push({
+          coaId: element.coaId,
+          notes: element.notes,
+          amount: element.amount,
+          allocationId: element.allocationId
+        })
+      })
     }
   }
 }

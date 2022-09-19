@@ -2,7 +2,7 @@
   <div>
     <breadcrumb>
       <breadcrumb-purchase />
-      <span class="breadcrumb-item active">{{ $t('purchase request') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ $t('purchase payment order') | uppercase }}</span>
     </breadcrumb>
 
     <purchase-menu />
@@ -11,7 +11,7 @@
       <p-block>
         <div class="input-group block">
           <router-link
-            v-if="$permission.has('create purchase request')"
+            v-if="$permission.has('create purchase payment order')"
             to="/purchase/payment-order/create"
             class="input-group-prepend"
           >

@@ -341,7 +341,7 @@
                   </router-link>
                 </li> -->
                 <li
-                  v-if="$permission.has('read purchase invoice')"
+                  v-if="$permission.has('read purchase payment order')"
                   @click="toggleLeftSidebar('close-xs')"
                 >
                   <router-link
