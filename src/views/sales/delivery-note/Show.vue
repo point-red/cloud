@@ -8,10 +8,25 @@
       >
         {{ $t('delivery note') | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">{{ deliveryNote.form.number | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ deliveryNote.form.number || deliveryNote.form.edited_number | uppercase }}</span>
     </breadcrumb>
 
     <sales-menu />
+
+    <div v-if="deliveryNote.form.number && deliveryNote.form.request_approval_to">
+      <p-show-form-approval-status
+        form="sales delivery note"
+        :is-loading="isLoading"
+        :is-proccess-approval="isProccessApproval"
+        :approval-status="deliveryNote.form.approval_status"
+        :approval-reason="deliveryNote.form.approval_reason"
+        :approved-by="deliveryNote.form.request_approval_to.full_name"
+        :cancellation-status="deliveryNote.form.cancellation_status"
+        :close-status="deliveryNote.form.close_status"
+        @onApprove="onApprove"
+        @onReject="onReject"
+      />
+    </div>
 
     <div
       v-if="deliveryNote"
@@ -21,19 +36,26 @@
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
-              <div class="text-right">
+              <h3 v-if="deliveryNote.form.edited_number">
+                {{ $t('archive') | uppercase }}
+              </h3>
+              <div
+                v-if="deliveryNote.form.number"
+                class="text-right"
+              >
                 <router-link
                   :to="{ name: 'sales.delivery-note.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <!-- <router-link
+                <router-link
+                  v-if="actions.edit"
                   :to="{ name: 'sales.delivery-note.edit', params: { id: deliveryNote.id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('edit') | uppercase }}
-                </router-link> -->
+                </router-link>
                 <!-- <button
                   v-if="deliveryNote.form.cancellation_status == null || deliveryNote.form.cancellation_status == -1"
                   class="btn btn-sm btn-outline-secondary mr-5"
@@ -60,21 +82,21 @@
                   >
                     {{ $t('form number') | uppercase }}
                   </td>
-                  <td>{{ deliveryNote.form.number }}</td>
+                  <td>{{ deliveryNote.form.number || deliveryNote.form.edited_number }}</td>
                 </tr>
                 <tr>
                   <td class="font-weight-bold">
                     {{ $t('date') | uppercase }}
                   </td>
-                  <td>{{ deliveryNote.date | dateFormat('DD MMMM YYYY') }}</td>
+                  <td>{{ deliveryNote.form.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
-                <tr v-if="deliveryNote.sales_order">
+                <tr>
                   <td class="font-weight-bold">
                     {{ $t('reference') | uppercase }}
                   </td>
-                  <td>{{ deliveryNote.sales_order.form.number }}</td>
+                  <td>{{ deliveryNote.delivery_order.form.number }}</td>
                 </tr>
-                <tr v-if="deliveryNote">
+                <tr>
                   <td class="font-weight-bold">
                     {{ $t('warehouse') | uppercase }}
                   </td>
@@ -198,12 +220,21 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: false,
-      isDeleting: false
+      isDeleting: false,
+      isProccessApproval: false
     }
   },
   computed: {
     ...mapGetters('salesDeliveryNote', ['deliveryNote']),
     ...mapGetters('auth', ['authUser']),
+    actions () {
+      const { form } = this.deliveryNote
+      const wherePending = form.done == 0
+      const whereNotClosed = form.close_status == null || form.close_status != 1
+      return {
+        edit: wherePending && whereNotClosed && this.$permission.has('update sales delivery note')
+      }
+    },
     items () {
       var items = []
       this.deliveryNote.items.forEach(function (element) {
@@ -211,7 +242,6 @@ export default {
 
         if (i && items[i - 1].id === element.item_id) {
           items[i - 1].quantity += element.quantity
-          items[i - 1].quantity_remaining += element.quantity_remaining
         } else {
           items.push({
             id: element.item_id,
@@ -262,6 +292,7 @@ export default {
           with_origin: true,
           includes: 'customer;' +
             'warehouse;' +
+            'deliveryOrder.form;' +
             'items.item;' +
             'items.allocation;' +
             'form.createdBy;' +
@@ -308,20 +339,32 @@ export default {
       })
     },
     onApprove () {
+      this.isProccessApproval = true
+
       this.approve({
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
         this.deliveryNoteRequest()
+      }).catch(error => {
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessApproval = false
       })
     },
     onReject (reason) {
+      this.isProccessApproval = true
+
       this.reject({
         id: this.id,
         reason: reason
       }).then(response => {
         this.$notification.success('reject success')
         this.deliveryNoteRequest()
+      }).catch(error => {
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessApproval = false
       })
     },
     onCancellationApprove () {
