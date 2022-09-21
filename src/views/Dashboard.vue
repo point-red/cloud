@@ -20,7 +20,7 @@ export default {
   name: 'Dashboard',
   mounted () {
     if (this.$plugin.has('STUDY')) {
-      this.router.replace('/plugin/study')
+      this.$router.replace('/plugin/study')
     }
   }
 }
