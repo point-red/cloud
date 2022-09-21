@@ -536,6 +536,7 @@
     />
     <m-user
       ref="approver"
+      permission="approve purchase payment order"
       @choosen="chooseApprover($event)"
     />
     <m-allocation
@@ -574,6 +575,7 @@ export default {
       isFromPreview: false,
       choosen: 'invoice',
       requestedBy: localStorage.getItem('fullName'),
+      userId: localStorage.getItem('userId'),
       checkedRow: [
         [], // purchase_invoices
         [], // purchase_down_payments
@@ -865,31 +867,6 @@ export default {
       this.getAvailableReference()
     },
     onSubmit () {
-      this.form.invoices = []
-      this.form.downPayments = []
-      this.form.returns = []
-      this.form.others_filtered = []
-      this.checkedRowToForm()
-      this.filteringOthersForm()
-      const payload = {
-        paymentType: this.form.payment_type,
-        supplierId: this.form.supplier_id,
-        date: this.$options.filters.dateFormat(this.form.date, 'YYYY-MM-DD'),
-        paymentAccountId: 1, // Dummy
-        invoices: this.form.invoices,
-        downPayments: this.form.downPayments,
-        returns: this.form.returns,
-        others: this.form.others_filtered,
-        totalInvoiceAmount: this.total_invoice,
-        totalDownPaymentAmount: this.total_down_payment,
-        totalReturnAmount: this.total_return,
-        totalOtherAmount: this.form.total_other,
-        totalAmount: this.total_amount,
-        approvedBy: 1, // Dummy
-        notes: this.form.notes
-      }
-      this.isSaving = true
-
       // var totalInvoice = this.total_invoice
       // var totalDownPayment = this.total_down_payment
       // var totalReturn = this.total_return
@@ -923,6 +900,32 @@ export default {
           return
         }
       }
+
+      this.form.invoices = []
+      this.form.downPayments = []
+      this.form.returns = []
+      this.form.others_filtered = []
+      this.checkedRowToForm()
+      this.filteringOthersForm()
+      const payload = {
+        paymentType: this.form.payment_type,
+        supplierId: this.form.supplier_id,
+        date: this.$options.filters.dateFormat(this.form.date, 'YYYY-MM-DD'),
+        paymentAccountId: this.userId,
+        invoices: this.form.invoices,
+        downPayments: this.form.downPayments,
+        returns: this.form.returns,
+        others: this.form.others_filtered,
+        totalInvoiceAmount: this.total_invoice,
+        totalDownPaymentAmount: this.total_down_payment,
+        totalReturnAmount: this.total_return,
+        totalOtherAmount: this.form.total_other,
+        totalAmount: this.total_amount,
+        approvedBy: this.form.request_approval_to,
+        notes: this.form.notes
+      }
+
+      this.isSaving = true
       this.create(payload)
         .then(response => {
           this.isSaving = false
