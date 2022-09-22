@@ -60,7 +60,7 @@
       <span>{{ $t('sales invoice') | uppercase }}</span>
     </router-link>
     <router-link
-      v-if="$permission.has('create sales return')"
+      v-if="$permission.has('read sales return')"
       to="/sales/return"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/sales/return')}"

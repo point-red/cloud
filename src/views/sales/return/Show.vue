@@ -63,6 +63,7 @@
             <div class="col-sm-12">
               <div class="text-right">
                 <router-link
+                  v-if="$permission.has('create sales return')"
                   :to="{ name: 'sales.return.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
