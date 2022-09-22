@@ -163,14 +163,142 @@
                 #
               </th>
               <th width="50px" />
-              <th>Code</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Address</th>
-              <th>Phone</th>
-              <th>Branch</th>
-              <th>Group</th>
-              <th>Pricing Group</th>
+              <th>
+                Code
+                <a
+                  v-show="isSortDsc"
+                  href="javascript:void(0)"
+                  @click="sortAsc('customer.code')"
+                >
+                  <i class="fa fa-caret-up" />
+                </a>
+                <a
+                  v-show="isSortAsc"
+                  href="javascript:void(0)"
+                  @click="sortDsc('-customer.code')"
+                >
+                  <i class="fa fa-caret-down" />
+                </a>
+              </th>
+              <th>
+                Name
+                <a
+                  v-show="isSortDsc"
+                  href="javascript:void(0)"
+                  @click="sortAsc('customer.name')"
+                >
+                  <i class="fa fa-caret-up" />
+                </a>
+                <a
+                  v-show="isSortAsc"
+                  href="javascript:void(0)"
+                  @click="sortDsc('-customer.name')"
+                >
+                  <i class="fa fa-caret-down" />
+                </a>
+              </th>
+              <th>
+                Email
+                <a
+                  v-show="isSortDsc"
+                  href="javascript:void(0)"
+                  @click="sortAsc('customer.email')"
+                >
+                  <i class="fa fa-caret-up" />
+                </a>
+                <a
+                  v-show="isSortAsc"
+                  href="javascript:void(0)"
+                  @click="sortDsc('-customer.email')"
+                >
+                  <i class="fa fa-caret-down" />
+                </a>
+              </th>
+              <th>
+                Address
+                <a
+                  v-show="isSortDsc"
+                  href="javascript:void(0)"
+                  @click="sortAsc('customer.address')"
+                >
+                  <i class="fa fa-caret-up" />
+                </a>
+                <a
+                  v-show="isSortAsc"
+                  href="javascript:void(0)"
+                  @click="sortDsc('-customer.address')"
+                >
+                  <i class="fa fa-caret-down" />
+                </a>
+              </th>
+              <th>
+                Phone
+                <a
+                  v-show="isSortDsc"
+                  href="javascript:void(0)"
+                  @click="sortAsc('customer.phone')"
+                >
+                  <i class="fa fa-caret-up" />
+                </a>
+                <a
+                  v-show="isSortAsc"
+                  href="javascript:void(0)"
+                  @click="sortDsc('-customer.phone')"
+                >
+                  <i class="fa fa-caret-down" />
+                </a>
+              </th>
+              <th>
+                Branch
+                <a
+                  v-show="isSortDsc"
+                  href="javascript:void(0)"
+                  @click="sortAsc('branch.name')"
+                >
+                  <i class="fa fa-caret-up" />
+                </a>
+                <a
+                  v-show="isSortAsc"
+                  href="javascript:void(0)"
+                  @click="sortDsc('-branch.name')"
+                >
+                  <i class="fa fa-caret-down" />
+                </a>
+              </th>
+              <th>
+                Group
+                <a
+                  v-show="isSortDsc"
+                  href="javascript:void(0)"
+                  @click="sortAsc('customer_groups.name')"
+                >
+                  <i class="fa fa-caret-up" />
+                </a>
+                <a
+                  v-show="isSortAsc"
+                  href="javascript:void(0)"
+                  @click="sortDsc('-customer_groups.name')"
+                >
+                  <i class="fa fa-caret-down" />
+                </a>
+              </th>
+              <th>
+                Pricing Group
+                <a
+                  v-show="isSortDsc"
+                  href="javascript:void(0)"
+                  @click="sortAsc('pricing_groups.label')"
+                >
+                  <i class="fa fa-caret-up" />
+                </a>
+                <a
+                  v-show="isSortAsc"
+                  href="javascript:void(0)"
+                  @click="sortDsc('-pricing_groups.label')"
+                >
+                  <i class="fa fa-caret-down" />
+                </a>
+              </th>
             </tr>
             <tr
               v-for="(customer, customerIndex) in customers"
@@ -290,6 +418,9 @@ export default {
       lastPage: 1,
       isAdvanceFilter: false,
       checkedRow: [],
+      isSortAsc: false,
+      isSortDsc: true,
+      sortAction: 'customer.name',
       groupId: this.$route.query.groupId,
       pricingGroupId: this.$route.query.pricingGroupId,
       statusId: this.$route.query.statusId,
@@ -459,18 +590,21 @@ export default {
       this.get({
         params: {
           fields: 'customer.*',
-          join: 'address,phone,email',
-          sort_by: 'customer.name',
+          join: 'address,phone,email,branch,pricing_groups,groups',
+          group_by: 'customer.id',
+          sort_by: this.sortAction,
           filter_like: {
             'customer.code': this.searchText,
             'customer.name': this.searchText,
             'customer.address': this.searchText,
             'customer.email': this.searchText,
-            'customer.phone': this.searchText
+            'customer.phone': this.searchText,
+            'pricing_groups.label': this.searchText,
+            'customer_groups.name': this.searchText
           },
           filter_equal: {
             pricing_group_id: this.pricingGroupId,
-            'customer_group.id': this.groupId
+            'customer_groups.id': this.groupId
           },
           is_archived: this.statusId,
           includes: 'groups;pricingGroup;branch',
@@ -497,6 +631,18 @@ export default {
       this.getCustomerRequest()
     }, 300),
     onAdded () {
+      this.getCustomerRequest()
+    },
+    sortAsc (action) {
+      this.sortAction = action
+      this.isSortAsc = true
+      this.isSortDsc = false
+      this.getCustomerRequest()
+    },
+    sortDsc (action) {
+      this.sortAction = action
+      this.isSortAsc = false
+      this.isSortDsc = true
       this.getCustomerRequest()
     }
   }
