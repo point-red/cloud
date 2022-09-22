@@ -10,12 +10,16 @@ const state = {
 const getters = {
   journals: state => {
     return state.journals
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.journals = payload.data
+    state.pagination = payload.meta
   }
 }
 
