@@ -100,6 +100,9 @@ export default {
   created () {
     this.load()
   },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('accountingJournal', ['get']),
     updatePage (value) {

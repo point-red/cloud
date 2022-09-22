@@ -3,7 +3,8 @@ import api from '@/api'
 const url = '/accounting/journals'
 
 const state = {
-  journals: []
+  journals: [],
+  pagination: {}
 }
 
 const getters = {
