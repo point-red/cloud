@@ -63,6 +63,12 @@
               </p-table>
             </div>
           </div>
+
+          <p-pagination
+            :current-page="page"
+            :last-page="lastPage"
+            @updatePage="updatePage"
+          />
         </div>
       </p-block>
     </div>
@@ -82,7 +88,10 @@ export default {
   data () {
     return {
       date: this.$moment().format('YYYY-MM-DD'),
-      isLoading: false
+      isLoading: false,
+      page: this.$route.query.page * 1 || 1,
+      limit: 100,
+      lastPage: 1,
     }
   },
   computed: {
@@ -93,13 +102,18 @@ export default {
   },
   methods: {
     ...mapActions('accountingJournal', ['get']),
+    updatePage (value) {
+      this.page = value
+      this.load()
+    },
     load () {
       this.isLoading = true
       this.get({
         params: {
           date: this.date,
           includes: 'chartOfAccount;form',
-          limit: 1000
+          limit: this.limit,
+          page: this.page
         }
       }).then(response => {
         this.isLoading = false
