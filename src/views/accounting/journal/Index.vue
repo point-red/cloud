@@ -91,7 +91,7 @@ export default {
       isLoading: false,
       page: this.$route.query.page * 1 || 1,
       limit: 100,
-      lastPage: 1,
+      lastPage: 1
     }
   },
   computed: {
