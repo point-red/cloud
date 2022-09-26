@@ -16,75 +16,74 @@
         <p-block>
           <p-block-inner>
             <div class="row">
-              <div class="col-sm-12">
-                <h4 class="text-center">
-                  {{ $t('inventory usage') | uppercase }}
-                </h4>
-                <hr>
-                <div class="float-sm-right text-right">
+              <div class="col-sm-6">
+                <h4>{{ $t('inventory usage') | uppercase }}</h4>
+                <table class="table table-sm table-bordered">
+                  <tr>
+                    <td class="font-weight-bold">
+                      {{ $t('date') | uppercase }}
+                    </td>
+                    <td>
+                      <p-date-picker
+                        id="date"
+                        v-model="form.date"
+                        name="date"
+                        :label="$t('date')"
+                        :errors="form.errors.get('date')"
+                        @errors="form.errors.set('date', null)"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">
+                      {{ $t('warehouse') | uppercase }}
+                    </td>
+                    <td>
+                      <span
+                        class="select-link"
+                        @click="$refs.warehouse.open()"
+                      >{{ form.warehouse_name || $t('select') | uppercase }}</span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-sm-6 text-right">
+                <div class="mb-30">
                   <h6 class="mb-0">
                     {{ authUser.tenant_name | uppercase }}
                   </h6>
-                  {{ authUser.tenant_address | uppercase }} <br v-if="authUser.tenant_address">
-                  {{ authUser.tenant_phone | uppercase }} <br v-if="authUser.tenant_phone">
+                  <template v-if="authUser.branch">
+                    {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
+                    {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
+                  </template>
+                </div>
+                <div>
+                  <h6 class="mb-5 mt-30">
+                    {{ $t('employee') | uppercase }}:
+                  </h6>
+                  <span
+                    class="select-link"
+                    @click="$refs.employee.open()"
+                  >
+                    {{ form.employee_name || $t('select') | uppercase }}
+                  </span>
                 </div>
               </div>
             </div>
-            <!-- <p-form-row
-              id="date"
-              name="date"
-              :label="$t('date')">
-              <div slot="body" class="col-lg-9">
-                <p-date-picker
-                  id="date"
-                  name="date"
-                  :label="$t('date')"
-                  v-model="form.date"
-                  :errors="form.errors.get('date')"
-                  @errors="form.errors.set('date', null)"/>
-              </div>
-            </p-form-row> -->
-            <p-form-row
-              id="warehouse"
-              name="warehouse"
-              :label="$t('warehouse')"
-              :is-horizontal="false"
-            >
-              <div slot="body">
-                <span
-                  class="select-link"
-                  @click="$refs.warehouse.open()"
-                >{{ warehouseName || $t('select') | uppercase }}</span>
-              </div>
-            </p-form-row>
             <hr>
             <point-table class="mt-20">
               <tr slot="p-head">
-                <th class="text-center">
-                  #
-                </th>
                 <th>Item</th>
                 <th>Account</th>
-                <th>Notes</th>
                 <th>Quantity Usage</th>
-                <th>
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-outline-secondary"
-                    @click="toggleMore()"
-                  >
-                    <i class="fa fa-ellipsis-h" />
-                  </button>
-                </th>
+                <th>Notes</th>
+                <th>Allocation</th>
               </tr>
               <template v-for="(row, index) in form.items">
                 <tr
                   slot="p-body"
                   :key="index"
                 >
-                  <th class="text-center">
-                    {{ index + 1 }}
-                  </th>
                   <td>
                     <span
                       class="select-link"
@@ -109,14 +108,6 @@
                     />
                   </td>
                   <td>
-                    <p-form-input
-                      :id="'notes-' + index"
-                      v-model="row.notes"
-                      :name="'item-' + index"
-                      :disabled="row.item_id == null"
-                    />
-                  </td>
-                  <td>
                     <p-quantity
                       :id="'quantity' + index"
                       v-model="row.quantity"
@@ -135,45 +126,22 @@
                     />
                   </td>
                   <td>
-                    <button
-                      v-if="!isSaving"
-                      type="button"
-                      class="btn btn-sm btn-outline-secondary"
-                      @click="row.more = !row.more"
+                    <p-form-input
+                      :id="'notes-' + index"
+                      v-model="row.notes"
+                      :name="'item-' + index"
+                      :disabled="row.item_id == null"
+                    />
+                  </td>
+                  <td>
+                    <span
+                      class="select-link"
+                      @click="$refs.allocation.open(index)"
                     >
-                      <i class="fa fa-ellipsis-h" />
-                    </button>
+                      {{ row.allocation_name || $t('select') | uppercase }}
+                    </span>
                   </td>
                 </tr>
-                <template v-if="row.more">
-                  <tr
-                    slot="p-body"
-                    :key="'ext-'+index"
-                    class="bg-gray-light"
-                  >
-                    <th class="bg-gray-light" />
-                    <td colspan="3">
-                      <p-form-row
-                        id="allocation"
-                        name="allocation"
-                        :label="$t('allocation')"
-                      >
-                        <div
-                          slot="body"
-                          class="col-lg-9 mt-5"
-                        >
-                          <span
-                            class="select-link"
-                            @click="$refs.allocation.open(index)"
-                          >
-                            {{ row.allocation_name || $t('select') | uppercase }}
-                          </span>
-                        </div>
-                      </p-form-row>
-                    </td>
-                    <td />
-                  </tr>
-                </template>
               </template>
             </point-table>
             <div class="row mt-50">
@@ -220,7 +188,7 @@
                 <hr>
                 <button
                   type="submit"
-                  class="btn btn-sm btn-primary"
+                  class="btn btn-sm btn-block btn-primary"
                   :disabled="isSaving"
                 >
                   <i
@@ -255,12 +223,18 @@
     <m-warehouse
       id="warehouse_id"
       ref="warehouse"
+      default-only
       @choosen="chooseWarehouse($event)"
     />
     <m-user
       ref="approver"
       :permission="'approve inventory usage'"
       @choosen="chooseApprover"
+    />
+    <m-employee
+      id="employee"
+      ref="employee"
+      @choosen="chooseEmployee"
     />
   </div>
 </template>
@@ -282,13 +256,13 @@ export default {
     return {
       isSaving: false,
       requestedBy: localStorage.getItem('userName'),
-      totalPrice: 0,
-      warehouseId: null,
-      warehouseName: null,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         warehouse_id: null,
+        warehouse_name: null,
+        employee_id: null,
+        employee_name: null,
         request_approval_to: null,
         approver_name: null,
         approver_email: null,
@@ -329,11 +303,6 @@ export default {
         }]
       })
     },
-    chooseWarehouse (option) {
-      this.warehouseId = option.id
-      this.warehouseName = option.name
-      this.form.warehouse_id = option.id
-    },
     onChoosenAccount (account) {
       const row = this.form.items[account.index]
       row.chart_of_account_id = account.id
@@ -346,21 +315,14 @@ export default {
       this.form.items[e.index].unit = e.unit
       this.form.items[e.index].converter = e.converter
     },
-    toggleMore () {
-      const isMoreActive = this.form.items.some(function (el, index) {
-        return el.more === false
-      })
-      this.form.items.forEach(element => {
-        element.more = isMoreActive
-      })
+    chooseWarehouse (option) {
+      this.form.warehouse_id = option.id
+      this.form.warehouse_name = option.name
     },
-    calculate () {
-      this.totalPrice = 0
-      this.form.items.forEach((item) => {
-        if (item.price) {
-          this.totalPrice += parseFloat(item.price)
-        }
-      })
+    chooseEmployee (value) {
+      console.log(value)
+      this.form.employee_id = value.id
+      this.form.employee_name = value.name
     },
     chooseAllocation (allocation) {
       const row = this.form.items[allocation.index]
@@ -402,16 +364,16 @@ export default {
         this.addItemRow()
       }
     },
+    chooseUnit (unit, row) {
+      row.unit = unit.label
+      row.converter = unit.converter
+    },
     onClickQuantity (row, index) {
       if (row.require_expiry_date === 1 || row.require_production_number === 1) {
         row.warehouse_id = this.warehouseId
         row.index = index
         this.$refs.inventory.open(row, row.quantity)
       }
-    },
-    chooseUnit (unit, row) {
-      row.unit = unit.label
-      row.converter = unit.converter
     },
     onSubmit () {
       this.isSaving = true
@@ -424,11 +386,15 @@ export default {
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/inventory/usage/' + response.data.id)
         }).catch(error => {
-          console.log(error.errors)
+          let formErrors = ''
+          if (error?.errors) {
+            formErrors = '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>'
+            this.form.errors.record(error.errors)
+          }
+
           this.isSaving = false
           this.addItemRow()
-          this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
-          this.form.errors.record(error.errors)
+          this.$alert.error(error.message, formErrors)
         })
     }
   }
