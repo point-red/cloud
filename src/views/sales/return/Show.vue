@@ -69,6 +69,13 @@
                 >
                   {{ $t('create') | uppercase }}
                 </router-link>
+                <router-link
+                  v-if="$permission.has('update sales return') && salesReturn.form.done === 0"
+                  :to="{ name: 'sales.return.edit', params: { id: salesReturn.id }}"
+                  class="btn btn-sm btn-outline-secondary mr-5"
+                >
+                  {{ $t('edit') | uppercase }}
+                </router-link>
                 <m-form-request-delete
                   ref="formRequestDelete"
                   @delete="onDelete($event)"
@@ -92,7 +99,7 @@
                       <td class="font-weight-bold">
                         {{ $t('date') | uppercase }}
                       </td>
-                      <td>{{ salesReturn.date | dateFormat('DD MMMM YYYY') }}</td>
+                      <td>{{ salesReturn.form.date | dateFormat('DD MMMM YYYY') }}</td>
                     </tr>
                     <tr v-if="salesReturn.sales_invoice">
                       <td class="font-weight-bold">
@@ -349,6 +356,7 @@ export default {
             'items.allocation;' +
             'items.salesInvoiceItem;' +
             'salesInvoice.form;' +
+            'salesInvoice.items;' +
             'form.createdBy;' +
             'form.requestApprovalTo;' +
             'form.branch'
