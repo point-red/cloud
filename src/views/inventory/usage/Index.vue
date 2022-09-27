@@ -59,7 +59,7 @@
         </div>
         <div
           v-show="isAdvanceFilter"
-          class="card m-5 pt-10"
+          class="card pt-10"
           :class="{ 'fadeIn': isAdvanceFilter }"
         >
           <div class="row">
@@ -184,7 +184,7 @@
                 <td>{{ inventoryUsage.expiry_date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
                 <td>{{ inventoryUsageItem.notes }}</td>
                 <td class="text-right">
-                  {{ inventoryUsageItem.quantity | numberFormat }}
+                  {{ inventoryUsageItem.quantity | numberFormat }} {{ inventoryUsageItem.unit }}
                 </td>
                 <td class="text-center">
                   <div
@@ -359,25 +359,25 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form',
-          fields: 'inventory_usages.*',
-          sort_by: '-forms.number',
-          // filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
-          // filter_like: {
-          //   'form.number': this.searchText,
-          //   'warehouse.name': this.searchText,
-          //   'items.item.name': this.searchText,
-          //   'items.notes': this.searchText,
-          //   'items.quantity': this.searchText
-          // },
-          // filter_date_min: {
-          //   'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
-          // },
-          // filter_date_max: {
-          //   'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
-          // },
+          join: 'form,warehouse,items,item',
+          fields: 'inventory_usage.*',
+          sort_by: '-form.number',
+          filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
+          filter_like: {
+            'form.number': this.searchText,
+            'warehouse.name': this.searchText,
+            'item.name': this.searchText,
+            'inventory_usage_item.notes': this.searchText,
+            'inventory_usage_item.quantity': this.searchText
+          },
+          filter_date_min: {
+            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
+          },
+          filter_date_max: {
+            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+          },
           limit: 10,
-          includes: 'form;warehouse;items.item',
+          includes: 'form;warehouse;items;items.item',
           page: this.currentPage
         }
       }).catch(error => {

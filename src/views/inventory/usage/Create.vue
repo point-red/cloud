@@ -95,17 +95,10 @@
                   <td>
                     <span
                       class="select-link"
-                      @click="$refs.chartOfAccountRef.open(index)"
+                      @click="$refs.itemChartOfAccountRef.open(index)"
                     >
                       {{ row.chart_of_account_name || $t('select') | uppercase }}
                     </span>
-                    <m-chart-of-account
-                      :id="'item-' + index"
-                      v-model="row.item_id"
-                      :data-index="index"
-                      :label="row.item_name"
-                      @choosen="chooseAccount($event, row)"
-                    />
                   </td>
                   <td>
                     <p-quantity
@@ -217,7 +210,8 @@
       @choosen="chooseAllocation($event)"
     />
     <m-chart-of-account
-      ref="chartOfAccountRef"
+      ref="itemChartOfAccountRef"
+      :type-in="['BEBAN OPERASIONAL', 'BEBAN NON OPERASIONAL']"
       @choosen="onChoosenAccount"
     />
     <m-warehouse
