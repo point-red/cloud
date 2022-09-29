@@ -168,6 +168,9 @@
               <th class="text-center">
                 Form Status
               </th>
+              <th class="text-center">
+                History
+              </th>
               <th width="50px" />
             </tr>
             <template v-for="(deliveryNote, index) in deliveryNotes">
@@ -214,6 +217,14 @@
                     >
                       {{ $t('done') | uppercase }}
                     </div>
+                  </td>
+                  <td class="text-center">
+                    <router-link
+                      class="btn btn-sm btn-light"
+                      :to="{ name: 'sales.delivery-note.histories', params: { id: deliveryNote.id }}"
+                    >
+                      <i class="fa fa-history" />
+                    </router-link>
                   </td>
                   <td />
                 </template>

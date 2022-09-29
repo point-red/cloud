@@ -45,7 +45,10 @@
                   </th>
                 </tr>
                 <template v-for="(journal, index) in journals">
-                  <tr slot="p-body" :key="index">
+                  <tr
+                    slot="p-body"
+                    :key="index"
+                  >
                     <td>{{ journal.form.date | dateFormat('D MMM Y') }}</td>
                     <td>{{ journal.form.number }}</td>
                     <td>{{ journal.chart_of_account.number }} {{ journal.chart_of_account.alias }}</td>
