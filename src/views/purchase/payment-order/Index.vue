@@ -182,7 +182,7 @@
                 <td>{{ purchasePaymentOrder.date | dateFormat('DD MMMM YYYY') }}</td>
                 <th>
                   <router-link
-                    :to="{ name: 'purchase.request.show', params: { id: purchasePaymentOrder.id }}"
+                    :to="{ name: 'purchase.payment-order.show', params: { id: purchasePaymentOrder.payment_order_id }}"
                   >
                     {{ purchasePaymentOrder.form_number }}
                   </router-link>

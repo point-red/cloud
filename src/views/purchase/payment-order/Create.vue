@@ -11,7 +11,7 @@
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <sales-menu />
+    <purchase-menu />
 
     <form
       class="row"
@@ -551,7 +551,7 @@
 </template>
 
 <script>
-import SalesMenu from '../Menu'
+import PurchaseMenu from '../Menu'
 import debounce from 'lodash/debounce'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
@@ -562,7 +562,7 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    SalesMenu,
+    PurchaseMenu,
     Breadcrumb,
     BreadcrumbPurchase,
     PointTable,
@@ -751,7 +751,7 @@ export default {
         if (response.data.purchase_invoices.length === 0 &&
         response.data.purchase_down_payments.length === 0 &&
         response.data.purchase_returns.length === 0) {
-          this.$notification.error('supplier doesn\'t have sales form to collect')
+          this.$notification.error('supplier doesn\'t have purchase form to collect')
         } else {
           console.log(response)
           this.form.references = response.data
@@ -783,7 +783,7 @@ export default {
       }
       console.log(JSON.stringify(this.form))
       localStorage.setItem('paymentCollectionData', JSON.stringify(object))
-      this.$router.push({ name: 'sales.payment-collection.preview', params: { source: 'create' } })
+      this.$router.push({ name: 'purchase.payment-order.show', params: { source: 'create' } })
     },
     onChoosenAccount (account) {
       const row = this.form.others[account.index]
@@ -931,7 +931,7 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/sales/payment-collection/' + response.data.id)
+          this.$router.push('/purchase/payment-order/' + response.data.paymentOrder.id)
           // this.sendSingle({
           //   id: response.data.id,
           //   total_invoice: totalInvoice,
