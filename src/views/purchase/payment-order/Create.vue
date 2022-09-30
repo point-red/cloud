@@ -621,14 +621,14 @@ export default {
           amount: 0,
           allocationId: null
         }],
-        others: [{
-          coaId: null,
-          coaName: null,
-          notes: null,
-          amount: 0,
-          allocationId: null,
-          allocationName: null
-        }],
+        others: [
+          // coaId: null,
+          // coaName: null,
+          // notes: null,
+          // amount: 0,
+          // allocationId: null,
+          // allocationName: null
+        ],
         details: [{
           date: null,
           chart_of_account_id: null,
