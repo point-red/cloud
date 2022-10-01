@@ -6,6 +6,7 @@ import SalesDeliveryNote from './delivery-note/routes'
 import SalesDownPayment from './down-payment/routes'
 import SalesReport from './report/routes'
 import SalesInvoice from './invoice/routes'
+import SalesReturn from './return/routes'
 import SalesSummary from './summary/routes'
 import SalesPaymentCollection from './payment-collection/routes'
 
@@ -18,6 +19,7 @@ export default [
   ...SalesDeliveryNote,
   ...SalesReport,
   ...SalesInvoice,
+  ...SalesReturn,
   ...SalesSummary,
   ...SalesPaymentCollection
 ]
