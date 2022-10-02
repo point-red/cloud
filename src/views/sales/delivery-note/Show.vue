@@ -164,7 +164,7 @@
               <div style="font-size:12px">
                 {{ deliveryNote.customer_address | uppercase }}
                 <br v-if="deliveryNote.customer_phone">{{ deliveryNote.customer_phone }}
-                <br v-if="deliveryNote.customer_email">{{ deliveryNote.customer_email | uppercase }}
+                <br v-if="deliveryNote.customer.email">{{ deliveryNote.customer.email | uppercase }}
               </div>
             </div>
           </div>
@@ -234,6 +234,7 @@
     />
     <m-form-send-email
       ref="formSendEmail"
+      :email-to="deliveryNote.customer.email"
       @submit="onSendEmail($event)"
     />
     <m-print-preview

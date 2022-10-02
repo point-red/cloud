@@ -61,7 +61,7 @@
                 <tr>
                   <td>Date</td>
                   <td>:</td>
-                  <td>{{ deliveryNote.date | dateFormat('DD MMMM YYYY') }}</td>
+                  <td>{{ deliveryNote.form.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
                 <tr>
                   <td>Customer</td>
@@ -230,7 +230,6 @@ export default {
   },
   async created () {
     this.onLoad = true
-    console.log(this.deliveryNote)
     await Promise.all([
       this.getSettingLogo(),
       this.getSettingEndNote()
