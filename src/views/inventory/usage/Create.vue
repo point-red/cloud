@@ -67,6 +67,12 @@
                   >
                     {{ form.employee_name || $t('select') | uppercase }}
                   </span>
+                  <div
+                    :v-show="!!form.errors.get('employee_id')"
+                    class="invalid-feedback d-block"
+                  >
+                    {{ form.errors.get('employee_id') }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -91,6 +97,12 @@
                     >
                       {{ row.item_label || $t('select') | uppercase }}
                     </span>
+                    <div
+                      :v-show="!!form.errors.get(`items.${index}.item_id`)"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ form.errors.get(`items.${index}.item_id`) }}
+                    </div>
                   </td>
                   <td>
                     <span
@@ -99,6 +111,12 @@
                     >
                       {{ row.chart_of_account_name || $t('select') | uppercase }}
                     </span>
+                    <div
+                      :v-show="!!form.errors.get(`items.${index}.chart_of_account_id`)"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ form.errors.get(`items.${index}.chart_of_account_id`) }}
+                    </div>
                   </td>
                   <td>
                     <p-quantity
@@ -117,6 +135,12 @@
                       @choosen="chooseUnit($event, row)"
                       @click.native="onClickQuantity(row, index)"
                     />
+                    <div
+                      :v-show="!!form.errors.get(`items.${index}.quantity`) || !!form.errors.get(`items.${index}.unit`)"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ form.errors.get(`items.${index}.quantity`) || form.errors.get(`items.${index}.unit`) }}
+                    </div>
                   </td>
                   <td>
                     <p-form-input
@@ -133,6 +157,12 @@
                     >
                       {{ row.allocation_name || $t('select') | uppercase }}
                     </span>
+                    <div
+                      :v-show="!!form.errors.get(`items.${index}.allocation_id`)"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ form.errors.get(`items.${index}.allocation_id`) }}
+                    </div>
                   </td>
                 </tr>
               </template>
@@ -175,6 +205,12 @@
                   @click="$refs.approver.open()"
                 >{{ form.approver_name || $t('select') | uppercase }}</span><br>
                 <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
+                <div
+                  :v-show="!!form.errors.get('request_approval_to')"
+                  class="invalid-feedback d-block"
+                >
+                  {{ form.errors.get('request_approval_to') }}
+                </div>
               </div>
 
               <div class="col-sm-12">
@@ -380,15 +416,23 @@ export default {
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/inventory/usage/' + response.data.id)
         }).catch(error => {
-          let formErrors = ''
           if (error?.errors) {
-            formErrors = '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>'
-            this.form.errors.record(error.errors)
+            const errors = { ...error.errors }
+
+            Object.keys(error.errors).forEach((key) => {
+              const fieldErrors = error.errors[key].map((err) => err
+                .replace(key, '')
+                .replace(key.replace(/_/g, ' '), '')
+              )
+              errors[key] = fieldErrors.join(', ')
+            })
+            this.form.errors.record(errors)
           }
 
           this.isSaving = false
           this.addItemRow()
-          this.$alert.error(error.message, formErrors)
+
+          this.$notification.error(error.message)
         })
     }
   }
