@@ -439,6 +439,17 @@
                   </router-link>
                 </li>
                 <li
+                  v-if="$permission.has('read sales return')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/sales/return"
+                    active-class="active"
+                  >
+                    {{ $t('sales return ') | uppercase }}
+                  </router-link>
+                </li>
+                <li
                   v-if="$permission.has('read sales payment collection')"
                   @click="toggleLeftSidebar('close-xs')"
                 >
