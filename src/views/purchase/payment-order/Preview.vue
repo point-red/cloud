@@ -328,7 +328,8 @@
               >
                 &nbsp;
               </div>
-              {{ form.approver_name | uppercase }}
+              <div>{{ form.approver_name | uppercase }}</div>
+              <div>{{ form.approver_email | lowercase }}</div>
             </div>
 
             <div class="col-sm-12">

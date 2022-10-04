@@ -686,9 +686,11 @@ export default {
     ...mapActions('purchasePaymentOrder', ['getReferences', 'create']),
     getDataFromStorage () {
       var data = JSON.parse(localStorage.getItem('purchasePaymentOrderData'))
-      this.form = new Form({ ...data })
-      this.checkedRow = [data.invoices, data.downPayments, data.returns]
-      localStorage.removeItem('purchasePaymentOrderData')
+      if (data) {
+        this.form = new Form({ ...data })
+        this.checkedRow = [data.invoices, data.downPayments, data.returns]
+        localStorage.removeItem('purchasePaymentOrderData')
+      }
     },
     toggleCheckRow (refIndex, id) {
       if (!this.isRowChecked(refIndex, id)) {
@@ -780,6 +782,7 @@ export default {
       const row = this.form.others[account.index]
       row.coaId = account.id
       row.coaName = account.label
+      row.coaType = account.type.name
     },
     checkedRowToForm () {
       this.checkedRow[0].forEach(element => {
