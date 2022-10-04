@@ -572,7 +572,6 @@ export default {
     return {
       isSaving: false,
       isLoading: false,
-      isFromPreview: false,
       choosen: 'invoice',
       requestedBy: localStorage.getItem('fullName'),
       userId: localStorage.getItem('userId'),
@@ -685,15 +684,11 @@ export default {
   },
   methods: {
     ...mapActions('purchasePaymentOrder', ['getReferences', 'create']),
-    ...mapActions('salesPaymentCollectionApproval', ['sendSingle']),
     getDataFromStorage () {
-      var data = JSON.parse(localStorage.getItem('paymentCollectionData'))
-      if (data) {
-        this.isFromPreview = true
-        this.form = new Form(data.form)
-        this.checkedRow = data.checkedRow
-        localStorage.removeItem('paymentCollectionData')
-      }
+      var data = JSON.parse(localStorage.getItem('purchasePaymentOrderData'))
+      this.form = new Form({ ...data })
+      this.checkedRow = [data.invoices, data.downPayments, data.returns]
+      localStorage.removeItem('purchasePaymentOrderData')
     },
     toggleCheckRow (refIndex, id) {
       if (!this.isRowChecked(refIndex, id)) {
@@ -753,7 +748,6 @@ export default {
         response.data.purchase_returns.length === 0) {
           this.$notification.error('supplier doesn\'t have purchase form to collect')
         } else {
-          console.log(response)
           this.form.references = response.data
         }
         this.isLoading = false
@@ -770,20 +764,17 @@ export default {
       this.form.payment_type = type
     },
     openPreview () {
-      if (!this.isFromPreview) {
-        this.checkedRowToForm()
-      }
-      this.form.amount = this.total_amount
+      this.form.invoices = []
+      this.form.downPayments = []
+      this.form.returns = []
+      this.form.others_filtered = []
+      this.checkedRowToPreview()
       this.form.total_invoice = this.total_invoice
       this.form.total_down_payment = this.total_down_payment
       this.form.total_return = this.total_return
-      var object = {
-        checkedRow: this.checkedRow,
-        form: this.form
-      }
-      console.log(JSON.stringify(this.form))
-      localStorage.setItem('paymentCollectionData', JSON.stringify(object))
-      this.$router.push({ name: 'purchase.payment-order.show', params: { source: 'create' } })
+      this.form.total_amount = this.total_amount
+      localStorage.setItem('purchasePaymentOrderData', JSON.stringify(this.form))
+      this.$router.push('/purchase/payment-order/preview')
     },
     onChoosenAccount (account) {
       const row = this.form.others[account.index]
@@ -821,6 +812,34 @@ export default {
         }
       })
     },
+    checkedRowToPreview () {
+      this.checkedRow[0].forEach(element => {
+        const purchaseInvoice = this.form.references.purchase_invoices.find((purchaseInvoice) => purchaseInvoice.id === element.id)
+        if (purchaseInvoice) {
+          this.form.invoices.push({
+            ...purchaseInvoice
+          })
+        }
+      })
+
+      this.checkedRow[1].forEach(element => {
+        const purchaseDownPayment = this.form.references.purchase_down_payments.find((purchaseDownPayment) => purchaseDownPayment.id === element.id)
+        if (purchaseDownPayment) {
+          this.form.downPayments.push({
+            ...purchaseDownPayment
+          })
+        }
+      })
+
+      this.checkedRow[2].forEach(element => {
+        const purchaseReturn = this.form.references.purchase_returns.find((purchaseReturn) => purchaseReturn.id === element.id)
+        if (purchaseReturn) {
+          this.form.returns.push({
+            ...purchaseReturn
+          })
+        }
+      })
+    },
     addRowOther () {
       this.form.others.push({
         coaId: null,
@@ -838,7 +857,6 @@ export default {
     calculateOther: debounce(function () {
       var totalAmount = 0
       this.form.others.forEach(function (element) {
-        console.log(JSON.stringify(element))
         if (element.is_debit === 1) {
           totalAmount -= parseFloat(element.amount)
         } else {
