@@ -147,7 +147,8 @@ export default {
               id: key.id,
               alias: key.alias,
               label: key.label,
-              isDebit: key.type.is_debit
+              isDebit: key.type.is_debit,
+              type: key.type.name
             })
 
             if (this.value == key.id) {
@@ -176,23 +177,16 @@ export default {
           this.options = []
           this.mutableLabel = null
           response.data.map((key, value) => {
-            // if (key.type.name.toUpperCase() === 'OTHER INCOME' ||
-            //   key.type.name.toUpperCase() === 'FACTORY OVERHEAD COST') {
-            //   this.options.push({
-            //     id: key.id,
-            //     alias: key.alias,
-            //     label: key.label,
-            //     isDebit: key.type.is_debit
-            //   })
-            // }
-
-            // For local only
-            this.options.push({
-              id: key.id,
-              alias: key.alias,
-              label: key.label,
-              isDebit: key.type.is_debit
-            })
+            if (key.type.name.toUpperCase() === 'OTHER INCOME' ||
+              key.type.name.toUpperCase() === 'DIRECT EXPENSE') {
+              this.options.push({
+                id: key.id,
+                alias: key.alias,
+                label: key.label,
+                isDebit: key.type.is_debit,
+                type: key.type.name
+              })
+            }
 
             if (this.value == key.id) {
               this.mutableLabel = key.number + ' - ' + key.alias

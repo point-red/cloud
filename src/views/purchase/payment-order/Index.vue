@@ -321,6 +321,9 @@ export default {
   created () {
     this.getPurchasePaymentOrder()
   },
+  updated () {
+    this.lastPage = this.pagination.last_page
+  },
   methods: {
     ...mapActions('purchasePaymentOrder', ['get']),
     filterSearch: debounce(function (value) {
@@ -335,7 +338,6 @@ export default {
       this.getPurchasePaymentOrder()
     }, 300),
     getPurchasePaymentOrder () {
-      console.log(this.$options.filters.dateFormat(this.date.start, 'YYYY-MM-DD'), 'DATE START')
       this.isLoading = true
       this.get({
         params: {
@@ -346,7 +348,7 @@ export default {
           dateTo: this.$options.filters.dateFormat(this.date.end, 'YYYY-MM-DD'),
           approvalStatus: this.formApprovalStatus.label,
           doneStatus: this.formStatus.label,
-          page: 1
+          page: this.currentPage
         }
       }).catch((error) => {
         this.$notification.error(error.message)
@@ -363,6 +365,10 @@ export default {
       console.log(option, 'OPTION')
       this.formApprovalStatus.label = option.label
       this.formApprovalStatus.value = option.value
+      this.getPurchasePaymentOrder()
+    },
+    updatePage (value) {
+      this.currentPage = value
       this.getPurchasePaymentOrder()
     }
   }

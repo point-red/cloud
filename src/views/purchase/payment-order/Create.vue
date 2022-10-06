@@ -676,6 +676,16 @@ export default {
     },
     total_amount () {
       var totalAmount = this.total_invoice - (this.total_return + this.total_down_payment)
+      this.form.others.forEach(element => {
+        if (element.coaId != null) {
+          if (element?.coaType?.toUpperCase() === 'OTHER INCOME') {
+            totalAmount -= parseFloat(element.amount)
+          }
+          if (element?.coaType?.toUpperCase() === 'DIRECT EXPENSE') {
+            totalAmount += parseFloat(element.amount)
+          }
+        }
+      })
       return totalAmount
     }
   },
@@ -779,10 +789,11 @@ export default {
       this.$router.push('/purchase/payment-order/preview')
     },
     onChoosenAccount (account) {
+      console.log(account)
       const row = this.form.others[account.index]
       row.coaId = account.id
       row.coaName = account.label
-      row.coaType = account.type.name
+      row.coaType = account.type
     },
     checkedRowToForm () {
       this.checkedRow[0].forEach(element => {
@@ -847,6 +858,7 @@ export default {
       this.form.others.push({
         coaId: null,
         coaName: null,
+        coaType: null,
         amount: null,
         allocationId: null,
         allocationName: null,
@@ -858,15 +870,22 @@ export default {
       this.calculateOther()
     },
     calculateOther: debounce(function () {
-      var totalAmount = 0
+      // var totalAmount = 0
+      var totalOther = 0
       this.form.others.forEach(function (element) {
-        if (element.is_debit === 1) {
-          totalAmount -= parseFloat(element.amount)
-        } else {
-          totalAmount += parseFloat(element.amount)
-        }
+        // console.log(element, 'element')
+        // if (element.coaType.toUpperCase() === 'OTHER INCOME') {
+        //   this.total_amount -= parseFloat(element.amount)
+        // }
+        // if (element.coaType.toUpperCase() === 'DIRECT EXPENSE') {
+        //   this.total_amount += parseFloat(element.amount)
+        // }
+
+        // === Accumulate Total Amount Other ===
+        totalOther += parseFloat(element.amount)
       })
-      this.form.total_other = totalAmount
+      // this.total_amount = totalAmount
+      this.form.total_other = totalOther
     }, 300),
     chooseAllocation (allocation) {
       const row = this.form.others[allocation.index]
