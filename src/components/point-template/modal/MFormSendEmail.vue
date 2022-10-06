@@ -13,7 +13,7 @@
         name="to"
         placeholder="ex: admin@point.com"
         :is-horizontal="false"
-        :disabled="isSaving"
+        :disabled="isDisabled"
         :label="$t('email receipient')"
         :errors="form.errors.get('to')"
         @errors="form.errors.set('to', null)"
@@ -48,14 +48,25 @@
 import Form from '@/utils/Form'
 
 export default {
+  props: {
+    emailTo: {
+      type: String,
+      default: ''
+    }
+  },
   data () {
     return {
       isSaving: false,
       isLoading: false,
       form: new Form({
-        to: '',
+        to: this.emailTo,
         body: 'Hello Mrs/Mr/Ms \nThe receipt for your Form is attached to this email'
       })
+    }
+  },
+  computed: {
+    isDisabled () {
+      return this.isSaving || !!this.emailTo
     }
   },
   beforeDestroy () {
