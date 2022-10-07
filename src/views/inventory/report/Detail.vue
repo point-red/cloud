@@ -314,8 +314,8 @@ export default {
       }
       this.id = parseInt(this.$route.params.id)
       this.warehouseId = parseInt(this.$route.params.warehouseId)
-      this.date_from = this.$route.query.date_from
-      this.date_to = this.$route.query.date_to
+      this.date.start = this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00')
+      this.date.end = this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59')
       this.getInventoryRequest()
     }
   },
