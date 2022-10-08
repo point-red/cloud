@@ -93,6 +93,12 @@ export default {
       type: String,
       default: ''
     },
+    typeIn: {
+      type: Array,
+      default: function () {
+        return []
+      }
+    },
     exclude: {
       type: Array,
       default: function () {
@@ -132,7 +138,7 @@ export default {
     ...mapActions('accountingChartOfAccount', ['get', 'create']),
     search () {
       this.isLoading = true
-      if (this.type) {
+      if (this.type && !this.typeIn.length) {
         this.get({
           params: {
             join: 'account_type',
@@ -183,6 +189,9 @@ export default {
               'account_type.alias': this.searchText,
               'account.alias': this.searchText,
               'account.number': this.searchText
+            },
+            filter_equal_or: {
+              'account_type.alias': this.typeIn
             },
             includes: 'type',
             sort_by: 'account.number;account.alias'
