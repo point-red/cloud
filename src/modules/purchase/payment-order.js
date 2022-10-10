@@ -4,22 +4,27 @@ const url = '/purchase/payment-order'
 
 const state = {
   purchasePaymentOrder: {
+    approved_by: null,
+    created_at: null,
+    created_by: null,
     date: null,
-    customer_id: null,
-    form: {
-      number: null,
-      notes: null,
-      created_by: {
-        name: null
-      },
-      request_approval_to: {
-        full_name: null
-      }
-    },
-    customer: {
-      name: null
-    },
-    details: []
+    down_payment_collection: [],
+    form_number: null,
+    id: null,
+    invoice_collection: [],
+    notes: null,
+    other_collection: null,
+    payment_method: null,
+    return_collection: [],
+    supplier_address: null,
+    supplier_name: null,
+    supplier_phone: null,
+    total_amount: null,
+    total_down_payment: null,
+    total_invoice: null,
+    total_other: null,
+    total_return: null,
+    form: {}
   },
   purchasePaymentOrders: [],
   pagination: {},
@@ -31,7 +36,6 @@ const getters = {
     return state.purchasePaymentOrder
   },
   purchasePaymentOrders: state => {
-    console.log(state)
     return state.purchasePaymentOrders
   },
   pagination: state => {
@@ -47,6 +51,13 @@ const mutations = {
     state.purchasePaymentOrders = payload.data
     state.pagination = payload.meta
   },
+  'FETCH_OBJECT' (state, payload) {
+    payload.data.form = {
+      approval_reason: 'Dummy',
+      approval_status: -1
+    }
+    state.purchasePaymentOrder = payload.data
+  },
   'FETCH_REFERENCES' (state, payload) {
     state.references = payload.data
   },
@@ -61,6 +72,17 @@ const actions = {
       api.get(url, payload)
         .then(response => {
           commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  find ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(`${url}/${payload.id}`)
+        .then(response => {
+          commit('FETCH_OBJECT', response)
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -104,6 +126,16 @@ const actions = {
         .then(response => {
           resolve(response)
         }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  previewFormNumber ({ commit }) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/preview-form-number')
+        .then((response) => {
+          resolve(response)
+        }, (error) => {
           reject(error)
         })
     })

@@ -33,7 +33,7 @@
                   >
                     {{ $t('form number') | uppercase }}
                   </td>
-                  <td>{{ number }}</td>
+                  <td>{{ formNumber }}</td>
                 </tr>
                 <tr>
                   <td
@@ -354,7 +354,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import PurchaseMenu from '../Menu'
 import PointTable from 'point-table-vue'
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -369,7 +369,8 @@ export default {
       isLoading: false,
       isDeleting: false,
       requestedBy: localStorage.getItem('fullName'),
-      form: null
+      form: null,
+      formNumber: null
     }
   },
   computed: {
@@ -377,12 +378,24 @@ export default {
   },
   created () {
     this.getDataFromStorage()
+    this.getPreviewFormNumber()
   },
   methods: {
+    ...mapActions('purchasePaymentOrder', ['previewFormNumber']),
     getDataFromStorage () {
       this.isLoading = true
       this.form = JSON.parse(localStorage.getItem('purchasePaymentOrderData'))
       this.isLoading = false
+    },
+    getPreviewFormNumber () {
+      this.isLoading = true
+      this.previewFormNumber().then(response => {
+        this.formNumber = response.data
+      }).catch(error => {
+        this.$notification.error(error.message)
+      }).finally(() => {
+        this.isLoading = false
+      })
     },
     back () {
       this.$router.push('/purchase/payment-order/create')

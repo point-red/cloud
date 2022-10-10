@@ -10,6 +10,14 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
+          <download-excel
+            class="input-group-prepend"
+            @click="exportData(purchasePaymentOrders)"
+          >
+            <span class="input-group-text">
+              <i class="fa fa-download" />
+            </span>
+          </download-excel>
           <router-link
             v-if="$permission.has('create purchase payment order')"
             to="/purchase/payment-order/create"
@@ -370,6 +378,9 @@ export default {
     updatePage (value) {
       this.currentPage = value
       this.getPurchasePaymentOrder()
+    },
+    exportData (value) {
+      console.log(value, 'This is export data func')
     }
   }
 }

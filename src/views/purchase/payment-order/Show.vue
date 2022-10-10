@@ -14,9 +14,9 @@
 
     <p-show-form-approval-status
       :is-loading="isLoading"
-      :approved-by="purchasePaymentOrder.form.request_approval_to.full_name"
+      :approved-by="purchasePaymentOrder.approvedBy"
       :cancellation-status="purchasePaymentOrder.form.cancellation_status"
-      :approval-status="0"
+      :approval-status="purchasePaymentOrder.form.approval_status"
       :approval-reason="purchasePaymentOrder.form.approval_reason"
       @onApprove="onApprove"
       @onReject="onReject"
@@ -43,7 +43,7 @@
                   <td class="font-weight-bold">
                     {{ $t('date') | uppercase }}
                   </td>
-                  <td>{{ date | dateFormat('DD MMMM YYYY') }}</td>
+                  <td>{{ purchasePaymentOrder.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
                 <tr>
                   <td
@@ -52,7 +52,7 @@
                   >
                     {{ $t('form number') | uppercase }}
                   </td>
-                  <td>{{ number }}</td>
+                  <td>{{ purchasePaymentOrder.form_number }}</td>
                 </tr>
                 <tr>
                   <td
@@ -60,22 +60,22 @@
                   >
                     {{ $t('payment method') | uppercase }}
                   </td>
-                  <td>{{ 'cash' | uppercase }}</td>
+                  <td>{{ purchasePaymentOrder.payment_method | uppercase }}</td>
                 </tr>
               </table>
             </div>
             <div class="col-sm-6 text-right">
               <h6 class="mb-5">
-                {{ 'Dummy' | uppercase }}
+                {{ authUser.tenant_name | uppercase }}
               </h6>
               <h6 class="mt-30 mb-5">
-                {{ $t('supplier') | uppercase }} : {{ 'dummy' | uppercase }}
+                {{ $t('supplier') | uppercase }} : {{ purchasePaymentOrder.supplier_name | uppercase }}
               </h6>
             </div>
           </div>
           <hr>
 
-          <div v-if="form.invoices.length > 0">
+          <div v-if="purchasePaymentOrder.invoice_collection.length > 0">
             <h5>{{ $t('invoice collection') | uppercase }}</h5>
             <point-table>
               <tr slot="p-head">
@@ -104,7 +104,7 @@
                   Amount Order
                 </th>
               </tr>
-              <template v-for="(row, index) in form.invoices">
+              <template v-for="(row, index) in purchasePaymentOrder.invoice_collection">
                 <tr
                   slot="p-body"
                   :key="index"
@@ -119,14 +119,14 @@
                     {{ row.available_amount | numberFormat }}
                   </td>
                   <td class="text-right">
-                    {{ row.amount | numberFormat }}
+                    {{ row.amount_order | numberFormat }}
                   </td>
                 </tr>
               </template>
             </point-table>
           </div>
 
-          <div v-if="form.downPayments.length > 0">
+          <div v-if="purchasePaymentOrder.down_payment_collection.length > 0">
             <h5>{{ $t('down payment collection') | uppercase }}</h5>
             <point-table>
               <tr slot="p-head">
@@ -155,7 +155,7 @@
                   Amount Order
                 </th>
               </tr>
-              <template v-for="(row, index) in form.downPayments">
+              <template v-for="(row, index) in purchasePaymentOrder.down_payment_collection">
                 <tr
                   slot="p-body"
                   :key="index"
@@ -170,14 +170,14 @@
                     {{ row.available_amount | numberFormat }}
                   </td>
                   <td class="text-right">
-                    {{ row.amount | numberFormat }}
+                    {{ row.amount_order | numberFormat }}
                   </td>
                 </tr>
               </template>
             </point-table>
           </div>
 
-          <div v-if="form.returns.length > 0">
+          <div v-if="purchasePaymentOrder.return_collection.length > 0">
             <h5>{{ $t('return collection') | uppercase }}</h5>
             <point-table>
               <tr slot="p-head">
@@ -206,7 +206,7 @@
                   Amount Order
                 </th>
               </tr>
-              <template v-for="(row, index) in form.returns">
+              <template v-for="(row, index) in purchasePaymentOrder.return_collection">
                 <tr
                   slot="p-body"
                   :key="index"
@@ -221,14 +221,14 @@
                     {{ row.available_amount | numberFormat }}
                   </td>
                   <td class="text-right">
-                    {{ row.amount | numberFormat }}
+                    {{ row.amount_order | numberFormat }}
                   </td>
                 </tr>
               </template>
             </point-table>
           </div>
 
-          <div v-if="form.others.length > 0">
+          <div v-if="purchasePaymentOrder.other_collection.length > 0">
             <h5>{{ $t('other collection') | uppercase }}</h5>
             <point-table>
               <tr slot="p-head">
@@ -254,7 +254,7 @@
                   Allocation
                 </th>
               </tr>
-              <template v-for="(row, index) in form.others">
+              <template v-for="(row, index) in purchasePaymentOrder.other_collection">
                 <tr
                   slot="p-body"
                   :key="index"
@@ -262,13 +262,13 @@
                   <th class="text-center">
                     {{ index + 1 }}
                   </th>
-                  <td>{{ row.coaName }}</td>
+                  <td>{{ row.account }}</td>
                   <td>{{ row.notes }}</td>
                   <td class="text-right">
                     {{ row.amount | numberFormat }}
                   </td>
                   <td class="text-right">
-                    {{ row.allocationName | uppercase }}
+                    {{ row.allocation | uppercase }}
                   </td>
                 </tr>
               </template>
@@ -282,31 +282,31 @@
                 <tr slot="p-body">
                   <td>Total Invoice</td>
                   <td class="text-right">
-                    {{ form.total_invoice | numberFormat }}
+                    {{ purchasePaymentOrder.total_invoice | numberFormat }}
                   </td>
                 </tr>
                 <tr slot="p-body">
                   <td>Total Down Payment</td>
                   <td class="text-right">
-                    {{ form.total_down_payment | numberFormat }}
+                    {{ purchasePaymentOrder.total_down_payment | numberFormat }}
                   </td>
                 </tr>
                 <tr slot="p-body">
                   <td>Total Return</td>
                   <td class="text-right">
-                    {{ form.total_return | numberFormat }}
+                    {{ purchasePaymentOrder.total_return | numberFormat }}
                   </td>
                 </tr>
                 <tr slot="p-body">
                   <td>Total Other</td>
                   <td class="text-right">
-                    {{ form.total_other | numberFormat }}
+                    {{ purchasePaymentOrder.total_other | numberFormat }}
                   </td>
                 </tr>
                 <tr slot="p-body">
                   <td>Total Amount</td>
                   <td class="text-right">
-                    {{ form.total_amount | numberFormat }}
+                    {{ purchasePaymentOrder.total_amount | numberFormat }}
                   </td>
                 </tr>
               </point-table>
@@ -319,7 +319,7 @@
                 {{ $t('notes') | uppercase }}
               </h6>
               <div style="white-space: pre-wrap;">
-                {{ 'Notes Gan dummy' }}
+                {{ purchasePaymentOrder.notes }}
               </div>
               <div class="d-sm-block d-md-none mt-10" />
             </div>
@@ -331,9 +331,9 @@
                 class="mb-50"
                 style="font-size:11px"
               >
-                {{ form.date | dateFormat('DD MMMM YYYY') }}
+                {{ purchasePaymentOrder.created_at | dateFormat('DD MMMM YYYY') }}
               </div>
-              {{ requestedBy | uppercase }}
+              {{ purchasePaymentOrder.created_by | uppercase }}
               <div class="d-sm-block d-md-none mt-10" />
             </div>
             <div class="col-sm-3 text-center">
@@ -346,8 +346,7 @@
               >
                 &nbsp;
               </div>
-              <div>{{ form.approver_name | uppercase }}</div>
-              <div>{{ form.approver_email | lowercase }}</div>
+              <div>{{ purchasePaymentOrder.approved_by | uppercase }}</div>
             </div>
           </div>
         </p-block-inner>
@@ -392,15 +391,30 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchasePaymentOrder', ['purchasePaymentOrder'])
+    ...mapGetters('purchasePaymentOrder', ['purchasePaymentOrder']),
+    ...mapGetters('auth', ['authUser'])
+  },
+  created () {
+    this.getDetail()
   },
   methods: {
-    ...mapActions('purchasePaymentOrder', ['approve', 'reject']),
+    ...mapActions('purchasePaymentOrder', ['approve', 'reject', 'find']),
+    getDetail () {
+      this.isLoading = true
+      this.find({
+        id: this.id
+      }).then(response => {
+        this.isLoading = false
+      }).catch(error => {
+        this.$notification.error(error.message)
+      })
+    },
     onApprove () {
       this.approve({
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
+        this.getDetail()
         // this.addHistories({ id: response.data.id, activity: 'Approved' })
         //   .catch(error => {
         //     console.log(error.message)
