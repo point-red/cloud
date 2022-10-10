@@ -14,22 +14,22 @@
 
     <p-show-form-approval-status
       :is-loading="isLoading"
-      :approved-by="purchasePaymentOrder.approvedBy"
-      :cancellation-status="purchasePaymentOrder.form.cancellation_status"
-      :approval-status="purchasePaymentOrder.form.approval_status"
-      :approval-reason="purchasePaymentOrder.form.approval_reason"
+      :approved-by="purchasePaymentOrder.approved_by"
+      :cancellation-status="purchasePaymentOrder.cancellation_status"
+      :approval-status="purchasePaymentOrder.approval_status"
+      :approval-reason="purchasePaymentOrder.approval_reason"
       @onApprove="onApprove"
       @onReject="onReject"
     />
 
-    <p-show-form-cancellation-status
+    <!-- <p-show-form-cancellation-status
       :is-loading="isLoading"
-      :cancellation-status="purchasePaymentOrder.form.cancellation_status"
-      :cancellation-approval-reason="purchasePaymentOrder.form.cancellation_approval_reason"
-      :request-cancellation-reason="purchasePaymentOrder.form.request_cancellation_reason"
+      :cancellation-status="purchasePaymentOrder.cancellation_status"
+      :cancellation-approval-reason="purchasePaymentOrder.cancellation_approval_reason"
+      :request-cancellation-reason="purchasePaymentOrder.request_cancellation_reason"
       @onCancellationApprove="onCancellationApprove"
       @onCancellationReject="onCancellationReject"
-    />
+    /> -->
 
     <div class="row">
       <p-block>
@@ -415,10 +415,6 @@ export default {
       }).then(response => {
         this.$notification.success('approve success')
         this.getDetail()
-        // this.addHistories({ id: response.data.id, activity: 'Approved' })
-        //   .catch(error => {
-        //     console.log(error.message)
-        //   })
       }).catch(error => {
         this.$notification.error(error.message)
       }).finally(() => {
@@ -434,12 +430,13 @@ export default {
         reason: reason
       }).then(response => {
         this.$notification.success('reject success')
+        this.getDetail()
       }).catch(error => {
         this.$notification.error(error.message)
       })
     },
     onCancellationApprove () {
-      console.log('reject')
+      console.log('approve')
     },
     onCancellationReject () {
       console.log('reject')

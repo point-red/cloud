@@ -4,7 +4,11 @@ const url = '/purchase/payment-order'
 
 const state = {
   purchasePaymentOrder: {
+    approval_reason: null,
+    approval_status: null,
     approved_by: null,
+    cancellation_approval_reason: null,
+    cancellation_status: null,
     created_at: null,
     created_by: null,
     date: null,
@@ -15,6 +19,7 @@ const state = {
     notes: null,
     other_collection: null,
     payment_method: null,
+    request_cancellation_reason: null,
     return_collection: [],
     supplier_address: null,
     supplier_name: null,
