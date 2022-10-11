@@ -12,7 +12,7 @@
         <div class="input-group block">
           <download-excel
             class="input-group-prepend"
-            @click="exportData(purchasePaymentOrders)"
+            @click="exportData()"
           >
             <span class="input-group-text">
               <i class="fa fa-download" />
@@ -333,7 +333,7 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('purchasePaymentOrder', ['get']),
+    ...mapActions('purchasePaymentOrder', ['get', 'export']),
     filterSearch: debounce(function (value) {
       this.$router.push({
         query: {
@@ -352,8 +352,8 @@ export default {
           filterLike: {
             'form.number': this.searchText
           },
-          dateFrom: this.$options.filters.dateFormat(this.date.start, 'YYYY-MM-DD'),
-          dateTo: this.$options.filters.dateFormat(this.date.end, 'YYYY-MM-DD'),
+          dateFrom: this.date.start ? this.$options.filters.dateFormat(this.date.start, 'YYYY-MM-DD') : null,
+          dateTo: this.date.end ? this.$options.filters.dateFormat(this.date.end, 'YYYY-MM-DD') : null,
           approvalStatus: this.formApprovalStatus.label,
           doneStatus: this.formStatus.label,
           page: this.currentPage
@@ -370,7 +370,6 @@ export default {
       this.getPurchasePaymentOrder()
     },
     chooseFormApprovalStatus (option) {
-      console.log(option, 'OPTION')
       this.formApprovalStatus.label = option.label
       this.formApprovalStatus.value = option.value
       this.getPurchasePaymentOrder()
@@ -379,8 +378,32 @@ export default {
       this.currentPage = value
       this.getPurchasePaymentOrder()
     },
-    exportData (value) {
-      console.log(value, 'This is export data func')
+    exportData () {
+      this.export({
+        params: {
+          filterLike: {
+            'form.number': this.searchText
+          },
+          dateFrom: this.date.start ? this.$options.filters.dateFormat(this.date.start, 'YYYY-MM-DD') : null,
+          dateTo: this.date.end ? this.$options.filters.dateFormat(this.date.end, 'YYYY-MM-DD') : null,
+          approvalStatus: this.formApprovalStatus.label,
+          doneStatus: this.formStatus.label,
+          page: this.currentPage
+        }
+      }).then((response) => {
+        const url = URL.createObjectURL(new Blob([response], {
+          type: '*/*'
+        }))
+        const startDate = this.$options.filters.dateFormat(this.date.start, 'DD MMMM YYYY')
+        const endDate = this.$options.filters.dateFormat(this.date.end, 'DD MMMM YYYY')
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', `Purchase Payment Order_${startDate}-${endDate}.xlsx`)
+        document.body.appendChild(link)
+        link.click()
+      }).catch((error) => {
+        this.$notification.error(error.message)
+      })
     }
   }
 }

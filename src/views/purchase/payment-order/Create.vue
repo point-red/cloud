@@ -789,7 +789,6 @@ export default {
       this.$router.push('/purchase/payment-order/preview')
     },
     onChoosenAccount (account) {
-      console.log(account)
       const row = this.form.others[account.index]
       row.coaId = account.id
       row.coaName = account.label
@@ -873,7 +872,6 @@ export default {
       // var totalAmount = 0
       var totalOther = 0
       this.form.others.forEach(function (element) {
-        // console.log(element, 'element')
         // if (element.coaType.toUpperCase() === 'OTHER INCOME') {
         //   this.total_amount -= parseFloat(element.amount)
         // }
