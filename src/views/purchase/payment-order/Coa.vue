@@ -182,7 +182,7 @@ export default {
               this.options.push({
                 id: key.id,
                 alias: key.alias,
-                label: key.label,
+                label: `[${key.number}] [${key.type.alias}] ${key.alias}`,
                 isDebit: key.type.is_debit,
                 type: key.type.name
               })

@@ -35,6 +35,40 @@
       <p-block>
         <p-block-inner :is-loading="isLoading">
           <div class="row">
+            <div class="col-sm-12">
+              <span>
+                <div class="text-right">
+                  <button
+                    class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                    title="Print payment collection"
+                  >
+                    <i class="si si-printer" />
+                  </button>
+                  <router-link
+                    v-if="$permission.has('create purchase payment order')"
+                    to=""
+                    class="btn btn-sm btn-outline-secondary mr-5"
+                  >
+                    {{ $t('create') | uppercase }}
+                  </router-link>
+                  <router-link
+                    v-if="$permission.has('create purchase payment order')"
+                    to=""
+                    class="btn btn-sm btn-outline-secondary mr-5"
+                  >
+                    {{ $t('edit') | uppercase }}
+                  </router-link>
+                  <button
+                    class="btn btn-sm btn-outline-secondary mr-5"
+                  >
+                    {{ $t('delete') | uppercase }}
+                  </button>
+                </div>
+              </span>
+            </div>
+          </div>
+          <hr>
+          <div class="row">
             <hr>
             <div class="col-sm-6">
               <h4>{{ $t('purchase payment order') | uppercase }}</h4>
