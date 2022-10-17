@@ -388,75 +388,79 @@ export default {
     }
   },
   created () {
-    this.isLoading = true
-    this.find({
-      id: this.$route.params.id,
-      params: {
-        includes: 'customer;' +
-            'items.item;' +
-            'items.allocation;' +
-            'items.salesInvoiceItem;' +
-            'salesInvoice.form;' +
-            'salesInvoice.items;' +
-            'form.createdBy;' +
-            'form.requestApprovalTo;' +
-            'form.branch'
-      }
-    }).then(response => {
-      this.isLoading = false
-      this.form.sales_invoice_id = response.data.sales_invoice_id
-      this.form.date = response.data.form.date
-      this.form.warehouse_id = response.data.warehouse_id
-      this.form.customer_id = response.data.customer_id
-      this.form.customer_name = response.data.customer_name
-      this.form.customer_address = response.data.customer.address
-      this.form.customer_phone = response.data.customer.phone
-      this.form.customer_email = response.data.customer.email
-      this.form.notes = response.data.form.notes
-      this.form.type_of_tax = response.data.sales_invoice.type_of_tax
-      this.form.amount = response.data.amount
-      this.form.tax = response.data.tax
-      this.form.items = response.data.sales_invoice.items.map(item => {
-        return {
-          sales_invoice_item_id: item.id,
-          item_id: item.item_id,
-          item_name: item.item_name,
-          item_label: item.item_name,
-          more: false,
-          unit: item.unit_smallest || item.unit,
-          converter: item.converter_smallest || item.converter,
-          expiry_date: item.expiry_date,
-          production_number: item.production_number,
-          quantity_sales: item.quantity - item.quantity_returned,
-          quantity: 0,
-          price: item.price,
-          price_sales: item.price - item.discount_value,
-          discount_percent: item.discount_percent,
-          discount_value: item.discount_value,
-          total: item.quantity * (item.price - item.discount_value),
-          allocation_id: item.allocation_id,
-          allocation_name: item.allocation_name,
-          notes: item.notes
+    if (this.$permission.has('update sales return')) {
+      this.isLoading = true
+      this.find({
+        id: this.$route.params.id,
+        params: {
+          includes: 'customer;' +
+              'items.item;' +
+              'items.allocation;' +
+              'items.salesInvoiceItem;' +
+              'salesInvoice.form;' +
+              'salesInvoice.items;' +
+              'form.createdBy;' +
+              'form.requestApprovalTo;' +
+              'form.branch'
         }
-      })
-      this.form.request_approval_to = response.data.form.request_approval_to.id
-      this.form.approver_name = response.data.form.request_approval_to.full_name
-      this.form.approver_email = response.data.form.request_approval_to.email
-      this.form.items.forEach(function (item) {
-        response.data.items.forEach(function (returned) {
-          if (item.item_id === returned.item_id) {
-            item.quantity_before = returned.quantity
-            item.quantity = returned.quantity
-            if (response.data.form.approval_status === 1) {
-              item.quantity_sales += returned.quantity
-            }
+      }).then(response => {
+        this.isLoading = false
+        this.form.sales_invoice_id = response.data.sales_invoice_id
+        this.form.date = response.data.form.date
+        this.form.warehouse_id = response.data.warehouse_id
+        this.form.customer_id = response.data.customer_id
+        this.form.customer_name = response.data.customer_name
+        this.form.customer_address = response.data.customer.address
+        this.form.customer_phone = response.data.customer.phone
+        this.form.customer_email = response.data.customer.email
+        this.form.notes = response.data.form.notes
+        this.form.type_of_tax = response.data.sales_invoice.type_of_tax
+        this.form.amount = response.data.amount
+        this.form.tax = response.data.tax
+        this.form.items = response.data.sales_invoice.items.map(item => {
+          return {
+            sales_invoice_item_id: item.id,
+            item_id: item.item_id,
+            item_name: item.item_name,
+            item_label: item.item_name,
+            more: false,
+            unit: item.unit_smallest || item.unit,
+            converter: item.converter_smallest || item.converter,
+            expiry_date: item.expiry_date,
+            production_number: item.production_number,
+            quantity_sales: item.quantity - item.quantity_returned,
+            quantity: 0,
+            price: item.price,
+            price_sales: item.price - item.discount_value,
+            discount_percent: item.discount_percent,
+            discount_value: item.discount_value,
+            total: item.quantity * (item.price - item.discount_value),
+            allocation_id: item.allocation_id,
+            allocation_name: item.allocation_name,
+            notes: item.notes
           }
         })
+        this.form.request_approval_to = response.data.form.request_approval_to.id
+        this.form.approver_name = response.data.form.request_approval_to.full_name
+        this.form.approver_email = response.data.form.request_approval_to.email
+        this.form.items.forEach(function (item) {
+          response.data.items.forEach(function (returned) {
+            if (item.item_id === returned.item_id) {
+              item.quantity_before = returned.quantity
+              item.quantity = returned.quantity
+              if (response.data.form.approval_status === 1) {
+                item.quantity_sales += returned.quantity
+              }
+            }
+          })
+        })
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
       })
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    } else {
+      this.$router.push('/')
+    }
   },
   methods: {
     ...mapActions('salesReturn', ['find', 'update']),
