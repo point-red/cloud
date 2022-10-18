@@ -22,6 +22,7 @@ const state = {
     items: []
   },
   salesReturns: [],
+  salesReturnHistories: [],
   pagination: {}
 }
 
@@ -46,6 +47,9 @@ const getters = {
       return salesReturn
     })
   },
+  salesReturnHistories: state => {
+    return state.salesReturnHistories
+  },
   pagination: state => {
     return state.pagination
   }
@@ -54,6 +58,7 @@ const getters = {
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.salesReturns = payload.data
+    state.salesReturnHistories = payload.data
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
@@ -222,6 +227,18 @@ const actions = {
         .then((response) => {
           resolve(response)
         }, (error) => {
+          reject(error)
+        })
+    })
+  },
+  getHistories ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/' + payload.id + '/histories', payload)
+        .then(response => {
+          commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          console.log(error)
           reject(error)
         })
     })
