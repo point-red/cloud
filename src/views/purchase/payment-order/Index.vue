@@ -192,11 +192,11 @@
                   <router-link
                     :to="{ name: 'purchase.payment-order.show', params: { id: purchasePaymentOrder.payment_order_id }}"
                   >
-                    {{ purchasePaymentOrder.form_number }}
+                    {{ purchasePaymentOrder.form.number }}
                   </router-link>
                 </th>
-                <td>{{ purchasePaymentOrder.supplier }}</td>
-                <td>{{ purchasePaymentOrder.notes }}</td>
+                <td>{{ purchasePaymentOrder.supplier_name }}</td>
+                <td>{{ purchasePaymentOrder.form.notes }}</td>
                 <td>{{ purchasePaymentOrder.value | numberFormat }}</td>
                 <td class="text-center">
                   <div
