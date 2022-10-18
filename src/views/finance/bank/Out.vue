@@ -143,6 +143,36 @@
                 </td>
               </tr>
             </template>
+            <template v-for="(purchasePaymentOrder, index) in purchasePaymentOrders">
+              <template v-if="purchasePaymentOrder.payment_method == 'bank'">
+                <tr
+                  :key="'purchase-payment-order-' + index + '-'"
+                  slot="p-body"
+                >
+                  <th>
+                    <router-link :to="{ name: 'purchase.payment-order.show', params: { id: purchasePaymentOrder.payment_order_id }}">
+                      {{ purchasePaymentOrder.form.number }}
+                    </router-link>
+                  </th>
+                  <td>{{ purchasePaymentOrder.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                  <td>{{ purchasePaymentOrder.supplier_name }}</td>
+                  <td>{{ purchasePaymentOrderAccountLabel }}</td>
+                  <td>{{ purchasePaymentOrder.form.notes }}</td>
+                  <td class="text-right">
+                    {{ purchasePaymentOrder.value | numberFormat }}
+                  </td>
+                  <td class="text-center">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-primary"
+                      @click="payPurchasePaymentOrder(purchasePaymentOrder)"
+                    >
+                      {{ $t('pay') | uppercase }}
+                    </button>
+                  </td>
+                </tr>
+              </template>
+            </template>
           </point-table>
         </p-block-inner>
         <p-pagination
@@ -173,6 +203,8 @@ export default {
       isAdvanceFilter: false,
       downPaymentAccountId: null,
       downPaymentAccountLabel: null,
+      purchasePaymentOrderAccountId: null,
+      purchasePaymentOrderAccountLabel: null,
       checkedRow: [],
       date: {
         start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
@@ -190,7 +222,8 @@ export default {
       paymentOrders: 'paymentOrders',
       paymentOrdersPagination: 'pagination'
     }),
-    ...mapGetters('purchaseDownPayment', ['downPayments'])
+    ...mapGetters('purchaseDownPayment', ['downPayments']),
+    ...mapGetters('purchasePaymentOrder', ['purchasePaymentOrders'])
   },
   watch: {
     date: function () {
@@ -219,6 +252,9 @@ export default {
     }),
     ...mapActions('accountingSettingJournal', {
       findAccount: 'find'
+    }),
+    ...mapActions('purchasePaymentOrder', {
+      getPurchasePaymentOrder: 'get'
     }),
     payPaymentOrder (paymentOrder) {
       const details = []
@@ -270,6 +306,29 @@ export default {
       })
       this.$router.push({ name: 'finance.bank.out.create' })
     },
+    payPurchasePaymentOrder (purchasePaymentOrder) {
+      const details = []
+      details.push({
+        chart_of_account_id: this.purchasePaymentOrderAccountId,
+        chart_of_account_label: this.purchasePaymentOrderAccountLabel,
+        notes: purchasePaymentOrder.form.notes,
+        amount: Number(purchasePaymentOrder.value)
+      })
+      this.$store.commit('financePayment/FETCH_OBJECT', {
+        data: {
+          reference_form_id: purchasePaymentOrder.form.id,
+          referenceable_id: purchasePaymentOrder.payment_order_id,
+          referenceable_type: purchasePaymentOrder.form.formableType,
+          reference_number: purchasePaymentOrder.form.number,
+          paymentable_name: purchasePaymentOrder.supplier_name,
+          paymentable_type: 'Supplier',
+          paymentable_id: purchasePaymentOrder.supplier_id,
+          amount: Number(purchasePaymentOrder.value),
+          details: details
+        }
+      })
+      this.$router.push({ name: 'finance.bank.out.create' })
+    },
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
@@ -285,6 +344,13 @@ export default {
       }).then(response => {
         this.downPaymentAccountId = response.data.id
         this.downPaymentAccountLabel = response.data.label
+      })
+      this.findAccount({
+        feature: 'purchase',
+        name: 'account payable'
+      }).then(response => {
+        this.purchasePaymentOrderAccountId = response.data.id
+        this.purchasePaymentOrderAccountLabel = response.data.label
       })
       this.getPaymentOrder({
         params: {
@@ -340,6 +406,22 @@ export default {
       }).catch(error => {
         this.isLoading = false
         this.$notification.error(error.message)
+      })
+      this.getPurchasePaymentOrder({
+        params: {
+          filterLike: {
+            'form.number': this.searchText
+          },
+          dateFrom: this.date.start ? this.$options.filters.dateFormat(this.date.start, 'YYYY-MM-DD') : null,
+          dateTo: this.date.end ? this.$options.filters.dateFormat(this.date.end, 'YYYY-MM-DD') : null,
+          approvalStatus: 'approved',
+          doneStatus: 'pending',
+          page: this.currentPage
+        }
+      }).catch((error) => {
+        this.$notification.error(error.message)
+      }).finally(() => {
+        this.isLoading = false
       })
     },
     updatePage (value) {
