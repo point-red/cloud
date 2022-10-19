@@ -187,7 +187,7 @@
                 :key="'pr-' + index"
                 slot="p-body"
               >
-                <td>{{ purchasePaymentOrder.date | dateFormat('DD MMMM YYYY') }}</td>
+                <td>{{ purchasePaymentOrder.form.date | dateFormat('DD MMMM YYYY') }}</td>
                 <th>
                   <router-link
                     :to="{ name: 'purchase.payment-order.show', params: { id: purchasePaymentOrder.payment_order_id }}"
