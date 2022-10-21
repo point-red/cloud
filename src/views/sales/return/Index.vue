@@ -140,6 +140,9 @@
               <th class="text-center">
                 Form Status
               </th>
+              <th class="text-center">
+                History
+              </th>
               <th width="50px" />
             </tr>
             <template v-for="(salesReturn, index) in salesReturns">
@@ -165,22 +168,48 @@
                 </td>
                 <td class="text-center">
                   <div
-                    v-if="salesReturn.form.approval_status == 0"
-                    class="badge badge-primary"
+                    v-if="salesReturn.form.cancellation_status == null"
                   >
-                    {{ $t('pending') | uppercase }}
+                    <div
+                      v-if="salesReturn.form.approval_status == 0"
+                      class="badge badge-primary"
+                    >
+                      {{ $t('pending') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.approval_status == -1"
+                      class="badge badge-danger"
+                    >
+                      {{ $t('rejected') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.approval_status == 1"
+                      class="badge badge-success"
+                    >
+                      {{ $t('approved') | uppercase }}
+                    </div>
                   </div>
                   <div
-                    v-if="salesReturn.form.approval_status == -1"
-                    class="badge badge-danger"
+                    v-if="salesReturn.form.cancellation_status != null"
                   >
-                    {{ $t('rejected') | uppercase }}
-                  </div>
-                  <div
-                    v-if="salesReturn.form.approval_status == 1"
-                    class="badge badge-success"
-                  >
-                    {{ $t('approved') | uppercase }}
+                    <div
+                      v-if="salesReturn.form.cancellation_status == 0"
+                      class="badge badge-primary"
+                    >
+                      {{ $t('pending') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.cancellation_status == -1"
+                      class="badge badge-danger"
+                    >
+                      {{ $t('rejected') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.cancellation_status == 1"
+                      class="badge badge-success"
+                    >
+                      {{ $t('approved') | uppercase }}
+                    </div>
                   </div>
                 </td>
                 <td class="text-center">
@@ -203,6 +232,15 @@
                     {{ $t('done') | uppercase }}
                   </div>
                 </td>
+                <td class="text-center">
+                  <router-link
+                    class="btn btn-sm btn-light"
+                    :to="{ name: 'sales.return.histories', params: { id: salesReturn.id }}"
+                  >
+                    <i class="fa fa-history" />
+                  </router-link>
+                </td>
+                <td />
               </tr>
             </template>
           </point-table>
