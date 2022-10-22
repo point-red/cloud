@@ -61,26 +61,38 @@
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
-              <div class="text-right">
-                <router-link
-                  v-if="$permission.has('create sales return')"
-                  :to="{ name: 'sales.return.create' }"
-                  class="btn btn-sm btn-outline-secondary mr-5"
-                >
-                  {{ $t('create') | uppercase }}
-                </router-link>
-                <router-link
-                  v-if="$permission.has('update sales return') && salesReturn.form.done === 0"
-                  :to="{ name: 'sales.return.edit', params: { id: salesReturn.id }}"
-                  class="btn btn-sm btn-outline-secondary mr-5"
-                >
-                  {{ $t('edit') | uppercase }}
-                </router-link>
-                <m-form-request-delete
-                  ref="formRequestDelete"
-                  @delete="onDelete($event)"
-                />
-              </div>
+              <h3 v-if="salesReturn.form.edited_number">
+                {{ $t('archive') | uppercase }}
+              </h3>
+              <span v-if="salesReturn.form.number">
+                <div class="text-right">
+                  <router-link
+                    v-if="$permission.has('create sales return')"
+                    :to="{ name: 'sales.return.create' }"
+                    class="btn btn-sm btn-outline-secondary mr-5"
+                  >
+                    {{ $t('create') | uppercase }}
+                  </router-link>
+                  <router-link
+                    v-if="$permission.has('update sales return') && salesReturn.form.done === 0"
+                    :to="{ name: 'sales.return.edit', params: { id: salesReturn.id }}"
+                    class="btn btn-sm btn-outline-secondary mr-5"
+                  >
+                    {{ $t('edit') | uppercase }}
+                  </router-link>
+                  <button
+                    v-if="(salesReturn.form.cancellation_status == null || salesReturn.form.cancellation_status == -1) && $permission.has('delete sales return') && salesReturn.form.done === 0"
+                    class="btn btn-sm btn-outline-secondary mr-5"
+                    @click="$refs.formRequestDelete.open()"
+                  >
+                    {{ $t('delete') | uppercase }}
+                  </button>
+                  <m-form-request-delete
+                    ref="formRequestDelete"
+                    @delete="onDelete($event)"
+                  />
+                </div>
+              </span>
               <hr>
               <div class="row">
                 <div class="col-sm-6">
@@ -93,7 +105,12 @@
                       >
                         {{ $t('form number') | uppercase }}
                       </td>
-                      <td>{{ salesReturn.form.number }}</td>
+                      <td v-if="salesReturn.form.number">
+                        {{ salesReturn.form.number }}
+                      </td>
+                      <td v-if="salesReturn.form.edited_number">
+                        {{ salesReturn.form.edited_number }}
+                      </td>
                     </tr>
                     <tr>
                       <td class="font-weight-bold">
@@ -344,6 +361,7 @@ export default {
       cancellationReject: 'cancellationReject',
       sendReport: 'sendReport'
     }),
+    ...mapActions('salesReturnApproval', ['send']),
     salesReturnRequest () {
       this.isLoading = true
       this.find({
@@ -378,6 +396,13 @@ export default {
         this.isDeleting = false
         this.$notification.success('cancel success')
         this.salesReturnRequest()
+        this.send({
+          ids: [{ id: this.id }]
+        })
+          .catch(error => {
+            this.$notification.error(error.message)
+            this.form.errors.record(error.errors)
+          })
       }).catch(error => {
         this.isDeleting = false
         this.$notification.error(error.message)
