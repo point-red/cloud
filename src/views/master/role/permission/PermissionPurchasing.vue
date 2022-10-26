@@ -353,6 +353,53 @@
           />
         </td>
       </tr>
+      <tr slot="p-body">
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create purchase payment order', 'read purchase payment order', 'update purchase payment order', 'delete purchase payment order'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['create purchase payment order', 'read purchase payment order', 'update purchase payment order', 'delete purchase payment order'], permissions)"
+          />
+        </td>
+        <td><b>{{ $t('payment order') | uppercase }}</b></td>
+        <td>
+          <p-form-check-box
+            ref="create purchase payment order"
+            :is-form="false"
+            :checked="$rolePermission.has('create purchase payment order', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create purchase payment order')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read purchase payment order"
+            :is-form="false"
+            :checked="$rolePermission.has('read purchase payment order', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read purchase payment order')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update purchase payment order"
+            :is-form="false"
+            :checked="$rolePermission.has('update purchase payment order', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update purchase payment order')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete purchase payment order"
+            :is-form="false"
+            :checked="$rolePermission.has('delete purchase payment order', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete purchase payment order')"
+          />
+        </td>
+      </tr>
     </p-table>
     <button
       class="btn btn-primary"
