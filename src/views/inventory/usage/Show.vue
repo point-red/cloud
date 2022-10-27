@@ -218,12 +218,21 @@
         </p-block-inner>
       </p-block>
     </div>
+    <m-form-send-email
+      ref="formSendEmail"
+      @submit="onSendEmail($event)"
+    />
+    <m-print-preview
+      ref="printPreview"
+      :inventory-usage="inventoryUsage"
+    />
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbInventory from '../Breadcrumb'
+import MPrintPreview from './MPrintPreview'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -231,6 +240,7 @@ export default {
   components: {
     Breadcrumb,
     BreadcrumbInventory,
+    MPrintPreview,
     PointTable
   },
   data () {
@@ -309,6 +319,32 @@ export default {
       this.inventoryUsage.items.forEach(element => {
         element.more = isMoreActive
       })
+    },
+    async onSendEmail (form) {
+      this.isSendingEmail = true
+
+      try {
+        const params = {
+          ...form,
+          subject: 'Inventory Usage Receipt',
+          attachments: [
+            {
+              filename: 'Inventory Usage Receipt ' + this.inventoryUsage.form.number + '.pdf',
+              type: 'pdf',
+              view: 'inventory.inventory-usage.inventory-usage-receipt',
+              view_data: { inventoryUsage: this.inventoryUsage }
+            }
+          ]
+        }
+        await this.$store.dispatch('emailService/send', { ...params })
+
+        this.$notification.success('send receipt success')
+      } catch (error) {
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
+      } finally {
+        this.isSendingEmail = false
+      }
     },
     onDelete () {
       this.isDeleting = true
