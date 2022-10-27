@@ -130,7 +130,7 @@ export default {
           sort_by: 'name',
           limit: 50,
           fields: 'warehouse.*',
-          join: 'user_warehouse',
+          join: this.defaultOnly ? 'user_warehouse' : '',
           filter_like: {
             name: this.searchText
           },

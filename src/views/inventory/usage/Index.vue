@@ -359,7 +359,7 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form,warehouse,items,item',
+          join: 'form,warehouse',
           fields: 'inventory_usage.*',
           sort_by: '-form.number',
           filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
