@@ -126,6 +126,10 @@ export default {
       approveByEmailMemo: 'approveByEmail',
       rejectByEmailMemo: 'rejectByEmail'
     }),
+    ...mapActions('salesReturn', {
+      approveByEmailSalesReturn: 'approveByEmail',
+      rejectByEmailSalesReturn: 'rejectByEmail'
+    }),
     close () {
       open(location, '_self').close()
     },
@@ -137,6 +141,7 @@ export default {
       }
 
       let resource, projectName, approvalStatus
+      console.log(this.resourceType)
       try {
         if (this.resourceType === 'SalesInvoice') {
           ({ resource, projectName, approvalStatus } = await this.handleApprovalSalesInvoice(headers))
@@ -161,6 +166,9 @@ export default {
         }
         if (this.resourceType === 'MemoJournal') {
           this.handleApprovalMemoJournal()
+        }
+        if (this.resourceType === 'SalesReturn') {
+          this.handleApprovalSalesReturn()
         }
       } catch (error) {
         alert(error)
@@ -497,6 +505,41 @@ export default {
             console.log(error.message)
           })
         }
+      }
+    },
+    async handleApprovalSalesReturn () {
+      let statusKey = 'approval_status'
+      if (this.crudType === 'delete') statusKey = 'cancellation_status'
+      if (this.crudType === 'close') statusKey = 'close_status'
+
+      this.isLoading = true
+
+      if (this.action === 'approve') {
+        this.$store.dispatch('salesReturn/approveByEmail', {
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form[statusKey]
+        }).catch(error => {
+          this.$notification.error(error.message)
+        }).finally(() => { this.isLoading = false })
+      }
+      if (this.action === 'reject') {
+        this.$store.dispatch('salesReturn/rejectByEmail', {
+          ids: this.ids,
+          token: this.token,
+          approver_id: this.approver_id,
+          reason: 'Rejected by email'
+        }).then(response => {
+          this.resource = response.data[0]
+          this.projectName = this.tenantName
+          this.approvalStatus = response.data[0].form[statusKey]
+        }).catch(error => {
+          this.$notification.error(error.message)
+        }).finally(() => { this.isLoading = false })
       }
     }
   }

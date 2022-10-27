@@ -39,12 +39,24 @@
           />
         </div>
         <div class="text-center font-size-sm">
-          <a
-            href="javascript:void(0)"
-            @click="isAdvanceFilter = !isAdvanceFilter"
-          >
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
-          </a>
+          <div class="col-sm-2">
+            <router-link
+              to="/sales/return/approval"
+              class="input-group-prepend"
+            >
+              <span class="input-group-text font-size-sm">
+                {{ $t('request approval all') | uppercase }}
+              </span>
+            </router-link>
+          </div>
+          <div class="col-sm-10 text-center font-size-sm">
+            <a
+              href="javascript:void(0)"
+              @click="isAdvanceFilter = !isAdvanceFilter"
+            >
+              {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
+            </a>
+          </div>
         </div>
         <div
           v-show="isAdvanceFilter"

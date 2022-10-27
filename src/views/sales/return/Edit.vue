@@ -464,6 +464,7 @@ export default {
   },
   methods: {
     ...mapActions('salesReturn', ['find', 'update']),
+    ...mapActions('salesReturnApproval', ['send']),
     chooseSalesInvoice (salesInvoice) {
       this.salesInvoice = salesInvoice
       this.form.sales_invoice_id = salesInvoice.id
@@ -549,12 +550,16 @@ export default {
           this.isSaving = false
           this.$notification.success('update success')
           Object.assign(this.$data, this.$options.data.call(this))
+          this.sendRequest(response.data.id)
           this.$router.push('/sales/return/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
+    },
+    sendRequest (id) {
+      this.send({ ids: [{ id }] })
     }
   }
 }

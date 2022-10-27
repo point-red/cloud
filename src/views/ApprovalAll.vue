@@ -208,6 +208,9 @@ export default {
       if (this.resourceType === 'MemoJournal') {
         this.handleApprovalMemoJournal()
       }
+      if (this.resourceType === 'SalesReturn') {
+        this.handleApprovalSalesReturn()
+      }
     },
     async handleApprovalTransferSend () {
       if (this.action === 'approve') {
@@ -339,6 +342,38 @@ export default {
         }).catch(error => {
           console.log(error.message)
         })
+      }
+    },
+    async handleApprovalSalesReturn () {
+      let endpoint = 'salesReturn/approveByEmail'
+      let params = {
+        ids: this.ids,
+        token: this.token,
+        approver_id: this.approver_id
+      }
+      if (this.action === 'reject') {
+        endpoint = 'salesReturn/rejectByEmail'
+        params = { ...params, reason: 'Rejected by Email' }
+      }
+
+      let statusKey = 'approval_status'
+      if (this.crudType === 'close') statusKey = 'close_status'
+      if (this.crudType === 'delete') statusKey = 'cancellation_status'
+
+      this.isLoading = true
+
+      try {
+        const response = await this.$store.dispatch(endpoint, params)
+
+        this.projectName = this.tenantName
+        this.resources = response.data.map((item) => {
+          item.approval_status = item.form[statusKey]
+          return item
+        })
+      } catch (error) {
+        this.$notification.error(error.message)
+      } finally {
+        this.isLoading = false
       }
     },
     setActionCode () {
