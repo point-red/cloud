@@ -1,11 +1,13 @@
 <template>
   <div>
+    <!-- COA Modal -->
     <sweet-modal
       ref="modal"
       :title="title || $t('select chart of account') | uppercase"
       overlay-theme="dark"
-      @close="onClose()"
+      @close="close()"
     >
+      <!-- Search -->
       <input
         v-model="searchText"
         type="text"
@@ -23,11 +25,12 @@
         v-else
         class="list-group push"
       >
+        <!-- COA Options -->
         <template v-for="(option, optionIndex) in options">
           <a
             :key="optionIndex"
             class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{'active': option.id == mutableId }"
+            :class="{ active: option.id == mutableId }"
             href="javascript:void(0)"
             @click="choose(option)"
           >
@@ -35,70 +38,98 @@
           </a>
         </template>
       </div>
+      <!-- Search Not Found Alert-->
       <div
         v-if="searchText && options.length == 0 && !isLoading"
         class="alert alert-info text-center"
       >
         {{ $t('searching not found', [searchText]) | capitalize }} <br>
       </div>
+      <!-- Create Recommendation Alert -->
       <div
         v-if="!searchText && options.length == 0 && !isLoading"
         class="alert alert-info text-center"
       >
-        {{ $t('you don\'t have any') | capitalize }} {{ $t('chart of account') | capitalize }}, <br> {{ $t('you can create') }}
+        {{ $t("you don't have any") | capitalize }}
+        {{ $t('chart of account') | capitalize }}, <br>
+        {{ $t('you can create') }}
       </div>
-      <div class="pull-right">
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-secondary mr-5"
-          @click="add()"
-        >
-          {{ $t('add') | uppercase }}
-        </button>
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-danger"
-          @click="clear()"
-        >
-          {{ $t('clear') | uppercase }}
-        </button>
+
+      <div class="row">
+        <!-- Pagination COA -->
+        <div class="col d-flex justify-content-start">
+          <p-pagination
+            :current-page="currentPage"
+            :last-page="lastPage"
+            @updatePage="updatePage"
+          />
+        </div>
+        <!-- Button Actions -->
+        <div class="col d-flex justify-content-end">
+          <!--  Button Add -->
+          <!-- <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary mr-5"
+            @click="add()"
+          >
+            {{ $t('add') | uppercase }}
+          </button> -->
+          <!-- Button Clear -->
+          <button
+            type="button"
+            class="btn btn-md btn-outline-danger"
+            @click="clear()"
+          >
+            {{ $t('clear') | uppercase }}
+          </button>
+        </div>
       </div>
     </sweet-modal>
   </div>
 </template>
 
 <script>
+// Import Library & Components
 import debounce from 'lodash/debounce'
+// Import Vuex
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  // Props Data
   props: {
+    // Id
     id: {
       type: String,
       default: ''
     },
+    // Value
     value: {
       type: [String, Number],
       default: ''
     },
+    // Label
     label: {
       type: String,
       default: ''
     },
+    // Title
     title: {
       type: String,
       default: ''
     },
+    // Type
     type: {
       type: String,
       default: ''
     },
+    // Type In
     typeIn: {
       type: Array,
       default: function () {
         return []
       }
     },
+    // Exclude
     exclude: {
       type: Array,
       default: function () {
@@ -108,99 +139,101 @@ export default {
   },
   data () {
     return {
-      index: null,
-      searchText: '',
+      // Data Default Loading
+      isLoading: false,
+      // Data Default Options
       options: [],
+      // Data Default Index
+      index: null,
+      // Data Default Mutable Id & Label
       mutableId: this.value,
       mutableLabel: this.label,
-      isSaving: false,
-      isLoading: false
+      // Data Default Filter
+      // Search Text Default
+      searchText: this.$route.query.search,
+      // Current Page Default
+      currentPage: this.$route.query.page * 1 || 1,
+      // Last Page Default
+      lastPage: 1,
+      // Limit Default
+      limit: 10
     }
   },
   computed: {
-    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts'])
+    // Get Data from Vuex Store
+    // Chart Of Account
+    ...mapGetters('accountingChartOfAccount', ['chartOfAccounts', 'pagination'])
   },
   watch: {
+    // Watch Data Filter Search
+    // Search Text
     searchText: debounce(function () {
+      // Get Data from Search Method
       this.search()
     }, 300),
+    // Label
     label () {
       this.mutableLabel = this.label
     }
   },
   created () {
+    // Created Data
+    // Get Data from Search Method
     this.search()
   },
+  updated () {
+    // Updated Data
+    // Update Last Page Pagination
+    this.lastPage = this.pagination.last_page
+  },
   beforeDestroy () {
+    // Before Destroy
+    // Close Modal
     this.close()
   },
   methods: {
-    ...mapActions('accountingChartOfAccount', ['get', 'create']),
+    // Action Data from Vuex Store
+    // Get Data Chart Of Account
+    ...mapActions('accountingChartOfAccount', ['get']),
+    // Filter Params COA
     search () {
+      // Loading
       this.isLoading = true
+      // Get Data with Conditional & Params
       if (this.type && !this.typeIn.length) {
         this.get({
           params: {
+            // Join
             join: 'account_type',
+            // Sort
+            sort_by: 'account.alias',
+            // Fields
             fields: 'account.*',
-            limit: 1000,
+            // Filter Like
             filter_like: {
+              // Account Type
               'account_type.alias': this.searchText,
-              'account.alias': this.searchText,
-              'account.number': this.searchText
+              // Account
+              'account.alias': this.searchText
             },
+            // Filter Equal
             filter_equal: {
+              // Account Type
               'account_type.name': this.type
             },
+            // Includes
             includes: 'type',
-            sort_by: 'account.number;account.alias'
+            // Limit
+            limit: this.limit,
+            // Page
+            page: this.currentPage
           }
-        }).then(response => {
-          this.options = []
-          this.mutableLabel = null
-          response.data.map((key, value) => {
-            this.options.push({
-              id: key.id,
-              alias: key.alias,
-              type: {
-                name: key.type.name
-              },
-              label: key.label,
-              number: key.number,
-              position: key.position,
-              sub_ledger: key.sub_ledger
-            })
-
-            if (this.value == key.id) {
-              this.mutableLabel = key.number + ' - ' + key.alias
-            }
-          })
-          this.isLoading = false
-        }).catch(error => {
-          this.isLoading = false
         })
-      } else {
-        this.get({
-          params: {
-            join: 'account_type',
-            fields: 'account.*',
-            limit: 1000,
-            filter_like: {
-              'account_type.alias': this.searchText,
-              'account.alias': this.searchText,
-              'account.number': this.searchText
-            },
-            filter_equal_or: {
-              'account_type.alias': this.typeIn
-            },
-            includes: 'type',
-            sort_by: 'account.number;account.alias'
-          }
-        }).then(response => {
-          this.options = []
-          this.mutableLabel = null
-          response.data.map((key, value) => {
-            if (this.exclude.includes(key.type_id) == false) {
+          // Success
+          .then((response) => {
+            this.options = []
+            this.mutableLabel = null
+            response.data.map((key, value) => {
               this.options.push({
                 id: key.id,
                 alias: key.alias,
@@ -212,22 +245,100 @@ export default {
                 position: key.position,
                 sub_ledger: key.sub_ledger
               })
-            }
 
-            if (this.value == key.id) {
-              this.mutableLabel = key.number + ' - ' + key.alias
-            }
+              if (this.value == key.id) {
+                this.mutableLabel = key.number + ' - ' + key.alias
+              }
+            })
+            this.isLoading = false
           })
-          this.isLoading = false
-        }).catch(error => {
-          this.isLoading = false
+          // Fail
+          .catch((error) => {
+            this.isLoading = false
+          })
+      } else {
+        this.get({
+          params: {
+            // Join
+            join: 'account_type',
+            // Sort
+            sort_by: 'account.alias',
+            // Fields
+            fields: 'account.*',
+            // Filter Like
+            filter_like: {
+              // Account Type
+              'account_type.alias': this.searchText,
+              // Account
+              'account.alias': this.searchText
+            },
+            // Filter Equal Or
+            filter_equal_or: {
+              // Account Type
+              'account_type.alias': this.typeIn
+            },
+            // Includes
+            includes: 'type',
+            // Limit
+            limit: this.limit,
+            // Page
+            page: this.currentPage
+          }
         })
+          // Success
+          .then((response) => {
+            // Initialization Data COA to Options
+            this.options = []
+            this.mutableLabel = null
+            response.data.map((key, value) => {
+              if (this.exclude.includes(key.type_id) == false) {
+                this.options.push({
+                  id: key.id,
+                  alias: key.alias,
+                  type: {
+                    name: key.type.name
+                  },
+                  label: key.label,
+                  number: key.number,
+                  position: key.position,
+                  sub_ledger: key.sub_ledger
+                })
+              }
+              if (this.value == key.id) {
+                this.mutableLabel = key.number + ' - ' + key.alias
+              }
+            })
+            this.isLoading = false
+          })
+          // Fail
+          .catch((error) => {
+            this.isLoading = false
+          })
       }
     },
+    // Update Page for Pagination
+    updatePage (value) {
+      // Current Page
+      this.currentPage = value
+      // Get Data from Search Method
+      this.search()
+    },
+    // Add COA
     add () {
       //
     },
+    // Choose Option COA
+    choose (option) {
+      option.index = this.index
+      this.mutableId = option.id
+      this.mutableLabel = option.label
+      this.$emit('input', option.id)
+      this.$emit('choosen', option)
+      this.close()
+    },
+    // Clear Choose Option
     clear (option) {
+      // Initialization Data Options to Null
       this.mutableId = null
       this.mutableLabel = null
       this.$emit('input', null)
@@ -243,38 +354,32 @@ export default {
           name: null
         }
       })
+      // Close Modal
       this.close()
     },
-    choose (option) {
-      option.index = this.index
-      this.mutableId = option.id
-      this.mutableLabel = option.label
-      this.$emit('input', option.id)
-      this.$emit('choosen', option)
-      this.close()
-    },
+    // Open Modal
     open (index = null, update = false) {
       this.index = index
       this.$refs.modal.open()
       if (update) this.search()
     },
+    // Close Modal
     close () {
       this.$refs.modal.close()
-    },
-    onClose () {
-      this.$emit('close', true)
     }
   }
 }
 </script>
 
 <style scoped>
+/* Style for input */
 input:readonly {
-  background-color: white
+  background-color: white;
 }
 input {
   min-width: 200px;
 }
+/* Style for Link */
 .link {
   border-bottom: dotted 1px #2196f3;
   color: #2196f3;

@@ -11,7 +11,8 @@ const state = {
       alias: ''
     }
   },
-  chartOfAccounts: []
+  chartOfAccounts: [],
+  pagination: {}
 }
 
 const getters = {
@@ -20,12 +21,16 @@ const getters = {
   },
   chartOfAccounts: state => {
     return state.chartOfAccounts
+  },
+  pagination: state => {
+    return state.pagination
   }
 }
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.chartOfAccounts = payload.data
+    state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
     state.chartOfAccount = payload.data

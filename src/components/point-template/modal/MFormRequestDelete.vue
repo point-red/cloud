@@ -3,6 +3,7 @@
     <sweet-modal
       :ref="'form-request-delete'"
       :title="$t('form request delete') | uppercase"
+      class="text-left"
       overlay-theme="dark"
       @close="onClose()"
     >
@@ -80,7 +81,7 @@ export default {
 
 <style scoped>
 input:readonly {
-  background-color: white
+  background-color: white;
 }
 input {
   min-width: 200px;
