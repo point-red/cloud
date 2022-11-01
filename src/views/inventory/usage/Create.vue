@@ -337,7 +337,6 @@ export default {
       row.chart_of_account_name = account.label
     },
     updateDna (e) {
-      console.log(e)
       this.form.items[e.index].dna = e.dna
       this.form.items[e.index].quantity = e.quantity
       this.form.items[e.index].unit = e.unit

@@ -85,7 +85,6 @@
               </div>
             </div>
             <hr>
-            <hr>
             <point-table class="mt-20">
               <tr slot="p-head">
                 <th>Item</th>
@@ -128,7 +127,14 @@
                     </div>
                   </td>
                   <td>
+                    <div
+                      v-if="row.id === isLoadingInvDna"
+                      style="text-align: center"
+                    >
+                      loading...
+                    </div>
                     <p-quantity
+                      v-else
                       :id="'quantity-' + index"
                       v-model="row.quantity"
                       :name="'quantity-' + index"
@@ -305,7 +311,9 @@ export default {
       id,
       isSaving: false,
       isLoading: true,
+      isLoadingInvDna: null,
       requestedBy: localStorage.getItem('userName'),
+      items: [],
       form: new Form({
         id,
         increment_group: this.$moment().format('YYYYMM'),
@@ -326,22 +334,27 @@ export default {
     ...mapGetters('auth', ['authUser']),
     ...mapGetters('inventoryUsage', ['inventoryUsage'])
   },
-  created () {
+  async created () {
     this.isLoading = true
 
-    this.find({
-      id: this.id,
-      params: {
-        includes: 'warehouse;' +
+    try {
+      const { data } = await this.find({
+        id: this.id,
+        params: {
+          includes: 'warehouse;' +
             'items.account;' +
             'items.item;' +
+            'items.item.units;' +
             'items.allocation;' +
             'form.createdBy;' +
             'form.requestApprovalTo;' +
             'form.requestCancellationTo;' +
             'employee'
-      }
-    }).then(({ data }) => {
+        }
+      })
+
+      this.items = data.items
+
       this.isLoading = false
 
       this.chooseWarehouse(data.warehouse)
@@ -351,22 +364,41 @@ export default {
       this.form.date = data.form.date
       this.form.notes = data.notes
 
-      this.form.items = data.items
-      this.form.items.forEach(function (item) {
-        item.item_label = item.item.name
-        item.chart_of_account_name = item.account.name
-        item.allocation_name = item.allocation.name
-        item.units = item.item.units
+      const usageItems = []
+      data.items.forEach((usageItem) => {
+        const sameItem = usageItems.find(({ item_id: itemId }) => itemId === usageItem.item_id)
+        if (sameItem) return
+
+        const defaultUnitId = usageItem.item.unit_default_purchase
+        const defaultUnit = usageItem.item.units.find(({ id: unitId }) => unitId === defaultUnitId)
+        usageItems.push({
+          ...usageItem,
+          item_label: usageItem.item.name,
+          chart_of_account_name: usageItem.account.name,
+          quantity: data.items
+            .filter((item) => item.item_id === usageItem.item_id)
+            .reduce((totalQty, { quantity: usageItemQty }) => totalQty + usageItemQty, 0),
+          allocation_name: usageItem.allocation.name,
+          units: usageItem.item.units,
+          item: {
+            ...usageItem.item,
+            unit: defaultUnit.label,
+            converter: defaultUnit.converter
+          }
+        })
       })
 
+      this.form.items = usageItems
+
       this.addItemRow()
-    }).catch(error => {
+    } catch (error) {
       this.isLoading = false
       this.$notification.error(error.message)
-    })
+    }
   },
   methods: {
     ...mapActions('inventoryUsage', ['find', 'update']),
+    ...mapActions('inventoryInventoryDna', { getInvDna: 'get' }),
     addItemRow () {
       this.form.items.push({
         item_id: null,
@@ -442,6 +474,35 @@ export default {
       row.unit = unit.label
       row.converter = unit.converter
     },
+    async onClickQuantity (row, index) {
+      if (row.item.require_expiry_date === 1 || row.item.require_production_number === 1) {
+        row.index = index
+        row.warehouse_id = this.form.warehouse_id
+        row.item.unit = row.units.find(unit => unit.name === row.unit)
+
+        this.isLoadingInvDna = row.id
+
+        const { data: dataInvDna } = await this.getInvDna({
+          itemId: row.item_id,
+          params: { warehouse_id: row.warehouse_id }
+        })
+
+        row.dna = dataInvDna.map((invDna) => {
+          const matchedInvItem = this.items.find(({ production_number: prodNumberUsage }) => {
+            return prodNumberUsage === invDna.production_number
+          })
+
+          if (matchedInvItem) {
+            return { ...invDna, quantity: matchedInvItem?.quantity }
+          }
+
+          return { ...invDna }
+        })
+
+        this.isLoadingInvDna = null
+        this.$refs.inventory.open(row, row.quantity)
+      }
+    },
     onSubmit () {
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
@@ -457,9 +518,26 @@ export default {
         }).catch(error => {
           this.isSaving = false
           this.form.errors.record(error.errors)
-          this.$alert.error(error.message, '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>')
+
+          let errorDesc = ''
+          if (error.errors) {
+            errorDesc = '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>'
+          }
+
+          this.$alert.error(error.message, errorDesc)
         })
     }
   }
 }
 </script>
+
+<style scoped>
+.loading-inv-dna {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

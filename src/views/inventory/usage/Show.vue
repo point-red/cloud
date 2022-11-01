@@ -157,7 +157,15 @@
                 slot="p-body"
                 :key="index"
               >
-                <td>{{ row.item.label }}</td>
+                <td>
+                  {{ row.item.label }}
+                  <template v-if="row.item.require_production_number">
+                    (PID: {{ row.production_number }})
+                  </template>
+                  <template v-if="row.item.require_expiry_date">
+                    (E/D: {{ row.expiry_date | dateFormat('DD MMMM YYYY') }})
+                  </template>
+                </td>
                 <td>{{ row.account.label }}</td>
                 <td>
                   {{ row.quantity | numberFormat }} {{ row.unit }}
