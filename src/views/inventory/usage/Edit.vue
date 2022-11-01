@@ -474,32 +474,41 @@ export default {
       row.unit = unit.label
       row.converter = unit.converter
     },
+    async fetchDna (row) {
+      this.isLoadingInvDna = row.id
+
+      const { data: dataInvDna } = await this.getInvDna({
+        itemId: row.item_id,
+        params: { warehouse_id: row.warehouse_id }
+      })
+
+      const dna = dataInvDna.map((invDna) => {
+        const matchedInvItem = this.items.find(({ production_number: prodNumberUsage }) => {
+          return prodNumberUsage === invDna.production_number
+        })
+
+        if (matchedInvItem) {
+          return { ...invDna, quantity: matchedInvItem?.quantity }
+        }
+
+        return { ...invDna }
+      })
+
+      this.isLoadingInvDna = null
+
+      return dna
+    },
     async onClickQuantity (row, index) {
       if (row.item.require_expiry_date === 1 || row.item.require_production_number === 1) {
         row.index = index
         row.warehouse_id = this.form.warehouse_id
         row.item.unit = row.units.find(unit => unit.name === row.unit)
 
-        this.isLoadingInvDna = row.id
+        // only fetch to server if dna values empty (unedited qty)
+        if (!row.dna) {
+          row.dna = await this.fetchDna(row)
+        }
 
-        const { data: dataInvDna } = await this.getInvDna({
-          itemId: row.item_id,
-          params: { warehouse_id: row.warehouse_id }
-        })
-
-        row.dna = dataInvDna.map((invDna) => {
-          const matchedInvItem = this.items.find(({ production_number: prodNumberUsage }) => {
-            return prodNumberUsage === invDna.production_number
-          })
-
-          if (matchedInvItem) {
-            return { ...invDna, quantity: matchedInvItem?.quantity }
-          }
-
-          return { ...invDna }
-        })
-
-        this.isLoadingInvDna = null
         this.$refs.inventory.open(row, row.quantity)
       }
     },

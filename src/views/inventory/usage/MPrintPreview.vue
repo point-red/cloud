@@ -128,6 +128,12 @@
               >
                 <td>
                   {{ row.item.label }}
+                  <template v-if="row.item.require_production_number">
+                    (PID: {{ row.production_number }})
+                  </template>
+                  <template v-if="row.item.require_expiry_date">
+                    (E/D: {{ row.expiry_date | dateFormat('DD MMMM YYYY') }})
+                  </template>
                 </td>
                 <td class="text-center">
                   {{ row.quantity | numberFormat }} {{ row.unit }}

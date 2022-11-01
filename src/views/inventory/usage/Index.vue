@@ -333,7 +333,7 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('inventoryUsage', ['get']),
+    ...mapActions('inventoryUsage', ['get', 'export']),
     chooseFormStatus (option) {
       this.formStatus.label = option.label
       this.formStatus.value = option.value
@@ -395,35 +395,37 @@ export default {
 
       this.isExportingData = true
 
-      // try {
-      //   const { data: { url } } = await this.export({
-      //     params: {
-      //       join: 'form,customer,items,item',
-      //       fields: 'sales_delivery_order.*;sales_delivery_order_item.*',
-      //       sort_by: '-form.number',
-      //       filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
-      //       filter_like: {
-      //         'form.number': this.searchText,
-      //         'customer.name': this.searchText,
-      //         'item.code': this.searchText,
-      //         'item.name': this.searchText
-      //       },
-      //       filter_date_min: {
-      //         'form.date': this.serverDateTime(this.date.start, 'start')
-      //       },
-      //       filter_date_max: {
-      //         'form.date': this.serverDateTime(this.date.end, 'end')
-      //       },
-      //       includes: 'form;customer;warehouse;items.item'
-      //     }
-      //   })
+      try {
+        const { data: { url } } = await this.export({
+          params: {
+            join: 'form,warehouse,items',
+            fields: 'inventory_usage.*;inventory_usage_item.*',
+            sort_by: '-form.number',
+            filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
+            filter_like: {
+              'form.number': this.searchText,
+              'warehouse.name': this.searchText,
+              'item.name': this.searchText,
+              'inventory_usage_item.notes': this.searchText,
+              'inventory_usage_item.quantity': this.searchText
+            },
+            filter_date_min: {
+              'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
+            },
+            filter_date_max: {
+              'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+            },
+            limit: 10,
+            includes: 'form;warehouse;items;items.item'
+          }
+        })
 
-      //   window.open(url, '_blank')
-      //   this.isExportingData = false
-      // } catch (error) {
-      //   this.isExportingData = false
-      //   this.$notification.error(error.message)
-      // }
+        window.open(url, '_blank')
+        this.isExportingData = false
+      } catch (error) {
+        this.isExportingData = false
+        this.$notification.error(error.message)
+      }
     }
   }
 }
