@@ -39,6 +39,7 @@
                       )}`,
                       ' ',
                       'Cash',
+                      'Ganesha Mandiri Bhakti',
                       ' '
                     ]"
                     class="input-group-prepend"
@@ -232,42 +233,58 @@
                 </td>
                 <td>
                   <template v-for="(paymentDetail, index2) in payment.details">
-                    <span :key="'payment-detail-' + index2">
-                      {{ paymentDetail.chart_of_account.number }} -
-                      {{ paymentDetail.chart_of_account.alias }}
-                      <br>
-                    </span>
-                  </template>
-                </td>
-                <td>
-                  <template v-for="(paymentDetail, index2) in payment.details">
-                    <span :key="'payment-detail-' + index2">
-                      {{ paymentDetail.notes }}
-                      <br>
-                    </span>
-                  </template>
-                </td>
-                <td>
-                  <template v-for="(paymentDetail, index2) in payment.details">
-                    <span :key="'payment-detail-' + index2">
-                      {{
-                        paymentDetail.allocation
-                          ? paymentDetail.allocation.name
-                          : ''
-                      }}
-                      <br>
-                    </span>
-                  </template>
-                </td>
-                <td>
-                  <template v-for="(paymentDetail, index2) in payment.details">
-                    <span
+                    <div
                       :key="'payment-detail-' + index2"
-                      class="text-right"
+                      class="my-10"
                     >
-                      {{ paymentDetail.amount | numberFormat }}
-                      <br>
-                    </span>
+                      <span>
+                        {{ paymentDetail.chart_of_account.number }} -
+                        {{ paymentDetail.chart_of_account.alias }}
+                      </span>
+                    </div>
+                  </template>
+                </td>
+                <td>
+                  <template v-for="(paymentDetail, index2) in payment.details">
+                    <div
+                      :key="'payment-detail-' + index2"
+                      class="my-10"
+                    >
+                      <span
+                        :key="'payment-detail-' + index2"
+                        class="my-20"
+                      >
+                        {{ paymentDetail.notes }}
+                      </span>
+                    </div>
+                  </template>
+                </td>
+                <td>
+                  <template v-for="(paymentDetail, index2) in payment.details">
+                    <div
+                      :key="'payment-detail-' + index2"
+                      class="my-10"
+                    >
+                      <span :key="'payment-detail-' + index2">
+                        {{
+                          paymentDetail.allocation
+                            ? paymentDetail.allocation.name
+                            : ''
+                        }}
+                      </span>
+                    </div>
+                  </template>
+                </td>
+                <td class="text-right">
+                  <template v-for="(paymentDetail, index2) in payment.details">
+                    <div
+                      :key="'payment-detail-' + index2"
+                      class="my-10"
+                    >
+                      <span :key="'payment-detail-' + index2">
+                        {{ paymentDetail.amount | numberFormat }}
+                      </span>
+                    </div>
                   </template>
                 </td>
               </tr>
@@ -339,19 +356,12 @@
       @choosen="chooseCashType($event)"
     />
     <!-- Select Cash Person Component Modal for Advance Filter Person -->
-    <m-paymentable
+    <m-select-cash-person
       id="selectCashPerson"
       ref="selectCashPerson"
       @clear="clearCashPerson"
       @choosen="chooseCashPerson"
     />
-    <!-- Select Cash Person Component Modal for Advance Filter Person -->
-    <!-- <m-select-cash-person
-      id="selectCashPerson"
-      ref="selectCashPerson"
-      @clear="clearCashPerson"
-      @choosen="chooseCashPerson"
-    /> -->
   </div>
 </template>
 
@@ -509,6 +519,8 @@ export default {
           sort_by: '-form.date',
           // Fields
           fields: 'payment.*',
+          // Group
+          group_by: 'payment.id',
           // Filter Like
           filter_like: {
             // Number
@@ -590,6 +602,9 @@ export default {
             sort_by: '-form.date',
             // Fields
             fields: 'payment.*',
+            // Group
+            group_by: 'payment.id',
+            //
             filter_like: {
               // Number
               'form.number': this.searchText,
@@ -626,11 +641,9 @@ export default {
             },
             // Includes
             includes:
-              'form;details.chartOfAccount;details.allocation;paymentable',
-            // Limit
-            limit: 10000,
-            // Page
-            page: 1
+              'form;details.chartOfAccount;details.allocation;paymentable'
+            // // Limit
+            // limit: 10,
           }
         })
         // Initialization Data Payments to Table Excel
@@ -650,7 +663,15 @@ export default {
               // Form Number
               'Form Number': payment.form.number,
               // Person From / To
-              'Payment Form / To': payment.paymentable.name,
+              'Payment Form / To': payment.paymentable
+                ? payment.paymentable.name
+                : '',
+              // Form Reference Payment Order / Down Payment
+              'Form Reference Payment Order / Down Payment': '',
+              // Form Reference Cash Advance
+              'Form Reference Cash Advance': '',
+              // Cash Account
+              'Cash Account': '',
               // Account Number
               'Account Number': detail.chart_of_account.number,
               // Account
@@ -659,8 +680,28 @@ export default {
               Notes: detail.notes,
               // Allocation
               Allocation: detail.allocation ? detail.allocation.name : '',
+              // Amount Reference Payment Order / Down Payment
+              'Amount Reference Payment Order / Down Payment': '',
+              // Amount Cash Advance
+              'Amount Cash Advance': '',
+              // Total Payment Order / Down Payment
+              'Total Payment Order / Down Payment': '',
+              // Total Cash Advance
+              'Total Cash Advance': '',
+              // Total Amount
+              'Total Amount': '',
+              // Note
+              Note: '',
+              // Create By
+              'Create By': '',
+              // Create At
+              'Create At': '',
+              // Approved By
+              'Approved By': '',
+              // Approved At
+              'Approved At': ''
               // Amount
-              Ammount: detail.amount
+              // Amount: detail.amount
             }
           })
         })

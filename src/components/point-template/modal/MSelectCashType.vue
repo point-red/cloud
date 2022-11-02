@@ -5,7 +5,7 @@
       :ref="'select-' + id"
       :title="$t('select cash type') | uppercase"
       overlay-theme="dark"
-      @close="close()"
+      @close="onClose()"
     >
       <div v-if="isLoading">
         <h3 class="text-center">
@@ -104,6 +104,9 @@ export default {
     // Close Modal
     close () {
       this.$refs['select-' + this.id].close()
+    },
+    onClose () {
+      this.$emit('close', true)
     }
   }
 }
