@@ -127,14 +127,7 @@
                     </div>
                   </td>
                   <td>
-                    <div
-                      v-if="row.id === isLoadingInvDna"
-                      style="text-align: center"
-                    >
-                      loading...
-                    </div>
                     <p-quantity
-                      v-else
                       :id="'quantity-' + index"
                       v-model="row.quantity"
                       :name="'quantity-' + index"
@@ -311,7 +304,6 @@ export default {
       id,
       isSaving: false,
       isLoading: true,
-      isLoadingInvDna: null,
       requestedBy: localStorage.getItem('userName'),
       items: [],
       form: new Form({
@@ -365,9 +357,19 @@ export default {
       this.form.notes = data.notes
 
       const usageItems = []
-      data.items.forEach((usageItem) => {
+      for (let idx = 0; idx < data.items.length; idx++) {
+        const usageItem = data.items[idx]
         const sameItem = usageItems.find(({ item_id: itemId }) => itemId === usageItem.item_id)
-        if (sameItem) return
+        if (sameItem) continue
+
+        let dna = []
+        if (usageItem.item.require_production_number === 1 || usageItem.item.require_expiry_date === 1) {
+          dna = await this.fetchDna({
+            ...usageItem,
+            index: idx,
+            warehouse_id: this.form.warehouse_id
+          })
+        }
 
         const defaultUnitId = usageItem.item.unit_default_purchase
         const defaultUnit = usageItem.item.units.find(({ id: unitId }) => unitId === defaultUnitId)
@@ -384,9 +386,10 @@ export default {
             ...usageItem.item,
             unit: defaultUnit.label,
             converter: defaultUnit.converter
-          }
+          },
+          dna
         })
-      })
+      }
 
       this.form.items = usageItems
 
@@ -475,26 +478,23 @@ export default {
       row.converter = unit.converter
     },
     async fetchDna (row) {
-      this.isLoadingInvDna = row.id
-
       const { data: dataInvDna } = await this.getInvDna({
         itemId: row.item_id,
         params: { warehouse_id: row.warehouse_id }
       })
 
       const dna = dataInvDna.map((invDna) => {
+        let quantity = 0
         const matchedInvItem = this.items.find(({ production_number: prodNumberUsage }) => {
           return prodNumberUsage === invDna.production_number
         })
 
         if (matchedInvItem) {
-          return { ...invDna, quantity: matchedInvItem?.quantity }
+          quantity = matchedInvItem?.quantity
         }
 
-        return { ...invDna }
+        return { ...invDna, quantity }
       })
-
-      this.isLoadingInvDna = null
 
       return dna
     },
@@ -503,11 +503,6 @@ export default {
         row.index = index
         row.warehouse_id = this.form.warehouse_id
         row.item.unit = row.units.find(unit => unit.name === row.unit)
-
-        // only fetch to server if dna values empty (unedited qty)
-        if (!row.dna) {
-          row.dna = await this.fetchDna(row)
-        }
 
         this.$refs.inventory.open(row, row.quantity)
       }
@@ -539,14 +534,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.loading-inv-dna {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-</style>
