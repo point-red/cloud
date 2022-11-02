@@ -30,7 +30,7 @@
           <a
             :key="'person-' + index"
             class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
-            :class="{ active: parseInt(option.id) === parseInt(mutableId) }"
+            :class="{ active: option.id == mutableId }"
             href="javascript:void(0)"
             @click="choose(option)"
           >
@@ -109,8 +109,8 @@ export default {
       // Data Default Options
       options: [],
       // Data Default Mutable Id & Label
-      mutableId: this.value,
-      mutableLabel: this.label,
+      mutableId: null,
+      mutableLabel: null,
       // Data Default Filter
       // Search Text Default
       searchText: '',
@@ -193,7 +193,6 @@ export default {
               type: paymentable.paymentable_type
             })
           })
-          console.log(this.option.id)
         })
         .catch((error) => {
           this.isLoading = false

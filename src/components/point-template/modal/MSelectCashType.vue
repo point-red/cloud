@@ -33,7 +33,7 @@
       <div class="pull-right">
         <button
           type="button"
-          class="btn btn-sm btn-outline-danger"
+          class="btn btn-md btn-outline-danger"
           @click="clear()"
         >
           {{ $t('clear') | uppercase }}

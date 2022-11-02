@@ -201,6 +201,57 @@
               </th>
             </tr>
             <template v-for="(payment, index) in payments">
+              <template v-for="(paymentDetail, index2) in payment.details">
+                <tr
+                  :key="'payment-' + index + '-' + index2"
+                  slot="p-body"
+                >
+                  <th>
+                    <router-link
+                      v-if="payment.disbursed == false"
+                      :to="{
+                        name: 'finance.cash.in.show',
+                        params: { id: payment.id }
+                      }"
+                    >
+                      {{ payment.form.number }}
+                    </router-link>
+                    <router-link
+                      v-if="payment.disbursed == true"
+                      :to="{
+                        name: 'finance.cash.out.show',
+                        params: { id: payment.id }
+                      }"
+                    >
+                      {{ payment.form.number }}
+                    </router-link>
+                  </th>
+                  <td>
+                    {{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
+                  </td>
+                  <td>
+                    {{ payment.paymentable ? payment.paymentable.name : '' }}
+                  </td>
+                  <td>
+                    {{ paymentDetail.chart_of_account.number }} -
+                    {{ paymentDetail.chart_of_account.alias }}
+                  </td>
+                  <td>{{ paymentDetail.notes }}</td>
+                  <td>
+                    {{
+                      paymentDetail.allocation
+                        ? paymentDetail.allocation.name
+                        : ''
+                    }}
+                  </td>
+                  <td class="text-right">
+                    {{ paymentDetail.amount | numberFormat }}
+                  </td>
+                </tr>
+              </template>
+            </template>
+            <!-- Table Reference Cash Index 10 Pagination -->
+            <!-- <template v-for="(payment, index) in payments">
               <tr
                 :key="'payment-' + index"
                 slot="p-body"
@@ -288,56 +339,6 @@
                   </template>
                 </td>
               </tr>
-            </template>
-            <!-- <template v-for="(payment, index) in payments">
-              <template v-for="(paymentDetail, index2) in payment.details">
-                <tr
-                  :key="'payment-' + index + '-' + index2"
-                  slot="p-body"
-                >
-                  <th>
-                    <router-link
-                      v-if="payment.disbursed == false"
-                      :to="{
-                        name: 'finance.cash.in.show',
-                        params: { id: payment.id }
-                      }"
-                    >
-                      {{ payment.form.number }}
-                    </router-link>
-                    <router-link
-                      v-if="payment.disbursed == true"
-                      :to="{
-                        name: 'finance.cash.out.show',
-                        params: { id: payment.id }
-                      }"
-                    >
-                      {{ payment.form.number }}
-                    </router-link>
-                  </th>
-                  <td>
-                    {{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
-                  </td>
-                  <td>
-                    {{ payment.paymentable ? payment.paymentable.name : '' }}
-                  </td>
-                  <td>
-                    {{ paymentDetail.chart_of_account.number }} -
-                    {{ paymentDetail.chart_of_account.alias }}
-                  </td>
-                  <td>{{ paymentDetail.notes }}</td>
-                  <td>
-                    {{
-                      paymentDetail.allocation
-                        ? paymentDetail.allocation.name
-                        : ''
-                    }}
-                  </td>
-                  <td class="text-right">
-                    {{ paymentDetail.amount | numberFormat }}
-                  </td>
-                </tr>
-              </template>
             </template> -->
           </point-table>
         </p-block-inner>
