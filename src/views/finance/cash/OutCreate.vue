@@ -563,7 +563,7 @@ export default {
     },
     // Calculate Data Amount Cash Out
     calculate: debounce(function () {
-      // Initialization Data Cash Out Amount Cash Out
+      // Initialization Data Amount Cash Out
       this.form.amount_cash_out =
         parseFloat(this.form.amount) - parseFloat(this.form.amount_cash_advance)
     }, 300),
@@ -591,6 +591,7 @@ export default {
           this.isSaving = false
           // Get Notification Success
           this.$notification.success('create success')
+          // Object Assign to Copy Data
           Object.assign(this.$data, this.$options.data.call(this))
           // Go to Show Page
           this.$router.push('/finance/cash/out/' + response.data.id)

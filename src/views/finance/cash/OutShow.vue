@@ -13,6 +13,7 @@
 
     <!-- Form Delete Status -->
     <p-show-form-cancellation-status
+      v-if="renderComponent"
       :form="'cash'"
       :is-loading="isLoading"
       :cancellation-status="payment.form.cancellation_status"
@@ -45,20 +46,15 @@
                       payment.form.cancellation_status == -1
                   "
                   class="btn btn-sm btn-outline-secondary mr-5"
-                  :disabled="isDeleting === true"
+                  :disabled="isDeleting"
                   @click="$refs.formRequestDelete.open()"
                 >
                   <i
-                    v-show="isDeleting === true"
+                    v-show="isDeleting"
                     class="fa fa-asterisk fa-spin"
                   />
                   {{ $t('delete') | uppercase }}
                 </button>
-                <!-- Form Request Delete Cash Out Modal Component -->
-                <m-form-request-delete
-                  ref="formRequestDelete"
-                  @delete="onDelete($event)"
-                />
               </div>
             </div>
           </div>
@@ -293,6 +289,12 @@
         </p-block-inner>
       </p-block>
     </div>
+
+    <!-- Form Request Delete Cash Out Modal Component -->
+    <m-form-request-delete
+      ref="formRequestDelete"
+      @delete="onDelete($event)"
+    />
   </div>
 </template>
 
@@ -313,8 +315,11 @@ export default {
     Breadcrumb,
     BreadcrumbFinance
   },
+
   data () {
     return {
+      // Data Default Render Component
+      renderComponent: true,
       // Data Default Id
       id: this.$route.params.id,
       // Data Default Loading
@@ -324,7 +329,6 @@ export default {
       // Data Default Create By
       createdBy: localStorage.getItem('fullName'),
       // Data Default Form
-      //
       form: {
         referenceableType: null,
         amount: 0,
@@ -341,25 +345,36 @@ export default {
     // Auth User
     ...mapGetters('auth', ['authUser'])
   },
+
   watch: {
+    // Watch Data for Date
     'form.date': function () {
       this.form.due_date = this.form.date
     }
   },
+
   created () {
     // Created Data
     // Get Data from Search Methods
     this.search()
-    console.log(this.payment)
   },
+
   methods: {
+    // Force Render Component
+    forceRerender () {
+      // Removing my-component from the DOM
+      this.renderComponent = false
+
+      this.$nextTick(() => {
+        // Adding the component back in
+        this.renderComponent = true
+      })
+    },
     // Action Data from Vuex Store
-    // Find Payment Order
+    // Find, Delete, Cancel Approve & Reject Data Payment
     ...mapActions('financePayment', {
       find: 'find',
       delete: 'delete',
-      // approve: 'approve',
-      // reject: 'reject',
       cancellationApprove: 'cancellationApprove',
       cancellationReject: 'cancellationReject'
     }),
@@ -367,8 +382,6 @@ export default {
     search () {
       // Loading
       this.isLoading = true
-      //
-      this.isDeleting = false
       // Find Data Payment with Params
       this.find({
         // Id
@@ -381,16 +394,13 @@ export default {
       })
         // Success
         .then((response) => {
-          //
+          // Initialization Data Referenceable Type Payment
           this.form.referenceableType =
             this.payment.details[0].referenceable_type
-          //
+          // Initialization Data Amount Payment
           this.form.amount = this.payment.amount
           this.form.amount_cash_advance = this.payment.cash_advance.amount
           // Loading
-          console.log(this.payment)
-          console.log('ctca', this.form)
-          console.log('pp', this.payment.cash_advance.cash_advance.form.number)
           this.isLoading = false
         })
         // Fail
@@ -399,52 +409,77 @@ export default {
           this.isLoading = false
         })
     },
-    //
+    // Delete Data Payment
     onDelete (reason) {
+      // Deleting
       this.isDeleting = true
+      // Delete Data to Push API
       this.delete({
         id: this.id,
         data: {
           reason: reason
         }
       })
+        // Success Delete
         .then((response) => {
+          // Delete
           this.isDeleting = false
+          // Get Notification Success
           this.$notification.success('request delete success')
+          // Force Render Component
+          this.forceRerender()
+          // Get Data from Search Method
           this.search()
         })
+        // Fail Delete
         .catch((error) => {
+          // Delete
           this.isDeleting = false
+          // Get Notification Fail
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
     },
-    //
+    // Cancel Approve for Delete Data Payment
     onCancellationApprove () {
+      // Cancel Approve Delete Data to Push API
       this.cancellationApprove({
         id: this.id
-      }).then((response) => {
-        this.$notification.success('cancellation approved')
-        this.$router.push('/finance/cash')
       })
-    },
-    //
-    onCancellationReject (reason) {
-      this.cancellationReject({
-        id: this.id,
-        reason: reason
-      })
+        // Success
         .then((response) => {
-          this.$notification.success('cancellation rejected')
-          this.search()
+          // Get Notification Success
+          this.$notification.success('cancellation approved')
+          // Go To Cash Index Page
+          this.$router.push('/finance/cash')
         })
+        // Fail
         .catch((error) => {
           console.log(error.message)
         })
     },
-    //
+    // Cancel Reject for Delete Data Payment
+    onCancellationReject (reason) {
+      // Cancel Rejected Delete Data to Push API
+      this.cancellationReject({
+        id: this.id,
+        reason: reason
+      })
+        // Success
+        .then((response) => {
+          // Get Notification Success
+          this.$notification.success('cancellation rejected')
+          // Get Data from Search Method
+          this.search()
+        })
+        // Fail
+        .catch((error) => {
+          console.log(error.message)
+        })
+    },
+    // Calculate Data Amount Payment
     calculate: debounce(function () {
-      // //
+      // Initialization Data Amount Payment
       this.form.amount_cash_out =
         parseFloat(this.form.amount) - parseFloat(this.form.amount_cash_advance)
     }, 300)
