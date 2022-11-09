@@ -126,7 +126,7 @@
             </point-table>
           </div>
           <!--  Cash Advance Menu -->
-          <div>
+          <div v-if="form.cash_advance.reference_number">
             <h5 class="pl-1 pt-20">
               {{ $t('cash advance') | uppercase }}
             </h5>
@@ -138,35 +138,40 @@
               >
                 <th>Reference</th>
                 <th>Notes</th>
-                <th>Account</th>
                 <th>Amount</th>
                 <th>Amount Remaining</th>
+                <th>Amount Usage</th>
                 <th class="text-center">
                   Close
                 </th>
               </tr>
               <tr
-                v-for="(row, index) in form.formCashAdvance.details"
                 slot="p-body"
-                :key="index"
                 class="text-left"
               >
+                <th>
+                  <span>
+                    {{
+                      form.cash_advance.reference_number ||
+                        $t('select') | uppercase
+                    }}
+                  </span>
+                </th>
+                <td>{{ form.cash_advance.notes }}</td>
+                <td>{{ form.cash_advance.amount | numberFormat }}</td>
                 <td>
-                  <span> ca00123 </span>
+                  {{ form.cash_advance.amount_remaining | numberFormat }}
                 </td>
-                <td>Notes</td>
-                <td>kas kas kecil Lorem.</td>
-                <td>100.000</td>
-                <td>50.000</td>
+                <td>
+                  {{ form.cash_advance.amount_usage | numberFormat }}
+                </td>
                 <td class="text-center">
-                  <input
-                    v-model="
-                      form.formCashAdvance.details[index].cashAdvance_close
-                    "
-                    type="checkbox"
-                    style="min-width: auto"
-                    disabled
-                  >
+                  <span v-if="form.cash_advance.close === true">
+                    {{ $t('Closed') }}
+                  </span>
+                  <span v-if="form.cash_advance.close === false">
+                    {{ $t('Opened') }}
+                  </span>
                 </td>
               </tr>
             </point-table>
@@ -187,26 +192,44 @@
                       Total Down Payment
                     </th>
                     <td class="text-right">
-                      {{ form.amount | numberFormat }}
+                      <p-form-number
+                        :id="'amount'"
+                        v-model="form.amount"
+                        class="input-readonly"
+                        :name="'amount'"
+                        :readonly="true"
+                        @input="calculate()"
+                      />
                     </td>
                   </tr>
                   <tr>
                     <th>Total Cash Advance</th>
                     <td class="text-right">
-                      {{ form.amount | numberFormat }}
+                      <p-form-number
+                        :id="'amount_cash_advance'"
+                        v-model="form.amount_cash_advance"
+                        class="input-readonly"
+                        :name="'amount_cash_advance'"
+                        :readonly="true"
+                        @input="calculate()"
+                      />
                     </td>
                   </tr>
                   <tr>
                     <th>Total Cash Out</th>
                     <td class="text-right">
-                      {{ form.amount | numberFormat }}
+                      <p-form-number
+                        :id="'amount_cash_out'"
+                        v-model="form.amount_cash_out"
+                        :name="'amount_cash_out'"
+                        :readonly="true"
+                      />
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
-
           <!-- Cash Out Additional Information -->
           <div class="row mt-30">
             <!-- Cash Out Note -->
@@ -254,6 +277,7 @@
 
 <script>
 // Import Library & Components
+import debounce from 'lodash/debounce'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
 import Form from '@/utils/Form'
@@ -273,8 +297,6 @@ export default {
     return {
       // Data Default Loading
       isLoading: false,
-      // Data Default From Preview
-      isFromPreview: false,
       // Data Default Form
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
@@ -288,20 +310,10 @@ export default {
         disbursed: true,
         notes: null,
         amount: 0,
+        amount_cash_advance: 0,
+        amount_cash_out: 0,
         details: {},
-        formCashAdvance: {
-          details: [
-            {
-              cashAdvance_id: null,
-              cashAdvance_reference: null,
-              cashAdvance_account_name: null,
-              cashAdvance_notes: null,
-              cashAdvance_amount: 0,
-              cashAdvance_amount_remaining: 0,
-              cashAdvance_close: false
-            }
-          ]
-        }
+        cash_advance: {}
       })
     }
   },
@@ -322,14 +334,12 @@ export default {
     // Mounted Data
     // Initialization Data Source with Params Source
     this.source = this.$route.params.source
-    console.log(this.source)
   },
 
   methods: {
     // Get Data From Local Storage
     getDataFromStorage () {
       var data = JSON.parse(localStorage.getItem('formData'))
-      console.log(data)
       // If Have Data In Local Storage
       if (data) {
         // Initialization Data from Local Storage for Reference Cash Out
@@ -348,9 +358,17 @@ export default {
         this.form.payment_account_id = data.payment_account_id
         this.form.payment_account_name = data.payment_account_name
         // Initialization Data from Local Storage for Cash Advance
-        this.form.formCashAdvance.details = data.formCashAdvance.details
+        this.form.amount_cash_advance = data.amount_cash_advance
+        this.form.amount_cash_out = data.amount_cash_out
+        this.form.cash_advance = data.cash_advance
       }
     },
+    // Calculate Data Amount Cash Out
+    calculate: debounce(function () {
+      // Initialization Data Cash Out Amount Cash Out
+      this.form.amount_cash_out =
+        parseFloat(this.form.amount) - parseFloat(this.form.amount_cash_advance)
+    }, 300),
     // Go Back to Cash Out Create Page
     goBack () {
       this.$router.push('/finance/cash/out/create')

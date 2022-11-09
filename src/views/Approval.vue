@@ -126,6 +126,13 @@ export default {
       approveByEmailMemo: 'approveByEmail',
       rejectByEmailMemo: 'rejectByEmail'
     }),
+    // Action Data from Vuex Store
+    // Approve & Reject Payment by Email
+    ...mapActions('financePayment', {
+      approveByEmailPayment: 'approveByEmail',
+      rejectByEmailPayment: 'rejectByEmail'
+    }),
+
     close () {
       open(location, '_self').close()
     },
@@ -139,13 +146,16 @@ export default {
       let resource, projectName, approvalStatus
       try {
         if (this.resourceType === 'SalesInvoice') {
-          ({ resource, projectName, approvalStatus } = await this.handleApprovalSalesInvoice(headers))
+          ;({ resource, projectName, approvalStatus } =
+            await this.handleApprovalSalesInvoice(headers))
         }
         if (this.resourceType === 'StockCorrection') {
-          ({ resource, projectName, approvalStatus } = await this.handleApprovalStockCorrection(headers))
+          ;({ resource, projectName, approvalStatus } =
+            await this.handleApprovalStockCorrection(headers))
         }
         if (this.resourceType === 'CashAdvance') {
-          ({ resource, projectName, approvalStatus } = await this.handleApprovalCashAdvance(headers))
+          ;({ resource, projectName, approvalStatus } =
+            await this.handleApprovalCashAdvance(headers))
         }
         if (this.resourceType === 'TransferSend') {
           this.handleApprovalTransferSend()
@@ -154,13 +164,17 @@ export default {
           this.handleApprovalTransferReceive()
         }
         if (this.resourceType === 'PaymentCollection') {
-          this.handleApprovalPaymentCollection()
+          this.handleApprovalFinancePaymentCollection()
         }
         if (this.resourceType === 'SalesDeliveryOrder') {
           this.handleApprovalDeliveryOrder()
         }
         if (this.resourceType === 'MemoJournal') {
           this.handleApprovalMemoJournal()
+        }
+        // Conditional in Resource Type Payment
+        if (this.resourceType === 'Payment') {
+          this.handleApprovalFinancePayment()
         }
       } catch (error) {
         alert(error)
@@ -184,51 +198,158 @@ export default {
 
       this.resource = resource
       this.projectName = projectName
-      this.approvalStatus = approvalStatus !== undefined && approvalStatus !== null ? approvalStatus : 2
+      this.approvalStatus =
+        approvalStatus !== undefined && approvalStatus !== null
+          ? approvalStatus
+          : 2
     },
     async handleApprovalSalesInvoice (headers) {
       if (this.crudType === 'create' || this.crudType === 'update') {
         if (this.action === 'approve') {
-          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/create-approve-with-token', { token: this.token }, { headers })
-          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.approvalStatus }
+          const {
+            data: {
+              data: salesInvoice,
+              meta: { projectName }
+            }
+          } = await axiosNode.post(
+            '/sales/invoices/create-approve-with-token',
+            { token: this.token },
+            { headers }
+          )
+          return {
+            resource: salesInvoice,
+            projectName,
+            approvalStatus: salesInvoice.form.approvalStatus
+          }
         }
         if (this.action === 'reject') {
-          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/create-reject-with-token', { token: this.token }, { headers })
-          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.approvalStatus }
+          const {
+            data: {
+              data: salesInvoice,
+              meta: { projectName }
+            }
+          } = await axiosNode.post(
+            '/sales/invoices/create-reject-with-token',
+            { token: this.token },
+            { headers }
+          )
+          return {
+            resource: salesInvoice,
+            projectName,
+            approvalStatus: salesInvoice.form.approvalStatus
+          }
         }
       }
 
       if (this.crudType === 'delete') {
         if (this.action === 'approve') {
-          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/delete-approve-with-token', { token: this.token }, { headers })
-          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.cancellationStatus }
+          const {
+            data: {
+              data: salesInvoice,
+              meta: { projectName }
+            }
+          } = await axiosNode.post(
+            '/sales/invoices/delete-approve-with-token',
+            { token: this.token },
+            { headers }
+          )
+          return {
+            resource: salesInvoice,
+            projectName,
+            approvalStatus: salesInvoice.form.cancellationStatus
+          }
         }
         if (this.action === 'reject') {
-          const { data: { data: salesInvoice, meta: { projectName } } } = await axiosNode.post('/sales/invoices/delete-reject-with-token', { token: this.token }, { headers })
-          return { resource: salesInvoice, projectName, approvalStatus: salesInvoice.form.cancellationStatus }
+          const {
+            data: {
+              data: salesInvoice,
+              meta: { projectName }
+            }
+          } = await axiosNode.post(
+            '/sales/invoices/delete-reject-with-token',
+            { token: this.token },
+            { headers }
+          )
+          return {
+            resource: salesInvoice,
+            projectName,
+            approvalStatus: salesInvoice.form.cancellationStatus
+          }
         }
       }
     },
     async handleApprovalStockCorrection (headers) {
       if (this.crudType === 'create' || this.crudType === 'update') {
         if (this.action === 'approve') {
-          const { data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/create-approve-with-token', { token: this.token }, { headers })
-          return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.approvalStatus }
+          const {
+            data: {
+              data: stockCorrection,
+              meta: { projectName }
+            }
+          } = await axiosNode.post(
+            '/inventory/corrections/create-approve-with-token',
+            { token: this.token },
+            { headers }
+          )
+          return {
+            resource: stockCorrection,
+            projectName,
+            approvalStatus: stockCorrection.form.approvalStatus
+          }
         }
         if (this.action === 'reject') {
-          const { data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/create-reject-with-token', { token: this.token }, { headers })
-          return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.approvalStatus }
+          const {
+            data: {
+              data: stockCorrection,
+              meta: { projectName }
+            }
+          } = await axiosNode.post(
+            '/inventory/corrections/create-reject-with-token',
+            { token: this.token },
+            { headers }
+          )
+          return {
+            resource: stockCorrection,
+            projectName,
+            approvalStatus: stockCorrection.form.approvalStatus
+          }
         }
       }
 
       if (this.crudType === 'delete') {
         if (this.action === 'approve') {
-          const { data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/delete-approve-with-token', { token: this.token }, { headers })
-          return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.cancellationStatus }
+          const {
+            data: {
+              data: stockCorrection,
+              meta: { projectName }
+            }
+          } = await axiosNode.post(
+            '/inventory/corrections/delete-approve-with-token',
+            { token: this.token },
+            { headers }
+          )
+          return {
+            resource: stockCorrection,
+            projectName,
+            approvalStatus: stockCorrection.form.cancellationStatus
+          }
         }
         if (this.action === 'reject') {
-          const { data: { data: stockCorrection, meta: { projectName } } } = await axiosNode.post('/inventory/corrections/delete-reject-with-token', { token: this.token }, { headers })
-          return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.cancellationStatus }
+          const {
+            data: {
+              data: stockCorrection,
+              meta: { projectName }
+            }
+          } = await axiosNode.post(
+            '/inventory/corrections/delete-reject-with-token',
+            { token: this.token },
+            { headers }
+          )
+          return {
+            resource: stockCorrection,
+            projectName,
+            approvalStatus: stockCorrection.form.cancellationStatus
+          }
         }
       }
     },
@@ -239,7 +360,18 @@ export default {
       } else if (this.action === 'reject') {
         status = -1
       }
-      const { data: { data: cashAdvance } } = await axios.post('approval-with-token/finance/cash-advances', { token: this.token, id: this.id, status: status, activity: 'approved by email' }, { headers })
+      const {
+        data: { data: cashAdvance }
+      } = await axios.post(
+        'approval-with-token/finance/cash-advances',
+        {
+          token: this.token,
+          id: this.id,
+          status: status,
+          activity: 'approved by email'
+        },
+        { headers }
+      )
       if (cashAdvance.form.approval_status == 0) {
         this.warningMessage = 'Balance Not Enough'
       } else if (cashAdvance.form.approval_status != status) {
@@ -249,7 +381,11 @@ export default {
           this.warningMessage = 'Cash Advance was rejected before'
         }
       }
-      return { resource: cashAdvance, projectName: this.projectName, approvalStatus: cashAdvance.form.approval_status }
+      return {
+        resource: cashAdvance,
+        projectName: this.projectName,
+        approvalStatus: cashAdvance.form.approval_status
+      }
     },
     async handleApprovalTransferSend () {
       if (this.action === 'approve') {
@@ -257,16 +393,18 @@ export default {
           ids: this.ids,
           token: this.token,
           approver_id: this.approver_id
-        }).then(response => {
-          this.resource = response.data[0]
-          this.projectName = this.tenantName
-          this.approvalStatus = response.data[0].form.approval_status
-          if (this.approvalStatus === 0) {
-            this.warningMessage = 'Stock not enough'
-          }
-        }).catch(error => {
-          console.log(error.message)
         })
+          .then((response) => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form.approval_status
+            if (this.approvalStatus === 0) {
+              this.warningMessage = 'Stock not enough'
+            }
+          })
+          .catch((error) => {
+            console.log(error.message)
+          })
       }
       if (this.action === 'reject') {
         this.rejectByEmail({
@@ -274,13 +412,15 @@ export default {
           token: this.token,
           approver_id: this.approver_id,
           reason: 'Rejected by email'
-        }).then(response => {
-          this.resource = response.data[0]
-          this.projectName = this.tenantName
-          this.approvalStatus = response.data[0].form.approval_status
-        }).catch(error => {
-          console.log(error.message)
         })
+          .then((response) => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form.approval_status
+          })
+          .catch((error) => {
+            console.log(error.message)
+          })
       }
     },
     async handleApprovalTransferReceive () {
@@ -291,13 +431,15 @@ export default {
             token: this.token,
             approver_id: this.approver_id,
             form_send_done: this.formSendDone
-          }).then(response => {
-            this.resource = response.data
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data.form.approval_status
-          }).catch(error => {
-            console.log(error.message)
           })
+            .then((response) => {
+              this.resource = response.data
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data.form.approval_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         }
         if (this.action === 'reject') {
           this.rejectByEmailReceive({
@@ -305,13 +447,15 @@ export default {
             token: this.token,
             approver_id: this.approver_id,
             reason: 'Rejected by email'
-          }).then(response => {
-            this.resource = response.data
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data.form.approval_status
-          }).catch(error => {
-            console.log(error.message)
           })
+            .then((response) => {
+              this.resource = response.data
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data.form.approval_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         }
       }
       if (this.crudType === 'delete') {
@@ -321,13 +465,15 @@ export default {
             token: this.token,
             approver_id: this.approver_id,
             form_send_done: this.formSendDone
-          }).then(response => {
-            this.resource = response.data
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data.form.cancellation_status
-          }).catch(error => {
-            console.log(error.message)
           })
+            .then((response) => {
+              this.resource = response.data
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data.form.cancellation_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         }
         if (this.action === 'reject') {
           this.rejectByEmailReceive({
@@ -335,13 +481,15 @@ export default {
             token: this.token,
             approver_id: this.approver_id,
             reason: 'Rejected by email'
-          }).then(response => {
-            this.resource = response.data
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data.form.cancellation_status
-          }).catch(error => {
-            console.log(error.message)
           })
+            .then((response) => {
+              this.resource = response.data
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data.form.cancellation_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         }
       }
     },
@@ -353,47 +501,61 @@ export default {
       this.isLoading = true
 
       if (this.action === 'approve') {
-        this.$store.dispatch('salesDeliveryOrder/approveByEmail', {
-          ids: this.ids,
-          token: this.token,
-          approver_id: this.approver_id
-        }).then(response => {
-          this.resource = response.data[0]
-          this.projectName = this.tenantName
-          this.approvalStatus = response.data[0].form[statusKey]
-        }).catch(error => {
-          this.$notification.error(error.message)
-        }).finally(() => { this.isLoading = false })
+        this.$store
+          .dispatch('salesDeliveryOrder/approveByEmail', {
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id
+          })
+          .then((response) => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form[statusKey]
+          })
+          .catch((error) => {
+            this.$notification.error(error.message)
+          })
+          .finally(() => {
+            this.isLoading = false
+          })
       }
       if (this.action === 'reject') {
-        this.$store.dispatch('salesDeliveryOrder/rejectByEmail', {
-          ids: this.ids,
-          token: this.token,
-          approver_id: this.approver_id,
-          reason: 'Rejected by email'
-        }).then(response => {
-          this.resource = response.data[0]
-          this.projectName = this.tenantName
-          this.approvalStatus = response.data[0].form[statusKey]
-        }).catch(error => {
-          this.$notification.error(error.message)
-        }).finally(() => { this.isLoading = false })
+        this.$store
+          .dispatch('salesDeliveryOrder/rejectByEmail', {
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            reason: 'Rejected by email'
+          })
+          .then((response) => {
+            this.resource = response.data[0]
+            this.projectName = this.tenantName
+            this.approvalStatus = response.data[0].form[statusKey]
+          })
+          .catch((error) => {
+            this.$notification.error(error.message)
+          })
+          .finally(() => {
+            this.isLoading = false
+          })
       }
     },
-    async handleApprovalPaymentCollection () {
+    async handleApprovalFinancePaymentCollection () {
       if (this.crudType === 'delete') {
         if (this.action === 'approve') {
           this.approveByEmailPaymentCollection({
             ids: this.ids,
             token: this.token,
             approver_id: this.approver_id
-          }).then(response => {
-            this.resource = response.data[0]
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data[0].form.cancellation_status
-          }).catch(error => {
-            console.log(error.message)
           })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.cancellation_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         }
         if (this.action === 'reject') {
           this.rejectByEmailPaymentCollection({
@@ -401,13 +563,15 @@ export default {
             token: this.token,
             approver_id: this.approver_id,
             reason: 'Rejected by email'
-          }).then(response => {
-            this.resource = response.data[0]
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data[0].form.cancellation_status
-          }).catch(error => {
-            console.log(error.message)
           })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.cancellation_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         }
       } else {
         if (this.action === 'approve') {
@@ -415,13 +579,15 @@ export default {
             ids: this.ids,
             token: this.token,
             approver_id: this.approver_id
-          }).then(response => {
-            this.resource = response.data[0]
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data[0].form.approval_status
-          }).catch(error => {
-            this.$notification.error(error.message)
           })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.approval_status
+            })
+            .catch((error) => {
+              this.$notification.error(error.message)
+            })
         }
         if (this.action === 'reject') {
           this.rejectByEmailPaymentCollection({
@@ -429,13 +595,15 @@ export default {
             token: this.token,
             approver_id: this.approver_id,
             reason: 'Rejected by email'
-          }).then(response => {
-            this.resource = response.data[0]
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data[0].form.approval_status
-          }).catch(error => {
-            console.log(error.message)
           })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.approval_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         }
       }
     },
@@ -446,13 +614,15 @@ export default {
             ids: this.ids,
             token: this.token,
             approver_id: this.approver_id
-          }).then(response => {
-            this.resource = response.data[0]
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data[0].form.approval_status
-          }).catch(error => {
-            console.log(error.message)
           })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.approval_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         }
         if (this.action === 'reject') {
           this.rejectByEmailMemo({
@@ -460,13 +630,15 @@ export default {
             token: this.token,
             approver_id: this.approver_id,
             reason: 'Rejected by email'
-          }).then(response => {
-            this.resource = response.data[0]
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data[0].form.approval_status
-          }).catch(error => {
-            console.log(error.message)
           })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.approval_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         }
       }
       if (this.crudType === 'delete') {
@@ -475,13 +647,15 @@ export default {
             ids: this.ids,
             token: this.token,
             approver_id: this.approver_id
-          }).then(response => {
-            this.resource = response.data[0]
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data[0].form.cancellation_status
-          }).catch(error => {
-            console.log(error.message)
           })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.cancellation_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         }
         if (this.action === 'reject') {
           this.rejectByEmailemo({
@@ -489,13 +663,83 @@ export default {
             token: this.token,
             approver_id: this.approver_id,
             reason: 'Rejected by email'
-          }).then(response => {
-            this.resource = response.data[0]
-            this.projectName = this.tenantName
-            this.approvalStatus = response.data[0].form.cancellation_status
-          }).catch(error => {
-            console.log(error.message)
           })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.cancellation_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
+        }
+      }
+    },
+    // Handle Approval Finance Payment
+    async handleApprovalFinancePayment () {
+      if (this.crudType === 'delete') {
+        if (this.action === 'approve') {
+          this.approveByEmailPayment({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id
+          })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.cancellation_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
+        }
+        if (this.action === 'reject') {
+          this.rejectByEmailPayment({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            reason: 'Rejected by email'
+          })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.cancellation_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
+        }
+      } else {
+        if (this.action === 'approve') {
+          this.approveByEmailPayment({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id
+          })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.approval_status
+            })
+            .catch((error) => {
+              this.$notification.error(error.message)
+            })
+        }
+        if (this.action === 'reject') {
+          this.rejectByEmailPayment({
+            ids: this.ids,
+            token: this.token,
+            approver_id: this.approver_id,
+            reason: 'Rejected by email'
+          })
+            .then((response) => {
+              this.resource = response.data[0]
+              this.projectName = this.tenantName
+              this.approvalStatus = response.data[0].form.approval_status
+            })
+            .catch((error) => {
+              console.log(error.message)
+            })
         }
       }
     }

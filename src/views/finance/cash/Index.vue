@@ -192,7 +192,7 @@
             <tr slot="p-head">
               <th>Number</th>
               <th>Date</th>
-              <th>Payment From / To</th>
+              <th>Person</th>
               <th>Account</th>
               <th>Notes</th>
               <th>Allocation</th>
@@ -250,96 +250,6 @@
                 </tr>
               </template>
             </template>
-            <!-- Table Reference Cash Index 10 Pagination -->
-            <!-- <template v-for="(payment, index) in payments">
-              <tr
-                :key="'payment-' + index"
-                slot="p-body"
-              >
-                <th>
-                  <router-link
-                    v-if="payment.disbursed == false"
-                    :to="{
-                      name: 'finance.cash.in.show',
-                      params: { id: payment.id }
-                    }"
-                  >
-                    {{ payment.form.number }}
-                  </router-link>
-                  <router-link
-                    v-if="payment.disbursed == true"
-                    :to="{
-                      name: 'finance.cash.out.show',
-                      params: { id: payment.id }
-                    }"
-                  >
-                    {{ payment.form.number }}
-                  </router-link>
-                </th>
-                <td>
-                  {{ payment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
-                </td>
-                <td>
-                  {{ payment.paymentable ? payment.paymentable.name : '' }}
-                </td>
-                <td>
-                  <template v-for="(paymentDetail, index2) in payment.details">
-                    <div
-                      :key="'payment-detail-' + index2"
-                      class="my-10"
-                    >
-                      <span>
-                        {{ paymentDetail.chart_of_account.number }} -
-                        {{ paymentDetail.chart_of_account.alias }}
-                      </span>
-                    </div>
-                  </template>
-                </td>
-                <td>
-                  <template v-for="(paymentDetail, index2) in payment.details">
-                    <div
-                      :key="'payment-detail-' + index2"
-                      class="my-10"
-                    >
-                      <span
-                        :key="'payment-detail-' + index2"
-                        class="my-20"
-                      >
-                        {{ paymentDetail.notes }}
-                      </span>
-                    </div>
-                  </template>
-                </td>
-                <td>
-                  <template v-for="(paymentDetail, index2) in payment.details">
-                    <div
-                      :key="'payment-detail-' + index2"
-                      class="my-10"
-                    >
-                      <span :key="'payment-detail-' + index2">
-                        {{
-                          paymentDetail.allocation
-                            ? paymentDetail.allocation.name
-                            : ''
-                        }}
-                      </span>
-                    </div>
-                  </template>
-                </td>
-                <td class="text-right">
-                  <template v-for="(paymentDetail, index2) in payment.details">
-                    <div
-                      :key="'payment-detail-' + index2"
-                      class="my-10"
-                    >
-                      <span :key="'payment-detail-' + index2">
-                        {{ paymentDetail.amount | numberFormat }}
-                      </span>
-                    </div>
-                  </template>
-                </td>
-              </tr>
-            </template> -->
           </point-table>
         </p-block-inner>
         <!-- Pagination Cash Table -->
@@ -356,6 +266,7 @@
       ref="selectCashType"
       @choosen="chooseCashType($event)"
     />
+
     <!-- Select Cash Person Component Modal for Advance Filter Person -->
     <m-select-cash-person
       id="selectCashPerson"
@@ -559,7 +470,7 @@ export default {
           },
           // Includes
           includes:
-            'form;details.chartOfAccount;details.allocation;paymentable',
+            'form;details.chartOfAccount;paymentAccount;details.allocation;paymentable;details.referenceable.form;cashAdvance.cashAdvance.form;form.createdBy;form.approvalBy',
           // Limit
           limit: this.limit,
           // Page
@@ -570,7 +481,6 @@ export default {
         .then((response) => {
           // Loading
           this.isLoading = false
-          console.log(response)
         })
         // Fail
         .catch((error) => {
@@ -642,7 +552,7 @@ export default {
             },
             // Includes
             includes:
-              'form;details.chartOfAccount;details.allocation;paymentable'
+              'form;details.chartOfAccount;paymentAccount;paymentAccount;details.allocation;paymentable;details.referenceable.form;cashAdvance.cashAdvance.form;form.createdBy;form.approvalBy'
             // // Limit
             // limit: 10,
           }
@@ -663,46 +573,51 @@ export default {
               ),
               // Form Number
               'Form Number': payment.form.number,
-              // Person From / To
-              'Payment Form / To': payment.paymentable
-                ? payment.paymentable.name
-                : '',
               // Form Reference Payment Order / Down Payment
-              'Form Reference Payment Order / Down Payment': '',
+              'Form Reference Payment': detail.referenceable
+                ? detail.referenceable.form.number
+                : '-',
               // Form Reference Cash Advance
-              'Form Reference Cash Advance': '',
+              'Form Reference Cash Advance': payment.cash_advance
+                ? payment.cash_advance.cash_advance.form.number
+                : '-',
               // Cash Account
-              'Cash Account': '',
+              'Cash Account': payment.payment_account.name,
               // Account Number
               'Account Number': detail.chart_of_account.number,
               // Account
               Account: detail.chart_of_account.alias,
               // Notes
-              Notes: detail.notes,
+              'Payment Notes': detail.notes,
               // Allocation
-              Allocation: detail.allocation ? detail.allocation.name : '',
+              Allocation: detail.allocation ? detail.allocation.name : '-',
               // Amount Reference Payment Order / Down Payment
-              'Amount Reference Payment Order / Down Payment': '',
+              'Amount Reference Payment': payment.amount,
               // Amount Cash Advance
-              'Amount Cash Advance': '',
+              'Amount Cash Advance': payment.cash_advance
+                ? payment.cash_advance.cash_advance.amount
+                : '-',
               // Total Payment Order / Down Payment
-              'Total Payment Order / Down Payment': '',
+              'Total Payment': payment.amount,
               // Total Cash Advance
-              'Total Cash Advance': '',
+              'Total Cash Advance': payment.cash_advance
+                ? payment.cash_advance.amount
+                : '-',
               // Total Amount
-              'Total Amount': '',
+              'Total Amount': payment.cash_advance
+                ? parseFloat(payment.amount) -
+                  parseFloat(payment.cash_advance.amount)
+                : payment.amount,
               // Note
-              Note: '',
+              'Cash Out Notes': payment.form.notes,
               // Create By
-              'Create By': '',
+              'Created By': payment.form.created_by.name,
               // Create At
-              'Create At': '',
+              'Created At': payment.form.created_by.created_at,
               // Approved By
-              'Approved By': '',
+              'Approved By': payment.form.created_by.name,
               // Approved At
-              'Approved At': ''
-              // Amount
-              // Amount: detail.amount
+              'Approved At': payment.form.created_by.created_at
             }
           })
         })

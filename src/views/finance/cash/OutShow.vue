@@ -18,6 +18,7 @@
       :cancellation-status="payment.form.cancellation_status"
       :approved-by="payment.paymentable_name"
       :request-cancellation-reason="payment.form.request_cancellation_reason"
+      :cancellation-approval-reason="payment.form.cancellation_approval_reason"
       @onCancellationApprove="onCancellationApprove"
       @onCancellationReject="onCancellationReject"
     />
@@ -44,8 +45,13 @@
                       payment.form.cancellation_status == -1
                   "
                   class="btn btn-sm btn-outline-secondary mr-5"
+                  :disabled="isDeleting === true"
                   @click="$refs.formRequestDelete.open()"
                 >
+                  <i
+                    v-show="isDeleting === true"
+                    class="fa fa-asterisk fa-spin"
+                  />
                   {{ $t('delete') | uppercase }}
                 </button>
                 <!-- Form Request Delete Cash Out Modal Component -->
@@ -113,20 +119,11 @@
           <!-- Payment Menu -->
           <div>
             <h5 class="pl-1 pt-20">
-              <!-- Payment Order -->
-              <span
-                v-if="payment.details[0].referenceable_type === 'PaymentOrder'"
-              >
-                {{ $t('payment order') | uppercase }}
+              <span v-if="form.referenceableType === 'PaymentOrder'">
+                {{ $t('payment Order') | uppercase }}
               </span>
-              <!-- Down Payment -->
-              <span
-                v-if="
-                  payment.details[0].referenceable_type ===
-                    'PurchaseDownPayment'
-                "
-              >
-                {{ $t('down payment') | uppercase }}
+              <span v-if="form.referenceableType === 'PurchaseDownPayment'">
+                {{ $t('Down Payment') | uppercase }}
               </span>
             </h5>
             <!-- Table Payment -->
@@ -159,106 +156,118 @@
                   {{ row.amount | numberFormat }}
                 </td>
               </tr>
-              <tr slot="p-body">
-                <td />
-                <td />
-                <td />
-                <td class="text-right">
-                  {{ payment.amount | numberFormat }}
-                </td>
-              </tr>
             </point-table>
           </div>
-
           <!--  Cash Advance Menu -->
           <div>
             <h5 class="pl-1 pt-20">
               {{ $t('cash advance') | uppercase }}
             </h5>
             <!-- Table Cash Advance -->
-            <!-- <point-table>
+            <point-table>
               <tr
                 slot="p-head"
                 class="text-left"
               >
                 <th>Reference</th>
                 <th>Notes</th>
-                <th>Account</th>
                 <th>Amount</th>
                 <th>Amount Remaining</th>
+                <th>Amount Usage</th>
                 <th class="text-center">
                   Close
                 </th>
               </tr>
               <tr
-                v-for="(row, index) in form.formCashAdvance.details"
                 slot="p-body"
-                :key="index"
                 class="text-left"
               >
+                <th>
+                  <span>
+                    {{
+                      payment.cash_advance.cash_advance.form.number | uppercase
+                    }}
+                  </span>
+                </th>
+                <td>{{ payment.cash_advance.cash_advance.form.notes }}</td>
                 <td>
-                  <span> ca00123 </span>
+                  {{ payment.cash_advance.cash_advance.amount | numberFormat }}
                 </td>
-                <td>Notes</td>
-                <td>kas kas kecil Lorem.</td>
-                <td>100.000</td>
-                <td>50.000</td>
+                <td>
+                  {{
+                    payment.cash_advance.cash_advance.amount_remaining
+                      | numberFormat
+                  }}
+                </td>
+                <td>
+                  {{ payment.cash_advance.amount | numberFormat }}
+                </td>
                 <td class="text-center">
-                  <input
-                    v-model="
-                      form.formCashAdvance.details[index].cashAdvance_close
-                    "
-                    type="checkbox"
-                    style="min-width: auto"
-                    disabled
+                  <span
+                    v-if="payment.cash_advance.cash_advance.form.done === 0"
                   >
+                    {{ $t('Closed') }}
+                  </span>
+                  <span
+                    v-if="payment.cash_advance.cash_advance.form.done === 1"
+                  >
+                    {{ $t('Opened') }}
+                  </span>
                 </td>
               </tr>
-            </point-table> -->
+            </point-table>
           </div>
-
           <!-- Table Total Cash Out -->
           <div class="row d-flex justify-content-end">
             <div class="col-lg-5">
               <table class="table table-bordered">
                 <tbody>
                   <tr>
-                    <th
-                      v-if="
-                        payment.details[0].referenceable_type === 'PaymentOrder'
-                      "
-                    >
+                    <th v-if="form.referenceableType === 'PaymentOrder'">
                       Total Payment Order
                     </th>
-                    <th
-                      v-if="
-                        payment.details[0].referenceable_type ===
-                          'PurchaseDownPayment'
-                      "
-                    >
+                    <th v-if="form.referenceableType === 'PurchaseDownPayment'">
                       Total Down Payment
                     </th>
                     <td class="text-right">
-                      {{ payment.amount | numberFormat }}
+                      <p-form-number
+                        :id="'amount'"
+                        v-model="form.amount"
+                        class="input-readonly"
+                        :name="'amount'"
+                        :readonly="true"
+                        @input="calculate()"
+                      />
                     </td>
                   </tr>
                   <tr>
                     <th>Total Cash Advance</th>
                     <td class="text-right">
-                      {{ payment.amount | numberFormat }}
+                      <p-form-number
+                        :id="'amount_cash_advance'"
+                        v-model="form.amount_cash_advance"
+                        class="input-readonly"
+                        :name="'amount_cash_advance'"
+                        :readonly="true"
+                        @input="calculate()"
+                      />
                     </td>
                   </tr>
                   <tr>
                     <th>Total Cash Out</th>
                     <td class="text-right">
-                      {{ payment.amount | numberFormat }}
+                      <p-form-number
+                        :id="'amount_cash_out'"
+                        v-model="form.amount_cash_out"
+                        :name="'amount_cash_out'"
+                        :readonly="true"
+                      />
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
-
           <!-- Cash Out Show Information -->
           <div class="row mt-30">
             <!-- Cash Out Note -->
@@ -292,7 +301,7 @@
 import debounce from 'lodash/debounce'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbFinance from '../Breadcrumb'
-import Form from '@/utils/Form'
+
 import PointTable from 'point-table-vue'
 // Import Vuex
 import { mapGetters, mapActions } from 'vuex'
@@ -315,34 +324,13 @@ export default {
       // Data Default Create By
       createdBy: localStorage.getItem('fullName'),
       // Data Default Form
-      form: new Form({
-        increment_group: this.$moment().format('YYYYMM'),
-        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        due_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        payment_type: 'cash',
-        payment_account_id: null,
-        payment_account_name: null,
-        paymentable_id: null,
-        paymentable_type: null,
-        paymentable_name: null,
-        disbursed: false,
-        notes: null,
+      //
+      form: {
+        referenceableType: null,
         amount: 0,
-        details: {},
-        formCashAdvance: {
-          details: [
-            {
-              cashAdvance_id: null,
-              cashAdvance_reference: null,
-              cashAdvance_account_name: null,
-              cashAdvance_notes: null,
-              cashAdvance_amount: 0,
-              cashAdvance_amount_remaining: 0,
-              cashAdvance_close: false
-            }
-          ]
-        }
-      })
+        amount_cash_advance: 0,
+        amount_cash_out: 0
+      }
     }
   },
 
@@ -362,6 +350,7 @@ export default {
     // Created Data
     // Get Data from Search Methods
     this.search()
+    console.log(this.payment)
   },
   methods: {
     // Action Data from Vuex Store
@@ -378,6 +367,8 @@ export default {
     search () {
       // Loading
       this.isLoading = true
+      //
+      this.isDeleting = false
       // Find Data Payment with Params
       this.find({
         // Id
@@ -385,16 +376,21 @@ export default {
         params: {
           // Includes
           includes:
-            'form.branch;' +
-            'paymentAccount;' +
-            'details.chartOfAccount;' +
-            'details.allocation'
+            'form;form.branch;paymentAccount;details.chartOfAccount;details.allocation;paymentable;details.referenceable.form;cashAdvance.cashAdvance.form'
         }
       })
         // Success
         .then((response) => {
+          //
+          this.form.referenceableType =
+            this.payment.details[0].referenceable_type
+          //
+          this.form.amount = this.payment.amount
+          this.form.amount_cash_advance = this.payment.cash_advance.amount
           // Loading
           console.log(this.payment)
+          console.log('ctca', this.form)
+          console.log('pp', this.payment.cash_advance.cash_advance.form.number)
           this.isLoading = false
         })
         // Fail
@@ -448,11 +444,9 @@ export default {
     },
     //
     calculate: debounce(function () {
-      var totalAmount = 0
-      this.form.details.forEach(function (element) {
-        totalAmount += parseFloat(element.amount)
-      })
-      this.form.amount = totalAmount
+      // //
+      this.form.amount_cash_out =
+        parseFloat(this.form.amount) - parseFloat(this.form.amount_cash_advance)
     }, 300)
   }
 }

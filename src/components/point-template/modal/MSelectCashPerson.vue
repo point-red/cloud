@@ -47,7 +47,6 @@
           {{ $t('searching not found', [searchText]) | capitalize }}
         </div>
       </div>
-
       <div class="row">
         <!-- Pagination Cash Person -->
         <div class="col d-flex justify-content-start">
@@ -216,18 +215,23 @@ export default {
       this.close()
     },
     // Clear Choose Option
-    clear () {
-      // Initialization Data Options to Null
+    clear (option) {
+      // Initialization Data Select to Reset Default
+      // Search Text
+      this.searchText = ''
+      // Mutable Id & Label
       this.mutableId = null
       this.mutableLabel = null
-      this.$emit('clear', true)
+      // Current Page
+      this.currentPage = 1
+      // Emit Choose
+      this.$emit('choosen', '')
       this.close()
     },
     // Open Modal
-    open (index = null, update = false) {
-      this.index = index
+    open () {
+      this.search()
       this.$refs['select-' + this.id].open()
-      if (update) this.search()
     },
     // Close Modal
     close () {
@@ -239,19 +243,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-/* Style for input */
-input:readonly {
-  background-color: white;
-}
-input {
-  min-width: 200px;
-}
-/* Style for Link */
-.link {
-  border-bottom: dotted 1px #2196f3;
-  color: #2196f3;
-  cursor: pointer;
-}
-</style>

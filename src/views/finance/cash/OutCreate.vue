@@ -88,7 +88,7 @@
             </div>
           </div>
 
-          <div v-if="form.reference_number">
+          <div v-if="form.reference_number && form.payment_account_name">
             <!-- Button Sub Menu Cash Out -->
             <div class="row mt-10 mb-20">
               <div class="col">
@@ -113,6 +113,7 @@
                 </button>
                 <!-- Cash Advance -->
                 <button
+                  v-if="form.referenceable_type === 'PaymentOrder'"
                   type="button"
                   class="btn btn-md btn-light"
                   :class="{ active: isShowCashAdvance === true }"
@@ -151,17 +152,7 @@
                   <td>{{ row.notes }}</td>
                   <td>{{ row.allocation_name }}</td>
                   <td class="text-right">
-                    <div v-if="row.referenceable_type == 'CashAdvance'">
-                      <p-form-number
-                        :id="'amount-' + index"
-                        v-model="row.amount"
-                        :name="'amount-' + index"
-                        @keyup.native="calculate()"
-                      />
-                    </div>
-                    <div v-else>
-                      {{ row.amount | numberFormat }}
-                    </div>
+                    {{ row.amount | numberFormat }}
                   </td>
                 </tr>
               </point-table>
@@ -176,56 +167,46 @@
                 >
                   <th>Reference</th>
                   <th>Notes</th>
-                  <th>Account</th>
                   <th>Amount</th>
                   <th>Amount Remaining</th>
+                  <th>Amount Usage</th>
                   <th class="text-center">
                     Close
                   </th>
-                  <th />
                 </tr>
                 <tr
-                  v-for="(row, index) in form.formCashAdvance.details"
                   slot="p-body"
-                  :key="index"
                   class="text-left"
                 >
-                  <td>
+                  <th>
                     <span
                       class="select-link"
-                      multiple
-                    > ca00123 </span>
+                      @click="$refs.selectReferenceCashAdvance.open()"
+                    >
+                      {{
+                        form.cash_advance.reference_number ||
+                          $t('select') | uppercase
+                      }}
+                    </span>
+                  </th>
+                  <td>{{ form.cash_advance.notes }}</td>
+                  <td>{{ form.cash_advance.amount | numberFormat }}</td>
+                  <td>
+                    {{ form.cash_advance.amount_remaining | numberFormat }}
                   </td>
-                  <td>Notes</td>
-                  <td>kas kas kecil Lorem.</td>
-                  <td>100.000</td>
-                  <td>50.000</td>
+                  <td>
+                    {{ form.cash_advance.amount_usage | numberFormat }}
+                  </td>
                   <td class="text-center">
                     <input
-                      v-model="
-                        form.formCashAdvance.details[index].cashAdvance_close
-                      "
+                      v-model="form.cash_advance.close"
                       type="checkbox"
                       style="min-width: auto"
-                      @click="check(index)"
+                      :disabled="boxDisabled"
                     >
-                  </td>
-                  <td class="text-right">
-                    <i
-                      class="btn btn-sm fa fa-times"
-                      @click="deleteRow(index)"
-                    />
                   </td>
                 </tr>
               </point-table>
-              <!-- Button Add Cash Advance -->
-              <button
-                type="button"
-                class="btn btn-sm btn-secondary my-20"
-                @click="addRow"
-              >
-                <i class="fa fa-plus pr-1" /> {{ $t('add') | uppercase }}
-              </button>
             </div>
             <br>
             <!-- Table Total Cash Out -->
@@ -243,19 +224,38 @@
                         Total Down Payment
                       </th>
                       <td class="text-right">
-                        {{ form.amount | numberFormat }}
+                        <p-form-number
+                          :id="'amount'"
+                          v-model="form.amount"
+                          class="input-readonly"
+                          :name="'amount'"
+                          :readonly="true"
+                          @input="calculate()"
+                        />
                       </td>
                     </tr>
                     <tr>
                       <th>Total Cash Advance</th>
                       <td class="text-right">
-                        {{ form.amount | numberFormat }}
+                        <p-form-number
+                          :id="'amount_cash_advance'"
+                          v-model="form.amount_cash_advance"
+                          class="input-readonly"
+                          :name="'amount_cash_advance'"
+                          :readonly="true"
+                          @input="calculate()"
+                        />
                       </td>
                     </tr>
                     <tr>
                       <th>Total Cash Out</th>
                       <td class="text-right">
-                        {{ form.amount | numberFormat }}
+                        <p-form-number
+                          :id="'amount_cash_out'"
+                          v-model="form.amount_cash_out"
+                          :name="'amount_cash_out'"
+                          :readonly="true"
+                        />
                       </td>
                     </tr>
                   </tbody>
@@ -272,7 +272,6 @@
                   class="form-control"
                   placeholder="Notes"
                 />
-
                 <div class="d-sm-block d-md-none mt-10" />
               </div>
               <!-- Cash Out Create Signature -->
@@ -290,10 +289,7 @@
                 <div class="d-sm-block d-md-none mt-10" />
               </div>
               <!-- Button Cash Out -->
-              <div
-                v-if="form.reference_number && form.payment_account_name"
-                class="col-sm-12"
-              >
+              <div class="col-sm-12">
                 <hr>
                 <div class="row text-center text-sm-left mt-20">
                   <div class="col">
@@ -331,11 +327,18 @@
       ref="selectReferenceCashOut"
       @choosen="chooseReferenceCashOut"
     />
+
     <!-- Select Cash Account Modal Component -->
     <m-chart-of-account
       ref="chartOfAccountCashRef"
       type="CASH"
       @choosen="onChoosenAccountCash"
+    />
+
+    <!-- Select Cash Advance Modal Component -->
+    <m-select-reference-cash-advance
+      ref="selectReferenceCashAdvance"
+      @choosen="chooseReferenceCashAdvance"
     />
   </div>
 </template>
@@ -365,6 +368,8 @@ export default {
       // Data Default Show Button Sub Menu Cash Out
       isShowPayment: true,
       isShowCashAdvance: false,
+      // Data Default Disable Box
+      boxDisabled: true,
       // Data Default Saving
       isSaving: false,
       // Data Default Form
@@ -380,19 +385,17 @@ export default {
         notes: null,
         disbursed: true,
         amount: 0,
+        amount_cash_advance: 0,
+        amount_cash_out: 0,
         details: {},
-        formCashAdvance: {
-          details: [
-            {
-              cashAdvance_id: null,
-              cashAdvance_reference: null,
-              cashAdvance_account_name: null,
-              cashAdvance_notes: null,
-              cashAdvance_amount: 0,
-              cashAdvance_amount_remaining: 0,
-              cashAdvance_close: false
-            }
-          ]
+        cash_advance: {
+          id: null,
+          reference_number: null,
+          notes: null,
+          amount: 0,
+          amount_remaining: 0,
+          amount_usage: 0,
+          close: false
         }
       })
     }
@@ -414,7 +417,6 @@ export default {
     // Created Data
     // Get Data from Local Storage
     this.getDataFromStorage()
-    console.log(this.data)
   },
 
   methods: {
@@ -431,7 +433,6 @@ export default {
     getDataFromStorage () {
       // Get Data
       var data = JSON.parse(localStorage.getItem('formData'))
-      console.log(data)
       // If Have Data In Local Storage
       if (data) {
         // Initialization Data from Local Storage for Reference Cash Out
@@ -450,15 +451,24 @@ export default {
         this.form.payment_account_id = data.payment_account_id
         this.form.payment_account_name = data.payment_account_name
         // Initialization Data from Local Storage for Cash Advance
-        this.form.formCashAdvance.details = data.formCashAdvance.details
+        this.form.amount_cash_advance = data.amount_cash_advance
+        this.form.amount_cash_out = data.amount_cash_out
+        this.form.cash_advance = data.cash_advance
+        // Initialization Data Disable Box to Active
+        if (data.cash_advance.id && data.cash_advance.close === false) {
+          this.boxDisabled = false
+        } else if (
+          data.cash_advance.amount_usage < data.cash_advance.amount_remaining
+        ) {
+          this.boxDisabled = false
+        }
         // Remove Data from Local Storage
         localStorage.removeItem('formData')
       }
-      console.log(this.form)
     },
     // Choose Reference Cash Out
     chooseReferenceCashOut () {
-      console.log(this.payment)
+      // Initialization Data from Cash Out
       this.form.payment_type = 'cash'
       this.form.disbursed = true
       this.form.referenceable_id = this.payment.referenceable_id
@@ -469,58 +479,93 @@ export default {
       this.form.paymentable_name = this.payment.paymentable_name
       this.form.amount = this.payment.amount
       this.form.details = this.payment.details
-
-      console.log(this.form.reference_number)
-      console.log(this.form.details)
+      // Initialization Reset Data from Cash Account
+      this.form.payment_account_id = null
+      this.form.payment_account_name = null
+      // Initialization Reset Data from Cash Advance
+      this.form.cash_advance.id = null
+      this.form.cash_advance.reference_number = null
+      this.form.cash_advance.notes = null
+      this.form.cash_advance.amount = 0
+      this.form.cash_advance.amount_remaining = 0
+      this.form.cash_advance.amount_usage = 0
+      this.form.cash_advance.close = false
+      // Initialization Reset Data from Cash Out
+      this.form.amount_cash_advance = 0
+      this.form.amount_cash_out = 0
+      // Show Payment Menu
+      this.showPayment()
     },
     // Choose Cash Account
     onChoosenAccountCash (account) {
       // Initialization Data from Cash Account
       this.form.payment_account_id = account.id
       this.form.payment_account_name = account.label
+      // Initialization Reset Data from Cash Advance
+      this.form.cash_advance.id = null
+      this.form.cash_advance.reference_number = null
+      this.form.cash_advance.notes = null
+      this.form.cash_advance.amount = 0
+      this.form.cash_advance.amount_remaining = 0
+      this.form.cash_advance.amount_usage = 0
+      this.form.cash_advance.close = false
+      // Initialization Reset Data from Cash Out
+      this.form.amount_cash_advance = 0
+      this.form.amount_cash_out = 0
     },
-    // Show Payment
+    // Show Payment Menu
     showPayment () {
       this.isShowPayment = true
       this.isShowCashAdvance = false
     },
-    // Show Cash Advance
+    // Show Cash Advance Menu
     showCashAdvance () {
       this.isShowPayment = false
       this.isShowCashAdvance = true
     },
     // Choose Cash Advance
-    onChoosenCashAdvance (account) {
-      this.form.payment_account_id = account.id
-      this.form.payment_account_name = account.label
+    chooseReferenceCashAdvance (cashAdvance) {
+      // Initialization Data from Cash Advance
+      this.form.cash_advance.id = cashAdvance.id
+      this.form.cash_advance.reference_number = cashAdvance.form.number
+      this.form.cash_advance.notes = cashAdvance.details[0].notes
+      this.form.cash_advance.amount = cashAdvance.amount
+      this.form.cash_advance.amount_remaining = cashAdvance.amount_remaining
+      this.form.cash_advance.amount_usage = 0
+      this.form.cash_advance.close = false
+      // Initialization Data from Cash Out
+      this.form.amount_cash_advance = 0
+      this.form.amount_cash_out = 0
+      // Initialization Conditional Data from Cash Out
+      if (this.form.cash_advance.amount_remaining >= this.form.amount) {
+        // Initialization Data Cash Advance Amount Usage
+        this.form.cash_advance.amount_usage = this.form.amount
+        // Initialization Data Disable Box to Disable
+        this.boxDisabled = false
+      } else if (
+        this.form.cash_advance.amount_remaining < this.form.amount &&
+        this.form.cash_advance.amount_remaining > 0
+      ) {
+        // Initialization Data Cash Advance Amount Usage
+        this.form.cash_advance.amount_usage =
+          this.form.cash_advance.amount_remaining
+        // Initialization Data Disable Box to Active
+        this.boxDisabled = true
+        // Check Closed Box
+        this.check()
+      }
+      // Initialization Data Cash Out Amount Cash Advance
+      this.form.amount_cash_advance = this.form.cash_advance.amount_usage
     },
-    //
-    check (index) {
-      this.form.formCashAdvance.details[index].cashAdvance_close = true
+    // Check Closed Box
+    check () {
+      this.form.cash_advance.close = true
     },
-    // Add Row Cash Advance
-    addRow () {
-      this.form.formCashAdvance.details.push({
-        cashAdvance_id: null,
-        cashAdvance_reference: null,
-        cashAdvance_account_name: null,
-        cashAdvance_notes: null,
-        cashAdvance_amount: 0,
-        cashAdvance_amount_remaining: 0,
-        cashAdvance_close: false
-      })
-    },
-    // Delete Row Cash Advance
-    deleteRow (index) {
-      this.$delete(this.form.formCashAdvance.details, index)
-    },
-    //
+    // Calculate Data Amount Cash Out
     calculate: debounce(function () {
-      var totalAmount = 0
-      this.form.details.forEach(function (element) {
-        totalAmount += parseFloat(element.amount)
-      })
-      this.form.amount = totalAmount
+      // Initialization Data Cash Out Amount Cash Out
+      this.form.amount_cash_out =
+        parseFloat(this.form.amount) - parseFloat(this.form.amount_cash_advance)
     }, 300),
     // Go to Preview Page
     toPreview () {

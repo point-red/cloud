@@ -1,14 +1,16 @@
+  <!-- Still Need FIX in Layout -->
 <template>
   <!-- Modal Select Reference Cash Out -->
   <sweet-modal
     ref="modal"
     :title="'select reference cash out' | uppercase"
     overlay-theme="dark"
+    :enable-mobile-fullscreen="false"
     @close="onClose()"
   >
     <!-- Search -->
     <div class="row">
-      <p-block :title="$t('payment order')">
+      <p-block :title="$t('reference cash out')">
         <div class="input-group block">
           <p-form-input
             id="search-text"
@@ -25,102 +27,124 @@
         <!-- Table Reference Cash Out  -->
         <p-block-inner :is-loading="isLoading">
           <point-table>
-            <tr slot="p-head">
+            <tr
+              slot="p-head"
+              class="text-center"
+            >
               <th>Number</th>
               <th>Date</th>
-              <th>To</th>
+              <th>Person</th>
               <th>Account</th>
+              <th>Amount</th>
               <th>Notes</th>
-              <th class="text-right">
-                Amount
-              </th>
-              <th class="text-center" />
+              <th>Created By</th>
             </tr>
-            <!-- Table Payment Order -->
-            <template v-for="(paymentOrder, index) in paymentOrders">
-              <template
-                v-for="(paymentOrderDetail, index2) in paymentOrder.details"
-              >
+            <template v-for="(reference, index) in references">
+              <!-- Table Payment Order -->
+              <template v-for="(referenceDetail, index2) in reference.details">
                 <tr
-                  :key="'payment-order-' + index + '-' + index2"
+                  v-if="reference.form.formable_type === 'PaymentOrder'"
+                  :key="'reference-' + index + index2"
                   slot="p-body"
                   style="cursor: pointer"
-                  class="hoover-table-select"
-                  @click="choosePaymentOrder(paymentOrder)"
+                  class="table-select text-center"
+                  :class="{
+                    active:
+                      reference.id == mutableId &&
+                      reference.form.formable_type === mutableType
+                  }"
+                  @click="choosePaymentOrder(reference)"
                 >
                   <th>
                     <router-link
                       :to="{
                         name: 'finance.payment-order.show',
-                        params: { id: paymentOrder.id }
+                        params: { id: reference.id }
                       }"
+                      class="link-color"
                     >
-                      {{ paymentOrder.form.number }}
+                      {{ reference.form.number }}
                     </router-link>
                   </th>
                   <td>
-                    {{
-                      paymentOrder.form.date | dateFormat('DD MMMM YYYY HH:mm')
-                    }}
+                    {{ reference.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
                   </td>
-                  <td>{{ paymentOrder.paymentable.name }}</td>
-                  <td>{{ paymentOrderDetail.account.label }}</td>
-                  <td>{{ paymentOrderDetail.notes }}</td>
-                  <td class="text-right">
-                    {{ paymentOrderDetail.amount | numberFormat }}
+                  <td>
+                    {{ reference.paymentable.name }}
+                  </td>
+                  <td>{{ referenceDetail.account.label }}</td>
+                  <td>
+                    {{ referenceDetail.amount | numberFormat }}
+                  </td>
+                  <td>{{ referenceDetail.notes }}</td>
+                  <td>
+                    {{ reference.form.created_by.name }}
                   </td>
                 </tr>
               </template>
-            </template>
-            <!-- Table Down Payment -->
-            <template v-for="(downPayment, index) in downPayments">
+              <!-- Table Down Payment -->
               <tr
-                :key="'purchase-down-payment-' + index"
+                v-if="reference.form.formable_type === 'PurchaseDownPayment'"
+                :key="'reference-' + index"
                 slot="p-body"
                 style="cursor: pointer"
-                class="hoover-table-select"
-                @click="chooseDownPayment(downPayment)"
+                class="table-select text-center"
+                :class="{
+                  active:
+                    reference.id == mutableId &&
+                    reference.form.formable_type === mutableType
+                }"
+                @click="chooseDownPayment(reference)"
               >
                 <th>
                   <router-link
                     :to="{
                       name: 'purchase.down-payment.show',
-                      params: { id: downPayment.id }
+                      params: { id: reference.id }
                     }"
+                    class="link-color"
                   >
-                    {{ downPayment.form.number }}
+                    {{ reference.form.number }}
                   </router-link>
                 </th>
                 <td>
-                  {{ downPayment.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
+                  {{ reference.form.date | dateFormat('DD MMMM YYYY HH:mm') }}
                 </td>
-                <td>{{ downPayment.supplier.name }}</td>
+                <td>{{ reference.supplier.name }}</td>
                 <td>{{ downPaymentAccountLabel }}</td>
-                <td>{{ downPayment.form.notes }}</td>
                 <td class="text-right">
-                  {{ downPayment.amount | numberFormat }}
+                  {{ reference.amount | numberFormat }}
+                </td>
+                <td>{{ reference.form.notes }}</td>
+                <td>
+                  {{ reference.form.created_by.name }}
                 </td>
               </tr>
             </template>
           </point-table>
         </p-block-inner>
-        <!-- Pagination  -->
-        <p-pagination
+      </p-block>
+    </div>
+
+    <div class="row">
+      <!-- Pagination Cash Person -->
+      <div class="col d-flex justify-content-start">
+        <p-pagination-modal
           :current-page="currentPage"
           :last-page="lastPage"
           @updatePage="updatePage"
         />
-      </p-block>
-    </div>
-    <!-- Button Clear -->
-    <div class="pull-right">
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-danger"
-        @click="clear()"
-      >
-        {{ $t('clear') | uppercase }}
-      </button>
+      </div>
+      <!-- Button Clear -->
+      <div class="col d-flex justify-content-end">
+        <button
+          type="button"
+          class="btn btn-md btn-outline-danger"
+          @click="clear()"
+        >
+          {{ $t('clear') | uppercase }}
+        </button>
+      </div>
     </div>
   </sweet-modal>
 </template>
@@ -140,8 +164,10 @@ export default {
   data () {
     return {
       isLoading: false,
+
       downPaymentAccountId: null,
       downPaymentAccountLabel: null,
+
       date: {
         start: this.$route.query.date_from
           ? this.$moment(this.$route.query.date_from).format(
@@ -154,31 +180,20 @@ export default {
           )
           : this.$moment().format('YYYY-MM-DD 23:59:59')
       },
-      searchText: this.$route.query.search,
-      currentPage: this.$route.query.page * 1 || 1,
+      searchText: '',
+      currentPage: 1,
       lastPage: 1,
-      limit: 100,
-      isActiveSelect: false
+      limit: 10,
+      isActiveSelect: false,
+      //
+      options: [],
+      // Data Default Mutable Id & Type
+      mutableId: null,
+      mutableType: null
     }
   },
   computed: {
-    ...mapGetters('financePaymentOrder', {
-      paymentOrders: 'paymentOrders',
-      paymentOrdersPagination: 'pagination'
-    }),
-    ...mapGetters('purchaseDownPayment', ['downPayments', 'pagination'])
-  },
-  watch: {
-    handler: function () {
-      this.$router.push({
-        query: {
-          ...this.$route.query
-        }
-      })
-      this.search()
-    },
-
-    deep: true
+    ...mapGetters('financeCashOutReference', ['references', 'pagination'])
   },
   created () {
     this.search()
@@ -187,29 +202,30 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   mounted () {
-    // Add Style for Responsive Table
-    const addStyle = document.querySelector('div.sweet-content-content')
-    addStyle.style.width = '100%'
+    // // Add Style for Responsive Table
+    // const addStyle = document.querySelector('div.sweet-content-content')
+    // addStyle.style.width = '100%'      // Add Class for Responsive Table
+    // const addClass = document.querySelector('div.sweet-modal')
+    // addClass.classList.add('sweet-modal-responsive')
+    // addClass.style.width = '100%'
   },
   methods: {
-    ...mapActions('financePaymentOrder', {
-      getPaymentOrder: 'get'
-    }),
-    ...mapActions('purchaseDownPayment', {
-      getPurchaseDownPayment: 'get'
-    }),
     ...mapActions('accountingSettingJournal', {
       findAccount: 'find'
     }),
+    ...mapActions('financeCashOutReference', {
+      getReferences: 'get'
+    }),
     // Filter Data Finance Payment
     filterSearch: debounce(function (value) {
-      this.$router.push({ query: { search: value } })
+      // this.$router.push({ query: { search: value } })
       this.searchText = value
       this.search()
     }, 300),
     //
     search () {
       this.isLoading = true
+      //
       this.findAccount({
         feature: 'purchase',
         name: 'down payment'
@@ -217,53 +233,50 @@ export default {
         this.downPaymentAccountId = response.data.id
         this.downPaymentAccountLabel = response.data.label
       })
-      this.getPaymentOrder({
+
+      this.getReferences({
         params: {
-          join: 'form,details,account',
-          sort_by: '-form.date',
-          group_by: 'payment_order.id',
-          fields: 'payment_order.*',
-          filter_form: 'notArchived;pending;approvalApproved',
-          filter_like: {
+          //
+          sort_by: 'form.date',
+          // PO
+          paymentorder_join: 'form,details,account',
+          // paymentorder_sort_by: '-form.date',
+          paymentorder_group_by: 'payment_order.id',
+          paymentorder_fields: 'payment_order.*',
+          paymentorder_filter_form: 'notArchived;pending;approvalApproved',
+          paymentorder_filter_like: {
             'form.number': this.searchText,
             'form.notes': this.searchText,
             paymentable_name: this.searchText
           },
-          filter_null: 'payment_order.payment_id',
-          filter_equal: {
+          paymentorder_filter_null: 'payment_order.payment_id',
+          paymentorder_filter_equal: {
             'payment_order.payment_type': 'cash'
           },
-          limit: this.limit,
-          includes: 'form;paymentable;details.account;details.allocation',
-          page: this.currentPage
-        }
-      })
-        .then((response) => {
-          this.isLoading = false
-        })
-        .catch((error) => {
-          this.isLoading = false
-          this.$notification.error(error.message)
-        })
-      this.getPurchaseDownPayment({
-        params: {
-          join: 'form',
-          sort_by: '-form.date',
-          group_by: 'purchase_down_payment.id',
-          fields: 'purchase_down_payment.*',
-          filter_form: 'notArchived;pending;approvalApproved',
-          filter_like: {
+          paymentorder_includes:
+            'form;paymentable;details.account;details.allocation;form.createdBy',
+
+          // DPs
+          downpayment_join: 'form',
+          // downpayment_sort_by: '-form.date',
+          downpayment_group_by: 'purchase_down_payment.id',
+          downpayment_fields: 'purchase_down_payment.*',
+          downpayment_filter_form: 'notArchived;pending;approvalApproved',
+          downpayment_filter_like: {
             'form.number': this.searchText,
             'form.notes': this.searchText,
             supplier_name: this.searchText
           },
+          downpayment_includes: 'form;supplier;form.createdBy',
+
+          // LP
           limit: this.limit,
-          includes: 'form;supplier',
           page: this.currentPage
         }
       })
         .then((response) => {
           this.isLoading = false
+          console.log('asd', response)
         })
         .catch((error) => {
           this.isLoading = false
@@ -274,29 +287,8 @@ export default {
       this.currentPage = value
       this.search()
     },
-    clear (clear) {
-      //
-      // this.searchText = null
-      //
-      this.$store.commit('financePayment/FETCH_OBJECT', {
-        data: {
-          reference_form_id: null,
-          referenceable_id: null,
-          referenceable_type: null,
-          reference_number: null,
-          paymentable_name: null,
-          paymentable_type: null,
-          paymentable_id: null,
-          amount: null,
-          details: null
-        }
-      })
-      //
-      this.$emit('choosen', clear)
-      //
-      this.close()
-    },
     choosePaymentOrder (paymentOrder) {
+      // Initialization Data Cash Person
       const details = []
       paymentOrder.details.forEach((el) => {
         details.push({
@@ -321,6 +313,10 @@ export default {
           details: details
         }
       })
+      // Initialization Data Select
+      this.mutableId = paymentOrder.id
+      this.mutableType = paymentOrder.form.formable_type
+      this.$emit('input', paymentOrder.id)
       this.$emit('choosen', paymentOrder)
       this.close()
     },
@@ -345,17 +341,67 @@ export default {
           details: details
         }
       })
+
+      // Initialization Data Select
+      // Emit Data Values
+      this.mutableId = downPayment.id
+      this.mutableType = downPayment.form.formable_type
+      this.$emit('input', downPayment.id)
       this.$emit('choosen', downPayment)
       this.close()
     },
-    open () {
+    // open () {
+    //   this.search()
+    //   // Add Style for Responsive Table
+    //   const addStyle = document.querySelector('div.sweet-content-content')
+    //   addStyle.style.width = '100%'
+    //   // Open Modal
+    //   this.$refs.modal.open()
+    // },
+    async open (index = null) {
+      this.index = index
       this.search()
+      this.$refs.modal.open()
+
+      const addClass = document.querySelector('div.sweet-modal')
+      await addClass.classList.add('sweet-modal-responsive')
+      addClass.style.width = '100%'
+
       // Add Style for Responsive Table
       const addStyle = document.querySelector('div.sweet-content-content')
       addStyle.style.width = '100%'
+
       // Open Modal
-      this.$refs.modal.open()
     },
+    clear (clear) {
+      // Initialization Data Select to Reset Default
+      // Search Text
+      this.searchText = ''
+      // Mutable Id
+      this.mutableId = null
+      this.mutableType = null
+      // Current Page
+      this.currentPage = 1
+      //
+      this.$store.commit('financePayment/FETCH_OBJECT', {
+        data: {
+          reference_form_id: null,
+          referenceable_id: null,
+          referenceable_type: null,
+          reference_number: null,
+          paymentable_name: null,
+          paymentable_type: null,
+          paymentable_id: null,
+          amount: null,
+          details: null
+        }
+      })
+      //
+      this.$emit('choosen', clear)
+      //
+      this.close()
+    },
+
     close () {
       this.$refs.modal.close()
     },
@@ -367,23 +413,42 @@ export default {
 </script>
 
 <style scoped>
+.sweet-modal {
+  width: 10% !important;
+}
+.sweet-modal-responsive {
+  width: 10% !important;
+}
 /*  */
-.hoover-table-select:hover > th,
-.hoover-table-select:hover > td {
+.table-select:hover > th,
+.table-select:hover > td {
   background-color: #f6f7f9;
 }
+.active > th,
+.active > th > .link-color,
+.active > td {
+  color: white !important;
+  background-color: #3f9ce8 !important;
+}
+
 input:readonly {
   background-color: white;
 }
 input {
   min-width: 200px;
 }
-.link {
+/* .link {
   border-bottom: dotted 1px #2196f3;
   color: #2196f3;
   cursor: pointer;
-}
+} */
 .w-1 {
   width: 1px;
+}
+/* Style for Hide Border */
+.block {
+  background-color: none !important;
+  -webkit-box-shadow: 0 0px 0px #e4e7ed !important;
+  box-shadow: 0 0px 0px #e4e7ed !important;
 }
 </style>

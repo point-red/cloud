@@ -5,7 +5,7 @@
       ref="modal"
       :title="title || $t('select chart of account') | uppercase"
       overlay-theme="dark"
-      @close="close()"
+      @close="onClose()"
     >
       <!-- Search -->
       <input
@@ -21,11 +21,11 @@
           Loading ...
         </h3>
       </div>
+      <!-- COA Options -->
       <div
         v-else
         class="list-group push"
       >
-        <!-- COA Options -->
         <template v-for="(option, optionIndex) in options">
           <a
             :key="optionIndex"
@@ -54,11 +54,11 @@
         {{ $t('chart of account') | capitalize }}, <br>
         {{ $t('you can create') }}
       </div>
-
+      <hr>
       <div class="row">
         <!-- Pagination COA -->
         <div class="col d-flex justify-content-start">
-          <p-pagination
+          <p-pagination-modal
             :current-page="currentPage"
             :last-page="lastPage"
             @updatePage="updatePage"
@@ -146,13 +146,13 @@ export default {
       // Data Default Index
       index: null,
       // Data Default Mutable Id & Label
-      mutableId: this.value,
-      mutableLabel: this.label,
+      mutableId: null,
+      mutableLabel: null,
       // Data Default Filter
       // Search Text Default
-      searchText: this.$route.query.search,
+      searchText: '',
       // Current Page Default
-      currentPage: this.$route.query.page * 1 || 1,
+      currentPage: 1,
       // Last Page Default
       lastPage: 1,
       // Limit Default
@@ -231,6 +231,7 @@ export default {
         })
           // Success
           .then((response) => {
+            // Initialization Data COA to Options
             this.options = []
             this.mutableLabel = null
             response.data.map((key, value) => {
@@ -245,7 +246,7 @@ export default {
                 position: key.position,
                 sub_ledger: key.sub_ledger
               })
-
+              // Initialization Mutable Data for Option
               if (this.value == key.id) {
                 this.mutableLabel = key.number + ' - ' + key.alias
               }
@@ -304,6 +305,7 @@ export default {
                   sub_ledger: key.sub_ledger
                 })
               }
+              // Initialization Mutable Data for Option
               if (this.value == key.id) {
                 this.mutableLabel = key.number + ' - ' + key.alias
               }
@@ -334,13 +336,20 @@ export default {
       this.mutableLabel = option.label
       this.$emit('input', option.id)
       this.$emit('choosen', option)
+      console.log(option)
       this.close()
     },
     // Clear Choose Option
     clear (option) {
-      // Initialization Data Options to Null
+      // Initialization Data Select to Reset Default
+      // Search Text
+      this.searchText = ''
+      // Mutable Id & Label
       this.mutableId = null
       this.mutableLabel = null
+      // Current Page
+      this.currentPage = 1
+      // Emit Data Null Value
       this.$emit('input', null)
       this.$emit('choosen', {
         index: this.index,
@@ -358,31 +367,26 @@ export default {
       this.close()
     },
     // Open Modal
-    open (index = null, update = false) {
-      this.index = index
+    open () {
+      this.search()
       this.$refs.modal.open()
-      if (update) this.search()
     },
     // Close Modal
     close () {
       this.$refs.modal.close()
+    },
+    onClose () {
+      this.$emit('close', true)
     }
   }
 }
 </script>
 
 <style scoped>
-/* Style for input */
-input:readonly {
-  background-color: white;
-}
-input {
-  min-width: 200px;
-}
-/* Style for Link */
-.link {
-  border-bottom: dotted 1px #2196f3;
-  color: #2196f3;
-  cursor: pointer;
+/* Style for Hide Border */
+.block {
+  background-color: none !important;
+  -webkit-box-shadow: 0 0px 0px #e4e7ed !important;
+  box-shadow: 0 0px 0px #e4e7ed !important;
 }
 </style>

@@ -1,7 +1,10 @@
+// Import API
 import api from '@/api'
 
+// Initialize URL
 const url = '/finance/payments'
 
+// State
 const state = {
   payment: {
     form: {
@@ -10,12 +13,25 @@ const state = {
     payment_account: {
       label: null
     },
-    details: []
+    details: [],
+    cash_advance: {
+      amount: null,
+      cash_advance: {
+        amount: 0,
+        amount_remaining: 0,
+        form: {
+          number: null,
+          notes: null,
+          done: false
+        }
+      }
+    }
   },
   payments: [],
   pagination: {}
 }
 
+// Getter
 const getters = {
   payment: (state) => {
     return state.payment
@@ -28,6 +44,7 @@ const getters = {
   }
 }
 
+// Mutations
 const mutations = {
   FETCH_ARRAY (state, payload) {
     state.payments = payload.data
@@ -47,7 +64,9 @@ const mutations = {
   }
 }
 
+// Action
 const actions = {
+  // Get Data
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api
@@ -61,6 +80,7 @@ const actions = {
         })
     })
   },
+  // Find Data
   find ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api
@@ -74,6 +94,7 @@ const actions = {
         })
     })
   },
+  // Create Data
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api
@@ -86,6 +107,7 @@ const actions = {
         })
     })
   },
+  // Update Data
   update (context, payload) {
     return new Promise((resolve, reject) => {
       api
@@ -98,6 +120,7 @@ const actions = {
         })
     })
   },
+  // Delete Data
   delete (context, payload) {
     return new Promise((resolve, reject) => {
       api
@@ -110,6 +133,7 @@ const actions = {
         })
     })
   },
+  // Cancel Approve Data
   cancellationApprove (context, payload) {
     return new Promise((resolve, reject) => {
       api
@@ -122,6 +146,7 @@ const actions = {
         })
     })
   },
+  // Cancel Reject Data
   cancellationReject (context, payload) {
     return new Promise((resolve, reject) => {
       api
@@ -133,9 +158,36 @@ const actions = {
           reject(error)
         })
     })
+  },
+  // Cancel Approve Data by Email
+  approveByEmail (context, payload) {
+    return new Promise((resolve, reject) => {
+      api
+        .post(url + '/approve', payload)
+        .then((response) => {
+          resolve(response)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  },
+  // Cancel Reject Data by Email
+  rejectByEmail (context, payload) {
+    return new Promise((resolve, reject) => {
+      api
+        .post(url + '/reject', payload)
+        .then((response) => {
+          resolve(response)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
   }
 }
 
+// Export Vuex
 export default {
   namespaced: true,
   state,
