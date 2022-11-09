@@ -37,6 +37,7 @@
                         v-model="form.date"
                         name="date"
                         :label="$t('date')"
+                        :disabled-date-rule="disabledDateRule"
                         :errors="form.errors.get('date')"
                         @errors="form.errors.set('date', null)"
                       />
@@ -435,6 +436,12 @@ export default {
       this.form.items[e.index].quantity = e.quantity
       this.form.items[e.index].unit = e.unit
       this.form.items[e.index].converter = e.converter
+    },
+    disabledDateRule (date) {
+      const dateOptionFormatted = this.$options.filters.dateFormat(date, 'YYYY-MM-DD')
+      const dateFormFormatted = this.$options.filters.dateFormat(this.form.date, 'YYYY-MM-DD')
+
+      return dateOptionFormatted < dateFormFormatted
     },
     chooseWarehouse (option) {
       this.form.warehouse_id = option.id
