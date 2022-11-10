@@ -2,7 +2,7 @@
 import api from '@/api'
 
 // Initialize URL
-const url = '/finance/approval/payments'
+const url = '/finance/payments'
 
 // State
 const state = {
@@ -51,9 +51,6 @@ const mutations = {
     state.pagination = payload.meta
   },
   FETCH_OBJECT (state, payload) {
-    payload.data.items.forEach((element) => {
-      element.more = false
-    })
     state.payment = payload.data
   },
   CREATE (state, payload) {
@@ -166,7 +163,7 @@ const actions = {
   approveByEmail (context, payload) {
     return new Promise((resolve, reject) => {
       api
-        .post(url + '/approve', payload)
+        .post(url + '/' + payload.ids + '/cancellation-approve', payload)
         .then((response) => {
           resolve(response)
         })
@@ -177,9 +174,10 @@ const actions = {
   },
   // Cancel Reject Data by Email
   rejectByEmail (context, payload) {
+    console.log('p', payload)
     return new Promise((resolve, reject) => {
       api
-        .post(url + '/reject', payload)
+        .post(url + '/' + payload.ids + '/cancellation-reject', payload)
         .then((response) => {
           resolve(response)
         })

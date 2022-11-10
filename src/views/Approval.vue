@@ -677,66 +677,87 @@ export default {
     },
     // Handle Approval Finance Payment
     async handleApprovalFinancePayment () {
+      // Conditional in Finance Payment Component
       if (this.crudType === 'delete') {
+        // Conditional Action Approve
         if (this.action === 'approve') {
           this.approveByEmailPayment({
+            // Initialization Data Payment Approve
             ids: this.ids,
             token: this.token,
             approver_id: this.approver_id
           })
+            // Sucess
             .then((response) => {
-              this.resource = response.data[0]
+              // Initialization Data Payment Approve
+              this.resource = response.data
               this.projectName = this.tenantName
-              this.approvalStatus = response.data[0].form.cancellation_status
+              this.approvalStatus = response.data.form.cancellation_status
             })
+            // Error
             .catch((error) => {
               console.log(error.message)
             })
         }
+        // Conditional Action Reject
         if (this.action === 'reject') {
           this.rejectByEmailPayment({
+            // Initialization Data Payment Reject
             ids: this.ids,
             token: this.token,
             approver_id: this.approver_id,
             reason: 'Rejected by email'
           })
+            // Sucess
             .then((response) => {
-              this.resource = response.data[0]
+              // Initialization Data Payment Reject
+              this.resource = response.data
               this.projectName = this.tenantName
-              this.approvalStatus = response.data[0].form.cancellation_status
+              this.approvalStatus = response.data.form.cancellation_status
             })
+            // Error
             .catch((error) => {
               console.log(error.message)
             })
         }
       } else {
+        // Conditional Action Approve
         if (this.action === 'approve') {
           this.approveByEmailPayment({
+            // Initialization Data Payment Approve
             ids: this.ids,
             token: this.token,
             approver_id: this.approver_id
           })
+            // Success
             .then((response) => {
-              this.resource = response.data[0]
+              // Initialization Data Payment Approve
+              this.resource = response.data
               this.projectName = this.tenantName
-              this.approvalStatus = response.data[0].form.approval_status
+              this.approvalStatus = response.data.form.approval_status
             })
+            // Error
             .catch((error) => {
               this.$notification.error(error.message)
             })
         }
+        // Conditional Action Reject
         if (this.action === 'reject') {
           this.rejectByEmailPayment({
+            // Initialization Data Payment Reject
             ids: this.ids,
             token: this.token,
             approver_id: this.approver_id,
             reason: 'Rejected by email'
           })
+            // Success
             .then((response) => {
-              this.resource = response.data[0]
+              // Initialization Data Payment Reject
+              this.resource = response.data
               this.projectName = this.tenantName
-              this.approvalStatus = response.data[0].form.approval_status
+              this.approvalStatus = response.data.form.approval_status
             })
+            // Error
             .catch((error) => {
               console.log(error.message)
             })
