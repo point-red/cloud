@@ -155,7 +155,7 @@
             </point-table>
           </div>
           <!--  Cash Advance Menu -->
-          <div>
+          <div v-if="payment.cash_advance">
             <h5 class="pl-1 pt-20">
               {{ $t('cash advance') | uppercase }}
             </h5>
@@ -202,12 +202,12 @@
                   <span
                     v-if="payment.cash_advance.cash_advance.form.done === 0"
                   >
-                    {{ $t('Closed') }}
+                    {{ $t('Opened') }}
                   </span>
                   <span
                     v-if="payment.cash_advance.cash_advance.form.done === 1"
                   >
-                    {{ $t('Opened') }}
+                    {{ $t('Closed') }}
                   </span>
                 </td>
               </tr>
