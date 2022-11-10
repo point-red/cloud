@@ -163,7 +163,7 @@ const actions = {
   approveByEmail (context, payload) {
     return new Promise((resolve, reject) => {
       api
-        .post(url + '/' + payload.id + '/cancellation-approve', payload)
+        .post(url + '/' + payload.ids + '/cancellation-approve', payload)
         .then((response) => {
           resolve(response)
         })
@@ -176,7 +176,7 @@ const actions = {
   rejectByEmail (context, payload) {
     return new Promise((resolve, reject) => {
       api
-        .post(url + '/' + payload.id + '/cancellation-reject', payload)
+        .post(url + '/' + payload.ids + '/cancellation-reject', payload)
         .then((response) => {
           resolve(response)
         })
