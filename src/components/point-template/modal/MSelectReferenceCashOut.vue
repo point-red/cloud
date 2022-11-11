@@ -391,6 +391,7 @@ export default {
     },
     // Open Modal
     async open (index = null) {
+      // Initialization Data Index
       this.index = index
       // Get Data from Search Method
       this.search()
