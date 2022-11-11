@@ -419,6 +419,13 @@ export default {
     this.getDataFromStorage()
   },
 
+  updated () {
+    // Add Style for Responsive Table
+    const addStyle = document.querySelector('div.sweet-content-content')
+    addStyle.style.width = '100%'
+    console.log('addstyke ope', addStyle)
+  },
+
   methods: {
     // Action Data from Vuex Store
     // Find Payment Order

@@ -72,7 +72,7 @@
 </template>
 
 <script>
-// Import Library & Components
+// Import Library
 import debounce from 'lodash/debounce'
 // Import Vuex
 import { mapGetters, mapActions } from 'vuex'
@@ -193,6 +193,7 @@ export default {
             })
           })
         })
+        // Fail
         .catch((error) => {
           this.isLoading = false
         })
@@ -226,11 +227,14 @@ export default {
       this.currentPage = 1
       // Emit Choose
       this.$emit('choosen', '')
+      // Close Modal
       this.close()
     },
     // Open Modal
     open () {
+      // Get Data from Search Method
       this.search()
+      // Open
       this.$refs['select-' + this.id].open()
     },
     // Close Modal

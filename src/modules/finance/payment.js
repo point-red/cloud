@@ -174,7 +174,6 @@ const actions = {
   },
   // Cancel Reject Data by Email
   rejectByEmail (context, payload) {
-    console.log('p', payload)
     return new Promise((resolve, reject) => {
       api
         .post(url + '/' + payload.ids + '/cancellation-reject', payload)

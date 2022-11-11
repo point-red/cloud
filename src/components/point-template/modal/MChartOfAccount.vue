@@ -251,10 +251,12 @@ export default {
                 this.mutableLabel = key.number + ' - ' + key.alias
               }
             })
+            // Loading
             this.isLoading = false
           })
           // Fail
           .catch((error) => {
+            // Loading
             this.isLoading = false
           })
       } else {
@@ -310,10 +312,12 @@ export default {
                 this.mutableLabel = key.number + ' - ' + key.alias
               }
             })
+            // Loading
             this.isLoading = false
           })
           // Fail
           .catch((error) => {
+            // Loading
             this.isLoading = false
           })
       }
@@ -368,7 +372,9 @@ export default {
     },
     // Open Modal
     open () {
+      // Get Data from Search Method
       this.search()
+      // Open
       this.$refs.modal.open()
     },
     // Close Modal
