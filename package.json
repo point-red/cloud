@@ -65,6 +65,8 @@
     "@vue/test-utils": "^1.0.3",
     "babel-eslint": "^10.1.0",
     "chai": "^4.2.0",
+    "cypress": "^10.11.0",
+    "cypress-file-upload": "^5.0.8",
     "eslint": "^7.3.1",
     "eslint-plugin-import": "^2.21.2",
     "eslint-plugin-node": "^11.1.0",
