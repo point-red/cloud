@@ -13,7 +13,10 @@
 
     <purchase-menu />
 
-    <form @submit.prevent="onSubmit">
+    <form
+      v-if="isHasDefaultBranch"
+      @submit.prevent="onSubmit"
+    >
       <div class="row">
         <p-block>
           <p-block-inner :is-loading="isLoading">
@@ -52,6 +55,13 @@
                           {{ $t('select') | uppercase }}
                         </template>
                       </span>
+                      <div
+                        v-for="(error, index) in form.errors.get('supplier_id')"
+                        :key="index"
+                        class="invalid-input"
+                      >
+                        {{ error }}
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -63,6 +73,13 @@
                         class="select-link"
                         @click="$refs.warehouse.open()"
                       >{{ form.warehouse_name || $t('select') | uppercase }}</span>
+                      <div
+                        v-for="(error, index) in form.errors.get('warehouse_id')"
+                        :key="index"
+                        class="invalid-input"
+                      >
+                        {{ error }}
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -198,6 +215,12 @@
         </p-block>
       </div>
     </form>
+    <div
+      v-else
+      class="m-0 mt-4 alert alert-danger"
+    >
+      {{ $t('please set as default branch') }}
+    </div>
     <m-inventory-in
       :id="'inventory'"
       ref="inventory"
@@ -263,7 +286,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    isHasDefaultBranch () {
+      if (this.authUser) {
+        return this.authUser.branches.some(element => {
+          return (element.pivot.is_default)
+        })
+      }
+      return false
+    }
   },
   created () {
     if (this.$route.query.id) {
