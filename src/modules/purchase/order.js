@@ -22,6 +22,7 @@ const state = {
     items: []
   },
   purchaseOrders: [],
+  histories: [],
   pagination: {}
 }
 
@@ -31,6 +32,9 @@ const getters = {
   },
   purchaseOrders: state => {
     return state.purchaseOrders
+  },
+  histories: state => {
+    return state.histories
   },
   pagination: state => {
     return state.pagination
@@ -47,6 +51,10 @@ const mutations = {
       element.more = false
     })
     state.purchaseOrder = payload.data
+  },
+  'FETCH_HISTORY' (state, payload) {
+    state.histories = payload.data
+    state.pagination = payload.meta
   },
   'CREATE' (state, payload) {
     state.purchaseOrder = payload
@@ -65,6 +73,27 @@ const actions = {
       api.get(url, payload)
         .then(response => {
           commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  history ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url + '/history', payload)
+        .then(response => {
+          commit('FETCH_HISTORY', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  storeHistory (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/history', payload)
+        .then(response => {
           resolve(response)
         }).catch(error => {
           reject(error)
@@ -145,6 +174,16 @@ const actions = {
   cancellationReject (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url + '/' + payload.id + '/cancellation-reject', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  sendBulkRequestApproval (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/send-bulk-request-approval', payload)
         .then(response => {
           resolve(response)
         }).catch(error => {
