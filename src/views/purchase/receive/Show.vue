@@ -2,7 +2,10 @@
   <div>
     <breadcrumb v-if="purchaseReceive">
       <breadcrumb-purchase />
-      <router-link to="/purchase/receive" class="breadcrumb-item">
+      <router-link
+        to="/purchase/receive"
+        class="breadcrumb-item"
+      >
         {{ $t("purchase receive") | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{
@@ -25,7 +28,10 @@
       @onCancellationReject="onCancellationReject"
     />
 
-    <div v-if="purchaseReceive" class="row">
+    <div
+      v-if="purchaseReceive"
+      class="row"
+    >
       <p-block>
         <p-block-inner :is-loading="isLoading">
           <div class="row">
@@ -49,7 +55,7 @@
                 <button
                   v-if="
                     purchaseReceive.form.cancellation_status == null ||
-                    purchaseReceive.form.cancellation_status == -1
+                      purchaseReceive.form.cancellation_status == -1
                   "
                   class="btn btn-sm btn-outline-secondary mr-5"
                   @click="$refs.formRequestDelete.open()"
@@ -63,13 +69,16 @@
               </div>
             </div>
           </div>
-          <hr />
+          <hr>
           <div class="row">
             <div class="col-sm-6">
               <h4>{{ $t("purchase receive") | uppercase }}</h4>
               <table class="table table-sm table-bordered">
                 <tr>
-                  <td width="150px" class="font-weight-bold">
+                  <td
+                    width="150px"
+                    class="font-weight-bold"
+                  >
                     {{ $t("form number") | uppercase }}
                   </td>
                   <td>{{ purchaseReceive.form.number }}</td>
@@ -114,7 +123,7 @@
               </h6>
               <template v-if="purchaseReceive.form.branch">
                 {{ purchaseReceive.form.branch.address | uppercase }}
-                <br v-if="purchaseReceive.form.branch.phone" />{{
+                <br v-if="purchaseReceive.form.branch.phone">{{
                   purchaseReceive.form.branch.phone | uppercase
                 }}
               </template>
@@ -124,19 +133,21 @@
               {{ purchaseReceive.supplier_name | uppercase }}
               <div style="font-size: 12px">
                 {{ purchaseReceive.supplier_address | uppercase }}
-                <br v-if="purchaseReceive.supplier_phone" />{{
+                <br v-if="purchaseReceive.supplier_phone">{{
                   purchaseReceive.supplier_phone
                 }}
-                <br v-if="purchaseReceive.supplier_email" />{{
+                <br v-if="purchaseReceive.supplier_email">{{
                   purchaseReceive.supplier_email | uppercase
                 }}
               </div>
             </div>
           </div>
-          <hr />
+          <hr>
           <point-table class="mt-20">
             <tr slot="p-head">
-              <th class="text-center">#</th>
+              <th class="text-center">
+                #
+              </th>
               <th>{{ $t("item") | uppercase }}</th>
               <th class="text-right">
                 {{ $t("quantity") | uppercase }}
@@ -144,7 +155,10 @@
               <th width="50px" />
             </tr>
             <template v-for="(row, index) in purchaseReceive.items">
-              <tr slot="p-body" :key="index">
+              <tr
+                slot="p-body"
+                :key="index"
+              >
                 <th class="text-center">
                   {{ index + 1 }}
                 </th>
@@ -178,7 +192,10 @@
               <h6 class="mb-0">
                 {{ $t("created by") | uppercase }}
               </h6>
-              <div class="mb-50" style="font-size: 11px">
+              <div
+                class="mb-50"
+                style="font-size: 11px"
+              >
                 {{ purchaseReceive.form.date | dateFormat("DD MMMM YYYY") }}
               </div>
               {{ purchaseReceive.form.created_by.full_name | uppercase }}
@@ -189,121 +206,124 @@
       </p-block>
     </div>
 
-    <m-form-request-delete ref="formRequestDelete" @delete="onDelete($event)" />
+    <m-form-request-delete
+      ref="formRequestDelete"
+      @delete="onDelete($event)"
+    />
   </div>
 </template>
 
 <script>
-import PurchaseMenu from "../Menu";
-import Breadcrumb from "@/views/Breadcrumb";
-import BreadcrumbPurchase from "../Breadcrumb";
-import PointTable from "point-table-vue";
-import { mapGetters, mapActions } from "vuex";
+import PurchaseMenu from '../Menu'
+import Breadcrumb from '@/views/Breadcrumb'
+import BreadcrumbPurchase from '../Breadcrumb'
+import PointTable from 'point-table-vue'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: "Show",
+  name: 'Show',
   components: {
     PurchaseMenu,
     Breadcrumb,
     BreadcrumbPurchase,
-    PointTable,
+    PointTable
   },
-  data() {
+  data () {
     return {
       id: this.$route.params.id,
       isLoading: false,
-      isDeleting: false,
-    };
+      isDeleting: false
+    }
   },
   computed: {
-    ...mapGetters("purchaseReceive", ["purchaseReceive"]),
-    ...mapGetters("auth", ["authUser"]),
+    ...mapGetters('purchaseReceive', ['purchaseReceive']),
+    ...mapGetters('auth', ['authUser'])
   },
   watch: {
-    $route(to, from) {
+    $route (to, from) {
       if (to.params.id != from.params.id) {
-        this.id = to.params.id;
-        this.purchaseReceiveRequest();
+        this.id = to.params.id
+        this.purchaseReceiveRequest()
       }
-    },
+    }
   },
-  created() {
-    this.purchaseReceiveRequest();
+  created () {
+    this.purchaseReceiveRequest()
   },
   methods: {
-    ...mapActions("purchaseReceive", {
-      find: "find",
-      delete: "delete",
-      cancellationApprove: "cancellationApprove",
-      cancellationReject: "cancellationReject",
+    ...mapActions('purchaseReceive', {
+      find: 'find',
+      delete: 'delete',
+      cancellationApprove: 'cancellationApprove',
+      cancellationReject: 'cancellationReject'
     }),
-    purchaseReceiveRequest() {
-      this.isLoading = true;
+    purchaseReceiveRequest () {
+      this.isLoading = true
       this.find({
         id: this.id,
         params: {
           with_archives: true,
           includes:
-            "supplier;" +
-            "warehouse;" +
-            "items.item.units;" +
-            "purchaseOrder.form;" +
-            "form.createdBy;" +
-            "form.branch",
-        },
+            'supplier;' +
+            'warehouse;' +
+            'items.item.units;' +
+            'purchaseOrder.form;' +
+            'form.createdBy;' +
+            'form.branch'
+        }
       })
         .then((response) => {
-          this.isLoading = false;
+          this.isLoading = false
         })
         .catch((error) => {
-          this.isLoading = false;
-          this.$notification.error(error.message);
-        });
+          this.isLoading = false
+          this.$notification.error(error.message)
+        })
     },
-    onDelete(reason) {
-      this.isDeleting = true;
+    onDelete (reason) {
+      this.isDeleting = true
       this.delete({
         id: this.id,
         data: {
-          reason: reason,
-        },
+          reason: reason
+        }
       })
         .then((response) => {
-          this.isDeleting = false;
-          this.$notification.success("cancel success");
-          this.purchaseReceiveRequest();
+          this.isDeleting = false
+          this.$notification.success('cancel success')
+          this.purchaseReceiveRequest()
         })
         .catch((error) => {
-          this.isDeleting = false;
-          this.$notification.error(error.message);
-          this.form.errors.record(error.errors);
-        });
+          this.isDeleting = false
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        })
     },
-    onCancellationApprove() {
+    onCancellationApprove () {
       this.cancellationApprove({
-        id: this.id,
+        id: this.id
       })
         .then((response) => {
-          this.$notification.success("cancellation approved");
-          this.$router.push("/purchase/receive");
+          this.$notification.success('cancellation approved')
+          this.$router.push('/purchase/receive')
         })
         .catch((error) => {
-          this.$notification.error(error.message);
-        });
+          this.$notification.error(error.message)
+        })
     },
-    onCancellationReject(reason) {
+    onCancellationReject (reason) {
       this.cancellationReject({
         id: this.id,
-        reason: reason,
+        reason: reason
       })
         .then((response) => {
-          this.$notification.success("cancellation rejected");
-          this.purchaseReceiveRequest();
+          this.$notification.success('cancellation rejected')
+          this.purchaseReceiveRequest()
         })
         .catch((error) => {
-          this.$notification.error(error.message);
-        });
-    },
-  },
-};
+          this.$notification.error(error.message)
+        })
+    }
+  }
+}
 </script>
