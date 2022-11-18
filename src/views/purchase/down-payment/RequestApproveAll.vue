@@ -3,7 +3,7 @@
     <breadcrumb>
       <breadcrumb-purchase />
       <router-link
-        to="/purchase/order"
+        to="/purchase/down-payment"
         class="breadcrumb-item"
       >
         {{ $t('purchase order') | uppercase }}
@@ -298,7 +298,6 @@ export default {
           data.push(purchaseOrder.id)
         }
       })
-      console.log(data, baseUrl)
       this.sendBulkRequestApproval({
         bulk_id: data,
         tenant_url: baseUrl,

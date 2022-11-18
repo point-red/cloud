@@ -29,13 +29,22 @@
             @input="filterSearch"
           />
         </div>
-        <div class="text-center font-size-sm">
-          <a
-            href="javascript:void(0)"
-            @click="isAdvanceFilter = !isAdvanceFilter"
+        <div class="d-flex justify-content-between">
+          <router-link
+            to="/purchase/down-payment/request-approve-all"
+            class="btn btn-sm btn-light"
           >
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
-          </a>
+            {{ $t('request approve all') | uppercase }}
+          </router-link>
+          <div class="font-size-sm mb-10 mt-2">
+            <a
+              href="javascript:void(0)"
+              @click="isAdvanceFilter = !isAdvanceFilter"
+            >
+              {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
+            </a>
+          </div>
+          <div />
         </div>
         <div
           v-show="isAdvanceFilter"
