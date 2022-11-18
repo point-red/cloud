@@ -382,7 +382,11 @@ export default {
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/purchase/receive/' + response.data.id)
         }).catch(error => {
-          this.$notification.error(error.message)
+          if (error.errors.total_quantity) {
+            this.$notification.error(error.errors.total_quantity[0])
+          } else {
+            this.$notification.error(error.message)
+          }
           this.form.errors.record(error.errors)
         }).finally(() => {
           this.isSaving = false
