@@ -13,7 +13,9 @@
 
     <purchase-menu />
 
-    <form @submit.prevent="onSubmit">
+    <form
+      @submit.prevent="onSubmit"
+    >
       <div class="row">
         <p-block>
           <p-block-inner :is-loading="isLoading">
@@ -52,6 +54,13 @@
                           {{ $t('select') | uppercase }}
                         </template>
                       </span>
+                      <div
+                        v-for="(error, index) in form.errors.get('supplier_id')"
+                        :key="index"
+                        class="invalid-input"
+                      >
+                        {{ error }}
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -63,6 +72,13 @@
                         class="select-link"
                         @click="$refs.warehouse.open()"
                       >{{ form.warehouse_name || $t('select') | uppercase }}</span>
+                      <div
+                        v-for="(error, index) in form.errors.get('warehouse_id')"
+                        :key="index"
+                        class="invalid-input"
+                      >
+                        {{ error }}
+                      </div>
                     </td>
                   </tr>
                   <tr>
@@ -263,7 +279,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    isHasDefaultBranch () {
+      if (this.authUser) {
+        return this.authUser.branches.some(element => {
+          return (element.pivot.is_default)
+        })
+      }
+      return false
+    }
   },
   created () {
     if (this.$route.query.id) {
@@ -351,7 +375,12 @@ export default {
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/purchase/receive/' + response.data.id)
         }).catch(error => {
-          this.$notification.error(error.message)
+          this.isSaving = false
+          let json = ''
+          if (error.errors) {
+            json = '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>'
+          }
+          this.$alert.error('Error Message', error.message + json)
           this.form.errors.record(error.errors)
         }).finally(() => {
           this.isSaving = false

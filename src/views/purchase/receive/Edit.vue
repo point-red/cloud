@@ -45,8 +45,8 @@
                         class="select-link"
                         @click="$refs.selectPurchaseOrder.open()"
                       >
-                        <template v-if="purchaseOrder && purchaseOrder.form.number">
-                          {{ purchaseOrder.form.number }}
+                        <template v-if="purchaseReceive && purchaseReceive.form.number">
+                          {{ purchaseReceive.form.number }}
                         </template>
                         <template v-else>
                           {{ $t('select') | uppercase }}
@@ -59,20 +59,17 @@
                       {{ $t('warehouse') | uppercase }}
                     </td>
                     <td>
-                      <!-- <span @click="$refs.warehouse.show()" class="select-link">
-                        <template v-if="warehouse">
-                          {{ warehouse.label }}
+                      <span
+                        class="select-link"
+                        @click="$refs.warehouse.open()"
+                      >
+                        <template v-if="form.warehouse_id">
+                          {{ form.warehouse_name }}
                         </template>
                         <template v-else>
                           {{ $t('select') | uppercase }}
                         </template>
-                      </span> -->
-                      <m-warehouse
-                        id="warehouse"
-                        ref="warehouse"
-                        name="warehouse"
-                        @choosen="chooseWarehouse"
-                      />
+                      </span>
                     </td>
                   </tr>
                   <tr>
@@ -211,10 +208,10 @@
             <!-- <div class="row"></div> -->
             <!-- <hr> -->
             <div class="row">
-              <div class="col-sm-6" />
+              <div class="col-sm-9" />
               <div class="col-sm-3 text-center">
                 <h6 class="mb-0">
-                  {{ $t('requested by') | uppercase }}
+                  {{ $t('created by') | uppercase }}
                 </h6>
                 <div
                   class="mb-50"
@@ -224,22 +221,6 @@
                 </div>
                 {{ requestedBy | uppercase }}
                 <div class="d-sm-block d-md-none mt-10" />
-              </div>
-              <div class="col-sm-3 text-center">
-                <h6 class="mb-0">
-                  {{ $t('approved by') | uppercase }}
-                </h6>
-                <div
-                  class="mb-50"
-                  style="font-size:11px"
-                >
-                  _______________
-                </div>
-                <span
-                  class="select-link"
-                  @click="$refs.approver.open()"
-                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
-                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
@@ -268,6 +249,12 @@
     <select-purchase-order
       ref="selectPurchaseOrder"
       @choosen="choosePurchaseOrder"
+    />
+    <m-warehouse
+      id="warehouse"
+      ref="warehouse"
+      name="warehouse"
+      @choosen="chooseWarehouse"
     />
   </div>
 </template>
@@ -324,7 +311,7 @@ export default {
     this.purchaseReceiveRequest()
   },
   methods: {
-    ...mapActions('purchaseReceive', ['create', 'find']),
+    ...mapActions('purchaseReceive', ['find', 'update']),
     toggleMore () {
       const isMoreActive = this.form.items.some(function (el, index) {
         return el.more === false
@@ -363,12 +350,12 @@ export default {
           notes: ''
         }
       })
-      this.form.supplier_id = purchaseOrder.supplier_id
-      this.form.supplier_name = purchaseOrder.supplier_name
-      this.form.supplier_label = purchaseOrder.supplier_name
-      this.form.supplier_address = purchaseOrder.supplier_address
-      this.form.supplier_phone = purchaseOrder.supplier_phone
-      this.form.supplier_email = purchaseOrder.supplier_email
+      this.form.supplier_id = purchaseOrder.supplier.id
+      this.form.supplier_name = purchaseOrder.supplier.name
+      this.form.supplier_label = purchaseOrder.supplier.label
+      this.form.supplier_address = purchaseOrder.supplier.address
+      this.form.supplier_phone = purchaseOrder.supplier.phone
+      this.form.supplier_email = purchaseOrder.supplier.email
     },
     purchaseReceiveRequest () {
       this.isLoading = true
@@ -376,7 +363,7 @@ export default {
         id: this.$route.params.id,
         params: {
           with_archives: true,
-          includes: 'supplier;' +
+          includes: 'purchaseOrder.supplier;' +
             'warehouse;' +
             'items.item.units;' +
             'purchaseOrder.form;' +
@@ -387,12 +374,12 @@ export default {
         }
       }).then(response => {
         this.purchaseReceive = response.data
-        this.form.purchase_receive_id = response.data.id
+        this.form.id = response.data.id
         this.form.driver = response.data.driver
         this.form.license_plate = response.data.license_plate
-        this.form.request_approval_to = response.data.form.request_approval_to.id
-        this.form.approver_name = response.data.form.request_approval_to.full_name
-        this.form.approver_email = response.data.form.request_approval_to.email
+        // this.form.request_approval_to = response.data.form.request_approval_to.id
+        // this.form.approver_name = response.data.form.request_approval_to.full_name
+        // this.form.approver_email = response.data.form.request_approval_to.email
         this.choosePurchaseOrder(response.data.purchase_order)
         this.chooseWarehouse(response.data.warehouse)
       }).catch(error => {
@@ -402,19 +389,12 @@ export default {
       })
     },
     onSubmit () {
-      if (this.form.request_approval_to == null) {
-        this.$notification.error('approval cannot be null')
-        this.form.errors.record({
-          request_approval_to: ['Approver should not empty']
-        })
-        return
-      }
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       this.form.items = this.form.items.filter(item => item.quantity)
-      this.create(this.form)
+      this.update(this.form)
         .then(response => {
-          this.$notification.success('create success')
+          this.$notification.success('update success')
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/purchase/receive/' + response.data.id)
         }).catch(error => {

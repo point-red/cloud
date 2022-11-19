@@ -14,7 +14,7 @@
     <div
       v-for="(error, index) in errors"
       :key="index"
-      class="invalid-feedback"
+      class="invalid-input"
     >
       {{ error }}
     </div>

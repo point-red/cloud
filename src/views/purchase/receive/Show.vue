@@ -49,6 +49,12 @@
                 >
                   {{ $t("create") | uppercase }}
                 </router-link>
+                <router-link
+                  :to="{ name: 'purchase.receive.edit', params: { id: purchaseReceive.id }}"
+                  class="btn btn-sm btn-outline-secondary mr-5"
+                >
+                  {{ $t('edit') | uppercase }}
+                </router-link>
                 <button
                   v-if="
                     purchaseReceive.form.cancellation_status == null ||
@@ -449,7 +455,23 @@ export default {
           this.form.errors.record(error.errors)
         })
     },
-
+    onApprove () {
+      this.approve({
+        id: this.id
+      }).then(response => {
+        this.$notification.success('approve success')
+        this.purchaseOrderRequest()
+      })
+    },
+    onReject (reason) {
+      this.reject({
+        id: this.id,
+        reason: reason
+      }).then(response => {
+        this.$notification.success('reject success')
+        this.purchaseOrderRequest()
+      })
+    },
     onCancellationApprove () {
       this.cancellationApprove({
         id: this.id
