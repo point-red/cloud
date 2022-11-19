@@ -14,7 +14,6 @@
     <purchase-menu />
 
     <form
-      v-if="isHasDefaultBranch"
       @submit.prevent="onSubmit"
     >
       <div class="row">
@@ -215,12 +214,6 @@
         </p-block>
       </div>
     </form>
-    <div
-      v-else
-      class="m-0 mt-4 alert alert-danger"
-    >
-      {{ $t('please set as default branch') }}
-    </div>
     <m-inventory-in
       :id="'inventory'"
       ref="inventory"
@@ -382,11 +375,12 @@ export default {
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/purchase/receive/' + response.data.id)
         }).catch(error => {
-          if (error.errors.total_quantity) {
-            this.$notification.error(error.errors.total_quantity[0])
-          } else {
-            this.$notification.error(error.message)
+          this.isSaving = false
+          let json = ''
+          if (error.errors) {
+            json = '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>'
           }
+          this.$alert.error('Error Message', error.message + json)
           this.form.errors.record(error.errors)
         }).finally(() => {
           this.isSaving = false
