@@ -228,7 +228,7 @@
                         {{ $t('Form') | uppercase }}
                       </td>
                       <td class="text-center">
-                        <span>{{ form.form.number }}</span>
+                        <span>{{ purchaseReceive.form.number }}</span>
                       </td>
                     </tr>
                     <tr>
@@ -236,15 +236,18 @@
                         {{ $t('Date') | uppercase }}
                       </td>
                       <td class="text-center">
-                        <span>{{ form.form.date | dateFormat("DD MMMM YYYY") }}</span>
+                        <span>{{ purchaseReceive.form.date | dateFormat("DD MMMM YYYY") }}</span>
                       </td>
                     </tr>
                     <tr>
                       <td class="font-weight-bold">
                         {{ $t('Purchase Order') | uppercase }}
                       </td>
-                      <td class="text-center text-primary">
-                        <span>{{ form.purchase_order.form.number }}</span>
+                      <td
+                        v-if="purchaseReceive.purchase_order"
+                        class="text-center text-primary"
+                      >
+                        <span>{{ purchaseReceive.purchase_order.form.number }}</span>
                       </td>
                     </tr>
                     <tr>
