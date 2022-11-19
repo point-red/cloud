@@ -35,7 +35,21 @@ import SweetModal from 'sweet-modal-vue/src/plugin.js'
 import sanitizeHTML from 'sanitize-html'
 import * as GmapVue from 'gmap-vue'
 import vars from './modules/common-vars'
+import VueHtmlToPaper from 'vue-html-to-paper';
+const options = {
+	name: '_blank',
+	specs: [
+		'fullscreen=yes',
+		'titlebar=yes',
+		'scrollbars=yes'
+	],
+	styles: [
+		'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
+		'https://unpkg.com/kidlat-css/css/kidlat.css'
+	]
+}
 
+Vue.use(VueHtmlToPaper, options);
 Vue.use(SweetModal)
 Vue.use(VScrollLock)
 

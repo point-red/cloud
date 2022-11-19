@@ -37,15 +37,12 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="text-right">
-                <router-link
-                  :to="{
-                    name: 'purchase.receive.print',
-                    params: { id: purchaseReceive.id },
-                  }"
+                <button
                   class="btn btn-sm btn-outline-secondary mr-5"
+                  @click="print()"
                 >
                   {{ $t("print") | uppercase }}
-                </router-link>
+                </button>
                 <router-link
                   :to="{ name: 'purchase.receive.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
@@ -206,6 +203,134 @@
       </p-block>
     </div>
 
+    <div
+      v-show="false"
+      id="printMe"
+      class="row"
+    >
+      <p-block>
+        <p-block-inner>
+          <div class="row p-10">
+            <div
+              class="col-12 border-black-op  p-15 my-border-black"
+            >
+              <div class="row">
+                <div class="col-9">
+                  <table class="table table-sm table-bordered">
+                    <tr>
+                      <td class="font-weight-bold">
+                        {{ $t('Form') | uppercase }}
+                      </td>
+                      <td class="text-center">
+                        <span>{{ form.form.number }}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-bold">
+                        {{ $t('Date') | uppercase }}
+                      </td>
+                      <td class="text-center">
+                        <span>{{ form.form.date | dateFormat("DD MMMM YYYY") }}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-bold">
+                        {{ $t('Purchase Order') | uppercase }}
+                      </td>
+                      <td class="text-center text-primary">
+                        <span>{{ form.purchase_order.form.number }}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-bold">
+                        {{ $t('Warehouse') | uppercase }}
+                      </td>
+                      <td class="text-center text-primary">
+                        <span>{{ form.warehouse_name }}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-bold">
+                        {{ $t('Driver') | uppercase }}
+                      </td>
+                      <td class="text-center">
+                        <span>{{ form.driver }}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="font-weight-bold">
+                        {{ $t('License Plate') | uppercase }}
+                      </td>
+                      <td class="text-center">
+                        <span>{{ form.license_plate }}</span>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <table class="table table-sm table-bordered">
+                    <tr class="fc-state-down text-center">
+                      <td class="font-weight-bold">
+                        {{ $t('No')| uppercase }}
+                      </td>
+                      <td class="font-weight-bold">
+                        {{ $t('ITEM') | uppercase }}
+                      </td>
+                      <td class="font-weight-bold">
+                        {{ $t('QUANTITY RECEIVED')| uppercase }}
+                      </td>
+                    </tr>
+
+                    <tr
+                      v-for="(item, index) in form.item"
+                      :key="item.id"
+                      class="text-center"
+                    >
+                      <td>
+                        {{ index +1 }}
+                      </td>
+                      <td>
+                        {{ item.item_name }}
+                      </td>
+                      <td>
+                        {{ item.quantity + " PCS" }}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="row mt-50 p-15">
+                <div class="col-8 border-black-op my-border-black p-10">
+                  <h6 class="mb-0">
+                    {{ $t("notes") | uppercase }}
+                  </h6>
+                  <div style="white-space: pre-wrap">
+                    {{ form.form.notes }}
+                  </div>
+                  <div class="d-sm-block d-md-none mt-10" />
+                </div>
+                <div class="col-4 text-center p-10">
+                  <h6 class="mb-0">
+                    {{ $t("created by") | uppercase }}
+                  </h6>
+                  <div
+                    class="mb-50"
+                    style="font-size: 11px"
+                  >
+                    {{ form.form.date | dateFormat("DD MMMM YYYY") }}
+                  </div>
+                  {{ form.form.created_by.full_name | uppercase }}
+                  <div class="d-sm-block d-md-none mt-10" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-block-inner>
+      </p-block>
+    </div>
+
     <m-form-request-delete
       ref="formRequestDelete"
       @delete="onDelete($event)"
@@ -219,6 +344,7 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '../Breadcrumb'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
+import Form from '@/utils/Form'
 
 export default {
   name: 'Show',
@@ -232,7 +358,23 @@ export default {
     return {
       id: this.$route.params.id,
       isLoading: false,
-      isDeleting: false
+      isDeleting: false,
+      form: new Form({
+        increment_group: this.$moment().format('YYYYMM'),
+        date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
+        supplier_id: null,
+        supplier_name: null,
+        supplier_label: null,
+        supplier_address: null,
+        supplier_phone: null,
+        supplier_email: null,
+        form: {},
+        purchase_order: {},
+        warehouse_name: null,
+        items: [],
+        driver: null,
+        license_plate: null
+      })
     }
   },
   computed: {
@@ -257,6 +399,7 @@ export default {
       cancellationApprove: 'cancellationApprove',
       cancellationReject: 'cancellationReject'
     }),
+
     purchaseReceiveRequest () {
       this.isLoading = true
       this.find({
@@ -273,6 +416,12 @@ export default {
         }
       })
         .then((response) => {
+          this.form.form = response.data.form
+          this.form.purchase_order = response.data.purchase_order
+          this.form.warehouse_name = response.data.warehouse_name
+          this.form.item = response.data.items
+          this.form.driver = response.data.driver
+          this.form.license_plate = response.data.license_plate
           this.isLoading = false
         })
         .catch((error) => {
@@ -280,6 +429,7 @@ export default {
           this.$notification.error(error.message)
         })
     },
+
     onDelete (reason) {
       this.isDeleting = true
       this.delete({
@@ -299,6 +449,7 @@ export default {
           this.form.errors.record(error.errors)
         })
     },
+
     onCancellationApprove () {
       this.cancellationApprove({
         id: this.id
@@ -311,6 +462,7 @@ export default {
           this.$notification.error(error.message)
         })
     },
+
     onCancellationReject (reason) {
       this.cancellationReject({
         id: this.id,
@@ -323,6 +475,13 @@ export default {
         .catch((error) => {
           this.$notification.error(error.message)
         })
+    },
+
+    print () {
+      // if (this.orderData.is_confirmed_partner || !this.orderData.partner_id) {
+      //   this.$htmlToPaper("printMe");
+      // }
+      this.$htmlToPaper('printMe')
     }
   }
 }
