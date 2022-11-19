@@ -311,7 +311,7 @@ export default {
     this.purchaseReceiveRequest()
   },
   methods: {
-    ...mapActions('purchaseReceive', ['create', 'find']),
+    ...mapActions('purchaseReceive', ['find', 'update']),
     toggleMore () {
       const isMoreActive = this.form.items.some(function (el, index) {
         return el.more === false
@@ -374,7 +374,7 @@ export default {
         }
       }).then(response => {
         this.purchaseReceive = response.data
-        this.form.purchase_receive_id = response.data.id
+        this.form.id = response.data.id
         this.form.driver = response.data.driver
         this.form.license_plate = response.data.license_plate
         // this.form.request_approval_to = response.data.form.request_approval_to.id
@@ -392,7 +392,7 @@ export default {
       this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       this.form.items = this.form.items.filter(item => item.quantity)
-      this.create(this.form)
+      this.update(this.form)
         .then(response => {
           this.$notification.success('update success')
           Object.assign(this.$data, this.$options.data.call(this))
