@@ -215,10 +215,51 @@
       class="row"
     >
       <p-block>
-        <p-block-inner>
-          <div class="row p-10">
+        <p-block-inner style="position: relative">
+          <div
+            v-if="purchaseReceive.form.cancellationStatus === 1"
+            style="position: absolute;color: red; z-index:100; bottom:0; right:0;top:0;left:0;display:flex;justify-content: center;align-items: center;"
+          >
+            <div style="font-size: 8em;transform: rotate(-45deg);letter-spacing: 15px;font-weight: 700;opacity: .5;">
+              {{ $t('canceled') | uppercase }}
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="row">
+              <div
+                class="col-4"
+                style="display:flex; justify-content: center;align-items: center;"
+              >
+                logo
+              </div>
+              <div
+                class="col-8"
+                style="display:flex; justify-content: center;flex-direction: column;"
+              >
+                <h1
+                  class="font-weight-bold text-primary"
+                >
+                  {{ $t('purchase down payment') | uppercase }}
+                </h1>
+                <h1 class="text-primary">
+                  {{ project.name | uppercase }}
+                </h1>
+                <h4>
+                  {{ "Address : "+project.address }}
+                </h4>
+                <h4>
+                  {{ "Phone : "+project.phone }}
+                </h4>
+              </div>
+            </div>
+          </div>
+          <div
+            class="row p-10"
+            style="margin-top:30px;"
+          >
             <div
-              class="col-12 border-black-op  p-15 my-border-black"
+              class="col-12"
+              style="padding:15px!important"
             >
               <div class="row">
                 <div class="col-9">
@@ -277,10 +318,16 @@
                   </table>
                 </div>
               </div>
-              <div class="row">
+              <div
+                class="row"
+                style="margin-top:30px;"
+              >
                 <div class="col-12">
                   <table class="table table-sm table-bordered">
-                    <tr class="fc-state-down text-center">
+                    <tr
+                      class="text-center print-background-gray"
+                      style="border-color:#adb8c8;-webkit-box-shadow:none;box-shadow:none;"
+                    >
                       <td class="font-weight-bold">
                         {{ $t('No')| uppercase }}
                       </td>
@@ -310,8 +357,14 @@
                   </table>
                 </div>
               </div>
-              <div class="row mt-50 p-15">
-                <div class="col-8 border-black-op my-border-black p-10">
+              <div
+                class="row mt-50"
+                style="padding:15px!important; margin-top:50px;"
+              >
+                <div
+                  class="col-8"
+                  style="border:2px solid rgba(0,0,0,.3)!important;padding:10px!important;border-radius:3px;"
+                >
                   <h6 class="mb-0">
                     {{ $t("notes") | uppercase }}
                   </h6>
@@ -388,7 +441,8 @@ export default {
   },
   computed: {
     ...mapGetters('purchaseReceive', ['purchaseReceive']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    ...mapGetters('accountProject', ['project', 'projects'])
   },
   watch: {
     $route (to, from) {
@@ -399,6 +453,29 @@ export default {
     }
   },
   created () {
+    this.isLoading = true
+    // Without parsing this.id into int it will always return false
+    // Even this.id should be int already
+    if (this.project.id === parseInt(this.id)) {
+      this.isLoading = false
+    }
+    this.projects.find((element) => {
+      // Without parsing this.id into int it will always return false
+      // Even this.id should be int already
+      if (element.id === parseInt(this.id)) {
+        this.$store.commit('accountProject/FETCH_OBJECT', element)
+        this.isLoading = false
+      }
+    })
+    // Fetch new data
+    this.findProject({ id: this.id })
+      .then((response) => {
+        this.isLoading = false
+      }, (error) => {
+        this.$router.replace('/account/whoops')
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
     this.purchaseReceiveRequest()
   },
   methods: {
@@ -407,6 +484,10 @@ export default {
       delete: 'delete',
       cancellationApprove: 'cancellationApprove',
       cancellationReject: 'cancellationReject'
+    }),
+    ...mapActions('accountProject', {
+      findProject: 'find',
+      deleteProject: 'delete'
     }),
 
     purchaseReceiveRequest () {
@@ -503,9 +584,6 @@ export default {
     },
 
     print () {
-      // if (this.orderData.is_confirmed_partner || !this.orderData.partner_id) {
-      //   this.$htmlToPaper("printMe");
-      // }
       this.$htmlToPaper('printMe')
     }
   }
