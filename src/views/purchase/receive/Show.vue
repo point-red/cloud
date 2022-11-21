@@ -242,13 +242,13 @@
                   {{ $t('purchase down payment') | uppercase }}
                 </h1>
                 <h1 class="text-primary">
-                  {{ project.name | uppercase }}
+                  {{ authUser.tenant_name | uppercase }}
                 </h1>
                 <h4>
-                  {{ "Address : "+project.address }}
+                  {{ "Address : "+authUser.tenant_address }}
                 </h4>
                 <h4>
-                  {{ "Phone : "+project.phone }}
+                  {{ "Phone : "+authUser.tenant_phone }}
                 </h4>
               </div>
             </div>
@@ -441,8 +441,7 @@ export default {
   },
   computed: {
     ...mapGetters('purchaseReceive', ['purchaseReceive']),
-    ...mapGetters('auth', ['authUser']),
-    ...mapGetters('accountProject', ['project', 'projects'])
+    ...mapGetters('auth', ['authUser'])
   },
   watch: {
     $route (to, from) {
@@ -453,29 +452,6 @@ export default {
     }
   },
   created () {
-    this.isLoading = true
-    // Without parsing this.id into int it will always return false
-    // Even this.id should be int already
-    if (this.project.id === parseInt(this.id)) {
-      this.isLoading = false
-    }
-    this.projects.find((element) => {
-      // Without parsing this.id into int it will always return false
-      // Even this.id should be int already
-      if (element.id === parseInt(this.id)) {
-        this.$store.commit('accountProject/FETCH_OBJECT', element)
-        this.isLoading = false
-      }
-    })
-    // Fetch new data
-    this.findProject({ id: this.id })
-      .then((response) => {
-        this.isLoading = false
-      }, (error) => {
-        this.$router.replace('/account/whoops')
-        this.isLoading = false
-        this.$notification.error(error.message)
-      })
     this.purchaseReceiveRequest()
   },
   methods: {
@@ -484,10 +460,6 @@ export default {
       delete: 'delete',
       cancellationApprove: 'cancellationApprove',
       cancellationReject: 'cancellationReject'
-    }),
-    ...mapActions('accountProject', {
-      findProject: 'find',
-      deleteProject: 'delete'
     }),
 
     purchaseReceiveRequest () {
