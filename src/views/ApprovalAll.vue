@@ -202,6 +202,9 @@ export default {
       if (this.resourceType === 'SalesDeliveryOrder') {
         this.handleApprovalDeliveryOrder()
       }
+      if (this.resourceType === 'PurchaseOrder') {
+        this.handleApprovalPurchaseOrder()
+      }
       if (this.resourceType === 'PaymentCollection') {
         this.handleApprovalPaymentCollection()
       }
@@ -300,6 +303,17 @@ export default {
           console.log(error.message)
         })
       }
+    },
+    async handleApprovalPurchaseOrder (headers) {
+      let activity = ''
+      if (this.action === 'approve') {
+        activity = 'approved by email'
+      } else if (this.action === 'reject') {
+        activity = 'rejected by email'
+      }
+      const bulkId = JSON.parse(this.$route.query.ids)
+      const { data: { data: purchaseOrders } } = await axios.post('approval-with-token/purchase/orders/bulk', { token: this.token, bulk_id: bulkId, status: this.actionCode, activity: activity }, { headers })
+      this.resources = purchaseOrders
     },
     async handleApprovalCashAdvance (headers) {
       let activity = ''
