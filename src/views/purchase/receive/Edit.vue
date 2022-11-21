@@ -398,7 +398,12 @@ export default {
           Object.assign(this.$data, this.$options.data.call(this))
           this.$router.push('/purchase/receive/' + response.data.id)
         }).catch(error => {
-          this.$notification.error(error.message)
+          this.isSaving = false
+          let json = ''
+          if (error.errors) {
+            json = '<pre class="text-left">' + JSON.stringify(error.errors, null, 2) + '</pre>'
+          }
+          this.$alert.error('Error Message', error.message + json)
           this.form.errors.record(error.errors)
         }).finally(() => {
           this.isSaving = false
