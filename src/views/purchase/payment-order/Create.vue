@@ -1,27 +1,27 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-sales />
+      <breadcrumb-purchase />
       <router-link
-        to="/sales/payment-collection"
+        to="/purchase/payment-order"
         class="breadcrumb-item"
       >
-        {{ $t('payment collection') | uppercase }}
+        {{ $t('payment order') | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <sales-menu />
+    <purchase-menu />
 
     <form
       class="row"
       @submit.prevent="onSubmit"
     >
-      <p-block :title="$t('payment collection')">
+      <p-block :title="$t('payment order')">
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-6">
-              <h4>{{ $t('payment collection') | uppercase }}</h4>
+              <h4>{{ $t('payment order') | uppercase }}</h4>
               <table class="table table-sm table-bordered">
                 <tr>
                   <td class="font-weight-bold">
@@ -76,13 +76,13 @@
               </div>
               <div>
                 <h6 class="mb-0 ">
-                  {{ $t('to') | uppercase }}: <span
+                  {{ $t('supplier') | uppercase }}: <span
                     class="select-link"
-                    @click="$refs.customers.open()"
-                  >{{ form.customer_label || $t('select') | uppercase }}</span>
+                    @click="$refs.supplier.open()"
+                  >{{ form.supplier_label || $t('select') | uppercase }}</span>
                 </h6>
-                {{ form.customer_address | uppercase }} <br v-if="form.customer_address">
-                {{ form.customer_phone }} <br v-if="form.customer_phone">
+                {{ form.supplier_address | uppercase }} <br v-if="form.supplier_address">
+                {{ form.supplier_phone }} <br v-if="form.supplier_phone">
               </div>
             </div>
           </div>
@@ -113,9 +113,9 @@
                 <a
                   href="javascript:void(0)"
                   class="nav-link"
-                  :class="{'active': choosen == 'sales-return'}"
-                  @click="choose('sales-return')"
-                >{{ $t('sales return') | uppercase }}</a>
+                  :class="{'active': choosen == 'purchase-return'}"
+                  @click="choose('purchase-return')"
+                >{{ $t('purchase return') | uppercase }}</a>
               </li>
               <li class="nav-item">
                 <a
@@ -127,7 +127,7 @@
               </li>
             </ul>
 
-            <!--Invoice table-->
+            <!-- Invoice Table -->
             <point-table
               v-show="choosen === 'invoice'"
             >
@@ -136,7 +136,7 @@
                   <p-form-check-box
                     id="subscibe"
                     name="subscibe"
-                    :checked="isRowsChecked(form.references.salesInvoice, checkedRow[0])"
+                    :checked="isRowsChecked(form.references.purchase_invoices, checkedRow[0])"
                     :is-form="false"
                     class="text-center"
                     @click.native="toggleCheckRows(0)"
@@ -146,9 +146,9 @@
                 <th>Form Number</th>
                 <th>Notes</th>
                 <th>Available Invoice</th>
-                <th>Amount Collection</th>
+                <th>Amount Order</th>
               </tr>
-              <template v-for="(row, index) in form.references.salesInvoice">
+              <template v-for="(row, index) in form.references.purchase_invoices">
                 <tr
                   slot="p-body"
                   :key="index"
@@ -167,7 +167,7 @@
                     {{ row.date | dateFormat('DD MMMM YYYY') }}
                   </td>
                   <td>
-                    {{ row.number | uppercase }}
+                    {{ row.form_number | uppercase }}
                   </td>
                   <td>
                     <p-form-input
@@ -182,22 +182,22 @@
                       :id="'available-' + index"
                       :name="'available-' + index"
                       :readonly="true"
-                      :value="row.amount - row.collected"
+                      :value="row.available_amount"
                     />
                   </td>
                   <td>
                     <p-form-number
                       :id="'amount-' + index"
-                      v-model.number="row.toCollect"
+                      v-model.number="row.amount"
                       :name="'amount-' + index"
-                      :max="row.amount - row.collected"
+                      :max="row.amount"
                     />
                   </td>
                 </tr>
               </template>
             </point-table>
 
-            <!--Down Payment table-->
+            <!-- Down Payment Table -->
             <point-table
               v-show="choosen === 'down-payment'"
             >
@@ -206,7 +206,7 @@
                   <p-form-check-box
                     id="subscibe"
                     name="subscibe"
-                    :checked="isRowsChecked(form.references.salesDownPayment, checkedRow[1])"
+                    :checked="isRowsChecked(form.references.purchase_down_payments, checkedRow[1])"
                     :is-form="false"
                     class="text-center"
                     @click.native="toggleCheckRows(1)"
@@ -216,9 +216,9 @@
                 <th>Form Number</th>
                 <th>Notes</th>
                 <th>Available Down Payment</th>
-                <th>Amount Collection</th>
+                <th>Amount Order</th>
               </tr>
-              <template v-for="(row, index) in form.references.salesDownPayment">
+              <template v-for="(row, index) in form.references.purchase_down_payments">
                 <tr
                   slot="p-body"
                   :key="index"
@@ -237,7 +237,7 @@
                     {{ row.date | dateFormat('DD MMMM YYYY') }}
                   </td>
                   <td>
-                    {{ row.number | uppercase }}
+                    {{ row.form_number | uppercase }}
                   </td>
                   <td>
                     <p-form-input
@@ -252,31 +252,31 @@
                       :id="'available-' + index"
                       :name="'available-' + index"
                       :readonly="true"
-                      :value="row.amount - row.collected"
+                      :value="row.available_amount"
                     />
                   </td>
                   <td>
                     <p-form-number
                       :id="'amount-' + index"
-                      v-model.number="row.toCollect"
+                      v-model.number="row.amount"
                       :name="'amount-' + index"
-                      :max="row.amount - row.collected"
+                      :max="row.amount"
                     />
                   </td>
                 </tr>
               </template>
             </point-table>
 
-            <!--Return table-->
+            <!-- Return Table -->
             <point-table
-              v-show="choosen === 'sales-return'"
+              v-show="choosen === 'purchase-return'"
             >
               <tr slot="p-head">
                 <th width="50px">
                   <p-form-check-box
                     id="subscibe"
                     name="subscibe"
-                    :checked="isRowsChecked(form.references.salesReturn, checkedRow[2])"
+                    :checked="isRowsChecked(form.references.purchase_returns, checkedRow[2])"
                     :is-form="false"
                     class="text-center"
                     @click.native="toggleCheckRows(2)"
@@ -285,10 +285,10 @@
                 <th>Date</th>
                 <th>Form Number</th>
                 <th>Notes</th>
-                <th>Available Sales Return</th>
-                <th>Amount Collection</th>
+                <th>Available Purchase Return</th>
+                <th>Amount Order</th>
               </tr>
-              <template v-for="(row, index) in form.references.salesReturn">
+              <template v-for="(row, index) in form.references.purchase_returns">
                 <tr
                   slot="p-body"
                   :key="index"
@@ -307,7 +307,7 @@
                     {{ row.date | dateFormat('DD MMMM YYYY') }}
                   </td>
                   <td>
-                    {{ row.number | uppercase }}
+                    {{ row.form_number | uppercase }}
                   </td>
                   <td>
                     <p-form-input
@@ -322,36 +322,31 @@
                       :id="'available-' + index"
                       :name="'available-' + index"
                       :readonly="true"
-                      :value="row.amount - row.collected"
+                      :value="row.available_amount"
                     />
                   </td>
                   <td>
                     <p-form-number
                       :id="'amount-' + index"
-                      v-model.number="row.toCollect"
+                      v-model.number="row.amount"
                       :name="'amount-' + index"
-                      :max="row.amount - row.collected"
+                      :max="row.amount"
                     />
                   </td>
                 </tr>
               </template>
             </point-table>
 
-            <!--Other table-->
+            <!-- Other Table -->
             <point-table
               v-show="choosen === 'other'"
             >
               <tr slot="p-head">
                 <th>#</th>
-                <th style="min-width: 120px">
-                  Account
-                </th>
+                <th>Account</th>
                 <th>Notes</th>
                 <th>Amount</th>
-                <th style="min-width: 120px">
-                  Allocation
-                </th>
-                <th />
+                <th>Allocation</th>
               </tr>
               <tr
                 v-for="(row, index) in form.others"
@@ -364,7 +359,7 @@
                     class="select-link"
                     @click="$refs.chartOfAccountRef.open(index)"
                   >
-                    {{ row.chart_of_account_name || $t('select') | uppercase }}
+                    {{ row.coaName || $t('select') | uppercase }}
                   </span>
                 </td>
                 <td>
@@ -387,7 +382,7 @@
                     class="select-link"
                     @click="$refs.allocation.open(index)"
                   >
-                    {{ row.allocation_name || $t('select') | uppercase }}
+                    {{ row.allocationName || $t('select') | uppercase }}
                   </span>
                 </td>
                 <td>
@@ -412,7 +407,7 @@
               <div class="col-sm-5">
                 <point-table>
                   <tr slot="p-body">
-                    <td>Total Invoice</td>
+                    <td>Total Amount Invoice</td>
                     <td>
                       <p-form-number
                         :id="'total_invoice'"
@@ -423,7 +418,7 @@
                     </td>
                   </tr>
                   <tr slot="p-body">
-                    <td>Total Down Payment</td>
+                    <td>Total Amount Down Payment</td>
                     <td>
                       <p-form-number
                         :id="'total_down_payment'"
@@ -434,7 +429,7 @@
                     </td>
                   </tr>
                   <tr slot="p-body">
-                    <td>Total Return</td>
+                    <td>Total Amount Return</td>
                     <td>
                       <p-form-number
                         :id="'total_return'"
@@ -445,7 +440,7 @@
                     </td>
                   </tr>
                   <tr slot="p-body">
-                    <td>Total Other</td>
+                    <td>Total Amount Other</td>
                     <td>
                       <p-form-number
                         :id="'total_other'"
@@ -470,6 +465,7 @@
                 </point-table>
               </div>
             </div>
+
             <div class="row">
               <div class="col-sm-6">
                 <textarea
@@ -540,25 +536,25 @@
     />
     <m-user
       ref="approver"
-      permission="approve sales payment collection"
+      permission="approve purchase payment order"
       @choosen="chooseApprover($event)"
     />
     <m-allocation
       ref="allocation"
       @choosen="chooseAllocation($event)"
     />
-    <m-customer
-      ref="customers"
-      @choosen="chooseCustomer"
+    <m-supplier
+      ref="supplier"
+      @choosen="chooseSupplier"
     />
   </div>
 </template>
 
 <script>
-import SalesMenu from '../Menu'
+import PurchaseMenu from '../Menu'
 import debounce from 'lodash/debounce'
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbSales from '@/views/sales/Breadcrumb'
+import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import PointTable from 'point-table-vue'
 import Form from '@/utils/Form'
 import Coa from './Coa'
@@ -566,9 +562,9 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
-    SalesMenu,
+    PurchaseMenu,
     Breadcrumb,
-    BreadcrumbSales,
+    BreadcrumbPurchase,
     PointTable,
     Coa
   },
@@ -576,23 +572,23 @@ export default {
     return {
       isSaving: false,
       isLoading: false,
-      isFromPreview: false,
       choosen: 'invoice',
       requestedBy: localStorage.getItem('fullName'),
+      userId: localStorage.getItem('userId'),
       checkedRow: [
-        [], // salesInvoice
-        [], // salesDownPayment
-        [] // salesReturn
+        [], // purchase_invoices
+        [], // purchase_down_payments
+        [] // purchase_returns
       ],
       form: new Form({
-        customer_id: null,
-        customer_name: null,
-        customer_label: null,
-        customer_address: null,
-        customer_phone: null,
-        customer_email: null,
+        supplier_id: null,
+        supplier_name: null,
+        supplier_label: null,
+        supplier_address: null,
+        supplier_phone: null,
+        supplier_email: null,
         references: null,
-        increment_group: this.$moment().format('YYYYMM'),
+        // increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         due_date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
         payment_type: 'cash',
@@ -606,15 +602,32 @@ export default {
         total_return: 0,
         total_other: 0,
         total_amount: 0,
-        others: [{
-          chart_of_account_id: null,
-          chart_of_account_name: null,
-          amount: null,
-          allocation_id: null,
-          allocation_name: null,
-          notes: null,
-          is_debit: 0
+        invoices: [{
+          id: null,
+          amount: 0
         }],
+        downPayments: [{
+          id: null,
+          amount: 0
+        }],
+        returns: [{
+          id: null,
+          amount: 0
+        }],
+        others_filtered: [{
+          coaId: null,
+          notes: null,
+          amount: 0,
+          allocationId: null
+        }],
+        others: [
+          // coaId: null,
+          // coaName: null,
+          // notes: null,
+          // amount: 0,
+          // allocationId: null,
+          // allocationName: null
+        ],
         details: [{
           date: null,
           chart_of_account_id: null,
@@ -633,37 +646,46 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('salesPaymentCollection', ['references']),
     ...mapGetters('auth', ['authUser']),
     total_invoice () {
       var totalInvoice = 0
-      this.form.references.salesInvoice.forEach(element => {
+      this.form.references.purchase_invoices.forEach(element => {
         if (this.isRowChecked(0, element.id)) {
-          totalInvoice += parseFloat(element.toCollect)
+          totalInvoice += parseFloat(element.amount)
         }
       })
       return totalInvoice
     },
     total_down_payment () {
       var totalDownPayment = 0
-      this.form.references.salesDownPayment.forEach(element => {
+      this.form.references.purchase_down_payments.forEach(element => {
         if (this.isRowChecked(1, element.id)) {
-          totalDownPayment += parseFloat(element.toCollect)
+          totalDownPayment += parseFloat(element.amount)
         }
       })
       return totalDownPayment
     },
     total_return () {
       var totalReturn = 0
-      this.form.references.salesReturn.forEach(element => {
+      this.form.references.purchase_returns.forEach(element => {
         if (this.isRowChecked(2, element.id)) {
-          totalReturn += parseFloat(element.toCollect)
+          totalReturn += parseFloat(element.amount)
         }
       })
       return totalReturn
     },
     total_amount () {
-      var totalAmount = this.total_invoice - this.total_down_payment - this.total_return + parseFloat(this.form.total_other)
+      var totalAmount = this.total_invoice - (this.total_return + this.total_down_payment)
+      this.form.others.forEach(element => {
+        if (element.coaId != null) {
+          if (element?.coaType?.toUpperCase() === 'OTHER INCOME') {
+            totalAmount -= parseFloat(element.amount)
+          }
+          if (element?.coaType?.toUpperCase() === 'DIRECT EXPENSE') {
+            totalAmount += parseFloat(element.amount)
+          }
+        }
+      })
       return totalAmount
     }
   },
@@ -671,15 +693,13 @@ export default {
     this.getDataFromStorage()
   },
   methods: {
-    ...mapActions('salesPaymentCollection', ['getReferences', 'create', 'addHistories']),
-    ...mapActions('salesPaymentCollectionApproval', ['sendSingle']),
+    ...mapActions('purchasePaymentOrder', ['getReferences', 'create']),
     getDataFromStorage () {
-      var data = JSON.parse(localStorage.getItem('paymentCollectionData'))
+      var data = JSON.parse(localStorage.getItem('purchasePaymentOrderData'))
       if (data) {
-        this.isFromPreview = true
-        this.form = new Form(data.form)
-        this.checkedRow = data.checkedRow
-        localStorage.removeItem('paymentCollectionData')
+        this.form = new Form({ ...data })
+        this.checkedRow = [data.invoices, data.downPayments, data.returns]
+        localStorage.removeItem('purchasePaymentOrderData')
       }
     },
     toggleCheckRow (refIndex, id) {
@@ -692,11 +712,11 @@ export default {
     toggleCheckRows (refIndex) {
       let haystack = []
       if (refIndex === 0) {
-        haystack = this.form.references.salesInvoice
+        haystack = this.form.references.purchase_invoices
       } else if (refIndex === 1) {
-        haystack = this.form.references.salesDownPayment
+        haystack = this.form.references.purchase_down_payments
       } else if (refIndex === 2) {
-        haystack = this.form.references.salesReturn
+        haystack = this.form.references.purchase_returns
       }
       if (!this.isRowsChecked(haystack, this.checkedRow[refIndex])) {
         haystack.forEach(element => {
@@ -733,12 +753,12 @@ export default {
     getAvailableReference () {
       this.isLoading = true
       this.getReferences({
-        id: this.form.customer_id
+        id: this.form.supplier_id
       }).then(response => {
-        if (response.data.salesInvoice.length === 0 &&
-        response.data.salesDownPayment.length === 0 &&
-        response.data.salesReturn.length === 0) {
-          this.$notification.error('customer doesn\'t have sales form to collect')
+        if (response.data.purchase_invoices.length === 0 &&
+        response.data.purchase_down_payments.length === 0 &&
+        response.data.purchase_returns.length === 0) {
+          this.$notification.error('supplier doesn\'t have purchase form to collect')
         } else {
           this.form.references = response.data
         }
@@ -756,100 +776,91 @@ export default {
       this.form.payment_type = type
     },
     openPreview () {
-      if (!this.isFromPreview) {
-        this.checkedRowToFormDetails()
-      }
-      this.form.amount = this.total_amount
+      this.form.invoices = []
+      this.form.downPayments = []
+      this.form.returns = []
+      this.form.others_filtered = []
+      this.checkedRowToPreview()
       this.form.total_invoice = this.total_invoice
       this.form.total_down_payment = this.total_down_payment
       this.form.total_return = this.total_return
-      var object = {
-        checkedRow: this.checkedRow,
-        form: this.form
-      }
-      console.log(JSON.stringify(this.form))
-      localStorage.setItem('paymentCollectionData', JSON.stringify(object))
-      this.$router.push({ name: 'sales.payment-collection.preview', params: { source: 'create' } })
+      this.form.total_amount = this.total_amount
+      localStorage.setItem('purchasePaymentOrderData', JSON.stringify(this.form))
+      this.$router.push('/purchase/payment-order/preview')
     },
     onChoosenAccount (account) {
       const row = this.form.others[account.index]
-      row.chart_of_account_id = account.id
-      row.chart_of_account_name = account.label
-      row.is_debit = account.isDebit
+      row.coaId = account.id
+      row.coaName = account.label
+      row.coaType = account.type
     },
-    checkedRowToFormDetails () {
-      if (this.form.others[0].chart_of_account_id) {
-        this.form.others.forEach(element => {
-          this.form.details.push(element)
-        })
-      }
+    checkedRowToForm () {
       this.checkedRow[0].forEach(element => {
-        const salesInvoice = this.form.references.salesInvoice.find((salesInvoice) => salesInvoice.id === element.id)
-        if (salesInvoice) {
-          this.form.details.push({
-            date: salesInvoice.date,
-            chart_of_account_id: null,
-            chart_of_account_name: null,
-            available: salesInvoice.amount - salesInvoice.collected,
-            amount: salesInvoice.toCollect,
-            allocation_id: null,
-            allocation_name: null,
-            referenceable_form_date: salesInvoice.date,
-            referenceable_form_number: salesInvoice.number,
-            referenceable_form_notes: salesInvoice.notes,
-            referenceable_id: salesInvoice.id,
-            referenceable_type: 'SalesInvoice'
+        const purchaseInvoice = this.form.references.purchase_invoices.find((purchaseInvoice) => purchaseInvoice.id === element.id)
+        if (purchaseInvoice) {
+          this.form.invoices.push({
+            id: purchaseInvoice.id,
+            amount: purchaseInvoice.amount
           })
         }
       })
 
       this.checkedRow[1].forEach(element => {
-        const salesDownPayment = this.form.references.salesDownPayment.find((salesDownPayment) => salesDownPayment.id === element.id)
-        if (salesDownPayment) {
-          this.form.details.push({
-            date: salesDownPayment.date,
-            chart_of_account_id: null,
-            chart_of_account_name: null,
-            available: salesDownPayment.amount - salesDownPayment.collected,
-            amount: salesDownPayment.toCollect,
-            allocation_id: null,
-            allocation_name: null,
-            referenceable_form_date: salesDownPayment.date,
-            referenceable_form_number: salesDownPayment.number,
-            referenceable_form_notes: salesDownPayment.notes,
-            referenceable_id: salesDownPayment.id,
-            referenceable_type: 'SalesDownPayment'
+        const purchaseDownPayment = this.form.references.purchase_down_payments.find((purchaseDownPayment) => purchaseDownPayment.id === element.id)
+        if (purchaseDownPayment) {
+          this.form.downPayments.push({
+            id: purchaseDownPayment.id,
+            amount: purchaseDownPayment.amount
           })
         }
       })
 
       this.checkedRow[2].forEach(element => {
-        const salesReturn = this.form.references.salesReturn.find((salesReturn) => salesReturn.id === element.id)
-        if (salesReturn) {
-          this.form.details.push({
-            date: salesReturn.date,
-            chart_of_account_id: null,
-            chart_of_account_name: null,
-            available: salesReturn.amount - salesReturn.collected,
-            amount: salesReturn.toCollect,
-            allocation_id: null,
-            allocation_name: null,
-            referenceable_form_date: salesReturn.date,
-            referenceable_form_number: salesReturn.number,
-            referenceable_form_notes: salesReturn.notes,
-            referenceable_id: salesReturn.id,
-            referenceable_type: 'SalesReturn'
+        const purchaseReturn = this.form.references.purchase_returns.find((purchaseReturn) => purchaseReturn.id === element.id)
+        if (purchaseReturn) {
+          this.form.returns.push({
+            id: purchaseReturn.id,
+            amount: purchaseReturn.amount
+          })
+        }
+      })
+    },
+    checkedRowToPreview () {
+      this.checkedRow[0].forEach(element => {
+        const purchaseInvoice = this.form.references.purchase_invoices.find((purchaseInvoice) => purchaseInvoice.id === element.id)
+        if (purchaseInvoice) {
+          this.form.invoices.push({
+            ...purchaseInvoice
+          })
+        }
+      })
+
+      this.checkedRow[1].forEach(element => {
+        const purchaseDownPayment = this.form.references.purchase_down_payments.find((purchaseDownPayment) => purchaseDownPayment.id === element.id)
+        if (purchaseDownPayment) {
+          this.form.downPayments.push({
+            ...purchaseDownPayment
+          })
+        }
+      })
+
+      this.checkedRow[2].forEach(element => {
+        const purchaseReturn = this.form.references.purchase_returns.find((purchaseReturn) => purchaseReturn.id === element.id)
+        if (purchaseReturn) {
+          this.form.returns.push({
+            ...purchaseReturn
           })
         }
       })
     },
     addRowOther () {
       this.form.others.push({
-        chart_of_account_id: null,
-        chart_of_account_name: null,
+        coaId: null,
+        coaName: null,
+        coaType: null,
         amount: null,
-        allocation_id: null,
-        allocation_name: null,
+        allocationId: null,
+        allocationName: null,
         notes: null
       })
     },
@@ -858,46 +869,46 @@ export default {
       this.calculateOther()
     },
     calculateOther: debounce(function () {
-      var totalAmount = 0
+      // var totalAmount = 0
+      var totalOther = 0
       this.form.others.forEach(function (element) {
-        console.log(JSON.stringify(element))
-        if (element.is_debit === 1) {
-          totalAmount -= parseFloat(element.amount)
-        } else {
-          totalAmount += parseFloat(element.amount)
-        }
+        // if (element.coaType.toUpperCase() === 'OTHER INCOME') {
+        //   this.total_amount -= parseFloat(element.amount)
+        // }
+        // if (element.coaType.toUpperCase() === 'DIRECT EXPENSE') {
+        //   this.total_amount += parseFloat(element.amount)
+        // }
+
+        // === Accumulate Total Amount Other ===
+        totalOther += parseFloat(element.amount)
       })
-      this.form.total_other = totalAmount
+      // this.total_amount = totalAmount
+      this.form.total_other = totalOther
     }, 300),
     chooseAllocation (allocation) {
       const row = this.form.others[allocation.index]
-      row.allocation_id = allocation.id
-      row.allocation_name = allocation.name
+      row.allocationId = allocation.id
+      row.allocationName = allocation.name
     },
     chooseApprover (value) {
       this.form.request_approval_to = value.id
       this.form.approver_name = value.fullName
       this.form.approver_email = value.email
     },
-    chooseCustomer (value) {
-      this.form.customer_id = value.id
-      this.form.customer_name = value.name
-      this.form.customer_label = value.label
-      this.form.customer_address = value.address
-      this.form.customer_phone = value.phone
-      this.form.customer_email = value.email
-      this.form.pricing_group_id = value.pricing_group_id
+    chooseSupplier (value) {
+      this.form.supplier_id = value.id
+      this.form.supplier_name = value.name
+      this.form.supplier_label = value.label
+      this.form.supplier_address = value.address
+      this.form.supplier_phone = value.phone
+      this.form.supplier_email = value.email
       this.getAvailableReference()
     },
     onSubmit () {
-      this.isSaving = true
-      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      this.form.amount = this.total_amount
-
-      var totalInvoice = this.total_invoice
-      var totalDownPayment = this.total_down_payment
-      var totalReturn = this.total_return
-      var totalOther = this.form.total_other
+      // var totalInvoice = this.total_invoice
+      // var totalDownPayment = this.total_down_payment
+      // var totalReturn = this.total_return
+      // var totalOther = this.form.total_other
 
       if (this.form.request_approval_to == null) {
         this.$notification.error('approval cannot be null')
@@ -927,26 +938,45 @@ export default {
           return
         }
       }
-      this.form.details = []
-      this.checkedRowToFormDetails()
-      if (this.form.details.length === 0) {
-        this.$notification.error('form cannot be empty')
-        this.isSaving = false
-        return
+
+      this.form.invoices = []
+      this.form.downPayments = []
+      this.form.returns = []
+      this.form.others_filtered = []
+      this.checkedRowToForm()
+      this.filteringOthersForm()
+      const payload = {
+        paymentType: this.form.payment_type,
+        supplierId: this.form.supplier_id,
+        date: this.$options.filters.dateFormat(this.form.date, 'YYYY-MM-DD'),
+        paymentAccountId: this.userId,
+        invoices: this.form.invoices,
+        downPayments: this.form.downPayments,
+        returns: this.form.returns,
+        others: this.form.others_filtered,
+        totalInvoiceAmount: this.total_invoice,
+        totalDownPaymentAmount: this.total_down_payment,
+        totalReturnAmount: this.total_return,
+        totalOtherAmount: this.form.total_other,
+        totalAmount: this.total_amount,
+        approvedBy: this.form.request_approval_to,
+        notes: this.form.notes
       }
-      this.create(this.form)
+
+      this.isSaving = true
+      this.create(payload)
         .then(response => {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/sales/payment-collection/' + response.data.id)
-          this.sendSingle({
-            id: response.data.id,
-            total_invoice: totalInvoice,
-            total_down_payment: totalDownPayment,
-            total_return: totalReturn,
-            total_other: totalOther
-          })
+          this.$router.push('/purchase/payment-order/' + response.data.paymentOrder.id)
+          // this.sendSingle({
+          //   id: response.data.id,
+          //   total_invoice: totalInvoice,
+          //   total_down_payment: totalDownPayment,
+          //   total_return: totalReturn,
+          //   total_other: totalOther
+          // })
             .catch(error => {
               this.$notification.error(error.message)
               this.form.errors.record(error.errors)
@@ -956,6 +986,16 @@ export default {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
+    },
+    filteringOthersForm () {
+      this.form.others.forEach(element => {
+        this.form.others_filtered.push({
+          coaId: element.coaId,
+          notes: element.notes,
+          amount: element.amount,
+          allocationId: element.allocationId
+        })
+      })
     }
   }
 }

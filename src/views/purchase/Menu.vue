@@ -49,14 +49,15 @@
       :class="{'btn-secondary': !isMatch('/purchase/return')}"
       active-class="btn-primary">
       <span>{{ $t('return') | uppercase }}</span>
-    </router-link>
+    </router-link> -->
     <router-link
       to="/purchase/payment-order"
       class="btn mr-5 mb-15"
       :class="{'btn-secondary': !isMatch('/purchase/payment-order')}"
-      active-class="btn-primary">
+      active-class="btn-primary"
+    >
       <span>{{ $t('payment order') | uppercase }}</span>
-    </router-link> -->
+    </router-link>
   </div>
 </template>
 

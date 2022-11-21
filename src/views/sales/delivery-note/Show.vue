@@ -8,10 +8,38 @@
       >
         {{ $t('delivery note') | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">{{ deliveryNote.form.number | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ deliveryNote.form.number || deliveryNote.form.edited_number | uppercase }}</span>
     </breadcrumb>
 
     <sales-menu />
+
+    <div v-if="deliveryNote.form.number && deliveryNote.form.request_approval_to">
+      <p-show-form-approval-status
+        form="sales delivery note"
+        :is-loading="isLoading"
+        :is-proccess-approval="isProccessApproval"
+        :approval-status="deliveryNote.form.approval_status"
+        :approval-reason="deliveryNote.form.approval_reason"
+        :approved-by="deliveryNote.form.request_approval_to.full_name"
+        :cancellation-status="deliveryNote.form.cancellation_status"
+        :close-status="deliveryNote.form.close_status"
+        @onApprove="onApprove"
+        @onReject="onReject"
+      />
+
+      <p-show-form-cancellation-status
+        form="sales delivery note"
+        :is-loading="isLoading"
+        :is-proccess-approval="isProccessCancellationApproval"
+        :approved-by="deliveryNote.form.request_approval_to.full_name"
+        :cancellation-status="deliveryNote.form.cancellation_status"
+        :close-status="deliveryNote.form.close_status"
+        :cancellation-approval-reason="deliveryNote.form.cancellation_approval_reason"
+        :request-cancellation-reason="deliveryNote.form.request_cancellation_reason"
+        @onCancellationApprove="onCancellationApprove"
+        @onCancellationReject="onCancellationReject"
+      />
+    </div>
 
     <div
       v-if="deliveryNote"
@@ -21,30 +49,57 @@
         <p-block-inner :is-loading="isLoading">
           <div class="row">
             <div class="col-sm-12">
-              <div class="text-right">
+              <h3 v-if="deliveryNote.form.edited_number">
+                {{ $t('archive') | uppercase }}
+              </h3>
+              <div
+                v-if="deliveryNote.form.number"
+                class="text-right"
+              >
+                <button
+                  class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                  title="Send Receipt Delivery Note"
+                  :disabled="isSendingEmail"
+                  @click="() => $refs.formSendEmail.open()"
+                >
+                  <i
+                    :class="{
+                      'fa fa-paper-plane': !isSendingEmail,
+                      'fa fa-asterisk fa-spin': isSendingEmail,
+                    }"
+                  />
+                </button>
+                <button
+                  class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                  title="Preview Receipt Delivery Note"
+                  @click="$refs.printPreview.open()"
+                >
+                  <i class="si si-printer" />
+                </button>
                 <router-link
                   :to="{ name: 'sales.delivery-note.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('create') | uppercase }}
                 </router-link>
-                <!-- <router-link
+                <router-link
+                  v-if="actions.edit"
                   :to="{ name: 'sales.delivery-note.edit', params: { id: deliveryNote.id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('edit') | uppercase }}
-                </router-link> -->
-                <!-- <button
-                  v-if="deliveryNote.form.cancellation_status == null || deliveryNote.form.cancellation_status == -1"
+                </router-link>
+                <button
+                  v-if="actions.delete"
                   class="btn btn-sm btn-outline-secondary mr-5"
+                  :disabled="isDeleting"
                   @click="$refs.formRequestDelete.open()"
                 >
-                  {{ $t('delete') | uppercase }}
-                </button> -->
-                <m-form-request-delete
-                  ref="formRequestDelete"
-                  @delete="onDelete($event)"
-                />
+                  <i
+                    v-show="isDeleting"
+                    class="fa fa-asterisk fa-spin"
+                  /> {{ $t('delete') | uppercase }}
+                </button>
               </div>
             </div>
           </div>
@@ -60,21 +115,21 @@
                   >
                     {{ $t('form number') | uppercase }}
                   </td>
-                  <td>{{ deliveryNote.form.number }}</td>
+                  <td>{{ deliveryNote.form.number || deliveryNote.form.edited_number }}</td>
                 </tr>
                 <tr>
                   <td class="font-weight-bold">
                     {{ $t('date') | uppercase }}
                   </td>
-                  <td>{{ deliveryNote.date | dateFormat('DD MMMM YYYY') }}</td>
+                  <td>{{ deliveryNote.form.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
-                <tr v-if="deliveryNote.sales_order">
+                <tr>
                   <td class="font-weight-bold">
                     {{ $t('reference') | uppercase }}
                   </td>
-                  <td>{{ deliveryNote.sales_order.form.number }}</td>
+                  <td>{{ deliveryNote.delivery_order.form.number }}</td>
                 </tr>
-                <tr v-if="deliveryNote">
+                <tr>
                   <td class="font-weight-bold">
                     {{ $t('warehouse') | uppercase }}
                   </td>
@@ -109,7 +164,7 @@
               <div style="font-size:12px">
                 {{ deliveryNote.customer_address | uppercase }}
                 <br v-if="deliveryNote.customer_phone">{{ deliveryNote.customer_phone }}
-                <br v-if="deliveryNote.customer_email">{{ deliveryNote.customer_email | uppercase }}
+                <br v-if="deliveryNote.customer.email">{{ deliveryNote.customer.email | uppercase }}
               </div>
             </div>
           </div>
@@ -177,6 +232,15 @@
       ref="formRequestDelete"
       @delete="onDelete($event)"
     />
+    <m-form-send-email
+      ref="formSendEmail"
+      :email-to="deliveryNote.customer.email"
+      @submit="onSendEmail($event)"
+    />
+    <m-print-preview
+      ref="printPreview"
+      :delivery-note="deliveryNote"
+    />
   </div>
 </template>
 
@@ -184,6 +248,7 @@
 import SalesMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbSales from '../Breadcrumb'
+import MPrintPreview from './MPrintPreview'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -192,18 +257,33 @@ export default {
     SalesMenu,
     Breadcrumb,
     BreadcrumbSales,
+    MPrintPreview,
     PointTable
   },
   data () {
     return {
       id: this.$route.params.id,
       isLoading: false,
-      isDeleting: false
+      isDeleting: false,
+      isProccessApproval: false,
+      isProccessCancellationApproval: false,
+      isSendingEmail: false
     }
   },
   computed: {
     ...mapGetters('salesDeliveryNote', ['deliveryNote']),
     ...mapGetters('auth', ['authUser']),
+    actions () {
+      const { form } = this.deliveryNote
+      const wherePending = form.done == 0
+      const whereNotArchived = !!form.number
+      const whereNotClosed = form.close_status == null || form.close_status != 1
+      const whereNotCancelled = form.cancellation_status == null || form.cancellation_status != 1
+      return {
+        edit: wherePending && whereNotClosed && this.$permission.has('update sales delivery note'),
+        delete: wherePending && whereNotArchived && whereNotClosed && whereNotCancelled && this.$permission.has('delete sales delivery note')
+      }
+    },
     items () {
       var items = []
       this.deliveryNote.items.forEach(function (element) {
@@ -211,7 +291,6 @@ export default {
 
         if (i && items[i - 1].id === element.item_id) {
           items[i - 1].quantity += element.quantity
-          items[i - 1].quantity_remaining += element.quantity_remaining
         } else {
           items.push({
             id: element.item_id,
@@ -262,6 +341,9 @@ export default {
           with_origin: true,
           includes: 'customer;' +
             'warehouse;' +
+            'deliveryOrder.form;' +
+            'deliveryOrder.form.createdBy;' +
+            'deliveryOrder.form.requestApprovalTo;' +
             'items.item;' +
             'items.allocation;' +
             'form.createdBy;' +
@@ -308,31 +390,51 @@ export default {
       })
     },
     onApprove () {
+      this.isProccessApproval = true
+
       this.approve({
         id: this.id
       }).then(response => {
         this.$notification.success('approve success')
         this.deliveryNoteRequest()
+      }).catch(error => {
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessApproval = false
       })
     },
     onReject (reason) {
+      this.isProccessApproval = true
+
       this.reject({
         id: this.id,
         reason: reason
       }).then(response => {
         this.$notification.success('reject success')
         this.deliveryNoteRequest()
+      }).catch(error => {
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessApproval = false
       })
     },
     onCancellationApprove () {
+      this.isProccessCancellationApproval = true
+
       this.cancellationApprove({
         id: this.id
       }).then(response => {
         this.$notification.success('cancellation approved')
         this.$router.push('/sales/delivery-note')
+      }).catch(error => {
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessCancellationApproval = false
       })
     },
     onCancellationReject (reason) {
+      this.isProccessCancellationApproval = true
+
       this.cancellationReject({
         id: this.id,
         reason: reason
@@ -340,8 +442,36 @@ export default {
         this.$notification.success('cancellation rejected')
         this.deliveryNoteRequest()
       }).catch(error => {
-        console.log(error.message)
+        this.$notification.error(error?.message)
+      }).finally(() => {
+        this.isProccessCancellationApproval = false
       })
+    },
+    async onSendEmail (form) {
+      this.isSendingEmail = true
+
+      try {
+        const params = {
+          ...form,
+          subject: 'Delivery Note Receipt',
+          attachments: [
+            {
+              filename: 'Delivery Note Receipt ' + this.deliveryNote.form.number + '.pdf',
+              type: 'pdf',
+              view: 'sales.delivery-note.delivery-note-receipt',
+              view_data: { deliveryNote: this.deliveryNote }
+            }
+          ]
+        }
+        await this.$store.dispatch('emailService/send', { ...params })
+
+        this.$notification.success('send receipt success')
+      } catch (error) {
+        this.$notification.error(error.message)
+        this.form.errors.record(error.errors)
+      } finally {
+        this.isSendingEmail = false
+      }
     }
   }
 }

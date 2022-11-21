@@ -314,8 +314,8 @@ export default {
       }
       this.id = parseInt(this.$route.params.id)
       this.warehouseId = parseInt(this.$route.params.warehouseId)
-      this.date_from = this.$route.query.date_from
-      this.date_to = this.$route.query.date_to
+      this.date.start = this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00')
+      this.date.end = this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59')
       this.getInventoryRequest()
     }
   },
@@ -405,6 +405,8 @@ export default {
           page: parseInt(this.$route.query.page) || 1,
           limit: 9999999,
           warehouse_id: this.warehouseId,
+          date_from: this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00'),
+          date_to: this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59'),
           filter_like: {
             'form.number': this.searchText
           }

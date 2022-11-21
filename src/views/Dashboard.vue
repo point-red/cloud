@@ -17,6 +17,11 @@
 
 <script>
 export default {
-  name: 'Dashboard'
+  name: 'Dashboard',
+  mounted () {
+    if (this.$plugin.has('STUDY')) {
+      this.$router.replace('/plugin/study')
+    }
+  }
 }
 </script>

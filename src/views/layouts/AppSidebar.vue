@@ -339,13 +339,18 @@
                     to="/purchase/return"
                     active-class="active">{{ $t('return') | uppercase }}
                   </router-link>
-                </li>
-                <li @click="toggleLeftSidebar('close-xs')" v-if="$permission.has('read purchase invoice')">
+                </li> -->
+                <li
+                  v-if="$permission.has('read purchase payment order')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
                   <router-link
                     to="/purchase/payment-order"
-                    active-class="active">{{ $t('payment order') | uppercase }}
+                    active-class="active"
+                  >
+                    {{ $t('payment order') | uppercase }}
                   </router-link>
-                </li> -->
+                </li>
               </ul>
             </li>
             <li
@@ -436,6 +441,17 @@
                     active-class="active"
                   >
                     {{ $t('sales invoice') | uppercase }}
+                  </router-link>
+                </li>
+                <li
+                  v-if="$permission.has('read sales return')"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/sales/return"
+                    active-class="active"
+                  >
+                    {{ $t('sales return ') | uppercase }}
                   </router-link>
                 </li>
                 <li

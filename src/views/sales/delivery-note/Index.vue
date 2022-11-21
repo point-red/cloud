@@ -168,6 +168,9 @@
               <th class="text-center">
                 Form Status
               </th>
+              <th class="text-center">
+                History
+              </th>
               <th width="50px" />
             </tr>
             <template v-for="(deliveryNote, index) in deliveryNotes">
@@ -214,6 +217,14 @@
                     >
                       {{ $t('done') | uppercase }}
                     </div>
+                  </td>
+                  <td class="text-center">
+                    <router-link
+                      class="btn btn-sm btn-light"
+                      :to="{ name: 'sales.delivery-note.histories', params: { id: deliveryNote.id }}"
+                    >
+                      <i class="fa fa-history" />
+                    </router-link>
                   </td>
                   <td />
                 </template>
@@ -383,7 +394,28 @@ export default {
       }).catch(error => {
         this.$notification.error(error.message)
       }).finally(() => {
+        this.groupItems()
         this.isLoading = false
+      })
+    },
+    groupItems () {
+      this.deliveryNotes.forEach((deliveryNote, i) => {
+        const items = []
+        let currentId = 0
+        deliveryNote.items.forEach((item) => {
+          item.item_label = item.item.name
+
+          let quantity = 0
+          if (currentId != item.item_id) {
+            items.push(item)
+            currentId = item.item_id
+            quantity = Number(item.quantity)
+          }
+
+          const index = items.length - 1
+          items[index].quantity = quantity || items[index].quantity + Number(item.quantity)
+        })
+        this.deliveryNotes[i].items = items
       })
     },
     updatePage (value) {

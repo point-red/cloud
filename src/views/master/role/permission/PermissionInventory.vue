@@ -220,6 +220,15 @@
             @click.native="togglePermission('delete inventory usage')"
           />
         </td>
+        <td>
+          <p-form-check-box
+            ref="approve inventory usage"
+            :is-form="false"
+            :checked="$rolePermission.has('approve inventory usage', permissions)"
+            :description="'approval' | uppercase"
+            @click.native="togglePermission('approve inventory usage')"
+          />
+        </td>
       </tr>
     </p-table>
     <button

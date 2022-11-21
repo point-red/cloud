@@ -1,38 +1,27 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-inventory />
-      <span class="breadcrumb-item active">{{ $t('inventory usage') | uppercase }}</span>
+      <breadcrumb-sales />
+      <span class="breadcrumb-item active">{{ $t('sales return') | uppercase }}</span>
     </breadcrumb>
+
+    <sales-menu />
 
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <div
+          <download-excel
+            :name="`Sales Return_${$options.filters.dateFormat(date.start, 'DD MMM YYYY')} - ${$options.filters.dateFormat(date.end, 'DD MMM YYYY')}`"
+            :fetch="generateReport"
             class="input-group-prepend"
-            :disabled="isExportingData"
-            :style="{
-              'opacity': isExportingData ? 0.3 : 1,
-              'cursor': isExportingData ? 'not-allowed' : 'pointer'
-            }"
-            @click="exportData"
           >
-            <span
-              v-if="isExportingData"
-              class="input-group-text"
-            >
-              <i class="fa fa-asterisk fa-spin" />
-            </span>
-            <span
-              v-else
-              class="input-group-text"
-            >
+            <span class="input-group-text">
               <i class="fa fa-download" />
             </span>
-          </div>
+          </download-excel>
           <router-link
-            v-if="$permission.has('create inventory usage')"
-            to="/inventory/usage/create"
+            v-if="$permission.has('create sales return')"
+            to="/sales/return/create"
             class="input-group-prepend"
           >
             <span class="input-group-text">
@@ -49,7 +38,7 @@
             @input="filterSearch"
           />
         </div>
-        <div class="text-center font-size-sm mb-10">
+        <div class="text-center font-size-sm">
           <a
             href="javascript:void(0)"
             @click="isAdvanceFilter = !isAdvanceFilter"
@@ -59,7 +48,7 @@
         </div>
         <div
           v-show="isAdvanceFilter"
-          class="card pt-10"
+          class="card m-5 pt-10"
           :class="{ 'fadeIn': isAdvanceFilter }"
         >
           <div class="row">
@@ -132,30 +121,18 @@
               </p-form-row>
             </div>
           </div>
-        </div>
-        <div style="margin-top: 10px">
-          <router-link
-            v-if="$permission.has('create sales delivery order')"
-            to="/sales/delivery-order/approval"
-            class="input-group-prepend"
-          >
-            <span class="input-group-text font-size-sm">
-              {{ $t('request approval all') | uppercase }}
-            </span>
-          </router-link>
+          <hr>
         </div>
         <hr>
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>Form Number</th>
+              <th>Number</th>
               <th>Date</th>
+              <th>Customer</th>
               <th>Item</th>
-              <th>Production Number</th>
-              <th>Expiry Date</th>
-              <th>Notes</th>
               <th class="text-right">
-                Quantity
+                Qty
               </th>
               <th class="text-center">
                 Approval Status
@@ -166,67 +143,90 @@
               <th class="text-center">
                 History
               </th>
+              <th width="50px" />
             </tr>
-            <template v-for="(inventoryUsage, index) in inventoryUsages">
+            <template v-for="(salesReturn, index) in salesReturns">
               <tr
-                v-for="(inventoryUsageItem, index2) in inventoryUsage.items"
+                v-for="(salesReturnItem, index2) in salesReturn.items"
                 :key="'pr-' + index + '-i-' + index2"
                 slot="p-body"
               >
-                <td>
-                  <router-link :to="{ name: 'inventory.usage.show', params: { id: inventoryUsage.id }}">
-                    {{ inventoryUsage.form.number }}
+                <th>
+                  <router-link :to="{ name: 'sales.return.show', params: { id: salesReturn.id }}">
+                    {{ salesReturn.form.number }}
                   </router-link>
+                </th>
+                <td>{{ salesReturn.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>
+                  <template v-if="salesReturn.customer">
+                    {{ salesReturn.customer.name }}
+                  </template>
                 </td>
-                <td>{{ inventoryUsage.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                <td>{{ inventoryUsageItem.item.name }}</td>
-                <td>{{ inventoryUsageItem.production_number }}</td>
-                <td>{{ inventoryUsage.expiry_date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                <td>{{ inventoryUsageItem.notes }}</td>
+                <td>{{ salesReturnItem.item.name }}</td>
                 <td class="text-right">
-                  {{ inventoryUsageItem.quantity | numberFormat }} {{ inventoryUsageItem.unit }}
+                  {{ salesReturnItem.quantity | numberFormat }} {{ salesReturnItem.unit }}
                 </td>
                 <td class="text-center">
                   <div
-                    v-if="inventoryUsage.form.last_status == 0"
-                    class="badge badge-primary"
+                    v-if="salesReturn.form.cancellation_status == null"
                   >
-                    {{ $t('pending') | uppercase }}
+                    <div
+                      v-if="salesReturn.form.approval_status == 0"
+                      class="badge badge-primary"
+                    >
+                      {{ $t('pending') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.approval_status == -1"
+                      class="badge badge-danger"
+                    >
+                      {{ $t('rejected') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.approval_status == 1"
+                      class="badge badge-success"
+                    >
+                      {{ $t('approved') | uppercase }}
+                    </div>
                   </div>
                   <div
-                    v-if="inventoryUsage.form.last_status == -1"
-                    class="badge badge-danger"
+                    v-if="salesReturn.form.cancellation_status != null"
                   >
-                    {{ $t('rejected') | uppercase }}
-                  </div>
-                  <div
-                    v-if="inventoryUsage.form.last_status == 1"
-                    class="badge badge-success"
-                  >
-                    {{ $t('approved') | uppercase }}
+                    <div
+                      v-if="salesReturn.form.cancellation_status == 0"
+                      class="badge badge-primary"
+                    >
+                      {{ $t('pending') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.cancellation_status == -1"
+                      class="badge badge-danger"
+                    >
+                      {{ $t('rejected') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.cancellation_status == 1"
+                      class="badge badge-success"
+                    >
+                      {{ $t('approved') | uppercase }}
+                    </div>
                   </div>
                 </td>
-                <td>
+                <td class="text-center">
                   <div
-                    v-if="inventoryUsage.form.close_status == 1"
-                    class="badge badge-danger"
-                  >
-                    {{ $t('closed') | uppercase }}
-                  </div>
-                  <div
-                    v-else-if="inventoryUsage.form.cancellation_status == 1"
+                    v-if="salesReturn.form.cancellation_status == 1"
                     class="badge badge-danger"
                   >
                     {{ $t('canceled') | uppercase }}
                   </div>
                   <div
-                    v-else-if="inventoryUsage.form.done == 0"
+                    v-else-if="salesReturn.form.done == 0"
                     class="badge badge-primary"
                   >
                     {{ $t('pending') | uppercase }}
                   </div>
                   <div
-                    v-else-if="inventoryUsage.form.done == 1"
+                    v-else-if="salesReturn.form.done == 1"
                     class="badge badge-success"
                   >
                     {{ $t('done') | uppercase }}
@@ -235,11 +235,12 @@
                 <td class="text-center">
                   <router-link
                     class="btn btn-sm btn-light"
-                    :to="{ name: 'inventory.usage.histories', params: { id: inventoryUsage.id }}"
+                    :to="{ name: 'sales.return.histories', params: { id: salesReturn.id }}"
                   >
                     <i class="fa fa-history" />
                   </router-link>
                 </td>
+                <td />
               </tr>
             </template>
           </point-table>
@@ -249,36 +250,36 @@
           :last-page="lastPage"
           @updatePage="updatePage"
         />
+        <m-form-approval-status
+          ref="formApprovalStatus"
+          @choosen="chooseFormApprovalStatus($event)"
+        />
+        <m-form-status
+          ref="formStatus"
+          @choosen="chooseFormStatus($event)"
+        />
       </p-block>
     </div>
-    <m-form-approval-status
-      ref="formApprovalStatus"
-      @choosen="chooseFormApprovalStatus($event)"
-    />
-    <m-form-status
-      ref="formStatus"
-      @choosen="chooseFormStatus($event)"
-    />
   </div>
 </template>
 
 <script>
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbInventory from '@/views/inventory/Breadcrumb'
+import BreadcrumbSales from '@/views/sales/Breadcrumb'
 import debounce from 'lodash/debounce'
 import PointTable from 'point-table-vue'
+import SalesMenu from '../Menu'
 import { mapGetters, mapActions } from 'vuex'
-
 export default {
   components: {
     Breadcrumb,
-    BreadcrumbInventory,
-    PointTable
+    BreadcrumbSales,
+    PointTable,
+    SalesMenu
   },
   data () {
     return {
-      isLoading: true,
-      isExportingData: false,
+      isLoading: false,
       searchText: this.$route.query.search,
       currentPage: this.$route.query.page * 1 || 1,
       lastPage: 1,
@@ -298,11 +299,16 @@ export default {
       date: {
         start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
         end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
+      },
+      approvalStatusses: {
+        0: 'pending',
+        1: 'approved',
+        '-1': 'reject'
       }
     }
   },
   computed: {
-    ...mapGetters('inventoryUsage', ['inventoryUsages', 'pagination'])
+    ...mapGetters('salesReturn', ['salesReturns', 'pagination'])
   },
   watch: {
     date: {
@@ -314,7 +320,7 @@ export default {
             date_to: this.date.end
           }
         })
-        this.getInventoryUsage()
+        this.getSalesReturn()
       },
       deep: true
     }
@@ -327,22 +333,17 @@ export default {
         date_to: this.date.end
       }
     })
-    this.getInventoryUsage()
+    this.getSalesReturn()
   },
   updated () {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('inventoryUsage', ['get']),
+    ...mapActions('salesReturn', ['get', 'export']),
     chooseFormStatus (option) {
       this.formStatus.label = option.label
       this.formStatus.value = option.value
-      this.getInventoryUsage()
-    },
-    chooseFormApprovalStatus (option) {
-      this.formApprovalStatus.label = option.label
-      this.formApprovalStatus.value = option.value
-      this.getInventoryUsage()
+      this.getSalesReturn()
     },
     filterSearch: debounce(function (value) {
       this.$router.push({
@@ -353,31 +354,31 @@ export default {
       })
       this.searchText = value
       this.currentPage = 1
-      this.getInventoryUsage()
+      this.getSalesReturn()
     }, 300),
-    getInventoryUsage () {
+    getSalesReturn () {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form,warehouse',
-          fields: 'inventory_usage.*',
+          join: 'form,customer,items,item',
+          fields: 'sales_return.*',
           sort_by: '-form.number',
-          filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
+          group_by: 'form.id',
+          filter_form: this.formStatus.value,
           filter_like: {
             'form.number': this.searchText,
-            'warehouse.name': this.searchText,
-            'item.name': this.searchText,
-            'inventory_usage_item.notes': this.searchText,
-            'inventory_usage_item.quantity': this.searchText
+            'customer.name': this.searchText,
+            'item.code': this.searchText,
+            'item.name': this.searchText
           },
           filter_date_min: {
-            'form.date': this.serverDateTime(this.$moment(this.date.start).format('YYYY-MM-DD 00:00:00'))
+            'form.date': this.serverDateTime(this.date.start, 'start')
           },
           filter_date_max: {
-            'form.date': this.serverDateTime(this.$moment(this.date.end).format('YYYY-MM-DD 23:59:59'))
+            'form.date': this.serverDateTime(this.date.end, 'end')
           },
           limit: 10,
-          includes: 'form;warehouse;items;items.item',
+          includes: 'form;customer;items.item;items.allocation',
           page: this.currentPage
         }
       }).catch(error => {
@@ -388,42 +389,7 @@ export default {
     },
     updatePage (value) {
       this.currentPage = value
-      this.getInventoryUsage()
-    },
-    async exportData () {
-      if (this.isExportingData) return
-
-      this.isExportingData = true
-
-      // try {
-      //   const { data: { url } } = await this.export({
-      //     params: {
-      //       join: 'form,customer,items,item',
-      //       fields: 'sales_delivery_order.*;sales_delivery_order_item.*',
-      //       sort_by: '-form.number',
-      //       filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
-      //       filter_like: {
-      //         'form.number': this.searchText,
-      //         'customer.name': this.searchText,
-      //         'item.code': this.searchText,
-      //         'item.name': this.searchText
-      //       },
-      //       filter_date_min: {
-      //         'form.date': this.serverDateTime(this.date.start, 'start')
-      //       },
-      //       filter_date_max: {
-      //         'form.date': this.serverDateTime(this.date.end, 'end')
-      //       },
-      //       includes: 'form;customer;warehouse;items.item'
-      //     }
-      //   })
-
-      //   window.open(url, '_blank')
-      //   this.isExportingData = false
-      // } catch (error) {
-      //   this.isExportingData = false
-      //   this.$notification.error(error.message)
-      // }
+      this.getSalesReturn()
     }
   }
 }

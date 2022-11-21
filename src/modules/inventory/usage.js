@@ -25,7 +25,21 @@ const getters = {
     return state.inventoryUsage
   },
   inventoryUsages: state => {
-    return state.inventoryUsages
+    return state.inventoryUsages.map((inventoryUsage) => {
+      inventoryUsage.form.last_status = inventoryUsage.form.approval_status
+
+      if (inventoryUsage.form.close_status != null) {
+        inventoryUsage.form.last_status = inventoryUsage.form.close_status
+        return inventoryUsage
+      }
+
+      if (inventoryUsage.form.cancellation_status != null) {
+        inventoryUsage.form.last_status = inventoryUsage.form.cancellation_status
+        return inventoryUsage
+      }
+
+      return inventoryUsage
+    })
   },
   pagination: state => {
     return state.pagination

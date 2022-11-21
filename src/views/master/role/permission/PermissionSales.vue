@@ -375,9 +375,9 @@
         <td>
           <p-form-check-box
             :is-form="false"
-            :checked="checkPermissionRow(['create sales return', 'read sales return', 'update sales return', 'delete sales return'], permissions)"
+            :checked="checkPermissionRow(['create sales return', 'read sales return', 'update sales return', 'delete sales return', 'approve sales return'], permissions)"
             :description="''"
-            @click.native="togglePermissionRow(['create sales return', 'read sales return', 'update sales return', 'delete sales return'], permissions)"
+            @click.native="togglePermissionRow(['create sales return', 'read sales return', 'update sales return', 'delete sales return', 'approve sales return'], permissions)"
           />
         </td>
         <td><b>{{ $t('return') | uppercase }}</b></td>
@@ -415,6 +415,15 @@
             :checked="$rolePermission.has('delete sales return', permissions)"
             :description="'delete' | uppercase"
             @click.native="togglePermission('delete sales return')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="approve sales return"
+            :is-form="false"
+            :checked="$rolePermission.has('approve sales return', permissions)"
+            :description="'approve' | uppercase"
+            @click.native="togglePermission('approve sales return')"
           />
         </td>
         <td />

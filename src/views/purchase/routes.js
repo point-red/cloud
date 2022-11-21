@@ -3,6 +3,7 @@ import PurchaseOrder from './order/routes'
 import PurchaseDownPayment from './down-payment/routes'
 import PurchaseReceive from './receive/routes'
 import PurchaseInvoice from './invoice/routes'
+import PurchasePaymentOrder from './payment-order/routes'
 
 export default [
   { path: '/purchase', name: 'Purchase', component: () => import('./Index') },
@@ -10,5 +11,6 @@ export default [
   ...PurchaseOrder,
   ...PurchaseDownPayment,
   ...PurchaseReceive,
-  ...PurchaseInvoice
+  ...PurchaseInvoice,
+  ...PurchasePaymentOrder
 ]
