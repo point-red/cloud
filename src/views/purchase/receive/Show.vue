@@ -230,7 +230,13 @@
                 class="col-4"
                 style="display:flex; justify-content: center;align-items: center;"
               >
-                logo
+                <div style=" width: 200px;">
+                  <img
+                    v-if="imageUrl"
+                    :src="imageUrl"
+                    style=" object-fit: contain; width: 100%; height: 100%;"
+                  >
+                </div>
               </div>
               <div
                 class="col-8"
@@ -296,7 +302,7 @@
                         {{ $t('Warehouse') | uppercase }}
                       </td>
                       <td class="text-center text-primary">
-                        <span>{{ form.warehouse_name }}</span>
+                        <span>{{ purchaseReceive.warehouse.name }}</span>
                       </td>
                     </tr>
                     <tr>
@@ -304,7 +310,7 @@
                         {{ $t('Driver') | uppercase }}
                       </td>
                       <td class="text-center">
-                        <span>{{ form.driver }}</span>
+                        <span>{{ purchaseReceive.driver }}</span>
                       </td>
                     </tr>
                     <tr>
@@ -312,7 +318,7 @@
                         {{ $t('License Plate') | uppercase }}
                       </td>
                       <td class="text-center">
-                        <span>{{ form.license_plate }}</span>
+                        <span>{{ purchaseReceive.license_plate }}</span>
                       </td>
                     </tr>
                   </table>
@@ -340,7 +346,7 @@
                     </tr>
 
                     <tr
-                      v-for="(item, index) in form.item"
+                      v-for="(item, index) in purchaseReceive.items"
                       :key="item.id"
                       class="text-center"
                     >
@@ -369,7 +375,7 @@
                     {{ $t("notes") | uppercase }}
                   </h6>
                   <div style="white-space: pre-wrap">
-                    {{ form.form.notes }}
+                    {{ purchaseReceive.form.notes }}
                   </div>
                   <div class="d-sm-block d-md-none mt-10" />
                 </div>
@@ -381,9 +387,9 @@
                     class="mb-50"
                     style="font-size: 11px"
                   >
-                    {{ form.form.date | dateFormat("DD MMMM YYYY") }}
+                    {{ purchaseReceive.form.date | dateFormat("DD MMMM YYYY") }}
                   </div>
-                  {{ form.form.created_by.full_name | uppercase }}
+                  {{ purchaseReceive.form.created_by.full_name | uppercase }}
                   <div class="d-sm-block d-md-none mt-10" />
                 </div>
               </div>
@@ -407,6 +413,7 @@ import BreadcrumbPurchase from '../Breadcrumb'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 import Form from '@/utils/Form'
+import axiosNode from '@/axiosNode'
 
 export default {
   name: 'Show',
@@ -421,6 +428,8 @@ export default {
       id: this.$route.params.id,
       isLoading: false,
       isDeleting: false,
+      currentLogo: null,
+      localUrl: null,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -429,19 +438,16 @@ export default {
         supplier_label: null,
         supplier_address: null,
         supplier_phone: null,
-        supplier_email: null,
-        form: {},
-        purchase_order: {},
-        warehouse_name: null,
-        items: [],
-        driver: null,
-        license_plate: null
+        supplier_email: null
       })
     }
   },
   computed: {
     ...mapGetters('purchaseReceive', ['purchaseReceive']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    imageUrl () {
+      return this.localUrl || (this.currentLogo && this.currentLogo.publicUrl) || null
+    }
   },
   watch: {
     $route (to, from) {
@@ -451,8 +457,9 @@ export default {
       }
     }
   },
-  created () {
+  async created () {
     this.purchaseReceiveRequest()
+    this.getSettingLogo()
   },
   methods: {
     ...mapActions('purchaseReceive', {
@@ -461,6 +468,17 @@ export default {
       cancellationApprove: 'cancellationApprove',
       cancellationReject: 'cancellationReject'
     }),
+
+    async getSettingLogo () {
+      this.onLoadingLogo = false
+      try {
+        const { data: { data: currentLogo } } = await axiosNode.get('/setting/logo')
+        this.currentLogo = currentLogo
+      } catch (e) {
+        console.log(e)
+      }
+      this.onLoadingLogo = false
+    },
 
     purchaseReceiveRequest () {
       this.isLoading = true
@@ -478,12 +496,6 @@ export default {
         }
       })
         .then((response) => {
-          this.form.form = response.data.form
-          this.form.purchase_order = response.data.purchase_order
-          this.form.warehouse_name = response.data.warehouse_name
-          this.form.item = response.data.items
-          this.form.driver = response.data.driver
-          this.form.license_plate = response.data.license_plate
           this.isLoading = false
         })
         .catch((error) => {
