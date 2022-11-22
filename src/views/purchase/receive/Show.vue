@@ -296,7 +296,7 @@
                         {{ $t('Warehouse') | uppercase }}
                       </td>
                       <td class="text-center text-primary">
-                        <span>{{ form.warehouse_name }}</span>
+                        <span>{{ purchaseReceive.warehouse.name }}</span>
                       </td>
                     </tr>
                     <tr>
@@ -304,7 +304,7 @@
                         {{ $t('Driver') | uppercase }}
                       </td>
                       <td class="text-center">
-                        <span>{{ form.driver }}</span>
+                        <span>{{ purchaseReceive.driver }}</span>
                       </td>
                     </tr>
                     <tr>
@@ -312,7 +312,7 @@
                         {{ $t('License Plate') | uppercase }}
                       </td>
                       <td class="text-center">
-                        <span>{{ form.license_plate }}</span>
+                        <span>{{ purchaseReceive.license_plate }}</span>
                       </td>
                     </tr>
                   </table>
@@ -340,7 +340,7 @@
                     </tr>
 
                     <tr
-                      v-for="(item, index) in form.item"
+                      v-for="(item, index) in purchaseReceive.items"
                       :key="item.id"
                       class="text-center"
                     >
