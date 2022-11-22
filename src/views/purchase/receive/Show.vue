@@ -369,7 +369,7 @@
                     {{ $t("notes") | uppercase }}
                   </h6>
                   <div style="white-space: pre-wrap">
-                    {{ form.form.notes }}
+                    {{ purchaseReceive.form.notes }}
                   </div>
                   <div class="d-sm-block d-md-none mt-10" />
                 </div>
@@ -381,9 +381,9 @@
                     class="mb-50"
                     style="font-size: 11px"
                   >
-                    {{ form.form.date | dateFormat("DD MMMM YYYY") }}
+                    {{ purchaseReceive.form.date | dateFormat("DD MMMM YYYY") }}
                   </div>
-                  {{ form.form.created_by.full_name | uppercase }}
+                  {{ purchaseReceive.form.created_by.full_name | uppercase }}
                   <div class="d-sm-block d-md-none mt-10" />
                 </div>
               </div>
@@ -429,13 +429,7 @@ export default {
         supplier_label: null,
         supplier_address: null,
         supplier_phone: null,
-        supplier_email: null,
-        form: {},
-        purchase_order: {},
-        warehouse_name: null,
-        items: [],
-        driver: null,
-        license_plate: null
+        supplier_email: null
       })
     }
   },
@@ -478,12 +472,6 @@ export default {
         }
       })
         .then((response) => {
-          this.form.form = response.data.form
-          this.form.purchase_order = response.data.purchase_order
-          this.form.warehouse_name = response.data.warehouse_name
-          this.form.item = response.data.items
-          this.form.driver = response.data.driver
-          this.form.license_plate = response.data.license_plate
           this.isLoading = false
         })
         .catch((error) => {
