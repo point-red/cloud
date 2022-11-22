@@ -230,7 +230,13 @@
                 class="col-4"
                 style="display:flex; justify-content: center;align-items: center;"
               >
-                logo
+                <div style=" width: 200px;">
+                  <img
+                    v-if="imageUrl"
+                    :src="imageUrl"
+                    style=" object-fit: contain; width: 100%; height: 100%;"
+                  >
+                </div>
               </div>
               <div
                 class="col-8"
@@ -407,6 +413,7 @@ import BreadcrumbPurchase from '../Breadcrumb'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 import Form from '@/utils/Form'
+import axiosNode from '@/axiosNode'
 
 export default {
   name: 'Show',
@@ -421,6 +428,8 @@ export default {
       id: this.$route.params.id,
       isLoading: false,
       isDeleting: false,
+      currentLogo: null,
+      localUrl: null,
       form: new Form({
         increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
@@ -435,7 +444,10 @@ export default {
   },
   computed: {
     ...mapGetters('purchaseReceive', ['purchaseReceive']),
-    ...mapGetters('auth', ['authUser'])
+    ...mapGetters('auth', ['authUser']),
+    imageUrl () {
+      return this.localUrl || (this.currentLogo && this.currentLogo.publicUrl) || null
+    }
   },
   watch: {
     $route (to, from) {
@@ -445,8 +457,9 @@ export default {
       }
     }
   },
-  created () {
+  async created () {
     this.purchaseReceiveRequest()
+    this.getSettingLogo()
   },
   methods: {
     ...mapActions('purchaseReceive', {
@@ -455,6 +468,17 @@ export default {
       cancellationApprove: 'cancellationApprove',
       cancellationReject: 'cancellationReject'
     }),
+
+    async getSettingLogo () {
+      this.onLoadingLogo = false
+      try {
+        const { data: { data: currentLogo } } = await axiosNode.get('/setting/logo')
+        this.currentLogo = currentLogo
+      } catch (e) {
+        console.log(e)
+      }
+      this.onLoadingLogo = false
+    },
 
     purchaseReceiveRequest () {
       this.isLoading = true
