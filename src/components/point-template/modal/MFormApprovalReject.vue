@@ -61,9 +61,9 @@ export default {
 
       if (this.form.reason.length > 255) {
         this.isSaving = false
-        this.$notification.error('Reason should not empty')
+        this.$notification.error('reason cannot be more than 255 character')
         this.form.errors.record({
-          reason: ['Reason should not empty']
+          reason: ['reason cannot be more than 255 character']
         })
 
         return false
@@ -71,9 +71,9 @@ export default {
 
       if (!this.form.reason) {
         this.isSaving = false
-        this.$notification.error('reason cannot be more than 255 character')
+        this.$notification.error('reason cannot be empty')
         this.form.errors.record({
-          reason: ['reason cannot be more than 255 character']
+          reason: ['reason cannot be empty']
         })
 
         return false

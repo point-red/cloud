@@ -352,32 +352,32 @@ export default {
         item.dna = []
         let sumQty = 0
         response.data.items.forEach(el => {
-          if (el.item.require_production_number == 1 || el.item.require_expiry_date == 1) {
-            this.getDna({
-              itemId: el.item_id,
-              params: {
-                warehouse_id: response.data.warehouse_id
-              }
-            }).then(response => {
-              response.data.forEach(val => {
-                if (el.item.require_expiry_date == 0) {
-                  if (val.production_number == el.production_number) {
-                    val.quantity = el.quantity
-                    item.dna.push(val)
-                  }
-                } else {
-                  if (val.production_number == el.production_number && val.expiry_date == el.expiry_date) {
-                    val.quantity = el.quantity
-                    item.dna.push(val)
-                  }
+          if (item.item_id == el.item_id) {
+            if (el.item.require_production_number == 1 || el.item.require_expiry_date == 1) {
+              this.getDna({
+                itemId: el.item_id,
+                params: {
+                  warehouse_id: response.data.warehouse_id
                 }
+              }).then(response => {
+                response.data.forEach(val => {
+                  if (el.item.require_expiry_date == 0) {
+                    if (val.production_number == el.production_number) {
+                      val.quantity = el.quantity
+                      item.dna.push(val)
+                    }
+                  } else {
+                    if (val.production_number == el.production_number && val.expiry_date == el.expiry_date) {
+                      val.quantity = el.quantity
+                      item.dna.push(val)
+                    }
+                  }
+                })
+                this.isLoading = false
+              }).catch(error => {
+                this.isLoading = false
               })
-              this.isLoading = false
-            }).catch(error => {
-              this.isLoading = false
-            })
-          }
-          if (el.item_id == item.item_id) {
+            }
             sumQty += el.quantity
           }
         })

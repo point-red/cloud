@@ -222,8 +222,8 @@ export default {
           sort_by: 'code;name',
           limit: this.limit,
           page: this.currentPage,
-          date_from: this.$route.query.date_from,
-          date_to: this.$route.query.date_to,
+          date_from: this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00'),
+          date_to: this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59'),
           filter_like: {
             code: this.searchText,
             name: this.searchText

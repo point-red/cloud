@@ -1,15 +1,15 @@
 import api from '@/api'
 
-const url = '/accounting/journals'
+const url = '/inventory/usages'
 
 const state = {
-  journals: [],
+  inventoryUsageHistories: [],
   pagination: {}
 }
 
 const getters = {
-  journals: state => {
-    return state.journals
+  inventoryUsageHistories: state => {
+    return state.inventoryUsageHistories
   },
   pagination: state => {
     return state.pagination
@@ -18,7 +18,7 @@ const getters = {
 
 const mutations = {
   'FETCH_ARRAY' (state, payload) {
-    state.journals = payload.data
+    state.inventoryUsageHistories = payload.data
     state.pagination = payload.meta
   }
 }
@@ -26,9 +26,20 @@ const mutations = {
 const actions = {
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      api.get(url, payload)
+      api.get(url + '/' + payload.id + '/histories', payload)
         .then(response => {
           commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          console.log(error)
+          reject(error)
+        })
+    })
+  },
+  add (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/' + payload.id + '/histories', payload)
+        .then(response => {
           resolve(response)
         }).catch(error => {
           reject(error)

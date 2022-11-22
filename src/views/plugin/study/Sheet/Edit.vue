@@ -202,6 +202,29 @@
                 @errors="pointForm.errors.set('teacher', null)"
               />
 
+              <p-form-row>
+                <div
+                  slot="body"
+                  class="col-lg-9"
+                >
+                  <div class="mb-2 d-flex font-size-lg text-primary">
+                    <div class="mr-2">
+                      <i class="fa fa-book" />
+                    </div>
+                    <div>
+                      <a
+                        href="https://docs.google.com/spreadsheets/d/11TVngjUsDSP3wPCZkO2B6jKOGNvPSlu-7UdYHb_SzbU/edit?usp=sharing"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style="text-decoration: underline;"
+                      >
+                        {{ $t('access topics library here') | titlecase }}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </p-form-row>
+
               <p-form-row
                 id="competency"
                 v-model="form.competency"

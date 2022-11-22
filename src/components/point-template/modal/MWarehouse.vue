@@ -129,6 +129,8 @@ export default {
         params: {
           sort_by: 'name',
           limit: 50,
+          fields: 'warehouse.*',
+          join: this.defaultOnly ? 'user_warehouse' : '',
           filter_like: {
             name: this.searchText
           },
