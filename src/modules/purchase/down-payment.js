@@ -153,6 +153,16 @@ const actions = {
           reject(error)
         })
     })
+  },
+  sendBulkRequestApproval (context, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/send-bulk-request-approval', payload)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 
