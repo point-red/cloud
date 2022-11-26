@@ -1,3 +1,13 @@
 {
-  "pluginsFile": "tests/e2e/plugins/index.js"
+    "pluginsFile": "tests/e2e/plugins/index.js",
+    "baseUrl":"http://dev.localhost:8080",
+    "e2e": {
+        "baseUrl": "http://dev.localhost:8080"
+    },
+    "env": {
+        "VUE_APP_API_ENDPOINT": "http://localhost:8000/api/v1",
+        "VUE_APP_API_DOMAIN": "http://localhost:8000/",
+        "VUE_APP_DOMAIN": "localhost:8080"
+    },
+    "configFile": "cypress.config.js"
 }
