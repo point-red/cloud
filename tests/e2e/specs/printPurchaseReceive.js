@@ -27,4 +27,25 @@ describe('Print Purchase Receive', () => {
     cy.waitVisible('#main-container > .content')
     cy.get('.text-right').find('button').contains(' PRINT ').should('be.visible').click({ force: true })
   })
+
+  it('If purchase receive was canceled, there is a watermark in print preview', () => {
+    cy.interceptToken()
+    cy.visit('purchase/receive/')
+    cy.waitToken()
+
+    cy.waitVisible('#main-container > .content')
+
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).invoke('text').then(text => {
+          if (text.includes('CANCELED')) {
+            cy.wrap($element).siblings('th').children('a').click()
+            cy.waitVisible('#main-container > .content')
+            cy.get('.text-right').find('button').contains(' PRINT ').should('be.visible').click({ force: true })
+          }
+        })
+      })
+  })
 })
