@@ -1,6 +1,9 @@
+import { generateText, createRole } from './functions'
+
+const randomString = generateText(7)
 const { should } = require("chai")
-const url = '/human-resource/employee-group'
-const apiUrl = Cypress.env('VUE_APP_API_ENDPOINT') + '/human-resource/employee/groups'
+const url = '/master/role'
+const apiUrl = Cypress.env('VUE_APP_API_ENDPOINT') + '/master/role'
 const getList = apiUrl + '**'
 const getDetail = apiUrl + '/*'
 const timeOut = { timeout : 300000 }
@@ -18,6 +21,18 @@ describe('Role Permission', () => {
 
     cy.waitVisible('#main-container > .content');
     cy.get('.nav').find('a').contains('ROLE & PERMISSION').should('be.visible').click()
+
+    cy.intercept('GET', getList).as('getRole')
+
+    cy.wait(5000)
+    cy.wait('@getRole', timeOut).its('response.statusCode').should('equal', 200)
+
+    cy.waitVisible('table');
+    cy.get('table th').should('contain', 'Role')
+  })
+
+  it('Create Role', () => {
+    createRole(randomString)
   })
 })
   
