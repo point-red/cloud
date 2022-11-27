@@ -217,7 +217,7 @@
       <p-block>
         <p-block-inner style="position: relative">
           <div
-            v-if="purchaseReceive.form.cancellationStatus === 1"
+            v-if="purchaseReceive.form.cancellation_status === 1"
             style="position: absolute;color: red; z-index:100; bottom:0; right:0;top:0;left:0;display:flex;justify-content: center;align-items: center;"
           >
             <div style="font-size: 8em;transform: rotate(-45deg);letter-spacing: 15px;font-weight: 700;opacity: .5;">
