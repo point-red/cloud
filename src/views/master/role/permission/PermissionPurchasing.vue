@@ -310,9 +310,9 @@
         <td>
           <p-form-check-box
             :is-form="false"
-            :checked="checkPermissionRow(['create purchase return', 'read purchase return', 'update purchase return', 'delete purchase return'], permissions)"
+            :checked="checkPermissionRow(['create purchase return', 'read purchase return', 'update purchase return', 'delete purchase return', 'approve purchase return'], permissions)"
             :description="''"
-            @click.native="togglePermissionRow(['create purchase return', 'read purchase return', 'update purchase return', 'delete purchase return'], permissions)"
+            @click.native="togglePermissionRow(['create purchase return', 'read purchase return', 'update purchase return', 'delete purchase return', 'approve purchase return'], permissions)"
           />
         </td>
         <td><b>{{ $t('return') | uppercase }}</b></td>
@@ -350,6 +350,15 @@
             :checked="$rolePermission.has('delete purchase return', permissions)"
             :description="'delete' | uppercase"
             @click.native="togglePermission('delete purchase return')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="approve purchase return"
+            :is-form="false"
+            :checked="$rolePermission.has('approve purchase return', permissions)"
+            :description="'approve' | uppercase"
+            @click.native="togglePermission('approve purchase return')"
           />
         </td>
       </tr>
