@@ -11,22 +11,22 @@ describe('Print Purchase Receive', () => {
     cy.login('admin', 'admin')
   })
 
-  // it('able to see a print icon on the top left of the form', () => {
-  //   cy.interceptToken()
-  //   cy.visit('purchase/receive/1')
-  //   cy.waitToken()
+  it('able to see a print icon on the top left of the form', () => {
+    cy.interceptToken()
+    cy.visit('purchase/receive/1')
+    cy.waitToken()
 
-  //   cy.waitVisible('#main-container > .content')
-  // })
+    cy.waitVisible('#main-container > .content')
+  })
 
-  // it('click on the print button will show up print setting page', () => {
-  //   cy.interceptToken()
-  //   cy.visit('purchase/receive/1')
-  //   cy.waitToken()
+  it('click on the print button will show up print setting page', () => {
+    cy.interceptToken()
+    cy.visit('purchase/receive/1')
+    cy.waitToken()
 
-  //   cy.waitVisible('#main-container > .content')
-  //   cy.get('.text-right').find('button').contains(' PRINT ').should('be.visible').click({ force: true })
-  // })
+    cy.waitVisible('#main-container > .content')
+    cy.get('.text-right').find('button').contains(' PRINT ').should('be.visible').click({ force: true })
+  })
 
   it('If purchase receive was canceled, there is a watermark in print preview', () => {
     cy.interceptToken()
