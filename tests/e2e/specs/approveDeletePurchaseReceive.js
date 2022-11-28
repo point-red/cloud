@@ -36,5 +36,11 @@ describe('Approve Deletion Purchase Receive', () => {
     cy.get('div.sweet-modal.theme-light.has-title.has-content.is-mobile-fullscreen.is-visible button[type="button"]')
       .should('be.visible')
       .click()
+
+    // Test case: Click approve deletion
+    cy.get('div.alert.alert-warning.d-flex.align-items-center.justify-content-between.mb-15')
+      .find('button[type="button"]').contains(' APPROVE ')
+      .should('be.visible')
+      .click()
   })
 })
