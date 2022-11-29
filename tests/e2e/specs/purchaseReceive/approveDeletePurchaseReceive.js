@@ -71,17 +71,19 @@ describe('Approve Deletion Purchase Receive', () => {
       .click()
 
     // Test case: Click reject deletion
+    cy.waitVisible('div.alert.alert-warning.d-flex.align-items-center.justify-content-between.mb-15')
     cy.get('div.alert.alert-warning.d-flex.align-items-center.justify-content-between.mb-15')
       .find('button[type="button"]').contains(' REJECT ')
       .should('be.visible')
       .click()
 
-    // // Be asked to fill a reject reason
-    // cy.get('div.sweet-modal.theme-light.has-title.has-content.is-mobile-fullscreen.is-visible textarea')
-    //   .should('be.visible')
-    //   .type('test reason reject delete receive')
-    // cy.get('div.sweet-modal.theme-light.has-title.has-content.is-mobile-fullscreen.is-visible').find('button.btn.btn-sm.btn-danger').contains(' REJECT ')
-    //   .should('be.visible')
-    //   .click()
+    // Be asked to fill a reject reason
+    cy.waitVisible('div.sweet-modal.theme-light.has-title.has-content.is-mobile-fullscreen.is-visible textarea')
+    cy.get('div.sweet-modal.theme-light.has-title.has-content.is-mobile-fullscreen.is-visible textarea')
+      .should('be.visible')
+      .type('test reason reject delete receive')
+    cy.get('div.sweet-modal.theme-light.has-title.has-content.is-mobile-fullscreen.is-visible').find('button.btn.btn-sm.btn-danger').contains(' REJECT ')
+      .should('be.visible')
+      .click()
   })
 })
