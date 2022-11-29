@@ -13,15 +13,38 @@ describe('Print Purchase Receive', () => {
 
   it('able to see a print icon on the top left of the form', () => {
     cy.interceptToken()
-    cy.visit('purchase/receive/1')
+    cy.visit('purchase/receive/')
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).invoke('text').then(text => {
+          if (text.includes('PENDING')) {
+            cy.wrap($element).siblings('th').children('a').click()
+            cy.waitVisible('#main-container > .content')
+          }
+        })
+      })
     cy.waitToken()
 
     cy.waitVisible('#main-container > .content')
+    cy.wait(10000)
   })
 
   it('click on the print button will show up print setting page', () => {
     cy.interceptToken()
-    cy.visit('purchase/receive/1')
+    cy.visit('purchase/receive/')
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).invoke('text').then(text => {
+          if (text.includes('PENDING')) {
+            cy.wrap($element).siblings('th').children('a').click()
+            cy.waitVisible('#main-container > .content')
+          }
+        })
+      })
     cy.waitToken()
 
     cy.waitVisible('#main-container > .content')
@@ -31,21 +54,11 @@ describe('Print Purchase Receive', () => {
   it('If purchase receive was canceled, there is a watermark in print preview', () => {
     cy.interceptToken()
     cy.visit('purchase/receive/')
-    cy.waitToken()
-
-    cy.waitVisible('#main-container > .content')
-
     cy.waitVisible('tbody > tr')
     cy.get('tbody > tr')
-      .find('td')
-      .each(($element) => {
-        cy.wrap($element).invoke('text').then(text => {
-          if (text.includes('CANCELED')) {
-            cy.wrap($element).siblings('th').children('a').click()
-            cy.waitVisible('#main-container > .content')
-          }
-        })
-      })
+      .find('td').contains(' CANCELED ').parent().siblings('th').children('a').click()
+    cy.waitToken()
+
     cy.waitVisible('.alert-danger')
     cy.get('.text-right').find('button').contains(' PRINT ').should('be.visible').click({ force: true })
   })
