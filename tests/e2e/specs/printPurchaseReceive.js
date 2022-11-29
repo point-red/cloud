@@ -54,21 +54,11 @@ describe('Print Purchase Receive', () => {
   it('If purchase receive was canceled, there is a watermark in print preview', () => {
     cy.interceptToken()
     cy.visit('purchase/receive/')
-    cy.waitToken()
-
-    cy.waitVisible('#main-container > .content')
-
     cy.waitVisible('tbody > tr')
     cy.get('tbody > tr')
-      .find('td')
-      .each(($element) => {
-        cy.wrap($element).invoke('text').then(text => {
-          if (text.includes('CANCELED')) {
-            cy.wrap($element).siblings('th').children('a').click()
-            cy.waitVisible('#main-container > .content')
-          }
-        })
-      })
+      .find('td').contains(' CANCELED ').parent().siblings('th').children('a').click()
+    cy.waitToken()
+
     cy.waitVisible('.alert-danger')
     cy.get('.text-right').find('button').contains(' PRINT ').should('be.visible').click({ force: true })
   })
