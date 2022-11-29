@@ -11,7 +11,7 @@ describe('Print Purchase Receive', () => {
     cy.login('admin', 'admin')
   })
 
-  it.only('able to see a print icon on the top left of the form', () => {
+  it('able to see a print icon on the top left of the form', () => {
     cy.interceptToken()
     cy.visit('purchase/receive/')
     cy.waitVisible('tbody > tr')
@@ -28,11 +28,23 @@ describe('Print Purchase Receive', () => {
     cy.waitToken()
 
     cy.waitVisible('#main-container > .content')
+    cy.wait(10000)
   })
 
   it('click on the print button will show up print setting page', () => {
     cy.interceptToken()
-    cy.visit('purchase/receive/1')
+    cy.visit('purchase/receive/')
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).invoke('text').then(text => {
+          if (text.includes('PENDING')) {
+            cy.wrap($element).siblings('th').children('a').click()
+            cy.waitVisible('#main-container > .content')
+          }
+        })
+      })
     cy.waitToken()
 
     cy.waitVisible('#main-container > .content')
