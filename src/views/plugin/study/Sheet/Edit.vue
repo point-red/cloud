@@ -445,13 +445,10 @@ export default {
     },
     onSubmit () {
       this.isSaving = true
-      const options = {
-        timeout: 12 * 60 * 60 * 1000, // 12 hours
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      const headers = {
+        'Content-Type': 'multipart/form-data'
       }
-      axios.post('/plugin/study/sheet', this.getFormData(), options)
+      axios.post('/plugin/study/sheet', this.getFormData(), { headers })
         .then(response => {
           const message = this.$t('data has been saved')
           const capitalizedMessage = this.$options.filters.capitalize(message)
