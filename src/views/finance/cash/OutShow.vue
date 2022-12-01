@@ -116,22 +116,24 @@
           <div>
             <h5 class="pl-1 pt-20">
               <span v-if="form.referenceableType === 'PaymentOrder'">
-                {{ $t('payment Order') | uppercase }}
+                {{ $t('payment order') | uppercase }}
               </span>
               <span v-if="form.referenceableType === 'PurchaseDownPayment'">
-                {{ $t('Down Payment') | uppercase }}
+                {{ $t('down payment') | uppercase }}
               </span>
             </h5>
             <!-- Table Payment -->
             <point-table>
               <tr slot="p-head">
                 <th style="min-width: 120px">
-                  Account
+                  {{ $t('account') }}
                 </th>
-                <th>Notes</th>
-                <th>Allocation</th>
+                <th>{{ $t('notes') }}</th>
+                <th>
+                  {{ $t('allocation') }}
+                </th>
                 <th class="text-right">
-                  Amount
+                  {{ $t('amount') }}
                 </th>
               </tr>
               <tr
@@ -165,13 +167,13 @@
                 slot="p-head"
                 class="text-left"
               >
-                <th>Reference</th>
-                <th>Notes</th>
-                <th>Amount</th>
-                <th>Amount Remaining</th>
-                <th>Amount Usage</th>
+                <th>{{ $t('reference') }}</th>
+                <th>{{ $t('notes') }}</th>
+                <th>{{ $t('amount') }}</th>
+                <th>{{ $t('amount remaining') }}</th>
+                <th>{{ $t('amount usage') }}</th>
                 <th class="text-center">
-                  Close
+                  {{ $t('close') }}
                 </th>
               </tr>
               <tr
@@ -202,12 +204,12 @@
                   <span
                     v-if="payment.cash_advance.cash_advance.form.done === 0"
                   >
-                    {{ $t('Opened') }}
+                    {{ $t('opened') }}
                   </span>
                   <span
                     v-if="payment.cash_advance.cash_advance.form.done === 1"
                   >
-                    {{ $t('Closed') }}
+                    {{ $t('closed') }}
                   </span>
                 </td>
               </tr>

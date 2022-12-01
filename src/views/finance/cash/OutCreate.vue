@@ -9,11 +9,11 @@
         }}</router-link>
       </span>
       <span class="breadcrumb-item active">{{
-        $t('cash out create') | uppercase
+        $t('create cash out') | uppercase
       }}</span>
     </breadcrumb>
 
-    <!-- Menu Cash Out Create -->
+    <!-- Menu create cash out -->
     <!-- Form -->
     <form
       class="row"
@@ -21,7 +21,7 @@
     >
       <p-block>
         <p-block-inner :is-loading="isLoading">
-          <!-- Cash Out Create Additional Information -->
+          <!-- create cash out Additional Information -->
           <div class="row">
             <!-- Table Cash Out -->
             <div class="col-sm-6">
@@ -68,7 +68,7 @@
                 </tr>
               </table>
             </div>
-            <!-- Cash Out Create Information User -->
+            <!-- create cash out Information User -->
             <div class="col-sm-6 text-right py-20 py-sm-0">
               <h6 class="mb-5">
                 {{ authUser.tenant_name | uppercase }}
@@ -130,16 +130,16 @@
               <!-- Table Payment Order -->
               <point-table>
                 <tr slot="p-head">
-                  <th>Payment</th>
+                  <th>{{ $t('payment') }}</th>
                   <th style="min-width: 120px">
-                    Account
+                    {{ $t('account') }}
                   </th>
-                  <th>Notes</th>
+                  <th>{{ $t('notes') }}</th>
                   <th style="min-width: 120px">
-                    Allocation
+                    {{ $t('allocation') }}
                   </th>
                   <th class="text-right">
-                    Amount
+                    {{ $t('amount') }}
                   </th>
                 </tr>
                 <tr
@@ -165,13 +165,13 @@
                   slot="p-head"
                   class="text-left"
                 >
-                  <th>Reference</th>
-                  <th>Notes</th>
-                  <th>Amount</th>
-                  <th>Amount Remaining</th>
-                  <th>Amount Usage</th>
+                  <th>{{ $t('reference') }}</th>
+                  <th>{{ $t('notes') }}</th>
+                  <th>{{ $t('amount') }}</th>
+                  <th>{{ $t('amount remaining') }}</th>
+                  <th>{{ $t('amount usage') }}</th>
                   <th class="text-center">
-                    Close
+                    {{ $t('close') }}
                   </th>
                 </tr>
                 <tr
@@ -216,12 +216,12 @@
                   <tbody>
                     <tr>
                       <th v-if="form.referenceable_type === 'PaymentOrder'">
-                        Total Payment Order
+                        {{ $t('total payment order') | titlecase }}
                       </th>
                       <th
                         v-if="form.referenceable_type === 'PurchaseDownPayment'"
                       >
-                        Total Down Payment
+                        {{ $t('total down payment') | titlecase }}
                       </th>
                       <td class="text-right">
                         <p-form-number
@@ -235,7 +235,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th>Total Cash Advance</th>
+                      <th>{{ $t('total cash advance') | titlecase }}</th>
                       <td class="text-right">
                         <p-form-number
                           :id="'amount_cash_advance'"
@@ -248,7 +248,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <th>Total Cash Out</th>
+                      <th>{{ $t('total cash out') | titlecase }}</th>
                       <td class="text-right">
                         <p-form-number
                           :id="'amount_cash_out'"
@@ -262,19 +262,19 @@
                 </table>
               </div>
             </div>
-            <!-- Cash Out Create Additional Information -->
+            <!-- create cash out Additional Information -->
             <div class="row mt-30">
-              <!-- Cash Out Create Note -->
+              <!-- create cash out Note -->
               <div class="col-sm-9 col-lg-5 pb-30">
                 <textarea
                   v-model="form.notes"
                   rows="5"
                   class="form-control"
-                  placeholder="Notes"
+                  :placeholder="$t('notes') | capitalize"
                 />
                 <div class="d-sm-block d-md-none mt-10" />
               </div>
-              <!-- Cash Out Create Signature -->
+              <!-- create cash out Signature -->
               <div class="col-sm-3 ml-auto text-center">
                 <h6 class="mb-0">
                   {{ $t('created by') | uppercase }}

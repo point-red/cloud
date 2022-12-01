@@ -4,7 +4,7 @@
     <!-- Modal Select Reference Cash Out -->
     <sweet-modal
       ref="modal"
-      :title="'select reference cash out' | uppercase"
+      :title="$t('select reference cash out') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >
@@ -17,7 +17,7 @@
               ref="searchText"
               v-model="searchText"
               name="search-text"
-              placeholder="Search..."
+              :placeholder="$t('search') | capitalize"
               class="btn-block"
               @input="filterSearch"
               @keydown.enter.prevent=""
@@ -31,13 +31,13 @@
                 slot="p-head"
                 class="text-center"
               >
-                <th>Number</th>
-                <th>Date</th>
-                <th>Person</th>
-                <th>Account</th>
-                <th>Amount</th>
-                <th>Notes</th>
-                <th>Created By</th>
+                <th>{{ $t('number') }}</th>
+                <th>{{ $t('date') }}</th>
+                <th>{{ $t('person') }}</th>
+                <th>{{ $t('account') }}</th>
+                <th>{{ $t('amount') }}</th>
+                <th>{{ $t('notes') }}</th>
+                <th>{{ $t('created by') }}</th>
               </tr>
               <template v-for="(reference, index) in references">
                 <!-- Table Payment Order -->

@@ -15,7 +15,7 @@
           'form-control': true,
           'is-invalid': !!form.errors.get('reason')
         }"
-        placeholder="reason"
+        :placeholder="$t('reason')"
       />
       <hr>
       <button

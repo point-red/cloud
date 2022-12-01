@@ -12,7 +12,7 @@
         v-model="searchText"
         type="text"
         class="form-control"
-        placeholder="Search..."
+        :placeholder="$t('search') | capitalize"
         @keydown.enter.prevent=""
       >
       <hr>

@@ -78,7 +78,7 @@
                     id="search-text"
                     ref="searchText"
                     name="search-text"
-                    placeholder="Search"
+                    :placeholder="$t('search') | capitalize"
                     class="btn-block"
                     :value="searchText"
                     width="100%"
@@ -190,14 +190,14 @@
           <!-- Cash Table -->
           <point-table>
             <tr slot="p-head">
-              <th>Number</th>
-              <th>Date</th>
-              <th>Person</th>
-              <th>Account</th>
-              <th>Notes</th>
-              <th>Allocation</th>
+              <th>{{ $t('number') }}</th>
+              <th>{{ $t('date') }}</th>
+              <th>{{ $t('person') }}</th>
+              <th>{{ $t('account') }}</th>
+              <th>{{ $t('notes') }}</th>
+              <th>{{ $t('allocation') }}</th>
               <th class="text-right">
-                Amount
+                {{ $t('amount') }}
               </th>
             </tr>
             <template v-for="(payment, index) in payments">
@@ -318,9 +318,9 @@ export default {
           : this.$moment().format('YYYY-MM-DD 23:59:59')
       },
       // Search Text Default
-      searchText: this.$route.query.search,
+      searchText: null,
       // Current Page Default for Pagination
-      currentPage: this.$route.query.page * 1 || 1,
+      currentPage: 1,
       // Last Page Default for Pagination
       lastPage: 1,
       // Limit Data Default for Pagination

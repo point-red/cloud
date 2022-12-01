@@ -1,5 +1,7 @@
 {
-  "cash" : "cash",
-  "bank" : "bank",
-  "cash advance" : "cash advance"
+  "cash": "cash",
+  "create cash out ": "cash out create",
+  "preview": "preview",
+  "bank": "bank",
+  "cash advance": "cash advance"
 }

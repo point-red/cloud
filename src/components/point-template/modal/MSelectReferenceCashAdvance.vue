@@ -4,7 +4,7 @@
     <!-- Modal Select Reference Cash Advance -->
     <sweet-modal
       ref="modal"
-      :title="'select reference cash advance' | uppercase"
+      :title="$t('select reference cash advance') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >
@@ -17,7 +17,7 @@
               ref="searchText"
               v-model="searchText"
               name="search-text"
-              placeholder="Search..."
+              :placeholder="$t('search') | capitalize"
               class="btn-block"
               @input="filterSearch"
               @keydown.enter.prevent=""
@@ -31,13 +31,13 @@
                 slot="p-head"
                 class="text-center"
               >
-                <th>Number</th>
-                <th>Date</th>
-                <th>Person</th>
-                <th>Amount</th>
-                <th>Amount Remaining</th>
-                <th>Notes</th>
-                <th>Created By</th>
+                <th>{{ $t('number') }}</th>
+                <th>{{ $t('date') }}</th>
+                <th>{{ $t('person') }}</th>
+                <th>{{ $t('amount') }}</th>
+                <th>{{ $t('amount remaining') }}</th>
+                <th>{{ $t('notes') }}</th>
+                <th>{{ $t('created by') }}</th>
               </tr>
               <template v-for="(option, optionIndex) in options">
                 <tr

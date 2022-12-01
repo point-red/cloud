@@ -3,7 +3,7 @@
     <!-- Select Cash Person Modal -->
     <sweet-modal
       :ref="'select-' + id"
-      :title="'select person' | uppercase"
+      :title="$t('select cash person') | uppercase"
       overlay-theme="dark"
       @close="onClose()"
     >
@@ -12,7 +12,7 @@
         v-model="searchText"
         type="text"
         class="form-control"
-        placeholder="Search..."
+        :placeholder="$t('search') | capitalize"
         @keydown.enter.prevent=""
       >
       <hr>
@@ -83,7 +83,7 @@ export default {
     // Id
     id: {
       type: String,
-      required: true
+      default: null
     },
     // Value
     value: {

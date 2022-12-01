@@ -1,5 +1,7 @@
 {
-  "cash" : "cash",
-  "bank" : "bank",
-  "cash advance" : "cash advance"
+  "cash": "cash",
+  "create cash out": "buat cash out",
+  "preview": "pratinjau",
+  "bank": "bank",
+  "cash advance": "cash advance"
 }

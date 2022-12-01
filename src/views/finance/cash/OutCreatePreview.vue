@@ -88,16 +88,16 @@
             <!-- Table Payment -->
             <point-table>
               <tr slot="p-head">
-                <th>Payment</th>
+                <th>{{ $t('payment') }}</th>
                 <th style="min-width: 120px">
-                  Account
+                  {{ $t('account') }}
                 </th>
-                <th>Notes</th>
+                <th>{{ $t('notes') }}</th>
                 <th style="min-width: 120px">
-                  Allocation
+                  {{ $t('allocation') }}
                 </th>
                 <th class="text-right">
-                  Amount
+                  {{ $t('amount') }}
                 </th>
               </tr>
               <tr
@@ -136,13 +136,13 @@
                 slot="p-head"
                 class="text-left"
               >
-                <th>Reference</th>
-                <th>Notes</th>
-                <th>Amount</th>
-                <th>Amount Remaining</th>
-                <th>Amount Usage</th>
+                <th>{{ $t('reference') }}</th>
+                <th>{{ $t('notes') }}</th>
+                <th>{{ $t('amount') }}</th>
+                <th>{{ $t('amount remaining') }}</th>
+                <th>{{ $t('amount usage') }}</th>
                 <th class="text-center">
-                  Close
+                  {{ $t('close') }}
                 </th>
               </tr>
               <tr
@@ -167,10 +167,10 @@
                 </td>
                 <td class="text-center">
                   <span v-if="form.cash_advance.close === true">
-                    {{ $t('Closed') }}
+                    {{ $t('closed') }}
                   </span>
                   <span v-if="form.cash_advance.close === false">
-                    {{ $t('Opened') }}
+                    {{ $t('opened') }}
                   </span>
                 </td>
               </tr>
@@ -184,12 +184,12 @@
                 <tbody>
                   <tr>
                     <th v-if="form.referenceable_type === 'PaymentOrder'">
-                      Total Payment Order
+                      {{ $t('total payment order') | titlecase }}
                     </th>
                     <th
                       v-if="form.referenceable_type === 'PurchaseDownPayment'"
                     >
-                      Total Down Payment
+                      {{ $t('total down payment') | titlecase }}
                     </th>
                     <td class="text-right">
                       <p-form-number
@@ -203,7 +203,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <th>Total Cash Advance</th>
+                    <th>{{ $t('total cash advance') | titlecase }}</th>
                     <td class="text-right">
                       <p-form-number
                         :id="'amount_cash_advance'"
@@ -216,7 +216,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <th>Total Cash Out</th>
+                    <th>{{ $t('total cash out') | titlecase }}</th>
                     <td class="text-right">
                       <p-form-number
                         :id="'amount_cash_out'"
@@ -263,7 +263,7 @@
                     class="btn btn-sm btn-light mr-10"
                     @click="goBack()"
                   >
-                    {{ $t('Go Back') | uppercase }}
+                    {{ $t('go back') | uppercase }}
                   </button>
                 </div>
               </div>
@@ -369,7 +369,7 @@ export default {
       this.form.amount_cash_out =
         parseFloat(this.form.amount) - parseFloat(this.form.amount_cash_advance)
     }, 300),
-    // Go Back to Cash Out Create Page
+    // Go Back to create cash out Page
     goBack () {
       this.$router.push('/finance/cash/out/create')
     }
