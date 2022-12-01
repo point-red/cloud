@@ -37,7 +37,7 @@ describe('Purchase - Purchase receive', () => {
 
   })
 
-  it('Submit create purchase receive form', () => {
+  it('Submit edit purchase receive form', () => {
     cy.interceptToken()
     cy.visit('/purchase/receive')
     cy.waitToken()
