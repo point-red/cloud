@@ -231,7 +231,7 @@ export default {
       this.$emit('updateSheetName', sheetName)
     },
     sheetDeleted () {
-      this.$router.replaace({ name: 'PluginStudySheetIndex' })
+      this.$router.replace({ name: 'PluginStudySheetIndex' })
     }
   }
 }
