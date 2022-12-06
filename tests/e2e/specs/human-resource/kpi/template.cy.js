@@ -12,7 +12,7 @@ const timeOut = { timeout : 300000 }
 
 describe('HR - KPI Template', () => {
   beforeEach(() => {
-    // cy.hideXHR()
+    cy.hideXHR()
     cy.login('admin', 'admin')
   })
 
@@ -21,19 +21,19 @@ describe('HR - KPI Template', () => {
     cy.visit('/')
     cy.waitToken()
 
-    cy.waitVisible('#main-container > .content');
-    cy.get('#main-container > .content > .row > div > div > a').contains('MAIN MENU').click()
+    cy.waitVisible("#main-container > .content");
+    cy.get('#main-container a[href*="/"]').contains("MAIN MENU").click();
 
-    cy.waitVisible('#main-container > .content');
-    cy.get('#main-container > .content > .row > div > div > a').contains('HUMAN RESOURCE').click()
+    cy.waitVisible("#main-container > .content");
+    cy.get('#main-container a[href*="/"]').contains("HUMAN RESOURCE").click();
 
-    cy.waitVisible('#main-container > .content');
-    cy.get('#main-container > .content > div > .row > div > div > a').contains('KPI').click()
+    cy.waitVisible("#main-container > .content");
+    cy.get('#main-container a[href*="/"]').contains("KPI").click();
   
     cy.intercept('GET', getList).as('getKpiTemplate')
 
-    cy.waitVisible('#main-container > .content');
-    cy.get('#main-container > .content > div > .row > div > div > a').contains('KPI TEMPLATE').click()
+    cy.waitVisible("#main-container > .content");
+    cy.get('#main-container a[href*="/"]').contains("KPI TEMPLATE").click();
 
     cy.wait('@getKpiTemplate', timeOut).its('response.statusCode').should('equal', 200)
 

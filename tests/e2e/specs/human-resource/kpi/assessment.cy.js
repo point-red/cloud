@@ -1,8 +1,6 @@
-import { generateText, createDepartement } from '../functions'
 import * as hrFunctions from '../functions'
 
 const { should } = require("chai")
-const randomString = generateText(7)
 const url = '/human-resource/kpi/kpi-assessment'
 const apiUrl = Cypress.env('VUE_APP_API_ENDPOINT')
 const apiEmployee = apiUrl + '/human-resource/employee/employees'
@@ -29,15 +27,15 @@ describe('KPI Assessement - Index', () => {
   })
 
   it('Create Departemen', () => {
-    hrFunctions.createDepartement(departmentName)
+    hrFunctions.createDepartementApi(departmentName, 1)
   })
 
   it('Create Job location', () => {
-    hrFunctions.createJobLocation(jobLocation)
+    hrFunctions.createJobLocationApi(jobLocation, 1)
   })
 
   it('Create Employment Contract', () => {
-    hrFunctions.createEmploymentContract(employmentContract)
+    hrFunctions.createEmploymentContract(employmentContract, 1)
   })
 
   it('Create Employment', () => {
@@ -62,19 +60,19 @@ describe('KPI Assessement - Index', () => {
     cy.visit('/')
     cy.waitToken()
 
-    cy.waitVisible('#main-container > .content');
-    cy.get('#main-container > .content > .row > div > div > a').contains('MAIN MENU').click()
+    cy.waitVisible("#main-container > .content");
+    cy.get('#main-container a[href*="/"]').contains("MAIN MENU").click();
 
-    cy.waitVisible('#main-container > .content');
-    cy.get('#main-container > .content > .row > div > div > a').contains('HUMAN RESOURCE').click()
+    cy.waitVisible("#main-container > .content");
+    cy.get('#main-container a[href*="/"]').contains("HUMAN RESOURCE").click();
 
-    cy.waitVisible('#main-container > .content');
-    cy.get('#main-container > .content > div > .row > div > div > a').contains('KPI').click()
+    cy.waitVisible("#main-container > .content");
+    cy.get('#main-container a[href*="/"]').contains("KPI").click();
   
     cy.intercept('GET', listEmployee).as('getEmployee')
 
-    cy.waitVisible('#main-container > .content');
-    cy.get('#main-container > .content > div > .row > div > div > a').contains('KPI ASSESSMENT').click()
+    cy.waitVisible("#main-container > .content");
+    cy.get('#main-container a[href*="/"]').contains("KPI ASSESSMENT").click();
 
     cy.wait('@getEmployee', timeOut).its('response.statusCode').should('equal', 200)
     cy.url().should('contain', url)
