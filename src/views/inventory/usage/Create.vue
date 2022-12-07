@@ -130,8 +130,6 @@
                         label: row.unit,
                         converter: row.converter
                       }"
-                      :max="row.quantity_pending * 1"
-                      :readonly="false"
                       @choosen="chooseUnit($event, row)"
                       @click.native="onClickQuantity(row, index)"
                     />
@@ -400,7 +398,7 @@ export default {
     },
     onClickQuantity (row, index) {
       if (row.require_expiry_date === 1 || row.require_production_number === 1) {
-        row.warehouse_id = this.warehouseId
+        row.warehouse_id = this.form.warehouse_id
         row.index = index
         this.$refs.inventory.open(row, row.quantity)
       }

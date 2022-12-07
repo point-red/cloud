@@ -3,123 +3,129 @@
     <breadcrumb>
       <breadcrumb-purchase />
       <router-link
-        :to="{ name: 'purchase.request.index' }"
+        to="/inventory/usage"
         class="breadcrumb-item"
       >
         {{ $t('inventory usage') | uppercase }}
       </router-link>
       <router-link
-        :to="{ name: 'purchase.request.show', params: { id: id }}"
+        :to="{ name: 'inventory.usage.show', params: { id: id }}"
         class="breadcrumb-item"
       >
-        {{ purchaseRequest.form.number | uppercase }}
+        {{ inventoryUsage.form.number | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
     </breadcrumb>
 
     <form @submit.prevent="onSubmit">
       <div class="row">
-        <p-block :header="false">
+        <p-block>
           <p-block-inner :is-loading="isLoading">
             <div class="row">
-              <div class="col-sm-12">
-                <h4 class="text-center">
+              <div class="col-sm-6">
+                <h4>
                   {{ $t('inventory usage') | uppercase }}
                 </h4>
-                <hr>
-                <div class="float-sm-right text-right">
+                <table class="table table-sm table-bordered">
+                  <tr>
+                    <td class="font-weight-bold">
+                      {{ $t('date') | uppercase }}
+                    </td>
+                    <td>
+                      <p-date-picker
+                        id="date"
+                        v-model="form.date"
+                        name="date"
+                        :label="$t('date')"
+                        :errors="form.errors.get('date')"
+                        @errors="form.errors.set('date', null)"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">
+                      {{ $t('warehouse') | uppercase }}
+                    </td>
+                    <td>
+                      <span
+                        class="select-link"
+                        @click="$refs.warehouse.open()"
+                      >{{ form.warehouse_name || $t('select') | uppercase }}</span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-sm-6 text-right">
+                <div class="mb-30">
                   <h6 class="mb-0">
                     {{ authUser.tenant_name | uppercase }}
                   </h6>
-                  {{ authUser.tenant_address | uppercase }} <br v-if="authUser.tenant_address">
-                  {{ authUser.tenant_phone | uppercase }} <br v-if="authUser.tenant_phone">
+                  <template v-if="authUser.branch">
+                    {{ authUser.branch.address | uppercase }} <br v-if="authUser.branch.address">
+                    {{ authUser.branch.phone | uppercase }} <br v-if="authUser.branch.phone">
+                  </template>
                 </div>
-                <div class="float-sm-left">
-                  <h6 class="mb-0 ">
-                    {{ $t('supplier') | uppercase }}
+                <div>
+                  <h6 class="mb-5 mt-30">
+                    {{ $t('employee') | uppercase }}:
                   </h6>
-                  <m-supplier
-                    id="supplier"
-                    v-model="form.supplier_id"
-                    :label="form.supplier_name"
-                    @choosen="chooseSupplier"
-                  />
-                  <div
-                    v-if="form.supplier_phone"
-                    style="font-size:12px"
+                  <span
+                    class="select-link"
+                    @click="$refs.employee.open()"
                   >
-                    {{ form.supplier_address | uppercase }} <br v-if="form.supplier_email">
-                    {{ form.supplier_phone }} <br v-if="form.supplier_phone">
-                    {{ form.supplier_email | uppercase }}
+                    {{ form.employee_name || $t('select') | uppercase }}
+                  </span>
+                  <div
+                    :v-show="!!form.errors.get('employee_id')"
+                    class="invalid-feedback d-block"
+                  >
+                    {{ form.errors.get('employee_id') }}
                   </div>
                 </div>
               </div>
             </div>
             <hr>
-            <p-form-row
-              id="form-number"
-              name="form-number"
-              :label="$t('form number')"
-            >
-              <div
-                slot="body"
-                class="col-lg-9 mt-5"
-              >
-                {{ purchaseRequest.form.number }}
-              </div>
-            </p-form-row>
-            <p-form-row
-              id="required-date"
-              name="required-date"
-              :label="$t('required date')"
-            >
-              <div
-                slot="body"
-                class="col-lg-9"
-              >
-                <p-date-picker
-                  id="required-date"
-                  v-model="form.required_date"
-                  name="required-date"
-                  :label="$t('required date')"
-                  :errors="form.errors.get('required_date')"
-                  @errors="form.errors.set('required_date', null)"
-                />
-              </div>
-            </p-form-row>
             <hr>
             <point-table class="mt-20">
               <tr slot="p-head">
-                <th class="text-center">
-                  #
-                </th>
                 <th>Item</th>
+                <th>Account</th>
+                <th>Quantity Usage</th>
                 <th>Notes</th>
-                <th>Quantity</th>
-                <th>Estimated Price</th>
-                <th />
+                <th>Allocation</th>
               </tr>
               <template v-for="(row, index) in form.items">
                 <tr
                   slot="p-body"
                   :key="index"
                 >
-                  <th class="text-center">
-                    {{ index + 1 }}
-                  </th>
                   <td>
-                    <m-item
-                      :id="'item-' + index"
-                      v-model="row.item_id"
-                      @choosen="chooseItem($event, row)"
-                    />
+                    <span
+                      class="select-link"
+                      @click="$refs.item.open(index)"
+                    >
+                      {{ row.item_label || $t('select') | uppercase }}
+                    </span>
+                    <div
+                      :v-show="!!form.errors.get(`items.${index}.item_id`)"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ form.errors.get(`items.${index}.item_id`) }}
+                    </div>
                   </td>
                   <td>
-                    <p-form-input
-                      :id="'notes-' + index"
-                      v-model="row.notes"
-                      :name="'notes-' + index"
-                    />
+                    <span
+                      class="select-link"
+                      @click="$refs.itemChartOfAccountRef.open(index)"
+                    >
+                      {{ row.chart_of_account_name || $t('select') | uppercase }}
+                    </span>
+                    <div
+                      :v-show="!!form.errors.get(`items.${index}.chart_of_account_id`)"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ form.errors.get(`items.${index}.chart_of_account_id`) }}
+                    </div>
                   </td>
                   <td>
                     <p-quantity
@@ -134,15 +140,35 @@
                         converter: row.converter
                       }"
                       @choosen="chooseUnit($event, row)"
+                      @click.native="onClickQuantity(row, index)"
+                    />
+                    <div
+                      :v-show="!!form.errors.get(`items.${index}.quantity`) || !!form.errors.get(`items.${index}.unit`)"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ form.errors.get(`items.${index}.quantity`) || form.errors.get(`items.${index}.unit`) }}
+                    </div>
+                  </td>
+                  <td>
+                    <p-form-input
+                      :id="'notes-' + index"
+                      v-model="row.notes"
+                      :name="'notes-' + index"
                     />
                   </td>
                   <td>
-                    <p-form-number
-                      :id="'price-' + index"
-                      v-model="row.price"
-                      :name="'price-' + index"
-                      @keyup.native="calculate"
-                    />
+                    <span
+                      class="select-link"
+                      @click="$refs.allocation.open(index)"
+                    >
+                      {{ row.allocation_name || $t('select') | uppercase }}
+                    </span>
+                    <div
+                      :v-show="!!form.errors.get(`items.${index}.allocation_id`)"
+                      class="invalid-feedback d-block"
+                    >
+                      {{ form.errors.get(`items.${index}.allocation_id`) }}
+                    </div>
                   </td>
                   <td>
                     <button
@@ -155,45 +181,7 @@
                     </button>
                   </td>
                 </tr>
-                <template v-if="row.more">
-                  <tr
-                    slot="p-body"
-                    :key="'ext-'+index"
-                    class="bg-gray-light"
-                  >
-                    <th class="bg-gray-light" />
-                    <td colspan="4">
-                      <p-form-row
-                        id="allocation"
-                        name="allocation"
-                        :label="$t('allocation')"
-                      >
-                        <m-allocation
-                          :id="'allocation-' + index"
-                          slot="body"
-                          v-model="row.allocation_id"
-                          class="mt-5"
-                        />
-                      </p-form-row>
-                    </td>
-                    <td />
-                  </tr>
-                </template>
               </template>
-              <tr slot="p-body">
-                <th class="text-center" />
-                <td />
-                <td />
-                <td />
-                <td>
-                  <p-form-number
-                    :id="'total-price'"
-                    v-model="totalPrice"
-                    :name="'total-price'"
-                    :readonly="true"
-                  />
-                </td>
-              </tr>
             </point-table>
             <div class="row mt-50">
               <div class="col-sm-6">
@@ -228,15 +216,17 @@
                 >
                   _______________
                 </div>
-                <m-user
-                  :id="'user'"
-                  v-model="form.approver_id"
-                  :label="form.approver_name"
-                  :errors="form.errors.get('approver_id')"
-                  @errors="form.errors.set('approver_id', null)"
-                  @choosen="chooseApprover"
-                />
-                {{ form.approver_email }} <br v-if="form.approver_email">
+                <span
+                  class="select-link"
+                  @click="$refs.approver.open()"
+                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
+                <div
+                  :v-show="!!form.errors.get('request_approval_to')"
+                  class="invalid-feedback d-block"
+                >
+                  {{ form.errors.get('request_approval_to') }}
+                </div>
               </div>
 
               <div class="col-sm-12">
@@ -244,7 +234,7 @@
                 <button
                   v-if="!isLoading"
                   type="submit"
-                  class="btn btn-sm btn-primary"
+                  class="btn btn-sm btn-block btn-primary"
                   :disabled="isSaving"
                 >
                   <i
@@ -258,6 +248,41 @@
         </p-block>
       </div>
     </form>
+    <m-item
+      ref="item"
+      @choosen="chooseItem"
+    />
+    <m-inventory-out
+      :id="'inventory'"
+      ref="inventory"
+      :disable-unit-selection="true"
+      @updated="updateDna($event)"
+    />
+    <m-allocation
+      ref="allocation"
+      @choosen="chooseAllocation($event)"
+    />
+    <m-chart-of-account
+      ref="itemChartOfAccountRef"
+      :type-in="['BEBAN OPERASIONAL', 'BEBAN NON OPERASIONAL']"
+      @choosen="onChoosenAccount"
+    />
+    <m-warehouse
+      id="warehouse_id"
+      ref="warehouse"
+      default-only
+      @choosen="chooseWarehouse($event)"
+    />
+    <m-user
+      ref="approver"
+      :permission="'approve inventory usage'"
+      @choosen="chooseApprover"
+    />
+    <m-employee
+      id="employee"
+      ref="employee"
+      @choosen="chooseEmployee"
+    />
   </div>
 </template>
 
@@ -275,21 +300,21 @@ export default {
     PointTable
   },
   data () {
+    const id = this.$route.params.id
     return {
-      id: this.$route.params.id,
-      isLoading: true,
+      id,
       isSaving: false,
-      totalPrice: 0,
-      requestedBy: null,
+      isLoading: true,
+      requestedBy: localStorage.getItem('userName'),
       form: new Form({
-        id: this.$route.params.id,
+        id,
+        increment_group: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        required_date: null,
-        supplier_id: null,
-        supplier_name: null,
-        supplier_address: null,
-        supplier_phone: null,
-        approver_id: null,
+        warehouse_id: null,
+        warehouse_name: null,
+        employee_id: null,
+        employee_name: null,
+        request_approval_to: null,
         approver_name: null,
         approver_email: null,
         notes: null,
@@ -299,56 +324,49 @@ export default {
   },
   computed: {
     ...mapGetters('auth', ['authUser']),
-    ...mapGetters('purchaseRequest', ['purchaseRequest'])
+    ...mapGetters('inventoryUsage', ['inventoryUsage'])
   },
   created () {
     this.isLoading = true
+
     this.find({
       id: this.id,
       params: {
-        includes: 'supplier;form.createdBy;items.item.units;items.allocation;services.service;services.allocation;approvers.requestedBy;approvers.requestedTo'
+        includes: 'warehouse;' +
+            'items.account;' +
+            'items.item;' +
+            'items.allocation;' +
+            'form.createdBy;' +
+            'form.requestApprovalTo;' +
+            'form.requestCancellationTo;' +
+            'employee'
       }
-    }).then(response => {
-      if (!this.$formRules.allowedToUpdate(response.data.form)) {
-        this.$router.replace('/inventory/usage/' + response.data.id)
-      }
+    }).then(({ data }) => {
       this.isLoading = false
-      this.requestedBy = response.data.form.created_by.first_name + ' ' + response.data.form.created_by.last_name
-      this.form.edited_form_number = response.data.form.edited_form_number
-      this.form.required_date = response.data.required_date
-      this.form.supplier_id = response.data.supplier_id
-      this.form.supplier_name = response.data.supplier_name
-      this.form.supplier_address = response.data.supplier_address
-      this.form.supplier_phone = response.data.supplier_phone
-      this.form.notes = response.data.form.notes
-      response.data.approvers.forEach((approval) => {
-        this.form.approver_id = approval.requested_to.id
-        this.form.approver_name = approval.requested_to.first_name + ' ' + approval.requested_to.last_name
-        this.form.approver_email = approval.requested_to.email
+
+      this.chooseWarehouse(data.warehouse)
+      this.chooseEmployee(data.employee)
+      this.chooseApprover(data.form.request_approval_to)
+
+      this.form.date = data.form.date
+      this.form.notes = data.notes
+
+      this.form.items = data.items
+      this.form.items.forEach(function (item) {
+        item.item_label = item.item.name
+        item.chart_of_account_name = item.account.name
+        item.allocation_name = item.allocation.name
+        item.units = item.item.units
       })
-      response.data.items.forEach((item, keyItem) => {
-        this.form.items.push({
-          item_id: item.item_id,
-          item_name: item.item.name,
-          quantity: item.quantity,
-          price: item.price,
-          unit: item.unit,
-          converter: item.converter,
-          units: item.item.units,
-          allocation_id: item.allocation_id,
-          notes: item.notes,
-          more: false
-        })
-      })
+
       this.addItemRow()
-      this.calculate()
     }).catch(error => {
       this.isLoading = false
       this.$notification.error(error.message)
     })
   },
   methods: {
-    ...mapActions('purchaseRequest', ['find', 'update']),
+    ...mapActions('inventoryUsage', ['find', 'update']),
     addItemRow () {
       this.form.items.push({
         item_id: null,
@@ -372,23 +390,34 @@ export default {
         more: false
       })
     },
-    calculate () {
-      this.totalPrice = 0
-      this.form.items.forEach((item) => {
-        if (item.price) {
-          this.totalPrice += parseFloat(item.price)
-        }
-      })
+    onChoosenAccount (account) {
+      const row = this.form.items[account.index]
+      row.chart_of_account_id = account.id
+      row.chart_of_account_name = account.label
+    },
+    updateDna (e) {
+      this.form.items[e.index].dna = e.dna
+      this.form.items[e.index].quantity = e.quantity
+      this.form.items[e.index].unit = e.unit
+      this.form.items[e.index].converter = e.converter
+    },
+    chooseWarehouse (option) {
+      this.form.warehouse_id = option.id
+      this.form.warehouse_name = option.name
+    },
+    chooseEmployee (value) {
+      this.form.employee_id = value.id
+      this.form.employee_name = value.name
+    },
+    chooseAllocation (allocation) {
+      const row = this.form.items[allocation.index]
+      row.allocation_id = allocation.id
+      row.allocation_name = allocation.name
     },
     chooseApprover (value) {
-      this.form.approver_name = value.label
+      this.form.request_approval_to = value.id
+      this.form.approver_name = value.full_name
       this.form.approver_email = value.email
-    },
-    chooseSupplier (value) {
-      this.form.supplier_name = value.label
-      this.form.supplier_address = value.address
-      this.form.supplier_phone = value.phone
-      this.form.supplier_email = value.email
     },
     chooseItem (item, row) {
       row.item_name = item.name
@@ -414,6 +443,7 @@ export default {
       row.converter = unit.converter
     },
     onSubmit () {
+      this.isSaving = true
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
       if (this.form.items.length > 1) {
         this.form.items = this.form.items.filter(item => item.item_id !== null)

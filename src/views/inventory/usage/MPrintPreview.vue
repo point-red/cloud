@@ -1,13 +1,13 @@
 <template>
   <sweet-modal
     ref="print-preview"
-    :title="$t('print delivery order') | uppercase"
+    :title="$t('print inventory usage') | uppercase"
     overlay-theme="dark"
     @close="onClose()"
   >
     <table
-      id="print-delivery-order"
-      class="print-delivery-order-container m-2 mb-4 mx-auto"
+      id="print-inventory-usage"
+      class="print-inventory-usage-container m-2 mb-4 mx-auto"
     >
       <thead>
         <tr>
@@ -25,7 +25,7 @@
               </div>
               <div class="company-detail">
                 <h1 style="margin-top: 0; margin-bottom: 5px;">
-                  Delivery Order
+                  inventory Usage
                 </h1>
                 <h3
                   class="my-5px"
@@ -56,22 +56,17 @@
                 <tr>
                   <td>Form Number</td>
                   <td>:</td>
-                  <td>{{ deliveryOrder.form.number }}</td>
+                  <td>{{ inventoryUsage.form.number }}</td>
                 </tr>
                 <tr>
                   <td>Date</td>
                   <td>:</td>
-                  <td>{{ deliveryOrder.date | dateFormat('DD MMMM YYYY') }}</td>
+                  <td>{{ inventoryUsage.date | dateFormat('DD MMMM YYYY') }}</td>
                 </tr>
                 <tr>
-                  <td>Sales Order</td>
+                  <td>Employee</td>
                   <td>:</td>
-                  <td>{{ '-' }}</td>
-                </tr>
-                <tr>
-                  <td>Warehouse</td>
-                  <td>:</td>
-                  <td>{{ deliveryOrder.warehouse.name || '-' }}</td>
+                  <td>{{ inventoryUsage.employee.name || '-' }}</td>
                 </tr>
               </table>
               <table
@@ -79,19 +74,19 @@
                 style="margin-left: 20px;"
               >
                 <tr>
-                  <td>Customer</td>
+                  <td>Warehouse</td>
                   <td>:</td>
-                  <td>{{ deliveryOrder.customer.name || '-' }}</td>
+                  <td>{{ inventoryUsage.warehouse.name || '-' }}</td>
                 </tr>
                 <tr>
                   <td>Address</td>
                   <td>:</td>
-                  <td>{{ deliveryOrder.customer.address || '-' }}</td>
+                  <td>{{ inventoryUsage.warehouse.address || '-' }}</td>
                 </tr>
                 <tr>
                   <td>Phone number</td>
                   <td>:</td>
-                  <td>{{ deliveryOrder.customer.phone || '-' }}</td>
+                  <td>{{ inventoryUsage.warehouse.phone || '-' }}</td>
                 </tr>
                 <tr>
                   .
@@ -105,7 +100,7 @@
         <tr>
           <td>
             <div
-              v-if="deliveryOrder.form.cancellation_status == 1"
+              v-if="inventoryUsage.form.cancellation_status == 1"
               class="watermark"
             >
               <img
@@ -123,25 +118,19 @@
                     Item
                   </th>
                   <th class="text-center">
-                    Quantity Requested
-                  </th>
-                  <th class="text-center">
-                    Quantity Delivered
+                    Quantity Usage
                   </th>
                 </tr>
               </thead>
               <tr
-                v-for="(row, index) in deliveryOrder.items"
+                v-for="(row, index) in inventoryUsage.items"
                 :key="index"
               >
                 <td>
                   {{ row.item.label }}
                 </td>
                 <td class="text-center">
-                  {{ row.quantity_requested | numberFormat }} {{ row.unit }}
-                </td>
-                <td class="text-center">
-                  {{ row.quantity_delivered | numberFormat }} {{ row.unit }}
+                  {{ row.quantity | numberFormat }} {{ row.unit }}
                 </td>
               </tr>
             </table>
@@ -155,12 +144,12 @@
               >
                 <h3>Created By</h3>
                 <br><br><br>
-                {{ deliveryOrder.form.created_by.full_name }}
+                {{ inventoryUsage.form.created_by.full_name }}
               </div>
               <div class="text-center">
                 <h3>Approved By</h3>
                 <br><br><br>
-                {{ deliveryOrder.form.request_approval_to.full_name }}
+                {{ inventoryUsage.form.request_approval_to.full_name }}
               </div>
             </div>
           </td>
@@ -169,7 +158,7 @@
     </table>
     <div class="pull-right">
       <button
-        v-print="'print-delivery-order'"
+        v-print="'print-inventory-usage'"
         type="button"
         class="btn btn-sm btn-outline-secondary mt-3"
         @click="createHistoryPrint"
@@ -189,7 +178,7 @@ export default {
     print
   },
   props: {
-    deliveryOrder: {
+    inventoryUsage: {
       type: Object,
       required: true
     }
@@ -224,7 +213,6 @@ export default {
   },
   async created () {
     this.onLoad = true
-    console.log(this.deliveryOrder)
     await Promise.all([
       this.getSettingLogo(),
       this.getSettingEndNote()
@@ -232,7 +220,7 @@ export default {
     this.onLoad = false
   },
   methods: {
-    ...mapActions('salesDeliveryOrderHistory', ['add']),
+    ...mapActions('inventoryUsageHistory', ['add']),
     clear () {
       this.mutableId = null
       this.mutableLabel = null
@@ -249,7 +237,7 @@ export default {
       this.$emit('close', true)
     },
     createHistoryPrint () {
-      this.add({ id: this.deliveryOrder.id, activity: 'Printed' })
+      this.add({ id: this.inventoryUsage.id, activity: 'Printed' })
         .catch(error => {
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
@@ -287,7 +275,7 @@ export default {
   justify-content: center;
   z-index: -1;
 }
-.print-delivery-order-container {
+.print-inventory-usage-container {
   width: 90%;
   padding: 30px;
 }
@@ -359,7 +347,7 @@ table.table-items, .table-items th, .table-items td {
   table.header-detail tr td {
     line-height: 0.5px;
   }
-  #print-delivery-order thead tr td {
+  #print-inventory-usage thead tr td {
     padding-top: 20px;
   }
 }
