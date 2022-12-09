@@ -102,4 +102,15 @@ describe('Purchase - Purchase receive', () => {
     cy.waitVisible('#main-container > .content')
     cy.get('#main-container > .content > div > div > div > div > div > div > a[href="/purchase/receive/create"]').should('have.class', 'input-group-prepend').should('be.visible').click()
   })
+
+  it('Submit create purchase receive form without filled form', () => {
+    cy.interceptToken()
+    cy.visit('/purchase/receive')
+    cy.waitToken()
+
+    cy.waitVisible('#main-container > .content')
+    cy.get('#main-container > .content > div > div > div > div > div > div > a[href="/purchase/receive/create"]').should('have.class', 'input-group-prepend').should('be.visible').click()
+    cy.waitVisible('#main-container > .content')
+    cy.get('#main-container > .content > div > form button').contains('SAVE').should('be.visible').click()
+  })
 })
