@@ -80,4 +80,36 @@ describe('Purchase - Purchase receive', () => {
     cy.waitVisible('table')
     cy.get('table td').should('contain', 'CANCELED')
   })
+
+  it('Dont have access branch wont be able to see receive data', () => {
+    cy.interceptToken()
+    cy.visit('master/branch/')
+    cy.waitToken()
+
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).invoke('text').then(text => {
+          if (text.includes('CENTRAL')) {
+            cy.wrap($element).find('a').click()
+            cy.waitVisible('#main-container > .content')
+          }
+        })
+      })
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).then(text => {
+          cy.get('[type="checkbox"]').uncheck()
+        })
+      })
+
+    cy.interceptToken()
+    cy.visit('/purchase/receive')
+    cy.waitToken()
+
+    cy.waitVisible('#main-container > .content')
+  })
 })
