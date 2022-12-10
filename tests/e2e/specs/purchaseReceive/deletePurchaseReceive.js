@@ -131,4 +131,24 @@ describe('View Purchase Receive', () => {
       .should('be.visible')
       .click()
   })
+
+  it('Access receive form with cancellation status = 1 wont see delete button', () => {
+    cy.interceptToken()
+    cy.visit('purchase/receive/')
+    cy.waitToken()
+
+    cy.waitVisible('#main-container > .content')
+
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).invoke('text').then(text => {
+          if (text.includes('CANCELED')) {
+            cy.wrap($element).siblings('th').children('a').click()
+            cy.waitVisible('#main-container > .content')
+          }
+        })
+      })
+  })
 })
