@@ -77,4 +77,49 @@ describe('Purchase - Purchase receive', () => {
     cy.get('#main-container > .content > div > form').contains('PURCHASE RECEIVE').get('input.form-control.form-number.text-right.bg-white').type('0')
     cy.get('#main-container > .content > div > form button').contains('SAVE').should('be.visible').click()
   })
+
+  it('Do not have access to default branch then wont be able to edit receive', () => {
+    cy.interceptToken()
+    cy.visit('master/branch/')
+    cy.waitToken()
+
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).invoke('text').then(text => {
+          if (text.includes('CENTRAL')) {
+            cy.wrap($element).find('a').click()
+            cy.waitVisible('#main-container > .content')
+          }
+        })
+      })
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).then(text => {
+          cy.get('[type="checkbox"]').uncheck()
+        })
+      })
+
+    cy.interceptToken()
+    cy.visit('purchase/receive/')
+    cy.waitToken()
+
+    cy.waitVisible('#main-container > .content')
+
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).invoke('text').then(text => {
+          if (text.includes('PENDING')) {
+            cy.wrap($element).siblings('th').children('a').click()
+            cy.waitVisible('#main-container > .content')
+          }
+        })
+      })
+    cy.get('.text-right').find('a').contains(' EDIT ').should('be.visible').click({ force: true })
+  })
 })
