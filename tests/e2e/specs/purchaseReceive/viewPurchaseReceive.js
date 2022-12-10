@@ -28,4 +28,35 @@ describe('View Purchase Receive', () => {
     cy.waitVisible('#main-container > .content')
     cy.waitVisible('table')
   })
+
+  it.only('Do not have access to branch will not be able to view the details', () => {
+    cy.interceptToken()
+    cy.visit('master/branch/')
+    cy.waitToken()
+
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).invoke('text').then(text => {
+          if (text.includes('CENTRAL')) {
+            cy.wrap($element).find('a').click()
+            cy.waitVisible('#main-container > .content')
+          }
+        })
+      })
+
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).then(text => {
+          cy.get('[type="checkbox"]').uncheck()
+        })
+      })
+
+    cy.interceptToken()
+    cy.visit('purchase/receive/')
+    cy.waitToken()
+  })
 })

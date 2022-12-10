@@ -68,4 +68,49 @@ describe('Purchase - Purchase receive', () => {
         })
       })
   })
+
+  it('Do not have access branch and click create button', () => {
+    cy.interceptToken()
+    cy.visit('master/branch/')
+    cy.waitToken()
+
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).invoke('text').then(text => {
+          if (text.includes('CENTRAL')) {
+            cy.wrap($element).find('a').click()
+            cy.waitVisible('#main-container > .content')
+          }
+        })
+      })
+
+    cy.waitVisible('tbody > tr')
+    cy.get('tbody > tr')
+      .find('td')
+      .each(($element) => {
+        cy.wrap($element).then(text => {
+          cy.get('[type="checkbox"]').uncheck()
+        })
+      })
+
+    cy.interceptToken()
+    cy.visit('purchase/receive/')
+    cy.waitToken()
+
+    cy.waitVisible('#main-container > .content')
+    cy.get('#main-container > .content > div > div > div > div > div > div > a[href="/purchase/receive/create"]').should('have.class', 'input-group-prepend').should('be.visible').click()
+  })
+
+  it('Submit create purchase receive form without filled form', () => {
+    cy.interceptToken()
+    cy.visit('/purchase/receive')
+    cy.waitToken()
+
+    cy.waitVisible('#main-container > .content')
+    cy.get('#main-container > .content > div > div > div > div > div > div > a[href="/purchase/receive/create"]').should('have.class', 'input-group-prepend').should('be.visible').click()
+    cy.waitVisible('#main-container > .content')
+    cy.get('#main-container > .content > div > form button').contains('SAVE').should('be.visible').click()
+  })
 })
