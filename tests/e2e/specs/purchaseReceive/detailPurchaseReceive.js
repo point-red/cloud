@@ -37,4 +37,18 @@ describe('Purchase - Purchase receive', () => {
     cy.get('#main-container > .content > div > form').contains('PURCHASE RECEIVE').should('be.visible')
     cy.get('table.table.table-sm.table-bordered').find('tr').contains('  WAREHOUSE  ').should('be.visible').find('td').contains(' SELECT ').should('be.visible').click({ force: true })
   })
+
+  it('Click to select purchase order', () => {
+    cy.interceptToken()
+    cy.visit('/purchase/receive')
+    cy.waitToken()
+
+    cy.waitVisible('#main-container > .content')
+    cy.get('#main-container > .content > div > div > div > div > div > div > a[href="/purchase/receive/create"]').should('have.class', 'input-group-prepend').should('be.visible').click()
+    cy.waitVisible('#main-container > .content')
+    cy.get('#main-container > .content > div > form').contains('PURCHASE RECEIVE').should('be.visible')
+    cy.get('table.table.table-sm.table-bordered').find('tr').contains('  PURCHASE ORDER  ').should('be.visible').find('td').contains(' SELECT ').should('be.visible').click({ force: true })
+    cy.waitVisible('.sweet-content-content > .list-group push')
+    cy.get('a.list-group-item.list-group-item-action').click({ force: true })
+  })
 })
