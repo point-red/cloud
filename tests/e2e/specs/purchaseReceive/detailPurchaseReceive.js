@@ -50,5 +50,7 @@ describe('Purchase - Purchase receive', () => {
     cy.get('table.table.table-sm.table-bordered').find('tr').contains('  PURCHASE ORDER  ').should('be.visible').find('td').contains(' SELECT ').should('be.visible').click({ force: true })
     cy.waitVisible('.sweet-content-content > .list-group push')
     cy.get('a.list-group-item.list-group-item-action').click({ force: true })
+
+    cy.get('#main-container > .content > div > form').contains('PURCHASE RECEIVE').get('input.form-control.form-number.text-right.bg-white').type('9999')
   })
 })
