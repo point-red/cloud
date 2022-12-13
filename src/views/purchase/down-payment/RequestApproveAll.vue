@@ -6,16 +6,16 @@
         to="/purchase/down-payment"
         class="breadcrumb-item"
       >
-        {{ $t('purchase order') | uppercase }}
+        {{ $t('down payment') | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ $t('request approve all') | uppercase }}</span>
     </breadcrumb>
 
     <div class="row">
-      <p-block :title="$t('purchase order')">
+      <p-block :title="$t('down payment')">
         <div class="input-group block">
           <download-excel
-            :name="`Purchase Order_approve`"
+            :name="`Down Payment_approve`"
             :fetch="generateReport"
             class="input-group-prepend"
           >
@@ -24,8 +24,8 @@
             </span>
           </download-excel>
           <router-link
-            v-if="$permission.has('create purchase order')"
-            to="/finance/cash-advance/create"
+            v-if="$permission.has('create down payment')"
+            to="/purchase/down-payment/create"
             class="input-group-prepend"
           >
             <span class="input-group-text">
@@ -91,9 +91,9 @@
                 Last Request
               </th>
             </tr>
-            <template v-for="(purchaseOrder, index) in purchaseOrders">
+            <template v-for="(downPayment, index) in downPayments">
               <tr
-                :key="'purchase-order-' + index"
+                :key="'down-payment-' + index"
                 slot="p-body"
               >
                 <td class="text-center">
@@ -105,48 +105,48 @@
                   >
                 </td>
                 <td class="text-center">
-                  {{ purchaseOrder.form.date | dateFormat('DD MMMM YYYY') }}
+                  {{ downPayment.form.date | dateFormat('DD MMMM YYYY') }}
                 </td>
                 <td class="text-center">
-                  <router-link :to="{ name: 'purchase.order.show', params: { id: purchaseOrder.id }}">
-                    {{ purchaseOrder.form.number }}
+                  <router-link :to="{ name: 'purchase.down_payment.show', params: { id: downPayment.id }}">
+                    {{ downPayment.form.number }}
                   </router-link>
                 </td>
                 <td class="text-center">
-                  {{ purchaseOrder.supplier.name }}
+                  {{ downPayment.supplier.name }}
                 </td>
                 <td class="text-center">
-                  {{ purchaseOrder.form.notes }}
+                  {{ downPayment.form.notes }}
                 </td>
                 <td class="text-center">
-                  {{ purchaseOrder.tax }}
+                  {{ downPayment.tax }}
                 </td>
                 <td class="text-center">
-                  {{ purchaseOrder.amount | numberFormat }}
+                  {{ downPayment.amount | numberFormat }}
                 </td>
                 <td class="text-center">
                   <div
-                    v-if="purchaseOrder.form.approval_status == 0"
+                    v-if="downPayment.form.approval_status == 0"
                     class="badge badge-primary"
                   >
                     {{ $t('pending') | uppercase }}
                   </div>
                   <div
-                    v-if="purchaseOrder.form.approval_status == -1"
+                    v-if="downPayment.form.approval_status == -1"
                     class="badge badge-danger"
                   >
                     {{ $t('rejected') | uppercase }}
                   </div>
                   <div
-                    v-if="purchaseOrder.form.approval_status == 1"
+                    v-if="downPayment.form.approval_status == 1"
                     class="badge badge-success"
                   >
                     {{ $t('approved') | uppercase }}
                   </div>
                 </td>
                 <td class="text-center">
-                  <div v-if="purchaseOrder.last_request_approval_at != null">
-                    {{ purchaseOrder.last_request_approval_at | dateFormat('DD MMMM YYYY HH:mm') }}
+                  <div v-if="downPayment.last_request_approval_at != null">
+                    {{ downPayment.last_request_approval_at | dateFormat('DD MMMM YYYY HH:mm') }}
                   </div>
                 </td>
               </tr>
@@ -219,7 +219,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('purchaseOrder', ['purchaseOrders', 'pagination'])
+    ...mapGetters('downPayment', ['downPayments', 'pagination'])
   },
   created () {
     this.search()
@@ -228,7 +228,7 @@ export default {
     this.lastPage = this.pagination.last_page
   },
   methods: {
-    ...mapActions('purchaseOrder', ['get', 'sendBulkRequestApproval']),
+    ...mapActions('downPayment', ['get', 'sendBulkRequestApproval']),
     filterSearch: debounce(function (value) {
       this.$router.push({ query: { search: value } })
       this.searchText = value
@@ -253,9 +253,9 @@ export default {
     },
     countCheck () {
       this.checkedLength = this.checkedData.filter(data => data.checked).length
-      if (this.checkedLength == this.purchaseOrders.length) {
+      if (this.checkedLength == this.downPayments.length) {
         this.isCheckAll = true
-      } else if (this.checkedLength != this.purchaseOrders.length) {
+      } else if (this.checkedLength != this.downPayments.length) {
         this.isCheckAll = false
       }
     },
@@ -265,8 +265,8 @@ export default {
         params: {
           join: 'form',
           sort_by: '-form.number',
-          group_by: 'purchase_order.id',
-          fields: 'purchase_order.*',
+          group_by: 'down_payment.id',
+          fields: 'down_payment.*',
           filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value + ';' + this.formCancellationStatus.value,
           filter_like: {},
           limit: this.limit,
@@ -274,9 +274,9 @@ export default {
           page: this.currentPage
         }
       }).then(response => {
-        response.data.forEach(purchaseOrder => {
+        response.data.forEach(downPayment => {
           this.checkedData.push({
-            id: purchaseOrder.id,
+            id: downPayment.id,
             checked: false
           })
         })
@@ -293,9 +293,9 @@ export default {
     sendApproval () {
       const baseUrl = location.origin
       const data = []
-      this.checkedData.forEach(purchaseOrder => {
-        if (purchaseOrder.checked) {
-          data.push(purchaseOrder.id)
+      this.checkedData.forEach(downPayment => {
+        if (downPayment.checked) {
+          data.push(downPayment.id)
         }
       })
       this.sendBulkRequestApproval({
@@ -314,12 +314,12 @@ export default {
     async generateReport () {
       this.isLoading = true
       try {
-        const { data: { data: purchaseOrders } } = await axios.get('/purchase/orders', {
+        const { data: { data: downPayments } } = await axios.get('/purchase/orders', {
           params: {
             join: 'form',
             sort_by: '-form.number',
-            group_by: 'purchase_order.id',
-            fields: 'purchase_order.*',
+            group_by: 'down_payment.id',
+            fields: 'down_payment.*',
             filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value + ';' + this.formCancellationStatus.value,
             filter_like: {},
             includes: 'form;items;supplier;',
@@ -329,35 +329,35 @@ export default {
         })
 
         let indexItem = 0
-        const dataResult = purchaseOrders.map((purchaseOrder) => {
+        const dataResult = downPayments.map((downPayment) => {
           let approvalStatus = ''
-          if (purchaseOrder.form.approval_status == -1) {
+          if (downPayment.form.approval_status == -1) {
             approvalStatus = 'rejected'
-          } else if (purchaseOrder.form.approval_status == 0) {
+          } else if (downPayment.form.approval_status == 0) {
             approvalStatus = 'pending'
-          } else if (purchaseOrder.form.approval_status == 1) {
+          } else if (downPayment.form.approval_status == 1) {
             approvalStatus = 'approve'
           }
 
           let formStatus = ''
-          if (purchaseOrder.form.cancellationStatus == 1) {
+          if (downPayment.form.cancellationStatus == 1) {
             formStatus = 'cancelled'
-          } else if (purchaseOrder.form.done == 0) {
+          } else if (downPayment.form.done == 0) {
             formStatus = 'pending'
-          } else if (purchaseOrder.form.done == 1) {
+          } else if (downPayment.form.done == 1) {
             formStatus = 'done'
           }
 
-          return purchaseOrder.details.map((detail) => {
+          return downPayment.details.map((detail) => {
             indexItem++
 
             return {
               No: indexItem,
-              'Date Form': this.$options.filters.dateFormat(purchaseOrder.form.date, 'DD MMMM YYYY'),
-              'Form Number': purchaseOrder.form.number,
-              'Payment Method': purchaseOrder.payment_type,
+              'Date Form': this.$options.filters.dateFormat(downPayment.form.date, 'DD MMMM YYYY'),
+              'Form Number': downPayment.form.number,
+              'Payment Method': downPayment.payment_type,
               Account: detail.account.name,
-              Amount: purchaseOrder.amount,
+              Amount: downPayment.amount,
               Notes: detail.notes,
               'Approval status': approvalStatus,
               'Form status': formStatus

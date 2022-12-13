@@ -25,7 +25,7 @@
           </download-excel>
           <router-link
             v-if="$permission.has('create purchase order')"
-            to="/finance/cash-advance/create"
+            to="/purchase/order/create"
             class="input-group-prepend"
           >
             <span class="input-group-text">
