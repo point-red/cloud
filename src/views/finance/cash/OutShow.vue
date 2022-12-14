@@ -34,6 +34,7 @@
               <div class="text-right">
                 <!-- Button Create Cash Out -->
                 <router-link
+                  v-if="$permission.has('create cash')"
                   :to="{ name: 'finance.cash.out.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
