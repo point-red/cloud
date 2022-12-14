@@ -43,8 +43,10 @@
                 <!-- Button Request Delete Cash Out -->
                 <button
                   v-if="
-                    payment.form.cancellation_status == null ||
-                      payment.form.cancellation_status == -1
+                    ($permission.has('delete cash') &&
+                      payment.form.cancellation_status == null) ||
+                      ($permission.has('delete cash') &&
+                        payment.form.cancellation_status == -1)
                   "
                   class="btn btn-sm btn-outline-secondary mr-5"
                   :disabled="isDeleting"
@@ -59,7 +61,11 @@
               </div>
             </div>
           </div>
-          <hr>
+          <hr
+            v-if="
+              $permission.has('create cash') || $permission.has('delete cash')
+            "
+          >
           <!-- Cash Out Show Additional Information -->
           <!-- Table Cash Out Show -->
           <div class="row pt-10">
