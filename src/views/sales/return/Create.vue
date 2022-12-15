@@ -355,6 +355,8 @@ export default {
         customer_email: null,
         notes: null,
         type_of_tax: null,
+        sub_total: null,
+        tax_base: null,
         tax: null,
         amount: null,
         request_approval_to: null,
@@ -377,17 +379,17 @@ export default {
     tax_amount () {
       let value = 0
       if (this.form.type_of_tax == 'include') {
-        value = this.tax_base - (this.tax_base * 10 / 11)
+        value = this.tax_base - (this.tax_base * 10 / 110)
       } else if (this.form.type_of_tax == 'exclude') {
-        value = this.tax_base / 10
+        value = this.tax_base * (10 / 110)
       }
       return value
     },
     amount () {
       if (this.form.type_of_tax == 'include') {
-        return this.sub_total
+        return this.tax_base
       } else {
-        return this.sub_total + this.tax_amount
+        return this.tax_base + this.tax_amount
       }
     }
   },
@@ -420,7 +422,7 @@ export default {
           price_sales: item.price - item.discountValue,
           discount_percent: item.discountPercent,
           discount_value: item.discountValue,
-          total: item.quantity * (item.price - item.discountValue),
+          total: 0 * (item.price - item.discountValue),
           allocation_id: item.allocation_id,
           allocation_name: item.allocation_name,
           notes: item.notes
@@ -467,10 +469,13 @@ export default {
         return
       }
       this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
+      this.form.sub_total = this.sub_total
+      this.form.tax_base = this.tax_base
       this.form.amount = this.amount
       this.form.tax = this.tax_amount
       this.form.items = this.form.items.filter(item => {
         if (item.quantity > 0) {
+          item.total = item.quantity * (item.price - item.discount_value)
           return item
         }
       })
@@ -479,16 +484,12 @@ export default {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.sendRequest(response.data.id)
           this.$router.push('/sales/return/' + response.data.id)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)
           this.form.errors.record(error.errors)
         })
-    },
-    sendRequest (id) {
-      this.send({ ids: [{ id }] })
     }
   }
 }
