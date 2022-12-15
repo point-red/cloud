@@ -18,7 +18,9 @@
             @click.native="togglePermission('menu finance')"
           />
         </td>
-        <td><b>{{ $t('finance') | uppercase }}</b></td>
+        <td>
+          <b>{{ $t('finance') | uppercase }}</b>
+        </td>
         <td />
         <td />
         <td />
@@ -28,12 +30,36 @@
         <td>
           <p-form-check-box
             :is-form="false"
-            :checked="checkPermissionRow(['create payment order', 'read payment order', 'update payment order', 'delete payment order', 'approve payment order'], permissions)"
+            :checked="
+              checkPermissionRow(
+                [
+                  'create payment order',
+                  'read payment order',
+                  'update payment order',
+                  'delete payment order',
+                  'approve payment order'
+                ],
+                permissions
+              )
+            "
             :description="''"
-            @click.native="togglePermissionRow(['create payment order', 'read payment order', 'update payment order', 'delete payment order', 'approve payment order'], permissions)"
+            @click.native="
+              togglePermissionRow(
+                [
+                  'create payment order',
+                  'read payment order',
+                  'update payment order',
+                  'delete payment order',
+                  'approve payment order'
+                ],
+                permissions
+              )
+            "
           />
         </td>
-        <td><b>{{ $t('payment order') | uppercase }}</b></td>
+        <td>
+          <b>{{ $t('payment order') | uppercase }}</b>
+        </td>
         <td>
           <p-form-check-box
             ref="create payment order"
@@ -84,12 +110,36 @@
         <td>
           <p-form-check-box
             :is-form="false"
-            :checked="checkPermissionRow(['create cash advance', 'read cash advance', 'update cash advance', 'delete cash advance', 'approve cash advance'], permissions)"
+            :checked="
+              checkPermissionRow(
+                [
+                  'create cash advance',
+                  'read cash advance',
+                  'update cash advance',
+                  'delete cash advance',
+                  'approve cash advance'
+                ],
+                permissions
+              )
+            "
             :description="''"
-            @click.native="togglePermissionRow(['create cash advance', 'read cash advance', 'update cash advance', 'delete cash advance', 'approve cash advance'], permissions)"
+            @click.native="
+              togglePermissionRow(
+                [
+                  'create cash advance',
+                  'read cash advance',
+                  'update cash advance',
+                  'delete cash advance',
+                  'approve cash advance'
+                ],
+                permissions
+              )
+            "
           />
         </td>
-        <td><b>{{ $t('cash advance') | uppercase }}</b></td>
+        <td>
+          <b>{{ $t('cash advance') | uppercase }}</b>
+        </td>
         <td>
           <p-form-check-box
             ref="create cash advance"
@@ -140,12 +190,36 @@
         <td>
           <p-form-check-box
             :is-form="false"
-            :checked="checkPermissionRow(['create cash', 'read cash', 'update cash', 'delete cash'], permissions)"
+            :checked="
+              checkPermissionRow(
+                [
+                  'create cash',
+                  'read cash',
+                  'update cash',
+                  'delete cash',
+                  'approve cash'
+                ],
+                permissions
+              )
+            "
             :description="''"
-            @click.native="togglePermissionRow(['create cash', 'read cash', 'update cash', 'delete cash'], permissions)"
+            @click.native="
+              togglePermissionRow(
+                [
+                  'create cash',
+                  'read cash',
+                  'update cash',
+                  'delete cash',
+                  'approve cash'
+                ],
+                permissions
+              )
+            "
           />
         </td>
-        <td><b>{{ $t('cash') | uppercase }}</b></td>
+        <td>
+          <b>{{ $t('cash') | uppercase }}</b>
+        </td>
         <td>
           <p-form-check-box
             ref="create cash"
@@ -182,18 +256,39 @@
             @click.native="togglePermission('delete cash')"
           />
         </td>
+        <td>
+          <p-form-check-box
+            ref="approve cash"
+            :is-form="false"
+            :checked="$rolePermission.has('approve cash', permissions)"
+            :description="'approve' | uppercase"
+            @click.native="togglePermission('approve cash')"
+          />
+        </td>
         <td />
       </tr>
       <tr slot="p-body">
         <td>
           <p-form-check-box
             :is-form="false"
-            :checked="checkPermissionRow(['create bank', 'read bank', 'update bank', 'delete bank'], permissions)"
+            :checked="
+              checkPermissionRow(
+                ['create bank', 'read bank', 'update bank', 'delete bank'],
+                permissions
+              )
+            "
             :description="''"
-            @click.native="togglePermissionRow(['create bank', 'read bank', 'update bank', 'delete bank'], permissions)"
+            @click.native="
+              togglePermissionRow(
+                ['create bank', 'read bank', 'update bank', 'delete bank'],
+                permissions
+              )
+            "
           />
         </td>
-        <td><b>{{ $t('bank') | uppercase }}</b></td>
+        <td>
+          <b>{{ $t('bank') | uppercase }}</b>
+        </td>
         <td>
           <p-form-check-box
             ref="create bank"
@@ -236,12 +331,24 @@
         <td>
           <p-form-check-box
             :is-form="false"
-            :checked="checkPermissionRow(['read cash report', 'check cash report'], permissions)"
+            :checked="
+              checkPermissionRow(
+                ['read cash report', 'check cash report'],
+                permissions
+              )
+            "
             :description="''"
-            @click.native="togglePermissionRow(['read cash report', 'check cash report'], permissions)"
+            @click.native="
+              togglePermissionRow(
+                ['read cash report', 'check cash report'],
+                permissions
+              )
+            "
           />
         </td>
-        <td><b>{{ $t('cash report') | uppercase }}</b></td>
+        <td>
+          <b>{{ $t('cash report') | uppercase }}</b>
+        </td>
         <td>
           <p-form-check-box
             ref="check cash report"
@@ -266,12 +373,24 @@
         <td>
           <p-form-check-box
             :is-form="false"
-            :checked="checkPermissionRow(['read bank report', 'check bank report'], permissions)"
+            :checked="
+              checkPermissionRow(
+                ['read bank report', 'check bank report'],
+                permissions
+              )
+            "
             :description="''"
-            @click.native="togglePermissionRow(['read bank report', 'check bank report'], permissions)"
+            @click.native="
+              togglePermissionRow(
+                ['read bank report', 'check bank report'],
+                permissions
+              )
+            "
           />
         </td>
-        <td><b>{{ $t('bank report') | uppercase }}</b></td>
+        <td>
+          <b>{{ $t('bank report') | uppercase }}</b>
+        </td>
         <td>
           <p-form-check-box
             ref="check bank report"
