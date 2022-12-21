@@ -1,17 +1,17 @@
 <template>
   <div>
     <breadcrumb>
-      <breadcrumb-sales />
+      <breadcrumb-purchase />
       <router-link
-        to="/sales/return"
+        to="/purchase/return"
         class="breadcrumb-item"
       >
-        {{ $t('sales return') | uppercase }}
+        {{ $t('purchase return ') | uppercase }}
       </router-link>
       <span class="breadcrumb-item active">{{ $t('create') | uppercase }}</span>
     </breadcrumb>
 
-    <sales-menu />
+    <purchase-menu />
 
     <form @submit.prevent="onSubmit">
       <div class="row">
@@ -19,7 +19,7 @@
           <p-block-inner :is-loading="isLoading">
             <div class="row">
               <div class="col-sm-6">
-                <h4>{{ $t('sales return ') | uppercase }}</h4>
+                <h4>{{ $t('purchase return') | uppercase }}</h4>
                 <table class="table table-sm table-bordered">
                   <tr>
                     <td class="font-weight-bold">
@@ -38,20 +38,32 @@
                   </tr>
                   <tr>
                     <td class="font-weight-bold">
-                      {{ $t('reference') | uppercase }}
+                      {{ $t('Purchase Invoice') | uppercase }}
                     </td>
                     <td>
                       <span
+                        id="select-purchase-invoice"
                         class="select-link"
-                        @click="$refs.selectSalesInvoice.open()"
+                        @click="$refs.selectPurchaseInvoice.open()"
                       >
-                        <template v-if="salesInvoice && salesInvoice.form.number != null">
-                          {{ salesInvoice.form.number }}
+                        <template v-if="purchaseInvoice && purchaseInvoice.form.number != null">
+                          {{ purchaseInvoice.form.number }}
                         </template>
                         <template v-else>
                           {{ $t('select') | uppercase }}
                         </template>
                       </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="font-weight-bold">
+                      {{ $t('warehouse') | uppercase }}
+                    </td>
+                    <td>
+                      <span
+                        class="select-link"
+                        @click="$refs.warehouse.open()"
+                      >{{ form.warehouseName || $t('select') | uppercase }}</span>
                     </td>
                   </tr>
                 </table>
@@ -68,25 +80,33 @@
                 </div>
                 <div>
                   <h6 class="mb-0 ">
-                    {{ $t('to') | uppercase }}: <span>{{ form.customer_name | uppercase }}</span>
+                    {{ $t('to') | uppercase }}:
                   </h6>
-                  {{ form.customer_address | uppercase }} <br v-if="form.customer_address">
-                  {{ form.customer_phone }} <br v-if="form.customer_phone">
+                  {{ form.supplierName | uppercase }}
+                  <div
+                    v-if="form.supplierPhone"
+                    style="font-size:12px"
+                  >
+                    <br v-if="form.supplierAddress">{{ form.supplierAddress | uppercase }}
+                    <br v-if="form.supplierPhone">{{ form.supplierPhone }}
+                    <br v-if="form.supplierEmail">{{ form.supplierEmail | uppercase }}
+                  </div>
                 </div>
               </div>
             </div>
             <hr>
-            <point-table v-if="form.sales_invoice_id">
+            <point-table v-if="form.items.length > 0">
               <tr slot="p-head">
-                <th>#</th>
+                <th>No</th>
                 <th style="min-width: 120px">
                   Item
                 </th>
-                <th>Allocation</th>
-                <th>Quantity Sales</th>
+                <th>Quantity Invoice</th>
                 <th>Quantity Return</th>
-                <th>Price Sales</th>
+                <th>Price</th>
+                <th>Discount</th>
                 <th>Total</th>
+                <th>Alocation</th>
               </tr>
               <template v-for="(row, index) in form.items">
                 <tr
@@ -95,22 +115,14 @@
                 >
                   <th>{{ index + 1 }}</th>
                   <td>
-                    {{ row.item_name || $t('select') | uppercase }}
-                  </td>
-                  <td>
-                    <span
-                      class="select-link"
-                      @click="$refs.allocation.open(index)"
-                    >
-                      {{ row.allocation_name || $t('select') | uppercase }}
-                    </span>
+                    {{ row.itemName || $t('select') | uppercase }}
                   </td>
                   <td>
                     <p-quantity-custom
                       :id="'quantity' + index"
-                      v-model="row.quantity_sales"
+                      v-model="row.quantityRemaining"
                       :name="'quantity' + index"
-                      :item-id="row.item_id"
+                      :item-id="row.itemId"
                       :units="row.units"
                       :unit="{
                         name: row.unit,
@@ -126,8 +138,8 @@
                       :id="'quantity-return' + index"
                       v-model="row.quantity"
                       :name="'quantity-return' + index"
-                      :max="Number(row.quantity_sales)"
-                      :item-id="row.item_id"
+                      :max="Number(row.quantityRemaining)"
+                      :item-id="row.itemId"
                       :units="row.units"
                       :unit="{
                         name: row.unit,
@@ -139,7 +151,15 @@
                   <td>
                     <p-form-number
                       :id="'price' + index"
-                      v-model.number="row.price_sales"
+                      v-model.number="row.price"
+                      :name="'price' + index"
+                      :readonly="true"
+                    />
+                  </td>
+                  <td>
+                    <p-form-number
+                      :id="'price' + index"
+                      v-model.number="row.discountValue"
                       :name="'price' + index"
                       :readonly="true"
                     />
@@ -149,20 +169,27 @@
                       :id="'total-' + index"
                       :name="'total-' + index"
                       :readonly="true"
-                      :value="row.quantity * row.price_sales"
+                      :value="(row.price - row.discountValue) * row.quantity"
                     />
+                  </td>
+                  <td>
+                    <span
+                      class="select-link"
+                      @click="$refs.allocation.open(index)"
+                    >
+                      {{ row.allocationName || $t('select') | uppercase }}
+                    </span>
                   </td>
                 </tr>
               </template>
             </point-table>
 
             <div
-              v-if="form.sales_invoice_id"
+              v-if="purchaseInvoice.form.number"
               class="row"
             >
               <div class="col-sm-6">
                 <textarea
-                  v-model="form.notes"
                   rows="14"
                   class="form-control"
                   placeholder="Notes"
@@ -204,17 +231,6 @@
                   </div>
                 </p-form-row>
                 <p-form-row
-                  name="tax"
-                  :label="$t('tax method')"
-                >
-                  <div
-                    slot="body"
-                    class="col-lg-9 mt-5"
-                  >
-                    {{ form.type_of_tax + ' tax' | uppercase }}
-                  </div>
-                </p-form-row>
-                <p-form-row
                   id="tax_amount"
                   name="tax_amount"
                   :label="$t('tax amount')"
@@ -250,9 +266,9 @@
                 </p-form-row>
               </div>
             </div>
-            <hr v-if="form.sales_invoice_id">
+            <hr v-if="purchaseInvoice.form.number">
             <div
-              v-if="form.sales_invoice_id"
+              v-if="purchaseInvoice.form.number"
               class="row"
             >
               <div class="col-sm-6" />
@@ -282,8 +298,8 @@
                 <span
                   class="select-link"
                   @click="$refs.approver.open()"
-                >{{ form.approver_name || $t('select') | uppercase }}</span><br>
-                <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
+                >{{ form.approverName || $t('select') | uppercase }}</span><br>
+                <span style="font-size:9px">{{ form.approverEmail | uppercase }}</span>
               </div>
 
               <div class="col-sm-12">
@@ -304,65 +320,80 @@
         </p-block>
       </div>
     </form>
+    <m-supplier
+      ref="supplier"
+      @choosen="chooseSupplier"
+    />
     <m-user
       ref="approver"
-      permission="approve sales return"
+      permission="approve purchase return"
       @choosen="chooseApprover"
+    />
+    <m-warehouse
+      id="warehouse"
+      ref="warehouse"
+      name="warehouse"
+      @choosen="chooseWarehouse"
     />
     <m-allocation
       ref="allocation"
       @choosen="chooseAllocation($event)"
     />
-    <select-sales-invoice
-      ref="selectSalesInvoice"
-      @choosen="chooseSalesInvoice"
+    <select-purchase-invoice
+      ref="selectPurchaseInvoice"
+      @choosen="choosePurchaseInvoice"
     />
   </div>
 </template>
 
 <script>
-import SalesMenu from '../Menu'
+import PurchaseMenu from '../Menu'
 import Breadcrumb from '@/views/Breadcrumb'
-import BreadcrumbSales from '@/views/sales/Breadcrumb'
-import Form from '@/utils/Form'
+import BreadcrumbPurchase from '@/views/purchase/Breadcrumb'
 import PointTable from 'point-table-vue'
-import SelectSalesInvoice from './SelectSalesInvoice'
+import Form from '@/utils/Form'
+import SelectPurchaseInvoice from './SelectPurchaseInvoice'
 import { mapGetters, mapActions } from 'vuex'
+
 export default {
   components: {
-    SalesMenu,
+    PurchaseMenu,
     Breadcrumb,
-    BreadcrumbSales,
-    SelectSalesInvoice,
-    PointTable
+    BreadcrumbPurchase,
+    PointTable,
+    SelectPurchaseInvoice
   },
   data () {
     return {
       isSaving: false,
       isLoading: false,
       requestedBy: localStorage.getItem('fullName'),
-      salesInvoice: null,
+      purchaseInvoice: {
+        form: {
+          number: null
+        }
+      },
+      warehouseName: '-',
       form: new Form({
-        increment_group: this.$moment().format('YYYYMM'),
+        incrementGroup: this.$moment().format('YYYYMM'),
         date: this.$moment().format('YYYY-MM-DD HH:mm:ss'),
-        sales_invoice_id: null,
-        warehouse_id: null,
-        customer_id: null,
-        customer_code: null,
-        customer_name: null,
-        customer_address: null,
-        customer_phone: null,
-        customer_email: null,
+        supplierId: null,
+        supplierName: null,
+        supplierLabel: null,
+        supplierAddress: null,
+        supplierPhone: null,
+        supplierEmail: null,
         notes: null,
-        type_of_tax: null,
-        sub_total: null,
-        tax_base: null,
-        tax: null,
-        amount: null,
-        request_approval_to: null,
-        approver_name: null,
-        approver_email: null,
-        items: []
+        taxBase: 0,
+        tax: 0,
+        typeOfTax: 'exclude',
+        items: [],
+        requestApprovalTo: null,
+        approverName: null,
+        approverEmail: null,
+        purchaseInvoiceId: null,
+        warehouseName: null,
+        warehouseId: 0
       })
     }
   },
@@ -370,7 +401,7 @@ export default {
     ...mapGetters('auth', ['authUser']),
     sub_total () {
       return this.form.items.reduce((carry, item) => {
-        return carry + item.quantity * item.price_sales
+        return carry + item.quantity * (item.price - item.discountValue)
       }, 0)
     },
     tax_base () {
@@ -378,113 +409,120 @@ export default {
     },
     tax_amount () {
       let value = 0
-      if (this.form.type_of_tax == 'include') {
-        value = this.tax_base - (this.tax_base * 10 / 110)
-      } else if (this.form.type_of_tax == 'exclude') {
-        value = this.tax_base * (10 / 110)
+      if (this.form.typeOfTax == 'include') {
+        value = this.tax_base - (this.tax_base * 10 / 11)
+      } else if (this.form.typeOfTax == 'exclude') {
+        value = this.tax_base / 10
       }
       return value
     },
     amount () {
-      if (this.form.type_of_tax == 'include') {
-        return this.tax_base
+      if (this.form.typeOfTax == 'include') {
+        return this.sub_total
       } else {
-        return this.tax_base + this.tax_amount
+        return this.sub_total + this.tax_amount
       }
     }
   },
   methods: {
-    ...mapActions('salesReturn', ['create']),
-    ...mapActions('salesReturnApproval', ['send']),
-    chooseSalesInvoice (salesInvoice) {
-      this.salesInvoice = salesInvoice
-      this.form.sales_invoice_id = salesInvoice.id
-      this.form.warehouse_id = salesInvoice.salesDeliveryNote.warehouseId
-      this.form.customer_id = salesInvoice.customerId
-      this.form.customer_code = salesInvoice.customerCode
-      this.form.customer_name = salesInvoice.customerName
-      this.form.type_of_tax = salesInvoice.typeOfTax
-      this.form.items = salesInvoice.items.map(item => {
-        return {
-          sales_invoice_item_id: item.id,
-          item_id: item.itemId,
-          item_name: item.itemName,
-          item_label: item.itemName,
-          more: false,
-          units: item.units,
-          unit: item.unit_smallest || item.unit,
-          converter: item.converter_smallest || item.converter,
-          expiry_date: item.expiryDate,
-          production_number: item.productionNumber,
-          quantity_sales: item.quantity - item.quantityReturned,
-          quantity: 0,
-          price: item.price,
-          price_sales: item.price - item.discountValue,
-          discount_percent: item.discountPercent,
-          discount_value: item.discountValue,
-          total: 0 * (item.price - item.discountValue),
-          allocation_id: item.allocation_id,
-          allocation_name: item.allocation_name,
-          notes: item.notes
-        }
-      })
-    },
-    chooseAllocation (allocation) {
-      const row = this.form.items[allocation.index]
-      row.allocation_id = allocation.id
-      row.allocation_name = allocation.name
+    ...mapActions('purchaseReturn', ['create']),
+    chooseWarehouse (warehouse) {
+      this.form.warehouseId = warehouse.id
+      this.form.warehouseName = warehouse.name
     },
     chooseApprover (value) {
-      this.form.request_approval_to = value.id
-      this.form.approver_name = value.fullName
-      this.form.approver_email = value.email
+      this.form.requestApprovalTo = value.id
+      this.form.approverName = value.fullName
+      this.form.approverEmail = value.email
+    },
+    choosePurchaseInvoice (purchaseInvoice) {
+      this.form.items = []
+      this.purchaseInvoice = purchaseInvoice
+      this.form.purchaseInvoiceId = purchaseInvoice.id
+      this.form.supplierId = purchaseInvoice.supplierId
+      this.form.supplierName = purchaseInvoice.supplierName
+      this.form.supplierLabel = purchaseInvoice.supplierLabel
+      this.form.supplierAddress = purchaseInvoice.supplierAddress
+      this.form.supplierPhone = purchaseInvoice.supplierPhone
+      this.form.supplierEmail = purchaseInvoice.supplierEmail
+      this.form.typeOfTax = purchaseInvoice.typeOfTax
+      purchaseInvoice.items.forEach(purchaseInvoiceItem => {
+        if (purchaseInvoice.form.done == false) {
+          this.form.warehouseId = purchaseInvoiceItem.purchaseReceive.warehouseId
+          this.form.warehouseName = purchaseInvoiceItem.purchaseReceive.warehouseName
+          this.form.items.push({
+            purchaseInvoiceItemId: purchaseInvoiceItem.id,
+            itemId: purchaseInvoiceItem.itemId,
+            itemName: purchaseInvoiceItem.itemName,
+            more: false,
+            unit: purchaseInvoiceItem.unit,
+            converter: purchaseInvoiceItem.converter,
+            quantity: 0,
+            quantityRemaining: purchaseInvoiceItem.quantity,
+            price: purchaseInvoiceItem.price,
+            discountPercent: purchaseInvoiceItem.discountPercent,
+            discountValue: purchaseInvoiceItem.discountValue,
+            total: purchaseInvoiceItem.quantity * (purchaseInvoiceItem.price - purchaseInvoiceItem.discountValue),
+            allocationId: purchaseInvoiceItem.allocationId,
+            allocation_name: purchaseInvoiceItem.allocationName,
+            notes: purchaseInvoiceItem.notes
+          })
+        }
+      })
+      // this.addItemRow()
     },
     onSubmit () {
       this.isSaving = true
-      if (this.form.notes) {
-        if (this.form.notes.length > 255) {
-          this.$notification.error('notes cannot be more than 255 character')
-          this.isSaving = false
-          this.form.errors.record({
-            notes: ['notes cannot be more than 255 character']
-          })
-          return
-        }
-
-        if (this.form.notes.charAt(0) === ' ' || this.form.notes.charAt(this.form.notes.length - 1) === ' ') {
-          this.$notification.error('notes cannot start or end with space')
-          this.isSaving = false
-          this.form.errors.record({
-            notes: ['notes cannot start or end with space']
-          })
-          return
-        }
-      }
-      if (this.form.request_approval_to == null) {
+      if (this.form.requestApprovalTo == null) {
         this.$notification.error('approval cannot be null')
         this.isSaving = false
         this.form.errors.record({
-          request_approval_to: ['Approver should not empty']
+          requestApprovalTo: ['Approver should not empty']
         })
         return
       }
-      this.form.increment_group = this.$moment(this.form.date).format('YYYYMM')
-      this.form.sub_total = this.sub_total
-      this.form.tax_base = this.tax_base
-      this.form.amount = this.amount
-      this.form.tax = this.tax_amount
-      this.form.items = this.form.items.filter(item => {
-        if (item.quantity > 0) {
-          item.total = item.quantity * (item.price - item.discount_value)
-          return item
+
+      const items = this.form.items.map((item) => {
+        return {
+          purchaseInvoiceItemId: item.purchaseInvoiceItemId,
+          itemId: item.itemId,
+          itemName: item.itemName,
+          qtyReturn: item.quantity,
+          qtyInvoice: item.quantityRemaining,
+          unitConverterInvoice: item.unit,
+          unitConverterReturn: item.unit,
+          converter: item.converter,
+          allocationId: item.allocationId,
+          price: item.price,
+          discountPercent: item.discountPercent,
+          disc: item.discountValue,
+          expiryDate: item.expiryDate,
+          productionNumber: item.productionNumber,
+          total: item.quantity * (item.price - item.discountValue)
         }
       })
-      this.create(this.form)
+      const requestPayload = {
+        purchaseInvoiceId: this.form.purchaseInvoiceId,
+        warehouseId: this.form.warehouseId,
+        items,
+        approver: this.form.requestApprovalTo,
+        approverName: this.form.approverName,
+        approverEmail: this.form.approverEmail,
+        subTotal: this.sub_total,
+        taxbase: this.tax_base,
+        total: this.amount,
+        supplierId: this.form.supplierId,
+        supplierName: this.form.supplierName,
+        tax: this.tax_amount,
+        notes: this.form.notes
+      }
+
+      this.create(requestPayload)
         .then(response => {
           this.isSaving = false
           this.$notification.success('create success')
           Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/sales/return/' + response.data.id)
+          this.$router.push('/purchase/return/' + response.data.purchaseReturn.id)
         }).catch(error => {
           this.isSaving = false
           this.$notification.error(error.message)
