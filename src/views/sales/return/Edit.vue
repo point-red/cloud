@@ -373,13 +373,7 @@ export default {
       return this.sub_total
     },
     tax_amount () {
-      let value = 0
-      if (this.form.type_of_tax == 'include') {
-        value = (this.tax_base - (this.tax_base * 10 / 110)).toFixed(10)
-      } else if (this.form.type_of_tax == 'exclude') {
-        value = (this.tax_base * (10 / 110)).toFixed(10)
-      }
-      return value
+      return (this.tax_base * (10 / 110)).toFixed(10)
     },
     amount () {
       if (this.form.type_of_tax == 'include') {
