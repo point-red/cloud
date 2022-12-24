@@ -375,9 +375,9 @@ export default {
     tax_amount () {
       let value = 0
       if (this.form.type_of_tax == 'include') {
-        value = this.tax_base - (this.tax_base * 10 / 110)
+        value = Math.round(this.tax_base - (this.tax_base * 10 / 110), 10)
       } else if (this.form.type_of_tax == 'exclude') {
-        value = this.tax_base * (10 / 110)
+        value = Math.round(this.tax_base * (10 / 110), 10)
       }
       return value
     },
