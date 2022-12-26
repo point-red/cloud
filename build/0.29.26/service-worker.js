@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.e3a03fc56b37388c14b8ec828d5be11d.js"
+  "/precache-manifest.63af9ee4811f9bfd13057c12e7cb552c.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "point-cloud"});
