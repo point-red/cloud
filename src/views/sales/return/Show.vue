@@ -74,14 +74,12 @@
                     {{ $t('create') | uppercase }}
                   </router-link>
                   <router-link
-                    v-if="$permission.has('update sales return') && salesReturn.form.done === 0"
                     :to="{ name: 'sales.return.edit', params: { id: salesReturn.id }}"
                     class="btn btn-sm btn-outline-secondary mr-5"
                   >
                     {{ $t('edit') | uppercase }}
                   </router-link>
                   <button
-                    v-if="(salesReturn.form.cancellation_status == null || salesReturn.form.cancellation_status == -1) && $permission.has('delete sales return') && salesReturn.form.done === 0"
                     class="btn btn-sm btn-outline-secondary mr-5"
                     @click="$refs.formRequestDelete.open()"
                   >
@@ -386,28 +384,32 @@ export default {
       })
     },
     onDelete (reason) {
-      this.isDeleting = true
-      this.delete({
-        id: this.id,
-        data: {
-          reason: reason || null
-        }
-      }).then(response => {
-        this.isDeleting = false
-        this.$notification.success('cancel success')
-        this.salesReturnRequest()
-        this.send({
-          ids: [{ id: this.id }]
-        })
-          .catch(error => {
-            this.$notification.error(error.message)
-            this.form.errors.record(error.errors)
+      if (this.$permission.has('delete sales return')) {
+        this.isDeleting = true
+        this.delete({
+          id: this.id,
+          data: {
+            reason: reason || null
+          }
+        }).then(response => {
+          this.isDeleting = false
+          this.$notification.success('cancel success')
+          this.salesReturnRequest()
+          this.send({
+            ids: [{ id: this.id }]
           })
-      }).catch(error => {
-        this.isDeleting = false
-        this.$notification.error(error.message)
-        this.form.errors.record(error.errors)
-      })
+            .catch(error => {
+              this.$notification.error(error.message)
+              this.form.errors.record(error.errors)
+            })
+        }).catch(error => {
+          this.isDeleting = false
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        })
+      } else {
+        this.$router.push('/404')
+      }
     },
     onApprove () {
       this.approve({

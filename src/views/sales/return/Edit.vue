@@ -458,7 +458,7 @@ export default {
         this.$notification.error(error.message)
       })
     } else {
-      this.$router.push('/')
+      this.$router.push('/404')
     }
   },
   methods: {
