@@ -74,6 +74,7 @@
                     {{ $t('create') | uppercase }}
                   </router-link>
                   <router-link
+                    v-if="$permission.has('update sales return')"
                     :to="{ name: 'sales.return.edit', params: { id: salesReturn.id }}"
                     class="btn btn-sm btn-outline-secondary mr-5"
                   >
