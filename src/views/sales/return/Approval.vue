@@ -59,10 +59,15 @@
               </th>
               <th>Number</th>
               <th>Date</th>
+              <th>Warehouse</th>
+              <th>Notes</th>
               <th>Customer</th>
               <th>Item</th>
               <th class="text-right">
                 Quantity
+              </th>
+              <th class="text-right">
+                Value
               </th>
               <th class="text-center">
                 Approval Status
@@ -93,6 +98,8 @@
                   </router-link>
                 </th>
                 <td>{{ salesReturn.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                <td>{{ salesReturn.warehouse.name }}</td>
+                <td>{{ salesReturn.form.notes }}</td>
                 <td>
                   <template v-if="salesReturn.customer">
                     {{ salesReturn.customer.name }}
@@ -102,24 +109,53 @@
                 <td class="text-right">
                   {{ salesReturnItem.quantity | numberFormat }} {{ salesReturnItem.unit }}
                 </td>
+                <td class="text-right">
+                  {{ (salesReturnItem.quantity * (salesReturnItem.price - salesReturnItem.discount_value) ) | numberFormat }}
+                </td>
                 <td class="text-center">
                   <div
-                    v-if="salesReturn.form.approval_status == 0"
-                    class="badge badge-primary"
+                    v-if="salesReturn.form.cancellation_status == null"
                   >
-                    {{ $t('pending') | uppercase }}
+                    <div
+                      v-if="salesReturn.form.approval_status == 0"
+                      class="badge badge-primary"
+                    >
+                      {{ $t('pending') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.approval_status == -1"
+                      class="badge badge-danger"
+                    >
+                      {{ $t('rejected') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.approval_status == 1"
+                      class="badge badge-success"
+                    >
+                      {{ $t('approved') | uppercase }}
+                    </div>
                   </div>
                   <div
-                    v-if="salesReturn.form.approval_status == -1"
-                    class="badge badge-danger"
+                    v-if="salesReturn.form.cancellation_status != null"
                   >
-                    {{ $t('rejected') | uppercase }}
-                  </div>
-                  <div
-                    v-if="salesReturn.form.approval_status == 1"
-                    class="badge badge-success"
-                  >
-                    {{ $t('approved') | uppercase }}
+                    <div
+                      v-if="salesReturn.form.cancellation_status == 0"
+                      class="badge badge-primary"
+                    >
+                      {{ $t('pending') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.cancellation_status == -1"
+                      class="badge badge-danger"
+                    >
+                      {{ $t('rejected') | uppercase }}
+                    </div>
+                    <div
+                      v-if="salesReturn.form.cancellation_status == 1"
+                      class="badge badge-success"
+                    >
+                      {{ $t('approved') | uppercase }}
+                    </div>
                   </div>
                 </td>
                 <td>
@@ -207,14 +243,19 @@ export default {
     }
   },
   created () {
-    this.$router.push({
-      query: {
-        ...this.$route.query,
-        date_from: this.date.start,
-        date_to: this.date.end
-      }
-    })
-    this.getSalesReturns()
+    if (this.$permission.has('create sales return') || this.$permission.has('update sales return') || this.$permission.has('delete sales return')) {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          date_from: this.date.start,
+          date_to: this.date.end
+        }
+      })
+      this.getSalesReturns()
+    } else {
+      this.$router.push('/sales/return')
+      this.$router.push('/404')
+    }
   },
   updated () {
     this.lastPage = this.pagination.last_page
@@ -294,7 +335,7 @@ export default {
       this.isLoading = true
       this.get({
         params: {
-          join: 'form,customer,items,item',
+          join: 'form,customer,items,item,warehouse',
           fields: 'sales_return.*',
           sort_by: '-form.number',
           group_by: 'form.id',
@@ -312,7 +353,7 @@ export default {
             'form.date': this.serverDateTime(this.date.end, 'end')
           },
           limit: 10,
-          includes: 'form;customer;items.item;items.allocation',
+          includes: 'form;customer;items.item;items.allocation;warehouse',
           page: this.currentPage
         }
       }).catch(error => {

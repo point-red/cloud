@@ -123,6 +123,12 @@
                       </td>
                       <td>{{ salesReturn.sales_invoice.form.number }}</td>
                     </tr>
+                    <tr>
+                      <td class="font-weight-bold">
+                        {{ $t('warehouse') | uppercase }}
+                      </td>
+                      <td>{{ salesReturn.warehouse.name }}</td>
+                    </tr>
                   </table>
                 </div>
                 <div class="col-sm-6 text-right">
@@ -164,6 +170,9 @@
                     Price Sales
                   </th>
                   <th class="text-right">
+                    Discount
+                  </th>
+                  <th class="text-right">
                     Total
                   </th>
                 </tr>
@@ -184,7 +193,10 @@
                       {{ row.quantity | numberFormat }} {{ row.unit }}
                     </td>
                     <td class="text-right">
-                      {{ (row.price - row.discount_value) | numberFormat }}
+                      {{ row.price | numberFormat }}
+                    </td>
+                    <td class="text-right">
+                      {{ row.discount_value | numberFormat }}
                     </td>
                     <td class="text-right">
                       {{ row.quantity * (row.price - row.discount_value) | numberFormat }}
@@ -193,6 +205,7 @@
                 </template>
                 <tr slot="p-body">
                   <th />
+                  <td />
                   <td />
                   <td />
                   <td />
@@ -211,6 +224,7 @@
                   <td />
                   <td />
                   <td />
+                  <td />
                   <td class="text-right">
                     <b>{{ $t('tax base') | uppercase }}</b>
                   </td>
@@ -225,6 +239,7 @@
                   <td />
                   <td />
                   <td />
+                  <td />
                   <td class="text-right">
                     <b>{{ $t('tax') | uppercase }}</b>
                   </td>
@@ -235,6 +250,7 @@
                 </tr>
                 <tr slot="p-body">
                   <th />
+                  <td />
                   <td />
                   <td />
                   <td />
@@ -348,7 +364,12 @@ export default {
     }
   },
   created () {
-    this.salesReturnRequest()
+    if (this.$permission.has('read sales return')) {
+      this.salesReturnRequest()
+    } else {
+      this.$router.push('/sales')
+      this.$router.push('/404')
+    }
   },
   methods: {
     ...mapActions('salesReturn', {
@@ -376,7 +397,8 @@ export default {
             'salesInvoice.items;' +
             'form.createdBy;' +
             'form.requestApprovalTo;' +
-            'form.branch'
+            'form.branch;' +
+            'warehouse;'
         }
       }).catch(error => {
         this.$notification.error(error.message)

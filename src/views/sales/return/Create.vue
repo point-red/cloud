@@ -86,6 +86,7 @@
                 <th>Quantity Sales</th>
                 <th>Quantity Return</th>
                 <th>Price Sales</th>
+                <th>Discount</th>
                 <th>Total</th>
               </tr>
               <template v-for="(row, index) in form.items">
@@ -139,7 +140,15 @@
                   <td>
                     <p-form-number
                       :id="'price' + index"
-                      v-model.number="row.price_sales"
+                      v-model.number="row.price"
+                      :name="'price' + index"
+                      :readonly="true"
+                    />
+                  </td>
+                  <td>
+                    <p-form-number
+                      :id="'price' + index"
+                      v-model.number="row.discount_value"
                       :name="'price' + index"
                       :readonly="true"
                     />
