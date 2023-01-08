@@ -81,6 +81,7 @@
                     {{ $t('edit') | uppercase }}
                   </router-link>
                   <button
+                    v-if="$permission.has('delete sales return')"
                     class="btn btn-sm btn-outline-secondary mr-5"
                     @click="$refs.formRequestDelete.open()"
                   >

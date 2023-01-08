@@ -363,6 +363,11 @@ export default {
       this.formStatus.value = option.value
       this.getSalesReturn()
     },
+    chooseFormApprovalStatus (option) {
+      this.formApprovalStatus.label = option.label
+      this.formApprovalStatus.value = option.value
+      this.getSalesReturn()
+    },
     filterSearch: debounce(function (value) {
       this.$router.push({
         query: {
@@ -382,7 +387,7 @@ export default {
           fields: 'sales_return.*',
           sort_by: '-form.number',
           group_by: 'form.id',
-          filter_form: this.formStatus.value,
+          filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
           filter_like: {
             'form.number': this.searchText,
             'customer.name': this.searchText,

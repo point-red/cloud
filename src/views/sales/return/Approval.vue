@@ -77,93 +77,95 @@
               </th>
             </tr>
             <template v-for="(salesReturn, index) in salesReturns">
-              <tr
-                v-for="(salesReturnItem, indexItem) in salesReturn.items"
-                :key="'pr-' + index + '-i-' + indexItem"
-                slot="p-body"
-              >
-                <td>
-                  <p-form-check-box
-                    id="subscibe"
-                    :is-form="false"
-                    name="subscibe"
-                    :checked="isRowChecked(salesReturn.id)"
-                    class="text-center"
-                    @click.native="toggleCheckRow(salesReturn.id)"
-                  />
-                </td>
-                <th>
-                  <router-link :to="{ name: 'sales.return.show', params: { id: salesReturn.id }}">
-                    {{ salesReturn.form.number + ([0, 1].includes(salesReturn.form.close_status) ? ' - Closed' : '') }}
-                  </router-link>
-                </th>
-                <td>{{ salesReturn.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
-                <td>{{ salesReturn.warehouse.name }}</td>
-                <td>{{ salesReturn.form.notes }}</td>
-                <td>
-                  <template v-if="salesReturn.customer">
-                    {{ salesReturn.customer.name }}
-                  </template>
-                </td>
-                <td>{{ salesReturnItem.item.name }}</td>
-                <td class="text-right">
-                  {{ salesReturnItem.quantity | numberFormat }} {{ salesReturnItem.unit }}
-                </td>
-                <td class="text-right">
-                  {{ (salesReturnItem.quantity * (salesReturnItem.price - salesReturnItem.discount_value) ) | numberFormat }}
-                </td>
-                <td class="text-center">
-                  <div
-                    v-if="salesReturn.form.cancellation_status == null"
-                  >
+              <template v-if="salesReturn.form.cancellation_status === null">
+                <tr
+                  v-for="(salesReturnItem, indexItem) in salesReturn.items"
+                  :key="'pr-' + index + '-i-' + indexItem"
+                  slot="p-body"
+                >
+                  <td>
+                    <p-form-check-box
+                      id="subscibe"
+                      :is-form="false"
+                      name="subscibe"
+                      :checked="isRowChecked(salesReturn.id)"
+                      class="text-center"
+                      @click.native="toggleCheckRow(salesReturn.id)"
+                    />
+                  </td>
+                  <th>
+                    <router-link :to="{ name: 'sales.return.show', params: { id: salesReturn.id }}">
+                      {{ salesReturn.form.number + ([0, 1].includes(salesReturn.form.close_status) ? ' - Closed' : '') }}
+                    </router-link>
+                  </th>
+                  <td>{{ salesReturn.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
+                  <td>{{ salesReturn.warehouse.name }}</td>
+                  <td>{{ salesReturn.form.notes }}</td>
+                  <td>
+                    <template v-if="salesReturn.customer">
+                      {{ salesReturn.customer.name }}
+                    </template>
+                  </td>
+                  <td>{{ salesReturnItem.item.name }}</td>
+                  <td class="text-right">
+                    {{ salesReturnItem.quantity | numberFormat }} {{ salesReturnItem.unit }}
+                  </td>
+                  <td class="text-right">
+                    {{ (salesReturnItem.quantity * (salesReturnItem.price - salesReturnItem.discount_value) ) | numberFormat }}
+                  </td>
+                  <td class="text-center">
                     <div
-                      v-if="salesReturn.form.approval_status == 0"
-                      class="badge badge-primary"
+                      v-if="salesReturn.form.cancellation_status == null"
                     >
-                      {{ $t('pending') | uppercase }}
+                      <div
+                        v-if="salesReturn.form.approval_status == 0"
+                        class="badge badge-primary"
+                      >
+                        {{ $t('pending') | uppercase }}
+                      </div>
+                      <div
+                        v-if="salesReturn.form.approval_status == -1"
+                        class="badge badge-danger"
+                      >
+                        {{ $t('rejected') | uppercase }}
+                      </div>
+                      <div
+                        v-if="salesReturn.form.approval_status == 1"
+                        class="badge badge-success"
+                      >
+                        {{ $t('approved') | uppercase }}
+                      </div>
                     </div>
                     <div
-                      v-if="salesReturn.form.approval_status == -1"
-                      class="badge badge-danger"
+                      v-if="salesReturn.form.cancellation_status != null"
                     >
-                      {{ $t('rejected') | uppercase }}
+                      <div
+                        v-if="salesReturn.form.cancellation_status == 0"
+                        class="badge badge-primary"
+                      >
+                        {{ $t('pending') | uppercase }}
+                      </div>
+                      <div
+                        v-if="salesReturn.form.cancellation_status == -1"
+                        class="badge badge-danger"
+                      >
+                        {{ $t('rejected') | uppercase }}
+                      </div>
+                      <div
+                        v-if="salesReturn.form.cancellation_status == 1"
+                        class="badge badge-success"
+                      >
+                        {{ $t('approved') | uppercase }}
+                      </div>
                     </div>
-                    <div
-                      v-if="salesReturn.form.approval_status == 1"
-                      class="badge badge-success"
-                    >
-                      {{ $t('approved') | uppercase }}
-                    </div>
-                  </div>
-                  <div
-                    v-if="salesReturn.form.cancellation_status != null"
-                  >
-                    <div
-                      v-if="salesReturn.form.cancellation_status == 0"
-                      class="badge badge-primary"
-                    >
-                      {{ $t('pending') | uppercase }}
-                    </div>
-                    <div
-                      v-if="salesReturn.form.cancellation_status == -1"
-                      class="badge badge-danger"
-                    >
-                      {{ $t('rejected') | uppercase }}
-                    </div>
-                    <div
-                      v-if="salesReturn.form.cancellation_status == 1"
-                      class="badge badge-success"
-                    >
-                      {{ $t('approved') | uppercase }}
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <span v-if="salesReturn.last_request_date">
-                    {{ salesReturn.last_request_date | dateFormat('DD MMMM YYYY HH:mm') }}
-                  </span>
-                </td>
-              </tr>
+                  </td>
+                  <td>
+                    <span v-if="salesReturn.last_request_date">
+                      {{ salesReturn.last_request_date | dateFormat('DD MMMM YYYY HH:mm') }}
+                    </span>
+                  </td>
+                </tr>
+              </template>
             </template>
           </point-table>
         </p-block-inner>
