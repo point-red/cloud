@@ -126,7 +126,7 @@
         <p-block-inner :is-loading="isLoading">
           <point-table>
             <tr slot="p-head">
-              <th>Number</th>
+              <th>Form Number</th>
               <th>Date</th>
               <th>Supplier</th>
               <th>Warehouse</th>

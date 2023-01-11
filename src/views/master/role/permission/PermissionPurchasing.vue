@@ -216,9 +216,9 @@
         <td>
           <p-form-check-box
             :is-form="false"
-            :checked="checkPermissionRow(['create purchase receive', 'read purchase receive', 'update purchase receive', 'delete purchase receive'], permissions)"
+            :checked="checkPermissionRow(['create purchase receive', 'read purchase receive', 'update purchase receive', 'delete purchase receive', 'approve purchase receive'], permissions)"
             :description="''"
-            @click.native="togglePermissionRow(['create purchase receive', 'read purchase receive', 'update purchase receive', 'delete purchase receive'], permissions)"
+            @click.native="togglePermissionRow(['create purchase receive', 'read purchase receive', 'update purchase receive', 'delete purchase receive', 'approve purchase receive'], permissions)"
           />
         </td>
         <td><b>{{ $t('purchase receive') | uppercase }}</b></td>
@@ -256,6 +256,15 @@
             :checked="$rolePermission.has('delete purchase receive', permissions)"
             :description="'delete' | uppercase"
             @click.native="togglePermission('delete purchase receive')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="approve purchase receive"
+            :is-form="false"
+            :checked="$rolePermission.has('approve purchase receive', permissions)"
+            :description="'approval' | uppercase"
+            @click.native="togglePermission('approve purchase receive')"
           />
         </td>
       </tr>

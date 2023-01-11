@@ -50,16 +50,14 @@
                   {{ $t("create") | uppercase }}
                 </router-link>
                 <router-link
+                  v-if="purchaseReceive.form.done == 0"
                   :to="{ name: 'purchase.receive.edit', params: { id: purchaseReceive.id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('edit') | uppercase }}
                 </router-link>
                 <button
-                  v-if="
-                    purchaseReceive.form.cancellation_status == null ||
-                      purchaseReceive.form.cancellation_status == -1
-                  "
+                  v-if="purchaseReceive.form.cancellation_status == null || purchaseReceive.form.cancellation_status == -1 || purchaseReceive.form.done == 0"
                   class="btn btn-sm btn-outline-secondary mr-5"
                   @click="$refs.formRequestDelete.open()"
                 >
