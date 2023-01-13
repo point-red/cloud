@@ -23,6 +23,8 @@
         <td />
         <td />
         <td />
+        <td />
+        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -70,6 +72,7 @@
             @click.native="togglePermission('delete purchase contract')"
           />
         </td>
+        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -117,6 +120,7 @@
             @click.native="togglePermission('delete purchase request')"
           />
         </td>
+        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -164,6 +168,7 @@
             @click.native="togglePermission('delete purchase order')"
           />
         </td>
+        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -211,6 +216,7 @@
             @click.native="togglePermission('delete purchase down payment')"
           />
         </td>
+        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -314,6 +320,7 @@
             @click.native="togglePermission('delete purchase invoice')"
           />
         </td>
+        <td />
       </tr>
       <tr slot="p-body">
         <td>
@@ -361,6 +368,7 @@
             @click.native="togglePermission('delete purchase return')"
           />
         </td>
+        <td />
       </tr>
     </p-table>
     <button

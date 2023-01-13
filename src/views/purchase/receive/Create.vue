@@ -14,6 +14,7 @@
     <purchase-menu />
 
     <form
+      v-if="isHasDefaultBranch"
       @submit.prevent="onSubmit"
     >
       <div class="row">
@@ -214,6 +215,13 @@
         </p-block>
       </div>
     </form>
+    <div
+      v-else
+      class="alert alert-danger"
+      role="alert"
+    >
+      {{ $t('please set as default branch') }}
+    </div>
     <m-inventory-in
       :id="'inventory'"
       ref="inventory"

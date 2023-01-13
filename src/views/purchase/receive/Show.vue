@@ -16,6 +16,7 @@
     <purchase-menu />
 
     <p-show-form-cancellation-status
+      v-if="$permission.has('approve purchase receive')"
       :is-loading="isLoading"
       :cancellation-status="purchaseReceive.form.cancellation_status"
       :cancellation-approval-reason="
@@ -50,14 +51,14 @@
                   {{ $t("create") | uppercase }}
                 </router-link>
                 <router-link
-                  v-if="purchaseReceive.form.done == 0"
+                  v-if="purchaseReceive.form.done == 0 && $permission.has('update purchase receive')"
                   :to="{ name: 'purchase.receive.edit', params: { id: purchaseReceive.id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >
                   {{ $t('edit') | uppercase }}
                 </router-link>
                 <button
-                  v-if="purchaseReceive.form.cancellation_status == null || purchaseReceive.form.cancellation_status == -1 || purchaseReceive.form.done == 0"
+                  v-if="(purchaseReceive.form.cancellation_status == null || purchaseReceive.form.cancellation_status == -1) && purchaseReceive.form.done == 0 && $permission.has('delete purchase receive')"
                   class="btn btn-sm btn-outline-secondary mr-5"
                   @click="$refs.formRequestDelete.open()"
                 >
