@@ -513,7 +513,7 @@ export default {
       })
         .then((response) => {
           this.isDeleting = false
-          this.$notification.success('cancel success')
+          this.$notification.success('success delete purchase receive')
           this.purchaseReceiveRequest()
         })
         .catch((error) => {

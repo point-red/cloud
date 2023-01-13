@@ -232,6 +232,7 @@
       id="warehouse"
       ref="warehouse"
       name="warehouse"
+      default-only
       @choosen="chooseWarehouse"
     />
     <select-purchase-order
