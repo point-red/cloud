@@ -51,7 +51,7 @@
                   {{ $t("create") | uppercase }}
                 </router-link>
                 <router-link
-                  v-if="purchaseReceive.form.done == 0 && $permission.has('update purchase receive')"
+                  v-if="purchaseReceive.form.done == 0 && $permission.has('update purchase receive') && purchaseReceive.form.cancellation_status != 1"
                   :to="{ name: 'purchase.receive.edit', params: { id: purchaseReceive.id }}"
                   class="btn btn-sm btn-outline-secondary mr-5"
                 >

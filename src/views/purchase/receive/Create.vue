@@ -56,7 +56,7 @@
                         </template>
                       </span>
                       <div
-                        v-for="(error, index) in form.errors.get('supplier_id')"
+                        v-for="(error, index) in form.errors.get('purchase_order_id')"
                         :key="index"
                         class="invalid-input"
                       >
