@@ -46,7 +46,11 @@ const mutations = {
     state.pagination = payload.meta
   },
   'FETCH_OBJECT' (state, payload) {
-    state.purchaseReceive = payload.data
+    if (payload.data && payload.data.id) {
+      state.purchaseReceive = payload.data
+    } else {
+      state.purchaseReceive = {}
+    }
   },
   'CREATE' (state, payload) {
     state.purchaseReceive = payload
@@ -55,7 +59,7 @@ const mutations = {
     state.purchaseReceive = payload
   },
   'DELETE' (state, payload) {
-    state.purchaseReceive = {}
+    state.purchaseReceive = null
   }
 }
 
@@ -78,6 +82,7 @@ const actions = {
           commit('FETCH_OBJECT', response)
           resolve(response)
         }).catch(error => {
+          commit('DELETE')
           reject(error)
         })
     })

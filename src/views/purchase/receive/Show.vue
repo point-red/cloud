@@ -16,7 +16,7 @@
     <purchase-menu />
 
     <p-show-form-cancellation-status
-      v-if="$permission.has('approve purchase receive')"
+      v-if="$permission.has('approve purchase receive') && purchaseReceive"
       :is-loading="isLoading"
       :cancellation-status="purchaseReceive.form.cancellation_status"
       :cancellation-approval-reason="
@@ -209,6 +209,7 @@
     </div>
 
     <div
+      v-if="purchaseReceive"
       v-show="false"
       id="printMe"
       class="row"
@@ -397,7 +398,12 @@
         </p-block-inner>
       </p-block>
     </div>
-
+    <div
+      v-else
+      class="alert alert-danger"
+    >
+      {{ errorMessage }}
+    </div>
     <m-form-request-delete
       ref="formRequestDelete"
       @delete="onDelete($event)"
@@ -438,7 +444,8 @@ export default {
         supplier_address: null,
         supplier_phone: null,
         supplier_email: null
-      })
+      }),
+      errorMessage: null
     }
   },
   computed: {
@@ -500,6 +507,7 @@ export default {
         .catch((error) => {
           this.isLoading = false
           this.$notification.error(error.message)
+          this.errorMessage = error.message
         })
     },
 
