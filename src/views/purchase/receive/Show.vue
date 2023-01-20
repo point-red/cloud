@@ -1,6 +1,6 @@
 <template>
   <div>
-    <breadcrumb v-if="purchaseReceive">
+    <breadcrumb>
       <breadcrumb-purchase />
       <router-link
         to="/purchase/receive"
@@ -8,7 +8,10 @@
       >
         {{ $t("purchase receive") | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">{{
+      <span
+        v-if="purchaseReceive"
+        class="breadcrumb-item active"
+      >{{
         purchaseReceive.form.number | uppercase
       }}</span>
     </breadcrumb>
