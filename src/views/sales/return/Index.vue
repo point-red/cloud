@@ -41,6 +41,7 @@
         <div class="text-center font-size-sm">
           <div class="col-sm-2">
             <router-link
+              v-if="$permission.has('create sales return') || $permission.has('update sales return') || $permission.has('delete sales return')"
               to="/sales/return/approval"
               class="input-group-prepend"
             >
@@ -338,14 +339,19 @@ export default {
     }
   },
   created () {
-    this.$router.push({
-      query: {
-        ...this.$route.query,
-        date_from: this.date.start,
-        date_to: this.date.end
-      }
-    })
-    this.getSalesReturn()
+    if (this.$permission.has('read sales return')) {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          date_from: this.date.start,
+          date_to: this.date.end
+        }
+      })
+      this.getSalesReturn()
+    } else {
+      this.$router.push('/sales')
+      this.$router.push('/404')
+    }
   },
   updated () {
     this.lastPage = this.pagination.last_page
@@ -355,6 +361,11 @@ export default {
     chooseFormStatus (option) {
       this.formStatus.label = option.label
       this.formStatus.value = option.value
+      this.getSalesReturn()
+    },
+    chooseFormApprovalStatus (option) {
+      this.formApprovalStatus.label = option.label
+      this.formApprovalStatus.value = option.value
       this.getSalesReturn()
     },
     filterSearch: debounce(function (value) {
@@ -376,7 +387,7 @@ export default {
           fields: 'sales_return.*',
           sort_by: '-form.number',
           group_by: 'form.id',
-          filter_form: this.formStatus.value,
+          filter_form: this.formStatus.value + ';' + this.formApprovalStatus.value,
           filter_like: {
             'form.number': this.searchText,
             'customer.name': this.searchText,

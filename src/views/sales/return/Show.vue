@@ -74,14 +74,14 @@
                     {{ $t('create') | uppercase }}
                   </router-link>
                   <router-link
-                    v-if="$permission.has('update sales return') && salesReturn.form.done === 0"
+                    v-if="$permission.has('update sales return')"
                     :to="{ name: 'sales.return.edit', params: { id: salesReturn.id }}"
                     class="btn btn-sm btn-outline-secondary mr-5"
                   >
                     {{ $t('edit') | uppercase }}
                   </router-link>
                   <button
-                    v-if="(salesReturn.form.cancellation_status == null || salesReturn.form.cancellation_status == -1) && $permission.has('delete sales return') && salesReturn.form.done === 0"
+                    v-if="$permission.has('delete sales return')"
                     class="btn btn-sm btn-outline-secondary mr-5"
                     @click="$refs.formRequestDelete.open()"
                   >
@@ -124,6 +124,12 @@
                       </td>
                       <td>{{ salesReturn.sales_invoice.form.number }}</td>
                     </tr>
+                    <tr>
+                      <td class="font-weight-bold">
+                        {{ $t('warehouse') | uppercase }}
+                      </td>
+                      <td>{{ salesReturn.warehouse.name }}</td>
+                    </tr>
                   </table>
                 </div>
                 <div class="col-sm-6 text-right">
@@ -165,6 +171,9 @@
                     Price Sales
                   </th>
                   <th class="text-right">
+                    Discount
+                  </th>
+                  <th class="text-right">
                     Total
                   </th>
                 </tr>
@@ -185,7 +194,10 @@
                       {{ row.quantity | numberFormat }} {{ row.unit }}
                     </td>
                     <td class="text-right">
-                      {{ (row.price - row.discount_value) | numberFormat }}
+                      {{ row.price | numberFormat }}
+                    </td>
+                    <td class="text-right">
+                      {{ row.discount_value | numberFormat }}
                     </td>
                     <td class="text-right">
                       {{ row.quantity * (row.price - row.discount_value) | numberFormat }}
@@ -194,6 +206,7 @@
                 </template>
                 <tr slot="p-body">
                   <th />
+                  <td />
                   <td />
                   <td />
                   <td />
@@ -212,6 +225,7 @@
                   <td />
                   <td />
                   <td />
+                  <td />
                   <td class="text-right">
                     <b>{{ $t('tax base') | uppercase }}</b>
                   </td>
@@ -226,6 +240,7 @@
                   <td />
                   <td />
                   <td />
+                  <td />
                   <td class="text-right">
                     <b>{{ $t('tax') | uppercase }}</b>
                   </td>
@@ -236,6 +251,7 @@
                 </tr>
                 <tr slot="p-body">
                   <th />
+                  <td />
                   <td />
                   <td />
                   <td />
@@ -349,7 +365,12 @@ export default {
     }
   },
   created () {
-    this.salesReturnRequest()
+    if (this.$permission.has('read sales return')) {
+      this.salesReturnRequest()
+    } else {
+      this.$router.push('/sales')
+      this.$router.push('/404')
+    }
   },
   methods: {
     ...mapActions('salesReturn', {
@@ -377,7 +398,8 @@ export default {
             'salesInvoice.items;' +
             'form.createdBy;' +
             'form.requestApprovalTo;' +
-            'form.branch'
+            'form.branch;' +
+            'warehouse;'
         }
       }).catch(error => {
         this.$notification.error(error.message)
@@ -386,28 +408,32 @@ export default {
       })
     },
     onDelete (reason) {
-      this.isDeleting = true
-      this.delete({
-        id: this.id,
-        data: {
-          reason: reason || null
-        }
-      }).then(response => {
-        this.isDeleting = false
-        this.$notification.success('cancel success')
-        this.salesReturnRequest()
-        this.send({
-          ids: [{ id: this.id }]
-        })
-          .catch(error => {
-            this.$notification.error(error.message)
-            this.form.errors.record(error.errors)
+      if (this.$permission.has('delete sales return')) {
+        this.isDeleting = true
+        this.delete({
+          id: this.id,
+          data: {
+            reason: reason || null
+          }
+        }).then(response => {
+          this.isDeleting = false
+          this.$notification.success('cancel success')
+          this.salesReturnRequest()
+          this.send({
+            ids: [{ id: this.id }]
           })
-      }).catch(error => {
-        this.isDeleting = false
-        this.$notification.error(error.message)
-        this.form.errors.record(error.errors)
-      })
+            .catch(error => {
+              this.$notification.error(error.message)
+              this.form.errors.record(error.errors)
+            })
+        }).catch(error => {
+          this.isDeleting = false
+          this.$notification.error(error.message)
+          this.form.errors.record(error.errors)
+        })
+      } else {
+        this.$router.push('/404')
+      }
     },
     onApprove () {
       this.approve({

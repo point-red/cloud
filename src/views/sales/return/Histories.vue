@@ -150,14 +150,19 @@ export default {
     }
   },
   created () {
-    this.$router.push({
-      query: {
-        ...this.$route.query,
-        date_from: this.date.start,
-        date_to: this.date.end
-      }
-    })
-    this.getsalesReturnHistories()
+    if (this.$permission.has('read sales return')) {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          date_from: this.date.start,
+          date_to: this.date.end
+        }
+      })
+      this.getsalesReturnHistories()
+    } else {
+      this.$router.push('/sales')
+      this.$router.push('/404')
+    }
   },
   updated () {
     this.lastPage = this.pagination.last_page

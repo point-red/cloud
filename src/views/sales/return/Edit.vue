@@ -85,6 +85,7 @@
                 <th>Quantity Sales</th>
                 <th>Quantity Return</th>
                 <th>Price Sales</th>
+                <th>Discount</th>
                 <th>Total</th>
               </tr>
               <template v-for="(row, index) in form.items">
@@ -138,7 +139,15 @@
                   <td>
                     <p-form-number
                       :id="'price' + index"
-                      v-model.number="row.price_sales"
+                      v-model.number="row.price"
+                      :name="'price' + index"
+                      :readonly="true"
+                    />
+                  </td>
+                  <td>
+                    <p-form-number
+                      :id="'price' + index"
+                      v-model.number="row.discount_value"
                       :name="'price' + index"
                       :readonly="true"
                     />
@@ -373,19 +382,13 @@ export default {
       return this.sub_total
     },
     tax_amount () {
-      let value = 0
-      if (this.form.type_of_tax == 'include') {
-        value = this.tax_base - (this.tax_base * 10 / 110)
-      } else if (this.form.type_of_tax == 'exclude') {
-        value = this.tax_base * (10 / 110)
-      }
-      return value
+      return (this.tax_base * (10 / 110)).toFixed(10)
     },
     amount () {
       if (this.form.type_of_tax == 'include') {
         return this.tax_base
       } else {
-        return this.tax_base + this.tax_amount
+        return this.tax_base + parseFloat(this.tax_amount)
       }
     }
   },
