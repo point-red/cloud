@@ -2,7 +2,7 @@
 node_modules
 /dist
 /release
-/build\0.29.26
+/build/0.29.26
 
 /tests/e2e/videos/
 /tests/e2e/screenshots/
