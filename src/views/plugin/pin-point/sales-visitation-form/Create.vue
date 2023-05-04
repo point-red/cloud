@@ -260,7 +260,8 @@
             slot="body"
             class="col-lg-9"
           >
-            <p-date-picker
+            {{ form.date | dateFormat('DD MMMM YYYY') }}
+            <!-- <p-date-picker
               id="date"
               v-model="form.date"
               name="date"
@@ -269,7 +270,7 @@
               format="YYYY-MM-DD HH:mm:ss"
               :errors="form.errors.get('date')"
               @errors="form.errors.set('date', null)"
-            />
+            /> -->
           </div>
         </p-form-row>
 
