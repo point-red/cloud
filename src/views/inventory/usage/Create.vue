@@ -233,7 +233,7 @@
       ref="item"
       @choosen="chooseItem"
     />
-    <m-inventory-out
+    <m-inventory-usage-out
       :id="'inventory'"
       ref="inventory"
       :disable-unit-selection="true"
