@@ -26,6 +26,9 @@
               <th>File Name</th>
               <th>File Expired at</th>
               <th>Download URL</th>
+              <th>Status</th>
+              <th>Export Started at</th>
+              <th>Export Updated at</th>
             </tr>
             <tr
               v-for="(cloudStorage, index) in cloudStorages"
@@ -39,7 +42,17 @@
                   {{ cloudStorage.expired_at | dateFormat('DD MMM YYYY HH:mm') }}
                 </template>
               </td>
-              <td><a :href="cloudStorage.download_url">{{ cloudStorage.download_url }}</a></td>
+              <td>
+                <template v-if="cloudStorage.percentage == 100">
+                  <a :href="cloudStorage.download_url">{{ cloudStorage.download_url }}</a>
+                </template>
+                <template v-else>
+                  {{ cloudStorage.download_url }}
+                </template>
+              </td>
+              <td>{{ cloudStorage.percentage }}%</td>
+              <td>{{ cloudStorage.created_at | dateFormat('DD MMM YYYY HH:mm') }}</td>
+              <td>{{ cloudStorage.updated_at | dateFormat('DD MMM YYYY HH:mm') }}</td>
             </tr>
           </point-table>
         </p-block-inner>
