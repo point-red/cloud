@@ -164,6 +164,17 @@
                 type="button"
                 :disabled="isExporting"
                 class="btn btn-sm btn-secondary mr-5"
+                @click="exportBulkData('SalesVisitationReport')"
+              >
+                <i
+                  v-show="isExporting"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('export bulk report') | uppercase }}
+              </button>
+              <button
+                type="button"
+                :disabled="isExporting"
+                class="btn btn-sm btn-secondary mr-5"
                 @click="exportData('ChartInterestReason')"
               >
                 <i
@@ -448,6 +459,7 @@ export default {
       isExporting: false,
       isDropdown: false,
       downloadLink: '',
+      bulkExportStarting: false,
       searchText: '',
       limit: 10,
       page: this.$route.query.page * 1 || 1,
@@ -563,17 +575,18 @@ export default {
     },
     exportData (file = '') {
       this.isExporting = true
+      this.bulkExportStarting = false
 
-      const date1 = new Date(this.date.start)
-      const date2 = new Date(this.date.end)
-      const diffTime = Math.abs(date2 - date1)
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+      // const date1 = new Date(this.date.start)
+      // const date2 = new Date(this.date.end)
+      // const diffTime = Math.abs(date2 - date1)
+      // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
-      if (diffDays > 31) {
-        this.isExporting = false
-        this.$alert.error('', 'Export tidak bisa lebih dari 1 bulan')
-        return
-      }
+      // if (diffDays > 31) {
+      //   this.isExporting = false
+      //   this.$alert.error('', 'Export tidak bisa lebih dari 1 bulan')
+      //   return
+      // }
 
       this.toggleBtnDropdown()
       this.export({
@@ -584,6 +597,24 @@ export default {
       }).then(response => {
         this.downloadLink = response.data.url
       }).catch(error => {
+      }).then(() => {
+        this.isExporting = false
+      })
+    },
+    exportBulkData (file = '') {
+      this.isExporting = true
+      this.bulkExportStarting = false
+      this.downloadLink = ''
+
+      this.toggleBtnDropdown()
+      this.exportBulk({
+        date_from: this.date.start,
+        date_to: this.date.end,
+        file_export: file,
+        branch_id: this.branchId
+      }).then(() => {
+        this.bulkExportStarting = true
+      }).catch(() => {
       }).then(() => {
         this.isExporting = false
       })

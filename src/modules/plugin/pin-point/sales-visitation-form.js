@@ -51,6 +51,17 @@ const actions = {
         })
     })
   },
+  exportBulk ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/queued-export', payload)
+        .then((response) => {
+          resolve(response)
+        },
+          (error) => {
+            reject(error)
+          })
+    })
+  },
   get ({ commit }, payload) {
     return new Promise((resolve, reject) => {
       api.get(url, payload)
