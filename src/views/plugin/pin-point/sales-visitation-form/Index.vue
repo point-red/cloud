@@ -11,67 +11,135 @@
     <div class="row">
       <p-block>
         <div class="input-group block">
-          <router-link to="/plugin/pin-point/sales-visitation-form/create" class="input-group-prepend">
+          <router-link
+            to="/plugin/pin-point/sales-visitation-form/create"
+            class="input-group-prepend"
+          >
             <span class="input-group-text">
               <i class="fa fa-plus" />
             </span>
           </router-link>
-          <p-form-input id="search-text" ref="searchText" name="search-text" placeholder="Search" :value="searchText"
-            class="btn-block" @input="filterSearch" />
+          <p-form-input
+            id="search-text"
+            ref="searchText"
+            name="search-text"
+            placeholder="Search"
+            :value="searchText"
+            class="btn-block"
+            @input="filterSearch"
+          />
         </div>
         <div class="text-center font-size-sm mb-10">
-          <a href="javascript:void(0)" @click="isFilterOpen = !isFilterOpen">
+          <a
+            href="javascript:void(0)"
+            @click="isFilterOpen = !isFilterOpen"
+          >
             {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
           </a>
         </div>
-        <div v-show="isFilterOpen" class="card" :class="{ 'fadeIn': isFilterOpen }">
+        <div
+          v-show="isFilterOpen"
+          class="card"
+          :class="{ 'fadeIn': isFilterOpen }"
+        >
           <div class="row">
             <div class="col-sm-2 text-center">
-              <p-form-row id="date-start" name="date-start" :label="$t('date start')" :is-horizontal="false">
+              <p-form-row
+                id="date-start"
+                name="date-start"
+                :label="$t('date start')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <p-date-picker id="date" v-model="date.start" name="date" label="date" />
+                  <p-date-picker
+                    id="date"
+                    v-model="date.start"
+                    name="date"
+                    label="date"
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-2 text-center">
-              <p-form-row id="date-end" name="date-end" :label="$t('date end')" :is-horizontal="false">
+              <p-form-row
+                id="date-end"
+                name="date-end"
+                :label="$t('date end')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <p-date-picker id="date" v-model="date.end" name="date" label="date" />
+                  <p-date-picker
+                    id="date"
+                    v-model="date.end"
+                    name="date"
+                    label="date"
+                  />
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-2 text-center">
-              <p-form-row id="filter-item" name="filter-item" :label="$t('filter item')" :is-horizontal="false">
+              <p-form-row
+                id="filter-item"
+                name="filter-item"
+                :label="$t('filter item')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <span class="select-link" @click="$refs.item.open()">
+                  <span
+                    class="select-link"
+                    @click="$refs.item.open()"
+                  >
                     {{ itemName || $t('select') | uppercase }}
                   </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-2 text-center">
-              <p-form-row id="filter-payment-method" name="filter-payment-method" :label="$t('payment method')"
-                :is-horizontal="false">
+              <p-form-row
+                id="filter-payment-method"
+                name="filter-payment-method"
+                :label="$t('payment method')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <span class="select-link" @click="$refs.paymentable.open()">
+                  <span
+                    class="select-link"
+                    @click="$refs.paymentable.open()"
+                  >
                     {{ paymentName || $t('select') | uppercase }}
                   </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-2 text-center">
-              <p-form-row id="filter-branch" name="filter-branch" :label="$t('branch')" :is-horizontal="false">
+              <p-form-row
+                id="filter-branch"
+                name="filter-branch"
+                :label="$t('branch')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <span class="select-link" @click="$refs.branch.open()">
+                  <span
+                    class="select-link"
+                    @click="$refs.branch.open()"
+                  >
                     {{ branchName || $t('select') | uppercase }}
                   </span>
                 </div>
               </p-form-row>
             </div>
             <div class="col-sm-2 text-center">
-              <p-form-row id="filter-item-sold" name="filter-item-sold" :label="$t('item sold')" :is-horizontal="false">
+              <p-form-row
+                id="filter-item-sold"
+                name="filter-item-sold"
+                :label="$t('item sold')"
+                :is-horizontal="false"
+              >
                 <div slot="body">
-                  <span class="select-link" @click="$refs.itemSold.open()">
+                  <span
+                    class="select-link"
+                    @click="$refs.itemSold.open()"
+                  >
                     {{ itemSoldLabel || $t('select') | uppercase }}
                   </span>
                 </div>
@@ -81,30 +149,66 @@
           <hr>
           <div class="row">
             <div class="col-sm-12 ml-10 mb-10">
-              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5"
-                @click="exportData('SalesVisitationReport')">
-                <i v-show="isExporting" class="fa fa-asterisk fa-spin" /> {{ $t('export report') | uppercase }}
+              <button
+                type="button"
+                :disabled="isExporting"
+                class="btn btn-sm btn-secondary mr-5"
+                @click="exportData('SalesVisitationReport')"
+              >
+                <i
+                  v-show="isExporting"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('export report') | uppercase }}
               </button>
-              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5"
-                @click="exportBulkData('SalesVisitationReport')">
-                <i v-show="isExporting" class="fa fa-asterisk fa-spin" /> {{ $t('export bulk report') | uppercase }}
+              <button
+                type="button"
+                :disabled="isExporting"
+                class="btn btn-sm btn-secondary mr-5"
+                @click="exportBulkData('SalesVisitationReport')"
+              >
+                <i
+                  v-show="isExporting"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('export bulk report') | uppercase }}
               </button>
-              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5"
-                @click="exportData('ChartInterestReason')">
-                <i v-show="isExporting" class="fa fa-asterisk fa-spin" /> {{ $t('export interest reason') | uppercase }}
+              <button
+                type="button"
+                :disabled="isExporting"
+                class="btn btn-sm btn-secondary mr-5"
+                @click="exportData('ChartInterestReason')"
+              >
+                <i
+                  v-show="isExporting"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('export interest reason') | uppercase }}
               </button>
-              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5"
-                @click="exportData('ChartNoInterestReason')">
-                <i v-show="isExporting" class="fa fa-asterisk fa-spin" /> {{ $t('export no interest reason') | uppercase
-                }}
+              <button
+                type="button"
+                :disabled="isExporting"
+                class="btn btn-sm btn-secondary mr-5"
+                @click="exportData('ChartNoInterestReason')"
+              >
+                <i
+                  v-show="isExporting"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('export no interest reason') | uppercase }}
               </button>
-              <button type="button" :disabled="isExporting" class="btn btn-sm btn-secondary mr-5"
-                @click="exportData('ChartSimilarProduct')">
-                <i v-show="isExporting" class="fa fa-asterisk fa-spin" /> {{ $t('export similar product') | uppercase }}
+              <button
+                type="button"
+                :disabled="isExporting"
+                class="btn btn-sm btn-secondary mr-5"
+                @click="exportData('ChartSimilarProduct')"
+              >
+                <i
+                  v-show="isExporting"
+                  class="fa fa-asterisk fa-spin"
+                /> {{ $t('export similar product') | uppercase }}
               </button>
               <hr v-show="downloadLink">
-              <a v-show="downloadLink" :href="downloadLink">{{ downloadLink }}</a> <span v-show="downloadLink">(expired in
-                24 hour)</span>
+              <a
+                v-show="downloadLink"
+                :href="downloadLink"
+              >{{ downloadLink }}</a> <span v-show="downloadLink">(expired in 24 hour)</span>
             </div>
           </div>
         </div>
@@ -151,16 +255,26 @@
               <th style="min-width: 150px">
                 {{ $t('item') }}
               </th>
-              <th class="text-right" style="min-width: 100px">
+              <th
+                class="text-right"
+                style="min-width: 100px"
+              >
                 {{ $t('quantity') }}
               </th>
-              <th class="text-right" style="min-width: 100px">
+              <th
+                class="text-right"
+                style="min-width: 100px"
+              >
                 {{ $t('price') }}
               </th>
             </tr>
             <template v-for="(form, index) in forms">
               <template v-if="form.details && form.details.length > 0">
-                <tr v-for="(detail, index2) in form.details" slot="p-body" :key="index + '-' + index2">
+                <tr
+                  v-for="(detail, index2) in form.details"
+                  slot="p-body"
+                  :key="index + '-' + index2"
+                >
                   <th>
                     {{ (page * limit) - limit + index + 1 }}<template v-if="form.details.length > 1">
                       .{{ ++index2 }}
@@ -168,7 +282,11 @@
                   </th>
                   <td>
                     <template v-if="form.photo">
-                      <img :src="form.photo" alt="" width="150px">
+                      <img
+                        :src="form.photo"
+                        alt=""
+                        width="150px"
+                      >
                     </template>
                   </td>
                   <td>
@@ -181,21 +299,30 @@
                   <td>{{ form.phone }}</td>
                   <td>
                     <template v-for="(interestReason, interestIndex) in form.interest_reasons">
-                      <p :key="interestIndex" class="mb-0">
+                      <p
+                        :key="interestIndex"
+                        class="mb-0"
+                      >
                         - {{ interestReason.name }}
                       </p>
                     </template>
                   </td>
                   <td>
                     <template v-for="(noInterestReason, noInterestIndex) in form.no_interest_reasons">
-                      <p :key="noInterestIndex" class="mb-0">
+                      <p
+                        :key="noInterestIndex"
+                        class="mb-0"
+                      >
                         - {{ noInterestReason.name }}
                       </p>
                     </template>
                   </td>
                   <td>
                     <template v-for="(similarProduct, similarProductIndex) in form.similar_products">
-                      <p :key="similarProductIndex" class="mb-0">
+                      <p
+                        :key="similarProductIndex"
+                        class="mb-0"
+                      >
                         - {{ similarProduct.name }}
                       </p>
                     </template>
@@ -215,11 +342,18 @@
                 </tr>
               </template>
               <template v-else>
-                <tr slot="p-body" :key="index">
+                <tr
+                  slot="p-body"
+                  :key="index"
+                >
                   <th>{{ (page * limit) - limit + index + 1 }}</th>
                   <td>
                     <template v-if="form.photo">
-                      <img :src="form.photo" alt="" width="150px">
+                      <img
+                        :src="form.photo"
+                        alt=""
+                        width="150px"
+                      >
                     </template>
                   </td>
                   <td>{{ form.form.date | dateFormat('DD MMMM YYYY HH:mm') }}</td>
@@ -230,21 +364,30 @@
                   <td>{{ form.phone }}</td>
                   <td>
                     <template v-for="(interestReason, interestIndex) in form.interest_reasons">
-                      <p :key="interestIndex" class="mb-0">
+                      <p
+                        :key="interestIndex"
+                        class="mb-0"
+                      >
                         - {{ interestReason.name }}
                       </p>
                     </template>
                   </td>
                   <td>
                     <template v-for="(noInterestReason, noInterestIndex) in form.no_interest_reasons">
-                      <p :key="noInterestIndex" class="mb-0">
+                      <p
+                        :key="noInterestIndex"
+                        class="mb-0"
+                      >
                         - {{ noInterestReason.name }}
                       </p>
                     </template>
                   </td>
                   <td>
                     <template v-for="(similarProduct, similarProductIndex) in form.similar_products">
-                      <p :key="similarProductIndex" class="mb-0">
+                      <p
+                        :key="similarProductIndex"
+                        class="mb-0"
+                      >
                         - {{ similarProduct.name }}
                       </p>
                     </template>
@@ -256,14 +399,32 @@
               </template>
             </template>
           </point-table>
-          <p-pagination :current-page="page" :last-page="lastPage" @updatePage="updatePage" />
+          <p-pagination
+            :current-page="page"
+            :last-page="lastPage"
+            @updatePage="updatePage"
+          />
         </p-block-inner>
       </p-block>
     </div>
-    <m-branch ref="branch" :clear-button="true" @choosen="chooseBranch" />
-    <m-item ref="item" :create-button="false" @choosen="chooseItem" />
-    <m-item-sold ref="itemSold" @choosen="chooseItemSold" />
-    <m-payment-method ref="paymentable" @choosen="choosePayment" />
+    <m-branch
+      ref="branch"
+      :clear-button="true"
+      @choosen="chooseBranch"
+    />
+    <m-item
+      ref="item"
+      :create-button="false"
+      @choosen="chooseItem"
+    />
+    <m-item-sold
+      ref="itemSold"
+      @choosen="chooseItemSold"
+    />
+    <m-payment-method
+      ref="paymentable"
+      @choosen="choosePayment"
+    />
   </div>
 </template>
 
