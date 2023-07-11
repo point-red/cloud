@@ -495,7 +495,7 @@ export default {
     this.search()
   },
   methods: {
-    ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export']),
+    ...mapActions('pluginPinPointSalesVisitationForm', ['get', 'export', 'exportBulk']),
     toggleBtnDropdown () {
       this.isDropdown = !this.isDropdown
     },
