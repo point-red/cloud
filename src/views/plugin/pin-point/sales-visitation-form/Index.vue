@@ -209,6 +209,10 @@
                 v-show="downloadLink"
                 :href="downloadLink"
               >{{ downloadLink }}</a> <span v-show="downloadLink">(expired in 24 hour)</span>
+              <template v-if="bulkExportStarting">
+                <hr>
+                <span>Proses export sedang berlangsung. Hasil export akan dikirim via email.</span>
+              </template>
             </div>
           </div>
         </div>
