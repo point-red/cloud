@@ -23,7 +23,7 @@ export default {
     return {
       url: '',
       iframeStyle: {
-        height: '400px',
+        height: '1200px',
         width: '100%'
       }
     }
@@ -44,7 +44,7 @@ export default {
       if (isfullscreen) {
         this.iframeStyle.height = '100%'
       } else {
-        this.iframeStyle.height = '400px'
+        this.iframeStyle.height = '1200px'
       }
     }
   }
