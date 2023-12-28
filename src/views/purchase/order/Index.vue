@@ -29,13 +29,22 @@
             @input="filterSearch"
           />
         </div>
-        <div class="text-center font-size-sm">
-          <a
-            href="javascript:void(0)"
-            @click="isAdvanceFilter = !isAdvanceFilter"
+        <div class="d-flex justify-content-between">
+          <router-link
+            to="/purchase/order/request-approve-all"
+            class="btn btn-sm btn-light"
           >
-            {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
-          </a>
+            {{ $t('request approve all') | uppercase }}
+          </router-link>
+          <div class="font-size-sm mb-10 mt-2">
+            <a
+              href="javascript:void(0)"
+              @click="isAdvanceFilter = !isAdvanceFilter"
+            >
+              {{ $t('advance filter') | uppercase }} <i class="fa fa-caret-down" />
+            </a>
+          </div>
+          <div />
         </div>
         <div
           v-show="isAdvanceFilter"
@@ -165,6 +174,9 @@
               <th class="text-center">
                 Form Status
               </th>
+              <th class="text-center">
+                History
+              </th>
               <th width="50px" />
             </tr>
             <template v-for="(purchaseOrder, index) in purchaseOrders">
@@ -234,6 +246,14 @@
                   >
                     {{ $t('done') | uppercase }}
                   </div>
+                </td>
+                <td class="text-center">
+                  <router-link
+                    class="btn btn-sm btn-light"
+                    :to="{ name: 'purchase.order.history', params: { number: purchaseOrder.form.number }}"
+                  >
+                    <i class="fa fa-history p-0" />
+                  </router-link>
                 </td>
                 <td>
                 <!-- <p-form-check-box

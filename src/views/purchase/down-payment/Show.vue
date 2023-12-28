@@ -41,6 +41,14 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="text-right">
+                <button
+                  type="button"
+                  class="mr-3 btn btn-sm btn-outline-secondary mr-5"
+                  title="Print cash advance"
+                  @click="$refs.printForm.open()"
+                >
+                  <i class="si si-printer" />
+                </button>
                 <router-link
                   :to="{ name: 'purchase.down-payment.create' }"
                   class="btn btn-sm btn-outline-secondary mr-5"
@@ -290,6 +298,11 @@
       ref="formRequestDelete"
       @delete="onDelete($event)"
     />
+    <print-form
+      ref="printForm"
+      :dp="downPayment"
+      @history="storeHistoryRecord($event)"
+    />
   </div>
 </template>
 
@@ -299,13 +312,15 @@ import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbPurchase from '../Breadcrumb'
 import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
+import PrintForm from './PrintForm'
 
 export default {
   components: {
     PurchaseMenu,
     Breadcrumb,
     BreadcrumbPurchase,
-    PointTable
+    PointTable,
+    PrintForm
   },
   data () {
     return {
@@ -422,6 +437,16 @@ export default {
         this.purchaseDownPaymentRequest()
       }).catch(error => {
         console.log(error.message)
+      })
+    },
+    storeHistoryRecord (history) {
+      this.storeHistory({
+        id: this.id,
+        activity: history
+      }).then(response => {
+        this.$notification.success('history recorded : ' + history)
+      }).catch(error => {
+        this.$notification.error(error.message)
       })
     }
   }

@@ -147,6 +147,9 @@ export default {
         if (this.resourceType === 'CashAdvance') {
           ({ resource, projectName, approvalStatus } = await this.handleApprovalCashAdvance(headers))
         }
+        if (this.resourceType === 'PurchaseOrder') {
+          ({ resource, projectName, approvalStatus } = await this.handleApprovalPurchaseOrder(headers))
+        }
         if (this.resourceType === 'TransferSend') {
           this.handleApprovalTransferSend()
         }
@@ -231,6 +234,27 @@ export default {
           return { resource: stockCorrection, projectName, approvalStatus: stockCorrection.form.cancellationStatus }
         }
       }
+    },
+    async handleApprovalPurchaseOrder (headers) {
+      let status = 0
+      if (this.action === 'approve') {
+        status = 1
+      } else if (this.action === 'reject') {
+        status = -1
+      }
+
+      console.log(this.token, this.id, status, headers)
+      const { data: { data: purchaseOrder } } = await axios.post('approval-with-token/purchase/orders', { token: this.token, id: this.id, status: status })
+      if (purchaseOrder.form.approval_status == 0) {
+        this.warningMessage = 'Balance Not Enough'
+      } else if (purchaseOrder.form.approval_status != status) {
+        if (purchaseOrder.form.approval_status == 1) {
+          this.warningMessage = 'Purchase Order was approved before'
+        } else if (purchaseOrder.form.approval_status == -1) {
+          this.warningMessage = 'Purchase Order was rejected before'
+        }
+      }
+      return { resource: purchaseOrder, projectName: this.projectName, approvalStatus: purchaseOrder.form.approval_status }
     },
     async handleApprovalCashAdvance (headers) {
       let status = 0
