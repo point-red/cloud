@@ -569,6 +569,7 @@ export default {
     }),
     ...mapActions('cloudStorage', {
       showByAttachment: 'showBy',
+      uploadAttachment: 'upload',
       replaceAttachment: 'replace'
     }),
 
@@ -820,7 +821,30 @@ export default {
                     console.log(this.form)
                   },
                   (error) => {
-                    this.findData()
+                    if (indicatorId > 0 && files !== null) {
+                      const formData = new FormData()
+                      formData.append('file', files)
+                      formData.append('feature', 'assessment')
+                      formData.append('feature_id', indicatorId)
+                      formData.append('notes', '')
+                      formData.append('is_user_protected', true)
+                      formData.append('expiration_day', 0)
+                      this.uploadAttachment(formData)
+                        .then(
+                          (response) => {
+                            this.findData()
+                          },
+                          (error) => {
+                            console.log(JSON.stringify(error))
+                            this.findData()
+                          }
+                        )
+                        .catch((error) => {
+                          this.findData()
+                        })
+                    } else {
+                      this.findData()
+                    }
                     console.log(JSON.stringify(error))
                   }
                 )
