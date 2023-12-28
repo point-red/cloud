@@ -777,7 +777,6 @@ export default {
           this.$notification.error('File limit 2 Mb', e.message)
           console.log('size limit')
         } else {
-          console.log('ini nih')
           console.log(this.form)
           console.log(files[0].name)
           var indicatorId = this.indicatorIdAtt
@@ -916,7 +915,6 @@ export default {
     },
     onSave (indicatorId = null, files = null) {
       this.isSaving = true
-      console.log('kpiId nih' + this.kpiId)
       if (this.kpiId != null) {
         this.updateEmployeeAssessment({
           employeeId: this.id,
