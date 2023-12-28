@@ -777,6 +777,7 @@ export default {
           this.$notification.error('File limit 2 Mb', e.message)
           console.log('size limit')
         } else {
+          console.log('ini nih')
           console.log(this.form)
           console.log(files[0].name)
           var indicatorId = this.indicatorIdAtt
@@ -915,6 +916,7 @@ export default {
     },
     onSave (indicatorId = null, files = null) {
       this.isSaving = true
+      console.log('kpiId nih' + this.kpiId)
       if (this.kpiId != null) {
         this.updateEmployeeAssessment({
           employeeId: this.id,
@@ -944,7 +946,31 @@ export default {
                       console.log(this.form)
                     },
                     (error) => {
-                      this.findData()
+                      // upload file if error
+                      if (indicatorId > 0 && files !== null) {
+                        const formData = new FormData()
+                        formData.append('file', files)
+                        formData.append('feature', 'assessment')
+                        formData.append('feature_id', indicatorId)
+                        formData.append('notes', '')
+                        formData.append('is_user_protected', true)
+                        formData.append('expiration_day', 0)
+                        this.uploadAttachment(formData)
+                          .then(
+                            (response) => {
+                              this.findData()
+                            },
+                            (error) => {
+                              console.log(JSON.stringify(error))
+                              this.findData()
+                            }
+                          )
+                          .catch((error) => {
+                            this.findData()
+                          })
+                      } else {
+                        this.findData()
+                      }
                       console.log(JSON.stringify(error))
                     }
                   )
