@@ -38,7 +38,7 @@
             <button
               type="button"
               class="btn btn-alt-secondary"
-              @click=""
+              @click="export"
             >
               {{ $t('export') }}
             </button>
@@ -191,6 +191,9 @@ export default {
       this.page = 1
       this.getEmployeesRequest()
     }, 300),
+    export () {
+      console.log('explort')
+    },
     getEmployeesRequest () {
       this.isLoading = true
       this.getEmployees({
