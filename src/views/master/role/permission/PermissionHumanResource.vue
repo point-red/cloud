@@ -241,6 +241,15 @@
             @click.native="togglePermission('delete employee assessment')"
           />
         </td>
+        <td>
+          <p-form-check-box
+            ref="export employee assessment"
+            :is-form="false"
+            :checked="$rolePermission.has('export employee assessment', permissions)"
+            :description="'export' | uppercase"
+            @click.native="togglePermission('export employee assessment')"
+          />
+        </td>
         <td />
       </tr>
     </p-table>
