@@ -94,6 +94,7 @@
           <p-table>
             <tr slot="p-head">
               <th>{{ $t("date") }}</th>
+              <th v-if="reportType == 'all'">{{ $t("created at") }}</th>
               <th>{{ $t("kpi template") }}</th>
               <th class="text-center">
                 {{ $t("weight") }}
@@ -195,6 +196,9 @@
                     {{ assessment.date | dateFormat("DD MMMM YYYY") }}
                   </template>
                 </template>
+              </td>
+              <td v-if="reportType == 'all'">
+                {{ assessment.created_at | dateFormat("DD MMMM YYYY") }}
               </td>
               <td>
                 {{ assessment.name }}
