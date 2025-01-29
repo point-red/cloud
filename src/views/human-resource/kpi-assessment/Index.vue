@@ -147,8 +147,8 @@ export default {
       isAdvanceFilter: false,
       checkedRow: [],
       date: {
-        start: this.$route.query.date_start ? this.$moment(this.$route.query.date_start).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
-        end: this.$route.query.date_end ? this.$moment(this.$route.query.date_end).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
+        start: this.$moment().format('YYYY-MM-01 00:00:00'),
+        end: this.$moment().format('YYYY-MM-DD 23:59:59')
       }
     }
   },
