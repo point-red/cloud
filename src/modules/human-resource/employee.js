@@ -5,6 +5,7 @@ const url = '/human-resource/employee/employees'
 const state = {
   employee: {},
   employees: [],
+  employeeList: [],
   pagination: {
     current_page: null,
     from: null,
@@ -23,6 +24,9 @@ const getters = {
   employees: state => {
     return state.employees
   },
+  employeeList: state => {
+    return state.employeeList
+  },
   pagination: state => {
     return state.pagination
   }
@@ -32,6 +36,16 @@ const mutations = {
   'FETCH_ARRAY' (state, payload) {
     state.employees = payload.data
     state.pagination = payload.meta
+  },
+  'FETCH_SELECT_LIST' (state, payload) {
+    const array = []
+    payload.forEach(element => {
+      array.push({
+        id: element.id,
+        label: element.name
+      })
+    })
+    state.employeeList = array
   },
   'FETCH_OBJECT' (state, payload) {
     state.employee = payload.data
@@ -53,6 +67,7 @@ const actions = {
       api.get(url, payload)
         .then(response => {
           commit('FETCH_ARRAY', response)
+          commit('FETCH_SELECT_LIST', response.data)
           resolve(response)
         }).catch(error => {
           reject(error)

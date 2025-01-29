@@ -8,6 +8,42 @@
 
     <div class="row">
       <p-block>
+        <div class="row mb-5">
+          <div class="col-sm-3">
+            <p-select
+              id="employee_id"
+              v-model="employee_id"
+              :options="employeeList"
+              name="employee_id"
+              label="employee"
+            />
+          </div>
+          <div class="col-sm-3">
+            <p-date-picker
+              id="date"
+              v-model="date.start"
+              name="date"
+              label="date from"
+            />
+          </div>
+          <div class="col-sm-3">
+            <p-date-picker
+              id="date"
+              v-model="date.end"
+              name="date"
+              label="date to"
+            />
+          </div>
+          <div class="col-sm-3">
+            <button
+              type="button"
+              class="btn btn-alt-secondary"
+              @click=""
+            >
+              {{ $t('export') }}
+            </button>
+          </div>
+        </div>
         <div class="input-group block mb-5">
           <p-form-input
             id="search-text"
@@ -107,13 +143,18 @@ export default {
       searchText: this.$route.query.search,
       page: this.$route.query.page * 1 || 1,
       lastPage: 1,
+      employee_id: 0,
       isAdvanceFilter: false,
-      checkedRow: []
+      checkedRow: [],
+      date: {
+        start: this.$route.query.date_from ? this.$moment(this.$route.query.date_from).format('YYYY-MM-DD 00:00:00') : this.$moment().format('YYYY-MM-01 00:00:00'),
+        end: this.$route.query.date_to ? this.$moment(this.$route.query.date_to).format('YYYY-MM-DD 23:59:59') : this.$moment().format('YYYY-MM-DD 23:59:59')
+      }
     }
   },
   computed: {
     ...mapGetters('auth', ['authUser']),
-    ...mapGetters('humanResourceEmployee', ['employees', 'pagination']),
+    ...mapGetters('humanResourceEmployee', ['employeeList', 'employees', 'pagination']),
     ...mapGetters('humanResourceEmployeeGroup', ['groupList'])
   },
   created () {
