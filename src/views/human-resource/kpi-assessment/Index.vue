@@ -197,11 +197,9 @@ export default {
     }, 300),
     exportData () {
       this.export({
-        params: {
-          employee_id: this.employeeId,
-          date_start: this.date.start,
-          date_end: this.date.end
-        }
+        employee_id: this.employeeId,
+        date_start: this.date.start,
+        date_end: this.date.end
       }).then((response) => {
         this.downloadLink = response.data.url
         window.open(response.data.url, '_blank')
