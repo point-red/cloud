@@ -12,7 +12,7 @@
           <div class="col-sm-3">
             <p-select
               id="employee_id"
-              v-model="employee_id"
+              v-model="employeeId"
               :options="employeeList"
               name="employee_id"
               label="employee"
@@ -143,7 +143,7 @@ export default {
       searchText: this.$route.query.search,
       page: this.$route.query.page * 1 || 1,
       lastPage: 1,
-      employee_id: 0,
+      employeeId: 0,
       isAdvanceFilter: false,
       checkedRow: [],
       date: {
