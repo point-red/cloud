@@ -9,7 +9,7 @@
     <div class="row">
       <p-block>
         <div class="row mb-5">
-          <div class="col-sm-3">
+          <div class="">
             <p-select
               id="employee_id"
               v-model="employeeId"
@@ -18,7 +18,7 @@
               label="employee"
             />
           </div>
-          <div class="col-sm-3">
+          <div class="">
             <p-date-picker
               id="date"
               v-model="date.start"
@@ -26,7 +26,7 @@
               label="date from"
             />
           </div>
-          <div class="col-sm-3">
+          <div class="">
             <p-date-picker
               id="date"
               v-model="date.end"
@@ -34,7 +34,7 @@
               label="date to"
             />
           </div>
-          <div class="col-sm-3">
+          <div class="">
             <button
               type="button"
               class="btn btn-alt-secondary"
@@ -145,6 +145,7 @@ export default {
       lastPage: 1,
       employeeId: 0,
       isAdvanceFilter: false,
+      downloadLink: '',
       checkedRow: [],
       date: {
         start: this.$moment().format('YYYY-MM-01 00:00:00'),
@@ -170,6 +171,9 @@ export default {
       bulkActivate: 'bulkActivate',
       bulkDelete: 'bulkDelete'
     }),
+    ...mapActions('humanResourceEmployeeAssessment', {
+      export: 'export'
+    }),
     getNumberIndex (index) {
       return (this.page * 10) - 10 + index + 1
     },
@@ -192,7 +196,18 @@ export default {
       this.getEmployeesRequest()
     }, 300),
     exportData () {
-      // console.log('explort')
+      this.export({
+        params: {
+          employee_id: this.employeeId,
+          date_start: this.date.start,
+          date_end: this.date.end
+        }
+      }).then((response) => {
+        this.downloadLink = response.data.url
+        window.open(response.data.url, '_blank')
+      }, (errors) => {
+        console.log(errors.data)
+      })
     },
     getEmployeesRequest () {
       this.isLoading = true
