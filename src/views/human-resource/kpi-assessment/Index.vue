@@ -8,7 +8,7 @@
 
     <div class="row">
       <p-block>
-        <div class="row mb-5" style="margin-left: 0px">
+        <div class="row mb-5" style="margin-left: 0px" v-if="$permission.has('export employee assessment')">
           <div class="">
             <p-select
               id="employee_id"
