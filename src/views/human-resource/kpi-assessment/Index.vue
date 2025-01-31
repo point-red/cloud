@@ -148,8 +148,8 @@ export default {
       downloadLink: '',
       checkedRow: [],
       date: {
-        start: this.$moment().substract(1, 'months').format('YYYY-MM-01 00:00:00'),
-        end: this.$moment().substract(1, 'months').endOf('month').format('YYYY-MM-DD 23:59:59')
+        start: this.$moment().subtract(1, 'months').format('YYYY-MM-01 00:00:00'),
+        end: this.$moment().subtract(1, 'months').endOf('month').format('YYYY-MM-DD 23:59:59')
       }
     }
   },
