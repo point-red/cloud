@@ -93,7 +93,7 @@
         <p-block-inner :is-loading="isLoading">
           <p-table>
             <tr slot="p-head">
-              <th>{{ $t("date") }}</th>
+              <th>{{ $t("assessment period") }}</th>
               <th v-if="reportType == 'all'">{{ $t("created at") }}</th>
               <th>{{ $t("kpi template") }}</th>
               <th class="text-center">
