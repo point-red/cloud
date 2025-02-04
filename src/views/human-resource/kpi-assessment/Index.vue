@@ -160,6 +160,7 @@ export default {
   },
   created () {
     this.getEmployeesRequest()
+    this.getEmployeeListRequest()
   },
   updated () {
     this.lastPage = this.pagination.last_page
@@ -167,6 +168,7 @@ export default {
   methods: {
     ...mapActions('humanResourceEmployee', {
       getEmployees: 'get',
+      getEmployeeList: 'getList',
       bulkArchive: 'bulkArchive',
       bulkActivate: 'bulkActivate',
       bulkDelete: 'bulkDelete'
@@ -216,6 +218,29 @@ export default {
             job_title: this.searchText
           },
           limit: 10,
+          page: this.page,
+          is_archived: 0,
+          sort_by: 'name',
+          includes: 'scorers',
+          additional: 'groups',
+          scorer_id: this.authUser.id
+        }
+      }).then((response) => {
+        this.isLoading = false
+      }, (errors) => {
+        this.isLoading = false
+        console.log(errors.data)
+      })
+    },
+    getEmployeeListRequest () {
+      this.isLoading = true
+      this.getEmployees({
+        params: {
+          filter_like: {
+            name: this.searchText,
+            job_title: this.searchText
+          },
+          limit: 10000,
           page: this.page,
           is_archived: 0,
           sort_by: 'name',
