@@ -234,7 +234,7 @@ export default {
     },
     getEmployeeListRequest () {
       this.isLoading = true
-      this.getEmployees({
+      this.getEmployeeList({
         params: {
           filter_like: {
             name: this.searchText,
