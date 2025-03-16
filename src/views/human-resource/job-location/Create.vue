@@ -114,6 +114,7 @@ export default {
       isSaving: false,
       form: new Form({
         name: '',
+        area_values: [{ year: '', value: '', notes: '' }],
         base_salary: null,
         multiplier_kpi: null
       })

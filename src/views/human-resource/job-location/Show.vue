@@ -54,26 +54,55 @@
             name="name"
             readonly
           />
-          <p-form-row
-            id="base-salary"
-            name="base-salary"
-            :label="$t('area value')"
-            readonly
-          >
-            <div
-              slot="body"
-              class="col-lg-9"
+          <div class="form-group row">
+            <label
+              for="area-value"
+              class="col-form-label col-lg-3"
             >
-              <p-form-number
-                id="base-salary"
-                v-model="jobLocation.base_salary"
-                name="base-salary"
-                :is-text-right="false"
-                :disabled="true"
-                :label="$t('area value')"
-              />
+              {{ $t("area value") | uppercase }}
+            </label>
+            <div class="col-lg-9">
+              <point-table
+                class="w-full"
+              >
+                <tr slot="p-head">
+                  <th>Year</th>
+                  <th>Value</th>
+                  <th>Notes</th>
+                </tr>
+                <tr
+                  v-for="(row, index) in jobLocation.area_values"
+                  slot="p-body"
+                  :key="index"
+                >
+                  <td>
+                    <p-form-number
+                      :id="'year-' + index"
+                      v-model="row.year"
+                      :name="'year-' + index"
+                      readonly
+                    />
+                  </td>
+                  <td>
+                    <p-form-number
+                      :id="'value-' + index"
+                      v-model="row.value"
+                      :name="'value-' + index"
+                      readonly
+                    />
+                  </td>
+                  <td>
+                    <p-form-input
+                      :id="'notes-' + index"
+                      v-model="row.notes"
+                      :name="'notes-' + index"
+                      readonly
+                    />
+                  </td>
+                </tr>
+              </point-table>
             </div>
-          </p-form-row>
+          </div>
           <p-form-row
             id="multiplier-kpi"
             name="multiplier-kpi"
@@ -113,6 +142,7 @@
 import TabMenu from '@/views/human-resource/TabMenu'
 
 import Breadcrumb from '@/views/Breadcrumb'
+import PointTable from 'point-table-vue'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -120,7 +150,8 @@ export default {
   components: {
     TabMenu,
     Breadcrumb,
-    BreadcrumbHumanResource
+    BreadcrumbHumanResource,
+    PointTable
   },
   data () {
     return {

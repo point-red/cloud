@@ -18,31 +18,76 @@
             :errors="form.errors.get('name')"
             @errors="form.errors.set('name', null)"
           />
-          <p-form-row
-            id="base-salary"
-            v-model="form.base_salary"
-            name="base-salary"
-            :disabled="isSaving"
-            :label="$t('area value')"
-            :errors="form.errors.get('base_salary')"
-            @errors="form.errors.set('base_salary', null)"
-          >
-            <div
-              slot="body"
-              class="col-lg-9"
+          <div class="form-group row">
+            <label
+              for="area-value"
+              class="col-form-label col-lg-3"
             >
-              <p-form-number
-                id="base-salary"
-                v-model="form.base_salary"
-                name="base-salary"
-                :is-text-right="false"
-                :disabled="isSaving"
-                :label="$t('area value')"
-                :errors="form.errors.get('base_salary')"
-                @errors="form.errors.set('base_salary', null)"
-              />
+              {{ $t("area value") | uppercase }}
+            </label>
+            <div class="col-lg-9">
+              <point-table
+                class="w-full"
+              >
+                <tr slot="p-head">
+                  <th>Year</th>
+                  <th>Value</th>
+                  <th>Notes</th>
+                  <th />
+                </tr>
+                <tr
+                  v-for="(row, index) in form.area_values"
+                  slot="p-body"
+                  :key="index"
+                >
+                  <td>
+                    <p-form-number
+                      :id="'year-' + index"
+                      v-model="row.year"
+                      :name="'year-' + index"
+                      :disabled="isSaving"
+                      :errors="form.errors.get(`area_values.${index}.year`)"
+                      @errors="form.errors.set(`area_values.${index}.year`, null)"
+                    />
+                  </td>
+                  <td>
+                    <p-form-number
+                      :id="'value-' + index"
+                      v-model="row.value"
+                      :name="'value-' + index"
+                      :disabled="isSaving"
+                      :errors="form.errors.get(`area_values.${index}.value`)"
+                      @errors="form.errors.set(`area_values.${index}.value`, null)"
+                    />
+                  </td>
+                  <td>
+                    <p-form-input
+                      :id="'notes-' + index"
+                      v-model="row.notes"
+                      :name="'notes-' + index"
+                      :disabled="isSaving"
+                      :errors="form.errors.get(`area_values.${index}.notes`)"
+                      @errors="form.errors.set(`area_values.${index}.notes`, null)"
+                    />
+                  </td>
+                  <td>
+                    <i
+                      v-if="index > 0"
+                      class="btn btn-sm fa fa-times"
+                      @click="deleteRow(index)"
+                    />
+                  </td>
+                </tr>
+              </point-table>
+              <button
+                type="button"
+                class="btn btn-sm btn-secondary"
+                @click="addRow"
+              >
+                <i class="fa fa-plus" /> {{ $t("add") | uppercase }}
+              </button>
             </div>
-          </p-form-row>
+          </div>
           <p-form-row
             id="multiplier-kpi"
             v-model="form.multiplier_kpi"
@@ -89,17 +134,26 @@
 
 <script>
 import Form from '@/utils/Form'
+import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
+  components: {
+    PointTable
+  },
   data () {
     return {
       isSaving: false,
       isFailed: false,
       form: new Form({
         name: null,
-        base_salary: null,
-        multiplier_kpi: null
+        // base_salary: null,
+        multiplier_kpi: null,
+        area_values: [{
+          year: null,
+          value: null,
+          notes: null
+        }]
       })
     }
   },
@@ -108,6 +162,16 @@ export default {
   },
   methods: {
     ...mapActions('humanResourceEmployeeJobLocation', ['create']),
+    addRow () {
+      this.form.area_values.push({
+        year: null,
+        value: null,
+        notes: null
+      })
+    },
+    deleteRow (index) {
+      this.$delete(this.form.area_values, index)
+    },
     onClose () {
       this.isFailed = false
       Object.assign(this.$data, this.$options.data.call(this))
@@ -144,5 +208,9 @@ export default {
 <style>
   h2 {
     line-height: 3;
+  }
+
+  .sweet-modal.is-visible {
+    max-width: 900px !important;
   }
 </style>
