@@ -264,6 +264,17 @@
                     {{ $t('kpi') | uppercase }}
                   </router-link>
                 </li>
+                <li
+                  v-if="($permission.has('read employee master job value') || $permission.has('create employee master job value') || $permission.has('read employee master job value'))"
+                  @click="toggleLeftSidebar('close-xs')"
+                >
+                  <router-link
+                    to="/human-resource/job-value/assessment"
+                    active-class="active"
+                  >
+                    {{ $t('job value') | uppercase }}
+                  </router-link>
+                </li>
               </ul>
             </li>
             <li

@@ -252,6 +252,111 @@
         </td>
         <td />
       </tr>
+      <tr slot="p-body">
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create employee master job value', 'read employee master job value', 'update employee master job value', 'delete employee master job value'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['create employee master job value', 'read employee master job value', 'update employee master job value', 'delete employee master job value'], permissions)"
+          />
+        </td>
+        <td><b>{{ $t('employee job value master') | uppercase }}</b></td>
+        <td>
+          <p-form-check-box
+            ref="create employee master job value"
+            :is-form="false"
+            :checked="$rolePermission.has('create employee master job value', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create employee master job value')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read employee master job value"
+            :is-form="false"
+            :checked="$rolePermission.has('read employee master job value', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read employee master job value')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update employee master job value"
+            :is-form="false"
+            :checked="$rolePermission.has('update employee master job value', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update employee master job value')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete employee master job value"
+            :is-form="false"
+            :checked="$rolePermission.has('delete employee master job value', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete employee master job value')"
+          />
+        </td>
+        <td />
+      </tr>
+      <tr slot="p-body">
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['create employee job value assessment', 'read employee job value assessment', 'update employee job value assessment', 'delete employee job value assessment'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['create employee job value assessment', 'read employee job value assessment', 'update employee job value assessment', 'delete employee job value assessment'], permissions)"
+          />
+        </td>
+        <td><b>{{ $t('employee job value assessment') | uppercase }}</b></td>
+        <td>
+          <p-form-check-box
+            ref="create employee job value assessment"
+            :is-form="false"
+            :checked="$rolePermission.has('create employee job value assessment', permissions)"
+            :description="'create' | uppercase"
+            @click.native="togglePermission('create employee job value assessment')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="read employee job value assessment"
+            :is-form="false"
+            :checked="$rolePermission.has('read employee job value assessment', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read employee job value assessment')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update employee job value assessment"
+            :is-form="false"
+            :checked="$rolePermission.has('update employee job value assessment', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update employee job value assessment')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="delete employee job value assessment"
+            :is-form="false"
+            :checked="$rolePermission.has('delete employee job value assessment', permissions)"
+            :description="'delete' | uppercase"
+            @click.native="togglePermission('delete employee job value assessment')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="approve employee job value assessment"
+            :is-form="false"
+            :checked="$rolePermission.has('approve employee job value assessment', permissions)"
+            :description="'approve' | uppercase"
+            @click.native="togglePermission('approve employee job value assessment')"
+          />
+        </td>
+        <td />
+      </tr>
     </p-table>
     <button
       class="btn btn-primary"

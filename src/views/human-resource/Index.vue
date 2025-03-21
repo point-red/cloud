@@ -16,6 +16,12 @@
         link="/human-resource/kpi"
         icon="si si-badge"
       />
+      <p-box
+        v-if="($permission.has('read employee master job value') || $permission.has('create employee master job value') || $permission.has('read employee master job value'))"
+        name="Master Job Value"
+        link="/human-resource/master-job-value"
+        icon="si si-people"
+      />
     </div>
   </div>
 </template>
