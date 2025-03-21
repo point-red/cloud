@@ -349,7 +349,7 @@ export default {
               date: dates[0]
             })
               .then((response) => {
-                this.assignSelected(response.data)
+                // this.assignSelected(response.data)
                 this.isLoading = false
               })
               .catch((error) => {
