@@ -394,20 +394,24 @@ export default {
     },
 
     showAttachment (indicator) {
+      console.log('indicator', indicator)
       this.showByAttachment({
         feature: 'assessment',
         feature_id: indicator.id
       })
         .then(
           (response) => {
+            console.log('response', this.cloudStorage)
             console.log(this.cloudStorage)
             this.$refs.showAttachment.show(this.cloudStorage.preview)
           },
           (error) => {
+            console.log('error then show attachment')
             console.log(JSON.stringify(error))
           }
         )
         .catch((error) => {
+          console.log('error show attachment')
           console.log(JSON.stringify(error))
         })
     },
