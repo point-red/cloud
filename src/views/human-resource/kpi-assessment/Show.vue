@@ -413,8 +413,8 @@ export default {
     },
 
     assignSelected (dataAssessment = null) {
-      console.log(dataAssessment)
-      console.log(this.form.template.groups)
+      console.log('1. data assessment', dataAssessment)
+      console.log('2. template groups', this.form.template.groups)
       if (dataAssessment !== null) {
         this.$set(this.dataAttachmentId, 'groups', dataAssessment.groups)
       } else {
@@ -466,6 +466,7 @@ export default {
                 { comment: indicator.comment }
               )
             }
+            console.log('3. indicator', groupIndex, ' = ', indicator.attachment, ' = ', indicatorIndex)
             this.$set(
               this.form.template.groups[groupIndex].indicators[indicatorIndex]
                 .selected,
