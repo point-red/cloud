@@ -413,6 +413,8 @@ export default {
     },
 
     assignSelected (dataAssessment = null) {
+      console.log(dataAssessment)
+      console.log(this.form.template.groups)
       if (dataAssessment !== null) {
         this.$set(this.dataAttachmentId, 'groups', dataAssessment.groups)
       } else {
