@@ -878,7 +878,14 @@ export default {
       })
     this.getUser()
       .then((response) => {
-        this.users = response.data 
+        const array = []
+        response.data.forEach(element => {
+          array.push({
+            id: element.id,
+            label: element.name
+          })
+        })
+        this.users = array 
         console.log(response.data)
       }, (error) => {
         console.log(JSON.stringify(error))
