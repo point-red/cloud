@@ -357,6 +357,36 @@
         </td>
         <td />
       </tr>
+      <tr slot="p-body">
+        <td>
+          <p-form-check-box
+            :is-form="false"
+            :checked="checkPermissionRow(['read employee job value score', 'update employee job value score'], permissions)"
+            :description="''"
+            @click.native="togglePermissionRow(['read employee job value score', 'update employee job value score'], permissions)"
+          />
+        </td>
+        <td><b>{{ $t('employee job value score') | uppercase }}</b></td>
+        <td>
+          <p-form-check-box
+            ref="read employee job value score"
+            :is-form="false"
+            :checked="$rolePermission.has('read employee job value score', permissions)"
+            :description="'read' | uppercase"
+            @click.native="togglePermission('read employee job value score')"
+          />
+        </td>
+        <td>
+          <p-form-check-box
+            ref="update employee job value score"
+            :is-form="false"
+            :checked="$rolePermission.has('update employee job value score', permissions)"
+            :description="'update' | uppercase"
+            @click.native="togglePermission('update employee job value score')"
+          />
+        </td>
+        <td />
+      </tr>
     </p-table>
     <button
       class="btn btn-primary"

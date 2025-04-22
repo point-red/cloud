@@ -17,9 +17,14 @@
         icon="si si-badge"
       />
       <p-box
-        v-if="($permission.has('read employee master job value') || $permission.has('create employee master job value') || $permission.has('read employee master job value'))"
-        name="Master Job Value"
-        link="/human-resource/master-job-value"
+        v-if="($permission.has('read employee master job value') ||
+          $permission.has('create employee master job value') ||
+          $permission.has('update employee master job value') ||
+          $permission.has('read employee job value assessment') ||
+          $permission.has('create employee job value assessment') ||
+          $permission.has('update employee job value assessment'))"
+        name="Job Value"
+        link="/human-resource/job-value/assessment"
         icon="si si-people"
       />
     </div>

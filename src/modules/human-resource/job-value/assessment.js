@@ -1,6 +1,7 @@
 import api from '@/api'
 
 const url = '/human-resource/job-value/assessment'
+const urlCoc = '/human-resource/job-value/assessment-coc'
 
 const state = {
   assessment: {
@@ -11,6 +12,7 @@ const state = {
     total_score: 0,
     scores: []
   },
+  coc: {},
   assessments: [],
   assessmentList: [],
   pagination: {
@@ -28,6 +30,9 @@ const state = {
 const getters = {
   assessment: state => {
     return state.assessment
+  },
+  coc: state => {
+    return state.coc
   },
   assessments: state => {
     return state.assessments
@@ -67,6 +72,9 @@ const mutations = {
   'FETCH_OBJECT' (state, payload) {
     state.assessment = payload.data
   },
+  'FETCH_COC' (state, payload) {
+    state.coc = payload.coc
+  },
   'FETCH_CALCULATION_OBJECT' (state, payload) {
     state.calculation = payload.data
   },
@@ -88,6 +96,17 @@ const actions = {
         .then(response => {
           commit('FETCH_ARRAY', response)
           commit('FETCH_SELECT_LIST', response.data)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  getCoc ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(urlCoc, payload)
+        .then(response => {
+          commit('FETCH_COC', response)
           resolve(response)
         }).catch(error => {
           reject(error)

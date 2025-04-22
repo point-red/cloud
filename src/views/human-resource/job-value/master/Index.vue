@@ -12,10 +12,10 @@
     <div class="row">
       <p-block>
         <div
-          v-if="$permission.has('create employee master job value')"
           class="text-right"
         >
           <button
+            v-if="$permission.has('read employee job value score')"
             type="button"
             class="btn btn-sm btn-outline-secondary mr-5"
             @click="$refs.updateJobValueScoreSetting.open()"
@@ -25,6 +25,7 @@
             </span>
           </button>
           <button
+            v-if="$permission.has('create employee master job value')"
             type="button"
             class="btn btn-sm btn-outline-secondary mr-5"
             @click="$refs.addJobValueCriteria.open()"
@@ -59,26 +60,46 @@
               <th>
                 Criteria Factor
               </th>
-              <th />
-              <th />
-              <th />
-              <th />
-              <th />
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+              <th>4</th>
+              <th>5</th>
             </tr>
-            <tr
-              v-for="(criteria, index) in criterias"
-              :key="index"
-              slot="p-body"
-            >
-              <th>{{ (page - 1) * limit + index + 1 }}</th>
-              <td>{{ criteria.category }}</td>
-              <td>{{ criteria.criteria_factor }}</td>
-              <td>{{ criteria.scales[0] ? criteria.scales[0].value : '-' }}</td>
-              <td>{{ criteria.scales[1] ? criteria.scales[1].value : '-' }}</td>
-              <td>{{ criteria.scales[2] ? criteria.scales[2].value : '-' }}</td>
-              <td>{{ criteria.scales[3] ? criteria.scales[3].value : '-' }}</td>
-              <td>{{ criteria.scales[4] ? criteria.scales[4].value : '-' }}</td>
-            </tr>
+            <template v-for="(criteria, index) in criterias">
+              <tr
+                :key="'criteria-' + index"
+                slot="p-body"
+              >
+                <th>{{ (page - 1) * limit + index + 1 }}</th>
+                <td>
+                  <router-link
+                    :to="{ name: 'MasterJobValueShow', params: { id: criteria.id }}"
+                  >
+                    {{ criteria.category.category }}
+                  </router-link>
+                </td>
+                <td>{{ criteria.criteria_factor }}</td>
+                <td>{{ criteria.scales[0] ? criteria.scales[0].value : '-' }}</td>
+                <td>{{ criteria.scales[1] ? criteria.scales[1].value : '-' }}</td>
+                <td>{{ criteria.scales[2] ? criteria.scales[2].value : '-' }}</td>
+                <td>{{ criteria.scales[3] ? criteria.scales[3].value : '-' }}</td>
+                <td>{{ criteria.scales[4] ? criteria.scales[4].value : '-' }}</td>
+              </tr>
+              <tr
+                :key="'criteria-scale-' + index"
+                slot="p-body"
+              >
+                <th />
+                <th />
+                <th />
+                <td>{{ criteria.scales[0] ? criteria.scales[0].description : '-' }}</td>
+                <td>{{ criteria.scales[1] ? criteria.scales[1].description : '-' }}</td>
+                <td>{{ criteria.scales[2] ? criteria.scales[2].description : '-' }}</td>
+                <td>{{ criteria.scales[3] ? criteria.scales[3].description : '-' }}</td>
+                <td>{{ criteria.scales[4] ? criteria.scales[4].description : '-' }}</td>
+              </tr>
+            </template>
           </point-table>
         </p-block-inner>
         <p-pagination
@@ -93,6 +114,7 @@
     />
     <m-add-job-value-criteria
       ref="addJobValueCriteria"
+      @added="onAdded"
     />
   </div>
 </template>
@@ -126,10 +148,14 @@ export default {
     ...mapGetters('humanResourceJobValueCriteria', ['criterias', 'pagination'])
   },
   created () {
-    this.getCriteriaRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
+    if (this.$permission.has('read employee master job value')) {
+      this.getCriteriaRequest()
+      this.$nextTick(() => {
+        this.$refs.searchText.setFocus()
+      })
+    } else {
+      this.$router.push('/403')
+    }
   },
   updated () {
     this.lastPage = this.pagination.last_page
@@ -146,14 +172,14 @@ export default {
       this.isLoading = true
       this.getCriteria({
         params: {
-          sort_by: 'criteria_factor',
+          sort_by: '-id',
           filter_like: {
             criteria_factor: this.searchText,
-            category: this.searchText
+            'category.category': this.searchText
           },
           limit: this.limit,
           page: this.page,
-          includes: 'scales;'
+          includes: 'scales;category'
         }
       }).then((response) => {
         this.isLoading = false

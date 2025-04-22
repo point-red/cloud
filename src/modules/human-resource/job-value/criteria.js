@@ -78,10 +78,9 @@ const actions = {
       api.get(url, payload)
         .then(response => {
           commit('FETCH_ARRAY', response)
-          commit('FETCH_SELECT_LIST', response.data)
           resolve(response)
         }).catch(error => {
-          alert(error)
+          reject(error)
         })
     })
   },

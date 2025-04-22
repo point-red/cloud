@@ -1,142 +1,131 @@
 <template>
-  <form @submit.prevent="onSubmit">
-    <sweet-modal
-      ref="modal"
-      :title="$t('edit job location') | uppercase"
-      overlay-theme="dark"
-      @close="onClose()"
-    >
-      <template v-if="isLoading">
-        <h3 class="text-center">
-          Loading ...
-        </h3>
-      </template>
-      <template v-else>
-        <div class="row">
-          <div class="col-sm-12">
-            <p-form-row
-              id="name"
-              ref="name"
-              v-model="form.name"
-              :disabled="isSaving"
-              :label="$t('location name')"
-              name="name"
-              :errors="form.errors.get('name')"
-              @errors="form.errors.set('name', null)"
-            />
-            <div class="form-group row">
-              <label
-                for="area-value"
-                class="col-form-label col-lg-3"
-              >
-                {{ $t("area value") | uppercase }}
-              </label>
-              <div class="col-lg-9">
-                <point-table
-                  class="w-full"
+  <div>
+    <form @submit.prevent="onSubmit">
+      <sweet-modal
+        ref="modal"
+        :title="$t('edit job location') | uppercase"
+        overlay-theme="dark"
+        @close="onClose()"
+      >
+        <template v-if="isLoading">
+          <h3 class="text-center">
+            Loading ...
+          </h3>
+        </template>
+        <template v-else>
+          <div class="row">
+            <div class="col-sm-12">
+              <p-form-row
+                id="name"
+                ref="name"
+                v-model="form.name"
+                :disabled="isSaving"
+                :label="$t('location name')"
+                name="name"
+                :errors="form.errors.get('name')"
+                @errors="form.errors.set('name', null)"
+              />
+              <div class="form-group row">
+                <label
+                  for="area-value"
+                  class="col-form-label col-lg-3"
                 >
-                  <tr slot="p-head">
-                    <th>Year</th>
-                    <th>Value</th>
-                    <th>Notes</th>
-                    <th />
-                  </tr>
-                  <tr
-                    v-for="(row, index) in form.area_values"
-                    slot="p-body"
-                    :key="index"
+                  {{ $t("area value") | uppercase }}
+                </label>
+                <div class="col-lg-9">
+                  <point-table
+                    class="w-full"
                   >
-                    <td>
-                      <p-form-number
-                        :id="'year-' + index"
-                        v-model="row.year"
-                        :name="'year-' + index"
-                        :disabled="isSaving"
-                        :errors="form.errors.get(`area_values.${index}.year`)"
-                        @errors="form.errors.set(`area_values.${index}.year`, null)"
-                      />
-                    </td>
-                    <td>
-                      <p-form-number
-                        :id="'value-' + index"
-                        v-model="row.value"
-                        :name="'value-' + index"
-                        :disabled="isSaving"
-                        :errors="form.errors.get(`area_values.${index}.value`)"
-                        @errors="form.errors.set(`area_values.${index}.value`, null)"
-                      />
-                    </td>
-                    <td>
-                      <p-form-input
-                        :id="'notes-' + index"
-                        v-model="row.notes"
-                        :name="'notes-' + index"
-                        :disabled="isSaving"
-                        :errors="form.errors.get(`area_values.${index}.notes`)"
-                        @errors="form.errors.set(`area_values.${index}.notes`, null)"
-                      />
-                    </td>
-                    <td>
-                      <i
-                        v-if="!row.id"
-                        class="btn btn-sm fa fa-times"
-                        @click="deleteRow(index)"
-                      />
-                    </td>
-                  </tr>
-                </point-table>
-                <button
-                  type="button"
-                  class="btn btn-sm btn-secondary"
-                  @click="addRow"
-                >
-                  <i class="fa fa-plus" /> {{ $t("add") | uppercase }}
-                </button>
+                    <tr slot="p-head">
+                      <th>Year</th>
+                      <th>Value</th>
+                      <th>Notes</th>
+                      <th />
+                    </tr>
+                    <tr
+                      v-for="(row, index) in form.area_values"
+                      slot="p-body"
+                      :key="index"
+                    >
+                      <td>
+                        {{ row.year }}
+                      </td>
+                      <td>
+                        {{ row.value | numberFormat }}
+                      </td>
+                      <td>
+                        {{ row.notes }}
+                      </td>
+                      <td>
+                        <i
+                          class="btn btn-sm fa fa-pencil"
+                          @click="$refs.areaValue.open(index, row, form.area_values)"
+                        />
+                        <i
+                          v-if="!row.id"
+                          class="btn btn-sm fa fa-times"
+                          @click="deleteRow(index)"
+                        />
+                      </td>
+                    </tr>
+                  </point-table>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-secondary"
+                    @click="$refs.areaValue.open(null, null, form.area_values)"
+                  >
+                    <i class="fa fa-plus" /> {{ $t("add") | uppercase }}
+                  </button>
+                </div>
               </div>
-            </div>
-            <p-form-row
-              id="multiplier-kpi"
-              v-model="form.multiplier_kpi"
-              name="multiplier-kpi"
-              :disabled="isSaving"
-              :label="$t('multiplier kpi')"
-              :errors="form.errors.get('multiplier_kpi')"
-              @errors="form.errors.set('multiplier_kpi', null)"
-            >
-              <div
-                slot="body"
-                class="col-lg-9"
+              <p-form-row
+                id="multiplier-kpi"
+                v-model="form.multiplier_kpi"
+                name="multiplier-kpi"
+                :disabled="isSaving"
+                :label="$t('multiplier kpi')"
+                :errors="form.errors.get('multiplier_kpi')"
+                @errors="form.errors.set('multiplier_kpi', null)"
               >
-                <p-form-number
-                  id="multiplier-kpi"
-                  v-model="form.multiplier_kpi"
-                  name="multiplier-kpi"
-                  :is-text-right="false"
-                  :disabled="isSaving"
-                  :label="$t('multiplier kpi')"
-                  :errors="form.errors.get('multiplier_kpi')"
-                  @errors="form.errors.set('multiplier_kpi', null)"
-                />
-              </div>
-            </p-form-row>
+                <div
+                  slot="body"
+                  class="col-lg-9"
+                >
+                  <p-form-number
+                    id="multiplier-kpi"
+                    v-model="form.multiplier_kpi"
+                    name="multiplier-kpi"
+                    :is-text-right="false"
+                    :disabled="isSaving"
+                    :label="$t('multiplier kpi')"
+                    :errors="form.errors.get('multiplier_kpi')"
+                    @errors="form.errors.set('multiplier_kpi', null)"
+                  />
+                </div>
+              </p-form-row>
+            </div>
           </div>
-        </div>
-        <div class="pull-right">
-          <button
-            type="submit"
-            class="btn btn-sm btn-primary"
-            :disabled="isSaving"
-            @click="onSubmit"
-          >
-            <i
-              v-show="isSaving"
-              class="fa fa-asterisk fa-spin"
-            /> {{ $t('update') | uppercase }}
-          </button>
-        </div>
-      </template>
-    </sweet-modal>
-  </form>
+          <div class="pull-right">
+            <button
+              type="submit"
+              class="btn btn-sm btn-primary"
+              :disabled="isSaving"
+              @click="onSubmit"
+            >
+              <i
+                v-show="isSaving"
+                class="fa fa-asterisk fa-spin"
+              /> {{ $t('update') | uppercase }}
+            </button>
+          </div>
+        </template>
+      </sweet-modal>
+    </form>
+    <m-job-location-area-value
+      ref="areaValue"
+      @updated="onUpdateAreaValue"
+    />
+  </div>
 </template>
 
 <script>
@@ -198,6 +187,14 @@ export default {
     },
     deleteRow (index) {
       this.$delete(this.form.area_values, index)
+    },
+    onUpdateAreaValue (data) {
+      if (data.index || data.index == 0) {
+        this.forms.area_values[data.index] = data.areaValue
+      } else {
+        this.form.area_values.push(data.areaValue)
+      }
+      this.form.area_values.sort((a, b) => a.year - b.year)
     },
     onClose () {
       this.isFailed = false

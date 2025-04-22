@@ -11,16 +11,23 @@
 
     <div class="row">
       <p-block>
-        <div class="row">
-          <div class="text-right">
-            <router-link
-              v-if="$permission.has('create employee job value assessment')"
-              to="/human-resource/job-value/assessment/create"
+        <div
+          class="text-right"
+        >
+          <router-link
+            v-if="$permission.has('create employee job value assessment')"
+            to="/human-resource/job-value/assessment/create"
+          >
+            <button
+              type="button"
               class="btn btn-sm btn-outline-secondary mr-5"
+              @click="$refs.updateJobValueScoreSetting.open()"
             >
-              Create
-            </router-link>
-          </div>
+              <span>
+                Create
+              </span>
+            </button>
+          </router-link>
         </div>
 
         <div class="input-group block mt-10">
@@ -44,8 +51,12 @@
               <th>Person</th>
               <th>Period</th>
               <th>Score Job Value</th>
-              <th>Status</th>
-              <th>Approval Status</th>
+              <th class="text-center">
+                Status
+              </th>
+              <th class="text-center">
+                Approval Status
+              </th>
             </tr>
             <tr
               v-for="(assessment, index) in assessments"
@@ -55,14 +66,7 @@
               <th>{{ (page - 1) * limit + index + 1 }}</th>
               <td>
                 <router-link
-                  v-if="assessment.status == 'completed'"
                   :to="{ name: 'JobValueAssessmentShow', params: { id: assessment.id }}"
-                >
-                  {{ assessment.employee.name }}
-                </router-link>
-                <router-link
-                  v-if="assessment.status == 'draft'"
-                  :to="{ name: 'JobValueAssessmentEdit', params: { id: assessment.id }}"
                 >
                   {{ assessment.employee.name }}
                 </router-link>
@@ -73,8 +77,40 @@
                 {{ $moment(assessment.period_to).format('yyyy-MM-DD') }}
               </td>
               <td>{{ assessment.total_value }}</td>
-              <td>{{ $t(assessment.status) | uppercase }}</td>
-              <td>{{ $t(assessment.approval_status) | uppercase }}</td>
+              <td class="text-center">
+                <div
+                  v-if="assessment.status == 'draft'"
+                  class="badge badge-primary"
+                >
+                  {{ $t(assessment.status) | uppercase }}
+                </div>
+                <div
+                  v-if="assessment.status == 'completed'"
+                  class="badge badge-success"
+                >
+                  {{ $t(assessment.status) | uppercase }}
+                </div>
+              </td>
+              <td class="text-center">
+                <div
+                  v-if="assessment.approval_status == 'pending'"
+                  class="badge badge-primary"
+                >
+                  {{ $t(assessment.approval_status) | uppercase }}
+                </div>
+                <div
+                  v-if="assessment.approval_status == 'rejected'"
+                  class="badge badge-danger"
+                >
+                  {{ $t(assessment.approval_status) | uppercase }}
+                </div>
+                <div
+                  v-if="assessment.approval_status == 'approved'"
+                  class="badge badge-success"
+                >
+                  {{ $t(assessment.approval_status) | uppercase }}
+                </div>
+              </td>
             </tr>
           </point-table>
         </p-block-inner>
@@ -117,10 +153,14 @@ export default {
     ...mapGetters('humanResourceJobValueAssessment', ['assessments', 'pagination'])
   },
   created () {
-    this.getAssessmentRequest()
-    this.$nextTick(() => {
-      this.$refs.searchText.setFocus()
-    })
+    if (this.$permission.has('read employee job value assessment')) {
+      this.getAssessmentRequest()
+      this.$nextTick(() => {
+        this.$refs.searchText.setFocus()
+      })
+    } else {
+      this.$router.push('/403')
+    }
   },
   updated () {
     this.lastPage = this.pagination.last_page

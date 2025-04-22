@@ -52,7 +52,7 @@
                   >
                     Employee JV Current Period
                   </td>
-                  <td>{{ calculation.prevAssessment?.total_score ?? 0 }}</td>
+                  <td>{{ calculation.prevAssessment?.total_value ?? 0 }}</td>
                 </tr>
                 <tr>
                   <td
@@ -60,7 +60,7 @@
                   >
                     Employee JV Next Period
                   </td>
-                  <td>{{ calculation.assessment.total_score }}</td>
+                  <td>{{ calculation.assessment.total_value }}</td>
                 </tr>
                 <tr>
                   <td
@@ -84,7 +84,7 @@
                   >
                     City Minimum Wage Current Period
                   </td>
-                  <td>{{ calculation.prev_area_value }}</td>
+                  <td>{{ calculation.prev_area_value | numberFormat }}</td>
                 </tr>
                 <tr>
                   <td
@@ -92,7 +92,7 @@
                   >
                     City Minimum Wage Next Period
                   </td>
-                  <td>{{ calculation.area_value }}</td>
+                  <td>{{ calculation.area_value | numberFormat }}</td>
                 </tr>
                 <tr>
                   <td

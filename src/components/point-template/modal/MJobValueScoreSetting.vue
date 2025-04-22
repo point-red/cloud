@@ -68,6 +68,7 @@
         </div>
         <div class="pull-right">
           <button
+            v-if="$permission.has('update employee job value score')"
             type="submit"
             class="btn btn-sm btn-primary"
             :disabled="isSaving"
@@ -114,7 +115,7 @@ export default {
           this.form.minimum_kpi = response.data.minimum_kpi
           this.form.minimum_coc = response.data.minimum_coc
           this.$nextTick(() => {
-            this.$refs.name.setFocus()
+            this.$refs.minimum_kpi.setFocus()
           })
         })
         .catch((error) => {

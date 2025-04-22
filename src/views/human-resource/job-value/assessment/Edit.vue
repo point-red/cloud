@@ -6,150 +6,213 @@
         to="/human-resource/job-value/assessment"
         class="breadcrumb-item"
       >
-        {{ $t('job value assessment') | titlecase }}
+        {{ 'job value assessment' | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">{{ $t('edit') | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ 'edit' | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu />
 
     <form @submit.prevent="onSubmit">
       <div class="row">
-        <p-block>
+        <p-block
+          :title="'employee assessment'"
+          :header="true"
+        >
           <p-block-inner :is-loading="isLoading">
-            <div class="row">
-              <div class="col-sm-8">
-                <h4>{{ $t('job value assessment') | uppercase }}</h4>
-                <table class="table table-sm table-bordered">
-                  <tr>
-                    <td class="font-weight-bold">
-                      {{ $t('period') | uppercase }}
-                    </td>
-                    <td>
-                      <table style="border:none; border-collapse:collapse;">
-                        <tr>
-                          <td style="border:none">
-                            <p-date-picker
-                              id="period_from"
-                              v-model="form.period_from"
-                              name="period_from"
-                              :label="$t('period_from')"
-                              :errors="form.errors.get('period_from')"
-                              @errors="form.errors.set('period_from', null)"
-                            />
-                          </td>
-                          <td style="border:none">
-                            -
-                          </td>
-                          <td style="border:none">
-                            <p-date-picker
-                              id="period_to"
-                              v-model="form.period_to"
-                              name="period_to"
-                              :label="$t('period_to')"
-                              :errors="form.errors.get('period_to')"
-                              @errors="form.errors.set('period_to', null)"
-                            />
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-bold">
-                      {{ $t('created at') | uppercase }}
-                    </td>
-                    <td>
-                      {{ createdAt }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="font-weight-bold">
-                      {{ $t('employee') | uppercase }}
-                    </td>
-                    <td>
-                      {{ authUser.employee.name | uppercase }}
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-            <hr>
-            <point-table>
-              <tr slot="p-head">
-                <th>Kriteria Factor</th>
-                <th>Score</th>
-                <th>Value</th>
-                <th>Score Description</th>
-                <th>Notes</th>
-              </tr>
-              <tr
-                v-for="(row, index) in form.scores"
-                :key="index"
-                slot="p-body"
+            <p-form-row
+              id="name"
+              :label="'name'"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 col-form-label"
               >
-                <td>{{ row.criteria.criteria_factor }}</td>
-                <td>
-                  <p-form-number
-                    :id="'score-' + index"
-                    v-model="row.score"
-                    :name="'score-' + index"
-                    :is-text-right="false"
-                    :errors="form.errors.get(`scores.${index}.score`)"
-                    @errors="form.errors.set(`scores.${index}.score`, null)"
-                    @input="handleScore(row)"
+                {{ authUser.employee.name }}
+              </div>
+            </p-form-row>
+            <p-form-row
+              id="assessment-date"
+              :label="'assessment period'"
+            >
+              <div
+                slot="body"
+                class="row col-lg-9"
+              >
+                <div class="col-lg-3">
+                  <p-date-picker
+                    id="period_from"
+                    v-model="form.period_from"
+                    name="period_from"
+                    :errors="form.errors.get('period_from')"
+                    @errors="form.errors.set('period_from', null)"
                   />
-                </td>
-                <td> {{ row.value }} </td>
-                <td> {{ row.description }} </td>
-                <td>
-                  <p-form-input
-                    :id="'note-' + index"
-                    v-model="row.note"
-                    :name="'note-' + index"
-                    :disabled="isSaving"
+                </div>
+                <div class="col-lg-3">
+                  <p-date-picker
+                    id="period_to"
+                    v-model="form.period_to"
+                    name="period_to"
+                    :label="'period_to'"
+                    :errors="form.errors.get('period_to')"
+                    @errors="form.errors.set('period_to', null)"
                   />
-                </td>
-              </tr>
-            </point-table>
+                </div>
+              </div>
+            </p-form-row>
+            <p-form-row
+              id="created-at"
+              :label="'created at'"
+            >
+              <div
+                slot="body"
+                class="col-lg-9 col-form-label"
+              >
+                {{ createdAt }}
+              </div>
+            </p-form-row>
+            <hr>
+            <div
+              class="list-group push"
+            >
+              <p-table>
+                <tr slot="p-head">
+                  <th
+                    class="font-size-h6 font-w700"
+                    width="25%"
+                  >
+                    {{ 'Kriteria Factor' | uppercase }}
+                  </th>
+                  <th
+                    class="font-size-h6 font-w700 text-center"
+                    width="10%"
+                  >
+                    {{ 'Score' | uppercase }}
+                  </th>
+                  <th
+                    class="font-size-h6 font-w700 text-center"
+                    width="10%"
+                  >
+                    {{ 'Value' | uppercase }}
+                  </th>
+                  <th
+                    class="font-size-h6 font-w700"
+                    width="25%"
+                  >
+                    {{ 'Score Description' | uppercase }}
+                  </th>
+                  <th
+                    class="font-size-h6 font-w700"
+                    width="25%"
+                  >
+                    {{ 'Notes' | uppercase }}
+                  </th>
+                </tr>
+                <template
+                  v-for="(row, index) in form.scores"
+                  slot="p-body"
+                >
+                  <tr
+                    v-if="row.isCategoryRow"
+                    :key="'group' + row.criteria.category.id"
+                    class="bg-info-light"
+                  >
+                    <td colspan="5">
+                      <strong>{{ row.criteria.category.category }}</strong>
+                    </td>
+                  </tr>
+                  <tr
+                    :key="index"
+                    slot="p-body"
+                  >
+                    <td>{{ row.criteria.criteria_factor }}</td>
+                    <td class="text-center">
+                      <a
+                        v-show="(!row.score || row.score === 0)"
+                        href="javascript:void(0)"
+                        class="btn btn-sm btn-primary"
+                        @click="!isSaving ? $refs.score.show(row) : null"
+                      >
+                        <i
+                          v-show="!isSaving"
+                          class="si si-note"
+                        />
+                      </a>
+                      <a
+                        v-if="(row.score > 0)"
+                        href="javascript:void(0)"
+                        class="text-decoration-none"
+                        style="text-overflow: ellipsis"
+                        @click="!isSaving ? $refs.score.show(row) : null"
+                      >{{ row.score | numberFormat }}</a>
+                    </td>
+                    <td> {{ row.value }} </td>
+                    <td> {{ row.description }} </td>
+                    <td>
+                      <a
+                        v-show="
+                          !row.note ||
+                            row.note === undefined ||
+                            row.note === '' ||
+                            row.note === null
+                        "
+                        href="javascript:void(0)"
+                        class="btn btn-sm btn-primary"
+                        @click="$refs.notes.show(row)"
+                      >
+                        <i
+                          v-show="!isSaving"
+                          class="si si-note"
+                        />
+                      </a>
+                      <a
+                        v-if="
+                          row.note &&
+                            row.note !== undefined &&
+                            row.note !== '' &&
+                            row.note !== null
+                        "
+                        href="javascript:void(0)"
+                        class="text-decoration-none"
+                        @click="$refs.notes.show(row)"
+                      >
+                        {{ row.note }}
+                      </a>
+                    </td>
+                  </tr>
+                </template>
+                <tr slot="p-body">
+                  <td />
+                  <td class="text-center font-w700">
+                    <span class>{{ total_score | numberFormat }}</span>
+                  </td>
+                  <td class="text-center font-w700">
+                    <span class>{{ total_value | numberFormat }}</span>
+                  </td>
+                  <td />
+                  <td />
+                </tr>
+              </p-table>
 
-            <div class="row">
-              <div class="col-sm-6" />
-              <div class="col-sm-6">
-                <p-form-row
-                  id="total-score"
-                  name="total-score"
-                  :label="$t('total score')"
-                >
+              <div class="row my-50">
+                <div class="col-sm-6" />
+                <div class="col-sm-3 text-center" />
+                <div class="col-sm-3 text-center">
+                  <h6 class="mb-0">
+                    {{ $t('approved by') | uppercase }}
+                  </h6>
                   <div
-                    slot="body"
-                    class="col-lg-9 mt-5"
+                    class="mb-50"
+                    style="font-size:11px"
                   >
-                    <p-form-number
-                      :id="'total_score'"
-                      :name="'total_score'"
-                      :readonly="true"
-                      :value="total_score"
-                    />
+                    _______________
                   </div>
-                </p-form-row>
-                <p-form-row
-                  id="total-value"
-                  name="total-value"
-                  :label="$t('total value')"
-                >
-                  <div
-                    slot="body"
-                    class="col-lg-9 mt-5"
-                  >
-                    <p-form-number
-                      :id="'total_value'"
-                      :name="'total_value'"
-                      :readonly="true"
-                      :value="total_value"
-                    />
-                  </div>
-                </p-form-row>
+                  <span
+                    class="select-link"
+                    @click="$refs.approver.open()"
+                  >{{ form.approver_name || $t('select') | uppercase }}</span><br>
+                  <span style="font-size:9px">{{ form.approver_email | uppercase }}</span>
+                </div>
               </div>
             </div>
 
@@ -163,7 +226,7 @@
                 <i
                   v-show="isSaving"
                   class="fa fa-asterisk fa-spin"
-                /> {{ $t('save') | uppercase }}
+                /> {{ 'save' | uppercase }}
               </button>
             </div>
 
@@ -178,13 +241,30 @@
                 <i
                   v-show="isSaving"
                   class="fa fa-asterisk fa-spin"
-                /> {{ $t('save as draft') | uppercase }}
+                /> {{ 'save as draft' | uppercase }}
               </button>
             </div>
           </p-block-inner>
         </p-block>
       </div>
     </form>
+
+    <assign-score-modal
+      id="employee-assessment"
+      ref="score"
+      :title="$t('employee assessment')"
+      @add="addedScore"
+    />
+
+    <assign-notes-modal
+      ref="notes"
+      @saveNotes="addedNotes"
+    />
+
+    <m-user
+      ref="approver"
+      @choosen="chooseApprover($event)"
+    />
   </div>
 </template>
 
@@ -193,15 +273,17 @@ import TabMenu from '@/views/human-resource/job-value/TabMenu'
 
 import Breadcrumb from '@/views/Breadcrumb'
 import BreadcrumbHumanResource from '@/views/human-resource/Breadcrumb'
-import PointTable from 'point-table-vue'
 import { mapGetters, mapActions } from 'vuex'
 import Form from '@/utils/Form'
+import AssignScoreModal from './AssignScoreModal'
+import AssignNotesModal from './AssignNotesModal'
 
 export default {
   components: {
+    AssignScoreModal,
+    AssignNotesModal,
     Breadcrumb,
     BreadcrumbHumanResource,
-    PointTable,
     TabMenu
   },
   data () {
@@ -212,10 +294,14 @@ export default {
       form: new Form({
         id: this.$route.params.id,
         scores: [],
+        existing_scores: [],
         period_from: this.$moment().format('YYYY-MM-01 00:00:00'),
         period_to: this.$moment().endOf('month').format('YYYY-MM-DD 23:59:59'),
         status: 'draft',
-        employee_id: null
+        employee_id: null,
+        request_approval_to: null,
+        approver_name: null,
+        approver_email: null
       }),
       createdAt: this.$moment(new Date()).format('YYYY-MM-DD hh:mm:ss')
     }
@@ -240,50 +326,66 @@ export default {
     }
   },
   created () {
-    this.find({
-      id: this.id,
-      params: {
-        includes: 'employee;' +
-          'employee.scorers;' +
-          'scores;' +
-          'scores.criteria;'
-      }
-    }).then(response => {
-      this.isLoading = false
-      this.form.scores = response.data.scores
-      this.form.period_from = response.data.period_from
-      this.form.period_to = response.data.period_to
-      this.form.status = response.data.status
-      this.form.employee_id = response.data.employee_id
-      this.getCriteriaRequest()
-    }).catch(error => {
-      this.isLoading = false
-      this.$notification.error(error.message)
-    })
+    if (this.$permission.has('update employee job value assessment')) {
+      this.find({
+        id: this.id,
+        params: {
+          includes: 'employee;' +
+            'employee.scorers;' +
+            'scores;' +
+            'scores.criteria;' +
+            'scores.criteria.category;' +
+            'requestApprover;' +
+            'approvedBy;'
+        }
+      }).then(response => {
+        this.isLoading = false
+        this.form.existing_scores = response.data.scores
+        this.form.period_from = response.data.period_from
+        this.form.period_to = response.data.period_to
+        this.form.status = response.data.status
+        this.form.employee_id = response.data.employee_id
+        this.form.request_approval_to = response.data.request_approval_to
+        this.form.approver_name = response.data.request_approver.name
+        this.form.approver_email = response.data.request_approver.email
+        this.getCriteriaRequest()
+      }).catch(error => {
+        this.isLoading = false
+        this.$notification.error(error.message)
+      })
+    } else {
+      this.$router.push('/403')
+    }
   },
   methods: {
     ...mapActions('humanResourceJobValueCriteria', {
       getCriteria: 'get'
     }),
     ...mapActions('humanResourceJobValueAssessment', ['find', 'update']),
-    handleScore (row) {
-      const scales = row.criteria.scales
-      const maxScore = scales.reduce((max, scale) => (scale.value > max.value ? scale : max), scales[0])
-      const minScore = scales.reduce((min, scale) => (scale.value < min.value ? scale : min), scales[0])
-
-      const targetValue = (row.score / 100) * maxScore?.value
-
-      if (targetValue < minScore.value) {
-        row.value = 0
-        row.description = '-'
-        return
-      }
-
-      const targetScore = scales.reduce((closest, current) =>
-        Math.abs(current.value - targetValue) < Math.abs(closest.value - targetValue) ? current : closest
+    addedScore ({ indicatorId, score, index }) {
+      const groupIndex = this.form.scores.findIndex((o) =>
+        o.criteria_id === indicatorId
       )
-      row.value = targetScore?.value
-      row.description = targetScore?.description
+
+      if (groupIndex !== -1) {
+        this.form.scores[groupIndex].score = index + 1
+        this.form.scores[groupIndex].value = score.value
+        this.form.scores[groupIndex].description = score.description
+      }
+    },
+    addedNotes ({ indicatorId, notes }) {
+      const groupIndex = this.form.scores.findIndex((o) =>
+        o.criteria_id === indicatorId
+      )
+
+      if (groupIndex !== -1) {
+        this.form.scores[groupIndex].note = notes
+      }
+    },
+    chooseApprover (value) {
+      this.form.request_approval_to = value.id
+      this.form.approver_name = value.fullName
+      this.form.approver_email = value.email
     },
     onSubmit () {
       this.isSaving = true
@@ -294,7 +396,8 @@ export default {
           this.isSaving = false
           this.form.reset()
           this.$notification.success('Update success')
-          this.$router.push('/job-value/assessment/show/' + response.data.id)
+          Object.assign(this.$data, this.$options.data.call(this))
+          this.$router.push('/human-resource/job-value/assessment')
         }).catch(error => {
           this.isSaving = false
           this.form.errors.record(error.errors)
@@ -309,27 +412,47 @@ export default {
       this.isLoading = true
       this.getCriteria({
         params: {
-          sort_by: 'criteria_factor',
-          filter_like: {
-            criteria_factor: this.searchText,
-            category: this.searchText
-          },
+          sort_by: 'category.id',
           limit: 100,
           page: this.page,
-          includes: 'scales'
+          includes: 'scales;category'
         }
       }).then((response) => {
         this.isLoading = false
+        let lastCategory = null
         for (const criteria of response.data) {
-          const exist = this.form.scores.some(score => criteria.id == score.criteria.id)
-          if (!exist) {
+          const index = this.form.existing_scores.findIndex((o) =>
+            o.criteria.id === criteria.id
+          )
+
+          const currentCategory = criteria.category.category
+
+          let isCategoryRow = false
+          if (lastCategory !== currentCategory) {
+            lastCategory = currentCategory
+            isCategoryRow = true
+          }
+
+          if (index !== -1) {
+            this.form.scores.push({
+              id: this.form.existing_scores[index].id,
+              criteria_id: criteria.id,
+              criteria: criteria,
+              description: this.form.existing_scores[index].description,
+              score: this.form.existing_scores[index].score,
+              value: this.form.existing_scores[index].value,
+              note: this.form.existing_scores[index].note,
+              isCategoryRow
+            })
+          } else {
             this.form.scores.push({
               criteria_id: criteria.id,
               criteria: criteria,
               description: null,
               score: 0,
               value: 0,
-              note: null
+              note: null,
+              isCategoryRow
             })
           }
         }

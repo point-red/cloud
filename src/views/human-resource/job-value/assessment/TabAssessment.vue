@@ -4,13 +4,16 @@
     data-toggle="tabs"
     role="tablist"
   >
+    <slot />
     <li
       v-if="$permission.has('read employee job value assessment')"
       class="nav-item"
     >
       <router-link
         :to="{ name: 'JobValueAssessmentShow', params: { id: id } }"
-        class="btn btn-sm btn-outline-secondary mr-5"
+        class="nav-link"
+        active-class="active"
+        exact
       >
         Assessment
       </router-link>
@@ -21,7 +24,9 @@
     >
       <router-link
         :to="{ name: 'JobValueAssessmentCalculation', params: { id: id } }"
-        class="btn btn-sm btn-outline-secondary mr-5"
+        class="nav-link"
+        active-class="active"
+        exact
       >
         Fee Calculation
       </router-link>
