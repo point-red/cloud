@@ -1,9 +1,7 @@
 import Index from './Index'
 import Create from './Create'
-import Create2 from './Create2'
 import Show from './Show'
 import Edit from './Edit'
-import Edit2 from './Edit2'
 import Calculation from './Calculation'
 
 export default [
