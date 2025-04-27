@@ -3,12 +3,12 @@
     <breadcrumb>
       <breadcrumb-human-resource />
       <router-link
-        to="/human-resource/job-location"
+        to="/human-resource/job-value/master"
         class="breadcrumb-item"
       >
-        {{ $t('job location') | uppercase }}
+        {{ $t("master job value") | uppercase }}
       </router-link>
-      <span class="breadcrumb-item active">{{ jobLocation.name | uppercase }}</span>
+      <span class="breadcrumb-item active">{{ criteria.criteria_factor | uppercase }}</span>
     </breadcrumb>
 
     <tab-menu />
@@ -17,23 +17,23 @@
       <p-block>
         <div class="text-right">
           <button
-            v-if="$permission.has('create employee')"
+            v-if="$permission.has('create employee master job value')"
             type="button"
             class="btn btn-sm btn-outline-secondary mr-5"
-            @click="$refs.addJobLocation.open()"
+            @click="$refs.addJobValueCriteria.open()"
           >
             <span>{{ $t('create') | uppercase }}</span>
           </button>
           <button
-            v-if="$permission.has('update employee')"
+            v-if="$permission.has('update employee master job value')"
             type="button"
             class="btn btn-sm btn-outline-secondary mr-5"
-            @click="$refs.editJobLocation.open(jobLocation)"
+            @click="$refs.editJobValueCriteria.open(criteria)"
           >
             {{ $t('edit') | uppercase }}
           </button>
           <button
-            v-if="$permission.has('delete employee')"
+            v-if="$permission.has('delete employee master job value')"
             type="button"
             :disabled="isDeleting"
             class="btn btn-sm btn-outline-secondary"
@@ -48,10 +48,24 @@
         <hr>
         <p-block-inner :is-loading="isLoading">
           <p-form-row
-            id="name"
-            v-model="jobLocation.name"
-            label="Name"
-            name="name"
+            id="category"
+            v-model="criteria.category.category"
+            label="Category"
+            name="category"
+            readonly
+          />
+          <p-form-row
+            id="criteria_factor"
+            v-model="criteria.criteria_factor"
+            label="Criteria Factor"
+            name="criteria_factor"
+            readonly
+          />
+          <p-form-row
+            id="total_score"
+            v-model="criteria.total_score"
+            label="Total Score"
+            name="total_score"
             readonly
           />
           <div class="form-group row">
@@ -59,27 +73,30 @@
               for="area-value"
               class="col-form-label col-lg-3"
             >
-              {{ $t("area value") | uppercase }}
+              {{ $t("Skala") | uppercase }}
             </label>
             <div class="col-lg-9">
               <point-table
                 class="w-full"
               >
                 <tr slot="p-head">
-                  <th>Year</th>
+                  <th>Skala</th>
+                  <th>Description</th>
                   <th>Value</th>
-                  <th>Notes</th>
                 </tr>
                 <tr
-                  v-for="(row, index) in jobLocation.area_values"
+                  v-for="(row, index) in criteria.scales"
                   slot="p-body"
                   :key="index"
                 >
                   <td>
-                    <p-form-number
-                      :id="'year-' + index"
-                      v-model="row.year"
-                      :name="'year-' + index"
+                    {{ index + 1 }}
+                  </td>
+                  <td>
+                    <p-form-input
+                      :id="'description-' + index"
+                      v-model="row.description"
+                      :name="'description-' + index"
                       readonly
                     />
                   </td>
@@ -91,55 +108,27 @@
                       readonly
                     />
                   </td>
-                  <td>
-                    <p-form-input
-                      :id="'notes-' + index"
-                      v-model="row.notes"
-                      :name="'notes-' + index"
-                      readonly
-                    />
-                  </td>
                 </tr>
               </point-table>
             </div>
           </div>
-          <p-form-row
-            id="multiplier-kpi"
-            name="multiplier-kpi"
-            :label="$t('multiplier kpi')"
-            readonly
-          >
-            <div
-              slot="body"
-              class="col-lg-9"
-            >
-              <p-form-number
-                id="multiplier-kpi"
-                v-model="jobLocation.multiplier_kpi"
-                name="multiplier-kpi"
-                :is-text-right="false"
-                :disabled="true"
-                :label="$t('multiplier kpi')"
-              />
-            </div>
-          </p-form-row>
         </p-block-inner>
       </p-block>
     </div>
 
-    <m-add-job-location
-      ref="addJobLocation"
-      @added="onAddedJobLocation($event)"
+    <m-add-job-value-criteria
+      ref="addJobValueCriteria"
+      @added="onAdded($event)"
     />
-    <m-edit-job-location
-      ref="editJobLocation"
-      @updated="onUpdatedJobLocation($event)"
+    <m-edit-job-value-criteria
+      ref="editJobValueCriteria"
+      @updated="onUpdated($event)"
     />
   </div>
 </template>
 
 <script>
-import TabMenu from '@/views/human-resource/TabMenu'
+import TabMenu from '@/views/human-resource/job-value/TabMenu'
 
 import Breadcrumb from '@/views/Breadcrumb'
 import PointTable from 'point-table-vue'
@@ -163,23 +152,27 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocation'])
+    ...mapGetters('humanResourceJobValueCriteria', ['criteria'])
   },
   created () {
-    this.findJobLocation()
+    if (this.$permission.has('read employee master job value')) {
+      this.findCriteria()
+    } else {
+      this.$router.push('/403')
+    }
   },
   methods: {
-    ...mapActions('humanResourceEmployeeJobLocation', ['find', 'delete']),
+    ...mapActions('humanResourceJobValueCriteria', ['find', 'delete']),
     updatePage (value) {
       this.page = value
     },
-    onAddedJobLocation (jobLocation) {
-      this.$router.push('/human-resource/job-location/' + jobLocation.id)
-      this.id = jobLocation.id
-      this.findJobLocation()
+    onAdded (criteria) {
+      this.$router.push('/human-resource/job-value/master/' + criteria.id)
+      this.id = criteria.id
+      this.findCriteria()
     },
-    onUpdatedJobLocation (jobLocation) {
-      this.findJobLocation()
+    onUpdated (criteria) {
+      this.findCriteria()
     },
     onDelete () {
       this.$alert.confirm(this.$t('delete'), this.$t('confirmation delete message')).then(response => {
@@ -188,14 +181,14 @@ export default {
           id: this.id
         }).then(response => {
           this.isDeleting = false
-          this.$router.push('/human-resource/job-location')
+          this.$router.push('/human-resource/job-value/master')
         }).catch(response => {
           this.isDeleting = false
           this.$notification.error('job location already used')
         })
       })
     },
-    findJobLocation () {
+    findCriteria () {
       this.isLoading = true
       this.find({
         id: this.id

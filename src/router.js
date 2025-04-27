@@ -7,6 +7,7 @@ import Approval from '@/views/Approval.vue'
 import ApprovalAll from '@/views/ApprovalAll.vue'
 // Authentication Pages
 import E404 from '@/views/error/404'
+import E403 from '@/views/error/403'
 import E503 from '@/views/error/503'
 // App Pages
 import Whoops from '@/views/error/Whoops'
@@ -139,6 +140,10 @@ export default new Router({
     {
       path: '/404',
       component: E404
+    },
+    {
+      path: '/403',
+      component: E403
     },
     {
       path: '/503',

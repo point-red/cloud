@@ -38,13 +38,10 @@
               <th width="50px">
                 #
               </th>
-              <th width="33%">
+              <th width="50%">
                 {{ $t('name') }}
               </th>
-              <th width="33%">
-                {{ $t('area value') }}
-              </th>
-              <th width="33%">
+              <th width="50%">
                 {{ $t('multiplier kpi') }}
               </th>
             </tr>
@@ -59,7 +56,7 @@
                   {{ jobLocation.name }}
                 </router-link>
               </td>
-              <td>{{ jobLocation.base_salary | numberFormat }}</td>
+              <!-- <td>{{ jobLocation.base_salary | numberFormat }}</td> -->
               <td>{{ jobLocation.multiplier_kpi | numberFormat }}</td>
             </tr>
           </point-table>
