@@ -263,6 +263,7 @@
 
     <m-user
       ref="approver"
+      :permission="'approve employee job value assessment'"
       @choosen="chooseApprover($event)"
     />
   </div>
@@ -388,6 +389,20 @@ export default {
       this.form.approver_email = value.email
     },
     onSubmit () {
+      let canFinalize = true
+      if (this.form.status === 'completed') {
+        for (const score of this.form.scores) {
+          if (score.value === null || score.value === 0) {
+            canFinalize = false
+          }
+        }
+      }
+
+      if (!canFinalize) {
+        this.$notification.error('Please fill all the score')
+        return
+      }
+
       this.isSaving = true
       this.form.total_score = this.total_score
       this.form.total_value = this.total_value
