@@ -349,7 +349,7 @@ export default {
               date: dates[0]
             })
               .then((response) => {
-                this.assignSelected(response.data)
+                // this.assignSelected(response.data)
                 this.isLoading = false
               })
               .catch((error) => {
@@ -394,25 +394,31 @@ export default {
     },
 
     showAttachment (indicator) {
+      console.log('indicator', indicator)
       this.showByAttachment({
         feature: 'assessment',
         feature_id: indicator.id
       })
         .then(
           (response) => {
+            console.log('response', this.cloudStorage)
             console.log(this.cloudStorage)
             this.$refs.showAttachment.show(this.cloudStorage.preview)
           },
           (error) => {
+            console.log('error then show attachment')
             console.log(JSON.stringify(error))
           }
         )
         .catch((error) => {
+          console.log('error show attachment')
           console.log(JSON.stringify(error))
         })
     },
 
     assignSelected (dataAssessment = null) {
+      console.log('1. data assessment', dataAssessment)
+      console.log('2. template groups', this.form.template.groups)
       if (dataAssessment !== null) {
         this.$set(this.dataAttachmentId, 'groups', dataAssessment.groups)
       } else {
@@ -464,6 +470,7 @@ export default {
                 { comment: indicator.comment }
               )
             }
+            console.log('3. indicator', groupIndex, ' = ', indicator.attachment, ' = ', indicatorIndex)
             this.$set(
               this.form.template.groups[groupIndex].indicators[indicatorIndex]
                 .selected,
