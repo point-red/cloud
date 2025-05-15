@@ -430,6 +430,20 @@ export default {
       this.form.approver_email = value.email
     },
     onSubmit () {
+      let canFinalize = true
+      if (this.form.status === 'completed') {
+        for (const score of this.form.scores) {
+          if (score.value === null || score.value === 0) {
+            canFinalize = false
+          }
+        }
+      }
+
+      if (!canFinalize) {
+        this.$notification.error('Please fill all the score')
+        return
+      }
+
       this.isSaving = true
       this.form.employee_id = this.authUser.employee.id
       this.form.total_score = this.total_score
