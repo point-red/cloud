@@ -545,7 +545,7 @@
                   id="user-account"
                   v-model="form.user_id"
                   :errors="form.errors.get('user_id')"
-                  :options="userList"
+                  :options="users"
                   name="user-account"
                   @errors="form.errors.set('user_id', null)"
                 />
@@ -777,6 +777,7 @@ export default {
       isFailed: false,
       isAdditionalAddress: false,
       editIndex: -1,
+      users: [],
       form: new Form({
         name: null,
         tax_identification_number: null,
@@ -877,6 +878,15 @@ export default {
       })
     this.getUser()
       .then((response) => {
+        const array = []
+        response.data.forEach(element => {
+          array.push({
+            id: element.id,
+            label: element.name
+          })
+        })
+        this.users = array 
+        this.userList = response.data
         console.log(response.data)
       }, (error) => {
         console.log(JSON.stringify(error))
