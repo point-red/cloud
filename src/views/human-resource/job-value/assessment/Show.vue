@@ -58,7 +58,7 @@
         <div class="row">
           <div class="col-sm-12">
             <div
-              v-if="authUser.employee?.id === assessment.employee_id"
+              v-if="authUser.employee?.id === assessment.employee_id || (assessment.request_approval_to === authUser.id && assessment.approval_status === 'rejected')"
               class="text-right mb-5"
             >
               <router-link
@@ -69,7 +69,7 @@
                 {{ $t('create') | uppercase }}
               </router-link>
               <router-link
-                v-if="$permission.has('update employee job value assessment') && assessment.approval_status != 'approved'"
+                v-if="($permission.has('update employee job value assessment')) && assessment.approval_status != 'approved'"
                 :to="{ name: 'JobValueAssessmentEdit', params: { id: id }}"
                 class="btn btn-sm btn-outline-secondary mr-5"
               >
@@ -167,7 +167,7 @@
                 </tr>
                 <tr>
                   <td class="font-weight-bold">
-                    {{ $t('approved by') | uppercase }}
+                    {{ assessment.approval_status == 'approved' ? $t('approved by') : assessment.approval_status == 'rejected' ? $t('rejected by') : $t('approval to') | uppercase }}
                   </td>
                   <td>
                     {{ assessment.approval_status != 'approved' ? assessment.request_approver?.full_name : assessment.approved_by?.full_name | uppercase }}
