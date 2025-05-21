@@ -28,7 +28,7 @@
                 slot="body"
                 class="col-lg-9 col-form-label"
               >
-                {{ authUser.employee.name }}
+                {{ form.employee?.name ?? '-' }}
               </div>
             </p-form-row>
             <p-form-row
@@ -300,6 +300,7 @@ export default {
         period_to: this.$moment().endOf('month').format('YYYY-MM-DD 23:59:59'),
         status: 'draft',
         employee_id: null,
+        employee: null,
         request_approval_to: null,
         approver_name: null,
         approver_email: null
@@ -346,6 +347,7 @@ export default {
         this.form.period_to = response.data.period_to
         this.form.status = response.data.status
         this.form.employee_id = response.data.employee_id
+        this.form.employee = response.data.employee
         this.form.request_approval_to = response.data.request_approval_to
         this.form.approver_name = response.data.request_approver.name
         this.form.approver_email = response.data.request_approver.email
@@ -362,7 +364,7 @@ export default {
     ...mapActions('humanResourceJobValueCriteria', {
       getCriteria: 'get'
     }),
-    ...mapActions('humanResourceJobValueAssessment', ['find', 'update']),
+    ...mapActions('humanResourceJobValueAssessment', ['find', 'update', 'approve']),
     addedScore ({ indicatorId, score, index }) {
       const groupIndex = this.form.scores.findIndex((o) =>
         o.criteria_id === indicatorId
@@ -408,11 +410,23 @@ export default {
       this.form.total_value = this.total_value
       this.update(this.form)
         .then(response => {
-          this.isSaving = false
-          this.form.reset()
-          this.$notification.success('Update success')
-          Object.assign(this.$data, this.$options.data.call(this))
-          this.$router.push('/human-resource/job-value/assessment')
+          if (this.form.request_approval_to === this.authUser.id) {
+            this.approve({
+              id: this.id
+            }).then(response => {
+              this.isSaving = false
+              this.form.reset()
+              this.$notification.success('Update success')
+              Object.assign(this.$data, this.$options.data.call(this))
+              this.$router.push('/human-resource/job-value/assessment')
+            })
+          } else {
+            this.isSaving = false
+            this.form.reset()
+            this.$notification.success('Update success')
+            Object.assign(this.$data, this.$options.data.call(this))
+            this.$router.push('/human-resource/job-value/assessment')
+          }
         }).catch(error => {
           this.isSaving = false
           this.form.errors.record(error.errors)
