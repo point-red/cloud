@@ -876,7 +876,12 @@ export default {
       }, (error) => {
         console.log(JSON.stringify(error))
       })
-    this.getUser()
+    this.getUser({
+        params: {
+          sort_by: 'name',
+          limit: 5000
+        }
+      })
       .then((response) => {
         const array = []
         response.data.forEach(element => {
