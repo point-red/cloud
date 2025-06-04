@@ -545,7 +545,7 @@
                   id="user-account"
                   v-model="form.user_id"
                   :errors="form.errors.get('user_id')"
-                  :options="users"
+                  :options="userList"
                   name="user-account"
                   @errors="form.errors.set('user_id', null)"
                 />
