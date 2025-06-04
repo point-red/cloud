@@ -899,6 +899,28 @@ export default {
         console.log(JSON.stringify(error))
       })
   },
+  mounted () {
+    this.getUser({
+        params: {
+          sort_by: 'name',
+          limit: 5000
+        }
+      })
+      .then((response) => {
+        const array = []
+        response.data.forEach(element => {
+          array.push({
+            id: element.id,
+            label: element.name
+          })
+        })
+        this.users = array 
+        this.userList = response.data
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+  },
   beforeDestroy () {
     this.close()
   },
