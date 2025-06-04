@@ -545,7 +545,7 @@
                   id="user-account"
                   v-model="form.user_id"
                   :errors="form.errors.get('user_id')"
-                  :options="users"
+                  :options="userList2"
                   name="user-account"
                   @errors="form.errors.set('user_id', null)"
                 />
@@ -836,7 +836,7 @@ export default {
     ...mapGetters('humanResourceEmployeeStatus', ['statusList']),
     ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocationList']),
     ...mapGetters('humanResourceEmployeeGroup', ['groupList']),
-    ...mapGetters('masterUser', ['userList']),
+    ...mapGetters('masterUser', ['userList2']),
     ...mapGetters('cloudStorage', ['cloudStorages', 'pagination'])
   },
   created () {
@@ -876,7 +876,12 @@ export default {
       }, (error) => {
         console.log(JSON.stringify(error))
       })
-    this.getUser()
+    this.getUser({
+      params: {
+        sort_by: 'name',
+        limit: 5000
+      }
+    })
       .then((response) => {
         const array = []
         response.data.forEach(element => {
@@ -886,7 +891,29 @@ export default {
           })
         })
         this.users = array
-        this.userList = response.data
+        this.userList2 = response.data
+        console.log(response.data)
+      }, (error) => {
+        console.log(JSON.stringify(error))
+      })
+  },
+  mounted () {
+    this.getUser({
+      params: {
+        sort_by: 'name',
+        limit: 5000
+      }
+    })
+      .then((response) => {
+        const array = []
+        response.data.forEach(element => {
+          array.push({
+            id: element.id,
+            label: element.name
+          })
+        })
+        this.users = array
+        this.userList2 = response.data
         console.log(response.data)
       }, (error) => {
         console.log(JSON.stringify(error))
@@ -916,7 +943,7 @@ export default {
       getJobLocations: 'get'
     }),
     ...mapActions('masterUser', {
-      getUser: 'get'
+      getUser: 'get2'
     }),
     ...mapActions('cloudStorage', {
       getCloudStorage: 'get',
