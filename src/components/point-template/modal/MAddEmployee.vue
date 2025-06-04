@@ -885,7 +885,7 @@ export default {
             label: element.name
           })
         })
-        this.users = array 
+        this.users = array
         this.userList = response.data
         console.log(response.data)
       }, (error) => {
