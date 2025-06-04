@@ -943,7 +943,7 @@ export default {
       getJobLocations: 'get'
     }),
     ...mapActions('masterUser', {
-      getUser: 'get'
+      getUser: 'get2'
     }),
     ...mapActions('cloudStorage', {
       getCloudStorage: 'get',

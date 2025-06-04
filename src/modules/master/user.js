@@ -49,6 +49,16 @@ const mutations = {
     })
     state.userList = array
   },
+  'FETCH_SELECT_LIST2' (state, payload) {
+    const array = []
+    payload.forEach(element => {
+      array.push({
+        id: element.id,
+        label: element.name
+      })
+    })
+    state.userList2 = array
+  },
   'FETCH_OBJECT' (state, payload) {
     state.user = payload.data
   },
@@ -70,6 +80,17 @@ const actions = {
         .then(response => {
           commit('FETCH_ARRAY', response)
           commit('FETCH_SELECT_LIST', response.data)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
+  get2 ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get(url, payload)
+        .then(response => {
+          commit('FETCH_SELECT_LIST2', response.data)
           resolve(response)
         }).catch(error => {
           reject(error)
