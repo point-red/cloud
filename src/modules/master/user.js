@@ -12,6 +12,7 @@ const state = {
   },
   users: [],
   userList: [],
+  userList2: [],
   pagination: {}
 }
 
@@ -24,6 +25,9 @@ const getters = {
   },
   userList: state => {
     return state.userList
+  },
+  userList2: state => {
+    return state.userList2
   },
   pagination: state => {
     return state.pagination

@@ -545,7 +545,7 @@
                   id="user-account"
                   v-model="form.user_id"
                   :errors="form.errors.get('user_id')"
-                  :options="userList"
+                  :options="userList2"
                   name="user-account"
                   @errors="form.errors.set('user_id', null)"
                 />
@@ -838,7 +838,7 @@ export default {
     ...mapGetters('humanResourceEmployeeStatus', ['statusList']),
     ...mapGetters('humanResourceEmployeeJobLocation', ['jobLocationList']),
     ...mapGetters('humanResourceEmployeeGroup', ['groupList']),
-    ...mapGetters('masterUser', ['userList']),
+    ...mapGetters('masterUser', ['userList2']),
     ...mapGetters('cloudStorage', ['cloudStorages', 'pagination'])
   },
   created () {
@@ -893,7 +893,7 @@ export default {
           })
         })
         this.users = array 
-        this.userList = response.data
+        this.userList2 = response.data
         console.log(response.data)
       }, (error) => {
         console.log(JSON.stringify(error))
@@ -915,7 +915,7 @@ export default {
           })
         })
         this.users = array 
-        this.userList = response.data
+        this.userList2 = response.data
         console.log(response.data)
       }, (error) => {
         console.log(JSON.stringify(error))
