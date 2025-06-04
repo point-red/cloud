@@ -405,6 +405,10 @@ export default {
         return
       }
 
+      if (this.form.request_approval_to === this.authUser.id) {
+        this.form.status = 'completed'
+      }
+
       this.isSaving = true
       this.form.total_score = this.total_score
       this.form.total_value = this.total_value
