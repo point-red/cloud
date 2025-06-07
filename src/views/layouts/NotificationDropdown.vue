@@ -59,7 +59,10 @@
             </div>
             <div class="media-body pr-10">
               <p class="mb-0">{{ notification.message }}</p>
-              <div class="text-muted font-size-sm font-italic">{{ notification.createdAt | fromNow }}</div>
+              <div class="text-muted font-size-sm font-italic">
+                {{ notification.createdAt | fromNow }}
+                <span class="ml-5">• {{ getNotificationTimeLabel(notification.created_at) }}</span>
+              </div>
             </div>
           </a>
         </li>
@@ -200,10 +203,30 @@ export default {
             status: 'READ'
           })
           // Redirect ke url tujuan
-          window.location.href = notification.clickAction
+          window.location.href = notification.link
         })
       } else {
-        window.location.href = notification.clickAction
+        window.location.href = notification.link
+      }
+    },
+    getNotificationTimeLabel (dateString) {
+      const notifDate = new Date(dateString)
+      const today = new Date()
+      const yesterday = new Date()
+      yesterday.setDate(today.getDate() - 1)
+
+      function isSameDay (d1, d2) {
+        return d1.getFullYear() === d2.getFullYear() &&
+          d1.getMonth() === d2.getMonth() &&
+          d1.getDate() === d2.getDate()
+      }
+
+      if (isSameDay(notifDate, today)) {
+        return 'Today'
+      } else if (isSameDay(notifDate, yesterday)) {
+        return 'Yesterday'
+      } else {
+        return 'Older'
       }
     }
   }

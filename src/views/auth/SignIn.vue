@@ -88,6 +88,7 @@
           /> Sign In
         </button>
       </div>
+      <span>{{ token }}</span>
       <div class="form-group text-center">
         <a
           class="text-center"
@@ -138,6 +139,8 @@ export default {
         console.log(error.message)
       })
     }
+
+    console.log('Checking for Firebase Messaging support...', firebase.messaging.isSupported())
 
     if (firebase.messaging.isSupported()) {
       const messaging = firebase.messaging()

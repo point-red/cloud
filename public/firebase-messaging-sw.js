@@ -1,39 +1,77 @@
 // Import and configure the Firebase SDK
 
 /**
- * Here is is the code snippet to initialize Firebase Messaging in the Service
- * Worker when your app is not hosted on Firebase Hosting.
+ * @fileoverview Firebase Messaging Service Worker
+ * @global importScripts
+ * @global firebase
+ * @global clients
+ */
+
+/**
+ * Initialize Firebase Messaging in the Service Worker.
  **/
 
-// [START initialize_firebase_in_sw]
-// Give the service worker access to Firebase Messaging.
-// Note that you can only use Firebase Messaging here, other Firebase libraries
-// are not available in the service worker.
-importScripts('https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js')
-importScripts('https://www.gstatic.com/firebasejs/6.3.4/firebase-messaging.js')
-// Initialize the Firebase app in the service worker by passing in the
-// messagingSenderId.
+// eslint-disable-next-line no-undef
+importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js')
+// eslint-disable-next-line no-undef
+importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js')
+
+// Replace the following config with your actual Firebase project config
+// You must include apiKey, authDomain, projectId, storageBucket, messagingSenderId, appId
+// See: https://firebase.google.com/docs/web/setup#config-object
+// eslint-disable-next-line no-undef
 firebase.initializeApp({
-  'messagingSenderId': '466429876586'
+  apiKey: '',
+  authDomain: '',
+  projectId: '',
+  storageBucket: '',
+  messagingSenderId: '',
+  appId: ''
 })
-// Retrieve an instance of Firebase Messaging so that it can handle background
-// messages.
+
+// eslint-disable-next-line no-undef
 const messaging = firebase.messaging()
-// [END initialize_firebase_in_sw]
 
-// If you would like to customize notifications that are received in the
-// background (Web app is closed or not in browser focus) then you should
-// implement this optional method.
-// [START background_handler]
-messaging.setBackgroundMessageHandler(function (payload) {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload)
-  // Customize notification here
-  var notificationTitle = 'Background Message Title'
-  var notificationOptions = {
-    body: 'Background Message body.',
-    icon: '/firebase-logo.png'
+// Handle background messages (for firebase v7+ use onBackgroundMessage)
+messaging.onBackgroundMessage(function (payload) {
+  console.log('[firebase-messaging-sw.js] Received background message', payload)
+  // If payload.notification exists, browser will show notification automatically, so skip manual showNotification
+  // if (payload.notification && payload.data.click_action) {
+  //   return
+  // }
+  // Only show notification if it's data-only
+  const notificationTitle = (payload.data && payload.data.title) || 'Notification'
+  const notificationOptions = {
+    body: (payload.data && payload.data.body) || '',
+    icon: '/firebase-logo.png',
+    data: {
+      click_action: (payload.data && payload.data.click_action) || '/'
+    }
   }
-
   return self.registration.showNotification(notificationTitle, notificationOptions)
 })
-// [END background_handler]
+
+// Listen for notification click
+self.addEventListener('notificationclick', function (event) {
+  console.log('[firebase-messaging-sw.js] Notification click event:', event)
+  event.notification.close()
+  // Get click_action from notification data
+  const clickAction = event.notification.data && event.notification.data.click_action
+    ? event.notification.data.click_action
+    : (event.notification.click_action || '/')
+  console.log('[firebase-messaging-sw.js] clickAction:', clickAction)
+  event.waitUntil(
+    clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(function (clientList) {
+      for (let i = 0; i < clientList.length; i++) {
+        const client = clientList[i]
+        // Use startsWith to match base url (handle params/hash)
+        if (client.url.startsWith(clickAction) && 'focus' in client) {
+          return client.focus()
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(clickAction)
+      }
+    })
+  )
+})
