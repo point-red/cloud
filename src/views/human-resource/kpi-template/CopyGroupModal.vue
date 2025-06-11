@@ -81,9 +81,7 @@ export default {
       this.form.group_id = groupId
       this.isLoading = true
       this.getKpiTemplates({
-        params: {
-          limit: 1000
-        }
+        limit: 1000
       }).finally(() => {
         this.isLoading = false
       })
