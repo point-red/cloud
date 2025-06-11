@@ -80,7 +80,11 @@ export default {
       this.form.template_id = templateId
       this.form.group_id = groupId
       this.isLoading = true
-      this.getKpiTemplates().finally(() => {
+      this.getKpiTemplates({
+        params: {
+          limit: 1000
+        }
+      }).finally(() => {
         this.isLoading = false
       })
       this.$refs.copyGroupModal.show()
