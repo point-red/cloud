@@ -21,12 +21,12 @@ importScripts('https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-comp
 // See: https://firebase.google.com/docs/web/setup#config-object
 // eslint-disable-next-line no-undef
 firebase.initializeApp({
-  apiKey: '',
-  authDomain: '',
-  projectId: '',
-  storageBucket: '',
-  messagingSenderId: '',
-  appId: ''
+  apiKey: 'AIzaSyCfAv1bmJ5SBB3wRZttEYrecYJ3bW5py2o',
+  authDomain: 'sample-2beba.firebaseapp.com',
+  projectId: 'sample-2beba',
+  storageBucket: 'sample-2beba.firebasestorage.app',
+  messagingSenderId: '846858288563',
+  appId: '1:846858288563:web:6aa6f1707385f6f886dfc6'
 })
 
 // eslint-disable-next-line no-undef

@@ -47,6 +47,17 @@ const actions = {
           reject(error)
         })
     })
+  },
+  markAllAsRead ({ commit }) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/mark-all-as-read')
+        .then(response => {
+          commit('FETCH_ARRAY', response)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 

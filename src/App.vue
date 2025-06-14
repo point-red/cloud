@@ -66,6 +66,16 @@ export default {
   mounted () {
     window.addEventListener('resize', this.handleResize)
     document.getElementById('app').style.minHeight = window.innerHeight + 'px'
+
+    if ('Notification' in window && Notification.permission !== 'granted') {
+      Notification.requestPermission().then(permission => {
+      // Optional: handle permission result
+        if (permission === 'granted') {
+        // Bisa tampilkan notifikasi selamat datang, dsb
+        // new Notification('Terima kasih telah mengaktifkan notifikasi!');
+        }
+      })
+    }
   },
   beforeDestroy: function () {
     window.removeEventListener('resize', this.handleResize)
