@@ -233,6 +233,7 @@
             <div class="col-sm-12">
               <hr>
               <button
+                v-if="form.request_approval_to != authUser.id"
                 type="submit"
                 class="btn btn-block btn-sm btn-danger"
                 :disabled="isSaving"
