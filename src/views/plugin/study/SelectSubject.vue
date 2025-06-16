@@ -6,8 +6,10 @@
     :options="subjects"
     label-field="name"
     :errors="errors"
+    :multiple="true"
     @errors="$emit('errors')"
   />
+  {{ modelValue }}
 </template>
 
 <script>
