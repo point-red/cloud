@@ -1,15 +1,17 @@
 <template>
-  <p-select
-    id="subject"
-    v-model="modelValue"
-    name="subject"
-    :options="subjects"
-    label-field="name"
-    :errors="errors"
-    :multiple="true"
-    @errors="$emit('errors')"
-  />
-  {{ modelValue }}
+  <div>
+    <p-select
+      id="subject"
+      v-model="modelValue"
+      name="subject"
+      :options="subjects"
+      label-field="name"
+      :errors="errors"
+      :multiple="true"
+      @errors="$emit('errors')"
+    />
+    {{ modelValue }}
+  </div>
 </template>
 
 <script>
