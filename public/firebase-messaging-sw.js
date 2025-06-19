@@ -51,24 +51,36 @@ messaging.onBackgroundMessage(function (payload) {
   return self.registration.showNotification(notificationTitle, notificationOptions)
 })
 
+messaging.onMessage(messaging, (payload) => {
+  // Always show notification even when app is open
+  if (payload?.notification) {
+    const { title, body, icon } = payload.notification
+    self.registration.showNotification(title, {
+      body,
+      icon: icon || '/firebase-logo.png',
+      data: payload.data
+    })
+  }
+})
+
 // Listen for notification click
 self.addEventListener('notificationclick', function (event) {
-  console.log('[firebase-messaging-sw.js] Notification click event:', event)
   event.notification.close()
-  // Get click_action from notification data
   const clickAction = event.notification.data && event.notification.data.click_action
     ? event.notification.data.click_action
     : (event.notification.click_action || '/')
-  console.log('[firebase-messaging-sw.js] clickAction:', clickAction)
+
   event.waitUntil(
-    clients.matchAll({ includeUncontrolled: true, type: 'window' }).then(function (clientList) {
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
+      // Cek jika sudah ada window/tab app yang terbuka
       for (let i = 0; i < clientList.length; i++) {
         const client = clientList[i]
-        // Use startsWith to match base url (handle params/hash)
-        if (client.url.startsWith(clickAction) && 'focus' in client) {
+        // Cek url root app, bisa disesuaikan jika perlu
+        if (client.url.includes(self.location.origin) && 'focus' in client) {
           return client.focus()
         }
       }
+      // Jika belum ada, buka window baru (akan membuka PWA, bukan browser baru jika sudah diinstall)
       if (clients.openWindow) {
         return clients.openWindow(clickAction)
       }

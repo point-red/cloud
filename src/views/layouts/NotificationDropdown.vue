@@ -338,7 +338,39 @@ export default {
   border: none;
   background: #fff;
   padding-bottom: 0;
+  z-index: 1000;
+  transition: all 0.2s;
 }
+
+/* Responsive styles for mobile */
+@media (max-width: 600px) {
+  .notification-dropdown {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 56px !important; /* adjust if you have a fixed header */
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    width: 100vw !important;
+    border-radius: 0 0 12px 12px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    max-height: 80vh !important;
+    padding-bottom: 0;
+  }
+  .notification-list {
+    padding: 0 0 0 0;
+  }
+  .category-label,
+  .notification-item {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  .dropdown-header {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
 .dropdown-header {
   padding: 12px 18px 12px 18px;
   border-bottom: 1px solid #f0f0f0;

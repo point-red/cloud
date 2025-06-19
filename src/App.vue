@@ -52,6 +52,31 @@ export default {
   created () {
     if (firebase.messaging.isSupported()) {
       const messaging = firebase.messaging()
+
+      // Force ask notification permission on first load
+      if ('Notification' in window && Notification.permission !== 'granted') {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            // Optional: show welcome notification
+            // new Notification('Terima kasih telah mengaktifkan notifikasi!');
+          }
+        })
+      }
+      // Always show notification even when app is open (foreground)
+      messaging.onMessage((payload) => {
+        if (payload?.notification) {
+          const { title, body, icon } = payload.notification
+          // Show notification in foreground
+          if (Notification.permission === 'granted') {
+            Notification(title, {
+              body,
+              icon: icon || '/firebase-logo.png',
+              data: payload.data
+            })
+          }
+        }
+      })
+
       messaging.requestPermission().then(() => {
         messaging.onMessage((payload) => {
           console.log('Message received. ', payload)
