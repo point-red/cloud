@@ -12,6 +12,7 @@
           <div class="">
             <p-select
               id="employee_id"
+              :multiple="true"
               v-model="employeeId"
               :options="employeeList"
               name="employee_id"
