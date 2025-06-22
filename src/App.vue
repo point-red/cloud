@@ -38,7 +38,7 @@
 
 <script>
 import Network from '@/network'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import firebase from 'firebase/app'
 
 export default {
@@ -62,21 +62,6 @@ export default {
           }
         })
       }
-      // Always show notification even when app is open (foreground)
-      // messaging.onMessage((payload) => {
-      //   if (payload?.notification) {
-      //     const { title, body, icon } = payload.notification
-      //     // Show notification in foreground
-      //     if (Notification.permission === 'granted') {
-      //       // eslint-disable-next-line no-new
-      //       new Notification(title, {
-      //         body,
-      //         icon: icon || '/firebase-logo.png',
-      //         data: payload.data
-      //       })
-      //     }
-      //   }
-      // })
 
       messaging.requestPermission().then(() => {
         messaging.onMessage((payload) => {
@@ -95,10 +80,22 @@ export default {
 
     if ('Notification' in window && Notification.permission !== 'granted') {
       Notification.requestPermission().then(permission => {
-      // Optional: handle permission result
         if (permission === 'granted') {
-        // Bisa tampilkan notifikasi selamat datang, dsb
-        // new Notification('Terima kasih telah mengaktifkan notifikasi!');
+          // Bisa tampilkan notifikasi selamat datang, dsb
+          // new Notification('Terima kasih telah mengaktifkan notifikasi!');
+        }
+      })
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'notification-click' && event.data.path) {
+          this.$router.push(event.data.path)
+        }
+
+        if (event.data && event.data.type === 'mark-as-read') {
+          // Gunakan mapActions notification/markAsRead
+          this.markAsRead(event.data.id)
         }
       })
     }
@@ -107,6 +104,7 @@ export default {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
+    ...mapActions('notification', ['get', 'update', 'markAllAsRead', 'markAsRead']),
     closeHeaderDropdown (event) {
       if (event.target.id !== 'page-header-user-dropdown') {
         this.$store.dispatch('uiHandler/closeHeaderDropdown')

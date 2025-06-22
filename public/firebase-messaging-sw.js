@@ -64,26 +64,41 @@ self.addEventListener('push', function (event) {
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close()
-  let clickAction =
+  const action = event.action
+  const clickAction =
     (event.notification.data && event.notification.data.click_action) ||
     (event.notification.click_action) ||
     '/'
 
-  // Normalisasi URL agar selalu absolut
-  if (!/^https?:\/\//.test(clickAction)) {
-    clickAction = self.location.origin + (clickAction.startsWith('/') ? clickAction : '/' + clickAction)
+  // Ambil notificationId jika ada
+  const notificationId =
+    (event.notification.data && event.notification.data.notificationId) ||
+    (event.notification.notificationId)
+
+  // Jika tombol "Mark as Read" diklik
+  if (action === 'mark-as-read') {
+    event.waitUntil(
+      clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
+        if (clientList.length > 0) {
+          clientList[0].postMessage({ type: 'mark-as-read', id: notificationId })
+        }
+      })
+    )
+    return
   }
 
+  // Jika notifikasi dibuka (klik utama), juga mark as read
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
-      // Fokuskan tab jika sudah ada, jika tidak buka baru
-      for (let i = 0; i < clientList.length; i++) {
-        const client = clientList[i]
-        // Gunakan startsWith agar path dengan query/fragment tetap cocok
-        if (client.url.startsWith(clickAction) && 'focus' in client) {
-          return client.focus()
-        }
+      if (clientList.length > 0) {
+        const client = clientList[0]
+        client.focus()
+        // Kirim pesan ke window: mark as read + navigasi
+        client.postMessage({ type: 'mark-as-read', id: notificationId })
+        client.postMessage({ type: 'notification-click', path: clickAction })
+        return
       }
+      // Jika belum ada, buka window/tab baru ke clickAction (fallback)
       if (clients.openWindow) {
         return clients.openWindow(clickAction)
       }

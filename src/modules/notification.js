@@ -58,6 +58,17 @@ const actions = {
           reject(error)
         })
     })
+  },
+  markAsRead ({ commit }, id) {
+    return new Promise((resolve, reject) => {
+      api.post(url + '/mark-as-read/' + id)
+        .then(response => {
+          commit('UPDATE', response.data)
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
   }
 }
 
