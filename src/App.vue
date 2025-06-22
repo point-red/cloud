@@ -63,19 +63,20 @@ export default {
         })
       }
       // Always show notification even when app is open (foreground)
-      messaging.onMessage((payload) => {
-        if (payload?.notification) {
-          const { title, body, icon } = payload.notification
-          // Show notification in foreground
-          if (Notification.permission === 'granted') {
-            Notification(title, {
-              body,
-              icon: icon || '/firebase-logo.png',
-              data: payload.data
-            })
-          }
-        }
-      })
+      // messaging.onMessage((payload) => {
+      //   if (payload?.notification) {
+      //     const { title, body, icon } = payload.notification
+      //     // Show notification in foreground
+      //     if (Notification.permission === 'granted') {
+      //       // eslint-disable-next-line no-new
+      //       new Notification(title, {
+      //         body,
+      //         icon: icon || '/firebase-logo.png',
+      //         data: payload.data
+      //       })
+      //     }
+      //   }
+      // })
 
       messaging.requestPermission().then(() => {
         messaging.onMessage((payload) => {
