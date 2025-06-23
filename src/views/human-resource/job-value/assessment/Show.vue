@@ -170,7 +170,7 @@
                     {{ assessment.approval_status == 'approved' ? $t('approved by') : assessment.approval_status == 'rejected' ? $t('rejected by') : $t('approval to') | uppercase }}
                   </td>
                   <td>
-                    {{ assessment.approval_status != 'approved' ? assessment.request_approver?.full_name : assessment.approved_by?.full_name | uppercase }}
+                    {{ assessment.approval_status != 'approved' ? assessment.request_approver?.full_name : (assessment.approved_by?.first_name + ' ' + assessment.approved_by?.last_name) | uppercase }}
                   </td>
                 </tr>
               </table>

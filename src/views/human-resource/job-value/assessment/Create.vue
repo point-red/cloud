@@ -73,12 +73,12 @@
               </div>
             </p-form-row>
             <hr>
-            <div v-if="(assessments && assessments.length > 0) && setting.minimum_coc > coc.score_percentage || contractMonthDiff < 6">
+            <div v-if="(settings.minimum_coc > cocScore.score_percentage || contractMonthDiff < 6)">
               <p
-                v-if="setting.minimum_coc > coc.score_percentage"
+                v-if="settings.minimum_coc > cocScore.score_percentage"
                 class="text-center font-w700"
               >
-                {{ `cant create job value because your coc score is ${coc.score_percentage}. minimum score needed is ${setting.minimum_coc}` }}
+                {{ `cant create job value because your coc score is ${cocScore.score_percentage}. minimum score needed is ${settings.minimum_coc}` }}
               </p>
               <p
                 v-if="contractMonthDiff < 6"
@@ -310,8 +310,9 @@ export default {
       contractMonthDiff: 0,
       requestedBy: localStorage.getItem('fullName'),
       salesQuotation: null,
-      setting: {},
-      coc: {
+      assessments: [],
+      settings: {},
+      cocScore: {
         score_percentage: 0
       },
       form: new Form({
@@ -467,7 +468,7 @@ export default {
       this.isLoading = true
       this.get()
         .then((response) => {
-          this.setting = response.data
+          this.settings = response.data
           this.getCocRequest()
         })
         .catch((error) => {
@@ -503,12 +504,13 @@ export default {
         }
       }).then((response) => {
         this.isLoading = false
-        this.coc = response.data
-        if (!this.coc.score_percentage) {
-          this.coc = {
+        this.cocScore = response.data
+        if (!this.cocScore.score_percentage) {
+          this.cocScore = {
             score_percentage: 0
           }
         }
+        console.log(this.assessments && this.assessments.length > 0 && (this.settings.minimum_coc > this.cocScore.score_percentage || this.contractMonthDiff < 6))
       }).catch(error => {
         this.isLoading = false
         this.$notifications.error(error.message)

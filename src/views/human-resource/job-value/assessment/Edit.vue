@@ -233,6 +233,7 @@
             <div class="col-sm-12">
               <hr>
               <button
+                v-if="form.request_approval_to != authUser.id"
                 type="submit"
                 class="btn btn-block btn-sm btn-danger"
                 :disabled="isSaving"
@@ -403,6 +404,10 @@ export default {
       if (!canFinalize) {
         this.$notification.error('Please fill all the score')
         return
+      }
+
+      if (this.form.request_approval_to === this.authUser.id) {
+        this.form.status = 'completed'
       }
 
       this.isSaving = true
