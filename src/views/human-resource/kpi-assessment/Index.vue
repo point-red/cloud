@@ -8,7 +8,7 @@
 
     <div class="row">
       <p-block>
-        <div class="row mb-5" style="margin-left: 0px" v-if="$permission.has('export employee assessment')">
+        <div class="row mb-5" style="margin-left: 0px; gap: 4px" v-if="$permission.has('export employee assessment')">
           <div class="">
             <p-select
               id="employee_id"
@@ -19,7 +19,7 @@
               label="employee"
             />
           </div>
-          <div style="margin-left: 4px">
+          <div style="">
             <p-date-picker
               id="date"
               v-model="date.start"
@@ -27,7 +27,7 @@
               label="date from"
             />
           </div>
-          <div style="margin-left: 4px">
+          <div style="">
             <p-date-picker
               id="date"
               v-model="date.end"
@@ -35,7 +35,7 @@
               label="date to"
             />
           </div>
-          <div style="margin-left: 4px">
+          <div style="">
             <button
               type="button"
               class="btn btn-alt-secondary"
