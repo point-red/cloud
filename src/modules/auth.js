@@ -21,6 +21,9 @@ const state = {
 const getters = {
   authUser: state => {
     return state.user
+  },
+  isAuthenticated: state => {
+    return !!state.accessToken // Return true if accessToken exists, otherwise false
   }
 }
 

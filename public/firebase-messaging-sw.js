@@ -50,57 +50,62 @@ self.addEventListener('push', function (event) {
   // Support both notification and data-only payloads
   const notification = payload.notification || {}
   const data = payload.data || {}
+
   const title = notification.title || data.title || 'Notification'
+  const actions = notification.actions || data.actions || [
+    {
+      action: 'mark-as-read',
+      title: 'Mark as Read'
+    }
+  ]
   const options = {
     body: notification.body || data.body || '',
     icon: notification.icon || '/firebase-logo.png',
     data: {
       ...data,
       click_action: data.click_action || notification.click_action || '/'
-    }
+    },
+    actions
   }
   event.waitUntil(self.registration.showNotification(title, options))
 })
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close()
+
   const action = event.action
-  const clickAction =
-    (event.notification.data && event.notification.data.click_action) ||
-    (event.notification.click_action) ||
-    '/'
+  const data = event.notification.data || {}
+  const domainProject = (data.domain_project || '').replace(/\/$/, '') // Ensure no trailing slash
+  const clickAction = data.click_action || '/' // Default to root path if undefined
 
-  // Ambil notificationId jika ada
-  const notificationId =
-    (event.notification.data && event.notification.data.notificationId) ||
-    (event.notification.notificationId)
+  // Validate domainProject and clickAction
+  const isValidDomain = /^https?:\/\//.test(domainProject)
+  const targetUrl = isValidDomain ? `${domainProject}${clickAction}` : clickAction
 
-  // Jika tombol "Mark as Read" diklik
+  // Handle "Mark as Read" action
   if (action === 'mark-as-read') {
     event.waitUntil(
       clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
         if (clientList.length > 0) {
-          clientList[0].postMessage({ type: 'mark-as-read', id: notificationId })
+          clientList[0].postMessage({ type: 'mark-as-read', id: data.notificationId })
         }
       })
     )
     return
   }
 
-  // Jika notifikasi dibuka (klik utama), juga mark as read
+  // Handle notification click
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
       if (clientList.length > 0) {
         const client = clientList[0]
         client.focus()
-        // Kirim pesan ke window: mark as read + navigasi
-        client.postMessage({ type: 'mark-as-read', id: notificationId })
-        client.postMessage({ type: 'notification-click', path: clickAction })
+        client.postMessage({ type: 'notification-click', path: clickAction, domainProject })
         return
       }
-      // Jika belum ada, buka window/tab baru ke clickAction (fallback)
+      // Open a new window if no client is available
       if (clients.openWindow) {
-        return clients.openWindow(clickAction)
+        return clients.openWindow(targetUrl)
       }
     })
   )

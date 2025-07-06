@@ -62,7 +62,7 @@
           /> Sign In
         </button>
       </div>
-      <span>{{ token }}</span>
+      <!-- <span>{{ token }}</span> -->
       <div class="form-group text-center">
         <a
           class="text-center"
@@ -74,6 +74,13 @@
         class="text-danger text-center mt-2"
       >
         Mohon izinkan notifikasi untuk melanjutkan login.
+      </div>
+      <div
+        v-if="fcmStatus"
+        class="text-center mt-2"
+        :class="{'text-warning': fcmStatusType==='warn', 'text-info': fcmStatusType==='info'}"
+      >
+        {{ fcmStatus }}
       </div>
     </form>
     <!-- END Sign In Form -->
@@ -91,7 +98,9 @@ export default {
       password: '',
       token: '',
       isLoading: false,
-      fcmReady: false // <-- tambahkan state ini
+      fcmReady: false,
+      fcmStatus: '',
+      fcmStatusType: 'info'
     }
   },
   computed: {
@@ -121,18 +130,32 @@ export default {
     }
 
     if (firebase.messaging.isSupported()) {
+      this.fcmStatus = 'Mengambil izin notifikasi...'
+      this.fcmStatusType = 'info'
       const messaging = firebase.messaging()
+      const timeout = setTimeout(() => {
+        this.fcmReady = true
+        this.fcmStatus = 'Gagal mendapatkan token notifikasi, Anda tetap bisa login namun tidak akan menerima notifikasi.'
+        this.fcmStatusType = 'warn'
+      }, 5000)
+
       messaging.requestPermission().then(() => {
+        this.fcmStatus = 'Mengambil token notifikasi...'
+        this.fcmStatusType = 'info'
         return messaging.getToken()
       }).then(token => {
+        clearTimeout(timeout)
         this.token = token
-        this.fcmReady = true // enable tombol login
+        this.fcmReady = true
+        this.fcmStatus = ''
       }).catch(error => {
-        this.fcmReady = false // disable tombol login jika gagal
+        clearTimeout(timeout)
+        this.fcmReady = true
+        this.fcmStatus = 'Tidak dapat mengaktifkan notifikasi, Anda tetap bisa login.'
+        this.fcmStatusType = 'warn'
         console.log('Unable to get permission to notify.', error)
       })
     } else {
-      // Jika browser tidak support, tetap enable login
       this.fcmReady = true
     }
   },
