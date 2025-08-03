@@ -87,7 +87,6 @@
           /> Sign In
         </button>
       </div>
-      <!-- <span>{{ token }}</span> -->
       <div class="form-group text-center">
         <a
           class="text-center"
