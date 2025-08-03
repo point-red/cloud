@@ -556,7 +556,8 @@ export default {
       findKpiTemplate: 'find'
     }),
     ...mapActions('humanResourceKpiResult', {
-      findKpiResult: 'findByScorePercentage'
+      findKpiResult: 'findByScorePercentage',
+      sendNotification: 'sendNotification'
     }),
     ...mapActions('humanResourceEmployeeAssessment', {
       createEmployeeAssessment: 'create',
@@ -891,6 +892,10 @@ export default {
       // }
       this.$notification.success('Edit success')
       this.isSubmit = true
+      // send notification
+      this.sendNotification({
+        id: this.kpiId
+      })
       this.findKpiResult(this.form.template.score_percentage)
         .then((response) => {
           this.isSubmit = false

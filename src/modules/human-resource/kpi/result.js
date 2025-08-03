@@ -1,6 +1,7 @@
 import api from '@/api'
 
 const url = '/human-resource/kpi/results'
+const urlNotification = '/human-resource/employee/assessment'
 
 const state = {
   result: {},
@@ -110,6 +111,18 @@ const actions = {
         .then(
           (response) => {
             context.dispatch('get')
+            resolve(response)
+          },
+          (error) => {
+            reject(error)
+          })
+    })
+  },
+  sendNotification ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.post(urlNotification + `/${payload.id}/send-notification`)
+        .then(
+          (response) => {
             resolve(response)
           },
           (error) => {

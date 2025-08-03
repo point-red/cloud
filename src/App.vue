@@ -38,7 +38,7 @@
 
 <script>
 import Network from '@/network'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import firebase from 'firebase/app'
 
 export default {
@@ -47,11 +47,24 @@ export default {
     Network
   },
   computed: {
-    ...mapGetters('uiHandler', ['isLoadingBlock'])
+    ...mapGetters('uiHandler', ['isLoadingBlock']),
+    isLoggedIn () {
+      return !!this.$store.getters['auth/isAuthenticated'] // Check if user is logged in
+    }
   },
   created () {
     if (firebase.messaging.isSupported()) {
       const messaging = firebase.messaging()
+
+      // Force ask notification permission on first load
+      if ('Notification' in window && Notification.permission !== 'granted') {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            this.registerPushNotificationToken(messaging)
+          }
+        })
+      }
+
       messaging.requestPermission().then(() => {
         messaging.onMessage((payload) => {
           console.log('Message received. ', payload)
@@ -66,11 +79,61 @@ export default {
   mounted () {
     window.addEventListener('resize', this.handleResize)
     document.getElementById('app').style.minHeight = window.innerHeight + 'px'
+
+    if ('Notification' in window && Notification.permission === 'granted') {
+      const messaging = firebase.messaging()
+      this.registerPushNotificationToken(messaging)
+    }
+
+    if ('serviceWorker' in navigator) {
+      if (this._swMessageHandler) {
+        navigator.serviceWorker.removeEventListener('message', this._swMessageHandler)
+      }
+
+      this._swMessageHandler = (event) => {
+        const data = event.data
+        if (!data || typeof data !== 'object') return
+
+        if (data.type === 'notification-click' && data.path && data.domainProject) {
+          console.log('Notification click event received:', data)
+
+          let domainProject = (data.domainProject || '').replace(/\/$/, '')
+          if (!/^https?:\/\//.test(domainProject)) {
+            domainProject = `${window.location.protocol}//${domainProject}`
+          }
+
+          const currentDomain = window.location.origin
+          const targetPath = data.path.startsWith('/') ? data.path : `/${data.path}`
+
+          if (domainProject !== currentDomain) {
+            this.$store.dispatch('uiHandler/showLoadingBlock', 'Mengalihkan ke aplikasi lain...')
+            setTimeout(() => {
+              this.$store.dispatch('uiHandler/dismissLoadingBlock')
+              alert('Gagal mengalihkan ke aplikasi tujuan. Silakan cek koneksi atau hubungi admin.')
+            }, 15000)
+
+            window.location.assign(`${domainProject}${targetPath}`)
+          } else {
+            if (this.$router.currentRoute.path !== targetPath) {
+              this.$router.push(targetPath).catch(() => {})
+            }
+          }
+        }
+
+        if (data.type === 'mark-as-read' && data.id) {
+          this.markAsRead(data.id)
+        }
+      }
+
+      navigator.serviceWorker.addEventListener('message', this._swMessageHandler)
+    }
   },
-  beforeDestroy: function () {
+  beforeDestroy () {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
+    ...mapActions('notification', ['get', 'update', 'markAllAsRead', 'markAsRead']),
+    ...mapActions('firebaseToken', ['create']),
     closeHeaderDropdown (event) {
       if (event.target.id !== 'page-header-user-dropdown') {
         this.$store.dispatch('uiHandler/closeHeaderDropdown')
@@ -78,62 +141,30 @@ export default {
     },
     handleResize (event) {
       document.getElementById('app').style.minHeight = window.innerHeight + 'px'
+    },
+    async registerPushNotificationToken (messaging) {
+      if (!this.isLoggedIn) {
+        console.log('User is not logged in. Skipping token registration.')
+        return
+      }
+
+      try {
+        const token = await messaging.getToken()
+        if (token) {
+          console.log('Push notification token:', token)
+          await this.create({ token })
+          console.log('Push notification token registered successfully.')
+        } else {
+          console.log('No push notification token available.')
+        }
+      } catch (error) {
+        console.error('Failed to register push notification token:', error)
+      }
     }
   }
 }
 </script>
 
 <style>
-.no-wrap {
-  white-space: nowrap;
-}
-.vue-notification.info {
-  background: #0c80df;
-  border-left-color: #0073d1;
-}
-.vue-notification-group {
-  z-index: 9999 !important;
-}
-.full-width {
-  width: 100%;
-}
-.block.block-mode-loading::after {
-  top: 50px;
-}
-
-.block-content-inner {
-  padding: 0px !important;
-}
-/* .fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-
-.fade-enter,
-.fade-leave-to
-{
-  opacity: 0;
-  transition: opacity;
-} */
-
-.card {
-  /* Add shadows to create the "card" effect */
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-  transition: 0.3s;
-}
-
-/* On mouse-over, add a deeper shadow */
-.card:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
-
-.invalid-input {
-  display: block;
-  margin-top: .25rem;
-  font-size: .875rem;
-  color: #ef5350;
-}
-.swal2-container {
-  z-index: 9060 !important;
-}
+/* Existing styles */
 </style>

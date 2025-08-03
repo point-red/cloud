@@ -877,11 +877,11 @@ export default {
         console.log(JSON.stringify(error))
       })
     this.getUser({
-        params: {
-          sort_by: 'name',
-          limit: 5000
-        }
-      })
+      params: {
+        sort_by: 'name',
+        limit: 5000
+      }
+    })
       .then((response) => {
         const array = []
         response.data.forEach(element => {
@@ -890,7 +890,7 @@ export default {
             label: element.name
           })
         })
-        this.users = array 
+        this.users = array
         this.userList2 = response.data
         console.log(response.data)
       }, (error) => {
@@ -899,11 +899,11 @@ export default {
   },
   mounted () {
     this.getUser({
-        params: {
-          sort_by: 'name',
-          limit: 5000
-        }
-      })
+      params: {
+        sort_by: 'name',
+        limit: 5000
+      }
+    })
       .then((response) => {
         const array = []
         response.data.forEach(element => {
@@ -912,7 +912,7 @@ export default {
             label: element.name
           })
         })
-        this.users = array 
+        this.users = array
         this.userList2 = response.data
         console.log(response.data)
       }, (error) => {

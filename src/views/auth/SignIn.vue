@@ -74,11 +74,10 @@
         type="password"
         name="password"
       />
-      <!-- <p-form-check-box id="remember-me" name="remember-me" description="Remember me"></p-form-check-box> -->
 
       <div class="form-group text-center">
         <button
-          :disabled="isLoading"
+          :disabled="isLoading || !fcmReady"
           type="submit"
           class="btn btn-sm btn-hero btn-outline-dark mb-10"
         >
@@ -88,6 +87,7 @@
           /> Sign In
         </button>
       </div>
+      <!-- <span>{{ token }}</span> -->
       <div class="form-group text-center">
         <a
           class="text-center"
@@ -109,7 +109,10 @@ export default {
       username: '',
       password: '',
       token: '',
-      isLoading: false
+      isLoading: false,
+      fcmReady: false,
+      fcmStatus: '',
+      fcmStatusType: 'info'
     }
   },
   computed: {
@@ -117,7 +120,6 @@ export default {
       if (this.$route.query.r) {
         return this.$route.query.r
       }
-
       return '/'
     }
   },
@@ -140,16 +142,25 @@ export default {
     }
 
     if (firebase.messaging.isSupported()) {
+      this.fcmStatus = 'Mengambil izin notifikasi...'
       const messaging = firebase.messaging()
-      console.log('Created Messaging.')
-      messaging.requestPermission().then(function () {
-        console.log('Notification permission granted.')
+      const timeout = setTimeout(() => {
+        this.fcmReady = true
+      }, 5000)
+
+      messaging.requestPermission().then(() => {
         return messaging.getToken()
       }).then(token => {
+        clearTimeout(timeout)
         this.token = token
+        this.fcmReady = true
       }).catch(error => {
+        clearTimeout(timeout)
+        this.fcmReady = true
         console.log('Unable to get permission to notify.', error)
       })
+    } else {
+      this.fcmReady = true
     }
   },
   methods: {
