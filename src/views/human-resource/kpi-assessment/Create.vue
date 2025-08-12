@@ -1054,7 +1054,8 @@ export default {
       this.isSubmit = true
 
       this.sendNotification({
-        id: this.kpiId
+        id: this.kpiId,
+        isNew: 1
       })
       this.findKpiResult(this.form.template.score_percentage)
         .then((response) => {
