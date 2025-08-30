@@ -86,7 +86,10 @@
                 {{ $t("target") | uppercase }}
               </th>
               <th class="font-size-h6 font-w700 text-center">
-                {{ $t("notes") | uppercase }}
+                {{ $t("plan") | uppercase }}
+              </th>
+              <th class="font-size-h6 font-w700 text-center">
+                {{ $t("realization") | uppercase }}
               </th>
               <th class="font-size-h6 font-w700 text-center">
                 {{ $t("attachment") | uppercase }}
@@ -101,7 +104,7 @@
                 {{ $t("description") | uppercase }}
               </th>
               <th class="font-size-h6 font-w700 text-center">
-                {{ $t("comment") | uppercase }}
+                {{ $t("feedback") | uppercase }}
               </th>
             </tr>
             <template
@@ -147,6 +150,49 @@
                 </td>
                 <td class="text-center">
                   {{ indicator.target | numberFormat }}
+                </td>
+                <td class="text-center">
+                  <a
+                    v-show="
+                      (!indicator.selected ||
+                        indicator.selected.plan === '' ||
+                        indicator.selected.plan === undefined ||
+                        indicator.selected.plan === null) &&
+                        isUser(employee.user_id)
+                    "
+                    href="javascript:void(0)"
+                    class="btn btn-sm btn-primary"
+                    @click="
+                      !isSaving
+                        ? $refs.plan.show(indicator, id, employee.user_id)
+                        : null
+                    "
+                  >
+                    <i
+                      v-show="isSaving"
+                      class="fa fa-asterisk fa-spin"
+                    />
+                    <i
+                      v-show="!isSaving"
+                      class="si si-note"
+                    />
+                  </a>
+                  <a
+                    v-if="
+                      indicator.selected &&
+                        indicator.selected.plan !== '' &&
+                        indicator.selected.plan !== undefined &&
+                        indicator.selected.plan !== null
+                    "
+                    href="javascript:void(0)"
+                    class="text-decoration-none"
+                    style="text-overflow: ellipsis"
+                    @click="$refs.plan.show(indicator, id, employee.user_id)"
+                  >{{
+                    indicator.selected.plan.length > 15
+                      ? indicator.selected.plan.substring(0, 15) + "..."
+                      : indicator.selected.plan
+                  }}</a>
                 </td>
                 <td class="text-center">
                   <a
@@ -387,7 +433,7 @@
             </tr>
           </p-table>
 
-          <p-form-row :label="$t('comment')">
+          <p-form-row :label="$t('notes')">
             <div
               slot="body"
               class="col-lg-9 col-form-label"
@@ -416,13 +462,6 @@
                 />
                 {{ $t("save") | uppercase }}
               </button>
-              <button
-                type="button"
-                class="btn btn-sm btn-outline-danger"
-                @click="cancel"
-              >
-                {{ $t("cancel") | uppercase }}
-              </button>
             </div>
           </div>
         </p-block-inner>
@@ -436,6 +475,10 @@
     <assign-notes-modal
       ref="notes"
       @saveNotes="addedNotes"
+    />
+    <assign-plan-modal
+      ref="plan"
+      @savePlan="addedPlan"
     />
     <assign-comment-modal
       ref="comment"
@@ -457,6 +500,7 @@ import Form from '@/utils/Form'
 import AssignScoreModal from './AssignScoreModal'
 import AssignKpiTemplateModal from './AssignKpiTemplateModal'
 import AssignNotesModal from './AssignNotesModal'
+import AssignPlanModal from './AssignPlanModal'
 import AssignCommentModal from './AssignCommentModal'
 import ShowAttachmentModal from './ShowAttachmentModal'
 import Breadcrumb from '@/views/Breadcrumb'
@@ -470,6 +514,7 @@ export default {
     AssignScoreModal,
     AssignKpiTemplateModal,
     AssignNotesModal,
+    AssignPlanModal,
     AssignCommentModal,
     Breadcrumb,
     BreadcrumbHumanResource,
@@ -768,6 +813,33 @@ export default {
       this.onSave()
       console.log(this.form)
     },
+    addedPlan ({ indicatorId, plan }) {
+      const groupIndex = this.form.template.groups.findIndex((o) =>
+        o.indicators.find((o) => o.id === indicatorId)
+      )
+      // find index of template indicator
+      const indicatorIndex = this.form.template.groups[
+        groupIndex
+      ].indicators.findIndex((o) => o.id === indicatorId)
+      if (
+        this.form.template.groups[groupIndex].indicators[indicatorIndex]
+          .selected !== undefined
+      ) {
+        this.$set(
+          this.form.template.groups[groupIndex].indicators[indicatorIndex]
+            .selected,
+          'plan',
+          plan
+        )
+      } else {
+        this.$set(
+          this.form.template.groups[groupIndex].indicators[indicatorIndex],
+          'selected',
+          { plan: plan }
+        )
+      }
+      this.onSave()
+    },
     setIndicatorIdAtt (indicatorId) {
       this.indicatorIdAtt = indicatorId
     },
@@ -939,6 +1011,7 @@ export default {
                       formData.append('feature', 'assessment')
                       formData.append('feature_id', indicatorId)
                       formData.append('notes', '')
+                      formData.append('plan', '')
                       formData.append('is_user_protected', true)
                       formData.append('expiration_day', 0)
                       formData.append('key', this.cloudStorage.key)
@@ -955,6 +1028,7 @@ export default {
                         formData.append('feature', 'assessment')
                         formData.append('feature_id', indicatorId)
                         formData.append('notes', '')
+                        formData.append('plan', '')
                         formData.append('is_user_protected', true)
                         formData.append('expiration_day', 0)
                         this.uploadAttachment(formData)
@@ -1016,6 +1090,7 @@ export default {
               formData.append('feature', 'assessment')
               formData.append('feature_id', this.indicatorIdAtt)
               formData.append('notes', '')
+              formData.append('plan', '')
               formData.append('is_user_protected', true)
               formData.append('expiration_day', 0)
               this.uploadAttachment(formData)
@@ -1145,6 +1220,16 @@ export default {
                   ? indicator.notes
                   : ''
               )
+
+              this.$set(
+                this.form.template.groups[groupIndex].indicators[indicatorIndex]
+                  .selected,
+                'plan',
+                this.form.template.name == dataAssessment.name &&
+                  indicator !== null
+                  ? indicator.plan
+                  : ''
+              )
             } else {
               if (
                 this.form.template.groups[groupIndex].indicators[indicatorIndex]
@@ -1175,6 +1260,13 @@ export default {
                 'notes',
                 indicator.notes
               )
+
+              this.$set(
+                this.form.template.groups[groupIndex].indicators[indicatorIndex]
+                  .selected,
+                'plan',
+                indicator.plan
+              )
             }
           } else {
             if (!indicator.automated_code && indicator.score !== undefined) {
@@ -1203,6 +1295,17 @@ export default {
                   this.form.template.name == dataAssessment.name &&
                     indicator !== null
                     ? indicator.notes
+                    : ''
+                )
+
+                this.$set(
+                  this.form.template.groups[groupIndex].indicators[
+                    indicatorIndex
+                  ].selected,
+                  'plan',
+                  this.form.template.name == dataAssessment.name &&
+                    indicator !== null
+                    ? indicator.plan
                     : ''
                 )
               } else {
@@ -1255,6 +1358,13 @@ export default {
                   ].selected,
                   'notes',
                   indicator.notes
+                )
+                this.$set(
+                  this.form.template.groups[groupIndex].indicators[
+                    indicatorIndex
+                  ].selected,
+                  'plan',
+                  indicator.plan
                 )
                 this.$set(
                   this.form.template.groups[groupIndex].indicators[

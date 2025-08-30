@@ -71,7 +71,10 @@
                 {{ $t("target") | uppercase }}
               </th>
               <th class="font-size-h6 font-w700 text-center">
-                {{ $t("notes") | uppercase }}
+                {{ $t("plan") | uppercase }}
+              </th>
+              <th class="font-size-h6 font-w700 text-center">
+                {{ $t("realization") | uppercase }}
               </th>
               <th class="font-size-h6 font-w700 text-center">
                 {{ $t("attachment") | uppercase }}
@@ -86,7 +89,7 @@
                 {{ $t("description") | uppercase }}
               </th>
               <th class="font-size-h6 font-w700 text-center">
-                {{ $t("comment") | uppercase }}
+                {{ $t("feedback") | uppercase }}
               </th>
             </tr>
             <template
@@ -132,6 +135,24 @@
                 </td>
                 <td class="text-center">
                   {{ indicator.target | numberFormat }}
+                </td>
+                <td class="text-center">
+                  <a
+                    v-if="
+                      indicator.selected &&
+                        indicator.selected.plan !== '' &&
+                        indicator.selected.plan !== undefined &&
+                        indicator.selected.plan !== null
+                    "
+                    href="javascript:void(0)"
+                    class="text-decoration-none"
+                    style="text-overflow: ellipsis"
+                    @click="$refs.plan.show(indicator, id, 0, true)"
+                  >{{
+                    indicator.selected.plan.length > 20
+                      ? indicator.selected.plan.substring(0, 20) + "..."
+                      : indicator.selected.plan
+                  }}</a>
                 </td>
                 <td class="text-center">
                   <a
@@ -257,7 +278,7 @@
 
           <p-form-row
             :is-horizontal="false"
-            :label="$t('comment')"
+            :label="$t('notes')"
           >
             <div
               slot="body"
@@ -271,6 +292,7 @@
     </form>
 
     <assign-notes-modal ref="notes" />
+    <assign-plan-modal ref="plan" />
     <assign-comment-modal ref="comment" />
     <show-attachment-modal ref="showAttachment" />
   </div>
@@ -279,6 +301,7 @@
 <script>
 import Form from '@/utils/Form'
 import AssignNotesModal from './AssignNotesModal'
+import AssignPlanModal from './AssignPlanModal'
 import AssignCommentModal from './AssignCommentModal'
 import ShowAttachmentModal from './ShowAttachmentModal'
 import Breadcrumb from '@/views/Breadcrumb'
@@ -290,6 +313,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   components: {
     AssignNotesModal,
+    AssignPlanModal,
     AssignCommentModal,
     ShowAttachmentModal,
     Breadcrumb,
@@ -483,6 +507,12 @@ export default {
               'notes',
               indicator.notes
             )
+            this.$set(
+              this.form.template.groups[groupIndex].indicators[indicatorIndex]
+                .selected,
+              'plan',
+              indicator.plan
+            )
 
             if (dataAssessment != null) {
               var dataAssessment2 =
@@ -498,6 +528,12 @@ export default {
                   .selected,
                 'notes',
                 dataAssessment2.notes
+              )
+              this.$set(
+                this.form.template.groups[groupIndex].indicators[indicatorIndex]
+                  .selected,
+                'plan',
+                dataAssessment2.plan
               )
             }
           }
