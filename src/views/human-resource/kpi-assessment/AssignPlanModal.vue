@@ -2,19 +2,19 @@
   <div>
     <form
       class="row"
-      @submit.prevent="onSubmitNotes"
+      @submit.prevent="onSubmitPlan"
     >
       <p-modal
-        id="assign-notes"
-        ref="notesAssessment"
-        :title="$t('input realization')"
+        id="assign-plan"
+        ref="planAssessment"
+        :title="$t('input plan')"
       >
         <template slot="content">
           <div class="list-group mb-20">
             <template>
-              <label>{{ $t("realization") | uppercase }}</label>
+              <label>{{ $t("plan") | uppercase }}</label>
               <textarea
-                v-model="notes"
+                v-model="plan"
                 class="form-control mt-2"
                 rows="20"
                 :readonly="!isUser(employee_user_id) || isdetail"
@@ -43,38 +43,38 @@ export default {
       employee_id: null,
       indicatorId: null,
       employee_user_id: null,
-      notes: '',
+      plan: '',
       isdetail: false
     }
   },
   methods: {
     show (indicator, id, userId, isdetail = false) {
       this.indicatorId = indicator.id
-      this.notes =
+      this.plan =
         indicator.selected !== undefined
-          ? indicator.selected.notes !== undefined
-            ? indicator.selected.notes
+          ? indicator.selected.plan !== undefined
+            ? indicator.selected.plan
             : ''
           : ''
       this.employee_id = id
       this.employee_user_id = userId
       this.isdetail = isdetail
-      this.$refs.notesAssessment.show()
+      this.$refs.planAssessment.show()
     },
     isUser (employeeUserid) {
       return localStorage.getItem('userId') == employeeUserid
     },
     close () {
-      this.notes = ''
-      this.$refs.notesAssessment.close()
+      this.plan = ''
+      this.$refs.planAssessment.close()
     },
-    onSubmitNotes () {
-      this.$emit('saveNotes', {
+    onSubmitPlan () {
+      this.$emit('savePlan', {
         indicatorId: this.indicatorId,
-        notes: this.notes
+        plan: this.plan
       })
-      this.notes = ''
-      this.$refs.notesAssessment.close()
+      this.plan = ''
+      this.$refs.planAssessment.close()
     }
   }
 }

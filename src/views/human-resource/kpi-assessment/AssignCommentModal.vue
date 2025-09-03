@@ -7,12 +7,12 @@
       <p-modal
         id="assign-comment"
         ref="commentAssessment"
-        :title="$t('comment assessment')"
+        :title="$t('feedback assessment')"
       >
         <template slot="content">
           <div class="list-group mb-20">
             <template>
-              <label>{{ $t("comment") | uppercase }}</label>
+              <label>{{ $t("feedback") | uppercase }}</label>
               <textarea
                 v-model="comment"
                 class="form-control mt-2"

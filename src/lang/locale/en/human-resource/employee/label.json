@@ -53,6 +53,8 @@
   "score" : "score",
   "score percentage" : "score percentage",
   "key performance indicator" : "key performance indicator",
+	"plan": "plan",
+	"realization": "realization",
   "description" : "description",
   "date" : "date",
   "value" : "nilai",
