@@ -53,10 +53,13 @@
           class="btn text-black"
           style="margin-top: -6px; padding: 8px !important"
         >
-          <i class="fa fa-info-circle" style="font-size: 20px;" />
+          <i
+            class="fa fa-info-circle"
+            style="font-size: 20px;"
+          />
         </a>
 
-        <notification-dropdown />
+        <notification-dropdown v-if="tenantCode && tenantCode !== 'undefined'" />
 
         <header-dropdown />
 
@@ -136,7 +139,8 @@ export default {
   },
   data () {
     return {
-      tenantName: localStorage.getItem('tenantName')
+      tenantName: localStorage.getItem('tenantName'),
+      tenantCode: localStorage.getItem('tenantCode')
     }
   },
   created () {

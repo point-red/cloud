@@ -189,6 +189,17 @@ export default {
   methods: {
     ...mapActions('notification', ['get', 'update', 'markAllAsRead']),
     fetchNotifications (append = false) {
+      // don't fetch notifications from API if tenantCode is not present or is the string 'undefined'
+      const tenantCode = localStorage.getItem('tenantCode')
+      if (!tenantCode || tenantCode === 'undefined') {
+        this.unreadMessages = 0
+        this.localNotifications = []
+        this.isLoading = false
+        this.isLoadingMore = false
+        this.allLoaded = true
+        return
+      }
+
       if (this.isLoading || this.isLoadingMore || this.allLoaded) return
       if (append) this.isLoadingMore = true
       else this.isLoading = true
@@ -231,6 +242,13 @@ export default {
       this.isLoading = false
       this.isLoadingMore = false
       this.localNotifications = []
+
+      const tenantCode = localStorage.getItem('tenantCode')
+      if (!tenantCode || tenantCode === 'undefined') {
+        this.allLoaded = true
+        return
+      }
+
       this.fetchNotifications(false)
     },
     listenFirestore () {
