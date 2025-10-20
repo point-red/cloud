@@ -15,7 +15,8 @@ const state = {
   accessToken: null,
   tokenType: null,
   expirationDate: null,
-  user: null
+  user: null,
+  tenantCode: null
 }
 
 const getters = {
@@ -24,6 +25,9 @@ const getters = {
   },
   isAuthenticated: state => {
     return !!state.accessToken // Return true if accessToken exists, otherwise false
+  },
+  tenantCode: state => {
+    return state.tenantCode
   }
 }
 
@@ -41,6 +45,14 @@ const mutations = {
     state.tokenType = null
     state.expirationDate = null
     state.user = null
+  },
+  setTenantCode (state, code) {
+    state.tenantCode = code
+    if (code) {
+      localStorage.setItem('tenantCode', code)
+    } else {
+      localStorage.removeItem('tenantCode')
+    }
   }
 }
 
@@ -87,6 +99,7 @@ const actions = {
         localStorage.setItem('tenantName', apiData.tenant_name)
         localStorage.setItem('tenantAddress', apiData.tenant_address)
         localStorage.setItem('tenantPhone', apiData.tenant_phone)
+        commit('setTenantCode', apiData.tenant_code)
         commit('storeUser', apiData)
         axios.defaults.headers.common.Authorization = apiData.token_type + ' ' + apiData.access_token
 
@@ -107,7 +120,7 @@ const actions = {
       })
     })
   },
-  logout () {
+  logout ({ commit }) {
     if (process.env.NODE_ENV === 'development') {
       Vue.cookie.delete('TID')
       Vue.cookie.delete('TTT')
@@ -130,6 +143,12 @@ const actions = {
     localStorage.removeItem('userPhone')
     localStorage.removeItem('userAddress')
     localStorage.removeItem('defaultWarehouse')
+    localStorage.removeItem('tenantCode')
+    localStorage.removeItem('tenantName')
+    localStorage.removeItem('tenantAddress')
+    localStorage.removeItem('tenantPhone')
+    commit('setTenantCode', null)
+    commit('removeAuth')
     router.replace('/auth/signin')
   },
   tryAutoLogin ({ commit }) {
@@ -162,6 +181,7 @@ const actions = {
         localStorage.setItem('userEmail', apiData.email)
         localStorage.setItem('tenantCode', apiData.tenant_code)
         localStorage.setItem('tenantName', apiData.tenant_name)
+        commit('setTenantCode', apiData.tenant_code)
         commit('storeUser', apiData)
         return resolve(response.data)
       }).catch(error => {

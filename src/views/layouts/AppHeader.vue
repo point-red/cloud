@@ -59,7 +59,7 @@
           />
         </a>
 
-        <notification-dropdown v-if="tenantCode && tenantCode !== 'undefined'" />
+        <notification-dropdown v-if="tenantCodeLocal && tenantCodeLocal !== 'undefined'" />
 
         <header-dropdown />
 
@@ -128,7 +128,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import HeaderDropdown from './HeaderDropdown'
 import NotificationDropdown from './NotificationDropdown'
 
@@ -139,8 +139,18 @@ export default {
   },
   data () {
     return {
-      tenantName: localStorage.getItem('tenantName'),
-      tenantCode: localStorage.getItem('tenantCode')
+      tenantName: localStorage.getItem('tenantName')
+    }
+  },
+  computed: {
+    ...mapGetters('auth', ['tenantCode']),
+    tenantCodeLocal () {
+      return this.tenantCode
+    }
+  },
+  watch: {
+    '$route' () {
+      this.tenantName = localStorage.getItem('tenantName')
     }
   },
   created () {

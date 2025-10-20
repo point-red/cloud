@@ -40,9 +40,12 @@
           class="btn text-black"
           style="margin-top: -6px; padding: 8px !important"
         >
-          <i class="fa fa-info-circle " style="font-size: 20px;" />
+          <i
+            class="fa fa-info-circle "
+            style="font-size: 20px;"
+          />
         </a>
-        <notification-dropdown />
+        <notification-dropdown v-if="tenantCodeLocal && tenantCodeLocal !== 'undefined'" />
         <header-dropdown />
       </div>
       <!-- END Right Section -->
@@ -52,7 +55,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import HeaderDropdown from './HeaderDropdown'
 import NotificationDropdown from '../NotificationDropdown'
 
@@ -60,6 +63,22 @@ export default {
   components: {
     HeaderDropdown,
     NotificationDropdown
+  },
+  data () {
+    return {
+      tenantName: localStorage.getItem('tenantName')
+    }
+  },
+  computed: {
+    ...mapGetters('auth', ['tenantCode']),
+    tenantCodeLocal () {
+      return this.tenantCode
+    }
+  },
+  watch: {
+    '$route' () {
+      this.tenantName = localStorage.getItem('tenantName')
+    }
   },
   created () {
     console.log(this.pointSwVersion + ' !== ' + this.pointPackageVersion)

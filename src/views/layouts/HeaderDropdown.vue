@@ -19,6 +19,7 @@
       <a
         :href="accountPage"
         class="dropdown-item"
+        @click.prevent="goToAccount"
       >
         <i class="si si-user mr-5" /> Account
       </a>
@@ -93,6 +94,12 @@ export default {
     signout () {
       this.toggleHeaderDropdown()
       this.logout()
+    },
+    goToAccount () {
+      // Only access window in browser environments to avoid SSR errors
+      if (typeof window !== 'undefined' && window.location) {
+        window.location.href = this.accountPage
+      }
     }
   }
 }
