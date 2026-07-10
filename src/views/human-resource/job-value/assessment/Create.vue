@@ -73,7 +73,7 @@
               </div>
             </p-form-row>
             <hr>
-            <div v-if="(settings.minimum_coc > cocScore.score_percentage || contractMonthDiff < 6)">
+            <div v-if="!isLoading && cocChecked && contractChecked && (settings.minimum_coc > cocScore.score_percentage || contractMonthDiff < 6)">
               <p
                 v-if="settings.minimum_coc > cocScore.score_percentage"
                 class="text-center font-w700"
@@ -88,7 +88,7 @@
               </p>
             </div>
             <div
-              v-else
+              v-if="!isLoading && cocChecked && contractChecked && settings.minimum_coc <= cocScore.score_percentage && contractMonthDiff >= 6"
               class="list-group push"
             >
               <p-table>
@@ -307,6 +307,8 @@ export default {
     return {
       isSaving: false,
       isLoading: false,
+      cocChecked: false,
+      contractChecked: false,
       contractMonthDiff: 0,
       requestedBy: localStorage.getItem('fullName'),
       salesQuotation: null,
@@ -477,6 +479,7 @@ export default {
         })
     },
     findEmployeeRequest () {
+      this.isLoading = true
       this.findEmployee({
         id: this.authUser.employee.id
       }).then(response => {
@@ -492,10 +495,16 @@ export default {
               (latestEnd.getFullYear() - earliestStart.getFullYear()) * 12 +
               (latestEnd.getMonth() - earliestStart.getMonth())
         }
+        this.contractChecked = true
+        this.isLoading = false
+      }).catch(() => {
+        this.contractChecked = true
+        this.isLoading = false
       })
     },
     getCocRequest () {
       this.isLoading = true
+      this.cocChecked = false
       this.getCoc({
         params: {
           employee_id: this.authUser.employee.id,
@@ -510,9 +519,10 @@ export default {
             score_percentage: 0
           }
         }
-        console.log(this.assessments && this.assessments.length > 0 && (this.settings.minimum_coc > this.cocScore.score_percentage || this.contractMonthDiff < 6))
+        this.cocChecked = true
       }).catch(error => {
         this.isLoading = false
+        this.cocChecked = true
         this.$notifications.error(error.message)
       })
     },

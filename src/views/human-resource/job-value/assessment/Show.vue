@@ -58,7 +58,7 @@
         <div class="row">
           <div class="col-sm-12">
             <div
-              v-if="authUser.employee?.id === assessment.employee_id || (assessment.request_approval_to === authUser.id && assessment.approval_status === 'rejected')"
+              v-if="authUser.employee?.id == assessment.employee_id || (assessment.request_approval_to === authUser.id && assessment.approval_status === 'rejected')"
               class="text-right mb-5"
             >
               <router-link
@@ -600,7 +600,7 @@ export default {
     ...mapGetters('humanResourceJobValueAssessment', ['assessment']),
     ...mapGetters('auth', ['authUser']),
     canApprove () {
-      if (this.assessment.request_approval_to === this.authUser.id) {
+      if (this.assessment.request_approval_to == this.authUser.id) {
         return true
       }
 
