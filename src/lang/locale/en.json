@@ -38,6 +38,7 @@
 	"price": "price",
 	"tax base": "tax base",
 	"subtotal": "subtotal",
+	"average": "average",
 	"total": "total",
 	"report": "report",
 	"timezone": "timezone",

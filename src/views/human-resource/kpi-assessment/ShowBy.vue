@@ -67,7 +67,7 @@
           </div>
         </p-form-row>
         <div class="form-group row">
-          <div class="col-md-12">
+          <div class="col-md-12 d-flex align-items-center">
             <div
               class="btn-group-toggle"
               data-toggle="buttons"
@@ -75,7 +75,7 @@
               <label
                 :class="{
                   'btn btn-sm mr-5 btn-primary active': isHighlight,
-                  'btn btn-sm mr-5 btn-info': !isHighlight
+                  'btn btn-sm mr-5 btn-primary': !isHighlight
                 }"
               >
                 <input
@@ -93,6 +93,19 @@
                 > Highlight
               </label>
             </div>
+            <button
+              v-if="templateSelected && type == 'monthly'"
+              type="button"
+              class="btn btn-sm btn-primary"
+              :disabled="isExporting"
+              @click="exportData"
+            >
+              <i
+                v-show="isExporting"
+                class="fa fa-asterisk fa-spin"
+              />
+              {{ $t('export') | uppercase }}
+            </button>
           </div>
         </div>
         <p-table v-if="templateSelected">
@@ -195,7 +208,7 @@
               class="font-size-h6 font-w700 text-center"
             >
               <b v-if="no>0">{{ (val%1 === 0 ? val : val.toFixed(2)) }}</b>
-              <b v-else>{{ val }}</b>
+              <b v-else>{{ $t('total') | uppercase }}</b>
             </td>
           </tr>
         </p-table>
@@ -236,7 +249,8 @@ export default {
       templateList: [],
       templateIndex: 0,
       templateSelected: null,
-      isHighlight: false
+      isHighlight: false,
+      isExporting: false
     }
   },
   computed: {
@@ -278,8 +292,23 @@ export default {
   },
   methods: {
     ...mapActions('humanResourceEmployeeAssessment', {
-      findEmployeeAssessment: 'findBy'
+      findEmployeeAssessment: 'findBy',
+      exportAssessmentBy: 'exportBy'
     }),
+    exportData () {
+      this.isExporting = true
+      this.exportAssessmentBy({
+        employeeId: this.id,
+        value: this.value,
+        type: this.type
+      }).then((response) => {
+        this.isExporting = false
+        window.open(response.data.url, '_blank')
+      }).catch((error) => {
+        this.isExporting = false
+        this.$notification.error(error.message || 'Failed to export')
+      })
+    },
     isScoreColumn (col) {
       const FIRST_SCORER_INDEX = 3
       return (col >= FIRST_SCORER_INDEX && (col % 2) != 0)
