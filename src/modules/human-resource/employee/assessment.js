@@ -100,6 +100,16 @@ const actions = {
         })
     })
   },
+  exportBy ({ commit }, payload) {
+    return new Promise((resolve, reject) => {
+      api.get('/human-resource/employee/employees/' + payload.employeeId + '/assessment-by/' + payload.value + '/export?type=' + payload.type)
+        .then(response => {
+          resolve(response)
+        }).catch(error => {
+          reject(error)
+        })
+    })
+  },
   create (context, payload) {
     return new Promise((resolve, reject) => {
       api.post(url(payload.employeeId), payload.form)
