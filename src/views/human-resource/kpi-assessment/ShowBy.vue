@@ -149,7 +149,7 @@
                 :colspan="templateSelected.scorer.length*2"
                 class="font-size-h6 font-w700 text-center"
               >
-                {{ $t('you do not have permission to see the employee assessor') }}
+                {{ $t('you do not have permission to see the employee assessor.') }}
               </th>
             </template>
           </tr>
